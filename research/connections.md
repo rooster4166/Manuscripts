@@ -266,16 +266,19 @@ So the bound transfers for free when n − |S| is odd. When n − |S| is even, t
 
 ## O. The second descent step is a "Lovász theorem for two even vertices"
 
-**Dictionary.** Let G have even order, E its even vertices, and u ≠ v ∈ E. Let z be a new vertex joined to E − {u, v}, and ℓ a new leaf at z. Then
+**Sufficient condition (proved).** Let G have even order, E its even vertices, and u ≠ v ∈ E. Let z be a new vertex joined to E − {u, v}, and ℓ a new leaf at z.
 
-  E − {u, v} is realisable in G  ⇔  G + z + ℓ has a decomposition into |odd|/2 paths.
+  If G + z + ℓ has a decomposition into |odd|/2 paths, then E − {u, v} is realisable in G.
 
-The graph G + z + ℓ has exactly two even vertices, u and v. A decomposition into |odd|/2 paths, i.e. one meeting the parity bound, is one with u and v internal.
+The graph G + z + ℓ has exactly two even vertices, u and v. A decomposition into |odd|/2 paths, i.e. one meeting the parity bound, has every odd vertex as an end exactly once and u, v internal.
 
 **Proof.**
 
-- (⇐) Every odd vertex has exactly one end. Delete ℓ and z, repairing the neighbours of z as in Lemma 2 (split those left with 0 ends).
-- (⇒) Append edges at z: pair two path ends at s, s′ ∈ E − {u, v} through z, and finish with the leaf. Counting ends shows the parity bound is met.
+- Delete ℓ. If its path is the single edge ℓz, this removes z's only end. Otherwise z gains a second end.
+- Delete z. Each neighbour of z then has 0 or 2 ends; split at those with 0.
+- The vertices u and v are not adjacent to z, so they keep 0 ends. The odd vertices keep 1.
+
+**The converse is not claimed.** Pairing path ends through z needs the two paths to be vertex-disjoint.
 
 So Lovász's theorem, covering at most one even vertex, gives the first descent step (Lemma 3), and the second step is exactly:
 
