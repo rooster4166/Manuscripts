@@ -35,3 +35,4 @@ import GallaiLean.SeparatorEvenOdd
 import GallaiLean.Bridge
 import GallaiLean.BranchBase
 import GallaiLean.MissingMove
+import GallaiLean.Relay
