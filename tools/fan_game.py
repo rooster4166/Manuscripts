@@ -47,7 +47,8 @@ import networkx as nx
 CACHE_CAP = 3_000_000  # states kept in the memo table before it is flushed
 
 
-def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False):
+def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False,
+                kmin=0):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -262,7 +263,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
     result = {}
     for r in roots:
         found = None
-        for k in range(0, kmax + 1):
+        for k in range(kmin, kmax + 1):
             for F in (hub_sets(k) if hubs else combinations(E, k)):
                 for b0 in starts(F):
                     if win(frozenset(F), b0, r, rot, alt):

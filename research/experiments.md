@@ -283,12 +283,14 @@ Tool: `tools/fan_game.py`, with new options. Manuscript `manuscripts/missing-mov
 | Test | Outcome |
 |---|---|
 | `np`, all 11,117 connected graphs, \|F\| ≤ 4 | 47 graphs with a losing root (base game: 50) |
-| the 47, `np`, \|F\| raised from 5 | every root wins. 35 graphs at \|F\| = 5 and 5 at \|F\| = 6 (all roots); the 7 dense graphs (complements of ≤ 6 edges), one root per automorphism orbit (`orbit_run.py`): Gut~vs at \|F\| = 6; Gut~~w, Gu^v~w, Guv]}{, Guv]z{ at 7; Guv]~{ at 8 (root 2); K8 − perfect matching (Gr~v~w) PENDING |
+| the 47, `np`, \|F\| raised from 5 | every root wins. Of the 40 sparser graphs (`stepper.sh`, all roots), 35 need \|F\| = 5 and 5 need 6. The 7 dense graphs (complements of ≤ 6 edges) were run one root per automorphism orbit (`orbit_run.py`): Gut~vs needs 6; Gut~~w, Gu^v~w, Guv]}{ and Guv]z{ need 7; Guv]~{ needs 8 (root 2); **K8 − perfect matching (Gr~v~w) needs 9**. Every held set of size 8 loses there; the star plus three edges wins, with a new path of length 4 through the hub |
 | the five §R losers, `np` | win; every certificate found is hub-shaped (`outputs/certificates.txt`) |
 | the five losers, `rot2` \|F\| ≤ 4; `alt2` \|F\| ≤ 4; `alt1` \|F\| ≤ 6 | **no losing root repaired** (GsRvnk 2, 3; GsZvnk 4; Gqrvn[ 2; Gqzvn[ 4; Gqzl\|{ 1) |
 | (R) by CP-SAT on the five losers | holds at every root |
 
-So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S). The certificate for GsRvnk, root 2, is the following:
+So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S).
+
+*Correction to E13.* K8 − perfect matching loses with path insertion at every \|F\| ≤ 8, so it also loses the original game there. The E13 list of five genuine losers at \|F\| ≤ 8 is therefore incomplete: K8 − PM is a sixth. With path insertion it wins at \|F\| = 9. The certificate for GsRvnk, root 2, is the following:
 - hold the star at 2;
 - take Lovász on G − 2 (3 paths, one spare);
 - single transfer 0 → 2;
@@ -301,9 +303,9 @@ Theorem `hub_four_ends` (Lean) is the general form.
 
 | Graph | Description | Outcome |
 | A_{4,4} | K4 core, full vertex with a leaf, four false twins | wins at k = 2 |
-| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root** (k ≤ 2) |
+| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | loses at every root with k ≤ 2; **core roots still lose with k = 3** |
 | B | K6 core, two adjacent full vertices, two half-contact vertices | wins at k = 1 |
-| B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | **loses at every root** (k ≤ 2) |
+| B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | loses at every root with k ≤ 2; **wins at every root with k = 3** (star at x1 + a core triangle; new path 0–2–1–x1–5) |
 
 (R) holds at every root of all four (CP-SAT).
 
@@ -319,7 +321,9 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 **Reading.**
 - At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
-- The first gaps of the extended game we know of are degree-six hubs at n = 10, one receipt short. There a non-profile count at Fan's equality can close the gap (A_{6,2}) or be tight (B′).
+- Degree-six hubs: with a pure star they are one receipt short at Fan's equality. By hand the gap closes by an edge count (A_{6,2} twins) or a flower (K8 − PM); the count is tight on B′.
+- The game bypasses the deficit with more held edges and a longer inserted path through the hub: K8 − PM at \|F\| = 9, and B′ with a star plus 3.
+- The resistant case we know of is the core roots of A_{6,2}, which lose with a star plus ≤ 3 held edges. General held sets at n = 10 are out of the solver's reach.
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
 
 **E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).

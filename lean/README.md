@@ -673,11 +673,14 @@ leaves when `G − F` has an isolated vertex. Manuscript `manuscripts/missing-mo
 | **`Ach.hub_four`** | **Hub lemma** (Lemma 2.1). If `s` meets no edge of `E`, and `a, c, d` have ends, then inserting `sa, sc, sd, sx` costs one extra path. For some `{y, y'} = {c, d}`: `b' v + [v=a] + [v=y] = b v + 2[v=s] + [v=y'] + [v=x]`. The steps are `Ach.transfer`, then `Ach.grouped`, then `Ach.addPath`. |
 | **`hub_four_ends`** | **Degree-four hubs** (Thm 2.2). Even order, `d(s) = 4`, all neighbours of `s` even, `#{v ∈ Ev : v ≠ s, sv ∉ E} ≤ 1` ⇒ for every neighbour `x` there is a decomposition with `2·size ≤ n`, `ends s = 2`, `ends x = 2`. Lovász is `lovasz_ends`, so this is unconditional. |
 | **`hub_four_rooted`** | the same hypotheses ⇒ `pathNumber (addLeaf G r) ≤ n/2` for `r = s` and for every neighbour `r` of `s` |
+| `fanPre_transport`, **`fan_reroute_exec`** | executing a partial chain: along a duplicate-free predecessor sequence `t = x₀, …, x_k = z` (`k ≥ 1`), `K + tu − zu` has a decomposition of the same size with an end moved from `t` to `z` (the reroutes of `fan_exec` without its final append) |
+| `fan_alt_count` | either some chain from `T` terminates, or `∑_T ends ≤ #{blank neighbours of u reachable from T}` (the counting of `fan_exists_chain`, stopped before the contradiction) |
+| **`fan_alternative`** | **Fan's alternative** (Lemma 4.2): either some `t ∈ T` gives an end to `u`, or a set `W` of blank neighbours of `u` with `∑_T ends ≤ |W|` can each be activated (`K + tu − zu`, end `t → z`) |
 
 `#print axioms`: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Not formalized:
-Lemmas 4.1–4.2 (rotation; Fan's alternative), which are a single step and partial chains of
-`fan_exec` / `fan_exists_chain` and do not help in the game; Proposition 5.2 (degree-six hub of
-`A_{6,2}`).
+Lemma 4.1 (rotation; it is the one-step case of `fan_reroute_exec` plus `append_move`), and the
+hand arguments of §5 (Proposition 5.2, the degree-six hub of `A_{6,2}`; the flower Lemma 5.4 and
+Proposition 5.5, `K₈` minus a perfect matching).
 
 ## Open / not formalized
 

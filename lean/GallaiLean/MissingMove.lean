@@ -24,9 +24,12 @@ step of Lovász's own induction, and it is the move that the n = 8 losers of the
   `x` of `s`, `G` has a decomposition into at most `n/2` paths with two ends at `s` and two at `x`.
 * **`hub_four_rooted`**: consequently the rooted test holds at `s` and at every neighbour of `s`.
 
-The profile-level Pósa moves tested alongside (rotation at equality, Fan's alternative; see the
-manuscript) are single steps of the chain in `Fan.lean` (`PathDecomp.reroute_move`,
-`PathDecomp.append_move`); they do not make the n = 8 losers winnable and are not needed here.
+* **`fan_alternative`** (Fan's alternative, manuscript Lemma 4.2): either some `t ∈ T` gives an
+  end to `u` (Fan's conclusion), or at least `∑_T ends` blank neighbours `z` of `u` can each be
+  activated: `K + tu - zu` has a decomposition of the same size with an end moved from `t` to `z`.
+  Its parts are `fan_reroute_exec` (the reroute steps of `fan_exec` without the final append) and
+  `fan_alt_count` (the counting of `fan_exists_chain`, stopped before the contradiction).
+  As a move of the profile game it repairs none of the n = 8 losers (manuscript Prop 4.3).
 -/
 
 open SimpleGraph
@@ -392,5 +395,359 @@ theorem hub_four_rooted (hn : Even (Fintype.card V)) {s : V} (hdeg : G.degree s 
     _ ≤ Fintype.card V / 2 := by omega
 
 end rooted
+
+/-! ### Fan's alternative -/
+
+section alternative
+
+omit [DecidableEq V] in
+/-- `FanPre` survives a reroute away from its vertices (the `FanPre` half of
+`fanChain_transport`). -/
+theorem fanPre_transport {K K₁ : SimpleGraph V} {D : PathDecomp K} {D₁ : PathDecomp K₁}
+    {u t : V} {P : GPath K}
+    (htrans : ∀ Q ∈ D.paths, Q ≠ P → ∃ Q' ∈ D₁.paths, Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+      Q'.walk.support = Q.walk.support)
+    (hP' : ∃ P' ∈ D₁.paths, ∀ x z, x ≠ t →
+      ((P.src = x ∧ [z, u] <:+: P.walk.support) ∨ (P.tgt = x ∧ [u, z] <:+: P.walk.support)) →
+      (P'.tgt = x ∧ [u, z] <:+: P'.walk.support)) :
+    ∀ l, t ∉ l → FanPre D u l → FanPre D₁ u l := by
+  apply FanPre.transport
+  rintro x z hx ⟨Q, hQ, hocc⟩
+  by_cases hQP : Q = P
+  · subst hQP
+    obtain ⟨P', hP'mem, hP'⟩ := hP'
+    exact ⟨P', hP'mem, Or.inr (hP' x z hx hocc)⟩
+  · obtain ⟨Q', hQ', hs, ht, hsupp⟩ := htrans Q hQ hQP
+    refine ⟨Q', hQ', ?_⟩
+    rcases hocc with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact Or.inl ⟨hs.trans h1, by rw [hsupp]; exact h2⟩
+    · exact Or.inr ⟨ht.trans h1, by rw [hsupp]; exact h2⟩
+
+/-- **Executing a partial chain.** Along a duplicate-free predecessor sequence
+`t = x₀, x₁, …, x_k = z` (`k ≥ 1`) from a non-neighbour `t` of `u`, the graph `K + tu - zu` has a
+decomposition of the same size with one end moved from `t` to `z`. These are the reroute steps of
+`fan_exec` without its final append. -/
+theorem fan_reroute_exec (u : V) : ∀ (xs : List V) {K : SimpleGraph V} (D : PathDecomp K)
+    (t z : V), xs ≠ [] → (t :: xs).Nodup → FanPre D u (t :: xs) → (t :: xs).getLast? = some z →
+    t ≠ u → ¬ K.Adj t u → ∀ K' : SimpleGraph V,
+    (∀ e, e ∈ K'.edgeSet ↔ (e ∈ K.edgeSet ∧ e ≠ s(z, u)) ∨ e = s(t, u)) →
+    ∃ D' : PathDecomp K', D'.size = D.size ∧
+      ∀ w, D'.ends w + (if t = w then 1 else 0) = D.ends w + (if z = w then 1 else 0)
+  | [], _, _, _, _, h, _, _, _, _, _, _, _ => absurd rfl h
+  | y :: rest, K, D, t, z, _, hnd, hpre, hlast, htu, hadj, K', hK' => by
+    obtain ⟨hpred, hpre'⟩ := hpre
+    have hyu : K.Adj y u := FanPred.adj hpred
+    obtain ⟨P, hP, hocc⟩ := hpred
+    have hty : t ≠ y := by
+      rintro rfl; exact (List.nodup_cons.mp hnd).1 List.mem_cons_self
+    have hyu' : y ≠ u := hyu.ne
+    cases rest with
+    | nil =>
+      simp only [List.getLast?_cons_cons, List.getLast?_singleton, Option.some.injEq] at hlast
+      subst hlast
+      obtain ⟨D', hs', he', -, -⟩ := D.reroute_move hadj hK' hP hocc
+      exact ⟨D', hs', he'⟩
+    | cons y' rest' =>
+      let K₁ : SimpleGraph V := SimpleGraph.fromEdgeSet ((K.edgeSet \ {s(y, u)}) ∪ {s(t, u)})
+      have hK₁ : ∀ e, e ∈ K₁.edgeSet ↔ (e ∈ K.edgeSet ∧ e ≠ s(y, u)) ∨ e = s(t, u) := by
+        intro e
+        simp only [K₁, edgeSet_fromEdgeSet, Set.mem_sdiff, Set.mem_union, Set.mem_singleton_iff,
+          Sym2.mem_diagSet]
+        constructor
+        · rintro ⟨h, -⟩; exact h
+        · intro h
+          refine ⟨h, ?_⟩
+          rcases h with ⟨he, -⟩ | rfl
+          · exact K.not_isDiag_of_mem_edgeSet he
+          · simpa using htu
+      obtain ⟨D₁, hs₁, he₁, htrans, hP'⟩ := D.reroute_move hadj hK₁ hP hocc
+      have hpre₁ : FanPre D₁ u (y :: y' :: rest') :=
+        fanPre_transport htrans hP' _ (List.nodup_cons.mp hnd).1 hpre'
+      have hadj₁ : ¬ K₁.Adj y u := by
+        rw [← mem_edgeSet, hK₁]
+        rintro (⟨-, h⟩ | h)
+        · exact h rfl
+        · rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, -⟩
+          · exact hty h1.symm
+          · exact hyu' h1
+      have hz : z ∈ y' :: rest' := by
+        have := List.mem_of_getLast? (by simpa using hlast)
+        simpa using this
+      have hzt : z ≠ t := by
+        rintro rfl
+        exact (List.nodup_cons.mp hnd).1 (List.mem_cons_of_mem _ hz)
+      have hzy : z ≠ y := by
+        rintro rfl
+        exact (List.nodup_cons.mp (List.nodup_cons.mp hnd).2).1 hz
+      have hK'₁ : ∀ e, e ∈ K'.edgeSet ↔ (e ∈ K₁.edgeSet ∧ e ≠ s(z, u)) ∨ e = s(y, u) := by
+        intro e
+        rw [hK' e, hK₁ e]
+        have hyuK : s(y, u) ∈ K.edgeSet := hyu
+        have hzu_tu : s(z, u) ≠ s(t, u) := by
+          intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, h2⟩
+          · exact hzt h1
+          · exact htu h2.symm
+        have hyu_zu : s(y, u) ≠ s(z, u) := by
+          intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, h2⟩
+          · exact hzy h1.symm
+          · exact hyu' h1
+        constructor
+        · rintro (⟨h, hz'⟩ | h)
+          · by_cases hey : e = s(y, u)
+            · exact Or.inr hey
+            · exact Or.inl ⟨Or.inl ⟨h, hey⟩, hz'⟩
+          · exact Or.inl ⟨Or.inr h, by rw [h]; exact hzu_tu.symm⟩
+        · rintro (⟨⟨h, -⟩ | h, hz'⟩ | h)
+          · exact Or.inl ⟨h, hz'⟩
+          · exact Or.inr h
+          · exact Or.inl ⟨h ▸ hyuK, h ▸ hyu_zu⟩
+      obtain ⟨D', hs', he'⟩ := fan_reroute_exec u (y' :: rest') D₁ y z (by simp)
+        (List.nodup_cons.mp hnd).2 hpre₁ (by simpa using hlast) hyu' hadj₁ K' hK'₁
+      refine ⟨D', hs'.trans hs₁, fun w => ?_⟩
+      have a := he' w
+      have b := he₁ w
+      omega
+
+section count
+
+variable [Fintype V] {K : SimpleGraph V} [DecidableRel K.Adj]
+
+open Classical in
+/-- **The counting half of Fan's alternative.** Either some chain from `T` terminates, or the
+supply at `T` is at most the number of blank neighbours of `u` reachable by predecessor
+sequences from `T`. -/
+theorem fan_alt_count (D : PathDecomp K) (u : V) (T : Finset V) (huT : u ∉ T)
+    (hT : ∀ t ∈ T, ¬ K.Adj t u) :
+    (∃ t ∈ T, ∃ xs, (t :: xs).Nodup ∧ FanChain D u (t :: xs)) ∨
+      ∑ t ∈ T, D.ends t ≤ (Finset.univ.filter (fun w => K.Adj u w ∧ D.ends w = 0 ∧
+        ∃ t ∈ T, ∃ xs : List V, (t :: xs).Nodup ∧ FanPre D u (t :: xs) ∧
+          (t :: xs).getLast? = some w)).card := by
+  classical
+  by_cases hno : ∃ t ∈ T, ∃ xs, (t :: xs).Nodup ∧ FanChain D u (t :: xs)
+  · exact Or.inl hno
+  right
+  let Reach : V → Prop := fun x => ∃ t ∈ T, ∃ xs : List V, (t :: xs).Nodup ∧
+    FanPre D u (t :: xs) ∧ (t :: xs).getLast? = some x
+  have hnoav : ∀ x, Reach x → ¬ FanAvoid D u x := by
+    rintro x ⟨t, ht, xs, hnd, hpre, hlast⟩ hav
+    exact hno ⟨t, ht, xs, hnd, hpre, x, hlast, hav⟩
+  let R : Finset V := Finset.univ.filter Reach
+  have hTR : T ⊆ R := fun t ht =>
+    Finset.mem_filter.mpr ⟨Finset.mem_univ _, t, ht, [], by simp, trivial, rfl⟩
+  have hclos : ∀ x z, x ∈ R → FanPred D u x z → z ∈ R := by
+    intro x z hx hp
+    obtain ⟨t, ht, xs, hnd, hpre, hlast⟩ := (Finset.mem_filter.mp hx).2
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    by_cases hz : z ∈ t :: xs
+    · obtain ⟨L₁, L₂, hL⟩ := List.append_of_mem hz
+      cases L₁ with
+      | nil =>
+        simp only [List.nil_append, List.cons.injEq] at hL
+        obtain ⟨rfl, -⟩ := hL
+        exact ⟨t, ht, [], by simp, trivial, rfl⟩
+      | cons a L₁' =>
+        simp only [List.cons_append, List.cons.injEq] at hL
+        obtain ⟨-, hxs⟩ := hL
+        refine ⟨t, ht, L₁' ++ [z], ?_, ?_, ?_⟩
+        · have hsub : (t :: (L₁' ++ [z])).Sublist (t :: xs) := by
+            rw [hxs]
+            exact List.Sublist.cons_cons t
+              (List.Sublist.append_left (List.singleton_sublist.mpr List.mem_cons_self) L₁')
+          exact hnd.sublist hsub
+        · have := FanPre.prefix (t :: L₁') z L₂ (by rw [List.cons_append, ← hxs]; exact hpre)
+          simpa using this
+        · rw [← List.cons_append, List.getLast?_concat]
+    · refine ⟨t, ht, xs ++ [z], ?_, ?_, by rw [← List.cons_append, List.getLast?_concat]⟩
+      · rw [← List.cons_append, List.nodup_append]
+        refine ⟨hnd, List.nodup_singleton z, ?_⟩
+        intro a ha b hb hab
+        rw [List.mem_singleton] at hb
+        subst hb hab
+        exact hz ha
+      · have := FanPre.snoc (t :: xs) x z hpre hlast hp
+        simpa using this
+  have hRadj : ∀ x ∈ R, x ∈ T ∨ K.Adj x u := by
+    intro x hx
+    obtain ⟨t, ht, xs, -, hpre, hlast⟩ := (Finset.mem_filter.mp hx).2
+    rcases FanPre.last (t :: xs) x hpre hlast with h | ⟨w, hw⟩
+    · simp only [List.head?_cons, Option.some.injEq] at h
+      exact Or.inl (h ▸ ht)
+    · exact Or.inr (FanPred.adj hw)
+  have huR : u ∉ R := fun hu => by
+    rcases hRadj u hu with h | h
+    · exact huT h
+    · exact K.loopless.irrefl u h
+  -- every end at `R` lies on a path through `u`
+  have hthru : ∀ P ∈ D.paths, ∀ x ∈ R, (P.src = x ∨ P.tgt = x) → u ∈ P.walk.support := by
+    intro P hP x hx hend
+    by_contra hu
+    exact hnoav x (Finset.mem_filter.mp hx).2 ⟨P, hP, hend, hu⟩
+  let p : Sym2 V → Bool := fun e => decide (u ∈ e ∧ ∃ z ∈ R, z ∈ e)
+  -- per path: ends at `R` ≤ edges from `u` into `R`
+  have hper : ∀ P ∈ D.paths,
+      (if P.src ∈ R then 1 else 0) + (if P.tgt ∈ R then 1 else 0) ≤ P.edges.countP p := by
+    intro P hP
+    have hnd : P.edges.Nodup := P.isPath.isTrail.edges_nodup
+    have hsrc : P.src ∈ R → ∃ d ∈ P.walk.darts, d.snd = u ∧ p d.edge = true := by
+      intro hs
+      have hu := hthru P hP _ hs (Or.inl rfl)
+      have hne : u ≠ P.src := fun h => huR (h ▸ hs)
+      obtain ⟨d, hd, hdu⟩ := Walk.exists_dart_snd_eq P.walk hu hne
+      have hinf : [d.fst, u] <:+: P.walk.support := by
+        rw [← hdu]; exact Walk.mem_darts_iff_fst_snd_infix_support.mp hd
+      have hzR : d.fst ∈ R := hclos _ _ hs ⟨P, hP, Or.inl ⟨rfl, hinf⟩⟩
+      refine ⟨d, hd, hdu, ?_⟩
+      simp only [p, decide_eq_true_eq, Dart.edge, Sym2.mem_iff]
+      exact ⟨Or.inr hdu.symm, d.fst, hzR, Or.inl rfl⟩
+    have htgt : P.tgt ∈ R → ∃ d ∈ P.walk.darts, d.fst = u ∧ p d.edge = true := by
+      intro hs
+      have hu := hthru P hP _ hs (Or.inr rfl)
+      have hne : u ≠ P.tgt := fun h => huR (h ▸ hs)
+      obtain ⟨d, hd, hdu⟩ := Walk.exists_dart_fst_eq P.walk hu hne
+      have hinf : [u, d.snd] <:+: P.walk.support := by
+        rw [← hdu]; exact Walk.mem_darts_iff_fst_snd_infix_support.mp hd
+      have hzR : d.snd ∈ R := hclos _ _ hs ⟨P, hP, Or.inr ⟨rfl, hinf⟩⟩
+      refine ⟨d, hd, hdu, ?_⟩
+      simp only [p, decide_eq_true_eq, Dart.edge, Sym2.mem_iff]
+      exact ⟨Or.inl hdu.symm, d.snd, hzR, Or.inr rfl⟩
+    have hmem : ∀ d ∈ P.walk.darts, d.edge ∈ P.edges := fun d hd =>
+      List.mem_map_of_mem hd
+    by_cases hs : P.src ∈ R <;> by_cases ht : P.tgt ∈ R
+    · obtain ⟨d, hd, hdu, hpd⟩ := hsrc hs
+      obtain ⟨d', hd', hdu', hpd'⟩ := htgt ht
+      have hne : d.edge ≠ d'.edge := by
+        intro h
+        have := List.inj_on_of_nodup_map hnd hd hd' h
+        subst this
+        have hadj : K.Adj d.fst d.snd := d.adj
+        rw [hdu, hdu'] at hadj
+        exact K.loopless.irrefl u hadj
+      have := two_le_countP hnd p (hmem d hd) (hmem d' hd') hne hpd hpd'
+      simp only [hs, ht, ite_true]
+      omega
+    · obtain ⟨d, hd, -, hpd⟩ := hsrc hs
+      have := List.countP_pos_iff.mpr ⟨d.edge, hmem d hd, hpd⟩
+      simp only [hs, ht, ite_true, ite_false]
+      omega
+    · obtain ⟨d, hd, -, hpd⟩ := htgt ht
+      have := List.countP_pos_iff.mpr ⟨d.edge, hmem d hd, hpd⟩
+      simp only [hs, ht, ite_true, ite_false]
+      omega
+    · simp [hs, ht]
+  -- edges from `u` into `R`
+  let NR : Finset V := R.filter (fun z => K.Adj u z)
+  have hcount : (D.paths.flatMap GPath.edges).countP p ≤ NR.card := by
+    rw [List.countP_eq_length_filter,
+      ← List.toFinset_card_of_nodup (D.nodup_edges.filter p)]
+    refine (Finset.card_le_card ?_).trans (Finset.card_image_le (f := fun z => s(z, u)))
+    intro e he
+    rw [List.mem_toFinset, List.mem_filter] at he
+    obtain ⟨heD, hpe⟩ := he
+    simp only [p, decide_eq_true_eq] at hpe
+    obtain ⟨hue, z, hzR, hze⟩ := hpe
+    have hzu : z ≠ u := fun h => huR (h ▸ hzR)
+    have he' : e = s(z, u) := (Sym2.mem_and_mem_iff hzu).mp ⟨hze, hue⟩
+    have heK : e ∈ K.edgeSet := (D.covers e).2 heD
+    rw [he'] at heK
+    rw [Finset.mem_image]
+    exact ⟨z, Finset.mem_filter.mpr ⟨hzR, (K.mem_edgeSet.mp heK).symm⟩, he'.symm⟩
+  have hR : ∑ x ∈ R, D.ends x ≤ NR.card := by
+    rw [sum_ends_eq]
+    have hc : (D.paths.map (fun P => P.edges.countP p)).sum =
+        (D.paths.flatMap GPath.edges).countP p := by
+      rw [List.countP_flatMap]; rfl
+    calc _ ≤ (D.paths.map (fun P => P.edges.countP p)).sum := sum_map_le_sum_map _ _ _ hper
+      _ = _ := hc
+      _ ≤ NR.card := hcount
+  have hdisj : Disjoint T NR := by
+    rw [Finset.disjoint_left]
+    intro t ht htN
+    exact hT t ht (Finset.mem_filter.mp htN).2.symm
+  have h1 : ∑ t ∈ T, D.ends t + ∑ w ∈ NR, D.ends w ≤ ∑ x ∈ R, D.ends x := by
+    rw [← Finset.sum_union hdisj]
+    exact Finset.sum_le_sum_of_subset (Finset.union_subset hTR (Finset.filter_subset _ _))
+  have hkey : ∀ S : Finset V,
+      S.card ≤ ∑ w ∈ S, D.ends w + (S.filter (fun w => D.ends w = 0)).card := by
+    intro S
+    rw [Finset.card_filter, ← Finset.sum_add_distrib, Finset.card_eq_sum_ones]
+    apply Finset.sum_le_sum
+    intro w _
+    split_ifs <;> omega
+  have h2 := hkey NR
+  have h3 : (NR.filter (fun w => D.ends w = 0)).card ≤
+      (Finset.univ.filter (fun w => K.Adj u w ∧ D.ends w = 0 ∧
+        ∃ t ∈ T, ∃ xs : List V, (t :: xs).Nodup ∧ FanPre D u (t :: xs) ∧
+          (t :: xs).getLast? = some w)).card := by
+    apply Finset.card_le_card
+    intro w hw
+    simp only [NR, R, Finset.mem_filter, Finset.mem_univ, true_and] at hw
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    exact ⟨hw.1.2, hw.2, hw.1.1⟩
+  omega
+
+
+omit [Fintype V] [DecidableRel K.Adj] in
+theorem one_le_ends_of_end (D : PathDecomp K) {P : GPath K} (hP : P ∈ D.paths) {t : V}
+    (h : P.src = t ∨ P.tgt = t) : 1 ≤ D.ends t := by
+  have h1 : 1 ≤ P.endsAt t := by
+    unfold GPath.endsAt
+    rcases h with h | h <;> simp [h]
+  exact h1.trans (List.le_sum_of_mem (List.mem_map_of_mem hP))
+
+omit [Fintype V] [DecidableRel K.Adj] in
+theorem one_le_ends_of_fanPred {D : PathDecomp K} {u t y : V} (h : FanPred D u t y) :
+    1 ≤ D.ends t := by
+  obtain ⟨P, hP, ⟨h1, -⟩ | ⟨h1, -⟩⟩ := h
+  · exact one_le_ends_of_end D hP (Or.inl h1)
+  · exact one_le_ends_of_end D hP (Or.inr h1)
+
+/-- **Fan's alternative** (missing-move manuscript, Lemma 4.2). Let `T` be a set of
+non-neighbours of `u` with `u ∉ T`. Then either some `t ∈ T` with an end gives an end to `u`
+(Fan's conclusion), or there is a set `W` of **blank** neighbours of `u` with
+`|W| ≥ ∑_{t ∈ T} ends t` such that every `z ∈ W` can be *activated*: for some `t ∈ T` with an
+end, `K + tu - zu` has a decomposition of the same size with one end moved from `t` to `z`.
+If `∑_T ends > #blank neighbours`, the second case is impossible; this is `fan_grouped`. -/
+theorem fan_alternative (D : PathDecomp K) (u : V) (T : Finset V) (huT : u ∉ T)
+    (hT : ∀ t ∈ T, ¬ K.Adj t u) :
+    (∃ t ∈ T, 1 ≤ D.ends t ∧ ∀ K' : SimpleGraph V,
+        (∀ e, e ∈ K'.edgeSet ↔ e ∈ K.edgeSet ∨ e = s(t, u)) →
+        ∃ D' : PathDecomp K', D'.size = D.size ∧
+          ∀ w, D'.ends w + (if t = w then 1 else 0) = D.ends w + (if u = w then 1 else 0)) ∨
+    ∃ W : Finset V, ∑ t ∈ T, D.ends t ≤ W.card ∧ (∀ z ∈ W, K.Adj u z ∧ D.ends z = 0) ∧
+      ∀ z ∈ W, ∃ t ∈ T, 1 ≤ D.ends t ∧ ∀ K' : SimpleGraph V,
+        (∀ e, e ∈ K'.edgeSet ↔ (e ∈ K.edgeSet ∧ e ≠ s(z, u)) ∨ e = s(t, u)) →
+        ∃ D' : PathDecomp K', D'.size = D.size ∧
+          ∀ w, D'.ends w + (if t = w then 1 else 0) = D.ends w + (if z = w then 1 else 0) := by
+  classical
+  rcases fan_alt_count D u T huT hT with ⟨t, ht, xs, hnd, hch⟩ | hcount
+  · left
+    refine ⟨t, ht, ?_, fun K' hK' =>
+      fan_exec u xs D t hnd hch (fun h => huT (h ▸ ht)) (hT t ht) K' hK'⟩
+    obtain ⟨hpre, x, hx, Q, hQ, hend, -⟩ := hch
+    cases xs with
+    | nil =>
+      simp only [List.getLast?_singleton, Option.some.injEq] at hx
+      subst hx
+      exact one_le_ends_of_end D hQ hend
+    | cons y rest => exact one_le_ends_of_fanPred hpre.1
+  · right
+    refine ⟨_, hcount, fun z hz => ?_, fun z hz => ?_⟩
+    · simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz
+      exact ⟨hz.1, hz.2.1⟩
+    · simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz
+      obtain ⟨hadj, -, t, ht, xs, hnd, hpre, hlast⟩ := hz
+      cases xs with
+      | nil =>
+        simp only [List.getLast?_singleton, Option.some.injEq] at hlast
+        subst hlast
+        exact absurd hadj.symm (hT t ht)
+      | cons y rest =>
+        exact ⟨t, ht, one_le_ends_of_fanPred hpre.1, fun K' hK' =>
+          fan_reroute_exec u (y :: rest) D t z (by simp) hnd hpre hlast
+            (fun h => huT (h ▸ ht)) (hT t ht) K' hK'⟩
+
+end count
+
+end alternative
 
 end Gallai
