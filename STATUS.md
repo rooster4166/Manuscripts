@@ -256,6 +256,8 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 2. ~~Chu–Fan–Zhou Lemma 2.4~~: **resolved** (`manuscripts/cfz-lemma`). The common-vertex form with sum ≤ 7 is proved.
 3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. The missing lemma is Botler–Sambinelli Thm 13 with one prescribed end; a cloud session is working on it. At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3.
 
+**Formal reduction of the whole conjecture (Lean, `gallai_of_branching`).** Gallai's conjecture follows from the statements `BStmt j` (j ≥ 3): j-step descent at an even vertex that has two even neighbours. No other hypotheses are needed.
+
 **Frontier, conceptual** (connections §R, experiments E13). Lovász's theorem with Fan's transfers is a finite game on end profiles. It proves the rooted test for every graph at n = 6, but not at n = 8. The single critical failure is Gqz~vw (4-connected) at a degree-4 root. **So full Gallai needs either a move beyond Fan's inequality or a stronger induction hypothesis.** This is now the central open problem of the programme (cloud session "missing-move").
 
 ## 7. Process going forward

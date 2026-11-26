@@ -24,6 +24,14 @@ This is the single source of truth for the proof architecture. Every node is a s
 | `comp(n≤N)` | exhaustive computation in `tools/` |
 | `—` | none |
 
+## The formal target (2026-11-26, night)
+
+**`Gallai.gallai_of_branching : (∀ j ≥ 3, BStmt j) → GallaiConjecture`** (lean/GallaiLean/Bridge.lean). No other hypotheses; Lovász's theorem is proved in the library. Standard axioms only.
+
+`BStmt j` says: in every connected graph H of even order with at least 2j even vertices, for every two distinct even vertices y, w such that y has two even neighbours, some j-set R ⊆ Ev with w ∈ R and y ∉ R has Ev ∖ R realisable (`Desc H j y {w}`). `rooted_six_of_bstmt3 : BStmt 3 → (R) for every connected even-order graph with 6 even vertices`, which is T(6)-i / BP₅.
+
+**Everything now hinges on proving `BStmt j`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
+
 ## Top-level chain
 
 ```
@@ -215,3 +223,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
 - **Gallai reduced to one family of base cases** (endpoint-structure Thm 29, Cor 30; emc-four session). B_k for all k ≥ 3 implies Gallai, where B_k is k-step descent at an even y with ≥ 2 even neighbours. B_3 is equivalent to T(6)-i. Gqz~vw shows that B_3 is not provable by Lovász + Fan certificates with ≤ 8 held edges.
+- **`gallai_of_branching` in Lean** (emc-four session; Bridge.lean, about 2000 lines). Full Gallai follows from `∀ j ≥ 3, BStmt j`. Definitions checked faithful: `GallaiConjecture` is ⌈n/2⌉ for connected finite G, and `PathDecomp` is an exact partition into simple paths of positive length.
