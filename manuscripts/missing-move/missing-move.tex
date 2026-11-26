@@ -109,7 +109,7 @@ six-clique schedules and the $d=6$ frontier certificates~\cite{ES,D6}. The game 
 of every connected graph of order $6$. It loses on $50$ connected graphs of order $8$ with
 $|F|\le4$, and five of them still lose with $|F|\le 8$~\cite[E13]{EXP}:
 \begin{center}
-\texttt{GsRvnk}, \texttt{GsZvnk}, \texttt{Gqrvn[}, \texttt{Gqzvn[}, \texttt{Gqzl|\{}.
+\texttt{GsRvnk}, \texttt{GsZvnk}, \texttt{Gqrvn[}, \texttt{Gqzvn[}, \texttt{Gqzl|\char123}.
 \end{center}
 The smallest, \texttt{GsRvnk}, consists of a clique $Q=\{q_1,\dots,q_4\}$ whose vertices have
 degree $6$, a vertex $x$ adjacent to $Q$ and to a leaf $\ell$, and two false twins $s,s'$
@@ -146,7 +146,7 @@ For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transf
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
 two, not because of Fan's inequality. The first genuine gap appears at order $10$, at a degree-six
 hub. There the missing ingredient is a non-profile count at Fan's equality: the
-``short by one'' of the $d=6$ frontier~\cite[Remark~3.6]{D6}.
+``short by one'' of the $d=6$ frontier~\cite[Remark~3.5]{D6}.
 
 \section{The spare path and the hub lemma}\label{sec:hub}
 
@@ -233,7 +233,7 @@ The same scheme, receipts at an isolated hub followed by one new path through it
 variants. The certificates found for the other losers use the following (printed by
 \texttt{scripts/certificate.py}).
 \begin{itemize}
-\item \texttt{Gqzl|\{}, root $1$: the hub has degree $4$, but one neighbour is odd. One more
+\item \texttt{Gqzl|\char123}, root $1$: the hub has degree $4$, but one neighbour is odd. One more
 edge at that neighbour is held, so it is odd in $K$, and the new path continues along it:
 $5\,1\,3\,6$ or $4\,1\,3\,6$.
 \item \texttt{GsZvnk}, root $4$: a hub of degree $5$. It receives from $0$ and passes the end on
@@ -370,7 +370,7 @@ budget allocation, not exchange.
 \section{Degree six: one receipt short}\label{sec:six}
 
 The $d=6$ frontier of the three-connected test has $\delta\ge6$, and its residual case is a $K_6$
-of even vertices with full exterior vertices~\cite[\S3]{D6}. Remark~\ref{rem:variants} shows what
+of even vertices with full exterior vertices~\cite[\S\S1, 3]{D6}. Remark~\ref{rem:variants} shows what
 goes wrong. A hub of degree six with $b\ge1$ on its neighbours absorbs three receipts against an
 adversary. Closing it with the spare path needs four receipts and one new path. The fourth receipt
 has supply $3$ against three blank neighbours: it is exactly at Fan's equality.
