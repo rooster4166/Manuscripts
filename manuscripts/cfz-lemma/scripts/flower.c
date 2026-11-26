@@ -51,21 +51,21 @@ static int armR(u64 R, int t, u64 pathedges, int vis, int end){
   /* current full path = left arm (reversed) + u v + right arm ending at 'end' */
   /* option: stop here */
   nodes++;
-  if(search(R & ~pathedges, t-1)) return 1;
   for(int i=0;i<deg0[end];i++){
     int w=adjl[end][i]; int e=adjc[end][i];
     if(!((R>>e)&1)) continue; if((pathedges>>e)&1) continue; if(vis>>w&1) continue;
     if(armR(R,t,pathedges|(1ULL<<e), vis|(1<<w), w)) return 1;
   }
+  if(search(R & ~pathedges, t-1)) return 1;
   return 0;
 }
 static int armL(u64 R, int t, u64 pathedges, int vis, int end, int v){
-  if(armR(R,t,pathedges,vis,v)) return 1;
   for(int i=0;i<deg0[end];i++){
     int w=adjl[end][i]; int e=adjc[end][i];
     if(!((R>>e)&1)) continue; if((pathedges>>e)&1) continue; if(vis>>w&1) continue;
     if(armL(R,t,pathedges|(1ULL<<e), vis|(1<<w), w, v)) return 1;
   }
+  if(armR(R,t,pathedges,vis,v)) return 1;
   return 0;
 }
 static int search(u64 R, int t){

@@ -164,3 +164,20 @@ The graph is K9 minus {a1a2, b1b2, c1c2}, plus w ∼ {a1, b1, c1}. Its propertie
 The construction generalizes to the j-family of Prop. "critical graphs need not be forced" in endpoint-structure.
 
 **Cones at n = 10** (`tools/emc_cones.py`): every random cone so far has a uniform endpoint matroid.
+
+## E11. Why critical graphs are critical (n = 6)
+
+Command: `tools/critical_reasons.py`
+
+Connected 6-vertex graphs with at least one even vertex:
+
+| Class | Count |
+|---|---|
+| non-critical | 65 |
+| critical, forced by a universal vertex (Δ = n − 1) | 27 |
+| critical, forced by edge count | 4 |
+| critical "rigid" (no trivial bound forces it) | 3: EsPG, EqhO, Eqzg |
+
+EqhO is a theta graph: two degree-3 vertices joined by three threads. The other two rigid graphs have leaves.
+
+The 3-connected n = 8 classification is running. At n ≥ 10 the j-family gives 3-connected rigid examples (E10).

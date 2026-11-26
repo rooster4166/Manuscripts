@@ -27,16 +27,16 @@ static int cadj[32][32], cadje[32][32], cdeg[32];
 static u128 ONE=1;
 static int search(u128 R,int t);
 static int armR(u128 R,int t,u128 pe,unsigned vis,int end){
-  if(search(R&~pe,t-1)) return 1;
   for(int i=0;i<cdeg[end];i++){int w=cadj[end][i],e=cadje[end][i];
     if(!((R>>e)&1)||((pe>>e)&1)||((vis>>w)&1)) continue;
     if(armR(R,t,pe|(ONE<<e),vis|(1u<<w),w)) return 1;}
+  if(search(R&~pe,t-1)) return 1;
   return 0;}
 static int armL(u128 R,int t,u128 pe,unsigned vis,int end,int v){
-  if(armR(R,t,pe,vis,v)) return 1;
   for(int i=0;i<cdeg[end];i++){int w=cadj[end][i],e=cadje[end][i];
     if(!((R>>e)&1)||((pe>>e)&1)||((vis>>w)&1)) continue;
     if(armL(R,t,pe|(ONE<<e),vis|(1u<<w),w,v)) return 1;}
+  if(armR(R,t,pe,vis,v)) return 1;
   return 0;}
 static int popc(u128 R){return __builtin_popcountll((uint64_t)R)+__builtin_popcountll((uint64_t)(R>>64));}
 static int ctz(u128 R){uint64_t lo=(uint64_t)R; if(lo) return __builtin_ctzll(lo); return 64+__builtin_ctzll((uint64_t)(R>>64));}
