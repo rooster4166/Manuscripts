@@ -164,6 +164,72 @@ Section~\ref{sec:thm7} explains precisely which parts of \JM\ Theorem~7 we re-pr
 parts we checked but did not rewrite, and how the pieces fit together. Section~\ref{sec:status}
 lists what is not proved here.
 
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Notation}
+$[n]=\{1,\dots,n\}$, $[a,b]=\{a,\dots,b\}$, and $\pos{z}=\max\{z,0\}$. All graphs are finite.
+They are simple, except for the auxiliary bipartite multigraphs in Section~\ref{sec:reduction}.
+A \emph{linear forest} is a forest of maximum degree at most~$2$. If $F$ is a set of edges of
+$K_m$, we regard it as the spanning subgraph $(V(K_m),F)$. Its components are paths, some of
+them trivial (single vertices). We write
+\[
+p(F):=m-|F|
+\]
+for the number of components of a linear forest $F$ on $m$ vertices. An \emph{edge
+decomposition} $\Q=(Q_1,\dots,Q_n)$ of $K_m$ is a sequence of pairwise disjoint edge sets whose
+union is $E(K_m)$. Empty $Q_i$ are allowed. We call $i$ the \emph{colour} of the edges of~$Q_i$,
+and we write $p_i=p_i(\Q)=p(Q_i)$. Throughout, $n$ is fixed, $m\le 2n$, and
+\[
+k=k(m):=2n+1-m
+\]
+is the number of vertices of $K_{2n+1}$ outside the current $K_m$.
+
+\subsection{Ends and slots}
+Let $F$ be a linear forest on $V$. Every component $C$ of $F$ has two \emph{slots}. If $C$ has
+an edge, its slots are its two end vertices. If $C=\{v\}$ is trivial, both slots are at~$v$.
+The number of slots at a vertex $v$ is
+\[
+\sigma_F(v):=2-\deg_F(v)\in\{0,1,2\}.
+\]
+Thus $\sum_{v\in V}\sigma_F(v)=2p(F)$.
+
+\begin{lemma}\label{lem:slots}
+Let $\Q$ be an edge decomposition of $K_m$ into linear forests $Q_1,\dots,Q_n$. Then every
+vertex $v$ has exactly $k=2n+1-m$ slots in total:
+$\sum_{i=1}^n\sigma_{Q_i}(v)=2n-\deg_{K_m}(v)=2n-(m-1)=k$.
+\end{lemma}
+
+\subsection{Hilton's theorem}
+The following is \cite[Corollary~6]{JM}, a reformulation of Hilton's theorem
+\cite[Theorem~1]{Hilton}. Since $p(Q_i)=r-|Q_i|$, condition~(2) is equivalent to
+$p(Q_i)\le 2n+1-r$.
+
+\begin{theorem}[Hilton]\label{thm:hilton}
+Let $1\le r\le 2n$. An edge decomposition $\cC=(C_1,\dots,C_n)$ of $K_r$ extends to a
+Hamiltonian decomposition $(C'_1,\dots,C'_n)$ of $K_{2n+1}$ with $C_i\subseteq C'_i$ for all
+$i$ if and only if, for every $i$, \textup{(1)}~$C_i$ is a linear forest, and
+\textup{(2)}~$|C_i|\ge 2r-2n-1$.
+\end{theorem}
+
+We use only the ``if'' direction. The ``only if'' direction is elementary. A Hamiltonian cycle
+of $K_{2n+1}$ meets $K_r$ in a linear forest, and each of its $p(C_i)$ path components is
+followed by at least one vertex outside $K_r$, so $p(C_i)\le 2n+1-r$.
+
+\subsection{Hoffman's circulation theorem}
+Let $D$ be a directed graph with integer lower and upper bounds $l\le u$ on its arcs, where
+$u$ may take the value $+\infty$. A \emph{circulation} is a function $f$ on the arcs with
+$l\le f\le u$ and with inflow equal to outflow at every node. For $X\subseteq V(D)$ let
+$\delta^{\mathrm{in}}(X)$ and $\delta^{\mathrm{out}}(X)$ be the sets of arcs entering and
+leaving~$X$.
+
+\begin{theorem}[Hoffman \cite{Hoffman}; see {\cite[Ch.~11]{Schrijver}}]\label{thm:hoffman}
+A circulation exists if and only if, for every $X\subseteq V(D)$,
+\[
+\sum_{a\in\delta^{\mathrm{in}}(X)} l(a)\ \le \sum_{a\in\delta^{\mathrm{out}}(X)} u(a).
+\]
+If $l$ and $u$ are integral and a circulation exists, then an integral circulation exists.
+\end{theorem}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
