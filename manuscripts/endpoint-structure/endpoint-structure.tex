@@ -55,6 +55,20 @@ graphs Theorem~\ref{thm:two} closes both (Remark~\ref{rem:twostep}).
 Iterating the argument gives a calculus of edge-deletion moves (Fan certificates). It yields a
 sufficient condition for the rooted test that is uniform in the deletion degree. The main
 statements are formalized in Lean.
+
+Finally (Section~\ref{sec:H}) we test whether a stronger induction hypothesis can rescue the
+branching case.
+\begin{itemize}
+\item One prescribed vertex reduces the case of two even neighbours. So Gallai's conjecture follows
+from the branching case with at least three even neighbours.
+\item An oracle that knows every realisable end profile of $G-e$ certifies the rooted test, through
+Fan's moves on $e$, at every even root of every connected graph of order at most eight, with one
+exception: $K_8$ minus a perfect matching.
+\item A counting barrier explains the exception. For $K_{2m}$ minus a perfect matching, $m\ge4$, no
+Fan transfer and no short new path can be the last move of a certificate, whatever the seed. Its
+endpoint matroid is uniform, so the obstruction lies in the moves, not in the hypothesis.
+\end{itemize}
+The endpoint matroid conjecture holds for all $1{,}082$ connected critical graphs of order eight.
 \end{abstract}
 \maketitle
 
@@ -1131,6 +1145,240 @@ the twin criterion of Corollary~\ref{cor:twins} says which pairs $\{u,v\}$ can f
 Theorem~\ref{thm:pair} names the pair among which $v$ can be chosen.
 \end{remark}
 
+\section{Stronger induction hypotheses, and a barrier for Fan moves}\label{sec:H}
+
+Theorem~\ref{thm:branching} reduces Gallai's conjecture to the branching case $\mathrm{B}^0_k$, where
+the even vertex $y$ has at least two even neighbours. There, certificates made of Lov\'asz's theorem
+and Fan's transfers can stall even when (R) holds. Even an induction hypothesis of type~(R), with one
+prescribed vertex, does not help: the realisation it supplies may have zero-end vertices next to every
+re-inserted edge, and Lemma~\ref{lem:fan} then cannot fire. This section asks whether a stronger
+hypothesis, one that controls where the seed has its zeros, repairs the transfer step. Throughout, $G$
+has even order $n$ and no isolated vertex, $e=|\Ev|$, and $N_E(y)=N(y)\cap\Ev$.
+
+The answer has three parts.
+\begin{itemize}
+\item One prescribed vertex suffices when $y$ has exactly two even neighbours. So the open case
+becomes ``at least three even neighbours'' (Corollary~\ref{cor:twonbrs}).
+\item Hypotheses with more prescribed vertices do not propagate. Computationally, the strongest
+possible hypothesis on end profiles of $G-e$, together with Fan's moves on the single edge $e$,
+certifies every even root of every connected graph of order at most $8$ except $K_8$ minus a perfect
+matching (Remark~\ref{rem:oracle}).
+\item That graph, and every $K_{2m}$ minus a perfect matching with $m\ge4$, cannot be finished by any
+Fan move, whatever the seed (Theorem~\ref{thm:barrier}, Corollary~\ref{cor:cp}).
+\end{itemize}
+
+\begin{definition}[Prescribed descent]\label{def:prescribed}
+For $P\subseteq\Ev$ and $k\ge0$, $G$ has \emph{$k$-step descent keeping $P$} if some $k$-set
+$R\subseteq\Ev\setminus P$ has $\Ev\setminus R\in\cF(G)$. Since $\cF(G)$ is an up-set, this holds
+exactly when some $S\in\cF(G)$ with $P\subseteq S$ has $|S|\le e-k$.
+\end{definition}
+
+For $P=\{y\}$ this is the notion in $\mathrm{D}^0_k$ and $\mathrm{B}^0_k$. At the critical level
+$e=2k$, descent keeping $P$ says that $P$ lies in a basis of the endpoint matroid.
+
+\begin{lemma}[Prescribed transfer]\label{lem:ptransfer}
+Let $y,a$ be adjacent even vertices, $K=G-ya$, and $P\subseteq\Ev\setminus\{a\}$. If $K$ has $k$-step
+descent keeping $(P\setminus\{y\})\cup(N_E(y)\setminus\{a\})$, then $G$ has $(k+1)$-step descent
+keeping $P\cup\{y\}$. Conversely, if a single transfer of $ya$ towards $y$ turns a partition of $K$
+that realises some $S$ into one that realises $S'$, then $\{y\}\cup N_E(y)\setminus\{a\}\subseteq S'$
+and $a\notin S'$.
+\end{lemma}
+
+\begin{proof}
+In $K$ the vertices $y,a$ are odd and $\Ev(K)=\Ev\setminus\{y,a\}$. The even neighbours of $y$ in $K$
+are $N_E(y)\setminus\{a\}$; its other neighbours are odd. Let $R$ be the $k$-set of the hypothesis and
+$S=\Ev(K)\setminus R$. Then $y$ has no neighbour in $\Ev(K)\setminus S$, so
+Lemma~\ref{lem:transfer} gives $S\cup\{y\}=\Ev\setminus(R\cup\{a\})\in\cF(G)$. The set $R\cup\{a\}$ has
+$k+1$ elements and avoids $P\cup\{y\}$. For the converse, Lemma~\ref{lem:fan} with $T=\{a\}$ needs
+$|Z_D(y)|<b_D(a)=1$. By~\eqref{eq:passing} this means $N_E(y)\setminus\{a\}\subseteq S$. After the
+transfer $y$ has two ends and $a$ none.
+\end{proof}
+
+\begin{corollary}[Two even neighbours reduce]\label{cor:twonbrs}
+Let $k\ge1$ and assume $\mathrm{D}^0_k$. Let $G$ be connected with $e\ge 2k+2$. Let the even vertex
+$y$ have exactly two even neighbours $a\ne b$, and let every bridge at $y$ be pendant. Then $G$ has
+$(k+1)$-step descent keeping $y$. Hence $\mathrm{B}^0_k$ may be weakened to $\mathrm{B}^3_k$, where $y$
+has at least three even neighbours. If $\mathrm{B}^3_k$ holds for every $k\ge3$, then Gallai's
+conjecture holds.
+\end{corollary}
+
+\begin{proof}
+The edge $ya$ is not a bridge, since $d(a)\ge2$. So $K=G-ya$ is connected of even order,
+$\Ev(K)=\Ev\setminus\{y,a\}$ has at least $2k$ elements, and $b\in\Ev(K)$. By $\mathrm{D}^0_k$, $K$
+has $k$-step descent keeping $b$. Since $N_E(y)\setminus\{a\}=\{b\}$, Lemma~\ref{lem:ptransfer} with
+$P=\{y\}$ applies. In the induction of Theorem~\ref{thm:branching}, $\mathrm{D}^0_k$ is available at
+level $k+1$, so $\mathrm{B}^3_{k+1}$ suffices there.
+\end{proof}
+
+{\sloppy In Lean (\texttt{lean/GallaiLean/FanBarrier.lean}) these results are \texttt{desc\_succ\_of\_transfer\_two},
+\texttt{branchBase\_of\_three} and \texttt{gallai\_of\_branchBase3}: Gallai's conjecture follows from
+the single named hypothesis \texttt{BranchBase3} for all $k\ge3$.\par}
+
+\begin{example}\label{ex:gqz}\sloppy
+Let $G_q=K_8-\{03,12,23,34,56,67\}$ (graph6 code Gqz\textasciitilde vw). Then $\Ev=\{0,1,3,4,5,7\}$, $N(3)=\{1,5,6,7\}$ and
+$N_E(3)=\{1,5,7\}$. The graph is critical, and all $20$ triples of even vertices are realisable, so its
+endpoint matroid is uniform. Lov\'asz-seeded Fan certificates do not reach the root $3$ with up to
+eight held edges. In the induction with (R) as hypothesis, the adversary places a zero at an even
+neighbour of $3$.
+
+Two prescribed vertices suffice. The graph $K=G_q-31$ has the four even vertices $0,4,5,7$, and all
+six pairs are realisable in it. In particular $\{5,7\}=N_E(3)\setminus\{1\}$ is realisable, and
+Lemma~\ref{lem:ptransfer} gives $\{3,5,7\}\in\cF(G_q)$. The edges $35$ and $37$ work in the same way.
+So a hypothesis on $G_q-e$, for an edge $e$ at $3$, does yield a certificate at the root $3$. The
+hypothesis needed is that a particular pair lies in the endpoint matroid of a four-even-vertex graph.
+Theorem~\ref{thm:emc4} does not supply this: it allows $\{5,7\}$ to be one of the two disjoint
+non-realisable pairs.
+\end{example}
+
+\begin{remark}[What prescribed descent propagates through]\label{rem:propagate}
+Let $\mathrm{D}^{(j)}_k$ say that every connected graph of even order with $e\ge2k$ has $k$-step
+descent keeping $P$, for every $P\subseteq\Ev$ with $|P|\le j$. Run the proof of
+Theorem~\ref{thm:branching} at a vertex $y\in P$.
+\begin{itemize}
+\item \emph{Bridge $yt$.} The pieces need descent keeping $P\cap A$ and $P\cap B$, or
+$(P\cap B)\cup\{t\}$ when $t$ is odd and $|A|$ is even. These sets have at most $j$ elements.
+The exception is $t\in P$ with $t$ even and $|A|$ even: gluing~(2) of Lemma~\ref{lem:bridge} removes $t$.
+\item \emph{Unique even neighbour $t$.} The step needs $\mathrm{D}^{(j)}_k$ in $G-yt$, and $t\notin P$.
+\item \emph{Lift along an odd neighbour $t$.} The step needs $\mathrm{D}^{(j)}_{k+1}$ in $G-yt$
+keeping $(P\setminus\{y\})\cup\{t\}$.
+\item \emph{Branching with $m$ even neighbours.} Lemma~\ref{lem:ptransfer} needs
+$\mathrm{D}^{(j+m-2)}_k$ in $G-ya$, with $a\notin P$.
+\end{itemize}
+So no bounded $j$ is closed under the reduction. For $j\ge2$ the statement is false at the critical
+level: a critical graph with four even vertices and a non-realisable pair violates
+$\mathrm{D}^{(2)}_2$, and such graphs exist at order $8$ (Section~\ref{app:comp}).
+
+The matroid version asks that $P$ be independent in the endpoint matroid. Its branching step needs
+some $a\in N_E(y)$ for which $N_E(y)\setminus\{a\}$ is independent in the endpoint matroid of
+$G-ya$. Conjecture~\ref{conj:emc} for $G-ya$ says nothing about which sets are independent, and the
+requirement is false in two ways.
+\begin{itemize}
+\item It fails whenever $m>e/2$. The set produced contains $\{y\}\cup N_E(y)\setminus\{a\}$.
+\item It fails in small cases. Among the $275$ pairs $(G,y)$ with $G$ critical of order~$8$,
+$e=6$ and $m=3$, there are $22$ in which no choice of $a$ works.
+\end{itemize}
+An example of the second kind is GsaEDo, with $y=7$ joined to a universal vertex by three ears
+$7\,i\,0$, $i=2,3,4$. In these cases the pair $N_E(y)\setminus\{a\}$ is non-realisable in $G-ya$
+for every choice of $a$.
+\end{remark}
+
+To measure how far any hypothesis on $G-F$ can go, we give the induction an oracle.
+
+\begin{definition}[Oracle-seeded Fan game]\label{def:oracle}
+Hold a nonempty set $F\subseteq E(G)$. As seed, take any realisable end profile of $K=G-F$, given by
+a partition of $K$. In the \emph{simple} game the profile must realise a set $S\in\cF(K)$; in the
+\emph{general} game it may be any profile. Then re-insert the edges of $F$ by the following moves:
+\begin{itemize}
+\item single transfers;
+\item grouped transfers, where an adversary chooses the donor;
+\item new one-edge paths.
+\end{itemize}
+The play wins for the root $r$ when $F$ is used up with $\sum b\le n$ and $b(r)\ge1$.
+\end{definition}
+
+A winning play gives a partition of $G$ into at most $n/2$ paths with an end at $r$, so it proves (R)
+at $r$. The general game uses everything that any hypothesis about end profiles of $G-F$ could
+provide.
+
+\begin{remark}[The oracle game at order at most eight]\label{rem:oracle}
+We solved the game exactly for every even root of every connected graph of order at most $8$
+(programs \texttt{tools/realis.c} and \texttt{tools/fan\_oracle.py}). At order $8$ there are $11{,}117$
+connected graphs and $44{,}008$ even roots. For comparison, Lov\'asz seeds with $|F|\le4$ lose on $50$
+graphs of order $8$.
+
+\begin{center}\small
+\begin{tabular}{lp{0.5\textwidth}p{0.3\textwidth}}
+order & simple game & general game \\ \hline
+$4$ & $|F|=1$ wins everywhere & -- \\
+$6$ & $|F|=1$: only $K_{2,2,2}$ loses (all roots); $|F|\le2$ wins everywhere & $|F|=1$ wins everywhere\\
+$8$ & $|F|=1$: $6$ graphs lose; $|F|\le2$ and $|F|\le3$: $3$ graphs lose & $|F|=1$: only $M_8$ loses
+\end{tabular}
+\end{center}
+
+Here $M_8=K_8$ minus a perfect matching.
+\begin{itemize}
+\item The three simple-game losers at $|F|\le3$ are $M_8$ (every root), Gqzn\textasciicircum[ (root $1$)
+and Gut\textasciitilde\textasciitilde w (roots $1,3,4$). The last two win the general game with $|F|\le2$.
+\item $M_8$ also loses the simple game with $|F|\le4$ and the general game with $|F|\le3$. By
+Corollary~\ref{cor:cp} it loses for every $F$.
+\end{itemize}
+So at order at most $8$, knowing the realisable profiles of $G-e$ for one well-chosen edge $e$, and
+playing Fan's moves on $e$, certifies (R) everywhere except on $M_8$. The endpoint matroid of $M_8$ is
+uniform: all $70$ half-sets are realisable, so $M_8$ satisfies Conjecture~\ref{conj:emc} in its
+strongest form.
+\end{remark}
+
+\begin{theorem}[The last-edge barrier]\label{thm:barrier}
+Let $D$ be a partition of a graph $H$, and let $u\ne t$ be vertices with $ut\notin E(H)$. Write
+$N^{\mathrm{ev}}_H(u)$ for the set of neighbours of $u$ of even degree in $H$.
+\begin{enumerate}
+\item If $b_D(t)>|Z_D(u)|$ (Fan's condition for a single transfer of $ut$ towards $u$), then
+\[
+b_D(u)+2\,|N^{\mathrm{ev}}_H(u)|+2\le 3|D|.
+\]
+\item If $H=G-F$ for a $d$-regular graph $G$ of order $n$, then $nd\le 2\bigl(|D|(n-1)+|F|\bigr)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) Let $N=N^{\mathrm{ev}}_H(u)$ and $Z=Z_D(u)$. Every $w\in N\setminus Z$ has $b_D(w)\ge2$, because
+$b_D(w)$ is positive and even by~\eqref{eq:parity}. Neither $u$ nor $t$ lies in $N$. By~\eqref{eq:parity},
+\[
+2|D|=\sum_v b_D(v)\ \ge\ b_D(u)+b_D(t)+2|N|-2|Z|.
+\]
+Now use $|Z|\le b_D(t)-1$, and $b_D(t)\le|D|$, which holds because a path has at most one end at $t$.
+This gives $2|D|\ge b_D(u)+2|N|+2-b_D(t)\ge b_D(u)+2|N|+2-|D|$.
+(2) Every path has at most $n-1$ edges, so $|E(G)|-|F|\le|E(H)|\le|D|(n-1)$. Also $2|E(G)|=nd$.
+\end{proof}
+
+\begin{corollary}[No Fan move finishes $K_{2m}$ minus a perfect matching]\label{cor:cp}
+Let $m\ge4$, and let $\mathrm{CP}(m)$ be $K_{2m}$ minus a perfect matching.
+\begin{enumerate}
+\item For every edge $ut$ and every partition $D$ of $\mathrm{CP}(m)-ut$ that satisfies Fan's condition
+for a transfer of $ut$ towards $u$, we have $|D|>m$.
+\item If $D$ partitions $\mathrm{CP}(m)-F$ into at most $m-1$ paths, then $|F|\ge m-1$.
+\end{enumerate}
+Consider a play that ends with a partition of $\mathrm{CP}(m)$ into at most $m$ paths, built from a
+partition of a proper spanning subgraph by Fan transfers and new paths made of held edges. Its last
+move is a new path with at least $m-1$ edges, added to a partition of $\mathrm{CP}(m)-F$ into $m-1$
+paths. In particular the last move is not a transfer, and it is not a new path of length one.
+\end{corollary}
+
+\begin{proof}
+$\mathrm{CP}(m)$ is $(2m-2)$-regular. In $H=\mathrm{CP}(m)-ut$ the vertex $u$ is odd, so $b_D(u)\ge1$.
+Its $2m-3$ neighbours have degree $2m-2$ in $H$. Theorem~\ref{thm:barrier}(1) gives
+$3|D|\ge 1+2(2m-3)+2=4m-3>3m$. Part~(2) of the theorem with $|D|\le m-1$ gives
+\[
+2m(2m-2)\le 2\bigl((m-1)(2m-1)+|F|\bigr),\quad\text{that is,}\quad |F|\ge m-1.
+\]
+A grouped transfer re-inserts one of its held edges and leaves the others held. So the last transfer
+of a play is a single transfer into $H=\mathrm{CP}(m)-ut$, and a transfer preserves $|D|$.
+\end{proof}
+
+{\sloppy Corollary~\ref{cor:cp} is formalised as \texttt{cocktail\_fan\_barrier} and
+\texttt{cocktail\_insertion\_barrier}, and Theorem~\ref{thm:barrier} as \texttt{fan\_transfer\_barrier} and
+\texttt{insertion\_barrier\_regular}. All are in \texttt{lean/GallaiLean/FanBarrier.lean}, use no
+hypotheses, and depend only on the standard axioms. Part~(1) of the theorem is general: for any
+even-regular graph with $d>(3n-2)/4$, no Fan transfer can finish at the budget $n/2$.\par}
+
+\begin{remark}[Consequence for stronger hypotheses]\label{rem:Hverdict}
+An induction hypothesis about realisable sets or end profiles of proper spanning subgraphs enters a
+Lov\'asz--Fan reduction only through the seed. In the reduction of Theorem~\ref{thm:branching}, every
+step other than bridge gluing is a Fan transfer: the transfer of Lemma~\ref{lem:ptransfer}, and the lift
+of Theorem~\ref{thm:reduction}. Bridge gluing does not apply to the $(2m-2)$-connected graphs
+$\mathrm{CP}(m)$. By Corollary~\ref{cor:cp}, no such hypothesis, however strong, makes the reduction
+reach $\mathrm{CP}(m)$ for $m\ge4$. Yet $\mathrm{CP}(4)=M_8$ is critical and its endpoint matroid is
+uniform. The obstruction lies in the moves, not in the hypothesis.
+
+A proof must spend a spare path: a new path of at least $m-1$ edges, added to a partition of
+$\mathrm{CP}(m)-F$ into $m-1$ paths. For $m=4$, the remaining $21$ edges then form three Hamiltonian
+paths. This is exactly the flower configuration by which the companion manuscript~\cite{MM}
+(Proposition~5.5) proves (R) on $M_8$. Its last move adds the transversal path $L$ of three edges to
+the three paths $C_i-e_i$, so the bound $|F|\ge m-1$ is attained. The two results together locate the
+missing ingredient. It is not a stronger hypothesis; it is a move that spends a spare path at
+Fan's equality.
+\end{remark}
+
 \section{Computational evidence}\label{app:comp}
 
 The accompanying programs (\texttt{tools/} in the project repository) compute exact partitions by
@@ -1138,7 +1386,12 @@ enumerating simple paths and solving an exact-cover integer program (OR-Tools CP
 partition returned was independently checked. On all connected graphs of order at most six,
 Conjectures~\ref{conj:emc} and~\ref{conj:fd} hold; the realisable family of every critical graph of
 order four or six is the spanning family of a loopless matroid, uniform whenever the graph is
-$2$-connected. [Order eight: in progress.] For four even vertices, Corollary~\ref{cor:four} was checked
+$2$-connected. At order eight the same holds for all $1{,}082$ connected critical graphs: the
+minimal realisable sets are the bases of a loopless matroid of rank $e/2$. The matroid is uniform for
+$1{,}030$ of them, including all $476$ three-connected ones. The $52$ non-uniform ones have a cut
+vertex ($46$) or connectivity two ($6$, among them GsaFC\{ of Proposition~\ref{prop:uhc}). This run
+uses the exact depth-first oracle \texttt{tools/realis.c}, with its own pruning. The oracle was checked
+against the integer program on a sample of graphs of orders six and eight (\texttt{tools/emc\_sweep.py}). For four even vertices, Corollary~\ref{cor:four} was checked
 on all connected graphs of order at most six (critical or not) and on the first 500 of the $5{,}523$
 connected graphs of order eight with four even vertices, with no exception (\texttt{tools/emc\_four.py});
 the run was stopped once the corollary was proved. In every critical graph found with a non-realisable
@@ -1168,6 +1421,8 @@ Academic Press, 1968, 231--236.
 manuscript, November 2026.
 \bibitem{REC} J.~Williams, Root endpoints and cut inequalities in path decompositions, manuscript,
 November 2026.
+\bibitem{MM} J.~Williams, Lov\'asz's spare path: the missing move in the Fan game, manuscript,
+\texttt{manuscripts/missing-move} of the project repository.
 \bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, manuscript,
 November 2026.
 \end{thebibliography}

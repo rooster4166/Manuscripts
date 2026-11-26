@@ -34,8 +34,8 @@ import GallaiLean.SeparatorOdd
 import GallaiLean.SeparatorEvenOdd
 import GallaiLean.Bridge
 import GallaiLean.BranchBase
+import GallaiLean.FanBarrier
 import GallaiLean.MissingMove
 import GallaiLean.Relay
 import GallaiLean.HubPhases
 import GallaiLean.D6Frontier
-import GallaiLean.FanBarrier

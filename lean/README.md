@@ -382,6 +382,32 @@ removal.
 
 `#print axioms gallai_of_branchBase` shows only `propext`, `Classical.choice` and `Quot.sound`.
 
+## `GallaiLean/FanBarrier.lean`: three even neighbours, and the last-edge barrier
+
+Manuscript: endpoint-structure §7.
+
+* `desc_succ_of_transfer_two`: let `y` have exactly two even neighbours `a ≠ b`. Then descent in
+  `G − ya` keeping `b` transfers to descent in `G` keeping `y`, one level up.
+* **`BranchBase3 k`** is `BranchBase k` restricted to `y` with three distinct even neighbours.
+  * `branchBase_of_three`: `DStmt0 k ∧ BranchBase3 (k+1) → BranchBase (k+1)`.
+  * `branchBase_of_branchBase3`: from `BranchBase3` for all `k ≥ 3` to `BranchBase` for all `k ≥ 3`.
+  * **`gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`**.
+* **`fan_transfer_barrier`**: let `D` partition `H`, with `ut ∉ E(H)`, and suppose Fan's condition
+  `#{w ∈ N_H(u) : ends w = 0} < ends t` holds. Then
+  `ends u + 2·#{w ∈ N_H(u) : deg_H w even} + 2 ≤ 3·|D|`.
+  * Helper lemmas: `PathDecomp.ends_le_size` and `card_edgeFinset_le_size_mul` (`|E(H)| ≤ |D|(n−1)`).
+* `fan_transfer_barrier_regular` (`2d + 1 ≤ 3|D|`), `newpath_barrier_regular` and
+  `insertion_barrier_regular` (`n·d ≤ 2(|D|(n−1) + |F|)`): the bounds for `d`-regular `G`, with `d`
+  even for the first.
+* `cocktail m` is `K_{2m}` minus a perfect matching, on `Fin m × Bool`. `cocktail_degree`: it is
+  `(2m−2)`-regular.
+* **`cocktail_fan_barrier`** (`m ≥ 4`): every partition of `CP(m) − ut` has at least `m` paths, and
+  more than `m` paths when Fan's condition towards `u` holds.
+* **`cocktail_insertion_barrier`**: a partition of `CP(m) − F` into at most `m − 1` paths needs
+  `|F| ≥ m − 1`.
+
+No hypotheses. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
 
 **Main result: Theorem 1 holds as a full equivalence.**

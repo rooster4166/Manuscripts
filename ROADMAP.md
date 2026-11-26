@@ -37,6 +37,15 @@ This is the single source of truth for the proof architecture. Every node is a s
 **Barrier theorem (Lean, `cocktail_fan_barrier`).** For the cocktail party graph CP(m) = K_{2m} − perfect matching, m ≥ 4, every decomposition of CP(m) − ut has ≥ m paths, and > m if Fan's condition for a transfer towards u holds. So **no certificate whose last step is a Fan transfer or a new one-edge path proves Gallai for CP(m)**, whatever the seed or induction hypothesis. Any proof of `BranchBase3` must end with a different kind of move, such as path insertion or the flower recombination (missing-move Prop 5.5), at least on these graphs.
 
 **Everything now hinges on proving `BranchBase3 k`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
+**Three even neighbours (FanBarrier.lean): `gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`.** The case of exactly two even neighbours reduces by a rooted transfer (`branchBase_of_three`), so `BranchBase3` asks for descent keeping y only when y has ≥ 3 even neighbours.
+
+**Route (H) verdict (endpoint-structure §7, connections §N follow-up 4, E15).**
+- A stronger induction hypothesis cannot close `BranchBase3` through Fan moves.
+- At n ≤ 8, oracle seeds (any realisable profile of G − e) win every even root of every connected graph except K8 − perfect matching.
+- For CP(m) = K_{2m} − PM with m ≥ 4, no Fan transfer and no new path of < m − 1 held edges can be the last move (`cocktail_fan_barrier`, `cocktail_insertion_barrier`, Lean, no hypotheses).
+- The missing ingredient is a spare-path move at Fan's equality: the flower, missing-move Prop 5.5.
+
+**Everything now hinges on proving `BranchBase k` (equivalently, it suffices to prove `BStmt j`).** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
 
 ## Top-level chain
 
@@ -157,7 +166,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Session | Branch | Target |
 |---|---|---|
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator; odd component case done) and Thm 114 |
-| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | delivered KStep and the bridge gluing. **Thm 29 / Cor 30 (human proof): B_3 ∧ … ∧ B_k ⇒ D_k, so B_k for all k ⇒ Gallai**, where B_k is k-step descent at a y with ≥ 2 even neighbours. **Now:** Lean for Thm 29 / Cor 30 (Bridge.lean) |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | delivered KStep, bridge gluing, Thm 29 / Cor 30 and BranchBase (Lean). **Route (H) done** (endpoint-structure §7): two even neighbours reduce (`gallai_of_branchBase3`); oracle-seeded Fan game; last-edge barrier for CP(m), m ≥ 4 (Lean `FanBarrier.lean`); EMC at n = 8 complete |
 | session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | delivered the Fan calculus, E-twins and the pair step. **Now:** the base case "y has ≥ 2 even neighbours" of three-step descent, which closes T(6)-i |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | **done**: six-clique Thm 1 in Lean. Idle; it took no new assignment without the owner's go-ahead |
 | session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | **done**: JM Thm 8 repair (16 pp.). Its own referee pass on §§5–8 is running. Idle otherwise; it took no new assignment without the owner's go-ahead |
@@ -236,6 +245,13 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
 - **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- 2026-11-26 (cloud session `claude/emc-four-even`, route (H)): **stronger induction hypotheses tested; the last-edge barrier.**
+  - Prescribed transfer (Lemma 51). The two-even-neighbour case reduces (Cor 52, Lean `gallai_of_branchBase3`), so the open base case is m ≥ 3 even neighbours.
+  - Gqz~vw at root 3: certified from G − 31, where the pair {5, 7} is realisable, and from G − 01 with a new path.
+  - Prescribed descent D^{(j)} does not propagate: branching raises j by m − 2, and j ≥ 2 is false at the critical level. The matroid-qualified form fails in 22 of 275 critical e = 6, m = 3 instances at n = 8.
+  - Oracle-seeded Fan game (`tools/fan_oracle.py`, exact oracle `tools/realis.c`): with general seeds and one held edge it wins all even roots at n ≤ 8 except K8 − PM.
+  - **Barrier theorem** (Lean `FanBarrier.lean`): Fan's condition forces b(u) + 2|N^ev(u)| + 2 ≤ 3|D|. For CP(m), m ≥ 4, every certificate ends with a new path of ≥ m − 1 edges; the flower attains this.
+  - **EMC holds on all 1,082 connected critical graphs at n = 8**: 1,030 are uniform, including all 476 three-connected ones.
 - 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
