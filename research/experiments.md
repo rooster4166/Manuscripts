@@ -329,7 +329,7 @@ Tools:
 - `tools/fan_oracle.py`: the Fan game of E13 with **oracle seeds**. The seed on G − F (F ≠ ∅) is any realisable simple profile, or with `+gen` any realisable end profile.
 - `tools/emc_sweep.py`: EMC, plus the transfer test at branching vertices.
 
-Cross-check: the oracle agrees with the CP-SAT oracle (`faithful_descent.make_oracle`) on 60 random graphs at n = 6 and on 35+ graphs at n = 8, including Gqz~vw. The run was stopped on a dense graph where the ILP was slow.
+Cross-check: the oracle agrees with the CP-SAT oracle (`faithful_descent.make_oracle`) on the full realisable families of 60 random graphs at n = 6 and 35 random graphs at n = 8 (9–18 edges). There were no mismatches. The ILP is too slow on the densest graphs, so they were not cross-checked.
 
 **EMC at n = 8 (complete).**
 - All 1,082 connected critical graphs satisfy EMC: the minimal realisable sets all have size e/2, satisfy basis exchange and are loopless.
