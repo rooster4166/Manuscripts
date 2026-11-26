@@ -45,8 +45,9 @@ bound $p=|\Od|/2$ for a graph with exactly two even vertices. We prove it (from 
 and Fan's addible-edge lemmas) whenever $u$ and $v$ are not twins in the subgraph induced by the even
 vertices. Consequently, for every root $r$ there are $u,v\ne r$ with $\Ev\setminus\{u,v\}$
 realisable, except in one configuration with four even vertices, and faithful descent takes its
-second step except when the even vertices are independent and have private odd neighbourhoods; both
-exceptions are closed by a path-induction argument from a parallel workstream (Remark~\ref{rem:twostep}). The
+second step except when the even vertices are independent and have private odd neighbourhoods; for
+connected graphs both exceptions are closed by a path-induction argument from a parallel workstream
+(Remark~\ref{rem:twostep}). The
 argument iterates to a calculus of edge-deletion moves (Fan certificates), which gives a sufficient
 condition for the rooted test that is uniform in the deletion degree. The main statements are
 formalized in Lean.
@@ -717,7 +718,10 @@ without exceptions: \emph{if $G$ is connected of even order with $e\ge4$ and $y\
 then some even $v\notin\{y,w\}$ has $\Ev\setminus\{w,v\}$ realisable.} It is an induction along a
 $y$--$w$ path, using the transfer across an even edge (Lemma~\ref{lem:fandescent}) and a star step
 built from single and grouped Fan transfers. Taking $y=r$ and $w=u$ settles
-Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} in full, including $G[\Ev]=K_3+r$. The Lean
+Theorem~\ref{thm:b}, and Corollary~\ref{cor:fd2strong} for connected $G$, in full, including
+$G[\Ev]=K_3+r$. Connectivity is needed: in $P_3$ together with a disjoint $K_5-e$, the root $r$ the
+middle vertex of $P_3$, exception (ii) of Corollary~\ref{cor:fd2strong} occurs and no $v$ works,
+since the $K_5-e$ component cannot be covered by two paths. The Lean
 proof is \texttt{two\_step\_descent} in \texttt{lean/GallaiLean/EMCFour.lean} on the project's base
 branch; we rebuilt it and checked that it uses only the standard axioms, with Lov\'asz as the hypothesis
 \texttt{LovaszStatement}. The results of this section remain useful for their explicit witnesses:
