@@ -75,6 +75,15 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | A7: Botler–Sambinelli replaces it at the Thm 144 r ∈ T step and in the zero-exception case of Cor 106. **The one-exception case of Cor 106 still needs Shaik**, so Thm 144 remains conditional. |
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
+### Contingency if the Javadi–Miralaei repair fails
+
+| Result | Effect |
+|---|---|
+| SP Thm 10.16, alternative 1 | "≥ h+1 missing edges" weakens to "≥ h, and exactly h only when the hole graph is JM-residual (h ≥ 6, not a linear forest, support ≥ h+2)" |
+| OSB Thm 4 | the lower bound p ≥ k+1 is elementary; the upper bound loses only the residual family (k ≥ 6, ⌈(k+4)/2⌉ ≤ m ≤ k−1, sparse non-linear-forest H) and its m = k analogue |
+| MR equivalence spine (N2–N4) | unaffected |
+| block-degree Thm 3 | unaffected |
+
 
 
 ## Final assembly target (after the audits)
