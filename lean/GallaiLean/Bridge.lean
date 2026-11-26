@@ -1,17 +1,41 @@
 import GallaiLean.KStep
+import GallaiLean.EMCFourFree
 
 /-!
 # Bridges, and the reduction of k-step descent to the branching case
 
-Endpoint-structure manuscript, subsection "Bridges, and reduction to the branching case".
+Endpoint-structure manuscript, subsection "Bridges, and reduction to the branching case"
+(Lemma 28, Theorem 29, Corollary 30). No hypotheses: Lovász's theorem is `lovaszStatement`.
 
-## Part 1: transport along an injective map, and induced graphs
+`DStmt j` (`D_j`): every connected graph of even order with at least `2j` even vertices has
+`j`-step descent at `(y, {w})` for all distinct even `y, w`. `BStmt j` (`B_j`): the same for
+vertices `y` with at least two even neighbours.
 
-* `GPath.mapInj`, `PathDecomp.mapInj`: push paths and decompositions along an injective vertex
-  map whose image of the edge set is exactly the target edge set; end counts are preserved at
-  images and vanish off the image.
-* `realisable_of_induce`, `desc_of_induce`: a set `s` containing every edge of `H`; realisations
-  and descents in `H.induce s` transport to `H`.
+## Main results
+
+* **`gallai_of_branching`**: `(∀ j ≥ 3, BStmt j) → GallaiConjecture`.
+* **`rooted_six_of_bstmt3`**: `BStmt 3` gives the rooted test for every connected graph of even
+  order with exactly six even vertices (test (i) at deletion degree 6).
+* **`dstmt_of_branching`**: `B_3, …, B_K` imply `D_1, …, D_K`; `dstmt_one` (Lemma 3),
+  `dstmt_two` (two-step descent).
+* **`dstmtE_succ`**: `D_1, …, D_k` and `B_{k+1}` imply `D_{k+1}` (`k ≥ 2`). Strong induction on the
+  number of edges with four cases: two even neighbours (`B_{k+1}`); a non-pendant bridge at `y`
+  (`bridge_odd`, `bridge_even`); exactly one even neighbour through a non-bridge
+  (`desc_succ_of_transfer`); otherwise a non-bridge edge to an odd neighbour
+  (`desc_lift_of_no_even_nbr`).
+* **`glue_bridge`**, **`glue_append`**: the two bridge gluings (Lemma 28).
+
+## Infrastructure
+
+* Part 1: `GPath.mapInj`, `PathDecomp.mapInj`, `realisable_of_induce`, `desc_of_induce`
+  (transport from `H.induce s` to `H` when `s` contains every edge).
+* Part 2: `DStmt`, `BStmt`, `nonIso`, `NIConn`, `desc_of_dstmt`, `desc_of_bstmt` (the statements
+  applied to graphs with isolated vertices, through the induced graph on the non-isolated ones).
+* Part 3: `PathDecomp.exists_union`, `PathDecomp.exists_erase`, `GPath.end_of_unique_edge`,
+  `GPath.exists_first_step`, `glue_bridge`, `glue_append`.
+* Part 4: `restr G C` (edges inside `C`), its degrees, `realisable_evenSet_ni`,
+  `DStmtE` (bounded edge count), `desc_of_dstmtE`, `piece_desc` (descent in a piece).
+* Parts 5–7: the bridge cases, the reduction, and the consequences.
 -/
 
 open SimpleGraph
@@ -1251,6 +1275,777 @@ theorem bridge_odd {k M : ℕ} (hlow : ∀ j, 1 ≤ j → j ≤ k → DStmt.{u} 
       · rintro ⟨⟨h, -⟩, h'⟩; exact ⟨h, fun h'' => hvA (hRAA v h''), h'⟩
       · rintro ⟨h, -, h'⟩; exact ⟨⟨h, hvA⟩, h'⟩
 
+theorem split_any (T c₁ c₂ : ℕ) (h : T ≤ c₁ + c₂) :
+    ∃ r₁ r₂, r₁ + r₂ = T ∧ r₁ ≤ c₁ ∧ r₂ ≤ c₂ := by
+  by_cases h' : c₁ ≤ T
+  · exact ⟨c₁, T - c₁, by omega, le_rfl, by omega⟩
+  · exact ⟨T, 0, by omega, by omega, by omega⟩
+
+/-- **Bridge case, even side.** `yt` is a bridge, `A` the vertex set of the side of `y`, with
+`|A|` even. Descend in `G[A]` and `G[Aᶜ]` (keeping `t` if it is odd in `G`), and glue by extending
+a path ending at `t` with the edge `ty`. -/
+theorem bridge_even {k M : ℕ} (hk : 1 ≤ k) (hlow : ∀ j, 1 ≤ j → j ≤ k → DStmt.{u} j)
+    (hIH : DStmtE.{u} (k + 1) M) (hG : ∀ v, 0 < G.degree v) (hn : Even (Fintype.card V))
+    (hEM : G.edgeFinset.card ≤ M + 1) (h2k : 2 * (k + 1) ≤ (evenSet G).card) {y w t : V}
+    (hy : y ∈ evenSet G) (hw : w ∈ evenSet G) (hyw : y ≠ w) (hyt : G.Adj y t)
+    (hdt : 2 ≤ G.degree t) {A : Finset V} (hyA : y ∈ A) (htA : t ∉ A)
+    (hcross : ∀ a b, G.Adj a b → a ∈ A → b ∉ A → a = y ∧ b = t)
+    (hreachA : ∀ v ∈ A, (restr G A).Reachable y v)
+    (hreachB : ∀ v ∉ A, (restr G Aᶜ).Reachable t v) (hAeven : Even A.card) :
+    Desc G (k + 1) y {w} := by
+  have hyt' : y ≠ t := hyt.ne
+  have nbrA : ∀ v ∈ A, v ≠ y → ∀ b, G.Adj v b → b ∈ A := fun v hv hvy b h => by
+    by_contra hb; exact hvy (hcross v b h hv hb).1
+  have nbrB : ∀ v, v ∉ A → v ≠ t → ∀ b, G.Adj v b → b ∉ A := fun v hv hvt b h hb =>
+    hvt (hcross b v h.symm hb hv).2
+  have nbrY : ∀ b, G.Adj y b → b ≠ t → b ∈ A := fun b h hbt => by
+    by_contra hb; exact hbt (hcross y b h hyA hb).2
+  have nbrT : ∀ b, G.Adj t b → b ≠ y → b ∉ A := fun b h hby hb =>
+    hby (hcross b t h.symm hb htA).1
+  obtain ⟨hy0, jy, hjy⟩ := mem_evenSet_iff_even.mp hy
+  -- degrees
+  have dA_A : ∀ v ∈ A, v ≠ y → (restr G A).degree v = G.degree v := fun v hv hvy =>
+    degree_restr_full hv (nbrA v hv hvy)
+  have dA_y : (restr G A).degree y + 1 = G.degree y :=
+    degree_restr_minus hyA hyt htA (fun b h hbt => nbrY b h hbt)
+  have dA_out : ∀ v, v ∉ A → (restr G A).degree v = 0 := fun v hv => degree_restr_out hv
+  have dB_B : ∀ v, v ∉ A → v ≠ t → (restr G Aᶜ).degree v = G.degree v := fun v hv hvt =>
+    degree_restr_full (Finset.mem_compl.mpr hv)
+      (fun b h => Finset.mem_compl.mpr (nbrB v hv hvt b h))
+  have dB_t : (restr G Aᶜ).degree t + 1 = G.degree t :=
+    degree_restr_minus (Finset.mem_compl.mpr htA) hyt.symm (by simp [hyA])
+      (fun b h hby => Finset.mem_compl.mpr (nbrT b h hby))
+  have dB_out : ∀ v ∈ A, (restr G Aᶜ).degree v = 0 := fun v hv =>
+    degree_restr_out (by simp [hv])
+  have hyodd : Odd ((restr G A).degree y) := ⟨jy - 1, by omega⟩
+  -- even vertices
+  have EvA : evenSet (restr G A) = ((evenSet G).filter (· ∈ A)).erase y := by
+    ext v
+    simp only [Finset.mem_erase, Finset.mem_filter]
+    by_cases hv : v ∈ A
+    · by_cases hvy : v = y
+      · rw [hvy]
+        simp only [ne_eq, not_true_eq_false, false_and, iff_false]
+        exact fun h => (Nat.not_even_iff_odd.mpr hyodd) (mem_evenSet_iff_even.mp h).2
+      · rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dA_A v hv hvy]; simp [hv, hvy]
+    · rw [mem_evenSet_iff_even, dA_out v hv]; simp [hv]
+  have hEvA_card : (evenSet (restr G A)).card + 1 = ((evenSet G).filter (· ∈ A)).card := by
+    rw [EvA, Finset.card_erase_of_mem (by simp [hy, hyA])]
+    have : 0 < ((evenSet G).filter (· ∈ A)).card := Finset.card_pos.mpr ⟨y, by simp [hy, hyA]⟩
+    omega
+  have hsplit := Finset.card_filter_add_card_filter_not (s := evenSet G) (fun v => v ∈ A)
+  -- non-isolated vertices, connectivity, parity
+  have nonA : nonIso (restr G A) = A := by
+    ext v
+    simp only [nonIso, Finset.mem_filter, Finset.mem_univ, true_and]
+    by_cases hv : v ∈ A
+    · by_cases hvy : v = y
+      · rw [hvy]; simp [hyA]; omega
+      · rw [dA_A v hv hvy]; simp [hv, hG v]
+    · rw [dA_out v hv]; simp [hv]
+  have nonB : nonIso (restr G Aᶜ) = Aᶜ := by
+    ext v
+    simp only [nonIso, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_compl]
+    by_cases hv : v ∈ A
+    · rw [dB_out v hv]; simp [hv]
+    · by_cases hvt : v = t
+      · rw [hvt]; simp [htA]; omega
+      · rw [dB_B v hv hvt]; simp [hv, hG v]
+  have hevA : Even (nonIso (restr G A)).card := by rw [nonA]; exact hAeven
+  have hevB : Even (nonIso (restr G Aᶜ)).card := by
+    rw [nonB, Finset.card_compl]
+    have := Finset.card_le_univ A
+    obtain ⟨m, hm⟩ := hn
+    obtain ⟨j, hj⟩ := hAeven
+    exact ⟨m - j, by omega⟩
+  have hconnA : NIConn (restr G A) := by
+    have key : ∀ v, 0 < (restr G A).degree v → (restr G A).Reachable y v := by
+      intro v hv
+      by_cases hvA : v ∈ A
+      · exact hreachA v hvA
+      · rw [dA_out v hvA] at hv; exact absurd hv (lt_irrefl 0)
+    exact fun a b ha hb => (key a ha).symm.trans (key b hb)
+  have hconnB : NIConn (restr G Aᶜ) := by
+    have key : ∀ v, 0 < (restr G Aᶜ).degree v → (restr G Aᶜ).Reachable t v := by
+      intro v hv
+      by_cases hvA : v ∈ A
+      · rw [dB_out v hvA] at hv; exact absurd hv (lt_irrefl 0)
+      · exact hreachB v hvA
+    exact fun a b ha hb => (key a ha).symm.trans (key b hb)
+  have hEA : (restr G A).edgeFinset.card ≤ M := by
+    have := card_edgeFinset_restr_lt (C := A) hyt (fun h => htA h.2); omega
+  have hEB : (restr G Aᶜ).edgeFinset.card ≤ M := by
+    have := card_edgeFinset_restr_lt (C := Aᶜ) hyt (fun h => (Finset.mem_compl.mp h.1) hyA)
+    omega
+  -- gluing data
+  have hdisj : ∀ e, e ∈ (restr G A).edgeSet → e ∉ (restr G Aᶜ).edgeSet := by
+    intro e h1 h2
+    induction e using Sym2.inductionOn with
+    | hf a b => exact (Finset.mem_compl.mp h2.2.1) h1.2.1
+  have hK : ∀ e, e ∈ (delE G {s(y, t)}).edgeSet ↔
+      e ∈ (restr G A).edgeSet ∨ e ∈ (restr G Aᶜ).edgeSet := by
+    intro e
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+      rw [delE_edgeSet, Finset.mem_singleton]
+      simp only [mem_edgeSet, restr_adj, Finset.mem_compl]
+      constructor
+      · rintro ⟨h, hne⟩
+        by_cases ha : a ∈ A
+        · by_cases hb : b ∈ A
+          · exact Or.inl ⟨h, ha, hb⟩
+          · obtain ⟨rfl, rfl⟩ := hcross a b h ha hb; exact absurd rfl hne
+        · by_cases hb : b ∈ A
+          · obtain ⟨rfl, rfl⟩ := hcross b a h.symm hb ha; exact absurd Sym2.eq_swap hne
+          · exact Or.inr ⟨h, ha, hb⟩
+      · rintro (⟨h, ha, hb⟩ | ⟨h, ha, hb⟩)
+        · refine ⟨h, fun he => ?_⟩
+          rcases Sym2.eq_iff.mp he with ⟨-, rfl⟩ | ⟨rfl, -⟩
+          · exact htA hb
+          · exact htA ha
+        · refine ⟨h, fun he => ?_⟩
+          rcases Sym2.eq_iff.mp he with ⟨rfl, -⟩ | ⟨-, rfl⟩
+          · exact ha hyA
+          · exact hb hyA
+  have hGK : ∀ e, e ∈ G.edgeSet ↔ e ∈ (delE G {s(y, t)}).edgeSet ∨ e = s(t, y) := by
+    intro e
+    rw [delE_edgeSet, Finset.mem_singleton, Sym2.eq_swap (a := t)]
+    constructor
+    · intro h; by_cases he : e = s(y, t)
+      · exact Or.inr he
+      · exact Or.inl ⟨h, he⟩
+    · rintro (⟨h, -⟩ | rfl)
+      · exact h
+      · exact hyt
+  have hKty : ¬ (delE G {s(y, t)}).Adj t y := fun h =>
+    (delE_adj.mp h).2 (by simp [Sym2.eq_swap])
+  -- the final check, shared by both parities of `t`
+  have hfinal : ∀ (RA RB : Finset V) (DA : PathDecomp (restr G A))
+      (DB : PathDecomp (restr G Aᶜ)) (D : PathDecomp G),
+      RA ⊆ evenSet (restr G A) → RB ⊆ evenSet (restr G Aᶜ) →
+      Realises (restr G A) DA (evenSet (restr G A) \ RA) →
+      Realises (restr G Aᶜ) DB (evenSet (restr G Aᶜ) \ RB) →
+      (∀ v, D.ends v + (if t = v then 1 else 0) =
+        DA.ends v + DB.ends v + (if y = v then 1 else 0)) →
+      ∀ R : Finset V, (∀ v ∈ A, v ∈ R ↔ v ∈ RA) → (∀ v, v ∉ A → v ≠ t → (v ∈ R ↔ v ∈ RB)) →
+      y ∉ R → (t ∈ evenSet G → t ∈ R) → (t ∉ evenSet G → t ∈ evenSet (restr G Aᶜ) \ RB) →
+      Realises G D (evenSet G \ R) := by
+    intro RA RB DA DB D hRA hRB hDA hDB hD R hRA' hRB' hyR htR htR'
+    intro v
+    have h1 := hD v
+    have hA' := hDA v
+    have hB' := hDB v
+    by_cases hvy : v = y
+    · rw [hvy] at h1 hA' hB' ⊢
+      rw [profile_odd hyodd] at hA'
+      rw [profile_zero_of_degree Finset.sdiff_subset (dB_out y hyA)] at hB'
+      rw [profile_even_mem (mem_evenSet_iff_even.mp hy).2 (Finset.mem_sdiff.mpr ⟨hy, hyR⟩)]
+      simp only [hyt', Ne.symm hyt', ite_false, ite_true] at h1
+      omega
+    by_cases hvt : v = t
+    · rw [hvt] at h1 hA' hB' ⊢
+      rw [profile_zero_of_degree Finset.sdiff_subset (dA_out t htA)] at hA'
+      simp only [hyt', Ne.symm hyt', ite_false, ite_true] at h1
+      by_cases htE : t ∈ evenSet G
+      · have htodd : Odd ((restr G Aᶜ).degree t) := by
+          obtain ⟨-, i, hi⟩ := mem_evenSet_iff_even.mp htE; exact ⟨i - 1, by omega⟩
+        rw [profile_odd htodd] at hB'
+        rw [profile_even_not_mem (mem_evenSet_iff_even.mp htE).2
+          (fun h => (Finset.mem_sdiff.mp h).2 (htR htE))]
+        omega
+      · have htev := htR' htE
+        rw [profile_even_mem (mem_evenSet_iff_even.mp (Finset.mem_sdiff.mp htev).1).2 htev]
+          at hB'
+        rw [profile_odd (odd_of_not_mem_evenSet hG htE)]
+        omega
+    simp only [Ne.symm hvy, Ne.symm hvt, ite_false, add_zero] at h1
+    by_cases hvA : v ∈ A
+    · rw [profile_zero_of_degree Finset.sdiff_subset (dB_out v hvA)] at hB'
+      rw [h1, hA', hB', add_zero]
+      apply profile_congr (dA_A v hvA hvy)
+      rw [EvA]
+      simp only [Finset.mem_sdiff, Finset.mem_erase, Finset.mem_filter]
+      rw [hRA' v hvA]
+      constructor
+      · rintro ⟨⟨-, h, -⟩, h'⟩; exact ⟨h, h'⟩
+      · rintro ⟨h, h'⟩; exact ⟨⟨hvy, h, hvA⟩, h'⟩
+    · rw [profile_zero_of_degree Finset.sdiff_subset (dA_out v hvA)] at hA'
+      rw [h1, hA', hB', zero_add]
+      apply profile_congr (dB_B v hvA hvt)
+      simp only [Finset.mem_sdiff]
+      rw [hRB' v hvA hvt]
+      have : v ∈ evenSet (restr G Aᶜ) ↔ v ∈ evenSet G := by
+        rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dB_B v hvA hvt]
+      rw [this]
+  have hRAA : ∀ (RA : Finset V), RA ⊆ evenSet (restr G A) → ∀ x ∈ RA, x ∈ A ∧ x ≠ y := by
+    intro RA hRA x hx
+    have := hRA hx; rw [EvA] at this
+    simp only [Finset.mem_erase, Finset.mem_filter] at this
+    exact ⟨this.2.2, this.1⟩
+  have hRBB : ∀ (RB : Finset V), RB ⊆ evenSet (restr G Aᶜ) → ∀ x ∈ RB, x ∉ A := by
+    intro RB hRB x hx
+    have := hRB hx
+    by_contra hxA
+    have := (mem_evenSet_iff_even.mp this).1
+    rw [dB_out x hxA] at this
+    exact lt_irrefl 0 this
+  have hBpaths : ∀ DB : PathDecomp (restr G Aᶜ), ∀ P ∈ DB.paths, y ∉ P.walk.support :=
+    fun DB P _ hyP => (Finset.mem_compl.mp (restr_path_support P y hyP)) hyA
+  by_cases htE : t ∈ evenSet G
+  · -- `t` even in `G`: remove `t`, and `k` further vertices
+    obtain ⟨-, jt, hjt⟩ := mem_evenSet_iff_even.mp htE
+    have htodd : Odd ((restr G Aᶜ).degree t) := ⟨jt - 1, by omega⟩
+    have EvB : evenSet (restr G Aᶜ) = ((evenSet G).filter (· ∉ A)).erase t := by
+      ext v
+      simp only [Finset.mem_erase, Finset.mem_filter]
+      by_cases hv : v ∈ A
+      · rw [mem_evenSet_iff_even, dB_out v hv]; simp [hv]
+      · by_cases hvt : v = t
+        · rw [hvt]
+          simp only [ne_eq, not_true_eq_false, false_and, iff_false]
+          exact fun h => (Nat.not_even_iff_odd.mpr htodd) (mem_evenSet_iff_even.mp h).2
+        · rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dB_B v hv hvt]; simp [hv, hvt]
+    have hEvB_card : (evenSet (restr G Aᶜ)).card + 1 =
+        ((evenSet G).filter (· ∉ A)).card := by
+      rw [EvB, Finset.card_erase_of_mem (by simp [htE, htA])]
+      have : 0 < ((evenSet G).filter (· ∉ A)).card := Finset.card_pos.mpr ⟨t, by simp [htE, htA]⟩
+      omega
+    obtain ⟨a2, ha2⟩ := even_card_evenSet_of_nonIso hevA
+    obtain ⟨b2, hb2⟩ := even_card_evenSet_of_nonIso hevB
+    obtain ⟨rA, rB, hsum, hrA, hrB, hwr⟩ : ∃ rA rB, rA + rB = k ∧ rA ≤ a2 ∧ rB ≤ b2 ∧
+        (w ∈ evenSet (restr G A) → 1 ≤ rA) ∧ (w ∈ evenSet (restr G Aᶜ) → 1 ≤ rB) := by
+      have hk2 : k ≤ a2 + b2 := by omega
+      by_cases hwA : w ∈ evenSet (restr G A)
+      · have : 1 ≤ a2 := by have := Finset.card_pos.mpr ⟨w, hwA⟩; omega
+        obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap k a2 b2 hk2 this (by omega)
+        refine ⟨r₁, r₂, h1, h2, h3, fun _ => h4, fun h => ?_⟩
+        exact absurd (hRAA _ (le_refl _) w hwA).1 ((hRBB _ (le_refl _)) w h)
+      · by_cases hwB : w ∈ evenSet (restr G Aᶜ)
+        · have : 1 ≤ b2 := by have := Finset.card_pos.mpr ⟨w, hwB⟩; omega
+          obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap k b2 a2 (by omega) this (by omega)
+          exact ⟨r₂, r₁, by omega, h3, h2, fun h => absurd h hwA, fun _ => h4⟩
+        · obtain ⟨r₁, r₂, h1, h2, h3⟩ := split_any k a2 b2 hk2
+          exact ⟨r₁, r₂, h1, h2, h3, fun h => absurd h hwA, fun h => absurd h hwB⟩
+    obtain ⟨RA, hRAE, hRAc, hwRA, -, -, DA, hDA⟩ := by
+      classical
+      exact piece_desc (r := rA) hlow hIH hEA (by omega) hconnA hevA (by omega) y
+        (({w} : Finset V).filter (· ∈ evenSet (restr G A)))
+        (fun x hx => (Finset.mem_filter.mp hx).2)
+        (by apply (Finset.card_filter_le _ _).trans; simp)
+        (by simp [hyw])
+        (fun ⟨x, hx⟩ => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          exact hwr.1 (hx.1 ▸ hx.2))
+    obtain ⟨RB, hRBE, hRBc, hwRB, -, -, DB, hDB⟩ := by
+      classical
+      exact piece_desc (r := rB) hlow hIH hEB (by omega) hconnB hevB (by omega) y
+        (({w} : Finset V).filter (· ∈ evenSet (restr G Aᶜ)))
+        (fun x hx => (Finset.mem_filter.mp hx).2)
+        (by apply (Finset.card_filter_le _ _).trans; simp)
+        (by simp [hyw])
+        (fun ⟨x, hx⟩ => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          exact hwr.2 (hx.1 ▸ hx.2))
+    obtain ⟨D, -, hD⟩ := glue_append DA DB hdisj hK hGK hKty (hBpaths DB)
+      (by rw [hDB t, profile_odd htodd]; exact Nat.one_pos)
+    have htRA : t ∉ RA := fun h => htA (hRAA RA hRAE t h).1
+    have htRB : t ∉ RB := fun h => by
+      have := hRBE h; rw [EvB] at this; simp at this
+    have hdisjAB : Disjoint RA RB := by
+      rw [Finset.disjoint_left]
+      exact fun x h1 h2 => hRBB RB hRBE x h2 (hRAA RA hRAE x h1).1
+    refine ⟨insert t (RA ∪ RB), ?_, ?_, ?_, ?_, ?_⟩
+    · intro x hx
+      rcases Finset.mem_insert.mp hx with rfl | hx
+      · exact htE
+      rcases Finset.mem_union.mp hx with h | h
+      · have := hRAE h; rw [EvA] at this; exact (Finset.mem_filter.mp (Finset.mem_of_mem_erase this)).1
+      · have := hRBE h; rw [EvB] at this; exact (Finset.mem_filter.mp (Finset.mem_of_mem_erase this)).1
+    · rw [Finset.card_insert_of_notMem (by simp [htRA, htRB]),
+        Finset.card_union_of_disjoint hdisjAB, hRAc, hRBc]
+      omega
+    · intro x hx
+      rw [Finset.mem_singleton] at hx
+      rw [hx]
+      by_cases hwt : w = t
+      · rw [hwt]; exact Finset.mem_insert_self _ _
+      by_cases hwA : w ∈ A
+      · have : w ∈ evenSet (restr G A) := by rw [EvA]; simp [hw, hwA, Ne.symm hyw]
+        exact Finset.mem_insert_of_mem (Finset.mem_union_left _ (hwRA (by simp [this])))
+      · have : w ∈ evenSet (restr G Aᶜ) := by rw [EvB]; simp [hw, hwA, hwt]
+        exact Finset.mem_insert_of_mem (Finset.mem_union_right _ (hwRB (by simp [this])))
+    · intro h
+      rcases Finset.mem_insert.mp h with h | h
+      · exact hyt' h
+      rcases Finset.mem_union.mp h with h | h
+      · exact (hRAA RA hRAE y h).2 rfl
+      · exact hRBB RB hRBE y h hyA
+    · refine ⟨Finset.sdiff_subset, D, ?_⟩
+      apply hfinal RA RB DA DB D hRAE hRBE hDA hDB hD
+      · intro v hv
+        simp only [Finset.mem_insert, Finset.mem_union]
+        constructor
+        · rintro (rfl | h | h)
+          · exact absurd hv htA
+          · exact h
+          · exact absurd hv (hRBB RB hRBE v h)
+        · intro h; exact Or.inr (Or.inl h)
+      · intro v hv hvt
+        simp only [Finset.mem_insert, Finset.mem_union, hvt, false_or]
+        constructor
+        · rintro (h | h)
+          · exact absurd (hRAA RA hRAE v h).1 hv
+          · exact h
+        · intro h; exact Or.inr h
+      · intro h
+        rcases Finset.mem_insert.mp h with h | h
+        · exact hyt' h
+        rcases Finset.mem_union.mp h with h | h
+        · exact (hRAA RA hRAE y h).2 rfl
+        · exact hRBB RB hRBE y h hyA
+      · intro _; exact Finset.mem_insert_self _ _
+      · intro h; exact absurd htE h
+  · -- `t` odd in `G`: keep `t` in `G[Aᶜ]`, remove `k + 1` vertices
+    have htev : Even ((restr G Aᶜ).degree t) := by
+      obtain ⟨i, hi⟩ := odd_of_not_mem_evenSet hG htE; exact ⟨i, by omega⟩
+    have htEB : t ∈ evenSet (restr G Aᶜ) := mem_evenSet_iff_even.mpr ⟨by omega, htev⟩
+    have EvB : evenSet (restr G Aᶜ) = insert t ((evenSet G).filter (· ∉ A)) := by
+      ext v
+      simp only [Finset.mem_insert, Finset.mem_filter]
+      by_cases hvt : v = t
+      · rw [hvt]; simp [htEB]
+      · by_cases hv : v ∈ A
+        · rw [mem_evenSet_iff_even, dB_out v hv]; simp [hv, hvt]
+        · rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dB_B v hv hvt]; simp [hv, hvt]
+    have hEvB_card : (evenSet (restr G Aᶜ)).card = ((evenSet G).filter (· ∉ A)).card + 1 := by
+      rw [EvB, Finset.card_insert_of_notMem (by simp [htE])]
+    obtain ⟨a2, ha2⟩ := even_card_evenSet_of_nonIso hevA
+    obtain ⟨b2, hb2⟩ := even_card_evenSet_of_nonIso hevB
+    have hwt : w ≠ t := fun h => htE (h ▸ hw)
+    obtain ⟨rA, rB, hsum, hrA, hrB, hwr⟩ : ∃ rA rB, rA + rB = k + 1 ∧ rA ≤ a2 ∧ rB ≤ b2 ∧
+        (w ∈ A → 1 ≤ rA) ∧ (w ∉ A → 1 ≤ rB) := by
+      have hk2 : k + 1 ≤ a2 + b2 := by omega
+      by_cases hwA : w ∈ A
+      · have hwEA : w ∈ evenSet (restr G A) := by rw [EvA]; simp [hw, hwA, Ne.symm hyw]
+        have : 1 ≤ a2 := by have := Finset.card_pos.mpr ⟨w, hwEA⟩; omega
+        obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap (k + 1) a2 b2 hk2 this (by omega)
+        exact ⟨r₁, r₂, h1, h2, h3, fun _ => h4, fun h => absurd hwA h⟩
+      · have : 1 ≤ b2 := by
+          have : 2 ≤ (evenSet (restr G Aᶜ)).card := by
+            have hsub : ({t, w} : Finset V) ⊆ evenSet (restr G Aᶜ) := by
+              intro x hx; simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+              rw [EvB]; rcases hx with rfl | rfl <;> simp [*]
+            have := Finset.card_le_card hsub
+            rwa [Finset.card_pair (Ne.symm hwt)] at this
+          omega
+        obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap (k + 1) b2 a2 (by omega) this (by omega)
+        exact ⟨r₂, r₁, by omega, h3, h2, fun h => absurd h hwA, fun _ => h4⟩
+    obtain ⟨RA, hRAE, hRAc, hwRA, -, -, DA, hDA⟩ := by
+      classical
+      exact piece_desc (r := rA) hlow hIH hEA (by omega) hconnA hevA (by omega) y
+        (({w} : Finset V).filter (· ∈ A))
+        (fun x hx => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          rw [EvA]; simp [hx.1 ▸ hw, hx.2, hx.1 ▸ Ne.symm hyw])
+        (by apply (Finset.card_filter_le _ _).trans; simp)
+        (by simp [hyw])
+        (fun ⟨x, hx⟩ => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          exact hwr.1 (hx.1 ▸ hx.2))
+    obtain ⟨RB, hRBE, hRBc, hwRB, htRB, -, DB, hDB⟩ := by
+      classical
+      exact piece_desc (r := rB) hlow hIH hEB (by omega) hconnB hevB (by omega) t
+        (({w} : Finset V).filter (· ∉ A))
+        (fun x hx => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          rw [EvB]; simp [hx.1 ▸ hw, hx.2])
+        (by apply (Finset.card_filter_le _ _).trans; simp)
+        (by simp [Ne.symm hwt])
+        (fun ⟨x, hx⟩ => by
+          simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+          exact hwr.2 (hx.1 ▸ hx.2))
+    have htS : t ∈ evenSet (restr G Aᶜ) \ RB := Finset.mem_sdiff.mpr ⟨htEB, htRB⟩
+    obtain ⟨D, -, hD⟩ := glue_append DA DB hdisj hK hGK hKty (hBpaths DB)
+      (by rw [hDB t, profile_even_mem htev htS]; exact Nat.two_pos)
+    have hdisjAB : Disjoint RA RB := by
+      rw [Finset.disjoint_left]
+      exact fun x h1 h2 => hRBB RB hRBE x h2 (hRAA RA hRAE x h1).1
+    refine ⟨RA ∪ RB, ?_, ?_, ?_, ?_, ?_⟩
+    · intro x hx
+      rcases Finset.mem_union.mp hx with h | h
+      · have := hRAE h; rw [EvA] at this
+        exact (Finset.mem_filter.mp (Finset.mem_of_mem_erase this)).1
+      · have := hRBE h; rw [EvB] at this
+        rcases Finset.mem_insert.mp this with rfl | h'
+        · exact absurd h htRB
+        · exact (Finset.mem_filter.mp h').1
+    · rw [Finset.card_union_of_disjoint hdisjAB, hRAc, hRBc, hsum]
+    · intro x hx
+      rw [Finset.mem_singleton] at hx
+      rw [hx]
+      by_cases hwA : w ∈ A
+      · exact Finset.mem_union_left _ (hwRA (by simp [hwA]))
+      · exact Finset.mem_union_right _ (hwRB (by simp [hwA]))
+    · intro h
+      rcases Finset.mem_union.mp h with h | h
+      · exact (hRAA RA hRAE y h).2 rfl
+      · exact hRBB RB hRBE y h hyA
+    · refine ⟨Finset.sdiff_subset, D, ?_⟩
+      apply hfinal RA RB DA DB D hRAE hRBE hDA hDB hD
+      · intro v hv
+        simp only [Finset.mem_union]
+        constructor
+        · rintro (h | h)
+          · exact h
+          · exact absurd hv (hRBB RB hRBE v h)
+        · intro h; exact Or.inl h
+      · intro v hv hvt
+        simp only [Finset.mem_union]
+        constructor
+        · rintro (h | h)
+          · exact absurd (hRAA RA hRAE v h).1 hv
+          · exact h
+        · intro h; exact Or.inr h
+      · intro h
+        rcases Finset.mem_union.mp h with h | h
+        · exact (hRAA RA hRAE y h).2 rfl
+        · exact hRBB RB hRBE y h hyA
+      · intro h; exact absurd h htE
+      · intro _; exact htS
+
 end bridge
+
+/-! ## Part 6: the reduction theorem -/
+
+section reduction
+
+variable {V : Type u} [Fintype V] [DecidableEq V] {G : SimpleGraph V} [DecidableRel G.Adj]
+
+/-- Lifting a descent at an odd neighbour `t` of `y` (when `y` has no even neighbour). -/
+theorem desc_lift_of_no_even_nbr (hG : ∀ v, 0 < G.degree v) {k : ℕ} {y t : V}
+    {W₀ : Finset V} (hy : y ∈ evenSet G) (hnoev : ∀ v ∈ evenSet G, ¬ G.Adj y v)
+    (hyt : G.Adj y t) (htK : 0 < (delE G {s(y, t)}).degree t) (hW : W₀ ⊆ evenSet G)
+    (hyW : y ∉ W₀) (h : Desc (delE G {s(y, t)}) k t W₀) : Desc G k y W₀ := by
+  have htE : t ∉ evenSet G := fun h => hnoev t h hyt
+  have hEvK := evenSet_delE_odd hG hy htE hyt htK
+  obtain ⟨R, hRK, hRc, hWR, htR, hreal⟩ := h
+  have htKE : t ∈ evenSet (delE G {s(y, t)}) := by rw [hEvK]; exact Finset.mem_insert_self _ _
+  have htS : t ∈ evenSet (delE G {s(y, t)}) \ R := Finset.mem_sdiff.mpr ⟨htKE, htR⟩
+  have hRE : ∀ a ∈ R, a ∈ evenSet G ∧ a ≠ y := by
+    intro a ha
+    have := hRK ha
+    rw [hEvK] at this
+    rcases Finset.mem_insert.mp this with rfl | h
+    · exact absurd ha htR
+    · exact ⟨Finset.mem_of_mem_erase h, Finset.ne_of_mem_erase h⟩
+  have hlift := realisable_lift hG hy htE hyt hreal htS (by
+    intro a ha haS
+    have haR : a ∈ R := by
+      by_contra h; exact haS (Finset.mem_sdiff.mpr ⟨ha, h⟩)
+    exact hnoev a (hRE a haR).1)
+  have hyR : y ∉ R := fun h => (hRE y h).2 rfl
+  refine ⟨R, fun a ha => (hRE a ha).1, hRc, hWR, hyR, ?_⟩
+  convert hlift using 1
+  ext a
+  rw [hEvK]
+  simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_erase]
+  by_cases h1 : a = y
+  · rw [h1]; simp [hy, hyR]
+  by_cases h2 : a = t
+  · rw [h2]; simp [htE, Ne.symm hyt.ne]
+  simp [h1, h2]
+
+/-- Transfer from `k`-step descent in `G − yt`, where `t` is the only even neighbour of `y`. -/
+theorem desc_succ_of_transfer (hG : ∀ v, 0 < G.degree v) {k : ℕ} {y w t y' w' : V}
+    (hy : y ∈ evenSet G) (hw : w ∈ evenSet G) (hyw : y ≠ w) (ht : t ∈ evenSet G)
+    (hyt : G.Adj y t) (huniq : ∀ v ∈ evenSet G, G.Adj y v → v = t)
+    (hdesc : Desc (delE G {s(y, t)}) k y' {w'}) (hww' : w = t ∨ w = w') :
+    Desc G (k + 1) y {w} := by
+  have hyt' : y ≠ t := hyt.ne
+  have hEvK := evenSet_delE_even hy ht hyt
+  obtain ⟨W, hWK, hWc, hw'W, -, hreal⟩ := hdesc
+  have hWE : ∀ a ∈ W, a ∈ evenSet G ∧ a ≠ y ∧ a ≠ t := by
+    intro a ha
+    have := hWK ha
+    rw [hEvK] at this
+    simp only [Finset.mem_erase] at this
+    exact ⟨this.2.2, this.2.1, this.1⟩
+  have htrans := realisable_transfer hy ht hyt hreal (by
+    intro u hu huS hadj
+    have huW : u ∈ W := by
+      by_contra h; exact huS (Finset.mem_sdiff.mpr ⟨hu, h⟩)
+    exact (hWE u huW).2.2 (huniq u (hWE u huW).1 hadj))
+  have htW : t ∉ W := fun h => (hWE t h).2.2 rfl
+  have hyW : y ∉ W := fun h => (hWE y h).2.1 rfl
+  refine ⟨insert t W, ?_, ?_, ?_, ?_, ?_⟩
+  · intro a ha
+    rcases Finset.mem_insert.mp ha with rfl | ha
+    · exact ht
+    · exact (hWE a ha).1
+  · rw [Finset.card_insert_of_notMem htW, hWc]
+  · intro a ha
+    rw [Finset.mem_singleton] at ha
+    rw [ha]
+    rcases hww' with h | h
+    · rw [h]; exact Finset.mem_insert_self _ _
+    · rw [h]; exact Finset.mem_insert_of_mem (hw'W (Finset.mem_singleton_self _))
+  · intro h
+    rcases Finset.mem_insert.mp h with h | h
+    · exact hyt' h
+    · exact hyW h
+  · convert htrans using 1
+    ext a
+    rw [hEvK]
+    simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_erase]
+    by_cases h1 : a = y
+    · rw [h1]; simp [hy, hyt', hyW]
+    by_cases h2 : a = t
+    · rw [h2]; simp [Ne.symm hyt']
+    simp [h1, h2]
+
+omit [Fintype V] [DecidableEq V] [DecidableRel G.Adj] in
+/-- A walk in `G − yt` that stays inside a vertex set `C` is a walk of `restr G C`. -/
+theorem restr_reachable_of_walk {C : Finset V} {y t a b : V}
+    (p : (delE G {s(y, t)}).Walk a b) (hp : ∀ x ∈ p.support, x ∈ C) :
+    (restr G C).Reachable a b := by
+  refine ⟨p.transfer (restr G C) (fun e he => ?_)⟩
+  induction e using Sym2.inductionOn with
+  | hf c d =>
+    have hcd : (delE G {s(y, t)}).Adj c d := p.edges_subset_edgeSet he
+    exact ⟨delE_le hcd, hp c (p.fst_mem_support_of_mem_edges he),
+      hp d (p.snd_mem_support_of_mem_edges he)⟩
+
+/-- **Reduction to the branching case** (one level). If `D_1, …, D_k` hold (`k ≥ 2`) and
+`B_{k+1}` holds, then `D_{k+1}` holds for graphs with any number of edges. -/
+theorem dstmtE_succ (k : ℕ) (hk : 2 ≤ k) (hlow : ∀ j, 1 ≤ j → j ≤ k → DStmt.{u} j)
+    (hB : BStmt.{u} (k + 1)) : ∀ N, DStmtE.{u} (k + 1) N := by
+  intro N
+  induction N using Nat.strong_induction_on with
+  | _ N ih =>
+  intro W _ _ G _ hN hconn hn h2k y w hy hw hyw
+  have hG := degree_pos_of_connected hconn hyw
+  -- Case 1: two even neighbours
+  by_cases h1 : ∃ v₁ ∈ evenSet G, ∃ v₂ ∈ evenSet G, v₁ ≠ v₂ ∧ G.Adj y v₁ ∧ G.Adj y v₂
+  · exact hB W G hconn hn h2k y w hy hw hyw h1
+  have huniq : ∀ t ∈ evenSet G, G.Adj y t → ∀ v ∈ evenSet G, G.Adj y v → v = t := by
+    intro t ht hyt v hv hyv
+    by_contra hvt
+    exact h1 ⟨t, ht, v, hv, Ne.symm hvt, hyt, hyv⟩
+  -- Case 2: a non-pendant bridge at `y`
+  by_cases h2 : ∃ t, G.Adj y t ∧ G.IsBridge s(y, t) ∧ 2 ≤ G.degree t
+  · obtain ⟨t, hyt, hbr, hdt⟩ := h2
+    have hN1 : 1 ≤ N := by
+      have : 0 < G.edgeFinset.card := Finset.card_pos.mpr ⟨s(y, t), mem_edgeFinset.mpr hyt⟩
+      omega
+    have hIH : DStmtE.{u} (k + 1) (N - 1) := ih (N - 1) (by omega)
+    have hEM : G.edgeFinset.card ≤ (N - 1) + 1 := by omega
+    classical
+    have hnr : ¬ (delE G {s(y, t)}).Reachable y t := by
+      rw [isBridge_iff] at hbr; simpa [delE] using hbr
+    let A : Finset W := Finset.univ.filter (fun v => (delE G {s(y, t)}).Reachable y v)
+    have hmemA : ∀ v, v ∈ A ↔ (delE G {s(y, t)}).Reachable y v := by simp [A]
+    have hyA : y ∈ A := (hmemA y).2 (Reachable.refl _)
+    have htA : t ∉ A := fun h => hnr ((hmemA t).1 h)
+    have hcross : ∀ a b, G.Adj a b → a ∈ A → b ∉ A → a = y ∧ b = t := by
+      intro a b hab ha hb
+      by_cases he : s(a, b) = s(y, t)
+      · rcases Sym2.eq_iff.mp he with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · exact ⟨h1, h2⟩
+        · exact absurd (h1 ▸ ha) htA
+      · exact absurd ((hmemA b).2 (((hmemA a).1 ha).trans
+          (delE_adj.mpr ⟨hab, by simpa using he⟩).reachable)) hb
+    have hreachA : ∀ v ∈ A, (restr G A).Reachable y v := by
+      intro v hv
+      obtain ⟨p⟩ := (hmemA v).1 hv
+      exact restr_reachable_of_walk p (fun x hx => (hmemA x).2 ⟨p.takeUntil x hx⟩)
+    have hreachB : ∀ v ∉ A, (restr G Aᶜ).Reachable t v := by
+      intro v hv
+      have hvt : (delE G {s(y, t)}).Reachable t v :=
+        ((delE_reach_or_reach hconn y t v).resolve_left (fun h => hv ((hmemA v).2 h.symm))).symm
+      obtain ⟨p⟩ := hvt
+      refine restr_reachable_of_walk p (fun x hx => Finset.mem_compl.mpr (fun hxA => ?_))
+      exact hnr (((hmemA x).1 hxA).trans ⟨(p.takeUntil x hx).reverse⟩)
+    rcases Nat.even_or_odd A.card with hAe | hAo
+    · exact bridge_even (by omega) hlow hIH hG hn hEM h2k hy hw hyw hyt hdt hyA htA hcross
+        hreachA hreachB hAe
+    · exact bridge_odd hlow hIH hG hn hEM h2k hy hw hyw hyt hdt hyA htA hcross hreachA
+        hreachB hAo
+  -- Case 3: the only even neighbour, through a non-bridge
+  by_cases h3 : ∃ t ∈ evenSet G, G.Adj y t ∧ ¬ G.IsBridge s(y, t)
+  · obtain ⟨t, ht, hyt, hnb⟩ := h3
+    have hKconn := connected_delE_of_not_isBridge hconn hnb
+    have hEvK := evenSet_delE_even hy ht hyt
+    have hcardK : 2 * k ≤ (evenSet (delE G {s(y, t)})).card := by
+      rw [hEvK, Finset.card_erase_of_mem (Finset.mem_erase.mpr ⟨hyt.ne.symm, ht⟩),
+        Finset.card_erase_of_mem hy]
+      omega
+    have hE2 : 1 < (evenSet (delE G {s(y, t)})).card := by omega
+    by_cases hwt : w = t
+    · obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp hE2
+      exact desc_succ_of_transfer hG hy hw hyw ht hyt (huniq t ht hyt)
+        (hlow k (by omega) le_rfl W _ hKconn hn hcardK a b ha hb hab) (Or.inl hwt)
+    · have hwK : w ∈ evenSet (delE G {s(y, t)}) := by
+        rw [hEvK]; exact Finset.mem_erase.mpr ⟨hwt, Finset.mem_erase.mpr ⟨Ne.symm hyw, hw⟩⟩
+      obtain ⟨a, ha, haw⟩ := Finset.exists_mem_ne hE2 w
+      exact desc_succ_of_transfer hG hy hw hyw ht hyt (huniq t ht hyt)
+        (hlow k (by omega) le_rfl W _ hKconn hn hcardK a w ha hwK haw) (Or.inr rfl)
+  -- Case 4: no even neighbour; delete a non-bridge edge to an odd neighbour
+  have hnoev : ∀ v ∈ evenSet G, ¬ G.Adj y v := by
+    intro t ht hyt
+    have hbr : G.IsBridge s(y, t) := by
+      by_contra h; exact h3 ⟨t, ht, hyt, h⟩
+    obtain ⟨-, j, hj⟩ := mem_evenSet_iff_even.mp ht
+    have := hG t
+    exact h2 ⟨t, hyt, hbr, by omega⟩
+  obtain ⟨t, hyt, hnb⟩ : ∃ t, G.Adj y t ∧ ¬ G.IsBridge s(y, t) := by
+    by_contra hall
+    push Not at hall
+    -- every neighbour of `y` is a leaf
+    have hleaf : ∀ c, G.Adj y c → ∀ d, G.Adj c d → d = y := by
+      intro c hyc d hcd
+      have hdeg : G.degree c ≤ 1 := by
+        by_contra h; exact h2 ⟨c, hyc, hall c hyc, by omega⟩
+      by_contra hdy
+      have : 2 ≤ G.degree c := by
+        rw [← card_neighborFinset_eq_degree]
+        have hsub : ({y, d} : Finset W) ⊆ G.neighborFinset c := by
+          intro x hx
+          simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+          rcases hx with rfl | rfl
+          · exact (mem_neighborFinset _ _ _).mpr hyc.symm
+          · exact (mem_neighborFinset _ _ _).mpr hcd
+        have := Finset.card_le_card hsub
+        rwa [Finset.card_pair (Ne.symm hdy)] at this
+      omega
+    obtain ⟨p⟩ := hconn.preconnected y w
+    have hpp := p.bypass_isPath
+    cases hq : p.bypass with
+    | nil => exact hyw rfl
+    | @cons _ c _ hyc q =>
+      rw [hq, Walk.cons_isPath_iff] at hpp
+      cases q with
+      | nil =>
+        obtain ⟨-, j, hj⟩ := mem_evenSet_iff_even.mp hw
+        have := hleaf w hyc
+        have hdw : G.degree w ≤ 1 := by
+          rw [← card_neighborFinset_eq_degree]
+          apply Finset.card_le_one.mpr
+          intro a ha b hb
+          rw [hleaf w hyc a ((mem_neighborFinset _ _ _).mp ha),
+            hleaf w hyc b ((mem_neighborFinset _ _ _).mp hb)]
+        have := hG w
+        omega
+      | cons hcd q' =>
+        have := hleaf c hyc _ hcd
+        subst this
+        exact hpp.2 (by simp)
+  have htE : t ∉ evenSet G := fun h => hnoev t h hyt
+  have hKconn := connected_delE_of_not_isBridge hconn hnb
+  have hKpos := degree_pos_of_connected hKconn hyt.ne
+  have hEvK := evenSet_delE_odd hG hy htE hyt (hKpos t)
+  have hlt := card_edgeFinset_delE_lt hyt
+  have hwK : w ∈ evenSet (delE G {s(y, t)}) := by
+    rw [hEvK]; exact Finset.mem_insert_of_mem (Finset.mem_erase.mpr ⟨Ne.symm hyw, hw⟩)
+  have htK : t ∈ evenSet (delE G {s(y, t)}) := by rw [hEvK]; exact Finset.mem_insert_self _ _
+  have hcardK : 2 * (k + 1) ≤ (evenSet (delE G {s(y, t)})).card := by
+    rw [hEvK, Finset.card_insert_of_notMem (fun h => htE (Finset.mem_of_mem_erase h)),
+      Finset.card_erase_of_mem hy]
+    have : 0 < (evenSet G).card := Finset.card_pos.mpr ⟨y, hy⟩
+    omega
+  have hdesc := ih _ (by omega) W _ le_rfl hKconn hn hcardK t w htK hwK
+    (fun h => htE (h ▸ hw))
+  exact desc_lift_of_no_even_nbr hG hy hnoev hyt (hKpos t) (by simpa using hw)
+    (by simpa using hyw) hdesc
+
+end reduction
+
+/-! ## Part 7: consequences -/
+
+/-- `D_1` is Lemma 3. -/
+theorem dstmt_one : DStmt.{u} 1 := by
+  intro W _ _ H _ hconn hn h2 y w hy hw hyw
+  have hG := degree_pos_of_connected hconn hyw
+  refine ⟨{w}, by simpa using hw, by simp, le_rfl, by simpa using hyw, ?_⟩
+  have := realisable_evenSet_erase' hG hn hw
+  rwa [Finset.erase_eq] at this
+
+/-- `D_2` is two-step descent. -/
+theorem dstmt_two : DStmt.{u} 2 := by
+  intro W _ _ H _ hconn hn h4 y w hy hw hyw
+  obtain ⟨s, hs, hsy, ⟨p⟩⟩ : ∃ s ∈ evenSet H, s ≠ y ∧ H.Reachable y s :=
+    ⟨w, hw, Ne.symm hyw, hconn.preconnected y w⟩
+  exact desc_two_of_reachable lovaszStatement hn H y w
+    (degree_pos_of_connected hconn hyw) hy hw hyw (by omega) ⟨s, hs, hsy, ⟨p⟩⟩
+
+/-- **Reduction to the branching case.** `B_3, …, B_K` imply `D_1, …, D_K`. -/
+theorem dstmt_of_branching (K : ℕ) (hB : ∀ j, 3 ≤ j → j ≤ K → BStmt.{u} j) :
+    ∀ k, 1 ≤ k → k ≤ K → DStmt.{u} k := by
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+  intro hk1 hkK
+  rcases (show k = 1 ∨ k = 2 ∨ 3 ≤ k by omega) with rfl | rfl | hk3
+  · exact dstmt_one
+  · exact dstmt_two
+  · obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+    have hD := dstmtE_succ m (by omega) (fun j hj1 hjm => ih j (by omega) hj1 (by omega))
+      (hB (m + 1) hk3 hkK)
+    intro W _ _ H _ hconn hn h2 y w hy hw hyw
+    exact hD _ W H le_rfl hconn hn h2 y w hy hw hyw
+
+/-- The rooted test at a graph with `2k` even vertices follows from `D_k`. -/
+theorem rooted_of_dstmt {W : Type u} [Fintype W] [DecidableEq W] {H : SimpleGraph W}
+    [DecidableRel H.Adj] (hconn : H.Connected) (hn : Even (Fintype.card W)) (r : W)
+    (hD : ∀ k, 1 ≤ k → 2 * k = (evenSet H).card → DStmt.{u} k) :
+    pathNumber (addLeaf H r) ≤ Fintype.card W / 2 := by
+  have h2 : 1 < Fintype.card W := by
+    have := Fintype.card_pos_iff.mpr ⟨r⟩
+    obtain ⟨m, hm⟩ := hn
+    omega
+  obtain ⟨a, b, hab⟩ := Fintype.exists_pair_of_one_lt_card h2
+  have hG := degree_pos_of_connected hconn hab
+  have hc := card_oddSet_add_card_evenSet hG
+  obtain ⟨m, hm⟩ := H.even_card_odd_degree_vertices
+  have hm' : (oddSet H).card = m + m := hm
+  obtain ⟨e2, he2⟩ : Even (evenSet H).card := by
+    obtain ⟨c, hc'⟩ := hn; exact ⟨c - m, by omega⟩
+  rcases Nat.eq_zero_or_pos e2 with he | he
+  · obtain ⟨hSE, D, hDr⟩ := realisable_evenSet' hG
+    have := pathNumber_addLeaf_le_of_realises hG hSE hDr (r := r) (fun h => h)
+    omega
+  · obtain ⟨y, w, hy, hw, hyw, hry⟩ : ∃ y w, y ∈ evenSet H ∧ w ∈ evenSet H ∧ y ≠ w ∧
+        (r ∈ evenSet H → y = r) := by
+      have h1 : 1 < (evenSet H).card := by omega
+      by_cases hr : r ∈ evenSet H
+      · obtain ⟨w, hw, hwr⟩ := Finset.exists_mem_ne h1 r
+        exact ⟨r, w, hr, hw, Ne.symm hwr, fun _ => rfl⟩
+      · obtain ⟨y, hy, w, hw, hyw⟩ := Finset.one_lt_card.mp h1
+        exact ⟨y, w, hy, hw, hyw, fun h => absurd h hr⟩
+    obtain ⟨R, hRE, hRc, -, hyR, hSE, D, hDr⟩ :=
+      hD e2 he (by omega) W H hconn hn (by omega) y w hy hw hyw
+    have := pathNumber_addLeaf_le_of_realises hG hSE hDr (r := r) (fun h => by
+      rw [← hry h]; exact Finset.mem_sdiff.mpr ⟨hy, hyR⟩)
+    rw [Finset.card_sdiff_of_subset hRE] at this
+    omega
+
+/-- **`B_3` gives the rooted test for six even vertices** (test (i) at deletion degree 6). -/
+theorem rooted_six_of_bstmt3 (hB3 : BStmt.{u} 3) {W : Type u} [Fintype W] [DecidableEq W]
+    {H : SimpleGraph W} [DecidableRel H.Adj] (hconn : H.Connected) (hn : Even (Fintype.card W))
+    (h6 : (evenSet H).card = 6) (r : W) :
+    pathNumber (addLeaf H r) ≤ Fintype.card W / 2 := by
+  apply rooted_of_dstmt hconn hn r
+  intro k hk1 hk
+  exact dstmt_of_branching 3 (fun j hj3 hj => by
+    obtain rfl : j = 3 := by omega
+    exact hB3) k hk1 (by omega)
+
+/-- **Gallai's conjecture follows from `B_k` for every `k ≥ 3`**: k-step descent at even
+vertices with at least two even neighbours. -/
+theorem gallai_of_branching (hB : ∀ j, 3 ≤ j → BStmt.{u} j) : GallaiConjecture.{u} := by
+  rw [gallai_iff_rootedTest]
+  intro W _ _ H hconn hn r
+  classical
+  exact rooted_of_dstmt hconn hn r (fun k hk1 _ =>
+    dstmt_of_branching k (fun j hj3 _ => hB j hj3) k hk1 le_rfl)
 
 end Gallai
