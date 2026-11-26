@@ -197,3 +197,9 @@ Candidate uniform mechanisms (`research/connections.md`):
     are written out in the `SixClique.lean` docstring.
   - Not formalized: Cor 5 and Thm 6. `Prog` is the format for replaying Thm 6's certificate
     records once they are in the repository.
+- **MR Thm 1 in Lean** (local agent): `gallai_iff_tests`, with standard axioms only. Includes the cut-vertex step (all five cases), the leaf steps, and the pendant step (the only place the three-end test is used). Also `pathNumber_gt_of_low_degree` (Critical.lean).
+- **TwoEven.lean merged** (cloud session two-even): Fan descent, Fan transfer, the second descent step for any pair a, b with a witness w (`realisable_evenSet_erase_pair`), **non-realisable pairs are E-twins** (`etwin_of_not_realisable`), and iterated Fan descent along Fan schedules (`realisable_of_fanSchedule`). The session is now on the third step, split three ways: G[Ev] = K6; some even vertex has ≥ 2 even non-neighbours; the complement of G[Ev] is a matching.
+- **Six-clique Thm 1 in Lean** (`six_clique_prescribed_ends`, sorry-free, kernel `decide` for the finite core). Hypotheses: U is a 6-clique of even vertices, every other vertex is odd with exactly 5 neighbours in U. Conclusion: every 3-set T ⊆ U is realisable.
+- **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
+- **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
+- **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
