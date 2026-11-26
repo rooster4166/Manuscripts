@@ -45,7 +45,7 @@ theorem PathDecomp.exists_path_endsAt [DecidableEq V] {G : SimpleGraph V} (D : P
   omega
 
 /-- Orient a path so that it starts at one of its ends. -/
-theorem GPath.exists_orient [DecidableEq V] {G : SimpleGraph V} (P : GPath G) {v : V}
+theorem GPath.exists_orientT [DecidableEq V] {G : SimpleGraph V} (P : GPath G) {v : V}
     (h : P.endsAt v = 1) : ∃ P' : TPath V, P'.src = v ∧
       (P'.edges : Multiset (Sym2 V)) = P.edges ∧
       (∀ w, w ∈ P'.walk.support ↔ w ∈ P.walk.support) ∧ ∀ w, P'.endsAt w = P.endsAt w := by
@@ -148,7 +148,7 @@ theorem rootedAt_oddComp (hL : LovaszStatement.{u})
       simp [hvx, h']
   -- the path ending at `x`
   obtain ⟨P, hP, hPx⟩ := DA.exists_path_endsAt (v := x) (by rw [hendsOut x hxC]; simp)
-  obtain ⟨P', hP's, hP'e, hP'supp, hP'ends⟩ := P.exists_orient hPx
+  obtain ⟨P', hP's, hP'e, hP'supp, hP'ends⟩ := P.exists_orientT hPx
   set c := P'.tgt with hcdef
   have hcx : c ≠ x := fun h => P'.src_ne_tgt (hP's.trans h.symm)
   have hcC : c ∈ C := by
