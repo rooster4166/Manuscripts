@@ -51,7 +51,9 @@ flower of cycles. We give a profile-level receipt-or-flower move with such a cou
 the symmetry of the root's orbit, the game wins our hard cases of orders $8$ and $10$ with a
 single held star. On a random sample of order $10$ every graph is won with a star plus at most
 three held edges. These include the cocktail party graphs $K_{2m}$ minus a perfect matching for
-$m=4,5$, where the move attains the insertion barrier. For every degree we prove the hub lemma
+$m=4,5$, where the move attains the insertion barrier. Their rooted test is already known for
+every $m$, by explicit Hamiltonian flowers, so on these graphs our results are re-derivations
+inside the game. For every degree we prove the hub lemma
 under a supply condition, a version with relays into the hub, and a version with two hubs that
 share one new path. We test a hub-strategy conjecture: at a root with the hypotheses of the
 branching base case, the root's star, a parity repair and a bounded number of further held
@@ -170,7 +172,8 @@ three receipts of a pure star, and four are needed. The fourth sits at Fan's equ
 arguments settle it there. On the order-$10$ analogue of \texttt{GsRvnk} the receipt is forced by
 an append-or-through argument and a count of edges (Proposition~\ref{prop:A62}). On $K_8$ minus a
 perfect matching it always fails, and the rigid configuration is a flower of three Hamiltonian
-cycles, which recombines (Proposition~\ref{prop:K8M}). The game compensates instead by holding
+cycles, which recombines (Proposition~\ref{prop:K8M}; a re-derivation of the case $m=4$
+of~\cite[Thm.~10.21]{SP}). The game compensates instead by holding
 more edges and routing the inserted path through the hub along them. A profile-level
 receipt-or-flower move with an edge count (Lemma~\ref{lem:rfcount}), together with the symmetry
 of the root's orbit, wins all these graphs with a single held star.
@@ -470,6 +473,15 @@ goes wrong. A hub of degree six with $b\ge1$ on its neighbours absorbs three rec
 adversary. Closing it with the spare path needs four receipts and one new path. The fourth receipt
 has supply $3$ against three blank neighbours: it is exactly at Fan's equality.
 
+Degree-six hubs are treated at the level of paths in~\cite[\S\S12.14, 13]{SP}. Let $y$ have degree
+six and five even neighbours. Suppose (R) fails at a root near $y$ (Thm.~12.29) or at distance at
+least three (Thm.~13.9). Then $G-y$ (or a slight modification of it) has more than $h$ paths and
+misses at least $h+1$ edges, where $n=2h+2$. The proofs assign ending paths of a partition of
+$G-y$ to the neighbours of $y$ and append the spokes. Doubly assigned paths close into cycles
+through $y$, which a short path reopens, by the short-path-and-cycles lemma of Chu, Fan and Zhou.
+These are the path-level forms of the receipts and flowers below. The profile game does not see
+the assignments.
+
 The game gets around this by holding further edges. Relays then feed the hub, and the new path is
 routed through the hub along the extra held edges. For $M_8$ (Theorem~\ref{thm:complete8}) the
 inserted path is $1\,4\,2\,0\,7$. We first give two hand arguments that close the pure star
@@ -571,6 +583,16 @@ The paths are $C_i-e_i$ for $i\le j$, and $L$. The path $C_i-e_i$ ends at the tw
 An interior vertex of $L$ lies on two of the $e_i$ and is interior to $L$. An end of $L$ lies on
 one $e_i$ and ends $L$.
 \end{proof}
+Lemma~\ref{lem:flower} is elementary and not new. The cycle-opening results of the archive go
+much further for the conclusion that matters for (R), namely two ends at the common vertex.
+\begin{itemize}
+\item Any $j\le7$ edge-disjoint cycles through a vertex $x$ partition into at most $j+1$ paths,
+two of them ending at $x$~\cite[Thm.~38]{MR}. This extends Chu, Fan and Zhou's $j+1$ count.
+\item The same holds for twelve nearly spanning cycles~\cite[Thm.~1]{CC}.
+\item Larger families are treated under intersection conditions~\cite[Thm.~13.18]{SP}.
+\end{itemize}
+The Hamiltonian flowers below are special cases. What our version adds is only the prescribed
+ends at the vertices of a transversal path.
 
 \begin{proposition}\label{prop:K8M}
 Let $M_8$ be $K_8$ minus a perfect matching. Then (R) holds at every vertex of $M_8$, by
@@ -592,6 +614,15 @@ through $w$. Its two edges there avoid $a$, because $aw\in C_2$, and at most one
 $s$. Choose $e_3=wz$ with $z\ne s$. Then $s,a,w,z$ are distinct and $L=s\,a\,w\,z$ is a path.
 Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
 \end{proof}
+
+Proposition~\ref{prop:K8M} is a re-derivation. (R) at every root of every cocktail party graph
+$\mathrm{CP}(m)=K_{2m}$ minus a perfect matching, $m\ge4$, is~\cite[Thm.~10.21]{SP}. Its proof
+opens the $m-1$ Walecki Hamilton cycles, each detoured through the mate of the root, along the
+path $Q=(t,1,\dots,m-1)$. This is a flower with a transversal path, for every $m$. The same theorem
+shows that Fan's numerical test fails in every partition within the budget, after any edge is
+deleted. The Lean theorem \texttt{cocktail\_fan\_barrier} is a formal counterpart of that half.
+New here is only that the flower arises from a Lov\'asz seed, three receipts and an edge count,
+i.e.\ inside the game.
 
 With the pure star the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's
 chain from $t\in T$ stops at a blank donor. The spare path is spent on recombining the flower. (The
@@ -663,8 +694,9 @@ edges.
 For $\mathrm{CP}(m)$ the argument is uniform up to the transversal. Lov\'asz on $\mathrm{CP}(m)-s$
 gives $m-1$ paths with $b=1$ on $N(s)$. Then $m-1$ receipts follow (supplies $1>0$, $2m-3>1$,
 $\dots$), and the flower with $j=m-1$ Hamiltonian cycles finishes. Lemma~\ref{lem:transversal}
-covers $m\le5$, and a transversal lemma for every $j$ would give (R) for every $\mathrm{CP}(m)$,
-each vertex of which is an instance of \texttt{BranchBase3} with $k=m$.
+covers $m\le5$, and a transversal lemma for every $j$ would give the flower move in the game for
+every $\mathrm{CP}(m)$, each vertex of which is an instance of \texttt{BranchBase3} with $k=m$.
+(R) itself holds for every $\mathrm{CP}(m)$ by~\cite[Thm.~10.21]{SP}.
 
 \subsection*{Receipt or flower, with a count}
 Proposition~\ref{prop:A62}, Proposition~\ref{prop:K8M} and the closure of $B'$ are three outcomes
@@ -733,6 +765,18 @@ $3$, and a new path through both hubs, $4\,3\,6\,2\,8$ or $4\,3\,6\,2\,7$
 (\texttt{scripts/outputs/certificate\_miss1.txt}). So in this sample the miss is again a matter of
 held-set size: a second hub along the inserted path does what the count cannot.
 
+\texttt{Inv\char126|\char126zbw} is dense ($\delta=0.6n$), and it lies in a regime that the archive
+treats at the level of paths. Its vertex $9$ has degree $6$, and $6$ is its only odd neighbour.
+Deleting $9$ leaves $K_9$ minus $\{02,17,24,58\}$, with $h=4$ missing edges. By the rainbow
+Hamiltonian decomposition theorem~\cite{JM} (repaired in~\cite{JMR}) this graph has a partition into
+$4$ Hamilton paths. So~\cite[Thm.~12.29]{SP} with $y=9$ gives (R) at the roots $9$ (distance $0$,
+$s=6$) and $6$ (distance $1$, $s=t=6$). At the roots $1,2,3$ (distance two, through $6$) the graph
+$W$ of that theorem misses $h+1=5$ edges, and the theorem does not decide. The roots $0,4,5,7,8$ are
+not of its form, because a neighbour other than $6$ would have to be the exceptional site. So the
+large held sets this graph needs (here, and in Proposition~\ref{prop:hubtest}(c)) measure how the
+end budgets of the profile game starve at high density, as for $\mathrm{CP}(4)$. They do not point
+to a sparse obstruction, and we did not raise the held-edge caps further.
+
 \begin{question}\label{q:count}
 \begin{enumerate}[label=(\alph*)]
 \item Is the game with path insertion, receipt or flower, and the orbit rule complete at order
@@ -741,7 +785,8 @@ $10$? \texttt{Inv\char126|\char126zbw} is the test case.
 bound, for instance one that uses the degrees of the remaining ends, that decides the rigid case
 more often?
 \item Does Lemma~\ref{lem:transversal} hold for every $j$ (with $N\ge2j+1$)? That would give a
-flower move for every $j$ and the rooted test for every $\mathrm{CP}(m)$.
+profile-level flower move for every $j$. The rooted test for every $\mathrm{CP}(m)$ is already
+known~\cite[Thm.~10.21]{SP}.
 \end{enumerate}
 \end{question}
 
@@ -752,6 +797,12 @@ $s$ and a few further edges. Take a Lov\'asz seed of the rest, which has a spare
 is isolated. Let $s$ receive, and spend the spare path on a new path through $s$. This section
 proves that shape for every degree, in three forms (one hub, relays into the hub, two hubs), and
 states the conjecture that it always suffices with a bounded number of further held edges.
+Path-level versions of the shape are older. In~\cite[Cor.~39]{MR}, a new vertex $x$ is joined to
+$d$ ends of a partition into $s$ paths. If $q$ of the spokes cannot be matched to distinct paths,
+then $s+\lceil q/7\rceil$ paths suffice, with at least $d-2q+2\lceil q/7\rceil$ ends at $x$. The proofs
+of~\cite[Thms.~12.29, 13.9]{SP} and the hub phases of~\cite{D6} have the same shape. What is new
+below is the profile-level form, which the game can use, with Lov\'asz's spare path as the
+payment.
 
 \begin{lemma}[Receipts]\label{lem:receipts}
 Let $D$ be a partition of $H$, let $s$ be a vertex, and let $T$ be a set of non-neighbours of $s$
@@ -943,7 +994,8 @@ vertex. For $|X|=3$ there are four paths of length three and two triangles.
 \item The bound $|X|\le\mathrm{lb}(y)+2$ fails at order $10$, at the roots $7$ and $9$ of
 \texttt{Inv\char126|\char126zbw} (Proposition~\ref{prop:hubtest}(c)). The value $c=3$ is not
 excluded by our data. The sample is small, though, and this graph is the only one in it that
-needs more than $\mathrm{lb}(y)+1$.
+needs more than $\mathrm{lb}(y)+1$. It is a dense graph, and (R) at its root $9$ follows
+from~\cite[Thm.~12.29]{SP} (see after Proposition~\ref{prop:rfgame}).
 \item The proved theorems are far from the computed wins. They cover $2757$ of the $9268$ root
 orbits of order $8$, and none of the $108$ of order $10$. At order $10$ the relay theorem fails for
 lack of even partners outside $N[y]$ for the odd neighbours ($99$ root orbits), by~(iii) ($4$)
@@ -1042,7 +1094,7 @@ graphs of order $10$.
 \item \texttt{run\_all.sh}: reproduces every table. The outputs are in \texttt{scripts/outputs/}.
 \end{itemize}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.\
 Tihany 1966), Academic Press, 1968, 231--236.
 \bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J.\ Combin.\ Theory Ser.\
@@ -1052,6 +1104,18 @@ B} 93 (2005) 117--125.
 \bibitem{D6} The $d=6$ frontier: transfers, relays and the terminal step, working draft,
 \texttt{manuscripts/d6-frontier}.
 \bibitem{EXP} Project experiment log, \texttt{research/experiments.md}, entry E13.
+\bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, working
+draft, 25 November 2026, \texttt{gallai/02-november-25/separating-pairs.pdf}.
+\bibitem{MR} J.~Williams, Cut vertices and cycle intersections in Gallai's path decomposition
+problem, working draft, 24 November 2026,
+\texttt{gallai/01-original-manuscripts/marked-reduction.pdf}.
+\bibitem{CC} J.~Williams, Nearly spanning cycles and long intersections in Gallai's path
+decomposition problem, working draft, 26 November 2026,
+\texttt{gallai/03-november-26-papers/cycle-and-contact.pdf}.
+\bibitem{JM} R.~Javadi, M.~Miralaei, A conjecture on rainbow Hamiltonian cycle decomposition,
+\emph{Discrete Math.} 349 (2026) 114676; arXiv:2403.17290.
+\bibitem{JMR} Repairing the extension step of Javadi--Miralaei, working draft,
+\texttt{manuscripts/jm-repair}.
 \end{thebibliography}
 
 \end{document}
