@@ -697,4 +697,202 @@ theorem glue_append {GA GB K G : SimpleGraph V} (DA : PathDecomp GA) (DB : PathD
 
 end glue
 
+/-! ## Part 4: restricted graphs, pieces, and descent in a piece -/
+
+/-- `D_j` for graphs with at most `N` edges. -/
+def DStmtE (j N : ℕ) : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) [DecidableRel H.Adj],
+    H.edgeFinset.card ≤ N → H.Connected → Even (Fintype.card W) → 2 * j ≤ (evenSet H).card →
+    ∀ y w, y ∈ evenSet H → w ∈ evenSet H → y ≠ w → Desc H j y {w}
+
+section restr
+
+variable {V : Type u} [Fintype V] [DecidableEq V] {G : SimpleGraph V} [DecidableRel G.Adj]
+
+/-- The edges of `G` with both ends in `C`; the other vertices are isolated. -/
+def restr (G : SimpleGraph V) (C : Finset V) : SimpleGraph V where
+  Adj a b := G.Adj a b ∧ a ∈ C ∧ b ∈ C
+  symm := ⟨fun _ _ h => ⟨h.1.symm, h.2.2, h.2.1⟩⟩
+  loopless := ⟨fun a h => G.loopless.irrefl a h.1⟩
+
+instance restr.decRel (C : Finset V) : DecidableRel (restr G C).Adj := fun a b =>
+  inferInstanceAs (Decidable (G.Adj a b ∧ a ∈ C ∧ b ∈ C))
+
+omit [Fintype V] [DecidableEq V] [DecidableRel G.Adj] in
+@[simp] theorem restr_adj {C : Finset V} {a b : V} :
+    (restr G C).Adj a b ↔ G.Adj a b ∧ a ∈ C ∧ b ∈ C := Iff.rfl
+
+theorem degree_restr (C : Finset V) (v : V) : (restr G C).degree v =
+    if v ∈ C then ((G.neighborFinset v).filter (· ∈ C)).card else 0 := by
+  rw [← card_neighborFinset_eq_degree]
+  split_ifs with hv
+  · congr 1; ext b; simp [hv]
+  · rw [Finset.card_eq_zero]; ext b; simp [hv]
+
+theorem degree_restr_full {C : Finset V} {v : V} (hv : v ∈ C) (hN : ∀ b, G.Adj v b → b ∈ C) :
+    (restr G C).degree v = G.degree v := by
+  rw [degree_restr, ite_eq_left hv, Finset.filter_true_of_mem (fun b hb => hN b
+    ((mem_neighborFinset _ _ _).mp hb)), card_neighborFinset_eq_degree]
+
+theorem degree_restr_minus {C : Finset V} {v x : V} (hv : v ∈ C) (hx : G.Adj v x) (hxC : x ∉ C)
+    (hN : ∀ b, G.Adj v b → b ≠ x → b ∈ C) : (restr G C).degree v + 1 = G.degree v := by
+  rw [degree_restr, ite_eq_left hv, ← card_neighborFinset_eq_degree]
+  have : (G.neighborFinset v).filter (· ∈ C) = (G.neighborFinset v).erase x := by
+    ext b
+    simp only [Finset.mem_filter, Finset.mem_erase, mem_neighborFinset]
+    constructor
+    · rintro ⟨h, hb⟩; exact ⟨fun h' => hxC (h' ▸ hb), h⟩
+    · rintro ⟨hbx, h⟩; exact ⟨h, hN b h hbx⟩
+  rw [this, Finset.card_erase_of_mem ((mem_neighborFinset _ _ _).mpr hx)]
+  have : 0 < (G.neighborFinset v).card := Finset.card_pos.mpr ⟨x, (mem_neighborFinset _ _ _).mpr hx⟩
+  omega
+
+theorem degree_restr_one {C : Finset V} {v x : V} (hv : v ∈ C) (hx : G.Adj v x) (hxC : x ∈ C)
+    (hN : ∀ b, G.Adj v b → b ∈ C → b = x) : (restr G C).degree v = 1 := by
+  rw [degree_restr, ite_eq_left hv, Finset.card_eq_one]
+  refine ⟨x, ?_⟩
+  ext b
+  simp only [Finset.mem_filter, mem_neighborFinset, Finset.mem_singleton]
+  constructor
+  · rintro ⟨h, hb⟩; exact hN b h hb
+  · rintro rfl; exact ⟨hx, hxC⟩
+
+theorem degree_restr_out {C : Finset V} {v : V} (hv : v ∉ C) : (restr G C).degree v = 0 := by
+  rw [degree_restr, ite_eq_right hv]
+
+theorem restr_edge_le {C : Finset V} {e : Sym2 V} (he : e ∈ (restr G C).edgeSet) :
+    e ∈ G.edgeSet := by
+  induction e using Sym2.inductionOn with
+  | hf a b => exact he.1
+
+theorem card_edgeFinset_restr_lt {C : Finset V} {a b : V} (hab : G.Adj a b)
+    (hnot : ¬ (a ∈ C ∧ b ∈ C)) :
+    (restr G C).edgeFinset.card < G.edgeFinset.card := by
+  apply Finset.card_lt_card
+  refine ⟨fun e he => mem_edgeFinset.mpr (restr_edge_le (mem_edgeFinset.mp he)), fun h => ?_⟩
+  have := h (mem_edgeFinset.mpr (show s(a, b) ∈ G.edgeSet from hab))
+  exact hnot (mem_edgeFinset.mp this).2
+
+/-- In a graph with an even number of non-isolated vertices, the number of even vertices is
+even. -/
+theorem even_card_evenSet_of_nonIso {H : SimpleGraph V} [DecidableRel H.Adj]
+    (hev : Even (nonIso H).card) : Even (evenSet H).card := by
+  have hsplit : nonIso H = evenSet H ∪ oddSet H := by
+    ext v
+    simp only [nonIso, evenSet, oddSet, Finset.mem_filter, Finset.mem_univ, true_and,
+      Finset.mem_union]
+    constructor
+    · intro h
+      rcases Nat.even_or_odd (H.degree v) with he | ho
+      · exact Or.inl ⟨h, he⟩
+      · exact Or.inr ho
+    · rintro (h | h)
+      · exact h.1
+      · exact h.pos
+  have hdisj : Disjoint (evenSet H) (oddSet H) := by
+    rw [Finset.disjoint_left]
+    intro v h1 h2
+    exact (Nat.not_even_iff_odd.mpr (Finset.mem_filter.mp h2).2) (mem_evenSet_iff_even.mp h1).2
+  rw [hsplit, Finset.card_union_of_disjoint hdisj] at hev
+  obtain ⟨m, hm⟩ := H.even_card_odd_degree_vertices
+  have : (oddSet H).card = m + m := hm
+  rw [Nat.even_add] at hev
+  exact hev.mpr ⟨m, this⟩
+
+/-- Lemma 2 for graphs that may have isolated vertices. -/
+theorem realisable_evenSet_ni (H : SimpleGraph V) [DecidableRel H.Adj] :
+    Realisable H (evenSet H) := by
+  have hs : ∀ a b, H.Adj a b → a ∈ {v | 0 < H.degree v} := fun a b h => by
+    simp only [Set.mem_ofPred_eq]; rw [degree_pos_iff_exists_adj]; exact ⟨b, h⟩
+  have h := realisable_of_induce hs (realisable_evenSet' (G := H.induce {v | 0 < H.degree v})
+    (fun v => by rw [degree_induce_of_closed hs]; exact v.2))
+  rwa [evenSet_induce_map hs] at h
+
+theorem card_edgeFinset_induce_le {H : SimpleGraph V} [DecidableRel H.Adj] {s : Set V}
+    [DecidablePred (· ∈ s)] (hs : ∀ a b, H.Adj a b → a ∈ s) :
+    (H.induce s).edgeFinset.card ≤ H.edgeFinset.card := by
+  apply Finset.card_le_card_of_injOn (Sym2.map Subtype.val)
+  · intro e he
+    exact mem_edgeFinset.mpr (induce_edge_map hs e (mem_edgeFinset.mp he))
+  · intro a _ b _ h
+    exact Sym2.map.injective Subtype.val_injective h
+
+/-- Conversion for `DStmtE`. -/
+theorem desc_of_dstmtE {j N : ℕ} (hD : DStmtE.{u} j N) {H : SimpleGraph V} [DecidableRel H.Adj]
+    (hE : H.edgeFinset.card ≤ N) (hconn : NIConn H) (hev : Even (nonIso H).card)
+    (h2j : 2 * j ≤ (evenSet H).card) {y w : V} (hy : y ∈ evenSet H) (hw : w ∈ evenSet H)
+    (hyw : y ≠ w) : Desc H j y {w} := by
+  have hs : ∀ a b, H.Adj a b → a ∈ {v | 0 < H.degree v} := fun a b h => by
+    simp only [Set.mem_ofPred_eq]; rw [degree_pos_iff_exists_adj]; exact ⟨b, h⟩
+  have hy' : y ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hy).1
+  have hw' : w ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hw).1
+  have hcard : Fintype.card {v | 0 < H.degree v} = (nonIso H).card := by
+    rw [Fintype.card_subtype]; rfl
+  have hEv : (evenSet (H.induce {v | 0 < H.degree v})).card = (evenSet H).card := by
+    rw [← evenSet_induce_map hs, Finset.card_map]
+  have h := hD _ (H.induce {v | 0 < H.degree v}) ((card_edgeFinset_induce_le hs).trans hE)
+    (induce_nonIso_connected hconn hy') (hcard ▸ hev) (hEv ▸ h2j) ⟨y, hy'⟩ ⟨w, hw'⟩
+    ((mem_evenSet_induce hs _).2 hy) ((mem_evenSet_induce hs _).2 hw)
+    (fun h => hyw (congrArg Subtype.val h))
+  have := desc_of_induce hs h
+  simpa using this
+
+/-- **Descent in a piece**: `r`-step descent in a graph with isolated vertices, keeping `kept`
+(when it is even) and removing the at most one vertex of `W₀`, from the lower levels or from the
+same level with fewer edges. -/
+theorem piece_desc {P : SimpleGraph V} [DecidableRel P.Adj] {k M r : ℕ}
+    (hlow : ∀ j, 1 ≤ j → j ≤ k → DStmt.{u} j) (hIH : DStmtE.{u} (k + 1) M)
+    (hEP : P.edgeFinset.card ≤ M) (hr : r ≤ k + 1) (hconn : NIConn P)
+    (hev : Even (nonIso P).card) (h2r : 2 * r ≤ (evenSet P).card) (kept : V) (W₀ : Finset V)
+    (hW₀ : W₀ ⊆ evenSet P) (hW₀c : W₀.card ≤ 1) (hkW : kept ∉ W₀)
+    (hW₀r : W₀.Nonempty → 1 ≤ r) :
+    ∃ R ⊆ evenSet P, R.card = r ∧ W₀ ⊆ R ∧ kept ∉ R ∧ Realisable P (evenSet P \ R) := by
+  rcases Nat.eq_zero_or_pos r with rfl | hr1
+  · have hW : W₀ = ∅ := by
+      by_contra h
+      have := hW₀r (Finset.nonempty_iff_ne_empty.mpr h)
+      omega
+    subst hW
+    exact ⟨∅, Finset.empty_subset _, rfl, Finset.empty_subset _, by simp,
+      by simpa using realisable_evenSet_ni P⟩
+  have hdesc : ∀ y' w', y' ∈ evenSet P → w' ∈ evenSet P → y' ≠ w' → Desc P r y' {w'} := by
+    intro y' w' hy' hw' hyw'
+    by_cases hrk : r ≤ k
+    · exact desc_of_dstmt (hlow r hr1 hrk) hconn hev h2r hy' hw' hyw'
+    · have : r = k + 1 := by omega
+      subst this
+      exact desc_of_dstmtE hIH hEP hconn hev h2r hy' hw' hyw'
+  have hE2 : 1 < (evenSet P).card := by omega
+  -- choose the kept vertex `y'` and the prescribed vertex `w'`
+  obtain ⟨y', w', hy', hw', hyw', hW₀w', hky'⟩ : ∃ y' w', y' ∈ evenSet P ∧ w' ∈ evenSet P ∧
+      y' ≠ w' ∧ W₀ ⊆ {w'} ∧ (kept ∈ evenSet P → y' = kept) := by
+    rcases Finset.eq_empty_or_nonempty W₀ with hW | ⟨w₀, hw₀⟩
+    · subst hW
+      by_cases hk : kept ∈ evenSet P
+      · obtain ⟨w', hw', hw'k⟩ := Finset.exists_mem_ne hE2 kept
+        exact ⟨kept, w', hk, hw', Ne.symm hw'k, Finset.empty_subset _, fun _ => rfl⟩
+      · obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp hE2
+        exact ⟨a, b, ha, hb, hab, Finset.empty_subset _, fun h => absurd h hk⟩
+    · have hW : W₀ = {w₀} := by
+        rw [Finset.eq_singleton_iff_unique_mem]
+        refine ⟨hw₀, fun x hx => ?_⟩
+        by_contra hne
+        have := Finset.card_le_card (show {x, w₀} ⊆ W₀ by
+          intro z hz; simp only [Finset.mem_insert, Finset.mem_singleton] at hz
+          rcases hz with rfl | rfl <;> assumption)
+        rw [Finset.card_pair hne] at this
+        omega
+      subst hW
+      have hw₀E := hW₀ (Finset.mem_singleton_self w₀)
+      by_cases hk : kept ∈ evenSet P
+      · exact ⟨kept, w₀, hk, hw₀E, fun h => hkW (by simp [h]), le_rfl, fun _ => rfl⟩
+      · obtain ⟨y', hy', hy'w⟩ := Finset.exists_mem_ne hE2 w₀
+        exact ⟨y', w₀, hy', hw₀E, hy'w, le_rfl, fun h => absurd h hk⟩
+  obtain ⟨R, hRE, hRc, hwR, hyR, hreal⟩ := hdesc y' w' hy' hw' hyw'
+  refine ⟨R, hRE, hRc, hW₀w'.trans hwR, fun hkR => ?_, hreal⟩
+  have hkE := hRE hkR
+  exact hyR (hky' hkE ▸ hkR)
+
+end restr
+
 end Gallai
