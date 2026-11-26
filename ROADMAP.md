@@ -41,10 +41,10 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 
 | Node | Statement | Source | Status | Verification |
 |---|---|---|---|---|
-| N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | CLAIMED; elementary; audit A3 in progress | lean: planned |
-| N2 | MR Thm 1 | MR §1–2 | CLAIMED; audit A1 in progress | — |
-| N3 | MR Thms 7, 57, 59 | MR | CLAIMED; audit A1 in progress | — |
-| N4 | MR Thms 113, 114 | MR §18–19 | CLAIMED; audit A2 in progress | lean-ext (ApexConnectivity) |
+| N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | **AUDITED** (A3) | **lean** (`gallai_iff_rootedTest`) |
+| N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | comp (eq. (2): 210 instances) |
+| N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
+| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors; external paraphrases (Fan, FHZ, Shaik) being verified (A7) | lean-ext; comp (n ≤ 8) |
 | T(4) | both tests at d = 4 | MR p.129 (Fan–Hou–Zhou) | CLAIMED | — |
 | T(6)-ii | three-end test, d = 6 | MR Thm 123 | CLAIMED | — |
 | T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | CLAIMED | lean-ext? |
@@ -58,10 +58,22 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Node | Statement | Source | Status |
 |---|---|---|---|
 | S1 | Bonamy–Perrett floor for 2-connected odd graphs, plus N2's marked bound, implies Gallai | MR Thm 1 + semi-clique Thm 4 | CLAIMED |
-| S2 | first failure: either a 2-connected odd floor witness, or failing hosts are 6-edge-connected with δ ≥ 6 | SP Thm 10.16, Cor 13.5 | CLAIMED; audit A3 in progress |
-| S3 | odd semi-cliques: p = k + 1 exactly | OSB Thm 4 (Javadi–Miralaei) | CLAIMED; audit A4 in progress |
+| S2 | first failure: either a 2-connected odd floor witness, or failing hosts are 6-edge-connected with δ ≥ 6 | SP Thm 10.16, Cor 13.5 | **AUDITED** (A3) modulo JM; citation gaps G1 and G2 in §12 |
+| S3 | odd semi-cliques: p = k + 1 exactly | OSB Thm 4 (Javadi–Miralaei) | **AUDITED modulo JM** (A4). **JM's proof has a substantive gap (Thm 8, Claim 12)**; JM verified computationally for k ≤ 7; repair in progress |
 | S4 | dense: exact at δ ≥ (1/2+ε)n, large n | SP Thm 14.1 | CLAIMED |
 | S5 | blocks with Δ ≤ 7 satisfy the floor | block-degree Thm 3 | CLAIMED; audit A5 in progress |
+
+## External dependencies
+
+| Result | Used by | Status |
+|---|---|---|
+| Lovász mixed theorem | everything | classical |
+| **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. Repair agent running. |
+| Fan addible-edge lemmas | six-even program; MR | verifying (A7) |
+| Fan–Hou–Zhou | T(4); MR p.129 | statement unclear; verifying (A7). Botler–Sambinelli likely suffices for d = 4. |
+| Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | verifying replaceability (A7) |
+
+**The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
 
 ## Current strategy
 
