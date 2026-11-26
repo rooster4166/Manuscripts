@@ -28,3 +28,4 @@ import GallaiLean.SixCliqueModel
 import GallaiLean.SixCliqueBuild
 import GallaiLean.SeparatorSetup
 import GallaiLean.KStep
+import GallaiLean.SixClique
