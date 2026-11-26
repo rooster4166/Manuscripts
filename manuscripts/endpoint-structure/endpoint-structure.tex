@@ -1120,7 +1120,10 @@ $v\notin\{y,w\}$ has $\Ev\setminus\{w,v\}$ realisable.} It is an induction along
 another even vertex, using the transfer across an even edge (Lemma~\ref{lem:edge}, which is the case
 $S=\Ev\setminus\{v\}$ of Lemma~\ref{lem:fandescent}), the star lemma (Lemma~\ref{lem:star}) and the
 lift along an odd neighbour (Lemma~\ref{lem:lift}). Taking $y=r$ and $w=u$ settles
-Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} in full, including $G[\Ev]=K_3+r$. The Lean
+Theorem~\ref{thm:b}, and Corollary~\ref{cor:fd2strong} for connected $G$, in full, including
+$G[\Ev]=K_3+r$. Connectivity is needed: in $P_3$ together with a disjoint $K_5-e$, the root $r$ the
+middle vertex of $P_3$, exception (ii) of Corollary~\ref{cor:fd2strong} occurs and no $v$ works,
+since the $K_5-e$ component cannot be covered by two paths. The Lean
 proof is \texttt{two\_step\_descent} in \texttt{lean/GallaiLean/EMCFour.lean} on the project's base
 branch; we rebuilt it and checked that it uses only the standard axioms, with Lov\'asz as the hypothesis
 \texttt{LovaszStatement}. The results of this section remain useful for their explicit witnesses:
