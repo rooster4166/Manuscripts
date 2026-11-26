@@ -64,8 +64,8 @@
 | 30 | pp. 171–172 | Cor 164: minimise (#even, order); no eligible pair; p(H) = k+1 and p(H−xy) = k; exactly one eligible pair in H^{xy}; no even–even bridge; the ab-nonedge remark. | SOUND |
 | 31 | p. 173 | p(H^{xy}) vs p(H): K3 example; the 16-vertex decrease example. | SOUND; verified by computer |
 | 32 | p. 188 | ApexConnectivity.lean, the "apex checker", and the §19 substitution checkers. | UNCLEAR: not available (F5). The equivalence itself is elementary (§4) and was re-checked by computer |
-| 33 | §18, pp. 103–126 | Lemma 81, Lemma 82, Thm 83, Cor 84, Lemma 87, Thm 88, Cor 89, Thm 92, Props 94 and 96, Cor 95, Thm 97 (main construction), Cor 99, Thm 101 (cases with four distinct exterior neighbours, odd and even order, and with two common neighbours), Thm 103, Prop 105. | SOUND on the points re-derived. One vacuous sub-case in Thm 83 (F8). Not used by 113/114 |
-| 34 | §18, remaining items: Props 85, 86, 93, 104, 107–112; Cors 90, 98; Thm 100; the one-common-neighbour case of Thm 101; the split cases of Thm 97 | Read for structure only. | NOT FULLY RE-DERIVED (§5) |
+| 33 | §18, pp. 103–126 | Lemma 81, Lemma 82, Thm 83, Cor 84, Lemma 87, Thm 88, Cor 89, Thm 92, Props 94 and 96, Cor 95, Thm 97 (main construction), Cor 99, Thm 101 (all three cases: four distinct exterior neighbours at odd and even order, one common neighbour, two common neighbours), Thm 103, Prop 105. | SOUND on the points re-derived. One vacuous sub-case in Thm 83 (F8). Not used by 113/114 |
+| 34 | §18, remaining items: Props 85, 86, 93, 104, 107–112; Cors 90, 98; Thm 100; the split cases of Thm 97 | Read for structure only. | NOT FULLY RE-DERIVED (§5) |
 
 ## 2. What 113/114 take from Theorem 59 (interface check)
 
@@ -292,11 +292,12 @@ Every move preserves or lowers the order in the right lexicographic sense.
   - the root on the pair;
   - the contraction case at odd order;
   - the full even-order table (add/delete/keep), including the two-component analysis that reduces to Prop 93 and the end-transfer bookkeeping;
+  - the one-common-neighbour case: D is connected, the protected-node routing works, and so does the r = s split with D + ab;
   - the two-common-neighbours case (square or diamond).
 - **Thm 103**, the three-tip and five-tip cases. The cited Lemma 66, Corollary 68 and Lemma 102 were taken as given.
 - **Prop 105.**
 
-**Not re-derived in full.** Props 85, 86, 93, 104, 107–112; Cors 90, 98; Thm 100; the one-common-neighbour case of Thm 101; the U/V split cases of Thm 97. Cor 98 also relies on an unavailable finite check (orders 4, 6, 8).
+**Not re-derived in full.** Props 85, 86, 93, 104, 107–112; Cors 90, 98; Thm 100; the U/V split cases of Thm 97. Cor 98 also relies on an unavailable finite check (orders 4, 6, 8).
 
 ## 5. Things the referee could not check
 

@@ -1,0 +1,149 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+\title{Corrigenda and addenda to the November 2026 Gallai manuscripts}
+\author{Compiled from independent referee audits}
+\date{26 November 2026 (living document)}
+\begin{document}
+\begin{abstract}
+Adversarial audits of the load-bearing parts of the collection found \emph{no false step} in the
+reduction chain from Gallai's conjecture to the three-connected deletion tests, nor in the
+block-degree-seven theorem, the first-failure alternative, or the odd semi-clique theorem, apart
+from the external dependency recorded in Section~\ref{sec:jm}. This document lists every correction
+found: wording and quantifier fixes, citation corrections, and one-line arguments that should be
+written out. Each entry gives the location, the issue and the replacement text. The detailed audit
+reports (\texttt{research/audit/A1}--\texttt{A5}) contain the verifications and computational checks.
+\end{abstract}
+\maketitle
+
+\section{Cut vertices and cycle intersections (marked-reduction)}
+
+\begin{enumerate}
+\item \textbf{p.\,2, last sentence of Theorem~1.} ``In the first assertion it suffices to test nonempty
+sets consisting entirely of even-degree vertices'' is proved (\S2.1) only \emph{in conjunction with}
+assertion~2. Replace by: ``In the presence of assertion~2, the first assertion may be restricted to
+nonempty sets of even-degree vertices.''
+\item \textbf{p.\,2.} ``assembled from three or more parts'' should read ``from two or more parts'',
+matching Theorem~7.
+\item \textbf{p.\,3, lower bound in (2).} Give the reason as: $z$ is a cut vertex of $W(F,S)$, so a
+path meets at most one copy of $X$ beyond $z$ and visits $z$ at most once.
+\item \textbf{pp.\,2, 7, 12.} Define $q(F,\emptyset)$ (the path number of $F$) where the marked bound is
+introduced; Lemma~6 uses it before \S2.1.
+\item \textbf{p.\,4.} Insert the one-line proof of $\alpha_i=q(J_i^+,S_i\cup\{\ell_i\})$: an assignment
+to the new leaf is the same as extending one path by the pendant edge.
+\item \textbf{p.\,13, Theorem~7.} State that the induction uses the marked bound for \emph{all}
+markings of smaller blocks, which is available by \S2.1.
+\item \textbf{p.\,82, claim in Theorem~57.} Expand the integrality step: the two half-counts are
+integers of the same parity, so the strict inequality improves by one.
+\item \textbf{p.\,84, Theorem~59 finite-order clause.} State the conclusion explicitly: ``If both tests
+hold for all members of $\mathcal C$ of order at most $m+1$, then the marked bound (1) holds on every
+connected graph whose $2$-connected blocks have order at most $m$.'' Theorem~113 uses the case
+$m=n-2$. The order-$(m+1)$ graphs involved are the cones $B+z$ and $B+w$.
+\item \textbf{p.\,85, diamond lower bound.} Add: $d_B(x)\ge3$, which holds since $B$ is $2$-connected and
+$d_B(x)$ is odd.
+\item \textbf{p.\,105, Theorem~83, ``$m=3$'' exceptional bridge.} The case is impossible: if $x\neq r$
+(here $r$ is the retained port, not the root) the retained side has a proper $2$-edge cut. The
+construction that follows may be deleted. Rename the retained port to avoid the clash with the root.
+\item \textbf{p.\,129, Theorem~114 proof.} Add the sentence covering the deletion of at most one vertex:
+$B-v$ is connected and $z$ keeps a neighbour since $|S|\ge2$; and $J-z=B$.
+\item \textbf{p.\,129, deletion-degree-six remark.} The consequence ``a failure at $d_J(z)=6$ needs two
+universal vertices in $K$'' rests on Shaik's unrefereed preprint [25, Cor.~1.2]. Mark it as
+conditional on [25], or replace the citation by an argument from Botler--Sambinelli, which is
+refereed. Fan--Hou--Zhou alone gives one universal vertex.
+\item \textbf{p.\,8 and p.\,129, Fan--Hou--Zhou [15].} Quote the exact published hypothesis. In
+particular, say whether ``maximum degree $\le3$'' is required within each block or for the whole
+$E$-subgraph; the doubling step of \S2.1 is sensitive to this.
+\item \textbf{Fan's lemmas [14, Lemmas 3.3--3.4].} Quote them once verbatim, including the clause
+``all other end counts are unchanged'', which every application uses.
+\item \textbf{p.\,130.} ``$K_2\vee K_3$'' should read $K_2\vee\overline{K_3}$ (three independent pages).
+\item \textbf{Addendum (Theorem~113).} The proof uses only that $B$ is $2$-connected and that both tests
+hold on smaller members of $\mathcal C$. Stating it in this generality makes the later uses
+(Theorems~144, 145, Corollary~146) transparent.
+\item \textbf{Supplement.} The paper names \texttt{ApexConnectivity.lean}, \texttt{FiveSiteFan.lean},
+\texttt{classify\_eight.cpp}, \texttt{check\_thin\_pairs.py} and others, but gives no location. Add a
+repository reference. Independent audits re-derived the apex equivalence by hand and checked it by
+computer through order~$8$.
+\end{enumerate}
+
+\section{Separators and endpoint exchange (separating-pairs)}
+
+\begin{enumerate}
+\item \textbf{pp.\,60--61, Theorem~12.6.} The ``unused slot'' is attributed to [6], a paper on
+\emph{transversal} matroids, which does not cover the graphic matroid used here. The argument in the
+text is correct; replace the citation by the direct argument or by a reference on graphic matroids.
+\item \textbf{pp.\,77--78, Theorem~12.29.} The cycle-merging step cites Chu--Fan--Zhou [3, Lemma~2.4]
+through a paraphrase of its hypotheses. The paper's own Lemma~13.6 covers the configuration; cite it
+instead.
+\item \textbf{Theorem~10.16.} The Eulerian clause ($\delta\ge6$) follows from $\delta\ge5$ and even
+degrees; no separate argument is needed. Theorem~10.15 is not used in the proof of Theorem~10.16; it
+enters only via Corollary~10.17 and later. Say so to clarify the dependency.
+\item \textbf{Throughout.} Several results are cited by descriptive names (e.g.\ ``cubic odd-core
+proposition''). Replace them by theorem numbers.
+\item \textbf{References.} [15] (Lov\'asz 1968) and [16] (Hilton) are never cited in the text.
+\end{enumerate}
+
+\section{Odd semi-cliques and sharp path partitions (odd-semi-clique-boundary)}
+
+\begin{enumerate}
+\item \textbf{pp.\,9, 12: citation.} ``Javadi--Miralaei, Theorem~3.8'' does not exist in
+arXiv:2403.17290v1; the matching-extension result is \textbf{Theorem~8}. The proof of Theorem~11 uses
+Theorem~8 through its proof, which needs $r\le 2t-1$ rather than the stated $G\not\cong tK_2$. Our
+setting satisfies $r\le2t-1$; say so explicitly.
+\item \textbf{p.\,4: dependency bookkeeping for Theorem~4.} The statement that Javadi--Miralaei is needed
+only for $k\ge6$, $\lceil (k+4)/2\rceil\le m\le k-1$ concerns the case $m<k$. The case $m=k$ (every
+minimum partition Hamiltonian) needs it for every $k$-edge $H$ with $k\ge6$, $|V(H)|\ge k+2$ that is
+not a linear forest.
+\item \textbf{Notation $e(G)$.} In Theorems~20, 28, 31, Corollaries~23, 27, 33, 34, 40 and Proposition~26,
+$e(G)$ denotes the number of \emph{missing} edges. Elsewhere it denotes $|E(G)|$. Replace the former by
+$e(\overline G)$. Read literally, Corollary~27 is false ($K_{2k+1}$ is a counterexample), and
+Theorem~20, Corollary~23 and Corollary~40 are vacuous. The proofs use the intended meanings correctly.
+In Proposition~26 and Theorem~31, the set $X=\{v:d_G(v)>.01n\}$ should use the missing degree
+$d_{\overline G}(v)$.
+\item \textbf{p.\,45, Corollary~44.} The equivalence holds as a conjunction over all $C>0$. The hosts
+used have about $|V(X)|\cdot N$ missing edges, so no single fixed $C$ suffices. Rephrase as: ``Gallai's
+conjecture holds if and only if, for every $C>0$, it holds for all sufficiently large connected graphs
+of even order $N$ with at most $CN$ missing edges.''
+\end{enumerate}
+
+\section{Blocks of maximum degree nine or cutwidth eight (block-degree)}
+
+\begin{enumerate}
+\item \textbf{Readiness statement.} Theorem~3 (block degree $\le7$) and Theorem~2 do not use
+\S\S10--13. An independent replay reproduced every enumeration they use: the counts $494$; $63$; $1{,}348+989$;
+$1{,}320$, $137$ and $03476125$ with $27$ sets; and the \S8 tables. Degree $8$, cutwidth $8$ and the
+families of Theorems~7--13 depend on the \S10.2 computations (25{,}003 and 1{,}154 cases). Degree $9$
+additionally depends on the \S12 and \S13 computations. The collection index should be corrected to say
+this.
+\item \textbf{p.\,4.} The five-contact path--cycle lemma is Zhang--Liu--Hong, Discrete Math.\ 2024
+([17]). The two-cycle five-contact lemma is Chu--Fan--Liu. Both were re-proved exhaustively for at most
+five contacts in the audit, so Theorem~3 no longer depends on these citations.
+\item \textbf{p.\,4.} ``a path of arbitrary length'' should read ``of length at least $2$''.
+\item \textbf{p.\,9, \S8.} State its hypothesis of block degree at most $7$; the incidence argument fails
+at degree $8$.
+\item \textbf{pp.\,5--7, 10.} ``Two different segments'' must allow both members of one parallel class.
+\item \textbf{p.\,53.} The appendix check of Theorem~2 for seven-vertex components omits cases of maximum
+degree above $7$ (paths through a cut vertex). It is not load-bearing.
+\end{enumerate}
+
+\section{External dependency: the rainbow Hamiltonian decomposition theorem}\label{sec:jm}
+
+The odd semi-clique theorem (Theorem~4 of odd-semi-clique-boundary and the September note), its
+endpoint refinement (Theorem~11), the equality case inside Theorem~10.16 of separating-pairs, and
+several other results use the theorem of Javadi and Miralaei [Discrete Math.\ 349 (2026) 114676]: every
+$k$-edge subgraph of $K_{2k+1}$ is rainbow in some Hamiltonian decomposition. The audit found that its
+proof (Theorem~7 combined with Theorem~8) has
+\begin{itemize}
+\item a fixable gap in the transfer steps of Theorem~7. The fix is to orient the paths and delete
+out-edges at receiver ends; the counts are unchanged;
+\item a substantive gap in Claim~12 of Theorem~8. The pairing step can fail when both duplicates of an
+endpoint edge survive, and condition (iv) does not imply the linear-forest conclusion.
+\end{itemize}
+No counterexample is known. The theorem was verified by computer for every $k$-edge subgraph up to
+isomorphism with $k\le7$. Liu and Chen proved it when the subgraph has at most $k+1$ vertices, is a
+linear forest, or $k\le5$. \textbf{Until a repaired proof is confirmed, every result using the theorem
+outside these ranges should state the dependency explicitly.} The three-connected reduction
+(Theorems~1--114 of marked-reduction) and the block-degree-seven theorem do not depend on it. A repair
+is in preparation.
+
+\end{document}

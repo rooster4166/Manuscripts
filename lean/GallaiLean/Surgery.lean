@@ -126,7 +126,8 @@ theorem exists_split_set [DecidableEq V] [∀ v, Fintype (G.neighborSet v)] (D :
   | @insert a Z ha ih =>
     obtain ⟨D₁, hs₁, he₁⟩ := ih (fun z hz => hZ z (Finset.mem_insert_of_mem hz))
     have ha0 : D₁.ends a = 0 := by
-      rw [he₁, if_neg ha]
+      rw [he₁]
+      simp only [ha, ite_false, add_zero]
       exact (hZ a (Finset.mem_insert_self a Z)).2
     obtain ⟨D₂, hs₂, he₂⟩ :=
       D₁.exists_split_of_ends_eq_zero (hZ a (Finset.mem_insert_self a Z)).1 ha0
