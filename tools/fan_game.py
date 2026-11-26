@@ -27,6 +27,8 @@ Let G have even order n. A play consists of the following steps.
        W, the opponent picks t in T, the end moves from t to z, and the held edge ut is replaced
        by uz. Soundness: `fan_alternative` (lean/GallaiLean/MissingMove.lean). It dominates
        rotation as a move (missing-move manuscript, Section 4).
+     * [option "flower"] the profile-level flower move at a saturated hub (missing-move
+       Lemma 5.6 and Lemma 5.7; see the comment in win()).
   3. The play wins for the root r if, once F is used up, sum b <= n and b(r) >= 1.
 Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, the rotation
 lemma or Fan's alternative, applied to a realising partition, so a winning play gives a partition
@@ -39,7 +41,7 @@ half-set S' of Ev(K) containing r'; the profile is 1 on odd vertices, 2 on S' an
 We must win against every choice of S'. If every connected even-order graph has a winning
 inductive play, Gallai follows by induction on the number of edges.
 
-Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs]
+Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs] [flower]
   e.g. python3 tools/fan_game.py data/conn8.g6 4 np      (Fan + multi-edge new paths)
        python3 tools/fan_game.py FILE 4 rot2              (Fan + at most two rotations)
        python3 tools/fan_game.py FILE 2 np hubs           (F = a full star plus <= 2 edges)
@@ -56,7 +58,7 @@ CACHE_CAP = 3_000_000  # states kept in the memo table before it is flushed
 
 
 def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False,
-                kmin=0):
+                kmin=0, flower=False):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -102,6 +104,53 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
             if s + 2 <= n:
                 nb = list(b); nb[a] += 1; nb[c] += 1
                 if win(rest, tuple(nb), r, R, A):
+                    return True
+        # flower move (option "flower"; missing-move Lemma 5.6): a saturated hub u whose held
+        # edges ut (t in T, |T| = j <= 4) carry b(t) = 1, with b(u) = d_H(u) = j, sum b = 2j and
+        # |E(H)| + j = j |V'| (V' = vertices of positive degree in H + uT). Then every path joins
+        # u to T, the paths close into j Hamiltonian cycles through u, and a transversal path
+        # L = u a1 ... aj (chosen by the opponent among all such paths in H + uT) gives j + 1
+        # paths with b = 2 on V(L) and 0 elsewhere.
+        if flower and s % 2 == 0:
+            j0 = s // 2
+            for u in range(n):
+                if b[u] != j0 or not 1 <= j0 <= 4:
+                    continue
+                T = [t for t in range(n) if key(u, t) in rem]
+                if len(T) != j0 or any(b[t] != 1 for t in T):
+                    continue
+                Hu = nbr[u] & ~remmask[u]
+                if popc(Hu) != j0:
+                    continue
+                star = frozenset(key(u, t) for t in T)
+                adjp = [nbr[v] & ~remmask[v] for v in range(n)]
+                for t in T:
+                    adjp[u] |= 1 << t
+                    adjp[t] |= 1 << u
+                nV = sum(1 for v in range(n) if adjp[v])
+                nE = sum(popc(x) for x in adjp) // 2
+                if nE != j0 * nV:
+                    continue
+                rest = rem - star
+                ok = True
+
+                def paths_from(path):
+                    if len(path) == j0 + 1:
+                        yield path
+                        return
+                    x = adjp[path[-1]]
+                    for w in range(n):
+                        if (x >> w) & 1 and w not in path:
+                            yield from paths_from(path + [w])
+
+                for L in paths_from([u]):
+                    nb = [0] * n
+                    for v in L:
+                        nb[v] = 2
+                    if not win(rest, tuple(nb), r, R, A):
+                        ok = False
+                        break
+                if ok:
                     return True
         # new paths of length >= 2 made of held edges
         if newpath and s + 2 <= n:
@@ -296,10 +345,12 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
 
 
 def parse_opts(args):
-    kmax, inductive, newpath, rot, alt, hubs = 4, False, False, 0, 0, False
+    kmax, inductive, newpath, rot, alt, hubs, flower = 4, False, False, 0, 0, False, False
     for a in args:
         if a == "ind":
             inductive = True
+        elif a == "flower":
+            flower = True
         elif a == "hubs":
             hubs = True
         elif a == "np":
@@ -310,19 +361,19 @@ def parse_opts(args):
             alt = int(a[3:] or 1)
         else:
             kmax = int(a)
-    return kmax, inductive, newpath, rot, alt, hubs
+    return kmax, inductive, newpath, rot, alt, hubs, flower
 
 
 def main():
     path = sys.argv[1]
-    kmax, inductive, newpath, rot, alt, hubs = parse_opts(sys.argv[2:])
+    kmax, inductive, newpath, rot, alt, hubs, flower = parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
         res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt,
-                          hubs=hubs)
+                          hubs=hubs, flower=flower)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
@@ -330,7 +381,8 @@ def main():
             print("LOSE", nx.to_graph6_bytes(G, header=False).strip().decode(), sorted(G.edges()),
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
     opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
-        (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "") + (", hubs" if hubs else "")
+        (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "") + (", hubs" if hubs else "") + \
+        (", flower" if flower else "")
     print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 

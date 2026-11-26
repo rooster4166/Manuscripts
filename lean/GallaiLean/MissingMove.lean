@@ -23,6 +23,11 @@ step of Lovász's own induction, and it is the move that the n = 8 losers of the
   neighbours even, and let at most one even vertex lie outside `N[s]`. Then for every neighbour
   `x` of `s`, `G` has a decomposition into at most `n/2` paths with two ends at `s` and two at `x`.
 * **`hub_four_rooted`**: consequently the rooted test holds at `s` and at every neighbour of `s`.
+* **`Ach.hub_four_tail`, `hub_four_odd_ends`, `hub_four_odd_rooted`**: the same with one odd
+  neighbour `x` of `s`; the held edge `xz` extends the new path to `y' s x z`.
+* **`gqz_rooted_three`**: the critical order-8 graph `Gqz~vw` (`K₈` minus `03, 12, 23, 34, 56, 67`;
+  `p = n/2`), which the original game loses at the root `3`, satisfies the rooted test there.
+  The hypotheses of `hub_four_odd_rooted` are checked by `decide`.
 
 * **`fan_alternative`** (Fan's alternative, manuscript Lemma 4.2): either some `t ∈ T` gives an
   end to `u` (Fan's conclusion), or at least `∑_T ends` blank neighbours `z` of `u` can each be
@@ -396,6 +401,323 @@ theorem hub_four_rooted (hn : Even (Fintype.card V)) {s : V} (hdeg : G.degree s 
 
 end rooted
 
+/-! ### A hub with one odd neighbour: the through-path continues -/
+
+section tail
+
+variable [Fintype V]
+
+omit [Fintype V] in
+/-- The last two steps of the hub when the new path continues along one more held edge `xz`:
+the new path is `y' s x z`, so `x` stays interior and the extra end goes to `z`. -/
+theorem Ach.hub_close_tail {E : Set (Sym2 V)} {b : V → ℕ} {s a y y' x z : V}
+    (h : Ach (insert s(y, s) (insert s(a, s) E)) (mv (mv b a s) y s))
+    (hs : ∀ w, s(s, w) ∉ E) (hxz : s(x, z) ∉ E) (hnd6 : [s, a, y, y', x, z].Nodup)
+    (ha : 1 ≤ b a) (hy : 1 ≤ b y) :
+    ∃ b' : V → ℕ, Ach (E ∪ {s(s, a), s(s, y), s(s, y'), s(s, x), s(x, z)}) b' ∧
+      ∀ v, b' v + (if v = a then 1 else 0) + (if v = y then 1 else 0) =
+        b v + 2 * (if v = s then 1 else 0) + (if v = y' then 1 else 0) +
+          (if v = z then 1 else 0) := by
+  simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil, or_false,
+    not_or, List.nodup_nil, and_true] at hnd6
+  obtain ⟨⟨hsa, hsy, hsy', hsx, hsz⟩, ⟨hay, hay', hax, haz⟩, ⟨hyy', hyx, hyz⟩, ⟨hy'x, hy'z⟩,
+    hxz', -⟩ := hnd6
+  have h1 := Ne.symm hsa; have h2 := Ne.symm hsy; have h3 := Ne.symm hsy'; have h4 := Ne.symm hsx
+  have h5 := Ne.symm hay; have h6 := Ne.symm hay'; have h7 := Ne.symm hax; have h8 := Ne.symm hyy'
+  have h9 := Ne.symm hyx; have h10 := Ne.symm hy'x; have h11 := Ne.symm hsz; have h12 := Ne.symm haz
+  have h13 := Ne.symm hyz; have h14 := Ne.symm hy'z; have h15 := Ne.symm hxz'
+  have hnd : [y', s, x, z].Nodup := by simp [*]
+  have hnew : ∀ e ∈ lEdges y' [s, x, z], e ∉ insert s(y, s) (insert s(a, s) E) := by
+    intro e he
+    simp only [lEdges_cons, lEdges_nil, List.mem_cons, List.not_mem_nil, or_false] at he
+    have hy's := hs y'
+    rw [Sym2.eq_swap] at hy's
+    rcases he with rfl | rfl | rfl <;> simp [*]
+  have h3' := h.addPath y' [s, x, z] (by simp) hnd hnew
+  refine ⟨_, h3'.congr ?_ (fun v => rfl), fun v => ?_⟩
+  · ext e
+    have e1 : s(a, s) = s(s, a) := Sym2.eq_swap
+    have e2 : s(y, s) = s(s, y) := Sym2.eq_swap
+    have e3 : s(y', s) = s(s, y') := Sym2.eq_swap
+    simp only [lEdges_cons, lEdges_nil, Set.mem_union, Set.mem_insert_iff, Set.mem_ofPred_eq,
+      List.mem_cons, List.not_mem_nil, or_false, Set.mem_singleton_iff, e1, e2, e3]
+    tauto
+  · simp only [lastOf_cons, lastOf_nil]
+    by_cases hvs : v = s
+    · subst hvs
+      rw [mv_apply_recv, mv_apply_recv]
+      simp [*]
+    have hm : mv (mv b a s) y s v = mv b a s v - (if v = y then 1 else 0) := by
+      by_cases hvy : v = y
+      · subst hvy; rw [mv_apply_donor _ (Ne.symm hsy)]; simp
+      · rw [mv_apply_other _ hvy hvs]; simp [hvy]
+    have hm' : mv b a s v = b v - (if v = a then 1 else 0) := by
+      by_cases hva : v = a
+      · subst hva; rw [mv_apply_donor _ (Ne.symm hsa)]; simp
+      · rw [mv_apply_other _ hva hvs]; simp [hva]
+    rw [hm, hm']
+    by_cases hva : v = a
+    · subst hva; simp [*]
+    by_cases hvy : v = y
+    · subst hvy; simp [*]
+    by_cases hvy' : v = y'
+    · subst hvy'; simp [*]
+    by_cases hvz : v = z
+    · subst hvz; simp [*]
+    simp [*, Ne.symm hvy', Ne.symm hvz]
+
+/-- **The hub lemma, odd-neighbour form.** As `Ach.hub_four`, with a further held edge `xz`: the
+new path is `y' s x z`. The profile changes by `+2` at `s`, `-1` at `a` and `y`, `+1` at `y'` and
+`z`; `x` is unchanged. -/
+theorem Ach.hub_four_tail {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) {s a c d x z : V}
+    (hs : ∀ w, s(s, w) ∉ E) (hxz : s(x, z) ∉ E) (hnd6 : [s, a, c, d, x, z].Nodup)
+    (ha : 1 ≤ b a) (hc : 1 ≤ b c) (hd : 1 ≤ b d) :
+    ∃ y y', ((y = c ∧ y' = d) ∨ (y = d ∧ y' = c)) ∧ ∃ b' : V → ℕ,
+      Ach (E ∪ {s(s, a), s(s, c), s(s, d), s(s, x), s(x, z)}) b' ∧
+      ∀ v, b' v + (if v = a then 1 else 0) + (if v = y then 1 else 0) =
+        b v + 2 * (if v = s then 1 else 0) + (if v = y' then 1 else 0) +
+          (if v = z then 1 else 0) := by
+  have hnd6' := hnd6
+  simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil, or_false,
+    not_or, List.nodup_nil, and_true] at hnd6'
+  obtain ⟨⟨hsa, hsc, hsd, hsx, hsz⟩, ⟨hac, had, hax, haz⟩, ⟨hcd, hcx, hcz⟩, ⟨hdx, hdz⟩,
+    hxz', -⟩ := hnd6'
+  have h1 := h.transfer (t := a) (u := s) (Ne.symm hsa) (by rw [Sym2.eq_swap]; exact hs a)
+    (by rw [blankNbrs_eq_zero_of_isolated hs]; omega)
+  have hsT : s ∉ ({c, d} : Finset V) := by simp [hsc, hsd]
+  have hT : ∀ t ∈ ({c, d} : Finset V), s(t, s) ∉ insert s(a, s) E := by
+    intro t ht
+    have hta : t ≠ a := by
+      simp only [Finset.mem_insert, Finset.mem_singleton] at ht
+      rcases ht with rfl | rfl
+      · exact Ne.symm hac
+      · exact Ne.symm had
+    have hts : t ≠ s := fun h' => hsT (h' ▸ ht)
+    simp only [Set.mem_insert_iff, not_or]
+    refine ⟨?_, ?_⟩
+    · rw [Sym2.eq_iff]; rintro (⟨h1, -⟩ | ⟨h1, -⟩)
+      · exact hta h1
+      · exact hts h1
+    · rw [Sym2.eq_swap]; exact hs t
+  have hbl : blankNbrs (insert s(a, s) E) (mv b a s) s ≤ 1 := by
+    have := blankNbrs_le_of_subset (E := insert s(a, s) E) (b := mv b a s) (u := s)
+      (S := {a}) (fun w hw _ _ => by
+        rcases (Set.mem_insert_iff.mp hw) with h' | h'
+        · rw [Sym2.eq_iff] at h'
+          rcases h' with ⟨h1, -⟩ | ⟨-, h1⟩
+          · exact absurd h1 hsa
+          · exact h1
+        · exact absurd h' (hs w))
+    simpa using this
+  have hsum : ∑ t ∈ ({c, d} : Finset V), mv b a s t = b c + b d := by
+    rw [Finset.sum_pair hcd, mv_apply_other _ (Ne.symm hac) (Ne.symm hsc),
+      mv_apply_other _ (Ne.symm had) (Ne.symm hsd)]
+  obtain ⟨y, hy, hby, h2⟩ := h1.grouped s {c, d} hsT hT (by rw [hsum]; omega)
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hy
+  rcases hy with rfl | rfl
+  · rw [mv_apply_other _ (Ne.symm hac) (Ne.symm hsc)] at hby
+    obtain ⟨b', hb', hid⟩ := h2.hub_close_tail hs hxz hnd6 ha hby
+    exact ⟨y, d, Or.inl ⟨rfl, rfl⟩, b', hb', hid⟩
+  · rw [mv_apply_other _ (Ne.symm had) (Ne.symm hsd)] at hby
+    have hnd6s : [s, a, y, c, x, z].Nodup :=
+      (List.Perm.cons s (List.Perm.cons a (List.Perm.swap y c [x, z]))).nodup_iff.mp hnd6
+    obtain ⟨b', hb', hid⟩ := h2.hub_close_tail hs hxz hnd6s ha hby
+    refine ⟨y, c, Or.inr ⟨rfl, rfl⟩, b', hb'.congr ?_ (fun v => rfl), hid⟩
+    ext e
+    simp only [Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff]
+    tauto
+
+end tail
+
+section rootedTail
+
+variable [Fintype V] (G : SimpleGraph V) [DecidableRel G.Adj]
+
+/-- **Degree-four hubs with one odd neighbour.** Let `G` have even order `n`, let `s` have degree
+four, let its neighbour `x` be odd and its other three neighbours even, and let `z ∉ N[s]` be an
+even neighbour of `x`. If at most one even vertex lies outside `N[s] ∪ {z}`, then `G` has a
+decomposition into at most `n/2` paths with exactly two ends at `s` and exactly two at `z`.
+
+Lovász on `G - s - xz` (now `x` and `z` are odd), then `Ach.hub_four_tail`: two receipts at `s`
+and the new path `y' s x z`. This closes the critical order-8 graph `Gqz~vw` at its losing root. -/
+theorem hub_four_odd_ends (hn : Even (Fintype.card V)) {s x z : V} (hdeg : G.degree s = 4)
+    (hx : G.Adj s x) (hxodd : Odd (G.degree x)) (hNev : ∀ w, G.Adj s w → w ≠ x → Even (G.degree w))
+    (hxz : G.Adj x z) (hzs : z ≠ s) (hzN : ¬ G.Adj s z) (hzev : Even (G.degree z))
+    (hEv : ((evenSet G).filter (fun v => v ≠ s ∧ ¬ G.Adj s v ∧ v ≠ z)).card ≤ 1) :
+    ∃ D : PathDecomp G, 2 * D.size ≤ Fintype.card V ∧ D.ends s = 2 ∧ D.ends z = 2 := by
+  classical
+  have hxN : x ∈ G.neighborFinset s := (mem_neighborFinset _ _ _).mpr hx
+  have h3 : ((G.neighborFinset s).erase x).card = 3 := by
+    rw [Finset.card_erase_of_mem hxN, card_neighborFinset_eq_degree, hdeg]
+  obtain ⟨a, c, d, hac, had, hcd, hacd⟩ := Finset.card_eq_three.mp h3
+  have hmem : ∀ w, w ∈ ({a, c, d} : Finset V) ↔ G.Adj s w ∧ w ≠ x := by
+    intro w
+    rw [← hacd, Finset.mem_erase, mem_neighborFinset]
+    exact and_comm
+  have ha := (hmem a).mp (by simp)
+  have hc := (hmem c).mp (by simp)
+  have hd := (hmem d).mp (by simp)
+  have hN : ∀ w, G.Adj s w → w = a ∨ w = c ∨ w = d ∨ w = x := by
+    intro w hw
+    by_cases hwx : w = x
+    · exact Or.inr (Or.inr (Or.inr hwx))
+    · have := (hmem w).mpr ⟨hw, hwx⟩
+      simp only [Finset.mem_insert, Finset.mem_singleton] at this
+      tauto
+  have hsa : s ≠ a := ha.1.ne
+  have hsc : s ≠ c := hc.1.ne
+  have hsd : s ≠ d := hd.1.ne
+  have hsx : s ≠ x := hx.ne
+  have hxz' : x ≠ z := hxz.ne
+  have hzs' : ¬ G.Adj z s := fun h => hzN h.symm
+  have hza : z ≠ a := fun h => hzN (h ▸ ha.1)
+  have hzc : z ≠ c := fun h => hzN (h ▸ hc.1)
+  have hzd : z ≠ d := fun h => hzN (h ▸ hd.1)
+  -- the seed graph: `s` isolated and `xz` deleted
+  have hI : (isolate G s).Adj x z := ⟨hxz, hsx.symm, hzs⟩
+  have hKd : ∀ w, w ≠ s → (delEdge (isolate G s) x z).degree w + (if w = x then 1 else 0) +
+      (if w = z then 1 else 0) + (if G.Adj w s then 1 else 0) = G.degree w := by
+    intro w hw
+    have h1 := delEdge_degree (isolate G s) hI w
+    have h2 := isolate_degree G hw
+    omega
+  have hKs : (delEdge (isolate G s) x z).degree s = 0 := by
+    have h1 := delEdge_degree (isolate G s) hI s
+    have h2 := isolate_degree_self G s
+    omega
+  have hevK : (evenSet (delEdge (isolate G s) x z)).card ≤ 1 := by
+    refine (Finset.card_le_card ?_).trans hEv
+    intro v hv
+    rw [mem_evenSet_iff] at hv
+    have hvs : v ≠ s := by
+      rintro rfl
+      rw [hKs] at hv
+      omega
+    have hdv := hKd v hvs
+    have hvx : v ≠ x := by
+      rintro rfl
+      obtain ⟨k, hk⟩ := hxodd
+      simp [hxz', hx.symm] at hdv
+      omega
+    have hvz : v ≠ z := by
+      rintro rfl
+      obtain ⟨k, hk⟩ := hzev
+      simp [hxz'.symm, hzs'] at hdv
+      omega
+    by_cases hadj : G.Adj v s
+    · exfalso
+      obtain ⟨k, hk⟩ := hNev v hadj.symm hvx
+      simp only [hvx, hvz, hadj, ite_true, ite_false, add_zero] at hdv
+      omega
+    · simp only [hvx, hvz, hadj, ite_false, add_zero] at hdv
+      simp only [Finset.mem_filter, mem_evenSet_iff]
+      exact ⟨⟨by omega, by omega⟩, hvs, fun h => hadj h.symm, hvz⟩
+  obtain ⟨D0, hD0⟩ := lovasz_ends (delEdge (isolate G s) x z) hevK
+  have hA : Ach (delEdge (isolate G s) x z).edgeSet
+      (fun v => (delEdge (isolate G s) x z).degree v % 2) :=
+    (Ach.of_decomp D0).congr rfl (fun v => hD0 v)
+  have hKE : ∀ e, e ∈ (delEdge (isolate G s) x z).edgeSet ↔
+      (e ∈ G.edgeSet ∧ s ∉ e) ∧ e ≠ s(x, z) := by
+    intro e
+    rw [delEdge_edgeSet, isolate_edgeSet]
+  have hs : ∀ w, s(s, w) ∉ (delEdge (isolate G s) x z).edgeSet := fun w h =>
+    ((hKE _).mp h).1.2 (Sym2.mem_mk_left _ _)
+  have hxzK : s(x, z) ∉ (delEdge (isolate G s) x z).edgeSet := fun h => ((hKE _).mp h).2 rfl
+  have hb1 : ∀ w, G.Adj s w → w ≠ x → (delEdge (isolate G s) x z).degree w % 2 = 1 := by
+    intro w hw hwx
+    have hdw := hKd w hw.ne.symm
+    have hwz : w ≠ z := fun h => hzN (h ▸ hw)
+    simp only [hwx, hwz, hw.symm, ite_true, ite_false, add_zero] at hdw
+    obtain ⟨k, hk⟩ := hNev w hw hwx
+    omega
+  have hbz : (delEdge (isolate G s) x z).degree z % 2 = 1 := by
+    have hdz := hKd z hzs
+    simp [hxz'.symm, hzs'] at hdz
+    obtain ⟨k, hk⟩ := hzev
+    omega
+  have hnd6 : [s, a, c, d, x, z].Nodup := by
+    simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil, or_false, not_or,
+      List.nodup_nil, and_true]
+    exact ⟨⟨hsa, hsc, hsd, hsx, hzs.symm⟩, ⟨hac, had, ha.2, Ne.symm hza⟩,
+      ⟨hcd, hc.2, Ne.symm hzc⟩, ⟨hd.2, Ne.symm hzd⟩, hxz', not_false⟩
+  obtain ⟨y, y', hyy, b', hb', hid⟩ := hA.hub_four_tail hs hxzK hnd6
+    (by rw [hb1 a ha.1 ha.2]) (by rw [hb1 c hc.1 hc.2]) (by rw [hb1 d hd.1 hd.2])
+  have hE : (delEdge (isolate G s) x z).edgeSet ∪ {s(s, a), s(s, c), s(s, d), s(s, x), s(x, z)}
+      = G.edgeSet := by
+    ext e
+    induction e using Sym2.ind with
+    | _ p q =>
+      rw [Set.mem_union, hKE]
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff, mem_edgeSet]
+      constructor
+      · rintro (⟨⟨h, -⟩, -⟩ | h | h | h | h | h)
+        · exact h
+        all_goals
+          rw [Sym2.eq_iff] at h
+          rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+            first
+              | exact ha.1 | exact hc.1 | exact hd.1 | exact hx | exact hxz
+              | exact ha.1.symm | exact hc.1.symm | exact hd.1.symm | exact hx.symm
+              | exact hxz.symm
+      · intro h
+        by_cases hsm : s ∈ s(p, q)
+        · right
+          rcases Sym2.mem_iff.mp hsm with rfl | rfl
+          · rcases hN q h with rfl | rfl | rfl | rfl <;> simp
+          · rcases hN p h.symm with rfl | rfl | rfl | rfl <;> simp [Sym2.eq_swap]
+        · by_cases hxzm : s(p, q) = s(x, z)
+          · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr hxzm))))
+          · exact Or.inl ⟨⟨h, hsm⟩, hxzm⟩
+  obtain ⟨D, hD⟩ := (hb'.congr hE (fun _ => rfl)).decomp_of_edgeSet
+  have hsum0 : ∑ v, (delEdge (isolate G s) x z).degree v % 2 = 2 * D0.size := by
+    rw [← D0.sum_ends]; exact Finset.sum_congr rfl (fun v _ => (hD0 v).symm)
+  have hle : ∑ v, (delEdge (isolate G s) x z).degree v % 2 ≤ Fintype.card V - 1 := by
+    rw [← Finset.add_sum_erase _ _ (Finset.mem_univ s), hKs, Nat.zero_mod, zero_add]
+    calc ∑ v ∈ Finset.univ.erase s, (delEdge (isolate G s) x z).degree v % 2
+          ≤ (Finset.univ.erase s).card • 1 :=
+          Finset.sum_le_card_nsmul _ _ _ (fun v _ => Nat.le_of_lt_succ (Nat.mod_lt _ two_pos))
+      _ = Fintype.card V - 1 := by
+          rw [Finset.card_erase_of_mem (Finset.mem_univ s), Finset.card_univ, smul_eq_mul,
+            mul_one]
+  have hsum : ∑ v, b' v + 2 = ∑ v, (delEdge (isolate G s) x z).degree v % 2 + 4 := by
+    have := Finset.sum_congr rfl (fun v (_ : v ∈ Finset.univ) => hid v)
+    simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
+      ← Finset.mul_sum] at this
+    omega
+  have hsz : 2 * D.size = ∑ v, b' v := by
+    rw [← D.sum_ends]; exact Finset.sum_congr rfl (fun v _ => hD v)
+  obtain ⟨m, hm⟩ := hn
+  have hfin : 2 * D.size ≤ Fintype.card V := by
+    have : 0 < Fintype.card V := Fintype.card_pos_iff.mpr ⟨s⟩
+    omega
+  refine ⟨D, hfin, ?_, ?_⟩
+  · have h := hid s
+    rw [hD s]
+    rcases hyy with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+      simp [hsa, hsc, hsd, hzs.symm, hKs] at h <;> omega
+  · have h := hid z
+    rw [hD z]
+    rcases hyy with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+      simp [hza, hzc, hzd, hzs] at h <;> omega
+
+/-- **The rooted test at a degree-four hub with one odd neighbour**, at `s` and at `z`. -/
+theorem hub_four_odd_rooted (hn : Even (Fintype.card V)) {s x z : V} (hdeg : G.degree s = 4)
+    (hx : G.Adj s x) (hxodd : Odd (G.degree x)) (hNev : ∀ w, G.Adj s w → w ≠ x → Even (G.degree w))
+    (hxz : G.Adj x z) (hzs : z ≠ s) (hzN : ¬ G.Adj s z) (hzev : Even (G.degree z))
+    (hEv : ((evenSet G).filter (fun v => v ≠ s ∧ ¬ G.Adj s v ∧ v ≠ z)).card ≤ 1) {r : V}
+    (hr : r = s ∨ r = z) :
+    pathNumber (addLeaf G r) ≤ Fintype.card V / 2 := by
+  classical
+  obtain ⟨D, hsz, hs2, hz2⟩ := hub_four_odd_ends G hn hdeg hx hxodd hNev hxz hzs hzN hzev hEv
+  have hend : D.ends r ≠ 0 := by
+    rcases hr with rfl | rfl <;> omega
+  calc pathNumber (addLeaf G r) ≤ leafCost D r := pathNumber_addLeaf_le D r
+    _ = D.size := by simp [leafCost, hend]
+    _ ≤ Fintype.card V / 2 := by omega
+
+
+end rootedTail
+
 /-! ### Fan's alternative -/
 
 section alternative
@@ -749,5 +1071,35 @@ theorem fan_alternative (D : PathDecomp K) (u : V) (T : Finset V) (huT : u ∉ T
 end count
 
 end alternative
+
+/-! ### The critical order-8 loser `Gqz~vw` -/
+
+section gqz
+
+/-- Adjacency of `Gqz~vw`: `K₈` minus `{03, 12, 23, 34, 56, 67}`. -/
+def gqzAdj (a b : Fin 8) : Bool :=
+  a != b && !([(0, 3), (1, 2), (2, 3), (3, 4), (5, 6), (6, 7)].any
+    (fun p : ℕ × ℕ => (p.1 == a.val && p.2 == b.val) || (p.1 == b.val && p.2 == a.val)))
+
+theorem gqzAdj_symm : ∀ a b : Fin 8, gqzAdj a b = true → gqzAdj b a = true := by decide
+theorem gqzAdj_irrefl : ∀ a : Fin 8, gqzAdj a a = false := by decide
+
+/-- The critical order-8 graph `Gqz~vw` (graph6). -/
+def gqzGraph : SimpleGraph (Fin 8) where
+  Adj a b := gqzAdj a b = true
+  symm := ⟨fun a b h => gqzAdj_symm a b h⟩
+  loopless := ⟨fun a h => by rw [gqzAdj_irrefl] at h; exact Bool.false_ne_true h⟩
+
+instance : DecidableRel gqzGraph.Adj := fun a b => inferInstanceAs (Decidable (gqzAdj a b = true))
+
+/-- **The critical order-8 loser of the original Fan game is closed by the odd-neighbour hub.**
+`Gqz~vw` is 4-connected with `p = 4 = n/2`, and the original game loses it at the root `3`. Hub
+`s = 3` (degree 4), odd neighbour `x = 6`, and `z = 0`. -/
+theorem gqz_rooted_three : pathNumber (addLeaf gqzGraph 3) ≤ Fintype.card (Fin 8) / 2 :=
+  hub_four_odd_rooted gqzGraph (by decide) (s := 3) (x := 6) (z := 0) (by decide) (by decide)
+    (by decide) (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
+    (Or.inl rfl)
+
+end gqz
 
 end Gallai
