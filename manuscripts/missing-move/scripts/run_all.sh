@@ -8,8 +8,8 @@ D=$(dirname "$0"); O=$D/outputs; C8=$D/../../../data/conn8.g6
 # Theorem 3.1: completeness at order 8 with path insertion
 python3 $D/fan_game.py $C8 4 np > $O/sweep8_np4.log              # 47 graphs lose with |F| <= 4
 grep LOSE $O/sweep8_np4.log | awk '{print $2}' > $O/np4_losers.g6
-$D/stepper.sh $O/np4_losers.g6 np > $O/step_np.log                # each wins with |F| in {5,6}
-python3 $D/orbit_run.py $O/dense7.g6 5 8 np > $O/dense7_orbits.log # the 7 dense ones, per root orbit
+$D/stepper.sh $O/np4_losers.g6 np > $O/step_np.log                # the 40 sparser ones win with |F| in {5,6}
+python3 $D/orbit_run.py $O/dense7.g6 5 8 np > $O/dense7_orbits.log # the 7 dense ones (6, 7, 8; K8-PM: see below)
 # Proposition 4.3: Posa moves repair no losing root
 python3 $D/fan_game.py $O/losers5.g6 4 rot2 > $O/rot2_k4.log
 python3 $D/fan_game.py $O/losers5.g6 4 alt2 > $O/alt2_k4.log
@@ -18,8 +18,14 @@ python3 $D/fan_game.py $O/losers5.g6 6 alt1 > $O/alt1_k6.log
 for gr in "GsRvnk 2" "GsRvnk 3" "GsZvnk 4" "Gqrvn[ 2" "Gqzvn[ 4" "Gqzl|{ 1"; do
   set -- $gr; echo "=== $1 root $2"; python3 $D/certificate.py "$1" $2 6; done > $O/certificates.txt
 # Section 5: order-10 families (hub-shaped held sets: a full star plus k edges)
-python3 $D/families.py
+(cd $O && python3 ../families.py)
 for g in A44 A62 B B2; do for k in 0 1 2; do
-  echo "$g k=$k: $(python3 $D/fan_game.py $g.g6 $k np hubs | tail -1)"; done; done > $O/fam_np.log
+  echo "$g k=$k: $(python3 $D/fan_game.py $O/$g.g6 $k np hubs | tail -1)"; done; done > $O/fam_np.log
 # independent CP-SAT check of the rooted test
-python3 $D/rootcheck.py $O/losers5.g6 A62.g6 B.g6 B2.g6 > $O/rootcheck.log
+python3 $D/rootcheck.py $O/losers5.g6 $O/A62.g6 $O/B.g6 $O/B2.g6 > $O/rootcheck.log
+# K8 minus a perfect matching: every held set of size 8 loses, the star plus three edges wins
+python3 $D/single_root.py 'Gr~v~w' 0 8 > $O/k8pm.log
+python3 $D/certificate.py 'Gr~v~w' 0 9 'F=((0,1),(0,2),(0,4),(0,5),(0,6),(0,7),(1,3),(1,4),(2,4))' > $O/certificate_K8M.txt
+# order 10 with a star plus three held edges, one root per orbit (run from outputs/, where the .g6 files are)
+(cd $O && python3 ../fam_hub34.py A62 3 > famhub_A62_3.log && python3 ../fam_hub34.py B2 3 > famhub_B2_3.log)
+python3 $D/certificate.py 'I~~~wF{~G' 0 10 'F=((0,1),(0,2),(0,6),(1,2),(1,6),(2,6),(3,6),(4,6),(5,6),(6,7))' > $O/certificate_B2.txt
