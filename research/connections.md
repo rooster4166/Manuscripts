@@ -263,3 +263,29 @@ So the bound transfers for free when n − |S| is odd. When n − |S| is even, t
 **The gluing tool.** two-vertex-separators Thm 1 (an exact gluing formula with five endpoint types and the disjointness matching number ρ) and Thm 7 (all attainable endpoint vectors) are exactly what (b) needs.
 
 **Test.** (a) at n = 8 on all 2,388 three-connected graphs (critical ones only): running.
+
+## O. The second descent step is a "Lovász theorem for two even vertices"
+
+**Dictionary.** Let G have even order, E its even vertices, and u ≠ v ∈ E. Let z be a new vertex joined to E − {u, v}, and ℓ a new leaf at z. Then
+
+  E − {u, v} is realisable in G  ⇔  G + z + ℓ has a decomposition into |odd|/2 paths.
+
+The graph G + z + ℓ has exactly two even vertices, u and v. A decomposition into |odd|/2 paths, i.e. one meeting the parity bound, is one with u and v internal.
+
+**Proof.**
+
+- (⇐) Every odd vertex has exactly one end. Delete ℓ and z, repairing the neighbours of z as in Lemma 2 (split those left with 0 ends).
+- (⇒) Append edges at z: pair two path ends at s, s′ ∈ E − {u, v} through z, and finish with the leaf. Counting ends shows the parity bound is met.
+
+So Lovász's theorem, covering at most one even vertex, gives the first descent step (Lemma 3), and the second step is exactly:
+
+> **Two-even-vertex Lovász problem.** Characterize the connected graphs with exactly two even vertices u, v that admit a decomposition into |odd|/2 paths.
+
+**Known.**
+
+- At most one even vertex: always (Lovász).
+- Two even vertices: not always. K4 − e fails, with u, v the two degree-2 vertices: one path cannot contain both a–u–b and a–v–b.
+
+**Why it matters.** A characterization, even a sufficient local condition such as "u and v are not degree-2 twins", would give the second faithful-descent step for most pairs.
+
+**Natural tools.** Fan's grouped transfer (now formalized), applied to the Lovász decomposition of G + z_u.

@@ -152,6 +152,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
 | Q5 | Audit SP §14 (dense exact theorem) | off the Gallai-critical path; lower priority |
+| Q6 | **Two-even-vertex Lovász problem** (connections §O): when does a graph with exactly two even vertices meet the parity bound |odd|/2? | equivalent to the second faithful-descent step; conceptual, Lean-ready |
 
 ## Log
 
