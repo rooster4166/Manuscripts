@@ -545,4 +545,511 @@ theorem spineTests_of_gallai (hG : GallaiConjecture.{u}) : SpineTests.{u} :=
 
 end forward
 
+/-! ### The parity apex is three-connected -/
+
+section apexConn
+
+variable {V : Type u} [Fintype V] [DecidableEq V] {B : SimpleGraph V} {S : Finset V}
+
+omit [Fintype V] [DecidableEq V] in
+/-- A walk of `B` lifts to the apex graph `apex B S`, through the same vertices. -/
+theorem apex_walk_of_walk : ∀ {a b : V} (p : B.Walk a b),
+    ∃ q : (apex B S).Walk (some a) (some b), q.support = p.support.map some
+  | _, _, .nil => ⟨.nil, rfl⟩
+  | _, _, .cons h p => by
+    obtain ⟨q, hq⟩ := apex_walk_of_walk p
+    exact ⟨.cons (show (apex B S).Adj (some _) (some _) from h) q, by simp [hq]⟩
+
+/-- **The apex lemma** (A2 audit, §4.2). Let `B` be two-connected and `|S| ≥ 3`. If, for every
+pair `x ≠ y`, every vertex `v ∉ {x, y}` is joined inside `B − {x, y}` to a vertex of `S` (that is,
+every component of `B − {x, y}` meets `S`), then `B` plus an apex adjacent to `S` is
+three-connected. -/
+theorem apex_kConnected_three (hB : KConnected 2 B) (hS : 3 ≤ S.card)
+    (hcomp : ∀ x y, x ≠ y → ∀ v, v ≠ x → v ≠ y →
+      ∃ s ∈ S, s ≠ x ∧ s ≠ y ∧ ∃ p : B.Walk v s, ∀ w ∈ p.support, w ≠ x ∧ w ≠ y) :
+    KConnected 3 (apex B S) := by
+  refine kConnected_of_walks ?_ ?_
+  · rw [Fintype.card_option]; have := hB.1; omega
+  intro X hX a b ha hb
+  by_cases hn : none ∈ X
+  · -- the apex is deleted: at most one old vertex is deleted, and `B` is two-connected
+    have hX' : X.eraseNone.card < 2 := by rw [Finset.card_eraseNone_of_mem hn]; omega
+    cases a with
+    | none => exact absurd hn ha
+    | some a =>
+    cases b with
+    | none => exact absurd hn hb
+    | some b =>
+    obtain ⟨p, hp⟩ := hB.walk hX' (by simpa [Finset.mem_eraseNone] using ha)
+      (by simpa [Finset.mem_eraseNone] using hb)
+    obtain ⟨q, hq⟩ := apex_walk_of_walk (S := S) p
+    refine ⟨q, fun w hw => ?_⟩
+    rw [hq, List.mem_map] at hw
+    obtain ⟨w', hw', rfl⟩ := hw
+    simpa [Finset.mem_eraseNone] using hp w' hw'
+  · -- the apex survives: join every surviving vertex to it
+    have key : ∀ v, v ∉ X → ∃ q : (apex B S).Walk v none, ∀ w ∈ q.support, w ∉ X := by
+      intro v hv
+      cases v with
+      | none => exact ⟨.nil, by simpa using hn⟩
+      | some v =>
+      have hv' : v ∉ X.eraseNone := by simpa [Finset.mem_eraseNone] using hv
+      have hcard : X.eraseNone.card ≤ 2 := by
+        rw [Finset.card_eraseNone_of_notMem hn]; omega
+      obtain ⟨t, htS, p, hp⟩ : ∃ t ∈ S, ∃ p : B.Walk v t, ∀ w ∈ p.support, w ∉ X.eraseNone := by
+        rcases Nat.lt_or_ge X.eraseNone.card 2 with hlt | hge
+        · obtain ⟨t, htS, ht⟩ := Finset.exists_mem_notMem_of_card_lt_card
+            (s := X.eraseNone) (t := S) (by omega)
+          obtain ⟨p, hp⟩ := hB.walk hlt hv' ht
+          exact ⟨t, htS, p, hp⟩
+        · obtain ⟨x, y, hxy, hXe⟩ := Finset.card_eq_two.mp (by omega : X.eraseNone.card = 2)
+          rw [hXe] at hv' ⊢
+          simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hv' ⊢
+          obtain ⟨t, htS, -, -, p, hp⟩ := hcomp x y hxy v hv'.1 hv'.2
+          exact ⟨t, htS, p, hp⟩
+      obtain ⟨q, hq⟩ := apex_walk_of_walk (S := S) p
+      refine ⟨q.concat (show (apex B S).Adj (some t) none from htS), fun w hw => ?_⟩
+      rw [Walk.support_concat, List.mem_append, List.mem_singleton, hq, List.mem_map] at hw
+      rcases hw with ⟨w', hw', rfl⟩ | rfl
+      · simpa [Finset.mem_eraseNone] using hp w' hw'
+      · exact hn
+    obtain ⟨qa, hqa⟩ := key a ha
+    obtain ⟨qb, hqb⟩ := key b hb
+    refine ⟨qa.append qb.reverse, fun w hw => ?_⟩
+    rw [Walk.support_append, List.mem_append] at hw
+    rcases hw with hw | hw
+    · exact hqa w hw
+    · exact hqb w (by rw [← List.mem_reverse, ← Walk.support_reverse]; exact List.mem_of_mem_tail hw)
+
+end apexConn
+
+/-! ### Statements of Theorems 59 and 113 -/
+
+section statements
+
+variable {V : Type u} [Fintype V]
+
+/-- Every two-connected induced subgraph of `F` has at most `m` vertices, i.e. the two-connected
+blocks of `F` have order at most `m`. -/
+def SmallBlocks (F : SimpleGraph V) (m : ℕ) : Prop :=
+  ∀ S : Finset V, KConnected 2 (F.induce (S : Set V)) → S.card ≤ m
+
+theorem smallBlocks_card (F : SimpleGraph V) : SmallBlocks F (Fintype.card V) :=
+  fun S _ => Finset.card_le_univ S
+
+/-- The two rooted assertions of Theorem 59 at the root `x`:
+`F₂(B, x) ≤ k` if `|B| = 2k` and `d(x)` is even, and `F₃(B, x) ≤ k + 1` if `|B| = 2k + 1` and
+`d(x)` is odd. -/
+def RootedAt [DecidableEq V] (B : SimpleGraph V) [DecidableRel B.Adj] (x : V) : Prop :=
+  (Even (Fintype.card V) → Even (B.degree x) →
+    ∃ D : PathDecomp B, D.size ≤ Fintype.card V / 2 ∧ 2 ≤ D.ends x) ∧
+  (Odd (Fintype.card V) → Odd (B.degree x) →
+    ∃ D : PathDecomp B, D.size ≤ Fintype.card V / 2 + 1 ∧ 3 ≤ D.ends x)
+
+end statements
+
+/-- The marked bound (1) on every connected graph whose two-connected blocks have order `≤ m`. -/
+def MarkedBoundUpTo (m : ℕ) : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (F : SimpleGraph V), F.Connected → SmallBlocks F m →
+    ∀ S : Finset V, S.Nonempty → markedNumber F S ≤ (Fintype.card V - S.card) / 2
+
+/-- **Theorem 59** (marked-reduction, p. 84), in the finite-order form recommended by the A2 audit
+(finding F1): if both rooted assertions hold on every member of the class `C` (two-connected, no
+matching cut) with at most `m + 1` vertices, then the marked bound holds on every connected graph
+whose two-connected blocks have order at most `m`. This is an explicit hypothesis here; it is not
+proved in this library. -/
+def Thm59Statement : Prop :=
+  ∀ m : ℕ, (∀ (W : Type u) [Fintype W] [DecidableEq W] (B : SimpleGraph W) [DecidableRel B.Adj],
+    InClassC B → Fintype.card W ≤ m + 1 → ∀ x, RootedAt B x) → MarkedBoundUpTo.{u} m
+
+/-- `C` is the vertex set of a component of `B − {x, y}`, and `{x, y}` is a separating pair. -/
+structure IsSepComponent {V : Type u} (B : SimpleGraph V) (x y : V) (C : Finset V) : Prop where
+  ne : x ≠ y
+  x_notMem : x ∉ C
+  y_notMem : y ∉ C
+  nonempty : C.Nonempty
+  conn : ∀ a ∈ C, ∀ b ∈ C, ∃ p : B.Walk a b, ∀ v ∈ p.support, v ∈ C
+  closed : ∀ a ∈ C, ∀ b, B.Adj a b → b ∈ C ∨ b = x ∨ b = y
+  sep : ∃ w, w ∉ C ∧ w ≠ x ∧ w ≠ y
+
+/-- **Theorem 113** (separator theorem, marked-reduction p. 127), in the form of the A2 audit's
+remark F7: let `B` be two-connected of order `n` and assume the marked bound on connected graphs
+whose blocks have order `≤ n − 2` (which Theorem 59 provides at a least-order failure). If `C` is a
+component of `B − {x, y}` for a separating pair `{x, y}`, `r ∉ C` (`r` may be a port), and every
+vertex of `C` has odd degree in `B`, then `B` passes the rooted test at `r`. -/
+def SeparatorStatement : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (B : SimpleGraph V) [DecidableRel B.Adj],
+    MarkedBoundUpTo.{u} (Fintype.card V - 2) → KConnected 2 B →
+    ∀ (x y : V) (C : Finset V), IsSepComponent B x y C → ∀ r, r ∉ C →
+      (∀ c ∈ C, Odd (B.degree c)) → RootedAt B r
+
+/-! ### Transport along an injective vertex map, with ends -/
+
+section transport
+
+variable {V V' : Type u} [DecidableEq V] [DecidableEq V'] {G : SimpleGraph V}
+  {G' : SimpleGraph V'}
+
+/-- A decomposition maps along an injective vertex map whose image of `G.edgeSet` is
+`G'.edgeSet`, with the same end counts. -/
+theorem PathDecomp.map_injective_ends (D : PathDecomp G) (f : V → V')
+    (hinj : Function.Injective f)
+    (hcov : ∀ e', e' ∈ G'.edgeSet ↔ ∃ e ∈ G.edgeSet, e.map f = e') :
+    ∃ D' : PathDecomp G', D'.size ≤ D.size ∧ ∀ v, D'.ends (f v) = D.ends v := by
+  have hpiece : ∀ P ∈ D.paths, HasPiece G' f (fun _ => true) P := by
+    intro P _
+    refine hasPiece_of_walk P.walk P.isPath ?_ (fun x _ y _ h => hinj h) (by simp [GPath.edges])
+    intro e he
+    exact (hcov _).2 ⟨e, P.walk.edges_subset_edgeSet he, rfl⟩
+  obtain ⟨D', h1, -, h3⟩ := D.project_full f (fun _ => true) Set.univ hinj.injOn (by simp)
+    (by simpa using hcov) hpiece
+  refine ⟨D', h1.trans List.countP_le_length, fun v => ?_⟩
+  rw [h3, PathDecomp.ends]
+  congr 1
+  refine List.map_congr_left (fun P _ => ?_)
+  rw [P.endsAt_eq_ite, GPath.incid, List.filter_true, List.countP_map]
+  congr 2
+  apply List.countP_congr
+  intro e _
+  simp only [Function.comp_apply, decide_eq_true_eq, Sym2.mem_map]
+  constructor
+  · rintro ⟨a, ha, hfa⟩; rwa [← hinj hfa]
+  · intro h; exact ⟨v, h, rfl⟩
+
+end transport
+
+/-! ### Few even vertices: Lovász's theorem passes the rooted test -/
+
+section fewEven
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+omit [DecidableEq V] in
+theorem card_filter_option (P : Option V → Prop) [DecidablePred P] :
+    (Finset.univ.filter P).card =
+      (if P none then 1 else 0) + (Finset.univ.filter (fun a => P (some a))).card := by
+  rw [Finset.card_filter, Finset.card_filter, Fintype.sum_option]
+
+/-- If at most two vertices lie in `{v : d(v) even} ∪ {r}`, the rooted test passes at `r` by
+Lovász's theorem (at even order with a private leaf at `r`). This is the `|S| ≤ 2` step of the
+proof of Theorem 114. -/
+theorem rootedAt_of_few_even (hL : LovaszStatement.{u}) (B : SimpleGraph V) [DecidableRel B.Adj]
+    (hB : KConnected 2 B) (r : V)
+    (hfew : (Finset.univ.filter (fun v => Even (B.degree v) ∨ v = r)).card ≤ 2) :
+    RootedAt B r := by
+  have hrS : r ∈ Finset.univ.filter (fun v => Even (B.degree v) ∨ v = r) := by simp
+  have hsub : ∀ P : V → Prop, [DecidablePred P] → (∀ v, P v → (Even (B.degree v) ∨ v = r) ∧ v ≠ r) →
+      (Finset.univ.filter P).card ≤ 1 := by
+    intro P _ hP
+    have : Finset.univ.filter P ⊆
+        (Finset.univ.filter (fun v => Even (B.degree v) ∨ v = r)).erase r := by
+      intro v hv
+      rw [Finset.mem_filter] at hv
+      exact Finset.mem_erase.mpr ⟨(hP v hv.2).2, by simpa using (hP v hv.2).1⟩
+    have := Finset.card_le_card this
+    rw [Finset.card_erase_of_mem hrS] at this
+    omega
+  have h2 := hB.le_degree r
+  constructor
+  · intro _ hr
+    have hcnt : (Finset.univ.filter (fun w => Even ((addLeaf B r).degree w))).card ≤ 1 := by
+      rw [card_filter_option, addLeaf_degree_none]
+      simp only [Nat.not_even_one, ite_false, zero_add]
+      apply hsub
+      intro v hv
+      rw [addLeaf_degree_some] at hv
+      by_cases hvr : v = r
+      · subst hvr
+        simp only [ite_true, Nat.even_add_one] at hv
+        exact absurd hr hv
+      · simp only [hvr, ite_false, add_zero] at hv
+        exact ⟨Or.inl hv, hvr⟩
+    have hp := hL _ (addLeaf B r) hcnt
+    rw [Fintype.card_option] at hp
+    obtain ⟨D, hD⟩ := exists_leafCost_le B r
+    obtain ⟨D', h1, h2⟩ := exists_two_ends D (k := Fintype.card V / 2) (by
+      have : (Fintype.card V + 1) / 2 = Fintype.card V / 2 := by
+        obtain ⟨m, hm⟩ := ‹Even (Fintype.card V)›; omega
+      omega) hr (by omega)
+    exact ⟨D', h1, h2⟩
+  · intro _ hr
+    have hcnt : (Finset.univ.filter (fun w => Even (B.degree w))).card ≤ 1 := by
+      apply hsub
+      intro v hv
+      refine ⟨Or.inl hv, ?_⟩
+      rintro rfl
+      exact (Nat.not_even_iff_odd.mpr hr) hv
+    have hp := hL _ B hcnt
+    obtain ⟨D, hD⟩ := pathNumber_spec B
+    have h3 : 3 ≤ B.degree r := by
+      rcases Nat.lt_or_ge (B.degree r) 3 with h | h
+      · have : B.degree r = 2 := by omega
+        rw [this] at hr; exact absurd hr (by decide)
+      · exact h
+    exact exists_three_ends D (hD ▸ hp) hr h3
+
+end fewEven
+
+/-! ### The converse of Theorem 114 -/
+
+section converse
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- Either some vertex of `S` is reachable from `v` in `B − {x, y}`, or the vertices reachable
+from `v` form a component of `B − {x, y}` that misses `S` and is separated from the rest. -/
+theorem exists_sepComponent_or {B : SimpleGraph V} {S : Finset V} (hS : 3 ≤ S.card) {x y : V}
+    (hxy : x ≠ y) {v : V} (hvx : v ≠ x) (hvy : v ≠ y) :
+    (∃ s ∈ S, s ≠ x ∧ s ≠ y ∧ ∃ p : B.Walk v s, ∀ w ∈ p.support, w ≠ x ∧ w ≠ y) ∨
+      ∃ C : Finset V, IsSepComponent B x y C ∧ ∀ s ∈ S, s ∉ C := by
+  classical
+  set C := Finset.univ.filter
+    (fun w => w ≠ x ∧ w ≠ y ∧ ∃ p : B.Walk v w, ∀ u ∈ p.support, u ≠ x ∧ u ≠ y) with hC
+  have memC : ∀ w, w ∈ C ↔ w ≠ x ∧ w ≠ y ∧ ∃ p : B.Walk v w, ∀ u ∈ p.support, u ≠ x ∧ u ≠ y := by
+    intro w; simp [hC]
+  -- every vertex of a walk from `v` avoiding `x, y` lies in `C`
+  have hpre : ∀ w (p : B.Walk v w), (∀ u ∈ p.support, u ≠ x ∧ u ≠ y) → ∀ u ∈ p.support, u ∈ C := by
+    intro w p hp u hu
+    refine (memC u).mpr ⟨(hp u hu).1, (hp u hu).2, p.takeUntil u hu, fun t ht => hp t ?_⟩
+    exact p.support_takeUntil_subset_support hu ht
+  by_cases hno : ∃ s ∈ S, s ∈ C
+  · obtain ⟨s, hs, hsC⟩ := hno
+    obtain ⟨h1, h2, p, hp⟩ := (memC s).mp hsC
+    exact Or.inl ⟨s, hs, h1, h2, p, hp⟩
+  push Not at hno
+  right
+  refine ⟨C, ⟨hxy, fun h => ((memC x).mp h).1 rfl, fun h => ((memC y).mp h).2.1 rfl,
+    ⟨v, (memC v).mpr ⟨hvx, hvy, .nil, by simpa using ⟨hvx, hvy⟩⟩⟩, ?_, ?_, ?_⟩, hno⟩
+  · intro a ha b hb
+    obtain ⟨-, -, pa, hpa⟩ := (memC a).mp ha
+    obtain ⟨-, -, pb, hpb⟩ := (memC b).mp hb
+    refine ⟨pa.reverse.append pb, fun u hu => ?_⟩
+    rw [Walk.support_append, List.mem_append] at hu
+    rcases hu with hu | hu
+    · rw [Walk.support_reverse, List.mem_reverse] at hu
+      exact hpre a pa hpa u hu
+    · exact hpre b pb hpb u (List.mem_of_mem_tail hu)
+  · intro a ha b hab
+    by_cases hbx : b = x
+    · exact Or.inr (Or.inl hbx)
+    by_cases hby : b = y
+    · exact Or.inr (Or.inr hby)
+    left
+    obtain ⟨-, -, pa, hpa⟩ := (memC a).mp ha
+    refine (memC b).mpr ⟨hbx, hby, pa.concat hab, fun u hu => ?_⟩
+    rw [Walk.support_concat, List.mem_append, List.mem_singleton] at hu
+    rcases hu with hu | rfl
+    · exact hpa u hu
+    · exact ⟨hbx, hby⟩
+  · obtain ⟨s, hs, hsxy⟩ := Finset.exists_mem_notMem_of_card_lt_card (s := {x, y}) (t := S)
+      (by have := Finset.card_le_two (a := x) (b := y); omega)
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hsxy
+    exact ⟨s, hno s hs, hsxy.1, hsxy.2⟩
+
+omit [Fintype V] [DecidableEq V] in
+/-- `J − none` for the apex graph has a matching cut only if `B` does. -/
+theorem not_hasMatchingCut_delVert_apex {B : SimpleGraph V} {S : Finset V}
+    (hB : ¬ HasMatchingCut B) : ¬ HasMatchingCut (delVert (apex B S) none) := by
+  rintro ⟨X, ⟨⟨w, hw⟩, hwX⟩, ⟨⟨w', hw'⟩, hw'X⟩, hm⟩
+  let ι : V → {v : Option V | v ≠ none} := fun v => ⟨some v, Option.some_ne_none v⟩
+  have hι : ∀ (w : Option V) (hw : w ∈ {v : Option V | v ≠ none}),
+      ∃ v, (⟨w, hw⟩ : {v : Option V | v ≠ none}) = ι v := by
+    intro w hw
+    cases w with
+    | none => exact absurd rfl hw
+    | some v => exact ⟨v, rfl⟩
+  apply hB
+  refine ⟨{v | ι v ∈ X}, ?_, ?_, ?_⟩
+  · obtain ⟨v, hv⟩ := hι w hw
+    exact ⟨v, by rw [Set.mem_ofPred_eq, ← hv]; exact hwX⟩
+  · obtain ⟨v, hv⟩ := hι w' hw'
+    exact ⟨v, by rw [Set.mem_compl_iff, Set.mem_ofPred_eq, ← hv]; exact hw'X⟩
+  · intro a b c hab hac hb hc
+    have := hm (ι a) (ι b) (ι c) hab hac hb hc
+    exact Option.some_injective _ (congrArg Subtype.val this)
+
+/-- The vertex map `J − none → B` for the apex graph. -/
+def unApex : {v : Option V | v ≠ none} → V := fun w => w.1.get (Option.ne_none_iff_isSome.mp w.2)
+
+omit [Fintype V] [DecidableEq V] in
+theorem unApex_injective : Function.Injective (unApex : {v : Option V | v ≠ none} → V) := by
+  rintro ⟨a, ha⟩ ⟨b, hb⟩ h
+  cases a with
+  | none => exact absurd rfl ha
+  | some a =>
+  cases b with
+  | none => exact absurd rfl hb
+  | some b =>
+  simp only [unApex, Option.get_some] at h
+  subst h; rfl
+
+omit [Fintype V] in
+/-- A decomposition of `(apex B S) − none` is a decomposition of `B`, with the same ends. -/
+theorem decomp_of_delVert_apex {B : SimpleGraph V} {S : Finset V}
+    (D : PathDecomp (delVert (apex B S) none)) :
+    ∃ D' : PathDecomp B, D'.size ≤ D.size ∧
+      ∀ v : V, D'.ends v = D.ends ⟨some v, Option.some_ne_none v⟩ := by
+  obtain ⟨D', h1, h2⟩ := D.map_injective_ends unApex unApex_injective (by
+    intro e'
+    induction e' using Sym2.inductionOn with
+    | hf a b =>
+    constructor
+    · intro hab
+      exact ⟨s(⟨some a, Option.some_ne_none a⟩, ⟨some b, Option.some_ne_none b⟩), hab, rfl⟩
+    · rintro ⟨e, he, hmap⟩
+      induction e using Sym2.inductionOn with
+      | hf c d =>
+      obtain ⟨c, hc⟩ := c
+      obtain ⟨d, hd⟩ := d
+      cases c with
+      | none => exact absurd rfl hc
+      | some c =>
+      cases d with
+      | none => exact absurd rfl hd
+      | some d =>
+      simp only [Sym2.map_mk, unApex, Option.get_some] at hmap
+      rw [← hmap]
+      exact he)
+  exact ⟨D', h1, fun v => h2 ⟨some v, Option.some_ne_none v⟩⟩
+
+/-- **The core of Theorem 114's converse.** Let `B ∈ C`, and assume the marked bound for blocks of
+order `≤ |B| − 2`, Lovász, the separator theorem, and the two deletion tests (restricted to `J − z`
+without a matching cut). Then `B` passes the rooted test at every `r`.
+
+Proof: with `S = {even vertices} ∪ {r}`: if `|S| ≤ 2`, Lovász. If some component behind a
+separating pair avoids `r` and has only odd vertices, Theorem 113. Otherwise every such component
+meets `S`, so `J = B + z(S)` is three-connected; its only even vertices are `z` (even order) or
+`z, r` (odd order), and the deletion test on `J − z = B` is the rooted test. -/
+theorem rootedAt_of_tests (hL : LovaszStatement.{u}) (hsep : SeparatorStatement.{u})
+    (hT : SpineTestsNMC.{u}) (B : SimpleGraph V) [DecidableRel B.Adj] (hC : InClassC B)
+    (hMB : MarkedBoundUpTo.{u} (Fintype.card V - 2)) (r : V) : RootedAt B r := by
+  set S := Finset.univ.filter (fun v => Even (B.degree v) ∨ v = r) with hSdef
+  have memS : ∀ v, v ∈ S ↔ Even (B.degree v) ∨ v = r := by intro v; simp [hSdef]
+  by_cases hfew : S.card ≤ 2
+  · exact rootedAt_of_few_even hL B hC.1 r hfew
+  push Not at hfew
+  by_cases hsc : ∃ x y C, IsSepComponent B x y C ∧ r ∉ C ∧ ∀ c ∈ C, Odd (B.degree c)
+  · obtain ⟨x, y, C, h1, h2, h3⟩ := hsc
+    exact hsep V B hMB hC.1 x y C h1 r h2 h3
+  push Not at hsc
+  -- every component of `B − {x, y}` meets `S`
+  have hcomp : ∀ x y, x ≠ y → ∀ v, v ≠ x → v ≠ y →
+      ∃ s ∈ S, s ≠ x ∧ s ≠ y ∧ ∃ p : B.Walk v s, ∀ w ∈ p.support, w ≠ x ∧ w ≠ y := by
+    intro x y hxy v hvx hvy
+    rcases exists_sepComponent_or (B := B) (by omega : 3 ≤ S.card) hxy hvx hvy with h | ⟨C, hC', hSC⟩
+    · exact h
+    · exfalso
+      obtain ⟨c, hcC, hc⟩ := hsc x y C hC' (hSC r ((memS r).mpr (Or.inr rfl)))
+      exact hSC c ((memS c).mpr (Or.inl hc)) hcC
+  have hJ : KConnected 3 (apex B S) := apex_kConnected_three hC.1 (by omega) hcomp
+  have hnmc := not_hasMatchingCut_delVert_apex (S := S) hC.2
+  obtain ⟨t1, t2⟩ := hT (Option V) (apex B S) none hJ hnmc
+  have hzr : (apex B S).Adj none (some r) := (memS r).mpr (Or.inr rfl)
+  -- the parity of `|S|`
+  have hsplit := Finset.card_filter_add_card_filter_not
+    (s := Finset.univ) (fun v => Even (B.degree v) ∨ v = r)
+  have hhand := B.even_card_odd_degree_vertices
+  rw [Finset.card_univ, ← hSdef] at hsplit
+  have hdeg_some := fun v => apex_degree_some (G := B) (T := S) v
+  have h3 := hC.1.le_degree r
+  constructor
+  · intro hn hr
+    have hneg : Finset.univ.filter (fun v => ¬ (Even (B.degree v) ∨ v = r)) =
+        Finset.univ.filter (fun v => Odd (B.degree v)) := by
+      ext v
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_or, ← Nat.not_even_iff_odd]
+      constructor
+      · exact fun h => h.1
+      · rintro h; exact ⟨h, by rintro rfl; exact h hr⟩
+    rw [hneg] at hsplit
+    have hSev : Even S.card := by
+      obtain ⟨a, ha⟩ := hn; obtain ⟨b, hb⟩ := hhand
+      exact ⟨a - b, by omega⟩
+    have hev : ∀ w, Even ((apex B S).degree w) ↔ w = none := by
+      intro w
+      cases w with
+      | none => simpa [apex_degree_none] using hSev
+      | some v =>
+        rw [hdeg_some v]
+        simp only [reduceCtorEq, iff_false]
+        by_cases hv : Even (B.degree v)
+        · simp only [(memS v).mpr (Or.inl hv), ite_true, Nat.even_add_one]
+          exact not_not.mpr hv
+        · have hvr : v ≠ r := by rintro rfl; exact hv hr
+          have hvS : v ∉ S := by rw [memS]; tauto
+          simp only [hvS, ite_false, add_zero]; exact hv
+    obtain ⟨D, hD1, hD2⟩ := t1 hev (some r) hzr
+    obtain ⟨D', h1, h2⟩ := decomp_of_delVert_apex D
+    refine ⟨D', ?_, by rw [h2 r]; exact hD2⟩
+    rw [Fintype.card_option] at hD1
+    simpa using h1.trans hD1
+  · intro hn hr
+    have hneg : Finset.univ.filter (fun v => ¬ (Even (B.degree v) ∨ v = r)) =
+        (Finset.univ.filter (fun v => Odd (B.degree v))).erase r := by
+      ext v
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_or, ← Nat.not_even_iff_odd,
+        Finset.mem_erase]
+      tauto
+    have hrodd : r ∈ Finset.univ.filter (fun v => Odd (B.degree v)) := by simpa using hr
+    rw [hneg, Finset.card_erase_of_mem hrodd] at hsplit
+    have hpos : 1 ≤ (Finset.univ.filter (fun v => Odd (B.degree v))).card :=
+      Finset.card_pos.mpr ⟨r, hrodd⟩
+    have hSev : Even S.card := by
+      obtain ⟨a, ha⟩ := hn; obtain ⟨b, hb⟩ := hhand
+      exact ⟨a - b + 1, by omega⟩
+    have hev : ∀ w, Even ((apex B S).degree w) ↔ w = none ∨ w = some r := by
+      intro w
+      cases w with
+      | none => simpa [apex_degree_none] using hSev
+      | some v =>
+        rw [hdeg_some v]
+        simp only [reduceCtorEq, false_or, Option.some.injEq]
+        by_cases hvr : v = r
+        · subst hvr
+          simp only [(memS v).mpr (Or.inr rfl), ite_true, Nat.even_add_one, Nat.not_even_iff_odd]
+          simpa using hr
+        · by_cases hv : Even (B.degree v)
+          · simp only [(memS v).mpr (Or.inl hv), ite_true, Nat.even_add_one]
+            simpa [hvr] using hv
+          · have hvS : v ∉ S := by rw [memS]; tauto
+            simp only [hvS, ite_false, add_zero]
+            simpa [hvr] using hv
+    obtain ⟨D, hD1, hD2⟩ := t2 (some r) hzr hev
+    obtain ⟨D', h1, h2⟩ := decomp_of_delVert_apex D
+    refine ⟨D', ?_, by rw [h2 r]; exact hD2⟩
+    rw [Fintype.card_option] at hD1
+    have : (Fintype.card V + 1) / 2 = Fintype.card V / 2 + 1 := by
+      obtain ⟨a, ha⟩ := hn; omega
+    omega
+
+/-- **Theorem 114, converse direction** (modulo Lovász, Theorem 59 and Theorem 113, all explicit
+hypotheses): the two deletion tests on three-connected graphs, even restricted to `J − z` without a
+matching cut, imply Gallai's conjecture. Every member of `C` passes both rooted tests, by strong
+induction on the order (Theorem 59 turns the tests below order `n` into the marked bound for
+blocks of order `≤ n − 2`); Theorem 59 then gives the marked bound everywhere, and a single mark
+gives Gallai. -/
+theorem gallai_of_spineTestsNMC (hL : LovaszStatement.{u}) (h59 : Thm59Statement.{u})
+    (hsep : SeparatorStatement.{u}) (hT : SpineTestsNMC.{u}) : GallaiConjecture.{u} := by
+  have key : ∀ n, ∀ (V : Type u) [Fintype V] [DecidableEq V] (B : SimpleGraph V)
+      [DecidableRel B.Adj], Fintype.card V = n → InClassC B → ∀ r, RootedAt B r := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+    intro V _ _ B _ hn hC r
+    have h3 := hC.1.1
+    have hMB : MarkedBoundUpTo.{u} (Fintype.card V - 2) :=
+      h59 _ (fun W _ _ B' _ hC' hcard x => ih _ (by omega) W B' rfl hC' x)
+    exact rootedAt_of_tests hL hsep hT B hC hMB r
+  intro W _ G hG
+  classical
+  have hMB := h59 (Fintype.card W) (fun W' _ _ B _ hC _ x => key _ W' B rfl hC x)
+  obtain ⟨r⟩ := hG.nonempty
+  have h1 := hMB W G hG (smallBlocks_card G) {r} (Finset.singleton_nonempty r)
+  have h2 := pathNumber_le_markedNumber_add G {r}
+  have h3 : 0 < Fintype.card W := Fintype.card_pos_iff.mpr ⟨r⟩
+  rw [Finset.card_singleton] at h1 h2
+  omega
+
+end converse
+
 end Gallai
