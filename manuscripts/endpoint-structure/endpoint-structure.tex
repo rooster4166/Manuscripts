@@ -1,0 +1,274 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cF}{\mathcal F}
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+
+\title{Endpoint sets of path decompositions at the Gallai budget}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+
+
+\begin{document}
+\begin{abstract}
+For a graph $G$ of even order $n$ with even-degree vertices $\Ev$, call $S\subseteq\Ev$
+\emph{realisable} if some partition of $E(G)$ into simple paths has exactly two ends at every vertex
+of $S$, none at the other even vertices, and exactly one at every odd vertex. Such a partition has
+$|\Od|/2+|S|$ paths, so Gallai's conjecture (in its rooted even-order form) asks that in every graph
+with $p(G)=n/2$ every even vertex lies in a realisable set of size $|\Ev|/2$.
+We record the elementary structure of the realisable family: it is an up-set, it contains $\Ev$ and
+$\Ev\setminus\{u\}$ for every even $u$ (both from Lov\'asz's theorem on an apex extension), and it is
+characterised by the parity-tightness of the graph with private leaves attached at $S$.
+We show by explicit examples that three natural strengthenings fail: a complementary-pair property,
+and uniformity of the realisable half-sets in $2$-connected graphs, both with and without the
+hypothesis $p(G)=n/2$. Exhaustive computation through order six (and order eight for the stated
+cases) supports the conjecture that in every graph with $p(G)=n/2$ the minimal realisable sets are
+the bases of a loopless matroid. This conjecture would settle all deletion degrees of the
+three-connected rooted test simultaneously.
+\end{abstract}
+\maketitle
+
+\section{Setting}
+
+All graphs are finite and simple. A \emph{path} is a nonempty simple path; a \emph{partition} of a
+graph is a partition of its edge set into paths, and $p(G)$ is the least size of a partition. For a
+partition $P$ and a vertex $v$ write $b_P(v)$ for the number of ends of paths of $P$ at $v$, counted
+with multiplicity. Since every path through $v$ uses one or two edges at $v$ according as $v$ is an
+end or an interior vertex of it,
+\begin{equation}\label{eq:parity}
+b_P(v)\equiv d(v)\pmod 2,\qquad \sum_v b_P(v)=2|P|.
+\end{equation}
+Write $\Od=\Od(G)$ and $\Ev=\Ev(G)$ for the sets of odd-degree and of even positive-degree
+vertices, $o=|\Od|$, $e=|\Ev|$. For a graph without isolated vertices $o+e=n$, and $o$ is even.
+
+Gallai's conjecture asserts $p(G)\le\lceil n/2\rceil$ for connected $G$. It is equivalent to the
+following rooted statement at even order~\cite{REC,SP}: for every connected $H$ of order $2k$ and
+every $r\in V(H)$, the graph $H^r$ obtained by attaching a new leaf at $r$ satisfies $p(H^r)\le k$.
+If $p(H)<k$ this holds trivially (split a path at an interior visit to $r$, or extend a path already
+ending at $r$), and if $d(r)$ is odd a minimum partition already has an end at $r$. Hence the rooted
+statement is equivalent to:
+
+\begin{quote}
+\textbf{(R)} If $H$ is connected of even order $n$ with $p(H)=n/2$, then every even vertex is an end
+of some partition of $H$ into $n/2$ paths.
+\end{quote}
+We call a graph of even order with $p(H)=n/2$ \emph{critical}.
+
+\section{Realisable sets}
+
+\begin{definition}
+A set $S\subseteq\Ev$ is \emph{realisable} if $G$ has a partition $P$ with $b_P=1$ on $\Od$, $b_P=2$
+on $S$ and $b_P=0$ on $\Ev\setminus S$. Such a partition has $o/2+|S|$ paths by \eqref{eq:parity}.
+Write $\cF(G)$ for the family of realisable sets.
+\end{definition}
+
+\begin{lemma}[Up-closure]\label{lem:up}
+If $S\in\cF(G)$ and $S\subseteq T\subseteq \Ev$ then $T\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+It suffices to add one vertex $v\in\Ev\setminus S$. In a partition realising $S$ the vertex $v$ has no
+ends and positive degree, so it is interior to some path; splitting that path at $v$ gives two
+nonempty paths and two ends at $v$, and changes no other end count.
+\end{proof}
+
+We use Lov\'asz's theorem~\cite{L68}: \emph{a graph on $N$ vertices with at most one vertex of even
+degree has a partition into $\lfloor N/2\rfloor$ paths.} (Isolated vertices are allowed; apply the
+theorem componentwise.)
+
+\begin{lemma}[Faithful partitions]\label{lem:faithful}
+$\Ev\in\cF(G)$ for every graph $G$ without isolated vertices.
+\end{lemma}
+
+This is Cai's theorem on faithful path partitions~\cite{Cai}; we include the short deduction from
+Lov\'asz's theorem since the same device gives Lemma~\ref{lem:minus}.
+
+\begin{proof}
+If $\Ev=\emptyset$ the claim is Lov\'asz's theorem itself. Otherwise form $G^+$ by adding a vertex
+$z$ adjacent to every vertex of $\Ev$. In $G^+$ every vertex of $G$ has odd degree and $d(z)=e$.
+If $e$ is odd, all $N=n+1$ vertices of $G^+$ are odd, so $N$ is even and Lov\'asz gives $N/2$ paths,
+each vertex being an end exactly once (there are $N$ odd vertices and $N$ ends). If $e$ is even, $z$
+is the unique even vertex, $N=n+1$ is odd, Lov\'asz gives $(N-1)/2$ paths and the $N-1$ odd vertices
+absorb all $N-1$ ends, so $z$ has none. In both cases every vertex of $G$ is an end of exactly one path of the partition of
+$G^+$. Delete $z$, discarding any piece without edges. Only the neighbours of $z$ change their end
+counts, and each $w\in N(z)$ loses exactly its edge $zw$. Let $Q$ be the path carrying $zw$. If $w$ is
+interior to $Q$, then $w$ becomes an end of a piece of $Q$, so $w$ now has two ends. If $w$ is an end of
+$Q$, then $zw$ is the end edge of $Q$ at $w$; removing it removes the unique end of $w$ (the piece of
+$Q$ on the far side of $z$ survives, if nonempty, and the piece $\{w\}$ is discarded), so $w$ now has no
+end. Thus every $w\in N(z)$ ends with $0$ or $2$ ends and every other vertex keeps its count. Finally
+each $w\in N(z)$ with no end has positive even degree in $G$, so it is interior to some path, and we
+split that path at $w$. The resulting partition realises $\Ev$.
+\end{proof}
+
+\begin{lemma}[Removing one vertex]\label{lem:minus}
+Let $G$ have even order and no isolated vertex. For every $u\in\Ev$, $\Ev\setminus\{u\}\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+Since $n$ is even, $e$ is even. Add a vertex $z$ adjacent to every vertex of $\Ev\setminus\{u\}$. In the
+resulting graph $G^+$ on $N=n+1$ vertices the vertices of $\Ev\setminus\{u\}$ and of $\Od$ are odd,
+$d(z)=e-1$ is odd, and $u$ is the unique even vertex. Lov\'asz's theorem gives a partition into
+$(N-1)/2=n/2$ paths; the $n$ odd vertices of $G^+$ absorb all $n$ ends, so each has exactly one end
+and $u$ has none. In particular $z$ is the end of exactly one path. Delete $z$ and repair exactly as
+in the proof of Lemma~\ref{lem:faithful}: each $w\in N(z)=\Ev\setminus\{u\}$ ends with $0$ or $2$
+ends and is split if it has none, while $u$ and the odd vertices are not adjacent to $z$ and keep $0$
+and $1$ ends respectively.
+\end{proof}
+
+Lemma~\ref{lem:minus} says that the first step of any descent from the faithful partition succeeds,
+for every choice of the vertex kept.
+
+\begin{lemma}[Leaf dictionary]\label{lem:dict}
+For $S\subseteq\Ev$ let $G^S$ be $G$ with a new leaf attached at each vertex of $S$. Then $S\in\cF(G)$
+if and only if $p(G^S)=|\Od(G^S)|/2$.
+\end{lemma}
+
+\begin{proof}
+$\Od(G^S)=\Od(G)\cup S\cup L$, where $L$ is the set of new leaves, so $|\Od(G^S)|=o+2|S|$. If $P$
+realises $S$, append each new leaf edge to one of the two paths ending at its attachment vertex
+(different leaves at different vertices use different ends). This gives $o/2+|S|$ paths. Conversely a
+partition of $G^S$ into $|\Od(G^S)|/2$ paths has exactly one end at each odd vertex of $G^S$ and none at
+the vertices of $\Ev\setminus S$. A leaf edge $s\ell$ is the end edge of its path. If that path has
+another edge, trimming the leaf leaves $s$ with two ends. If the path is the single edge $s\ell$,
+deleting it leaves $s$ with no ends, and $s$ is then interior to another path, at which we split. In
+every case the result realises $S$.
+\end{proof}
+
+\begin{corollary}\label{cor:R}
+For a critical graph $H$, every realisable set has size at least $e/2$, and (R) holds for $H$ at the
+even vertex $r$ if and only if $r$ lies in a realisable set of size exactly $e/2$, or $r$ is an end in
+a partition of $H$ into $n/2$ paths in which some odd vertex has at least three ends.
+\end{corollary}
+
+\begin{proof}
+A realisable $S$ gives $o/2+|S|\ge p(H)=n/2=(o+e)/2$ paths. The second statement restates (R),
+distinguishing whether the partition has a simple profile.
+\end{proof}
+
+\section{Three strengthenings that fail}
+
+\begin{proposition}[Complementary pairs]\label{prop:cp}
+There are connected graphs $G$ of odd order, outside the odd semi-cliques, with no pair of partitions
+$P_1,P_2$ such that $b_{P_1}=b_{P_2}=1$ on $\Od$ and $\{b_{P_1}(v),b_{P_2}(v)\}=\{0,2\}$ for every
+$v\in\Ev$. An example is $K_3\vee \overline{K_4}$.
+\end{proposition}
+
+\begin{proof}
+Let $G=K_3\vee\overline{K_4}$. The three triangle vertices have degree $6$ and the other four have
+degree $3$, so $n=7$, $o=4$, $e=3$. Such a pair would satisfy $|P_1|+|P_2|=(2o+2e)/2=7$. Since a
+vertex of degree $6$ needs at least three paths, both partitions have at least three paths, and one of
+them, say $P_1$, has exactly three paths and exposes exactly $|P_1|-o/2=1$ even vertex. But in a
+partition into three paths a vertex of degree $6$ is interior to all three paths, so no even vertex can
+be an end of $P_1$, a contradiction. Note $p(G)=3=\lfloor 7/2\rfloor$.
+\end{proof}
+
+\begin{proposition}[Non-critical $2$-connected graphs]\label{prop:uhcstar}
+Let $G$ have vertices $0,\dots,5$ and edges $01,02,03,05,14,25,35,45$. Then $G$ is $2$-connected, all
+degrees are even, $p(G)=2<3$, and the half-set $\{0,1,4\}$ of even vertices is not realisable.
+\end{proposition}
+
+\begin{proof}
+Suppose a partition has ends exactly at $0,1,4$ (two each) and none at $2,3,5$. Since $2$ and $3$
+are interior, the paths contain the segments $0\,2\,5$ and $0\,3\,5$. At the interior vertex $5$ the
+four edges $52,53,50,54$ are paired into two transitions. Pairing $52$ with $53$ closes the cycle
+$0\,2\,5\,3\,0$; pairing $52$ with $50$ closes $0\,2\,5\,0$; likewise $53$ cannot pair with $50$. So
+$50$ pairs with $54$, and then $52$ must pair with $53$, a contradiction. The value $p(G)=2$ is
+attained by the paths $2\,0\,1\,4\,5\,3$ and $2\,5\,0\,3$.
+\end{proof}
+
+\begin{proposition}[Critical $2$-connected graphs]\label{prop:uhc}
+Let $G$ have vertices $0,\dots,7$, with $0$ adjacent to all others, $6$ adjacent to $1,2,7$ and $7$
+adjacent to $3,4,5,6$. Then $G$ is $2$-connected, $p(G)=4=n/2$ (forced by $d(0)=7$), the even vertices
+are $1,\dots,6$, and neither half-set $\{3,4,5\}$ nor $\{1,2,6\}$ is realisable. All other $18$
+half-sets are realisable, and they form the bases of a sparse paving matroid.
+\end{proposition}
+
+\begin{proof}[Proof of non-realisability]
+For $\{3,4,5\}$: the even vertices $1,2,6$ would be interior, giving segments $0\,1\,6$ and $0\,2\,6$.
+At $6$ (degree $4$, interior) pairing $61$ with $62$, $61$ with $60$, or $62$ with $60$ closes a
+cycle through $0$, so both $61$ and $62$ must pair with $67$, which is impossible. For $\{1,2,6\}$:
+$3,4,5$ are interior, giving segments $0\,3\,7$, $0\,4\,7$, $0\,5\,7$. At $7$, which has degree $5$ and
+exactly one end, no two of $73,74,75$ can be paired with each other, nor with $70$, without closing a
+cycle through $0$. So at most one of them pairs with $76$ and at most one is the end edge, leaving the
+third unmatched, a contradiction.
+The realisability of the other $18$ half-sets was verified by exact search (Appendix~\ref{app:comp}).
+\end{proof}
+
+\begin{proposition}[Critical graphs need not be forced]\label{prop:notforced}
+For $k\ge3$ let $H$ be $K_{2k+1}$ minus two disjoint edges $ac,bd$, and add a vertex $w$ adjacent to
+$a,b$. The resulting graph $G$ is $2$-connected of order $n=2k+2$, has maximum degree $n-2$, has
+exactly $(n/2-1)(n-1)$ edges and $o=2$ odd vertices, and satisfies $p(G)\ge n/2$.
+\end{proposition}
+
+\begin{proof}
+$|E(G)|=\binom{2k+1}{2}-2+2=k(2k+1)$. A partition into $k$ paths would have to use $k$ paths of length
+$2k+1=n-1$, that is, $k$ Hamilton paths. Each contains $w$, but $d(w)=2$, so $w$ lies on at most one
+path; this is impossible for $k\ge2$. The other assertions are immediate.
+\end{proof}
+
+So the trivial lower bounds $o/2$, $\lceil\Delta/2\rceil$, $\lceil m/(n-1)\rceil$ do not detect all
+critical graphs, and (R) has content beyond the dense regime.
+
+\section{The endpoint matroid conjecture}
+
+\begin{conjecture}[Endpoint matroid]\label{conj:emc}
+If $H$ is connected and critical, the minimal members of $\cF(H)$ are the bases of a matroid on
+$\Ev(H)$ of rank $e/2$ without loops.
+\end{conjecture}
+
+By Lemma~\ref{lem:up}, the conjecture says that $\cF(H)$ is the family of spanning sets of a loopless
+matroid. Looplessness is exactly (R), via the simple-profile half of Corollary~\ref{cor:R}. Hence the
+conjecture implies Gallai's conjecture.
+
+\begin{conjecture}[Faithful descent]\label{conj:fd}
+If $G$ is connected of even order, then every $S\in\cF(G)$ with $|S|>e/2$ and every $r\in S$ admit
+some $u\in S\setminus\{r\}$ with $S\setminus\{u\}\in\cF(G)$.
+\end{conjecture}
+
+Starting from Lemma~\ref{lem:faithful} and descending, Conjecture~\ref{conj:fd} yields (R). By
+Lemma~\ref{lem:minus} its first step always succeeds.
+
+\begin{remark}[Relation to the deletion tests]
+In the three-connected reduction of~\cite{MR}, $J$ has a unique even vertex $z$ of degree $d$,
+$B=J-z$ has $\Ev(B)=N_J(z)$, and one asks for a partition of $B$ into $(|J|-1)/2$ paths with two ends
+at a prescribed $r\in N_J(z)$. Lov\'asz's theorem on $J$ restricted to $B$ is exactly the faithful
+partition of Lemma~\ref{lem:faithful}, and the test asks for $d/2$ descent steps keeping $r$. Both
+conjectures treat every $d$ at once.
+\end{remark}
+
+\section*{Computational evidence}\label{app:comp}
+
+The accompanying programs (\texttt{tools/} in the project repository) compute exact partitions by
+enumerating simple paths and solving an exact-cover integer program (OR-Tools CP-SAT). Every
+partition returned was independently checked. On all connected graphs of order at most six,
+Conjectures~\ref{conj:emc} and~\ref{conj:fd} hold; the realisable family of every critical graph of
+order four or six is the spanning family of a loopless matroid, uniform whenever the graph is
+$2$-connected. [Order eight: in progress.] The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
+were found by the same exhaustive searches.
+
+\begin{thebibliography}{9}
+\bibitem{Cai} M.~Cai, Faithful path partitions (as cited in the short-faithful manuscript).
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, 1968, 231--236.
+\bibitem{MR} J.~Williams, Cut vertices and cycle intersections in Gallai's path decomposition problem,
+manuscript, November 2026.
+\bibitem{REC} J.~Williams, Root endpoints and cut inequalities in path decompositions, manuscript,
+November 2026.
+\bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, manuscript,
+November 2026.
+\end{thebibliography}
+\end{document}
