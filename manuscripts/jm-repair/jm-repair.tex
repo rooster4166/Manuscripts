@@ -979,7 +979,61 @@ Hamiltonian decompositions to Hamiltonian decompositions. So the given copy of $
 in some Hamiltonian decomposition, contradicting the choice of $H$.
 \qed
 
-%%COMP%%
+\section{Computational sanity checks}\label{sec:computations}
+
+None of the proofs depends on these computations. They test the reductions and the
+inequalities on small cases, so that an error in a reduction or in a case analysis would
+probably show up. The scripts are in \texttt{manuscripts/jm-repair/scripts/} and the logs in
+\texttt{manuscripts/jm-repair/data/}. We used Python with \texttt{networkx} (max-flow) and
+OR-Tools CP-SAT.
+
+\begin{itemize}[leftmargin=*]
+\item \emph{Instances.} \texttt{solvers.one\_vertex\_step} grows decompositions of $K_m$ one
+vertex at a time. Each step solves a CP-SAT model of a Hilton one-vertex step with a random
+objective. \texttt{test\_adversarial.py} uses a variant whose objective keeps about half the
+colours as tight as possible, so that many colours have $p_i=k$ or $p_i=k-1$. The set $U$ is
+then chosen among colours with $p_i\le k-1$, preferring $p_i=k-1$, with $|U|$ as large as
+$2|U|\le k-2$ allows, and every $c\in U$ is tested.
+
+\item \emph{Three independent tests of Theorem~\ref{thmB}} on each instance:
+  \begin{itemize}
+  \item a direct CP-SAT search for an extension under (V1)--(V4), each solution re-checked at
+  graph level (linear forests and targets);
+  \item feasibility of the network $D$ by max-flow with lower bounds;
+  \item brute force over all $B\subseteq V$ of the cut conditions (UH) and (LH).
+  \end{itemize}
+  Random instances (\texttt{test\_random.py}, seeds 21--23, $n\le10$): $712$ cases.
+  Adversarial instances (\texttt{test\_adversarial.py}, seeds 31--33, $n\le10$): $1013$ cases.
+  Every case was feasible, and the three tests agreed in every case.
+
+\item \emph{The bound on $|U|$} (\texttt{test\_noUbound.py}). We took $U$ to be all colours with
+$p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible
+(the three tests again agreed). In every infeasible case (UH) held and (LH) failed already at
+$B=\emptyset$. This matches Proposition~\ref{prop:UH}, which does not use the bound, and
+Remark~\ref{rem:sharp}.
+
+\item \emph{Lemma~\ref{lem:valid}} (\texttt{check\_valid\_lemma.py}). On $40$ random small
+instances ($m\le4$, $n\le4$) we enumerated all $306{,}446$ two-vertex colourings. Conditions
+(V1)--(V4) agreed with graph-level validity in every case; $12{,}631$ colourings were valid.
+
+\item \emph{Lemmas~\ref{lem:u} and~\ref{lem:s}} (\texttt{check\_colour\_lemmas.py}). We
+checked every claimed inequality for all $4\le k\le60$, all three colour types, and all
+$(p,n_0,n_1,n_2)$ allowed by the hypotheses. There were no violations.
+
+\item \emph{End-to-end construction} (\texttt{pipeline.py}). We generated $160$ random
+instances of Theorem~\ref{thmA}, with $4\le n\le9$ and $r\le 2t-1$ (seeds 11--14). For each we
+carried out the proof as an algorithm. Each of the $436$ two-vertex steps used an integral flow
+in $D$ and the split of Lemma~\ref{lem:record}(b). Hilton one-vertex steps followed (CP-SAT),
+and the cycles were closed at the last vertex. Each output was verified to consist of $n$
+Hamiltonian cycles of $K_{2n+1}$ with $P_i\subseteq C_i$ and $G\cup\{e_{t+1},\dots,e_n\}$
+rainbow.
+
+\item \emph{\JM\ Theorem~7 counts} (\texttt{check\_thm7\_counts.py}). See the end of
+Section~\ref{sec:thm7}: $93{,}843{,}621$ triples $(n,t,r)$ with $n\le1500$, no failures.
+\end{itemize}
+
+The audit \cite[\S4]{A4} independently verified Wu's conjecture by computer for every
+$n$-edge $H$ up to isomorphism with $n\le7$.
 
 \section{What is proved, what is assumed, and what is not proved}\label{sec:status}
 
@@ -1031,7 +1085,7 @@ and satisfies $r\le 2t-1$. Theorem~\ref{thmA} covers exactly this situation. A p
 matching on the outside vertices is obtained by relabelling those vertices. We have not
 re-examined any other part of that manuscript's use.
 
-%%BODY%%
+
 
 \begin{thebibliography}{99}
 \bibitem{Hilton} A.~J.~W.~Hilton, Hamiltonian decompositions of complete graphs,
