@@ -230,6 +230,103 @@ A circulation exists if and only if, for every $X\subseteq V(D)$,
 If $l$ and $u$ are integral and a circulation exists, then an integral circulation exists.
 \end{theorem}
 
+\section{The gap in the proof of \JM\ Theorem 8}\label{sec:gap}
+
+We summarise the argument of \cite[pp.~8--9]{JM} in its own notation, and then explain why it
+is incomplete. This section reproduces the audit's finding \cite[\S2.4]{A4} in a self-contained
+form. Nothing in it is used later.
+
+\subsection{The argument}
+The proof is by induction on $s\in[0,n-t]$. At stage $s$ there is a decomposition $\Q$ of
+$K_{2s+r}$ into linear forests in which $G\cup sK_2$ is rainbow in $Q_1,\dots,Q_{t+s}$, and
+\[
+|Q_i|\ge 4s+2r-2n-1\ \ (i\le t+s),\qquad |Q_i|\ge 4s+2r-2n\ \ (i>t+s). \tag{JM2}
+\]
+Set $k=2n-2s-r+1$; this is our $k$ with $m=2s+r$. The auxiliary bipartite multigraph
+$\widetilde G$ has vertex classes $\{u_j\}$ (the vertices of $K_{2s+r}$) and $\{c_i\}$
+(the colours). It has one edge $c_iu_j$ if $u_j$ is an end of a nontrivial path of $Q_i$, two
+parallel edges if $u_j$ is isolated in $Q_i$, and none otherwise. In our language, $\widetilde G$
+has one edge per slot. Claim~12 asserts that there are disjoint subgraphs
+$G_1,G_2\subseteq\widetilde G$ with the following properties:
+(i) $\deg_{G_\ell}(u_j)=1$;
+(ii) $\deg_{G_\ell}(c_i)\le2$ and $\deg_{G_\ell}(c_{s+t+1})\le1$;
+(iii) lower bounds on $\deg_{G_1}(c_i)+\deg_{G_2}(c_i)$;
+(iv) if $c_i$ is adjacent in $G_\ell$ to $u_{j_1}$ and $u_{j_2}$, these are not the two ends of
+a path of $Q_i$;
+(v) the same across $G_1,G_2$ for the colour $s+t+1$, and $G_1\cup G_2$ has no parallel edges.
+The new vertex $u_{2s+r+\ell}$ is then joined to $u_j$ in colour $i$ for each edge
+$c_iu_j\in G_\ell$, and the edge $u_{2s+r+1}u_{2s+r+2}$ is given colour $s+t+1$.
+The text then states: ``because of Conditions (ii), (iv) and (v) of Claim~12, each $Q_i$ induces
+a linear forest''.
+
+The proof of Claim~12 constructs the following objects in turn.
+\begin{itemize}[leftmargin=*]
+\item $\widehat G$: $\widetilde G$ with every edge doubled, plus a vertex $u'$.
+\item A balanced $k$-edge-colouring $L_1,\dots,L_k$ of $\widehat G$.
+\item Modified classes $L'_1$ and $L'_3$, obtained via Lemma~11, and their union $L'$.
+\item A balanced 2-colouring $E_1,E_2$ of $F=\widehat G[L']$ respecting a \emph{pairing}
+(their Lemma~10), with $E_1$ selected by a degree condition at $c_{s+t+2}$.
+\item An arbitrary balanced 2-colouring $E_{11},E_{12}$ of $E_1$, from which
+$G_\ell=\widetilde G[E_{1\ell}]$.
+\end{itemize}
+The pairing has two rules:
+(P1) two parallel edges joining $c_i$ to $u_j$ form an $i$-pair;
+(P2) if $u_j,u_{j'}$ are the two ends of one path of $Q_i$, the edges $c_iu_j$ and $c_iu_{j'}$
+form an $i$-pair.
+The text asserts that $E_1,E_2$ have the following property: if $c_i$ is adjacent in $E_\ell$ to
+$u_{j_1}$ and $u_{j_2}$, then these are not the two ends of a path of $Q_i$.
+
+\subsection{What goes wrong}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item \emph{The pairing is not well defined.} Let $u_j$ be an end of a nontrivial path $A$ of
+$Q_i$, with other end $u_{j'}$. The edge $c_iu_j$ of $\widetilde G$ has two duplicates in
+$\widehat G$. Since the $k$-colouring is balanced on pairs and $k\ge4$, the duplicates lie in
+different classes $L_q$. If both classes are among the four classes used, both duplicates can
+survive into~$L'$, and nothing in the construction prevents this. Then (P1) pairs them with each
+other, while (P2) asks to pair one of them with $c_iu_{j'}$. A pairing consists of disjoint
+pairs, and Lemma~10 also requires that at most one of several parallel edges be paired outside
+the bundle. Suppose (P1) is honoured. Then $E_1$ and $E_2$ each contain a copy of $c_iu_j$, so
+whichever of them contains $c_iu_{j'}$ contains both ends of $A$ at $c_i$. Since $E_1$ is
+afterwards fixed by a degree condition, it cannot be chosen to avoid this. Similarly, an
+isolated vertex of $Q_i$ contributes up to four duplicates to $L'$, and $E_1$ may contain two
+of them. The clause ``$G_1\cup G_2$ has no parallel edges'' in (v) is therefore not established
+either.
+\item \emph{Conditions (i)--(v) do not imply the conclusion.} Condition (iv) is a condition on
+each $G_\ell$ separately. Example~\ref{ex:cycle} below satisfies (iv) and still creates a cycle.
+The property needed is a joint one. By Lemma~\ref{lem:valid} below, the exact condition is that
+at most one path of $Q_i$ is joined to both new vertices (none in colour $s+t+1$), in addition
+to (iv). The stronger property claimed for $E_1$ would give this joint condition, but by~(a)
+that property is not established.
+\item \emph{Together.} Suppose $E_1$ contains, at $c_i$, both ends of two different paths of
+$Q_i$. This is possible by~(a). Every split of $E_1$ into $G_1,G_2$ that satisfies (ii) and
+(iv) then joins each new vertex to one end of each path, which creates a cycle.
+\end{enumerate}
+
+\begin{example}\label{ex:cycle}
+Suppose $Q_i$ contains two nontrivial paths $A$ (ends $z_A,w_A$) and $B$ (ends $z_B,w_B$).
+Let $G_1$ contain $c_iz_A,c_iz_B$ and let $G_2$ contain $c_iw_A,c_iw_B$. Then (ii) and (iv) hold
+at $c_i$, but the new class contains the cycle
+$u_{2s+r+1}\,z_A\,A\,w_A\,u_{2s+r+2}\,w_B\,B\,z_B\,u_{2s+r+1}$.
+\end{example}
+
+This is a gap in the written proof, not a counterexample to \JM\ Theorem~8. All our
+computations agree with the theorem (Section~\ref{sec:computations}). We do not try to repair
+Claim~12. We keep the architecture of \JM, namely adding the outside vertices in pairs, each
+pair joined by a matching edge of a new colour, while maintaining (JM2). We replace the inductive
+step by Theorem~\ref{thmB}. Its proof needs no balanced colourings and no pairings.
+
+\begin{remark}[the hypothesis of \JM\ Theorem 8]\label{rem:hyp}
+\JM\ Theorem~8 assumes only $G\not\cong tK_2$, but its proof uses $r\le 2t-1$
+(\cite[p.~9]{JM}: ``$k\ge4$ as $r\le 2t-1$''). If $G$ has no isolated vertices, then $r\le 2t$
+with equality only for $G\cong tK_2$, so the two hypotheses agree. In the application $G=H'$,
+which has no isolated vertices, and moreover $r\le(3t-1)/2$. If $G$ may have isolated vertices,
+the literal statement fails. For example, let $n=3$, $t=1$, $r=4$, and decompose $K_4$ into three
+perfect matchings $P_1,P_2,P_3$. Let $G$ consist of one edge of $P_1$ together with the two
+remaining vertices, so $G\not\cong K_2$. The size conditions hold ($|P_1|=2\ge1$ and
+$|P_2|=|P_3|=2\ge2$). But the $n-t=2$ matching edges would need four vertices outside $K_4$,
+and $K_7$ has only three. Theorem~\ref{thmA} uses the hypothesis $r\le 2t-1$.
+\end{remark}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
