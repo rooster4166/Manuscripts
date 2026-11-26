@@ -10,3 +10,6 @@ import GallaiLean.LeafDictionary
 import GallaiLean.Marked
 import GallaiLean.FanMoves
 import GallaiLean.Fan
+import GallaiLean.Insertion
+import GallaiLean.Schedule
+import GallaiLean.EvenInsert
