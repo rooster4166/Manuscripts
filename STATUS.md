@@ -229,6 +229,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | OSB Thm 4 and §15 equivalences (A4) | **sound** modulo JM; e(G) notation errors in statements (proofs fine); Cor 44 quantifier |
 | block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
 | d6-frontier; endpoint-structure §§5–6, including the bridge reduction to BranchBase (A9) | **sound**: no error in any theorem or proof; 13 gaps fixed; one abstract error fixed |
+| JM repair: new proof of JM Thm 8, transfer lemma, Thm 7 (A10) | **sound**: no error, no substantive gap; independent brute-force checks agree |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
@@ -253,7 +254,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 
 **Open risks:**
 
-1. **Javadi–Miralaei (Wu's conjecture).** A new proof of JM Thm 8 is written, under r ≤ 2t − 1, which is the case the semi-clique manuscript uses (`manuscripts/jm-repair`). Its independent audit (A10) is running. Off the MR spine.
+1. ~~Javadi–Miralaei (Wu's conjecture)~~: **repaired and audited** (`manuscripts/jm-repair`, audit A10: sound). The new proof of JM Thm 8 holds under r ≤ 2t − 1, which covers both uses in the semi-clique manuscript. It relies on Hilton, Hoffman and Liu–Chen (Liu–Chen not re-checked).
 2. ~~Chu–Fan–Zhou Lemma 2.4~~: **resolved** (`manuscripts/cfz-lemma`). The common-vertex form with sum ≤ 7 is proved.
 3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. The missing lemma is Botler–Sambinelli Thm 13 with one prescribed end; a cloud session is working on it. At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3.
 
