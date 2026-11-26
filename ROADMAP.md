@@ -134,19 +134,14 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 | Session | Branch | Target |
 |---|---|---|
-| session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
-| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | **delivered** `two_step_descent`, EMC(e=4), `rooted_le_four`, and the write-up (merged). **Now:** general k-step infrastructure (transfer and lift with arbitrary W; the path induction reduces k-step descent to the base case; the one-even-neighbour case) |
-| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
-| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
-| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
+| session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator; odd component case done) and Thm 114 |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | delivered two-step descent, EMC(e=4), KStep reduction. **Now:** the bridge base case of three-step descent, and the reduction for general k with exactly two base cases |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | delivered the Fan calculus, E-twins and the pair step. **Now:** the base case "y has ≥ 2 even neighbours" of three-step descent, which closes T(6)-i |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | delivered six-clique Thm 1 (Lean). **Now:** Lean for the d6-frontier certificates (relay/carry, root hub, full hub, all-d versions) |
+| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 (no push yet; reminded) |
+| session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
 
-**Local agents:**
-
-- Lean: Lovász's theorem (discharges LovaszStatement).
-- Lean: the 2-connected reduction for MR Thm 1, and `pathNumber_gt_of_low_degree` (Critical.lean).
-- JM Thm 8 repair (conceptual).
-- Chu–Fan–Zhou Lemma 2.4 resolution (conceptual).
-- d = 6 frontier, Q2 (conceptual).
+**Local agents:** all finished. They delivered MR Thm 1 (Lean), Pyber (Lean), the hypothesis-free EMCFour corollaries, and the d6-frontier manuscript.
 
 ## Work queue (next wave)
 
