@@ -384,3 +384,5 @@ Gqz~vw at root 3 wins with |F| = 1 in two ways:
 - The strongest hypothesis on end profiles of G − e, played through Fan's moves on e, certifies (R) at every even root of every connected graph with n ≤ 8, except K8 − PM.
 - K8 − PM is critical with uniform endpoint matroid U_{4,8}, so the failure lies in the moves.
 - Its only possible finish is a ≥ 3-edge spare path into a 3-path partition, i.e. three Hamiltonian paths. That is the flower of missing-move Prop 5.5.
+
+**E14 addendum 2 (independent).** `one_root.py Gr~v~w 0 9` (path insertion, \|F\| ≤ 9): **WIN** at root 0, and hence at every root by vertex-transitivity. F is the full star at 0 together with {13, 14, 24}. The Lovász seed is b = (0,1,0,1,1,1,1,1). Together with Guv]}{ (root 0, \|F\| = 7; checked independently above), this confirms the missing-move session's claim: **the extended game (Lovász + Fan + path insertion) wins every root of every connected graph of order 8 with \|F\| ≤ 9.** The flower lemma (Prop 5.5) gives a shorter proof for K8 − PM, but at n = 8 it is not needed.
