@@ -13,3 +13,6 @@ import GallaiLean.Fan
 import GallaiLean.Lovasz
 import GallaiLean.EMCFour
 import GallaiLean.ThreeConnected
+import GallaiLean.Insertion
+import GallaiLean.Schedule
+import GallaiLean.EvenInsert
