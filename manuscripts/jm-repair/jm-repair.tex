@@ -616,6 +616,64 @@ By Lemma~\ref{lem:slots},
 \sum_{i=1}^n f_i(B)=kb,\qquad \sum_{i=1}^n f_i(A)=ka .
 \end{equation}
 
+\section{The upper condition (UH)}\label{sec:upper}
+
+In this section we assume only $k\ge4$, $p_i\le k$ for all $i$, and $p_c\le k-1$. For a fixed
+$B\subseteq V$ put
+\[
+u_i:=k\min\{\kappa_i,\psi_i(B)\}-2f_i(B).
+\]
+By \eqref{eq:slotsum},
+\[
+\sum_{i}u_i=k\Bigl(\sum_i\min\{\kappa_i,\psi_i(B)\}-2b\Bigr).
+\]
+
+\begin{lemma}\label{lem:u}
+Write $n_j=n_j^i$, $f=f_i(B)$ and $\psi=\psi_i(B)$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=*]
+\item Let $i\ne c$. Then $u_i\ge0$. If $f>0$ and $\psi\le4$, then $u_i\ge k-2$. If $\psi\ge5$,
+then $u_i=4k-2f$.
+\item If $n_1+n_2\le2$, then $u_c\ge0$. Otherwise $u_c=2k-2f_c(B)\ge 4-2k$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) If $\psi\le4$, then
+$u_i=k(n_1+n_2+[n_2\ge1])-2(n_1+2n_2)=(k-2)n_1+(k-4)n_2+k[n_2\ge1]$.
+This is $\ge0$, and it is $\ge k-2$ if $n_1\ge1$. If $n_1=0$ and $n_2\ge1$, it is
+$\ge (k-4)+k\ge k-2$. If $\psi\ge5$, then $\min\{\kappa_i,\psi\}=4$, so $u_i=4k-2f$. This is
+$\ge0$ because $f\le 2p_i\le 2k$.
+(b) Here $\psi_c=n_1+n_2$. If this is at most $2$, then $u_c=(k-2)n_1+(k-4)n_2\ge0$. Otherwise
+$\min\{2,\psi_c\}=2$, so $u_c=2k-2f_c(B)$. Since $f_c(B)\le2p_c\le2k-2$, this is $\ge 4-2k$.
+\end{proof}
+
+\begin{proposition}\label{prop:UH}
+Assume $k\ge4$, $p_i\le k$ for all $i$, and $p_c\le k-1$. Then \textup{(UH)} holds for every
+$B\subseteq V$.
+\end{proposition}
+
+\begin{proof}
+Let $E:=\sum_i\min\{\kappa_i,\psi_i(B)\}-2b$. This is an integer, and $kE=\sum_iu_i$. By
+Lemma~\ref{lem:u}, $kE\ge u_c\ge 4-2k>-2k$, so $E\ge-1$. Suppose that $E=-1$, so that
+$\sum_iu_i=-k$. Then $u_c<0$, since otherwise $\sum_i u_i\ge0$. By Lemma~\ref{lem:u}(b) this
+means $u_c=2k-2f_c(B)$, and therefore
+\[
+\sum_{i\ne c}u_i\;=\;-k-u_c\;=\;2f_c(B)-3k\;\le\;2(2k-2)-3k\;=\;k-4 .
+\]
+All $u_i$ with $i\ne c$ are nonnegative. So by Lemma~\ref{lem:u}(a) no colour $i\ne c$ has both
+$f_i(B)>0$ and $\psi_i(B)\le4$, because such a colour would have $u_i\ge k-2>k-4$.
+
+Let $H=\{i\ne c:\psi_i(B)\ge5\}$. Every colour $i\ne c$ outside $H$ has $f_i(B)=0$, hence
+$\psi_i(B)=0$ and $u_i=0$. Every $i\in H$ has $f_i(B)=2k-u_i/2$. Using \eqref{eq:slotsum},
+\[
+kb=\sum_if_i(B)=f_c(B)+\sum_{i\in H}\Bigl(2k-\frac{u_i}{2}\Bigr)
+=f_c(B)+2k|H|-\frac{2f_c(B)-3k}{2}=2k|H|+\frac{3k}{2}.
+\]
+Thus $b=2|H|+\tfrac32$, which is not an integer, a contradiction. Hence $E\ge0$, which is (UH).
+\end{proof}
+
+The bound $2|U|\le k-2$ is not needed for (UH).
+
 %%BODY%%
 
 \begin{thebibliography}{99}
