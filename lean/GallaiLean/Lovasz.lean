@@ -67,11 +67,11 @@ def delEdge (a b : W) : SimpleGraph W where
   loopless := ⟨fun x h => G.loopless.irrefl x h.1⟩
 
 instance delEdge.decRel [DecidableEq W] [DecidableRel G.Adj] (a b : W) :
-    DecidableRel (G.delEdge a b).Adj := fun x y =>
+    DecidableRel (delEdge G a b).Adj := fun x y =>
   inferInstanceAs (Decidable (G.Adj x y ∧ ¬ s(x, y) = s(a, b)))
 
 theorem delEdge_edgeSet (a b : W) :
-    ∀ e, e ∈ (G.delEdge a b).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(a, b) := by
+    ∀ e, e ∈ (delEdge G a b).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(a, b) := by
   intro e
   induction e using Sym2.inductionOn with
   | hf x y => exact Iff.rfl
@@ -79,16 +79,16 @@ theorem delEdge_edgeSet (a b : W) :
 variable [Fintype W] [DecidableEq W] [DecidableRel G.Adj]
 
 theorem delEdge_degree {a b : W} (hab : G.Adj a b) (w : W) :
-    (G.delEdge a b).degree w + (if w = a then 1 else 0) + (if w = b then 1 else 0) =
+    (delEdge G a b).degree w + (if w = a then 1 else 0) + (if w = b then 1 else 0) =
       G.degree w := by
   have hne : a ≠ b := hab.ne
   rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree, neighborFinset_eq_filter,
     neighborFinset_eq_filter (G := G), Finset.card_filter, Finset.card_filter]
   have hy : ∀ y, (if G.Adj w y then 1 else 0) =
-      (if (G.delEdge a b).Adj w y then 1 else 0) +
+      (if (delEdge G a b).Adj w y then 1 else 0) +
         (if (w = a ∧ y = b) ∨ (w = b ∧ y = a) then 1 else 0) := by
     intro y
-    have hiff : (G.delEdge a b).Adj w y ↔ G.Adj w y ∧ ¬ ((w = a ∧ y = b) ∨ (w = b ∧ y = a)) := by
+    have hiff : (delEdge G a b).Adj w y ↔ G.Adj w y ∧ ¬ ((w = a ∧ y = b) ∨ (w = b ∧ y = a)) := by
       show G.Adj w y ∧ ¬ s(w, y) = s(a, b) ↔ _
       rw [Sym2.eq_iff]
     by_cases h1 : (w = a ∧ y = b) ∨ (w = b ∧ y = a)
@@ -96,12 +96,12 @@ theorem delEdge_degree {a b : W} (hab : G.Adj a b) (w : W) :
         rcases h1 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
         · exact hab
         · exact hab.symm
-      have h3 : ¬ (G.delEdge a b).Adj w y := fun h => (hiff.mp h).2 h1
+      have h3 : ¬ (delEdge G a b).Adj w y := fun h => (hiff.mp h).2 h1
       simp only [hadj, h1, h3, ite_true, ite_false, zero_add]
     · by_cases hadj : G.Adj w y
-      · have h3 : (G.delEdge a b).Adj w y := hiff.mpr ⟨hadj, h1⟩
+      · have h3 : (delEdge G a b).Adj w y := hiff.mpr ⟨hadj, h1⟩
         simp only [hadj, h1, h3, ite_true, ite_false, add_zero]
-      · have h3 : ¬ (G.delEdge a b).Adj w y := fun h => hadj (hiff.mp h).1
+      · have h3 : ¬ (delEdge G a b).Adj w y := fun h => hadj (hiff.mp h).1
         simp only [hadj, h1, h3, ite_false, add_zero]
   rw [Finset.sum_congr rfl (fun y _ => hy y), Finset.sum_add_distrib]
   by_cases hwa : w = a
@@ -113,7 +113,7 @@ theorem delEdge_degree {a b : W} (hab : G.Adj a b) (w : W) :
     · simp [hwa, hwb]
 
 theorem delEdge_sum_degree {a b : W} (hab : G.Adj a b) :
-    (∑ w, (G.delEdge a b).degree w) + 2 = ∑ w, G.degree w := by
+    (∑ w, (delEdge G a b).degree w) + 2 = ∑ w, G.degree w := by
   rw [← Finset.sum_congr rfl (fun w _ => delEdge_degree G hab w), Finset.sum_add_distrib,
     Finset.sum_add_distrib]
   simp
@@ -165,6 +165,7 @@ section induction
 
 variable {W : Type u} [Fintype W] [DecidableEq W]
 
+omit [DecidableEq W] in
 theorem mem_evenSet_iff {G : SimpleGraph W} [DecidableRel G.Adj] {w : W} :
     w ∈ evenSet G ↔ 0 < G.degree w ∧ G.degree w % 2 = 0 := by
   simp [evenSet, Nat.even_iff]
@@ -215,7 +216,7 @@ theorem lovasz_case_even {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
   have hdu := hdeg u
   have hdz := hdeg z
   simp only [hne, hne.symm, ite_true, ite_false, add_zero] at hdu hdz
-  have hev' : evenSet (G.delEdge u z) ⊆ {u} := by
+  have hev' : evenSet (delEdge G u z) ⊆ {u} := by
     intro w hw
     rw [Finset.mem_singleton]
     obtain ⟨hpos, heven⟩ := mem_evenSet_iff.mp hw
@@ -226,24 +227,24 @@ theorem lovasz_case_even {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
     · have h := hdeg w
       simp only [hwu, hwz, ite_false, add_zero] at h
       exact hwz (huniq w (mem_evenSet_iff.mpr ⟨h ▸ hpos, h ▸ heven⟩))
-  have hcard' : (evenSet (G.delEdge u z)).card ≤ 1 :=
+  have hcard' : (evenSet (delEdge G u z)).card ≤ 1 :=
     (Finset.card_le_card hev').trans (by simp)
   have hsum := delEdge_sum_degree G huz
-  have hlt : (∑ w, (G.delEdge u z).degree w) +
-      (if (evenSet (G.delEdge u z)).card = 0 then 1 else 0) < n := by
+  have hlt : (∑ w, (delEdge G u z).degree w) +
+      (if (evenSet (delEdge G u z)).card = 0 then 1 else 0) < n := by
     have : (evenSet G).card ≠ 0 := Finset.card_ne_zero.mpr ⟨z, hz⟩
     simp only [this, ite_false, add_zero] at hn
     split_ifs <;> omega
-  obtain ⟨D', hD'⟩ := ih _ hlt W (G.delEdge u z) hcard' rfl
+  obtain ⟨D', hD'⟩ := ih _ hlt W (delEdge G u z) hcard' rfl
   have hD'z : D'.ends z = 1 := by rw [hD' z]; omega
   obtain ⟨D, -, hDu, hDz, hDo⟩ := fan_single huz (delEdge_edgeSet G u z) D' (by
     rw [hD'z]
-    have : Finset.univ.filter (fun w => (G.delEdge u z).Adj u w ∧ D'.ends w = 0) = ∅ := by
+    have : Finset.univ.filter (fun w => (delEdge G u z).Adj u w ∧ D'.ends w = 0) = ∅ := by
       rw [Finset.filter_eq_empty_iff]
       rintro w - ⟨hadj, h0⟩
       have hwu : w ≠ u := hadj.ne.symm
-      have hpos : 0 < (G.delEdge u z).degree w :=
-        ((G.delEdge u z).degree_pos_iff_exists_adj w).mpr ⟨u, hadj.symm⟩
+      have hpos : 0 < (delEdge G u z).degree w :=
+        ((delEdge G u z).degree_pos_iff_exists_adj w).mpr ⟨u, hadj.symm⟩
       rw [hD' w] at h0
       exact hwu (Finset.mem_singleton.mp (hev' (mem_evenSet_iff.mpr ⟨hpos, h0⟩)))
     rw [this, Finset.card_empty]
@@ -281,14 +282,14 @@ theorem lovasz_case_big {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
   simp only [hne, hne.symm, ite_true, ite_false, add_zero] at hdu hdx
   have hux_odd := hpar u hupos
   have hx_odd := hpar x (by omega)
-  have hHsome : ∀ w, (apex (G.delEdge u x) {u}).degree (some w) =
-      (G.delEdge u x).degree w + (if w = u then 1 else 0) := by
+  have hHsome : ∀ w, (apex (delEdge G u x) {u}).degree (some w) =
+      (delEdge G u x).degree w + (if w = u then 1 else 0) := by
     intro w
     rw [apex_degree_some]
     simp [Finset.mem_singleton]
-  have hHnone : (apex (G.delEdge u x) {u}).degree none = 1 := by
+  have hHnone : (apex (delEdge G u x) {u}).degree none = 1 := by
     rw [apex_degree_none]; simp
-  have hevH : evenSet (apex (G.delEdge u x) {u}) ⊆ {some x} := by
+  have hevH : evenSet (apex (delEdge G u x) {u}) ⊆ {some x} := by
     intro w hw
     rw [mem_evenSet_iff] at hw
     rw [Finset.mem_singleton]
@@ -306,34 +307,34 @@ theorem lovasz_case_big {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
         simp only [hyu, hyx', ite_false, add_zero] at h hw
         have := hpar y (h ▸ hw.1)
         omega
-  have hxH : some x ∈ evenSet (apex (G.delEdge u x) {u}) := by
+  have hxH : some x ∈ evenSet (apex (delEdge G u x) {u}) := by
     rw [mem_evenSet_iff, hHsome]
     simp only [hne.symm, ite_false, add_zero]
     omega
-  have hcardH : (evenSet (apex (G.delEdge u x) {u})).card ≤ 1 :=
+  have hcardH : (evenSet (apex (delEdge G u x) {u})).card ≤ 1 :=
     (Finset.card_le_card hevH).trans (by simp)
-  have hsumH : ∑ w, (apex (G.delEdge u x) {u}).degree w = ∑ w, G.degree w := by
+  have hsumH : ∑ w, (apex (delEdge G u x) {u}).degree w = ∑ w, G.degree w := by
     rw [Fintype.sum_option, hHnone, ← delEdge_sum_degree G hux]
     simp only [hHsome, Finset.sum_add_distrib]
     simp
     omega
-  have hlt : (∑ w, (apex (G.delEdge u x) {u}).degree w) +
-      (if (evenSet (apex (G.delEdge u x) {u})).card = 0 then 1 else 0) < n := by
-    have h1 : (evenSet (apex (G.delEdge u x) {u})).card ≠ 0 :=
+  have hlt : (∑ w, (apex (delEdge G u x) {u}).degree w) +
+      (if (evenSet (apex (delEdge G u x) {u})).card = 0 then 1 else 0) < n := by
+    have h1 : (evenSet (apex (delEdge G u x) {u})).card ≠ 0 :=
       Finset.card_ne_zero.mpr ⟨_, hxH⟩
     have h2 : (evenSet G).card = 0 :=
       Finset.card_eq_zero.mpr (Finset.eq_empty_of_forall_notMem hnone)
     simp only [h2, ite_true] at hn
     simp only [h1, ite_false, add_zero, hsumH]
     omega
-  obtain ⟨DH, hDH⟩ := ih _ hlt (Option W) (apex (G.delEdge u x) {u}) hcardH rfl
+  obtain ⟨DH, hDH⟩ := ih _ hlt (Option W) (apex (delEdge G u x) {u}) hcardH rfl
   -- delete the new leaf
-  obtain ⟨D', hD'⟩ := (apexRetract (G.delEdge u x) {u} x).delete DH (by
+  obtain ⟨D', hD'⟩ := (apexRetract (delEdge G u x) {u} x).delete DH (by
     intro P _ y hy hky
     cases y with
     | some _ => simp [apexRetract] at hky
     | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
-  have hD'w : ∀ w, w ≠ u → D'.ends w = (G.delEdge u x).degree w % 2 := by
+  have hD'w : ∀ w, w ≠ u → D'.ends w = (delEdge G u x).degree w % 2 := by
     intro w hwu
     rw [(hD' w).1 (fun e he hk hwe => hwu (Finset.mem_singleton.mp (apex_nonkept he hk hwe).2))]
     change DH.ends (some w) = _
@@ -354,7 +355,7 @@ theorem lovasz_case_big {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
     rw [hD w]
     by_cases hwu : w = u
     · subst hwu
-      simp only [h0, hne, ite_true, ite_false]
+      simp only [h0, Ne.symm hne, ite_true, ite_false]
       omega
     · rw [hD'w w hwu]
       by_cases hwx : w = x
@@ -365,19 +366,19 @@ theorem lovasz_case_big {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
         simp only [hwu, hwx, Ne.symm hwu, Ne.symm hwx, ite_false, add_zero] at h ⊢
         rw [h]
   · -- `u` has two ends: Fan's transfer `u → x`
-    have hG'x : ∀ e, e ∈ (G.delEdge u x).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(x, u) := by
+    have hG'x : ∀ e, e ∈ (delEdge G u x).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(x, u) := by
       intro e
       rw [delEdge_edgeSet, Sym2.eq_swap]
     obtain ⟨D, -, hDx, hDu, hDo⟩ := fan_single hxu hG'x D' (by
       rw [h2]
-      have : Finset.univ.filter (fun w => (G.delEdge u x).Adj x w ∧ D'.ends w = 0) = ∅ := by
+      have : Finset.univ.filter (fun w => (delEdge G u x).Adj x w ∧ D'.ends w = 0) = ∅ := by
         rw [Finset.filter_eq_empty_iff]
         rintro w - ⟨hadj, h0⟩
         by_cases hwu : w = u
         · subst hwu; omega
         · have hwx : w ≠ x := hadj.ne.symm
-          have hpos : 0 < (G.delEdge u x).degree w :=
-            ((G.delEdge u x).degree_pos_iff_exists_adj w).mpr ⟨x, hadj.symm⟩
+          have hpos : 0 < (delEdge G u x).degree w :=
+            ((delEdge G u x).degree_pos_iff_exists_adj w).mpr ⟨x, hadj.symm⟩
           have h := hdeg w
           simp only [hwu, hwx, ite_false, add_zero] at h
           rw [hD'w w hwu, h] at h0
@@ -418,7 +419,7 @@ theorem lovasz_case_matching {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
   have hdu := hdeg u
   have hdx := hdeg x
   simp only [hne, hne.symm, ite_true, ite_false, add_zero] at hdu hdx
-  have hev' : evenSet (G.delEdge u x) = ∅ := by
+  have hev' : evenSet (delEdge G u x) = ∅ := by
     apply Finset.eq_empty_of_forall_notMem
     intro w hw
     obtain ⟨hpos, heven⟩ := mem_evenSet_iff.mp hw
@@ -431,20 +432,20 @@ theorem lovasz_case_matching {n : ℕ} (ih : ∀ m < n, LovaszStrong.{u} m)
         have := hpar w (h ▸ hpos)
         omega
   have hsum := delEdge_sum_degree G hux
-  have hlt : (∑ w, (G.delEdge u x).degree w) +
-      (if (evenSet (G.delEdge u x)).card = 0 then 1 else 0) < n := by
+  have hlt : (∑ w, (delEdge G u x).degree w) +
+      (if (evenSet (delEdge G u x)).card = 0 then 1 else 0) < n := by
     have h2 : (evenSet G).card = 0 :=
       Finset.card_eq_zero.mpr (Finset.eq_empty_of_forall_notMem hnone)
     simp only [h2, ite_true] at hn
     simp only [hev', Finset.card_empty, ite_true]
     omega
-  obtain ⟨D', hD'⟩ := ih _ hlt W (G.delEdge u x) (by simp [hev']) rfl
+  obtain ⟨D', hD'⟩ := ih _ hlt W (delEdge G u x) (by simp [hev']) rfl
   obtain ⟨D, hD⟩ := PathDecomp.add_edge hux (delEdge_edgeSet G u x) D'
   refine ⟨D, fun w => ?_⟩
   rw [hD w, hD' w]
   by_cases hwu : w = u
   · subst hwu
-    simp only [hne, ite_true, ite_false]
+    simp only [Ne.symm hne, ite_true, ite_false]
     omega
   · by_cases hwx : w = x
     · subst hwx

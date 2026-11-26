@@ -129,7 +129,8 @@ With `[Fintype V] [DecidableEq V] [DecidableRel G.Adj]`:
 * **`LovaszStatement`**:
   `∀ (W : Type u) [Fintype W] [DecidableEq W] (G : SimpleGraph W) [DecidableRel G.Adj],
   #{v | Even (deg v)} ≤ 1 → pathNumber G ≤ card W / 2`. Isolated vertices count as even.
-  `card W / 2` is `⌊N/2⌋` in both cases. It is a hypothesis and is not proved here.
+  `card W / 2` is `⌊N/2⌋` in both cases. It is now a theorem: `lovaszStatement` in
+  `GallaiLean/Lovasz.lean`.
 * `apex G T : SimpleGraph (Option V)` has an apex `none` adjacent to `T`.
   `apex_degree_some`, `apex_degree_none`.
 * `realisable_of_apex`: if the apex graph has at most one even vertex, then, under Lovász, `T` is
@@ -239,10 +240,35 @@ paper (Lemma 2). Here `b(w) = D.ends w`.
   for all other `w`. `fan_single_deleteEdges` is the same statement for
   `G' = G.deleteEdges {s(u,v)}`.
 
+## `GallaiLean/Lovasz.lean`: Lovász's theorem (1968)
+
+* **`lovasz_ends`** (strong form): if at most one vertex has *positive* even degree, then some
+  path decomposition has `D.ends v = deg v % 2` for every `v`. That is, every odd vertex has
+  exactly one end and every other vertex has none.
+* **`lovaszStatement : LovaszStatement`**, and **`lovasz`**: if at most one vertex has even
+  degree (isolated vertices included), then `pathNumber G ≤ card W / 2`.
+* **`realisable_evenSet'`**, **`realisable_evenSet_erase'`**: Lemmas 2 and 3 of the
+  endpoint-structure manuscript, with no Lovász hypothesis.
+* The proof is a self-contained strong induction on `∑ deg + [no positive-even vertex]`. Its
+  only engines are Fan's lemma (`fan_single`), deleting a pendant vertex (`Retract.delete` on
+  `apex (G − ux) {u}`), and adding an edge as a new path (`PathDecomp.add_edge`). The file's
+  header comment gives the full paper proof.
+  - Case I (a positive-even vertex `z`): delete an edge `uz` and apply induction. `u` has no
+    zero-end neighbours, so Fan's lemma moves an end from `z` to `u`.
+  - Case II (all positive degrees odd, some degree at `x` is `≥ 3`): detach the edge `ux` onto a
+    new leaf at `u`. This keeps the edge count and leaves exactly one even vertex, `x`. Apply
+    induction and delete the leaf, which leaves 0 or 2 ends at `u`. Then either add `ux` as a
+    new path or use Fan's lemma to move an end from `u` to `x`.
+  - Case III (a matching): delete an edge and re-add it as a path.
+  - Case IV: no edges.
+* Helpers: `delEdge G a b` (with `delEdge_edgeSet`, `delEdge_degree`, `delEdge_sum_degree`),
+  `apex_none_pendant`, `LovaszStrong`, and the case lemmas `lovasz_case_even/big/matching/empty`.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
-left open. Lovász's theorem enters only as the explicit hypothesis `LovaszStatement`.
+left open. Lovász's theorem is proved (`lovaszStatement`), so Lemmas 2 and 3 hold
+unconditionally (`realisable_evenSet'`, `realisable_evenSet_erase'`).
 Corollary 5 and Sections 3–4 of the manuscript are not formalized. Fan's single-edge and grouped
 lemmas are proved in full, with no special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula (it
 is stated with `sInf` over a set of naturals), and versions of the results for infinite vertex
