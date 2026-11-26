@@ -37,6 +37,9 @@ step of Lovász's own induction, and it is the move that the n = 8 losers of the
   `y s y'`). **`Ach.two_hub`** (two hubs): two isolated hubs `s₁, s₂` with private neighbour
   sets `N₁, N₂` (supply `∑_{N_i} b ≥ 2|N_i| - 3`) and a common neighbour `m` are re-inserted at
   the cost of one path in all: `|N_i| - 1` receipts at each hub, and the path `y₁ s₁ m s₂ y₂`.
+  **`Ach.relays`** (forward relays `z x → x`, in any order, when no relayed `x` sees a blank
+  vertex or a `z x'`) and **`Ach.relay_hub`** (relays into `X ⊆ N(s)` raise the supply to
+  `|N| + |X|`, so `|N| ≤ |X| + 5` suffices for `Ach.hub_general`).
 
 * **`fan_alternative`** (Fan's alternative, manuscript Lemma 4.2): either some `t ∈ T` gives an
   end to `u` (Fan's conclusion), or at least `∑_T ends` blank neighbours `z` of `u` can each be
@@ -1048,6 +1051,157 @@ theorem Ach.two_hub {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) {s₁ s₂ 
     have k2 := hid2 v
     simp only [lastOf_cons, lastOf_nil, @eq_comm _ y₁ v, @eq_comm _ y₂ v]
     omega
+
+/-- **Forward relays.** Let `X` be a set of vertices and `z` a map, injective on `X`, sending each
+`x ∈ X` to a vertex `z x ∉ X` with one end, with `z x x` not an edge of `E`. Suppose that no
+`x ∈ X` has, in `E`, a blank neighbour or a neighbour of the form `z x'`. Then the single
+transfers `z x → x` succeed in any order: the edges `z x x` are added, each `x` gains one end and
+each `z x` loses its end. (Each transfer has supply `1` against no blank neighbour.) -/
+theorem Ach.relays {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) (X : Finset V) (z : V → V)
+    (hzX : ∀ x ∈ X, z x ∉ X) (hinj : ∀ x ∈ X, ∀ x' ∈ X, z x = z x' → x = x')
+    (hzE : ∀ x ∈ X, s(z x, x) ∉ E) (hbz : ∀ x ∈ X, b (z x) = 1)
+    (hnb : ∀ x ∈ X, ∀ w, s(x, w) ∈ E → w ≠ x → b w ≠ 0 ∧ ∀ x' ∈ X, w ≠ z x') :
+    ∃ b' : V → ℕ, Ach (E ∪ {e | ∃ x ∈ X, e = s(z x, x)}) b' ∧
+      ∀ v, b' v + (if v ∈ X.image z then 1 else 0) = b v + (if v ∈ X then 1 else 0) := by
+  classical
+  revert hzX hinj hzE hbz hnb
+  induction X using Finset.induction_on with
+  | empty =>
+    intro _ _ _ _ _
+    exact ⟨b, h.congr (by ext e; simp) (fun _ => rfl), fun v => by simp⟩
+  | @insert a X haX ih =>
+    intro hzX hinj hzE hbz hnb
+    have ha : a ∈ insert a X := Finset.mem_insert_self a X
+    have sub : ∀ {x}, x ∈ X → x ∈ insert a X := fun hx => Finset.mem_insert_of_mem hx
+    obtain ⟨b1, hb1, hid1⟩ := ih (fun x hx h' => hzX x (sub hx) (sub h'))
+      (fun x hx x' hx' => hinj x (sub hx) x' (sub hx')) (fun x hx => hzE x (sub hx))
+      (fun x hx => hbz x (sub hx))
+      (fun x hx w hw hwx => ⟨(hnb x (sub hx) w hw hwx).1,
+        fun x' hx' => (hnb x (sub hx) w hw hwx).2 x' (sub hx')⟩)
+    have hza : z a ∉ insert a X := hzX a ha
+    have hzaX : z a ∉ X := fun h' => hza (sub h')
+    have hza' : z a ≠ a := fun h' => hza (by rw [h']; exact ha)
+    have hzim : z a ∉ X.image z := by
+      simp only [Finset.mem_image, not_exists, not_and]
+      intro x hx h'
+      exact haX (hinj x (sub hx) a ha h' ▸ hx)
+    have haim : a ∉ X.image z := by
+      simp only [Finset.mem_image, not_exists, not_and]
+      intro x hx h'
+      exact hzX x (sub hx) (by rw [h']; exact ha)
+    have hb1z : b1 (z a) = 1 := by
+      have := hid1 (z a)
+      simp [hzim, hzaX, hbz a ha] at this
+      omega
+    have hb1a : b1 a = b a := by
+      have := hid1 a
+      simp [haim, haX] at this
+      omega
+    have hnotE : s(z a, a) ∉ E ∪ {e | ∃ x ∈ X, e = s(z x, x)} := by
+      intro h'
+      simp only [Set.mem_union, Set.mem_ofPred_eq] at h'
+      rcases h' with h' | ⟨x, hx, h'⟩
+      · exact hzE a ha h'
+      · rw [Sym2.eq_iff] at h'
+        rcases h' with ⟨-, h2⟩ | ⟨h1, -⟩
+        · exact haX (h2 ▸ hx)
+        · exact hzaX (h1 ▸ hx)
+    have key : ∀ w, s(a, w) ∈ E ∪ {e | ∃ x ∈ X, e = s(z x, x)} → w ≠ a → b1 w ≠ 0 := by
+      intro w hw hwa
+      simp only [Set.mem_union, Set.mem_ofPred_eq] at hw
+      rcases hw with hw | ⟨x, hx, hw⟩
+      · obtain ⟨h1, h2⟩ := hnb a ha w hw hwa
+        have hwim : w ∉ X.image z := by
+          simp only [Finset.mem_image, not_exists, not_and]
+          intro x hx h'
+          exact h2 x (sub hx) h'.symm
+        have := hid1 w
+        simp only [hwim, ite_false] at this
+        omega
+      · rw [Sym2.eq_iff] at hw
+        rcases hw with ⟨h1, -⟩ | ⟨h1, -⟩
+        · exact absurd (h1 ▸ ha) (hzX x (sub hx))
+        · exact absurd (h1 ▸ hx) haX
+    have hbl : blankNbrs (E ∪ {e | ∃ x ∈ X, e = s(z x, x)}) b1 a = 0 := by
+      have := blankNbrs_le_of_subset (S := (∅ : Set V)) (E := E ∪ {e | ∃ x ∈ X, e = s(z x, x)})
+        (b := b1) (u := a) (fun w h1 h2 h3 => absurd h3 (key w h1 h2))
+      simpa using this
+    have h2 := hb1.transfer hza' hnotE (by rw [hbl, hb1z]; omega)
+    refine ⟨_, h2.congr ?_ (fun _ => rfl), fun v => ?_⟩
+    · ext e
+      simp only [Set.mem_insert_iff, Set.mem_union, Set.mem_ofPred_eq, Finset.mem_insert]
+      constructor
+      · rintro (rfl | h' | ⟨x, hx, rfl⟩)
+        · exact Or.inr ⟨a, Or.inl rfl, rfl⟩
+        · exact Or.inl h'
+        · exact Or.inr ⟨x, Or.inr hx, rfl⟩
+      · rintro (h' | ⟨x, rfl | hx, rfl⟩)
+        · exact Or.inr (Or.inl h')
+        · exact Or.inl rfl
+        · exact Or.inr (Or.inr ⟨x, hx, rfl⟩)
+    · rw [Finset.image_insert]
+      have k := hid1 v
+      by_cases hva : v = a
+      · subst hva
+        rw [mv_apply_recv]
+        simp [haim, Ne.symm hza', haX] at k ⊢
+        omega
+      by_cases hvz : v = z a
+      · subst hvz
+        rw [mv_apply_donor _ hza']
+        simp [hza', hzaX, hzim, hbz a ha] at k ⊢
+        omega
+      · rw [mv_apply_other _ hvz hva]
+        simp [hva, hvz] at k ⊢
+        omega
+
+/-- **Relays, then a hub.** Let `s` meet no edge of `E` and have neighbour set `N` (`s ∉ N`) with
+one end at each vertex of `N`. Relay into a subset `X ⊆ N` as in `Ach.relays`, from vertices
+`z x` outside `N ∪ {s}`. If `|N| ≤ |X| + 5`, then inserting the star `sN` costs one path: each
+`x ∈ X` has two ends after its relay, so the supply condition of `Ach.hub_general` holds. -/
+theorem Ach.relay_hub {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) {s : V} (N X : Finset V)
+    (z : V → V) (hs : ∀ w, s(s, w) ∉ E) (hsN : s ∉ N) (hXN : X ⊆ N)
+    (hzN : ∀ x ∈ X, z x ∉ N) (hzs : ∀ x ∈ X, z x ≠ s)
+    (hinj : ∀ x ∈ X, ∀ x' ∈ X, z x = z x' → x = x')
+    (hzE : ∀ x ∈ X, s(z x, x) ∉ E) (hbz : ∀ x ∈ X, b (z x) = 1)
+    (hnb : ∀ x ∈ X, ∀ w, s(x, w) ∈ E → w ≠ x → b w ≠ 0 ∧ ∀ x' ∈ X, w ≠ z x')
+    (hbN : ∀ t ∈ N, b t = 1) (hd : 2 ≤ N.card) (hX : N.card ≤ X.card + 5) :
+    ∃ R ⊆ N, R.card = N.card - 2 ∧ ∃ y y', y ∈ N ∧ y' ∈ N ∧ y ≠ y' ∧ y ∉ R ∧ y' ∉ R ∧
+      ∃ b' : V → ℕ, Ach (E ∪ {e | ∃ x ∈ X, e = s(z x, x)} ∪ {e | ∃ t ∈ N, e = s(s, t)}) b' ∧
+        ∀ v, b' v + (if v ∈ R then 1 else 0) + (if v ∈ X.image z then 1 else 0) =
+          b v + (if v ∈ X then 1 else 0) + (N.card - 2) * (if v = s then 1 else 0) +
+            (if v = y then 1 else 0) + (if v = y' then 1 else 0) := by
+  classical
+  have hzX : ∀ x ∈ X, z x ∉ X := fun x hx h' => hzN x hx (hXN h')
+  obtain ⟨b1, hb1, hid1⟩ := h.relays X z hzX hinj hzE hbz hnb
+  have hs1 : ∀ w, s(s, w) ∉ E ∪ {e | ∃ x ∈ X, e = s(z x, x)} := by
+    intro w h'
+    simp only [Set.mem_union, Set.mem_ofPred_eq] at h'
+    rcases h' with h' | ⟨x, hx, h'⟩
+    · exact hs w h'
+    · rw [Sym2.eq_iff] at h'
+      rcases h' with ⟨h1, -⟩ | ⟨h1, -⟩
+      · exact hzs x hx h1.symm
+      · exact hsN (h1 ▸ hXN hx)
+  have hb1N : ∀ t ∈ N, b1 t = 1 + (if t ∈ X then 1 else 0) := by
+    intro t ht
+    have k := hid1 t
+    have : t ∉ X.image z := by
+      simp only [Finset.mem_image, not_exists, not_and]
+      intro x hx h'
+      exact hzN x hx (h' ▸ ht)
+    simp only [this, ite_false, hbN t ht] at k
+    omega
+  have hsum : ∑ t ∈ N, b1 t = N.card + X.card := by
+    rw [Finset.sum_congr rfl hb1N, Finset.sum_add_distrib, Finset.sum_boole]
+    simp [Finset.filter_mem_eq_inter, Finset.inter_eq_right.mpr hXN]
+  obtain ⟨R, hRN, hRc, y, y', hy, hy', hyy', hyR, hy'R, b2, hb2, hid2⟩ :=
+    hb1.hub_general N hs1 hsN
+      (fun t ht => by rw [hb1N t ht]; split_ifs <;> omega) hd (by rw [hsum]; omega)
+  refine ⟨R, hRN, hRc, y, y', hy, hy', hyy', hyR, hy'R, b2, hb2, fun v => ?_⟩
+  have k1 := hid1 v
+  have k2 := hid2 v
+  omega
 
 end general
 
