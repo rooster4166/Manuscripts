@@ -1328,7 +1328,7 @@ theorem doubleLeafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) {
   let M₁ := M.addPath (GPath.ofAdj hl.1.symm) none
     (by intro y hy t ht; rw [List.mem_singleton] at hy; subst hy; simp at ht) hvw (by simp)
   have hw' : w' ∉ (GPath.ofAdj hl.1.symm).walk.support := by
-    simp only [GPath.ofAdj, Walk.support_cons, Walk.support_nil, List.mem_cons, List.mem_singleton,
+    simp only [GPath.ofAdj, Walk.support_cons, Walk.support_nil, List.mem_cons,
       List.not_mem_nil, or_false, not_or]
     exact ⟨hl'.ne, Ne.symm hww⟩
   have hwv : s(w', v) ∉ (restrict G (U'.erase w')).edgeSet ∪

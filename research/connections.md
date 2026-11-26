@@ -292,3 +292,29 @@ So Lovász's theorem, covering at most one even vertex, gives the first descent 
 **Why it matters.** A characterization, even a sufficient local condition such as "u and v are not degree-2 twins", would give the second faithful-descent step for most pairs.
 
 **Natural tools.** Fan's grouped transfer (now formalized), applied to the Lovász decomposition of G + z_u.
+
+## Q. Two-step descent: hand verification and the k-step template
+
+**Result.** The cloud session `claude/emc-four-even` proved `two_step_descent` in Lean: for G connected of even order with e ≥ 4, and all distinct even y, w, there is an even v ∉ {y, w} with Ev ∖ {w, v} realisable. **Every step was checked by hand (coordinator):**
+
+1. **Transfer across an even edge.** s, t, u′ are even, st ∈ E, su′ ∉ E. In K = G − st both s and t are odd. Lemma 3 gives Ev(K) ∖ {u′} realisable, i.e. Ev ∖ {s, t, u′} doubled with s and t at one end each. The only zero-end vertex is u′, which is not a neighbour of s. Fan's single lemma adds st towards s. Result: Ev ∖ {t, u′}.
+2. **Star.** y is adjacent to even w, x, z. In K = G − {yw, yx, yz} the vertices y, w, x, z are odd; take the faithful decomposition (Lemma 2).
+   - Add yw towards y: there are no zero-end neighbours.
+   - Add one of yx, yz towards y by the grouped lemma: 1 + 1 > 1, the 1 being w.
+   - Add the last edge towards its far end: b(y) = 3 > 2 ≥ |N(z) ∩ {w, x}|.
+   - Result: Ev ∖ {w, x} or Ev ∖ {w, z}.
+3. **Lift.** y is even, t an odd neighbour, K = G − yt. If S ∋ t is realisable in K and y has no neighbour among the zero-end even vertices of K, a single transfer of yt towards y realises S − t + y.
+4. **Induction along a y–w path.**
+   - Base: y has an even neighbour (cases by whether w is a neighbour, using 1 or 2).
+   - Otherwise the next vertex t is odd. Apply induction to t in G − yt and lift back with 3. The lift hypothesis holds because y has no even neighbours.
+   - Degrees stay positive, since the path has length ≥ 2.
+
+**k-step template.** Each lemma generalizes, with the removed set W in place of {u′}, {w, v}, …:
+
+- Transfer: if Ev(K) ∖ ({s, t} ∪ W′) is realisable in K = G − st and s has no neighbour in W′, then Ev ∖ ({t} ∪ W′) is realisable.
+- Lift: as stated, with W the zero-end set.
+- Star and base cases: need extension with more edges at y.
+
+So a three-step descent ("for all distinct even y, w with e ≥ 6 there are v1, v2 with Ev ∖ {w, v1, v2} realisable") would follow by the same induction along a path, provided the base case (y has an even neighbour) can be handled with two removed vertices. **That base case is now the exact target** of the redirected two-even cloud session. It would give T(6)-i.
+
+**A caveat for a general k-step version:** the prescribed vertex w might be a coloop of the endpoint matroid at the bottom level. The rooted test needs only reachability, so the right statement prescribes w only in the first step.

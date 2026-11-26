@@ -205,6 +205,15 @@ theorem mem_evenSet_insert {G : SimpleGraph W} [DecidableRel G.Adj] {r : W} {T :
     (0 < G.degree w ∧ G.degree w % 2 = 0) ↔ (w = r ∨ w ∈ T) := by
   rw [← mem_evenSet_iff, hE, Finset.mem_insert]
 
+theorem pair_subset_evenSet {G : SimpleGraph W} [DecidableRel G.Adj] {r w : W} {T : Finset W}
+    (hE : evenSet G = insert r T) (hw : w ∈ T) : ({r, w} : Finset W) ⊆ evenSet G := by
+  intro x hx
+  rw [Finset.mem_insert, Finset.mem_singleton] at hx
+  rw [hE, Finset.mem_insert]
+  rcases hx with rfl | rfl
+  · exact Or.inl rfl
+  · exact Or.inr hw
+
 /-- Case A: `r` sees some `p ∈ T` and misses some `v ∈ T`. -/
 theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Finset W)
     (hrT : r ∉ T) (hT : T.card = 3) (hE : evenSet G = insert r T)
@@ -213,13 +222,11 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
   have hEv := mem_evenSet_insert hE
   have hpv : p ≠ v := fun h => hrv (h ▸ hrp)
   have hrp' : r ≠ p := hrp.ne
-  have hrv' : r ≠ v := fun h => hrT (h ▸ hvT)
   obtain ⟨u, hu⟩ : ∃ u, (T.erase p).erase v = {u} := by
     apply Finset.card_eq_one.mp
     rw [Finset.card_erase_of_mem (Finset.mem_erase.mpr ⟨Ne.symm hpv, hvT⟩),
       Finset.card_erase_of_mem hpT, hT]
   have huT' : u ∈ (T.erase p).erase v := by rw [hu]; exact Finset.mem_singleton_self u
-  have huv : u ≠ v := (Finset.mem_erase.mp huT').1
   have hup : u ≠ p := (Finset.mem_erase.mp (Finset.mem_erase.mp huT').2).1
   have huT : u ∈ T := (Finset.mem_erase.mp (Finset.mem_erase.mp huT').2).2
   have hru : r ≠ u := fun h => hrT (h ▸ huT)
@@ -233,23 +240,20 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
           Finset.mem_erase.mpr ⟨hwv, Finset.mem_erase.mpr ⟨hwp, hw⟩⟩
         rw [hu, Finset.mem_singleton] at this
         exact Or.inr (Or.inr this)
-  -- parities in `G`
-  have hr := (hEv r).2 (Or.inl rfl)
-  have hp := (hEv p).2 (Or.inr hpT)
-  have hv := (hEv v).2 (Or.inr hvT)
-  have hu2 := (hEv u).2 (Or.inr huT)
+  have hr2 := ((hEv r).2 (Or.inl rfl)).2
+  have hp2 := ((hEv p).2 (Or.inr hpT)).2
+  have hu2 := ((hEv u).2 (Or.inr huT)).2
   have hdr := delEdge_degree_left G hrp
   have hdp := delEdge_degree_right G hrp
   have hdo : ∀ w, w ≠ r → w ≠ p → (delEdge G r p).degree w = G.degree w :=
     fun w h1 h2 => delEdge_degree_of_ne G hrp h1 h2
-  -- even vertices of `G − rp`
   have hev' : ∀ w ∈ evenSet (delEdge G r p), w = u ∨ w = v := by
     intro w hw
     rw [mem_evenSet_iff] at hw
     by_cases hwr : w = r
-    · subst hwr; omega
+    · rw [hwr] at hw; omega
     · by_cases hwp : w = p
-      · subst hwp; omega
+      · rw [hwp] at hw; omega
       · rw [hdo w hwr hwp] at hw
         rcases (hEv w).1 hw with h | h
         · exact absurd h hwr
@@ -265,43 +269,25 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
     · exact absurd h hw.1
     · rw [h]; exact Finset.mem_singleton_self v
   obtain ⟨D', hD'w, hD'u⟩ := two_even (delEdge G r p) (u := u)
-    (by rw [hdo u (Ne.symm hru) hup]; exact hu2.2) hcard
+    (by rw [hdo u (Ne.symm hru) hup]; exact hu2) hcard
   rcases hD'u with h0 | h2
   · -- add `rp` as a new path: realise `{r, p}`
     obtain ⟨D, hD⟩ := PathDecomp.add_edge hrp (delEdge_edgeSet G r p) D'
-    refine ⟨p, hpT, ?_, D, realises_of ?_ (fun w => ?_)⟩
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr hpT
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr hpT
-    · rw [hD w]
-      by_cases hwu : w = u
-      · subst hwu
-        simp only [h0, Finset.mem_insert, Finset.mem_singleton, hru.symm, hup, false_or,
-          ite_false, add_zero]
-        omega
-      · rw [hD'w w hwu]
-        by_cases hwr : w = r
-        · subst hwr
-          simp only [hrp', Finset.mem_insert, Finset.mem_singleton, true_or, ite_true,
-            ite_false, add_zero]
-          omega
-        · by_cases hwp : w = p
-          · subst hwp
-            simp only [hrp', Ne.symm hrp', Finset.mem_insert, Finset.mem_singleton, or_true,
-              ite_true, ite_false, zero_add]
-            omega
-          · simp only [Ne.symm hwr, Ne.symm hwp, hwr, hwp, Finset.mem_insert,
-              Finset.mem_singleton, or_self, ite_false, add_zero]
-            rw [hdo w hwr hwp]
+    refine ⟨p, hpT, pair_subset_evenSet hE hpT, D,
+      realises_of (pair_subset_evenSet hE hpT) (fun w => ?_)⟩
+    rw [hD w]
+    by_cases hwu : w = u
+    · rw [hwu, h0]
+      simp [hru, Ne.symm hru, hup, Ne.symm hup] <;> omega
+    · rw [hD'w w hwu]
+      by_cases hwr : w = r
+      · rw [hwr]
+        simp [hrp', Ne.symm hrp'] <;> omega
+      · by_cases hwp : w = p
+        · rw [hwp]
+          simp [hrp', Ne.symm hrp'] <;> omega
+        · rw [hdo w hwr hwp]
+          simp [hwr, hwp, Ne.symm hwr, Ne.symm hwp]
   · -- Fan's transfer `p → r`: realise `{r, u}`
     obtain ⟨D, -, hDr, hDp, hDo⟩ := fan_single hrp (delEdge_edgeSet G r p) D' (by
       have hempty : Finset.univ.filter
@@ -314,41 +300,24 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
         rw [hD'w w hwu] at hw0
         rcases hev' w (mem_evenSet_iff.mpr ⟨hpos, hw0⟩) with h | h
         · exact hwu h
-        · subst h; exact hrv hadj.1
+        · rw [h] at hadj; exact hrv hadj.1
       rw [hempty, Finset.card_empty, hD'w p (Ne.symm hup)]
       omega)
-    refine ⟨u, huT, ?_, D, realises_of ?_ (fun w => ?_)⟩
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr huT
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr huT
-    · by_cases hwr : w = r
-      · subst hwr
-        rw [hDr, hD'w w hru]
-        simp only [Finset.mem_insert, Finset.mem_singleton, true_or, ite_true]
-        omega
-      · by_cases hwp : w = p
-        · subst hwp
-          have := hD'w w (Ne.symm hup)
-          simp only [Finset.mem_insert, Finset.mem_singleton, Ne.symm hrp', Ne.symm hup,
-            or_self, ite_false, add_zero]
-          omega
-        · rw [hDo w hwr hwp]
-          by_cases hwu : w = u
-          · subst hwu
-            simp only [Finset.mem_insert, Finset.mem_singleton, or_true, ite_true]
-            omega
-          · rw [hD'w w hwu, hdo w hwr hwp]
-            simp only [Finset.mem_insert, Finset.mem_singleton, hwr, hwu, or_self, ite_false,
-              add_zero]
+    refine ⟨u, huT, pair_subset_evenSet hE huT, D,
+      realises_of (pair_subset_evenSet hE huT) (fun w => ?_)⟩
+    by_cases hwr : w = r
+    · rw [hwr, hDr, hD'w r hru]
+      simp <;> omega
+    · by_cases hwp : w = p
+      · have h1 := hD'w p (Ne.symm hup)
+        rw [hwp]
+        simp [hrp', Ne.symm hrp', hup, Ne.symm hup] <;> omega
+      · rw [hDo w hwr hwp]
+        by_cases hwu : w = u
+        · rw [hwu, h2]
+          simp <;> omega
+        · rw [hD'w w hwu, hdo w hwr hwp]
+          simp [hwr, hwu, Ne.symm hwr, Ne.symm hwu]
 
 /-- Case B: `r` sees all of `T`. -/
 theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Finset W)
@@ -360,51 +329,45 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
   have hrp := hall p (by simp)
   have hrq := hall q (by simp)
   have hrq' := hall q' (by simp)
-  have hr := (hEv r).2 (Or.inl rfl)
-  have hp := (hEv p).2 (Or.inr (by simp))
-  have hq := (hEv q).2 (Or.inr (by simp))
-  have hq' := (hEv q').2 (Or.inr (by simp))
+  have hr2 := ((hEv r).2 (Or.inl rfl)).2
+  have hp2 := ((hEv p).2 (Or.inr (by simp))).2
+  have hq2 := ((hEv q).2 (Or.inr (by simp))).2
+  have hq'2 := ((hEv q').2 (Or.inr (by simp))).2
   have hrp' : r ≠ p := hrp.ne
   have hrq0 : r ≠ q := hrq.ne
   have hrq'0 : r ≠ q' := hrq'.ne
   have hne : ∀ {a b : W}, a ≠ b → s(r, a) ≠ s(r, b) := fun h h' => h (Sym2.congr_right.mp h')
-  -- the graphs `G₁ = G − rq`, `G₂ = G₁ − rq'`, `G₃ = G₂ − rp`
   have h1 : (delEdge G r q).Adj r q' := ⟨hrq', hne (Ne.symm hqq')⟩
   have h2 : (delEdge (delEdge G r q) r q').Adj r p := ⟨⟨hrp, hne hpq⟩, hne hpq'⟩
-  set G₁ := delEdge G r q with hG₁
-  set G₂ := delEdge G₁ r q' with hG₂
-  set G₃ := delEdge G₂ r p with hG₃
-  -- degrees
-  have d1 : ∀ w, G₁.degree w + (if w = r then 1 else 0) + (if w = q then 1 else 0) =
-      G.degree w := delEdge_degree G hrq
-  have d2 : ∀ w, G₂.degree w + (if w = r then 1 else 0) + (if w = q' then 1 else 0) =
-      G₁.degree w := delEdge_degree G₁ h1
-  have d3 : ∀ w, G₃.degree w + (if w = r then 1 else 0) + (if w = p then 1 else 0) =
-      G₂.degree w := delEdge_degree G₂ h2
-  have deg3 : ∀ w, w ≠ r → w ≠ p → w ≠ q → w ≠ q' → G₃.degree w = G.degree w := by
+  have d1 := delEdge_degree G hrq
+  have d2 := delEdge_degree (delEdge G r q) h1
+  have d3 := delEdge_degree (delEdge (delEdge G r q) r q') h2
+  have deg3 : ∀ w, w ≠ r → w ≠ p → w ≠ q → w ≠ q' →
+      (delEdge (delEdge (delEdge G r q) r q') r p).degree w = G.degree w := by
     intro w h1 h2 h3 h4
     have a := d1 w; have b := d2 w; have c := d3 w
     simp only [h1, h2, h3, h4, ite_false, add_zero] at a b c
     omega
-  have hev3 : ∀ w, w ∉ evenSet G₃ := by
+  have hev3 : ∀ w, w ∉ evenSet (delEdge (delEdge (delEdge G r q) r q') r p) := by
     intro w hw
     rw [mem_evenSet_iff] at hw
     have a := d1 w; have b := d2 w; have c := d3 w
     by_cases hwr : w = r
-    · subst hwr
+    · rw [hwr] at a b c hw
       simp only [hrp', hrq0, hrq'0, ite_true, ite_false, add_zero] at a b c
       omega
     · by_cases hwp : w = p
-      · subst hwp
-        simp only [hwr, hpq, hpq', ite_true, ite_false, add_zero] at a b c
+      · rw [hwp] at a b c hw
+        simp only [Ne.symm hrp', hpq, hpq', ite_true, ite_false, add_zero] at a b c
         omega
       · by_cases hwq : w = q
-        · subst hwq
-          simp only [hwr, hwp, hqq', ite_true, ite_false, add_zero] at a b c
+        · rw [hwq] at a b c hw
+          simp only [Ne.symm hrq0, Ne.symm hpq, hqq', ite_true, ite_false, add_zero] at a b c
           omega
         · by_cases hwq' : w = q'
-          · subst hwq'
-            simp only [hwr, hwp, hwq, ite_true, ite_false, add_zero] at a b c
+          · rw [hwq'] at a b c hw
+            simp only [Ne.symm hrq'0, Ne.symm hpq', Ne.symm hqq', ite_true, ite_false,
+              add_zero] at a b c
             omega
           · rw [deg3 w hwr hwp hwq hwq'] at hw
             rcases (hEv w).1 hw with h | h
@@ -414,19 +377,22 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
               · exact hwp h
               · exact hwq h
               · exact hwq' h
-  obtain ⟨D₃, hD₃⟩ := lovasz_ends G₃ (by
-    rw [Finset.card_le_one]; intro a ha; exact absurd ha (hev3 a))
-  have hzero3 : ∀ w, 0 < G₃.degree w → D₃.ends w = 1 := by
+  obtain ⟨D₃, hD₃⟩ := lovasz_ends (delEdge (delEdge (delEdge G r q) r q') r p) (by
+    rw [Finset.eq_empty_of_forall_notMem hev3]; simp)
+  have hone3 : ∀ w, 0 < (delEdge (delEdge (delEdge G r q) r q') r p).degree w →
+      D₃.ends w = 1 := by
     intro w hw
     rw [hD₃ w]
     have := hev3 w
     rw [mem_evenSet_iff] at this
     omega
-  have h3pos : ∀ {x w : W}, G₃.Adj x w → 0 < G₃.degree w :=
-    fun h => (G₃.degree_pos_iff_exists_adj _).mpr ⟨_, h.symm⟩
-  -- degree positivity of the four vertices in `G₃`
-  have hpos : ∀ w, (w = r ∨ w = p ∨ w = q ∨ w = q') → 0 < G₃.degree w := by
+  have hpos3 : ∀ {x w : W}, (delEdge (delEdge (delEdge G r q) r q') r p).Adj x w →
+      0 < (delEdge (delEdge (delEdge G r q) r q') r p).degree w :=
+    fun h => ((delEdge (delEdge (delEdge G r q) r q') r p).degree_pos_iff_exists_adj _).mpr
+      ⟨_, h.symm⟩
+  have e3 : ∀ w, (w = r ∨ w = p ∨ w = q ∨ w = q') → D₃.ends w = 1 := by
     intro w hw
+    apply hone3
     have a := d1 w; have b := d2 w; have c := d3 w
     rcases hw with rfl | rfl | rfl | rfl
     · simp only [hrp', hrq0, hrq'0, ite_true, ite_false, add_zero] at a b c; omega
@@ -436,22 +402,24 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
     · simp only [Ne.symm hrq'0, Ne.symm hpq', Ne.symm hqq', ite_true, ite_false,
         add_zero] at a b c
       omega
-  have e3 : ∀ w, (w = r ∨ w = p ∨ w = q ∨ w = q') → D₃.ends w = 1 :=
-    fun w hw => hzero3 w (hpos w hw)
+  have e3r := e3 r (Or.inl rfl)
+  have e3p := e3 p (Or.inr (Or.inl rfl))
+  have e3q := e3 q (Or.inr (Or.inr (Or.inl rfl)))
+  have e3q' := e3 q' (Or.inr (Or.inr (Or.inr rfl)))
   -- step 1: restore `rp`
-  obtain ⟨D₂, -, hD₂r, hD₂p, hD₂o⟩ := fan_single h2 (delEdge_edgeSet G₂ r p) D₃ (by
-    have hempty : Finset.univ.filter (fun w => G₃.Adj r w ∧ D₃.ends w = 0) = ∅ := by
-      rw [Finset.filter_eq_empty_iff]
-      rintro w - ⟨hadj, hw0⟩
-      rw [hzero3 w (h3pos hadj)] at hw0
-      exact one_ne_zero hw0
-    rw [hempty, Finset.card_empty, e3 p (Or.inr (Or.inl rfl))]
-    exact Nat.one_pos)
-  have e2 : ∀ w, w ≠ r → w ≠ p → D₂.ends w = D₃.ends w := fun w h1 h2 => hD₂o w h1 h2
+  obtain ⟨D₂, -, hD₂r, hD₂p, hD₂o⟩ := fan_single h2
+    (delEdge_edgeSet (delEdge (delEdge G r q) r q') r p) D₃ (by
+      have hempty : Finset.univ.filter (fun w =>
+          (delEdge (delEdge (delEdge G r q) r q') r p).Adj r w ∧ D₃.ends w = 0) = ∅ := by
+        rw [Finset.filter_eq_empty_iff]
+        rintro w - ⟨hadj, hw0⟩
+        rw [hone3 w (hpos3 hadj)] at hw0
+        exact one_ne_zero hw0
+      rw [hempty, Finset.card_empty, e3p]
+      exact Nat.one_pos)
   -- step 2: grouped transfer from `{q, q'}` to `r`
-  have hqq'ne : ({q, q'} : Finset W) = {q, q'} := rfl
   obtain ⟨t, ht, hK⟩ := fan_grouped D₂ r {q, q'}
-    (by simp [Ne.symm hrq0, Ne.symm hrq'0, hrq0, hrq'0])
+    (by simp [hrq0, hrq'0])
     (by
       intro t ht hadj
       simp only [Finset.mem_insert, Finset.mem_singleton] at ht
@@ -459,64 +427,84 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       · exact hadj.1.2 Sym2.eq_swap
       · exact hadj.2 Sym2.eq_swap)
     (by
-      rw [Finset.sum_pair hqq', e2 q (Ne.symm hrq0) (Ne.symm hpq),
-        e2 q' (Ne.symm hrq'0) (Ne.symm hpq'), e3 q (Or.inr (Or.inr (Or.inl rfl))),
-        e3 q' (Or.inr (Or.inr (Or.inr rfl)))]
-      have hsub : Finset.univ.filter (fun w => G₂.Adj r w ∧ D₂.ends w = 0) ⊆ {p} := by
+      rw [Finset.sum_pair hqq', hD₂o q (Ne.symm hrq0) (Ne.symm hpq),
+        hD₂o q' (Ne.symm hrq'0) (Ne.symm hpq'), e3q, e3q']
+      have hsub : Finset.univ.filter
+          (fun w => (delEdge (delEdge G r q) r q').Adj r w ∧ D₂.ends w = 0) ⊆ {p} := by
         intro w hw
         simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hw
         rw [Finset.mem_singleton]
         by_contra hwp
         have hwr : w ≠ r := hw.1.ne.symm
-        rw [e2 w hwr hwp] at hw
-        have hadj3 : G₃.Adj r w := ⟨hw.1, fun h => hwp (Sym2.congr_right.mp h)⟩
-        rw [hzero3 w (h3pos hadj3)] at hw
+        rw [hD₂o w hwr hwp] at hw
+        have hadj3 : (delEdge (delEdge (delEdge G r q) r q') r p).Adj r w :=
+          ⟨hw.1, fun h => hwp (Sym2.congr_right.mp h)⟩
+        rw [hone3 w (hpos3 hadj3)] at hw
         exact one_ne_zero hw.2
       have := Finset.card_le_card hsub
       rw [Finset.card_singleton] at this
       omega)
   -- step 3: restore the last edge `rt'`
-  have step3 : ∀ t' : W, t' ∈ ({q, q'} : Finset W) → t' ≠ t →
-      (∀ e, e ∈ (delEdge G r t').edgeSet ↔ e ∈ G₂.edgeSet ∨ e = s(t, r)) →
+  have step3 : ∀ t' : W, ((t = q ∧ t' = q') ∨ (t = q' ∧ t' = q)) →
+      (∀ e, e ∈ (delEdge G r t').edgeSet ↔
+        e ∈ (delEdge (delEdge G r q) r q').edgeSet ∨ e = s(t, r)) →
       ∃ w ∈ ({p, q, q'} : Finset W), Realisable G {r, w} := by
-    intro t' ht' htt' hedges
-    have htq : t ∈ ({q, q'} : Finset W) := ht
+    intro t' htt hedges
     obtain ⟨D₁, -, hD₁⟩ := hK (delEdge G r t') hedges
-    have hrt' : G.Adj t' r := by
-      simp only [Finset.mem_insert, Finset.mem_singleton] at ht'
-      rcases ht' with rfl | rfl
-      · exact hrq.symm
-      · exact hrq'.symm
     have htr : t ≠ r := by
-      simp only [Finset.mem_insert, Finset.mem_singleton] at htq
-      rcases htq with rfl | rfl
-      · exact Ne.symm hrq0
-      · exact Ne.symm hrq'0
-    have ht'r : t' ≠ r := hrt'.ne
+      rcases htt with ⟨h, -⟩ | ⟨h, -⟩
+      · rw [h]; exact Ne.symm hrq0
+      · rw [h]; exact Ne.symm hrq'0
+    have ht'r : t' ≠ r := by
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩
+      · rw [h]; exact Ne.symm hrq'0
+      · rw [h]; exact Ne.symm hrq0
     have htp : t ≠ p := by
-      simp only [Finset.mem_insert, Finset.mem_singleton] at htq
-      rcases htq with rfl | rfl
-      · exact Ne.symm hpq
-      · exact Ne.symm hpq'
+      rcases htt with ⟨h, -⟩ | ⟨h, -⟩
+      · rw [h]; exact Ne.symm hpq
+      · rw [h]; exact Ne.symm hpq'
     have ht'p : t' ≠ p := by
-      simp only [Finset.mem_insert, Finset.mem_singleton] at ht'
-      rcases ht' with rfl | rfl
-      · exact Ne.symm hpq
-      · exact Ne.symm hpq'
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩
+      · rw [h]; exact Ne.symm hpq'
+      · rw [h]; exact Ne.symm hpq
+    have htt' : t ≠ t' := by
+      rcases htt with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · rw [h1, h2]; exact hqq'
+      · rw [h1, h2]; exact Ne.symm hqq'
+    have e3t : D₃.ends t = 1 := by
+      rcases htt with ⟨h, -⟩ | ⟨h, -⟩
+      · rw [h]; exact e3q
+      · rw [h]; exact e3q'
+    have e3t' : D₃.ends t' = 1 := by
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩
+      · rw [h]; exact e3q'
+      · rw [h]; exact e3q
+    have hother : ∀ w, w ≠ t → w ≠ t' → w ≠ q ∧ w ≠ q' := by
+      intro w h1 h2
+      rcases htt with ⟨ha, hb⟩ | ⟨ha, hb⟩
+      · rw [ha] at h1; rw [hb] at h2; exact ⟨h1, h2⟩
+      · rw [ha] at h1; rw [hb] at h2; exact ⟨h2, h1⟩
+    have hrt' : G.Adj t' r := by
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩
+      · rw [h]; exact hrq'.symm
+      · rw [h]; exact hrq.symm
+    have ht'2 : G.degree t' % 2 = 0 := by
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩
+      · rw [h]; exact hq'2
+      · rw [h]; exact hq2
+    have ht2 : G.degree t % 2 = 0 := by
+      rcases htt with ⟨h, -⟩ | ⟨h, -⟩
+      · rw [h]; exact hq2
+      · rw [h]; exact hq'2
     have hD₁r : D₁.ends r = 3 := by
       have := hD₁ r
-      rw [hD₂r, e3 r (Or.inl rfl)] at this
-      simp only [htr.symm, ite_true, ite_false, add_zero] at this
+      rw [hD₂r, e3r] at this
+      simp only [htr, ite_true, ite_false, add_zero] at this
       omega
     have hD₁t : D₁.ends t = 0 := by
       have := hD₁ t
-      rw [e2 t htr htp] at this
-      have h3 : D₃.ends t = 1 := by
-        simp only [Finset.mem_insert, Finset.mem_singleton] at htq
-        rcases htq with rfl | rfl
-        · exact e3 t (Or.inr (Or.inr (Or.inl rfl)))
-        · exact e3 t (Or.inr (Or.inr (Or.inr rfl)))
-      simp only [htr, ite_true, ite_false, add_zero] at this
+      rw [hD₂o t htr htp, e3t] at this
+      simp only [htr, Ne.symm htr, ite_true, ite_false, add_zero] at this
       omega
     have hD₁o : ∀ w, w ≠ r → w ≠ t → D₁.ends w = D₂.ends w := by
       intro w hwr hwt
@@ -525,106 +513,68 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       exact this
     have hG' : ∀ e, e ∈ (delEdge G r t').edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(t', r) := by
       intro e
-      rw [delEdge_edgeSet, Sym2.eq_swap]
+      rw [delEdge_edgeSet, Sym2.eq_swap (a := r)]
     obtain ⟨D, -, hDt', hDr, hDo⟩ := fan_single hrt' hG' D₁ (by
       have hsub : Finset.univ.filter
           (fun w => (delEdge G r t').Adj t' w ∧ D₁.ends w = 0) ⊆ {p, t} := by
         intro w hw
         simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hw
-        simp only [Finset.mem_insert, Finset.mem_singleton]
+        rw [Finset.mem_insert, Finset.mem_singleton]
         by_contra hc
         rw [not_or] at hc
         obtain ⟨hwp, hwt⟩ := hc
         have hwr : w ≠ r := by
-          rintro rfl
-          rw [hD₁r] at hw
+          intro h
+          rw [h, hD₁r] at hw
           exact absurd hw.2 (by norm_num)
-        have hwt' : w ≠ t' := hw.1.ne.symm
-        rw [hD₁o w hwr hwt, e2 w hwr hwp] at hw
-        -- `t'w` is still an edge of `G₃`
-        have hadj3 : G₃.Adj t' w := by
-          refine ⟨⟨⟨hw.1.1, ?_⟩, ?_⟩, ?_⟩
-          · intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
-            · exact ht'r h1
-            · exact hwr h2
-          · intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
-            · exact ht'r h1
-            · exact hwr h2
-          · intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
-            · exact ht'r h1
-            · exact hwr h2
-        rw [hzero3 w (h3pos hadj3)] at hw
+        rw [hD₁o w hwr hwt, hD₂o w hwr hwp] at hw
+        have hnr : ∀ a, ¬ s(t', w) = s(r, a) := by
+          intro a h
+          rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
+          · exact ht'r h1
+          · exact hwr h2
+        have hadj3 : (delEdge (delEdge (delEdge G r q) r q') r p).Adj t' w :=
+          ⟨⟨⟨hw.1.1, hnr q⟩, hnr q'⟩, hnr p⟩
+        rw [hone3 w (hpos3 hadj3)] at hw
         exact one_ne_zero hw.2
       have := Finset.card_le_card hsub
       have h2c : ({p, t} : Finset W).card ≤ 2 := Finset.card_le_two
       omega)
     have ht'mem : t' ∈ ({p, q, q'} : Finset W) := by
-      simp only [Finset.mem_insert, Finset.mem_singleton] at ht' ⊢
-      rcases ht' with h | h <;> simp [h]
-    refine ⟨t', ht'mem, ?_, D, realises_of ?_ (fun w => ?_)⟩
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr ht'mem
-    · intro w hw
-      rw [Finset.mem_insert, Finset.mem_singleton] at hw
-      rw [hE, Finset.mem_insert]
-      rcases hw with rfl | rfl
-      · exact Or.inl rfl
-      · exact Or.inr ht'mem
-    · by_cases hwr : w = r
-      · subst hwr
-        simp only [Finset.mem_insert, Finset.mem_singleton, true_or, ite_true]
-        omega
-      · by_cases hwt' : w = t'
-        · subst hwt'
-          rw [hDt', hD₁o w hwr (Ne.symm htt'), e2 w hwr ht'p]
-          have : D₃.ends w = 1 := by
-            simp only [Finset.mem_insert, Finset.mem_singleton] at ht'
-            rcases ht' with h | h
-            · rw [h]; exact e3 q (Or.inr (Or.inr (Or.inl rfl)))
-            · rw [h]; exact e3 q' (Or.inr (Or.inr (Or.inr rfl)))
-          simp only [Finset.mem_insert, Finset.mem_singleton, or_true, ite_true]
-          omega
-        · rw [hDo w hwt' hwr]
-          have hS : w ∉ ({r, t'} : Finset W) := by simp [hwr, hwt']
-          simp only [hS, ite_false, add_zero]
-          by_cases hwt : w = t
-          · subst hwt
-            rw [hD₁t]
-            simp only [Finset.mem_insert, Finset.mem_singleton] at htq
-            rcases htq with h | h <;> (rw [h]; omega)
-          · rw [hD₁o w hwr hwt]
-            by_cases hwp : w = p
-            · subst hwp
-              have := hD₂p
-              rw [e3 w (Or.inr (Or.inl rfl))] at this
+      rcases htt with ⟨-, h⟩ | ⟨-, h⟩ <;> simp [h]
+    refine ⟨t', ht'mem, pair_subset_evenSet hE ht'mem, D,
+      realises_of (pair_subset_evenSet hE ht'mem) (fun w => ?_)⟩
+    by_cases hwr : w = r
+    · rw [hwr]
+      simp <;> omega
+    · by_cases hwt' : w = t'
+      · rw [hwt', hDt', hD₁o t' ht'r (Ne.symm htt'), hD₂o t' ht'r ht'p, e3t']
+        simp <;> omega
+      · rw [hDo w hwt' hwr]
+        have hS : w ∉ ({r, t'} : Finset W) := by simp [hwr, hwt']
+        simp only [hS, ite_false, add_zero]
+        by_cases hwt : w = t
+        · rw [hwt, hD₁t]; omega
+        · rw [hD₁o w hwr hwt]
+          by_cases hwp : w = p
+          · rw [hwp]; omega
+          · rw [hD₂o w hwr hwp]
+            obtain ⟨hwq, hwq'⟩ := hother w hwt hwt'
+            have hdeg := deg3 w hwr hwp hwq hwq'
+            rcases Nat.eq_zero_or_pos
+                ((delEdge (delEdge (delEdge G r q) r q') r p).degree w) with hz | hpw
+            · rw [hD₃ w, hz, ← hdeg, hz]
+            · rw [hone3 w hpw]
+              have := hev3 w
+              rw [mem_evenSet_iff, hdeg] at this
+              rw [hdeg] at hpw
               omega
-            · rw [e2 w hwr hwp]
-              have hwq : w ≠ q := by
-                intro h; subst h
-                simp only [Finset.mem_insert, Finset.mem_singleton] at htq ht'
-                rcases htq with h1 | h1 <;> rcases ht' with h2 | h2 <;> simp_all
-              have hwq' : w ≠ q' := by
-                intro h; subst h
-                simp only [Finset.mem_insert, Finset.mem_singleton] at htq ht'
-                rcases htq with h1 | h1 <;> rcases ht' with h2 | h2 <;> simp_all
-              have hpos' : 0 < G₃.degree w ∨ G₃.degree w = 0 := by omega
-              rcases hpos' with hpw | hpw
-              · rw [hzero3 w hpw, ← deg3 w hwr hwp hwq hwq']
-                have := hev3 w
-                rw [mem_evenSet_iff] at this
-                omega
-              · rw [hD₃ w, hpw, ← deg3 w hwr hwp hwq hwq', hpw]
   simp only [Finset.mem_insert, Finset.mem_singleton] at ht
-  rcases ht with rfl | rfl
-  · refine step3 q' (by simp) (Ne.symm hqq') ?_
+  rcases ht with ht | ht
+  · refine step3 q' (Or.inl ⟨ht, rfl⟩) ?_
     intro e
-    rw [delEdge_edgeSet]
-    simp only [G₂, G₁, delEdge_edgeSet]
-    have hmem : s(q, r) ∈ G.edgeSet := hrq.symm
+    rw [ht]
+    simp only [delEdge_edgeSet]
     constructor
     · rintro ⟨he, hne'⟩
       by_cases h : e = s(r, q)
@@ -632,15 +582,14 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       · exact Or.inl ⟨⟨he, h⟩, hne'⟩
     · rintro (⟨⟨he, -⟩, hne'⟩ | rfl)
       · exact ⟨he, hne'⟩
-      · refine ⟨hmem, ?_⟩
+      · refine ⟨hrq.symm, ?_⟩
         intro h
         rw [Sym2.eq_swap] at h
         exact hqq' (Sym2.congr_right.mp h)
-  · refine step3 q (by simp) hqq' ?_
+  · refine step3 q (Or.inr ⟨ht, rfl⟩) ?_
     intro e
-    rw [delEdge_edgeSet]
-    simp only [G₂, G₁, delEdge_edgeSet]
-    have hmem : s(q', r) ∈ G.edgeSet := hrq'.symm
+    rw [ht]
+    simp only [delEdge_edgeSet]
     constructor
     · rintro ⟨he, hne'⟩
       by_cases h : e = s(r, q')
@@ -648,13 +597,13 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       · exact Or.inl ⟨⟨he, hne'⟩, h⟩
     · rintro (⟨⟨he, h1⟩, -⟩ | rfl)
       · exact ⟨he, h1⟩
-      · refine ⟨hmem, ?_⟩
+      · refine ⟨hrq'.symm, ?_⟩
         intro h
         rw [Sym2.eq_swap] at h
         exact hqq' (Sym2.congr_right.mp h).symm
 
-/-- Every realisable pair among four even vertices, by induction on the distance from `r` to
-`T`. -/
+/-- Every realisable pair among four even vertices, by induction on the length of a path from
+`r` to `T`. -/
 theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] (r : W)
     (T : Finset W), r ∉ T → T.card = 3 → evenSet G = insert r T →
     (∃ t ∈ T, ∃ p : G.Walk r t, p.IsPath ∧ p.length ≤ d) →
@@ -662,8 +611,7 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
   induction d with
   | zero =>
     rintro G _ r T hrT - - ⟨t, ht, p, -, hp⟩
-    have : p.length = 0 := by omega
-    have hrt := Walk.eq_of_length_eq_zero this
+    have hrt := Walk.eq_of_length_eq_zero (p := p) (by omega)
     exact absurd (hrt ▸ ht) hrT
   | succ d ih =>
     intro G _ r T hrT hT hE ⟨t, ht, p, hpath, hp⟩
@@ -680,21 +628,20 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
       have hrt : r ≠ t := fun h => hrT (h ▸ ht)
       obtain ⟨o, hro, p', rfl⟩ := Walk.exists_eq_cons_of_length_pos p (by
         by_contra h0
-        exact hrt (Walk.eq_of_length_eq_zero (by omega)))
+        exact hrt (Walk.eq_of_length_eq_zero (p := p) (by omega)))
       rw [Walk.cons_isPath_iff] at hpath
       have hoT : o ∉ T := fun h => hadj o h hro
       have hor : o ≠ r := hro.ne.symm
       have hot : o ≠ t := fun h => hoT (h ▸ ht)
-      -- `o` has a second neighbour on `p'`
       obtain ⟨y, hoy, p'', rfl⟩ := Walk.exists_eq_cons_of_length_pos p' (by
         by_contra h0
-        exact hot (Walk.eq_of_length_eq_zero (by omega)))
+        exact hot (Walk.eq_of_length_eq_zero (p := p') (by omega)))
       have hyr : y ≠ r := by
         intro h
         apply hpath.2
-        rw [Walk.support_cons, h]
-        exact List.mem_cons_of_mem _ p''.start_mem_support
-      have hr := (hEv r).2 (Or.inl rfl)
+        rw [Walk.support_cons]
+        exact List.mem_cons_of_mem _ (h ▸ p''.start_mem_support)
+      have hr2 := ((hEv r).2 (Or.inl rfl)).2
       have hopos : 0 < G.degree o := (G.degree_pos_iff_exists_adj o).mpr ⟨r, hro.symm⟩
       have hoodd : G.degree o % 2 = 1 := by
         have := (hEv o).not.mpr (by rintro (h | h); exact hor h; exact hoT h)
@@ -703,31 +650,29 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
       have hdo' := delEdge_degree_right G hro
       have hdo : ∀ w, w ≠ r → w ≠ o → (delEdge G r o).degree w = G.degree w :=
         fun w h1 h2 => delEdge_degree_of_ne G hro h1 h2
-      have hadj' : (delEdge G r o).Adj o y :=
-        ⟨hoy, fun h => by rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
-                          · exact hor h1
-                          · exact hyr h2⟩
+      have hadj' : (delEdge G r o).Adj o y := ⟨hoy, fun h => by
+        rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
+        · exact hor h1
+        · exact hyr h2⟩
       have hopos' : 0 < (delEdge G r o).degree o :=
         ((delEdge G r o).degree_pos_iff_exists_adj o).mpr ⟨y, hadj'⟩
       have hE' : evenSet (delEdge G r o) = insert o T := by
         ext w
         rw [mem_evenSet_iff, Finset.mem_insert]
         by_cases hwr : w = r
-        · subst hwr
+        · rw [hwr]
           constructor
           · intro h; omega
           · rintro (h | h)
             · exact absurd h hor.symm
             · exact absurd h hrT
         · by_cases hwo : w = o
-          · subst hwo
+          · rw [hwo]
             constructor
             · intro _; exact Or.inl rfl
             · intro _; exact ⟨hopos', by omega⟩
           · rw [hdo w hwr hwo, hEv w]
             simp [hwr, hwo]
-      -- the shorter path from `o`
-      have hp'path : (Walk.cons hoy p'').IsPath := hpath.1
       have hnr : r ∉ (Walk.cons hoy p'').support := hpath.2
       have htr : ∀ e ∈ (Walk.cons hoy p'').edges, e ∈ (delEdge G r o).edgeSet := by
         intro e he
@@ -736,14 +681,14 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
         rintro rfl
         exact hnr ((Walk.cons hoy p'').fst_mem_support_of_mem_edges he)
       obtain ⟨w, hwT, hw⟩ := ih (delEdge G r o) o T hoT hT hE'
-        ⟨t, ht, (Walk.cons hoy p'').transfer _ htr, hp'path.transfer htr,
-          by rw [Walk.length_transfer]; simp at hp ⊢; omega⟩
+        ⟨t, ht, (Walk.cons hoy p'').transfer _ htr, (Walk.isPath_transfer htr).mpr hpath.1,
+          by rw [Walk.length_transfer]; simp only [Walk.length_cons] at hp ⊢; omega⟩
       obtain ⟨hS', D', hD'⟩ := hw
       have e' := ends_of_realises hS' hD'
       have hwo : w ≠ o := fun h => hoT (h ▸ hwT)
       have hwr : w ≠ r := fun h => hrT (h ▸ hwT)
       have hD'o : D'.ends o = 2 := by
-        rw [e' o]; simp [Finset.mem_insert]; omega
+        rw [e' o]; simp; omega
       obtain ⟨D, -, hDr, hDo, hDoth⟩ := fan_single hro (delEdge_edgeSet G r o) D' (by
         have hempty : Finset.univ.filter
             (fun x => (delEdge G r o).Adj r x ∧ D'.ends x = 0) = ∅ := by
@@ -755,50 +700,35 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
           have hxeven : (delEdge G r o).degree x % 2 = 0 := by omega
           have hxE : x ∈ evenSet (delEdge G r o) := mem_evenSet_iff.mpr ⟨hxpos, hxeven⟩
           rw [hE', Finset.mem_insert] at hxE
-          rcases hxE with rfl | hxT
-          · exact hadjx.2 rfl
+          rcases hxE with hxo | hxT
+          · rw [hxo] at hadjx; exact hadjx.2 rfl
           · exact hadj x hxT hadjx.1
         rw [hempty, Finset.card_empty, hD'o]
         omega)
-      refine ⟨w, hwT, ?_, D, realises_of ?_ (fun x => ?_)⟩
-      · intro x hx
-        rw [Finset.mem_insert, Finset.mem_singleton] at hx
-        rw [hE, Finset.mem_insert]
-        rcases hx with rfl | rfl
-        · exact Or.inl rfl
-        · exact Or.inr hwT
-      · intro x hx
-        rw [Finset.mem_insert, Finset.mem_singleton] at hx
-        rw [hE, Finset.mem_insert]
-        rcases hx with rfl | rfl
-        · exact Or.inl rfl
-        · exact Or.inr hwT
-      · by_cases hxr : x = r
-        · subst hxr
-          rw [hDr, e' x]
-          simp only [Finset.mem_insert, Finset.mem_singleton, hor.symm, Ne.symm hwr,
-            or_self, ite_false, add_zero, true_or, ite_true]
-          omega
-        · by_cases hxo : x = o
-          · subst hxo
-            simp only [Finset.mem_insert, Finset.mem_singleton, hxr, Ne.symm hwo, or_self,
-              ite_false, add_zero]
-            omega
-          · rw [hDoth x hxr hxo, e' x, hdo x hxr hxo]
-            simp only [Finset.mem_insert, Finset.mem_singleton, hxr, hxo, false_or]
+      refine ⟨w, hwT, pair_subset_evenSet hE hwT, D,
+        realises_of (pair_subset_evenSet hE hwT) (fun x => ?_)⟩
+      by_cases hxr : x = r
+      · rw [hxr, hDr, e' r]
+        simp [hor.symm, Ne.symm hwr, hor, hwr] <;> omega
+      · by_cases hxo : x = o
+        · rw [hxo]
+          have := hDo
+          rw [hD'o] at this
+          simp [hor, Ne.symm hor, hwo, Ne.symm hwo] <;> omega
+        · rw [hDoth x hxr hxo, e' x, hdo x hxr hxo]
+          simp [hxr, hxo]
 
 /-- **Realisable pairs, `e = 4`** (endpoint-structure, small even sets): in a connected graph
 with exactly four even vertices, every even vertex lies in a realisable 2-set. -/
 theorem realisable_pair_of_four (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected)
     {r : W} (hr : r ∈ evenSet G) (h4 : (evenSet G).card = 4) :
     ∃ w, w ≠ r ∧ w ∈ evenSet G ∧ Realisable G {r, w} := by
-  set T := (evenSet G).erase r
-  have hT : T.card = 3 := by rw [Finset.card_erase_of_mem hr, h4]
-  have hE : evenSet G = insert r T := (Finset.insert_erase hr).symm
-  obtain ⟨t, ht⟩ : T.Nonempty := Finset.card_pos.mp (by omega)
+  have hT : ((evenSet G).erase r).card = 3 := by rw [Finset.card_erase_of_mem hr, h4]
+  have hE : evenSet G = insert r ((evenSet G).erase r) := (Finset.insert_erase hr).symm
+  obtain ⟨t, ht⟩ : ((evenSet G).erase r).Nonempty := Finset.card_pos.mp (by omega)
   obtain ⟨q⟩ := hconn.preconnected r t
-  obtain ⟨w, hwT, hw⟩ := four_even_pair q.bypass.length G r T (Finset.notMem_erase r _) hT hE
-    ⟨t, ht, q.bypass, q.bypass_isPath, le_rfl⟩
+  obtain ⟨w, hwT, hw⟩ := four_even_pair q.bypass.length G r ((evenSet G).erase r)
+    (Finset.notMem_erase r _) hT hE ⟨t, ht, q.bypass, q.bypass_isPath, le_rfl⟩
   exact ⟨w, (Finset.mem_erase.mp hwT).1, (Finset.mem_erase.mp hwT).2, hw⟩
 
 end four
@@ -816,19 +746,19 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     ∃ S : Finset W, S.card ≤ 1 ∧ Realisable G S := by
   have hsℓ : s ≠ ℓ := hℓs.ne.symm
   -- `ℓ` is pendant
+  have hN : G.neighborFinset ℓ = {s} := by
+    rw [Finset.eq_singleton_iff_unique_mem]
+    refine ⟨(G.mem_neighborFinset ℓ s).mpr hℓs, fun y hy => ?_⟩
+    have hcard : (G.neighborFinset ℓ).card = 1 := by rw [card_neighborFinset_eq_degree, hℓ]
+    obtain ⟨z, hz⟩ := Finset.card_eq_one.mp hcard
+    have h1 : y ∈ ({z} : Finset W) := hz ▸ hy
+    have h2 : s ∈ ({z} : Finset W) := hz ▸ (G.mem_neighborFinset ℓ s).mpr hℓs
+    rw [Finset.mem_singleton] at h1 h2
+    rw [h1, h2]
   have hpend : ∀ e ∈ G.edgeSet, ℓ ∈ e → e = s(ℓ, s) := by
     intro e he hle
     induction e using Sym2.inductionOn with
     | hf a b =>
-    have hN : G.neighborFinset ℓ = {s} := by
-      rw [Finset.eq_singleton_iff_unique_mem]
-      refine ⟨(G.mem_neighborFinset ℓ s).mpr hℓs, fun y hy => ?_⟩
-      have hcard : (G.neighborFinset ℓ).card = 1 := by rw [card_neighborFinset_eq_degree, hℓ]
-      obtain ⟨z, hz⟩ := Finset.card_eq_one.mp hcard
-      have h1 : y ∈ ({z} : Finset W) := hz ▸ hy
-      have h2 : s ∈ ({z} : Finset W) := hz ▸ (G.mem_neighborFinset ℓ s).mpr hℓs
-      rw [Finset.mem_singleton] at h1 h2
-      rw [h1, h2]
     rw [mem_edgeSet] at he
     rcases Sym2.mem_iff.mp hle with rfl | rfl
     · have : b ∈ G.neighborFinset a := (G.mem_neighborFinset a b).mpr he
@@ -837,21 +767,22 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     · have : a ∈ G.neighborFinset b := (G.mem_neighborFinset b a).mpr he.symm
       rw [hN, Finset.mem_singleton] at this
       rw [this, Sym2.eq_swap]
-  set G₀ := delEdge G ℓ s with hG₀
-  have hdℓ : G₀.degree ℓ = 0 := by have := delEdge_degree_left G hℓs; omega
+  have hdℓ : (delEdge G ℓ s).degree ℓ = 0 := by
+    have := delEdge_degree_left G hℓs; omega
   have hds := delEdge_degree_right G hℓs
-  have hdo : ∀ w, w ≠ ℓ → w ≠ s → G₀.degree w = G.degree w :=
+  have hdo : ∀ w, w ≠ ℓ → w ≠ s → (delEdge G ℓ s).degree w = G.degree w :=
     fun w h1 h2 => delEdge_degree_of_ne G hℓs h1 h2
-  have hℓodd : G.degree ℓ % 2 = 1 := by omega
   have hℓE : ℓ ∉ evenSet G := by rw [mem_evenSet_iff]; omega
   -- re-append `ℓ` at an end at `s`
-  have reappend : ∀ (D₀ : PathDecomp G₀), 0 < D₀.ends s →
+  have reappend : ∀ (D₀ : PathDecomp (delEdge G ℓ s)), 0 < D₀.ends s →
       ∃ D : PathDecomp G, ∀ w, D.ends w + (if s = w then 1 else 0) =
         D₀.ends w + (if ℓ = w then 1 else 0) := by
     intro D₀ hpos
     obtain ⟨P, hP, hend⟩ := D₀.exists_end_of_pos hpos
-    exact D₀.append_move (t := s) (u := ℓ)
-      (fun h => by have := (G₀.degree_pos_iff_exists_adj ℓ).mpr ⟨s, h.symm⟩; omega)
+    obtain ⟨D, -, hD⟩ := D₀.append_move (K' := G) (t := s) (u := ℓ)
+      (fun h => by
+        have := ((delEdge G ℓ s).degree_pos_iff_exists_adj ℓ).mpr ⟨s, h.symm⟩
+        omega)
       (fun e => by
         rw [delEdge_edgeSet, Sym2.eq_swap (a := s)]
         constructor
@@ -863,75 +794,76 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
           · exact he
           · exact hℓs)
       hP hend (not_mem_support_of_degree_zero P hdℓ)
+    exact ⟨D, hD⟩
   by_cases hsE : s ∈ evenSet G
   · -- the leaf hangs at an even vertex
     have hs := mem_evenSet_iff.mp hsE
-    have hsodd' : G₀.degree s % 2 = 1 := by omega
     obtain ⟨u, hu⟩ : ((evenSet G).erase s).Nonempty :=
       Finset.card_pos.mp (by rw [Finset.card_erase_of_mem hsE, h3]; omega)
     have huE := (Finset.mem_erase.mp hu).2
     have hus : u ≠ s := (Finset.mem_erase.mp hu).1
     have huℓ : u ≠ ℓ := fun h => hℓE (h ▸ huE)
-    have hev0 : ∀ w ∈ evenSet G₀, w ∈ (evenSet G).erase s := by
+    have hu2 := (mem_evenSet_iff.mp huE).2
+    have hev0 : ∀ w ∈ evenSet (delEdge G ℓ s), w ∈ (evenSet G).erase s := by
       intro w hw
       rw [mem_evenSet_iff] at hw
       by_cases hwℓ : w = ℓ
-      · subst hwℓ; omega
+      · rw [hwℓ] at hw; omega
       · by_cases hws : w = s
-        · subst hws; omega
+        · rw [hws] at hw; omega
         · rw [hdo w hwℓ hws] at hw
           exact Finset.mem_erase.mpr ⟨hws, mem_evenSet_iff.mpr hw⟩
-    have hcard : ((evenSet G₀).erase u).card ≤ 1 := by
-      have hsub : (evenSet G₀).erase u ⊆ ((evenSet G).erase s).erase u := by
+    have hcard : ((evenSet (delEdge G ℓ s)).erase u).card ≤ 1 := by
+      have hsub : (evenSet (delEdge G ℓ s)).erase u ⊆ ((evenSet G).erase s).erase u := by
         intro w hw
         rw [Finset.mem_erase] at hw ⊢
         exact ⟨hw.1, hev0 w hw.2⟩
       have := Finset.card_le_card hsub
       rw [Finset.card_erase_of_mem hu, Finset.card_erase_of_mem hsE, h3] at this
       omega
-    obtain ⟨D₀, hD₀w, hD₀u⟩ := two_even G₀ (u := u)
-      (by rw [hdo u huℓ hus]; exact (mem_evenSet_iff.mp huE).2) hcard
+    obtain ⟨D₀, hD₀w, hD₀u⟩ := two_even (delEdge G ℓ s) (u := u)
+      (by rw [hdo u huℓ hus]; exact hu2) hcard
     obtain ⟨D, hD⟩ := reappend D₀ (by rw [hD₀w s hus.symm]; omega)
-    let S : Finset W := if D₀.ends u = 2 then {u} else ∅
-    have hSsub : S ⊆ evenSet G := by
-      intro w hw
-      simp only [S] at hw
-      split_ifs at hw
-      · rw [Finset.mem_singleton] at hw; rw [hw]; exact huE
-      · simp at hw
-    refine ⟨S, by simp only [S]; split_ifs <;> simp, hSsub, D, realises_of hSsub (fun w => ?_)⟩
-    have h := hD w
-    by_cases hws : w = s
-    · subst hws
-      have hwS : w ∉ S := by
-        simp only [S]; split_ifs <;> simp [Ne.symm hus]
-      rw [hD₀w w hus.symm] at h
-      simp only [hwS, ite_false, hsℓ, ite_true, add_zero] at h ⊢
-      omega
-    · by_cases hwℓ : w = ℓ
-      · subst hwℓ
-        have hwS : w ∉ S := by
-          simp only [S]; split_ifs <;> simp [Ne.symm huℓ]
-        rw [hD₀w w (Ne.symm huℓ)] at h
-        simp only [hwS, ite_false, Ne.symm hws, ite_true, add_zero] at h ⊢
+    rcases hD₀u with h0 | h2
+    · refine ⟨∅, by simp, by simp, D, realises_of (by simp) (fun w => ?_)⟩
+      have h := hD w
+      simp only [Finset.notMem_empty, ite_false, add_zero]
+      by_cases hws : w = s
+      · rw [hws] at h ⊢
+        rw [hD₀w s hus.symm] at h
+        simp only [hsℓ, ite_true, ite_false, add_zero] at h
         omega
-      · simp only [Ne.symm hws, Ne.symm hwℓ, ite_false, add_zero] at h
-        rw [h]
-        by_cases hwu : w = u
-        · subst hwu
-          rcases hD₀u with h0 | h2
-          · have hwS : w ∉ S := by simp [S, h0]
-            simp only [hwS, ite_false, add_zero, h0]
-            have := (mem_evenSet_iff.mp huE).2
-            omega
-          · have hwS : w ∈ S := by simp [S, h2]
-            simp only [hwS, ite_true, h2]
-            have := (mem_evenSet_iff.mp huE).2
-            omega
-        · have hwS : w ∉ S := by
-            simp only [S]; split_ifs <;> simp [hwu]
-          rw [hD₀w w hwu, hdo w hwℓ hws]
-          simp [hwS]
+      · by_cases hwℓ : w = ℓ
+        · rw [hwℓ] at h ⊢
+          rw [hD₀w ℓ (Ne.symm huℓ)] at h
+          simp only [Ne.symm hsℓ, ite_true, ite_false, add_zero] at h
+          omega
+        · simp only [Ne.symm hws, Ne.symm hwℓ, ite_false, add_zero] at h
+          rw [h]
+          by_cases hwu : w = u
+          · rw [hwu, h0]; omega
+          · rw [hD₀w w hwu, hdo w hwℓ hws]
+    · refine ⟨{u}, by simp, by simpa using huE, D,
+        realises_of (by simpa using huE) (fun w => ?_)⟩
+      have h := hD w
+      by_cases hws : w = s
+      · rw [hws] at h ⊢
+        rw [hD₀w s hus.symm] at h
+        simp only [hsℓ, ite_true, ite_false, add_zero, Finset.mem_singleton,
+          Ne.symm hus] at h ⊢
+        omega
+      · by_cases hwℓ : w = ℓ
+        · rw [hwℓ] at h ⊢
+          rw [hD₀w ℓ (Ne.symm huℓ)] at h
+          simp only [Ne.symm hsℓ, ite_true, ite_false, add_zero, Finset.mem_singleton,
+            Ne.symm huℓ] at h ⊢
+          omega
+        · simp only [Ne.symm hws, Ne.symm hwℓ, ite_false, add_zero] at h
+          rw [h]
+          by_cases hwu : w = u
+          · rw [hwu, h2]; simp; omega
+          · rw [hD₀w w hwu, hdo w hwℓ hws]
+            simp [hwu]
   · -- the leaf hangs at an odd vertex
     have hspos : 0 < G.degree s := (G.degree_pos_iff_exists_adj s).mpr ⟨ℓ, hℓs.symm⟩
     have hsodd : G.degree s % 2 = 1 := by
@@ -940,57 +872,52 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     have hts : t ≠ s := fun h => hsE (h ▸ ht)
     have htℓ : t ≠ ℓ := fun h => hℓE (h ▸ ht)
     obtain ⟨q⟩ := hconn.preconnected s t
-    set p := q.bypass
-    have hp : p.IsPath := q.bypass_isPath
-    -- the path avoids `ℓ`
-    have hℓp : ℓ ∉ p.support := by
+    have hp : q.bypass.IsPath := q.bypass_isPath
+    have hlen : 0 < q.bypass.length := by
+      by_contra h0
+      exact hts (Walk.eq_of_length_eq_zero (p := q.bypass) (by omega)).symm
+    have hℓp : ℓ ∉ q.bypass.support := by
       intro hm
-      have hpos : 0 < p.length := by
-        by_contra h0
-        exact hts (Walk.eq_of_length_eq_zero (p := p) (by omega)).symm
-      have := (GPath.end_of_pendant ⟨s, t, p, hp, hpos⟩ hpend hm)
-      rcases this with h | h
+      rcases GPath.end_of_pendant ⟨s, t, q.bypass, hp, hlen⟩ hpend hm with h | h
       · exact hsℓ h
       · exact htℓ h
-    have htr : ∀ e ∈ p.edges, e ∈ G₀.edgeSet := by
+    have htr : ∀ e ∈ q.bypass.edges, e ∈ (delEdge G ℓ s).edgeSet := by
       intro e he
       rw [delEdge_edgeSet]
-      refine ⟨p.edges_subset_edgeSet he, ?_⟩
+      refine ⟨q.bypass.edges_subset_edgeSet he, ?_⟩
       rintro rfl
-      exact hℓp (p.fst_mem_support_of_mem_edges he)
-    -- second vertex of `p` gives `s` a neighbour in `G₀`
-    obtain ⟨y, hsy, p', hpeq⟩ := Walk.exists_eq_cons_of_length_pos p (by
-      by_contra h0
-      exact hts (Walk.eq_of_length_eq_zero (p := p) (by omega)).symm)
+      exact hℓp (q.bypass.fst_mem_support_of_mem_edges he)
+    obtain ⟨y, hsy, p', hpeq⟩ := Walk.exists_eq_cons_of_length_pos q.bypass hlen
     have hyℓ : y ≠ ℓ := by
       intro h
       apply hℓp
-      rw [hpeq, Walk.support_cons, h]
-      exact List.mem_cons_of_mem _ p'.start_mem_support
-    have hs0pos : 0 < G₀.degree s := (G₀.degree_pos_iff_exists_adj s).mpr ⟨y, hsy, by
-      intro h; rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
-      · exact hsℓ h1
-      · exact hyℓ h2⟩
-    have hE0 : evenSet G₀ = insert s (evenSet G) := by
+      rw [hpeq, Walk.support_cons]
+      exact List.mem_cons_of_mem _ (h ▸ p'.start_mem_support)
+    have hs0pos : 0 < (delEdge G ℓ s).degree s :=
+      ((delEdge G ℓ s).degree_pos_iff_exists_adj s).mpr ⟨y, hsy, fun h => by
+        rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h2⟩
+        · exact hsℓ h1
+        · exact hyℓ h2⟩
+    have hE0 : evenSet (delEdge G ℓ s) = insert s (evenSet G) := by
       ext w
       rw [mem_evenSet_iff, Finset.mem_insert]
       by_cases hwℓ : w = ℓ
-      · subst hwℓ
-        rw [hdℓ]
+      · rw [hwℓ, hdℓ]
         constructor
         · intro h; omega
         · rintro (h | h)
           · exact absurd h.symm hsℓ
           · exact absurd h hℓE
       · by_cases hws : w = s
-        · subst hws
+        · rw [hws]
           constructor
           · intro _; exact Or.inl rfl
           · intro _; exact ⟨hs0pos, by omega⟩
         · rw [hdo w hwℓ hws, ← mem_evenSet_iff]
           simp [hws]
-    obtain ⟨w, hwE, hw⟩ := four_even_pair p.length G₀ s (evenSet G) hsE h3 hE0
-      ⟨t, ht, p.transfer G₀ htr, hp.transfer htr, by rw [Walk.length_transfer]⟩
+    obtain ⟨w, hwE, hw⟩ := four_even_pair q.bypass.length (delEdge G ℓ s) s (evenSet G) hsE
+      h3 hE0 ⟨t, ht, q.bypass.transfer _ htr, (Walk.isPath_transfer htr).mpr hp,
+        by rw [Walk.length_transfer]⟩
     obtain ⟨hS₀, D₀, hD₀⟩ := hw
     have e₀ := ends_of_realises hS₀ hD₀
     have hws : w ≠ s := fun h => hsE (h ▸ hwE)
@@ -1000,17 +927,15 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     have h := hD x
     rw [e₀ x] at h
     by_cases hxs : x = s
-    · subst hxs
-      simp only [Finset.mem_insert, Finset.mem_singleton, true_or, ite_true, hsℓ, ite_false,
-        add_zero, Ne.symm hws] at h ⊢
+    · rw [hxs] at h ⊢
+      simp [hsℓ, Ne.symm hws] at h ⊢
       omega
     · by_cases hxℓ : x = ℓ
-      · subst hxℓ
-        simp only [Finset.mem_insert, Finset.mem_singleton, hxs, Ne.symm hwℓ, or_self,
-          ite_false, add_zero, Ne.symm hxs, ite_true] at h ⊢
+      · rw [hxℓ] at h ⊢
+        simp [Ne.symm hsℓ, Ne.symm hwℓ, hℓ] at h ⊢
         omega
-      · simp only [Finset.mem_insert, Finset.mem_singleton, hxs, Ne.symm hxs, Ne.symm hxℓ,
-          false_or, ite_false, add_zero] at h ⊢
+      · simp only [Finset.mem_insert, Finset.mem_singleton, hxs, false_or, Ne.symm hxs,
+          Ne.symm hxℓ, ite_false, add_zero] at h ⊢
         rw [h, hdo x hxℓ hxs]
 
 /-- **BP₃**: a connected graph of order `N` with a leaf and exactly three even vertices has a
@@ -1021,17 +946,21 @@ theorem bp3_pathNumber (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Conne
   obtain ⟨S, hS, hS', D, hD⟩ := bp3 G hconn hℓ hℓs h3
   have hsize := Realises.size_eq hS' hD
   have h1 := pathNumber_le D
-  have hsum := card_oddSet_add_card_evenSet (G := G) (fun v => by
-    obtain ⟨w, hw⟩ := hconn.preconnected v ℓ |>.elim (fun q => ?_)
-    · exact hw
-    · exact ⟨0, by
-        by_cases hvℓ : v = ℓ
-        · subst hvℓ; omega
-        · have hpos : 0 < q.length := by
-            by_contra h0
-            exact hvℓ (Walk.eq_of_length_eq_zero (p := q) (by omega))
-          obtain ⟨z, hvz, -, -⟩ := Walk.exists_eq_cons_of_length_pos q hpos
-          exact ⟨(G.degree_pos_iff_exists_adj v).mpr ⟨z, hvz⟩, rfl⟩.1⟩)
+  have hsℓ : s ≠ ℓ := hℓs.ne.symm
+  have hposall : ∀ v, 0 < G.degree v := by
+    intro v
+    obtain ⟨x, hxv⟩ : ∃ x, x ≠ v := by
+      by_cases h : ℓ = v
+      · exact ⟨s, fun h' => hsℓ (h'.trans h.symm)⟩
+      · exact ⟨ℓ, h⟩
+    obtain ⟨q⟩ := hconn.preconnected v x
+    obtain ⟨z, hvz, -, -⟩ := Walk.exists_eq_cons_of_length_pos q (by
+      by_contra h0
+      exact hxv (Walk.eq_of_length_eq_zero (p := q) (by omega)).symm)
+    exact (G.degree_pos_iff_exists_adj v).mpr ⟨z, hvz⟩
+  have hsum := card_oddSet_add_card_evenSet (G := G) hposall
+  obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+  unfold oddSet at hsize hsum
   omega
 
 end bp3
