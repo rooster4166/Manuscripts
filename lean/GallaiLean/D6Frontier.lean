@@ -1493,6 +1493,406 @@ theorem root_hub_six_passes (hn : Even (Fintype.card V)) (U : Finset V)
   obtain ⟨S, -, hrS, hS, hreal⟩ := root_hub_six G hn U hU hU6 hr hrT hdeg hry hyU hy3 hyT
   exact passesAt_of_realisable hreal hrS (by rw [filter_even_eq G hU]; omega)
 
+/-- **Theorem 4.1(ii)** (`|Q| = 1`, the roots on the edge of `D = K₂`). `|U| = 6`; `r ∈ U` is
+adjacent to every vertex of `T = U − r` except `q`, and `q` is not isolated; `d(r) ≥ 8`; `r` has
+two adjacent odd neighbours `a, b` with `|N(a) ∩ T| ≤ 2` and `bq ∉ E`. Then some `S ⊆ U` with
+`r ∈ S` and `|S| = 3` is realisable.
+
+The certificate: hold `r–(T − q)`, `ra`, `rb`, `ab`; seed `b(r) = 2`, `b(q) = 0`; carry the
+battery (`b → r`, `a → b`); `z₁ → r` with `N(a) ∩ (T − q) ⊆ {z₁, w}`; one grouped receipt;
+`r → s₁`, `r → s₂` with `s₂ ≠ w`; `r → a`. -/
+theorem root_hub_six_Q1 (hn : Even (Fintype.card V)) (U : Finset V)
+    (hU : ∀ v, v ∈ U ↔ Even (G.degree v)) (hU6 : U.card = 6) {r q : V} (hr : r ∈ U)
+    (hq : q ∈ U) (hqr : q ≠ r) (hrT : ∀ t ∈ U, t ≠ r → t ≠ q → G.Adj r t)
+    (hrq : ¬ G.Adj r q) (hq0 : 0 < G.degree q) (hdeg : 8 ≤ G.degree r)
+    {a b : V} (hra : G.Adj r a) (hrb : G.Adj r b) (hab : G.Adj a b) (haU : a ∉ U) (hbU : b ∉ U)
+    (haT : ((U.erase r).filter (G.Adj a)).card ≤ 2) (hbq : ¬ G.Adj b q) :
+    ∃ S ⊆ U, r ∈ S ∧ S.card = 3 ∧ Realisable G S := by
+  classical
+  obtain ⟨T, hT⟩ : ∃ T, T = (U.erase r).erase q := ⟨_, rfl⟩
+  have hTc : T.card = 4 := by
+    rw [hT, Finset.card_erase_of_mem (Finset.mem_erase.mpr ⟨hqr, hq⟩),
+      Finset.card_erase_of_mem hr, hU6]
+  have mT : ∀ {v}, v ∈ T ↔ v ≠ q ∧ v ≠ r ∧ v ∈ U := by
+    intro v; rw [hT, Finset.mem_erase, Finset.mem_erase]
+  have hadjT : ∀ t ∈ T, G.Adj r t := fun t ht =>
+    hrT t (mT.mp ht).2.2 (mT.mp ht).2.1 (mT.mp ht).1
+  have haT' : a ∉ T := fun h' => haU (mT.mp h').2.2
+  have hbT' : b ∉ T := fun h' => hbU (mT.mp h').2.2
+  have hqT : q ∉ T := fun h' => (mT.mp h').1 rfl
+  have hab' : a ≠ b := hab.ne
+  have har : a ≠ r := hra.ne.symm
+  have hbr : b ≠ r := hrb.ne.symm
+  have haq : a ≠ q := fun h' => haU (h' ▸ hq)
+  have hbq' : b ≠ q := fun h' => hbU (h' ▸ hq)
+  -- the seed: hold `r–(T ∪ {a, b})` and the chord `ab`
+  obtain ⟨X₀, hX₀⟩ : ∃ X : Finset V, X = insert a (insert b T) := ⟨_, rfl⟩
+  have mX : ∀ {v}, v ∈ X₀ ↔ v = a ∨ v = b ∨ v ∈ T := by
+    intro v; rw [hX₀, Finset.mem_insert, Finset.mem_insert]
+  have hverts : ∀ v, (v ∈ [(a, b)].map Prod.fst ∨ v ∈ [(a, b)].map Prod.snd) ↔ v = a ∨ v = b := by
+    intro v; simp
+  have hndr : (r :: ([(a, b)].map Prod.fst ++ [(a, b)].map Prod.snd)).Nodup := by
+    simp only [List.map_cons, List.map_nil, List.cons_append, List.nil_append, List.nodup_cons,
+      List.mem_cons, List.not_mem_nil, or_false, not_or, List.nodup_nil, not_false_eq_true,
+      and_true]
+    exact ⟨⟨Ne.symm har, Ne.symm hbr⟩, hab'⟩
+  have hX : ∀ x ∈ X₀, G.Adj r x := by
+    intro x hx
+    rcases mX.mp hx with rfl | rfl | hx
+    · exact hra
+    · exact hrb
+    · exact hadjT x hx
+  have hX₀c : X₀.card = 6 := by
+    rw [hX₀, Finset.card_insert_of_notMem (by rw [Finset.mem_insert, not_or]; exact ⟨hab', haT'⟩),
+      Finset.card_insert_of_notMem hbT', hTc]
+  have hseed : Ach (G.edgeSet \ hubHeld r X₀ (batChords [(a, b)])) (hst r 2 {q} ∅) := by
+    apply ach_of_deleteEdges
+    have hd := degree_hubDel G r X₀ [(a, b)] hX hndr
+      (fun p hp => by rw [List.mem_singleton] at hp; subst hp; exact hab.symm)
+    have hcase : ∀ v, v ≠ r → v ≠ q →
+        Odd ((G.deleteEdges (hubHeld r X₀ (batChords [(a, b)]))).degree v) := by
+      intro v hvr hvq
+      have h1 := hd v
+      rw [ite_eq_right hvr] at h1
+      by_cases hvab : v = a ∨ v = b
+      · rw [ite_eq_left (mX.mpr (by tauto)), ite_eq_left ((hverts v).mpr hvab)] at h1
+        have hvU : v ∉ U := by rcases hvab with rfl | rfl <;> assumption
+        obtain ⟨k, hk⟩ := Nat.not_even_iff_odd.mp (fun h' => hvU ((hU v).mpr h'))
+        exact ⟨k - 1, by omega⟩
+      · rw [ite_eq_right (fun h' => hvab ((hverts v).mp h'))] at h1
+        by_cases hvT : v ∈ T
+        · rw [ite_eq_left (mX.mpr (Or.inr (Or.inr hvT)))] at h1
+          obtain ⟨k, hk⟩ := (hU v).mp (mT.mp hvT).2.2
+          have hpos : 0 < G.degree v :=
+            G.degree_pos_iff_exists_adj v |>.mpr ⟨r, (hadjT v hvT).symm⟩
+          exact ⟨k - 1, by omega⟩
+        · rw [ite_eq_right (fun h' => by
+            rcases mX.mp h' with h' | h' | h'
+            · exact hvab (Or.inl h')
+            · exact hvab (Or.inr h')
+            · exact hvT h')] at h1
+          have hvU : v ∉ U := fun h' => hvT (mT.mpr ⟨hvq, hvr, h'⟩)
+          rw [show (G.deleteEdges (hubHeld r X₀ (batChords [(a, b)]))).degree v = G.degree v by
+            omega]
+          exact Nat.not_even_iff_odd.mp (fun h' => hvU ((hU v).mpr h'))
+    have hdr := hd r
+    rw [ite_eq_left rfl, ite_eq_right (fun h' => by
+      rcases mX.mp h' with h' | h' | h'
+      · exact har h'.symm
+      · exact hbr h'.symm
+      · exact (mT.mp h').2.1 rfl),
+      ite_eq_right (fun h' => by rcases (hverts r).mp h' with h' | h' <;> simp_all), hX₀c] at hdr
+    have hdq := hd q
+    rw [ite_eq_right hqr, ite_eq_right (fun h' => by
+      rcases mX.mp h' with h' | h' | h'
+      · exact haq h'.symm
+      · exact hbq' h'.symm
+      · exact hqT h'),
+      ite_eq_right (fun h' => by rcases (hverts q).mp h' with h' | h' <;> simp_all)] at hdq
+    refine seed_pair _ hn ?_ (Ne.symm hqr) ?_
+    · intro v
+      by_cases hvr : v = r
+      · rw [hvr]; omega
+      · by_cases hvq : v = q
+        · rw [hvq]; omega
+        · exact (hcase v hvr hvq).pos
+    · intro v
+      by_cases hvr : v = r
+      · rw [hvr]
+        obtain ⟨k, hk⟩ := (hU r).mp hr
+        exact ⟨fun _ => Or.inl rfl, fun _ => ⟨k - 3, by omega⟩⟩
+      · by_cases hvq : v = q
+        · rw [hvq]
+          obtain ⟨k, hk⟩ := (hU q).mp hq
+          exact ⟨fun _ => Or.inr rfl, fun _ => ⟨k, by omega⟩⟩
+        · exact ⟨fun he => absurd he (Nat.not_even_iff_odd.mpr (hcase v hvr hvq)),
+            fun h' => by rcases h' with h' | h' <;> contradiction⟩
+  -- steps 1–2: carry the battery (`b → r`, `a → b`)
+  have h1 := hub_batteries (D := ∅) [(a, b)] X₀ 2 {q} hseed hndr
+    (fun p hp => by
+      rw [List.mem_singleton] at hp; subst hp
+      exact ⟨mX.mpr (Or.inl rfl), mX.mpr (Or.inr (Or.inl rfl))⟩)
+    (fun p hp => by rw [List.mem_singleton] at hp; subst hp; exact ⟨hrb, hab.symm⟩)
+    (fun p hp => by
+      rw [List.mem_singleton] at hp; subst hp
+      exact ⟨fun h' => haq (Finset.mem_singleton.mp h'), Finset.notMem_empty _,
+        fun h' => hbq' (Finset.mem_singleton.mp h'), Finset.notMem_empty _⟩)
+    (fun w hw hrw => absurd (Finset.mem_singleton.mp hw ▸ hrw) hrq)
+    (fun p hp w hw => by
+      rw [List.mem_singleton] at hp; subst hp
+      rw [Finset.mem_singleton.mp hw]; exact hbq)
+    (List.pairwise_singleton _ _)
+  have e1 : ([(a, b)].map Prod.snd).toFinset = {b} := by simp
+  have e2 : ([(a, b)].map Prod.fst).toFinset = {a} := by simp
+  rw [e1, e2, List.length_singleton] at h1
+  -- `z₁, w` with `N(a) ∩ (T − q) ⊆ {z₁, w}`
+  have hYc : (T.filter (G.Adj a)).card ≤ 2 := by
+    refine le_trans (Finset.card_le_card ?_) haT
+    intro t ht
+    rw [Finset.mem_filter] at ht ⊢
+    exact ⟨Finset.mem_erase.mpr ⟨(mT.mp ht.1).2.1, (mT.mp ht.1).2.2⟩, ht.2⟩
+  obtain ⟨P, hYP, hPT, hPc⟩ := Finset.exists_subsuperset_card_eq (Finset.filter_subset (G.Adj a) T)
+    hYc (by rw [hTc]; norm_num)
+  obtain ⟨z₁, w, hzw, rfl⟩ := Finset.card_eq_two.mp hPc
+  have hz₁T : z₁ ∈ T := hPT (by simp)
+  have hNa : ∀ t ∈ T, G.Adj a t → t = z₁ ∨ t = w := fun t ht hat => by
+    have := hYP (Finset.mem_filter.mpr ⟨ht, hat⟩); simpa using this
+  have mX₁ : ∀ {v}, v ∈ X₀ \ {b} ↔ v = a ∨ v ∈ T := by
+    intro v
+    rw [Finset.mem_sdiff, mX, Finset.mem_singleton]
+    constructor
+    · rintro ⟨h' | h' | h', hvb⟩
+      · exact Or.inl h'
+      · exact absurd h' hvb
+      · exact Or.inr h'
+    · rintro (rfl | h')
+      · exact ⟨Or.inl rfl, hab'⟩
+      · exact ⟨Or.inr (Or.inr h'), fun h'' => hbT' (h'' ▸ h')⟩
+  -- step 3: `z₁ → r`
+  have h2 := hub_take h1 (t := z₁) (mX₁.mpr (Or.inr hz₁T)) (hadjT z₁ hz₁T) (Set.notMem_empty _)
+    (by
+      rw [Finset.mem_union, Finset.mem_singleton, Finset.mem_singleton, not_or]
+      exact ⟨(mT.mp hz₁T).1, fun h' => haT' (h' ▸ hz₁T)⟩)
+    (Finset.notMem_empty _)
+    (by
+      apply Nat.le_zero.mp
+      refine le_of_le_of_eq (blankNbrs_hub_le (∅ : Finset V) ?_) Finset.card_empty
+      intro w' hrw hw hwr hw0
+      rw [hst_eq_zero_iff hwr, Finset.mem_union, Finset.mem_singleton, Finset.mem_singleton] at hw0
+      rcases hw0 with rfl | rfl
+      · exact absurd hrw hrq
+      · exact absurd (Or.inl (mem_hubSpokes.mpr (Or.inl ⟨rfl, mX₁.mpr (Or.inl rfl)⟩))) hw)
+  -- step 4: one grouped receipt from `T − q − z₁`
+  obtain ⟨Z'', hZS, hZc, h3⟩ := hub_receive h2 (T.erase z₁)
+    (fun t ht => Finset.mem_erase.mpr ⟨(Finset.mem_erase.mp ht).1,
+      mX₁.mpr (Or.inr (Finset.mem_erase.mp ht).2)⟩)
+    (fun t ht => hadjT t (Finset.mem_erase.mp ht).2) (fun _ _ => Set.notMem_empty _)
+    (by
+      rw [Finset.disjoint_left]
+      intro t ht ht'
+      have htT := (Finset.mem_erase.mp ht).2
+      simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at ht'
+      rcases ht' with h' | h' | h'
+      · exact (Finset.mem_erase.mp ht).1 h'
+      · exact hqT (h' ▸ htT)
+      · exact haT' (h' ▸ htT))
+    (Finset.disjoint_empty_right _) 1
+    (by
+      have hb := blankNbrs_hub_le (G := G) (h := r) (X := (X₀ \ {b}).erase z₁) (C := ∅)
+        (N := 2 + 1 + 1) (B := insert z₁ ({q} ∪ {a})) (D := ∅) (v := r) {z₁} (by
+          intro w' hrw hw hwr hw0
+          rw [hst_eq_zero_iff hwr] at hw0
+          simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton] at hw0
+          rcases hw0 with h' | h' | h'
+          · rw [h']; exact Finset.mem_singleton_self _
+          · rw [h'] at hrw; exact absurd hrw hrq
+          · rw [h'] at hw
+            exact absurd (Or.inl (mem_hubSpokes.mpr (Or.inl ⟨rfl, Finset.mem_erase.mpr
+              ⟨fun (h'' : a = z₁) => haT' (h'' ▸ hz₁T), mX₁.mpr (Or.inl rfl)⟩⟩))) hw)
+      rw [Finset.card_singleton] at hb
+      intro j hj
+      rw [Finset.card_erase_of_mem hz₁T, hTc]
+      omega)
+  obtain ⟨z₂, rfl⟩ := Finset.card_eq_one.mp hZc
+  have hz₂T : z₂ ∈ T := (Finset.mem_erase.mp (hZS (Finset.mem_singleton_self _))).2
+  have hz₂₁ : z₂ ≠ z₁ := (Finset.mem_erase.mp (hZS (Finset.mem_singleton_self _))).1
+  -- the two receivers, ordered so that `s₂ ≠ w`
+  have hTZ : (T \ {z₁, z₂}).card = 2 := by
+    rw [Finset.card_sdiff_of_subset (by
+      intro t ht
+      simp only [Finset.mem_insert, Finset.mem_singleton] at ht
+      rcases ht with rfl | rfl
+      · exact hz₁T
+      · exact hz₂T), Finset.card_pair (Ne.symm hz₂₁), hTc]
+  obtain ⟨u₁, u₂, hu, hTZeq⟩ := Finset.card_eq_two.mp hTZ
+  obtain ⟨s₁, s₂, hs, hTZ', hs₂⟩ : ∃ s₁ s₂, s₁ ≠ s₂ ∧ T \ {z₁, z₂} = {s₁, s₂} ∧ s₂ ≠ w := by
+    by_cases h : u₂ = w
+    · exact ⟨u₂, u₁, hu.symm, by rw [hTZeq, Finset.pair_comm], h ▸ hu⟩
+    · exact ⟨u₁, u₂, hu, hTZeq, h⟩
+  have hs₁ : s₁ ∈ T ∧ s₁ ∉ ({z₁, z₂} : Finset V) := by
+    rw [← Finset.mem_sdiff, hTZ']; exact Finset.mem_insert_self _ _
+  have hs₂' : s₂ ∈ T ∧ s₂ ∉ ({z₁, z₂} : Finset V) := by
+    rw [← Finset.mem_sdiff, hTZ']; simp
+  have hs₁z : s₁ ≠ z₁ ∧ s₁ ≠ z₂ := by
+    have := hs₁.2; simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at this; exact this
+  have hs₂z : s₂ ≠ z₁ ∧ s₂ ≠ z₂ := by
+    have := hs₂'.2; simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at this
+    exact this
+  have mB : ∀ {v}, v ∈ insert z₁ (({q} : Finset V) ∪ {a}) ∪ ({z₂} : Finset V) ↔ v = a ∨ v = q ∨ v = z₁ ∨ v = z₂ := by
+    intro v; simp only [Finset.mem_union, Finset.mem_insert, Finset.mem_singleton]; tauto
+  have hsB : ∀ s, s ∈ T → s ≠ z₁ → s ≠ z₂ →
+      s ∉ insert z₁ (({q} : Finset V) ∪ {a}) ∪ ({z₂} : Finset V) := by
+    intro s hsT h1 h2 h'
+    rcases mB.mp h' with rfl | rfl | rfl | rfl
+    · exact haT' hsT
+    · exact hqT hsT
+    · exact h1 rfl
+    · exact h2 rfl
+  have mX₃ : ∀ {v}, v ∈ ((X₀ \ {b}).erase z₁) \ {z₂} ↔ (v = a ∨ v ∈ T) ∧ v ≠ z₁ ∧ v ≠ z₂ := by
+    intro v
+    rw [Finset.mem_sdiff, Finset.mem_erase, mX₁, Finset.mem_singleton]
+    tauto
+  -- step 5: `r → s₁`, at most four blank neighbours
+  have h4 := hub_give h3 {s₁}
+    (by rw [Finset.singleton_subset_iff, mX₃]; exact ⟨Or.inr hs₁.1, hs₁z⟩)
+    (fun x hx => (Finset.mem_singleton.mp hx) ▸ hadjT s₁ hs₁.1)
+    (fun _ _ => Set.notMem_empty _)
+    (Finset.disjoint_singleton_left.mpr (hsB s₁ hs₁.1 hs₁z.1 hs₁z.2))
+    (Finset.disjoint_empty_right _) 4
+    (by
+      intro x hx
+      rw [Finset.mem_singleton.mp hx]
+      refine (blankNbrs_hub_le (insert a (insert q (insert z₁ {z₂}))) ?_).trans
+        ((Finset.card_insert_le _ _).trans (Nat.succ_le_succ ((Finset.card_insert_le _ _).trans
+          (Nat.succ_le_succ ((Finset.card_insert_le _ _).trans (by simp))))))
+      intro w' _ _ _ hw0
+      by_cases hwr : w' = r
+      · rw [hwr, hst_self] at hw0; omega
+      · rw [hst_eq_zero_iff hwr, mB] at hw0
+        simp only [Finset.mem_insert, Finset.mem_singleton]
+        exact hw0)
+    (by rw [Finset.card_singleton])
+  -- step 6: `r → s₂`, at most three blank neighbours (`s₂ ∉ N(a)`)
+  have h5 := hub_give h4 {s₂}
+    (by
+      rw [Finset.singleton_subset_iff, Finset.mem_sdiff, mX₃, Finset.mem_singleton]
+      exact ⟨⟨Or.inr hs₂'.1, hs₂z⟩, fun h' => hs h'.symm⟩)
+    (fun x hx => (Finset.mem_singleton.mp hx) ▸ hadjT s₂ hs₂'.1)
+    (fun _ _ => Set.notMem_empty _)
+    (Finset.disjoint_singleton_left.mpr (hsB s₂ hs₂'.1 hs₂z.1 hs₂z.2))
+    (by
+      rw [Finset.disjoint_singleton_left, Finset.empty_union, Finset.mem_singleton]
+      exact fun h' => hs h'.symm)
+    3
+    (by
+      intro x hx
+      rw [Finset.mem_singleton.mp hx]
+      refine (blankNbrs_hub_le (insert q (insert z₁ {z₂})) ?_).trans
+        ((Finset.card_insert_le _ _).trans (Nat.succ_le_succ ((Finset.card_insert_le _ _).trans
+          (by simp))))
+      intro w' hsw _ _ hw0
+      by_cases hwr : w' = r
+      · rw [hwr, hst_self, Finset.card_singleton] at hw0; omega
+      · rw [hst_eq_zero_iff hwr, mB] at hw0
+        simp only [Finset.mem_insert, Finset.mem_singleton]
+        rcases hw0 with rfl | hw0
+        · rcases hNa s₂ hs₂'.1 hsw.symm with h' | h'
+          · exact absurd h' hs₂z.1
+          · exact absurd h' hs₂
+        · exact hw0)
+    (by rw [Finset.card_singleton, Finset.card_singleton])
+  -- step 7: `r → a`, at most `|N(a) ∩ T| ≤ 2` blank neighbours
+  have h6 := hub_pay_one h5 (a := a)
+    (by
+      rw [Finset.mem_sdiff, Finset.mem_sdiff, mX₃, Finset.mem_singleton, Finset.mem_singleton]
+      exact ⟨⟨⟨Or.inl rfl, fun h' => haT' (h' ▸ hz₁T), fun h' => haT' (h' ▸ hz₂T)⟩,
+        fun h' => haT' (h' ▸ hs₁.1)⟩, fun h' => haT' (h' ▸ hs₂'.1)⟩)
+    hra (Set.notMem_empty _) (mB.mpr (Or.inl rfl))
+    (by
+      simp only [Finset.empty_union, Finset.mem_union, Finset.mem_singleton, not_or]
+      exact ⟨fun h' => haT' (h' ▸ hs₁.1), fun h' => haT' (h' ▸ hs₂'.1)⟩)
+    (by
+      refine lt_of_le_of_lt (blankNbrs_hub_le ((U.erase r).filter (G.Adj a)) ?_) ?_
+      · intro w' haw _ hwa hw0
+        by_cases hwr : w' = r
+        · rw [hwr, hst_self, Finset.card_singleton, Finset.card_singleton] at hw0; omega
+        · rw [hst_eq_zero_iff hwr, mB] at hw0
+          rw [Finset.mem_filter, Finset.mem_erase]
+          refine ⟨⟨hwr, ?_⟩, haw⟩
+          rcases hw0 with h' | rfl | rfl | rfl
+          · exact absurd h' hwa
+          · exact hq
+          · exact (mT.mp hz₁T).2.2
+          · exact (mT.mp hz₂T).2.2
+      · simp only [Finset.card_singleton]; omega)
+  -- the end state
+  have hXe : ((((X₀ \ {b}).erase z₁ \ {z₂}) \ {s₁}) \ {s₂}).erase a = ∅ := by
+    apply Finset.eq_empty_of_forall_notMem
+    intro v hv
+    rw [Finset.mem_erase, Finset.mem_sdiff, Finset.mem_sdiff, mX₃, Finset.mem_singleton,
+      Finset.mem_singleton] at hv
+    obtain ⟨hva, ⟨⟨hvaT, hv1, hv2⟩, hvs1⟩, hvs2⟩ := hv
+    have hvT : v ∈ T := hvaT.resolve_left hva
+    have : v ∈ T \ {z₁, z₂} := by
+      rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or]
+      exact ⟨hvT, hv1, hv2⟩
+    rw [hTZ', Finset.mem_insert, Finset.mem_singleton] at this
+    rcases this with h' | h'
+    · exact hvs1 h'
+    · exact hvs2 h'
+  have hBe : (insert z₁ (({q} : Finset V) ∪ {a}) ∪ ({z₂} : Finset V)).erase a = {q, z₁, z₂} := by
+    ext v
+    rw [Finset.mem_erase, mB]
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hva, h' | h'⟩
+      · exact absurd h' hva
+      · exact h'
+    · intro h'
+      refine ⟨?_, Or.inr h'⟩
+      rintro rfl
+      rcases h' with h' | h' | h'
+      · exact haq h'
+      · exact haT' (h' ▸ hz₁T)
+      · exact haT' (h' ▸ hz₂T)
+  have hDe : ∅ ∪ {s₁} ∪ {s₂} = ({s₁, s₂} : Finset V) := by
+    ext v; simp only [Finset.empty_union, Finset.mem_union, Finset.mem_insert, Finset.mem_singleton]
+  rw [hXe, hubHeld_empty, Set.sdiff_empty, hBe, hDe] at h6
+  simp only [Finset.card_singleton] at h6
+  have hfin : Ach G.edgeSet (hst r 2 {q, z₁, z₂} {s₁, s₂}) := h6.congr rfl (fun v => rfl)
+  have hpos : ∀ v ∈ U, 0 < G.degree v := by
+    intro v hv
+    by_cases hvr : v = r
+    · rw [hvr]; omega
+    · by_cases hvq : v = q
+      · rw [hvq]; exact hq0
+      · exact G.degree_pos_iff_exists_adj v |>.mpr ⟨r, (hrT v hv hvr hvq).symm⟩
+  have hreal := realisable_of_hst_root (G := G) U hU hpos hfin hr
+    (by
+      intro v hvr
+      simp only [Finset.mem_insert, Finset.mem_singleton]
+      constructor
+      · intro hv
+        by_cases hvq : v = q
+        · exact Or.inl (Or.inl hvq)
+        · have hvT : v ∈ T := mT.mpr ⟨hvq, hvr, hv⟩
+          by_cases hvz : v = z₁ ∨ v = z₂
+          · exact Or.inl (Or.inr hvz)
+          · right
+            have : v ∈ T \ {z₁, z₂} := by
+              rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton]; exact ⟨hvT, hvz⟩
+            rw [hTZ', Finset.mem_insert, Finset.mem_singleton] at this
+            exact this
+      · rintro ((rfl | rfl | rfl) | (rfl | rfl))
+        · exact hq
+        · exact (mT.mp hz₁T).2.2
+        · exact (mT.mp hz₂T).2.2
+        · exact (mT.mp hs₁.1).2.2
+        · exact (mT.mp hs₂'.1).2.2)
+    (by
+      rw [Finset.disjoint_left]
+      intro v hv hv'
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hv hv'
+      rcases hv' with rfl | rfl
+      · rcases hv with h' | h' | h'
+        · exact hqT (h' ▸ hs₁.1)
+        · exact hs₁z.1 h'
+        · exact hs₁z.2 h'
+      · rcases hv with h' | h' | h'
+        · exact hqT (h' ▸ hs₂'.1)
+        · exact hs₂z.1 h'
+        · exact hs₂z.2 h')
+  refine ⟨insert r {s₁, s₂}, ?_, Finset.mem_insert_self _ _, ?_, hreal⟩
+  · intro v hv
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hv
+    rcases hv with rfl | rfl | rfl
+    · exact hr
+    · exact (mT.mp hs₁.1).2.2
+    · exact (mT.mp hs₂'.1).2.2
+  · rw [Finset.card_insert_of_notMem, Finset.card_pair hs]
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨fun h' => (mT.mp hs₁.1).2.1 h'.symm, fun h' => (mT.mp hs₂'.1).2.1 h'.symm⟩
+
 end uniform
 
 end Gallai
