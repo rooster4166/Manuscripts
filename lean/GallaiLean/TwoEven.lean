@@ -601,6 +601,356 @@ theorem tight_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V))
   have := realisable_of_fanCert hL hn M H (evenSet H) hG (subset_refl _) hM
   rwa [Finset.sdiff_self] at this
 
+/-! ### The pair step (Fan's grouped lemma) -/
+
+/-- Second half of the pair step: one application of `fan_single` at the edge `t'w`. -/
+theorem pair_finish {u t t' w : V} (ht'w : G.Adj t' w) (ht : t ∈ evenSet G)
+    (ht' : t' ∈ evenSet G) (hut : u ≠ t) (hut' : u ≠ t') (htt' : t ≠ t')
+    (D' : PathDecomp (delEdge G t' w)) (hDt : D'.ends t = 0) (hDt' : D'.ends t' = 1)
+    (hDx : ∀ x, x ≠ t → x ≠ t' → x ≠ w → D'.ends x = profile G ((evenSet G).erase u) x)
+    (hDw : D'.ends w = profile G (((evenSet G).erase u).erase t) w + 1)
+    (hcond : (Finset.univ.filter
+      (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0)).card < D'.ends w) :
+    Realisable G (((evenSet G).erase u).erase t) := by
+  have hne : t' ≠ w := G.ne_of_adj ht'w
+  obtain ⟨D, -, hDt'', hDw'', hrest⟩ := fan_single (G := G) (G' := delEdge G t' w) (u := t')
+    (v := w) ht'w (fun e => delEdge_edgeSet t' w e) D' hcond
+  refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), D, fun x => ?_⟩
+  by_cases hxt' : x = t'
+  · subst hxt'
+    rw [hDt'', hDt']
+    have : x ∈ ((evenSet G).erase u).erase t :=
+      Finset.mem_erase.mpr ⟨Ne.symm htt', Finset.mem_erase.mpr ⟨Ne.symm hut', ht'⟩⟩
+    simp [profile, not_odd_of_mem_evenSet ht', this]
+  · by_cases hxw : x = w
+    · subst hxw; omega
+    · rw [hrest x hxt' hxw]
+      by_cases hxt : x = t
+      · subst hxt
+        rw [hDt]
+        simp [profile, not_odd_of_mem_evenSet ht]
+      · rw [hDx x hxt hxt' hxw]
+        unfold profile
+        have : x ∈ ((evenSet G).erase u).erase t ↔ x ∈ (evenSet G).erase u := by
+          simp [Finset.mem_erase, hxt]
+        simp only [this]
+
+/-- Degree bookkeeping for `G − aw − a'w`. -/
+theorem degree_delEdge₂ {a a' w : V} (haa' : a ≠ a') (haw : G.Adj a w) (ha'w : G.Adj a' w) :
+    (delEdge (delEdge G a w) a' w).degree a + 1 = G.degree a ∧
+    (delEdge (delEdge G a w) a' w).degree a' + 1 = G.degree a' ∧
+    (delEdge (delEdge G a w) a' w).degree w + 2 = G.degree w ∧
+    ∀ x, x ≠ a → x ≠ a' → x ≠ w → (delEdge (delEdge G a w) a' w).degree x = G.degree x := by
+  have hne : a ≠ w := G.ne_of_adj haw
+  have hne' : a' ≠ w := G.ne_of_adj ha'w
+  have h1 : (delEdge G a w).Adj a' w := (delEdge_adj_of_ne (Ne.symm haa') hne').mpr ha'w
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [delEdge_degree_of_ne haa' hne]; exact delEdge_degree_left haw
+  · rw [← delEdge_degree_of_ne (G := G) (Ne.symm haa') hne']; exact delEdge_degree_left h1
+  · have := delEdge_degree_right h1
+    have := delEdge_degree_right (G := G) haw
+    omega
+  · intro x hxa hxa' hxw
+    rw [delEdge_degree_of_ne hxa' hxw, delEdge_degree_of_ne hxa hxw]
+
+omit [Fintype V] [DecidableRel G.Adj] in
+theorem edgeSet_readd {G2 : SimpleGraph V} {a a' w t t' : V}
+    (hE2 : ∀ e, e ∈ G2.edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(a, w) ∧ e ≠ s(a', w))
+    (h : (t = a ∧ t' = a') ∨ (t = a' ∧ t' = a))
+    (haa' : a ≠ a') (haw : G.Adj a w) (ha'w : G.Adj a' w) (e : Sym2 V) :
+    e ∈ (delEdge G t' w).edgeSet ↔ e ∈ G2.edgeSet ∨ e = s(t, w) := by
+  rw [delEdge_edgeSet, hE2]
+  have hst : s(a, w) ≠ s(a', w) := by
+    intro he
+    rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨h1, h2⟩
+    · exact haa' h1
+    · exact haa' (h1.trans h2)
+  rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+  · constructor
+    · rintro ⟨he, hne⟩
+      by_cases h : e = s(t, w)
+      · exact Or.inr h
+      · exact Or.inl ⟨he, h, hne⟩
+    · rintro (⟨he, -, hne⟩ | rfl)
+      · exact ⟨he, hne⟩
+      · exact ⟨haw, hst⟩
+  · constructor
+    · rintro ⟨he, hne⟩
+      by_cases h : e = s(t, w)
+      · exact Or.inr h
+      · exact Or.inl ⟨he, hne, h⟩
+    · rintro (⟨he, hne, -⟩ | rfl)
+      · exact ⟨he, hne⟩
+      · exact ⟨ha'w, Ne.symm hst⟩
+
+/-- The pair step, for an abstract `G2 = G − aw − a'w`. -/
+theorem pair_core (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) {u a a' w : V}
+    (G2 : SimpleGraph V) [DecidableRel G2.Adj]
+    (hE2 : ∀ e, e ∈ G2.edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(a, w) ∧ e ≠ s(a', w))
+    (d2a : G2.degree a + 1 = G.degree a) (d2a' : G2.degree a' + 1 = G.degree a')
+    (d2w : G2.degree w + 2 = G.degree w)
+    (d2x : ∀ x, x ≠ a → x ≠ a' → x ≠ w → G2.degree x = G.degree x)
+    (hG : ∀ v, 0 < G.degree v) (hu : u ∈ evenSet G) (ha : a ∈ evenSet G)
+    (ha' : a' ∈ evenSet G) (hua : u ≠ a) (hua' : u ≠ a') (haa' : a ≠ a') (huw : u ≠ w)
+    (haw : G.Adj a w) (ha'w : G.Adj a' w)
+    (hw : (w ∈ evenSet G ∧ 4 ≤ G.degree w) ∨
+      (Odd (G.degree w) ∧ (¬ G.Adj a a' ∨ (¬ G.Adj a u ∧ ¬ G.Adj a' u)))) :
+    Realisable G (((evenSet G).erase u).erase a) ∨
+      Realisable G (((evenSet G).erase u).erase a') := by
+  have hne : a ≠ w := G.ne_of_adj haw
+  have hne' : a' ≠ w := G.ne_of_adj ha'w
+  have hadj2 : ∀ x y, G2.Adj x y → G.Adj x y := fun x y h => ((hE2 s(x, y)).mp h).1
+  have hae := (Finset.mem_filter.mp ha).2
+  have hae' := (Finset.mem_filter.mp ha').2
+  have hap := hae.1
+  have hap' := hae'.1
+  have hwpos : 3 ≤ G.degree w := by
+    rcases hw with ⟨-, h4⟩ | ⟨hodd, -⟩
+    · omega
+    · have h2 : a ∈ G.neighborFinset w := (mem_neighborFinset _ _ _).mpr haw.symm
+      have h3 : a' ∈ G.neighborFinset w := (mem_neighborFinset _ _ _).mpr ha'w.symm
+      have : 2 ≤ (G.neighborFinset w).card := by
+        have := Finset.card_le_card (s := {a, a'}) (t := G.neighborFinset w)
+          (Finset.insert_subset h2 (Finset.singleton_subset_iff.mpr h3))
+        rwa [Finset.card_pair haa'] at this
+      rw [card_neighborFinset_eq_degree] at this
+      rcases hodd with ⟨k, hk⟩
+      omega
+  have hG2pos : ∀ x, 0 < G2.degree x := by
+    intro x
+    by_cases hxa : x = a
+    · rw [hxa]; rcases hae.2 with ⟨k, hk⟩; omega
+    · by_cases hxa' : x = a'
+      · rw [hxa']; rcases hae'.2 with ⟨k, hk⟩; omega
+      · by_cases hxw : x = w
+        · rw [hxw]
+          rcases hw with ⟨hwE, h4⟩ | ⟨⟨k, hk⟩, -⟩
+          · omega
+          · omega
+        · rw [d2x x hxa hxa' hxw]; exact hG x
+  have hodd2a : Odd (G2.degree a) := by rcases hae.2 with ⟨k, hk⟩; exact ⟨k - 1, by omega⟩
+  have hodd2a' : Odd (G2.degree a') := by rcases hae'.2 with ⟨k, hk⟩; exact ⟨k - 1, by omega⟩
+  have hu2 : u ∈ evenSet G2 := by
+    have := d2x u hua hua' huw
+    have hu' := (Finset.mem_filter.mp hu).2
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, this ▸ hu'.1, this ▸ hu'.2⟩
+  obtain ⟨-, D2, hD2⟩ := realisable_evenSet_erase hL hG2pos hn hu2
+  have hD2a : D2.ends a = 1 := by rw [hD2 a]; simp [profile, hodd2a]
+  have hD2a' : D2.ends a' = 1 := by rw [hD2 a']; simp [profile, hodd2a']
+  have hmem2 : ∀ x, x ≠ a → x ≠ a' → x ≠ w → (x ∈ evenSet G2 ↔ x ∈ evenSet G) := by
+    intro x hxa hxa' hxw
+    simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and, d2x x hxa hxa' hxw]
+  have hD2x : ∀ x, x ≠ a → x ≠ a' → x ≠ w → D2.ends x = profile G ((evenSet G).erase u) x := by
+    intro x hxa hxa' hxw
+    rw [hD2 x]
+    unfold profile
+    rw [d2x x hxa hxa' hxw]
+    simp only [Finset.mem_erase, hmem2 x hxa hxa' hxw]
+  have hD2w : D2.ends w = profile G ((evenSet G).erase u) w := by
+    rcases hw with ⟨hwE, h4⟩ | ⟨hodd, -⟩
+    · have hwe := (Finset.mem_filter.mp hwE).2.2
+      have h2e : Even (G2.degree w) := by rcases hwe with ⟨k, hk⟩; exact ⟨k - 1, by omega⟩
+      have hw2 : w ∈ (evenSet G2).erase u := Finset.mem_erase.mpr ⟨Ne.symm huw,
+        Finset.mem_filter.mpr ⟨Finset.mem_univ _, hG2pos w, h2e⟩⟩
+      have hwu : w ∈ (evenSet G).erase u := Finset.mem_erase.mpr ⟨Ne.symm huw, hwE⟩
+      rw [hD2 w]
+      simp [profile, Nat.not_odd_iff_even.mpr h2e, hw2, Nat.not_odd_iff_even.mpr hwe, hwu]
+    · have h2o : Odd (G2.degree w) := by rcases hodd with ⟨k, hk⟩; exact ⟨k - 1, by omega⟩
+      rw [hD2 w]
+      simp [profile, h2o, hodd]
+  have hzero : ∀ x, G2.Adj w x → D2.ends x = 0 → x = u := by
+    intro x hwx h0
+    have hxw : x ≠ w := fun h => G2.loopless.irrefl w (h ▸ hwx)
+    have hxa : x ≠ a := fun h => ((hE2 s(w, x)).mp hwx).2.1 (by rw [h, Sym2.eq_swap])
+    have hxa' : x ≠ a' := fun h => ((hE2 s(w, x)).mp hwx).2.2 (by rw [h, Sym2.eq_swap])
+    rw [hD2x x hxa hxa' hxw] at h0
+    by_contra hxu
+    unfold profile at h0
+    by_cases ho : Odd (G.degree x)
+    · simp [ho] at h0
+    · have hxE : x ∈ evenSet G := Finset.mem_filter.mpr ⟨Finset.mem_univ _,
+        G.degree_pos_iff_exists_adj x |>.mpr ⟨w, (hadj2 _ _ hwx).symm⟩,
+        Nat.not_odd_iff_even.mp ho⟩
+      simp [ho, Finset.mem_erase, hxu, hxE] at h0
+  -- Fan's grouped lemma at `w` for the two deleted edges
+  have hsum : (Finset.univ.filter (fun x => G2.Adj w x ∧ D2.ends x = 0)).card <
+      ∑ t ∈ ({a, a'} : Finset V), D2.ends t := by
+    rw [Finset.sum_pair haa', hD2a, hD2a']
+    have hsub : Finset.univ.filter (fun x => G2.Adj w x ∧ D2.ends x = 0) ⊆ {u} := by
+      intro x hx
+      rw [Finset.mem_filter] at hx
+      exact Finset.mem_singleton.mpr (hzero x hx.2.1 hx.2.2)
+    have := Finset.card_le_card hsub
+    rw [Finset.card_singleton] at this
+    omega
+  have hwT : w ∉ ({a, a'} : Finset V) := by
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨Ne.symm hne, Ne.symm hne'⟩
+  have hT : ∀ t ∈ ({a, a'} : Finset V), ¬ G2.Adj t w := by
+    intro t ht h
+    rcases Finset.mem_insert.mp ht with rfl | ht
+    · exact ((hE2 _).mp h).2.1 rfl
+    · rw [Finset.mem_singleton] at ht
+      subst ht
+      exact ((hE2 _).mp h).2.2 rfl
+  obtain ⟨t, ht, hK⟩ := fan_grouped D2 w {a, a'} hwT hT hsum
+  -- finish with `fan_single` at the other edge
+  have finish : ∀ t t', ((t = a ∧ t' = a') ∨ (t = a' ∧ t' = a)) →
+      (∀ K' : SimpleGraph V, (∀ e, e ∈ K'.edgeSet ↔ e ∈ G2.edgeSet ∨ e = s(t, w)) →
+        ∃ D' : PathDecomp K', D'.size = D2.size ∧
+          ∀ x, D'.ends x + (if t = x then 1 else 0) = D2.ends x + (if w = x then 1 else 0)) →
+      Realisable G (((evenSet G).erase u).erase t) := by
+    intro t t' htt hK
+    have htt' : t ≠ t' := by
+      rcases htt with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+      · exact haa'
+      · exact Ne.symm haa'
+    have ht'w : G.Adj t' w := by
+      rcases htt with ⟨-, rfl⟩ | ⟨-, rfl⟩
+      · exact ha'w
+      · exact haw
+    have htE : t ∈ evenSet G := by
+      rcases htt with ⟨rfl, -⟩ | ⟨rfl, -⟩
+      · exact ha
+      · exact ha'
+    have ht'E : t' ∈ evenSet G := by
+      rcases htt with ⟨-, rfl⟩ | ⟨-, rfl⟩
+      · exact ha'
+      · exact ha
+    have hut : u ≠ t := by
+      rcases htt with ⟨rfl, -⟩ | ⟨rfl, -⟩
+      · exact hua
+      · exact hua'
+    have hut' : u ≠ t' := by
+      rcases htt with ⟨-, rfl⟩ | ⟨-, rfl⟩
+      · exact hua'
+      · exact hua
+    have htw : t ≠ w := by
+      rcases htt with ⟨rfl, -⟩ | ⟨rfl, -⟩
+      · exact hne
+      · exact hne'
+    have ht'w' : t' ≠ w := G.ne_of_adj ht'w
+    have hD2t : D2.ends t = 1 := by
+      rcases htt with ⟨rfl, -⟩ | ⟨rfl, -⟩
+      · exact hD2a
+      · exact hD2a'
+    have hD2t' : D2.ends t' = 1 := by
+      rcases htt with ⟨-, rfl⟩ | ⟨-, rfl⟩
+      · exact hD2a'
+      · exact hD2a
+    have hnot : ∀ x, x ≠ t → x ≠ t' → x ≠ a ∧ x ≠ a' := by
+      intro x h1 h2
+      rcases htt with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+      · exact ⟨h1, h2⟩
+      · exact ⟨h2, h1⟩
+    obtain ⟨D', -, hD'⟩ := hK (delEdge G t' w)
+      (edgeSet_readd hE2 htt haa' haw ha'w)
+    have hDt : D'.ends t = 0 := by
+      have := hD' t
+      simp only [ite_true, Ne.symm htw, ite_false, add_zero, hD2t] at this
+      omega
+    have hDt' : D'.ends t' = 1 := by
+      have := hD' t'
+      simp only [htt', Ne.symm ht'w', ite_false, add_zero, hD2t'] at this
+      exact this
+    have hDw : D'.ends w = D2.ends w + 1 := by
+      have := hD' w
+      simp only [htw, ite_false, ite_true, add_zero] at this
+      exact this
+    have hDx : ∀ x, x ≠ t → x ≠ t' → x ≠ w →
+        D'.ends x = profile G ((evenSet G).erase u) x := by
+      intro x h1 h2 h3
+      have := hD' x
+      simp only [Ne.symm h1, Ne.symm h3, ite_false, add_zero] at this
+      rw [this]
+      exact hD2x x (hnot x h1 h2).1 (hnot x h1 h2).2 h3
+    -- zeros of `D'` next to `t'` are among `t, u`
+    have hz : ∀ x, (delEdge G t' w).Adj t' x → D'.ends x = 0 → x = t ∨ x = u := by
+      intro x hx h0
+      by_cases hxt : x = t
+      · exact Or.inl hxt
+      · right
+        have hxt' : x ≠ t' := fun h => G.loopless.irrefl t' (h ▸ hx.1)
+        have hxw : x ≠ w := fun h => hx.2 (by rw [h])
+        rw [hDx x hxt hxt' hxw] at h0
+        by_contra hxu
+        unfold profile at h0
+        by_cases ho : Odd (G.degree x)
+        · simp [ho] at h0
+        · have hxE : x ∈ evenSet G := Finset.mem_filter.mpr ⟨Finset.mem_univ _,
+            G.degree_pos_iff_exists_adj x |>.mpr ⟨t', hx.1.symm⟩, Nat.not_odd_iff_even.mp ho⟩
+          simp [ho, Finset.mem_erase, hxu, hxE] at h0
+    have hprof : profile G (((evenSet G).erase u).erase t) w = profile G ((evenSet G).erase u) w := by
+      unfold profile
+      have : w ∈ ((evenSet G).erase u).erase t ↔ w ∈ (evenSet G).erase u := by
+        simp [Finset.mem_erase, Ne.symm htw]
+      simp only [this]
+    refine pair_finish ht'w htE ht'E hut hut' htt' D' hDt hDt' hDx (by rw [hDw, hD2w, hprof]) ?_
+    rw [hDw, hD2w]
+    rcases hw with ⟨hwE, -⟩ | ⟨hodd, hcase⟩
+    · -- even `w`: at most two zeros, and `D'` has three ends at `w`
+      have hsub : Finset.univ.filter (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆
+          {t, u} := by
+        intro x hx
+        rw [Finset.mem_filter] at hx
+        rcases hz x hx.2.1 hx.2.2 with rfl | rfl <;> simp
+      have h1 := (Finset.card_le_card hsub).trans (Finset.card_le_two)
+      have hwu : w ∈ (evenSet G).erase u := Finset.mem_erase.mpr ⟨Ne.symm huw, hwE⟩
+      simp only [profile, not_odd_of_mem_evenSet hwE, hwu, ite_true, ite_false]
+      omega
+    · -- odd `w`: at most one zero
+      have hpw : profile G ((evenSet G).erase u) w = 1 := by simp [profile, hodd]
+      rw [hpw]
+      have hsub : ∃ y, Finset.univ.filter
+          (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆ {y} := by
+        rcases hcase with hna | ⟨hnu, hnu'⟩
+        · refine ⟨u, fun x hx => ?_⟩
+          rw [Finset.mem_filter] at hx
+          rcases hz x hx.2.1 hx.2.2 with rfl | rfl
+          · exfalso
+            have := hx.2.1.1
+            rcases htt with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+            · exact hna this.symm
+            · exact hna this
+          · exact Finset.mem_singleton_self _
+        · refine ⟨t, fun x hx => ?_⟩
+          rw [Finset.mem_filter] at hx
+          rcases hz x hx.2.1 hx.2.2 with rfl | rfl
+          · exact Finset.mem_singleton_self _
+          · exfalso
+            have := hx.2.1.1
+            rcases htt with ⟨-, rfl⟩ | ⟨-, rfl⟩
+            · exact hnu' this
+            · exact hnu this
+      obtain ⟨y, hy⟩ := hsub
+      have := Finset.card_le_card hy
+      rw [Finset.card_singleton] at this
+      omega
+  rcases Finset.mem_insert.mp ht with rfl | ht
+  · exact Or.inl (finish t a' (Or.inl ⟨rfl, rfl⟩) hK)
+  · rw [Finset.mem_singleton] at ht
+    subst ht
+    exact Or.inr (finish t a (Or.inr ⟨rfl, rfl⟩) hK)
+
+/-- **Pair step.** Let `u, a, a'` be distinct even vertices and `w ≠ u` a common neighbour of `a`
+and `a'`. Suppose that `w` is even of degree at least `4`, or that `w` is odd and `aa' ∉ E` or
+neither `a` nor `a'` is adjacent to `u`. Then `Ev \ {u, a}` or `Ev \ {u, a'}` is realisable.
+
+Proof: Lemma 3 in `G − aw − a'w` (exceptional vertex `u`), Fan's grouped lemma for the two
+edges into `w` (it puts back one of them, say `tw`), then Fan's single lemma for the other. -/
+theorem realisable_pair (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
+    (hn : Even (Fintype.card V)) {u a a' w : V} (hu : u ∈ evenSet G) (ha : a ∈ evenSet G)
+    (ha' : a' ∈ evenSet G) (hua : u ≠ a) (hua' : u ≠ a') (haa' : a ≠ a') (huw : u ≠ w)
+    (haw : G.Adj a w) (ha'w : G.Adj a' w)
+    (hw : (w ∈ evenSet G ∧ 4 ≤ G.degree w) ∨
+      (Odd (G.degree w) ∧ (¬ G.Adj a a' ∨ (¬ G.Adj a u ∧ ¬ G.Adj a' u)))) :
+    Realisable G (((evenSet G).erase u).erase a) ∨
+      Realisable G (((evenSet G).erase u).erase a') := by
+  obtain ⟨d2a, d2a', d2w, d2x⟩ := degree_delEdge₂ haa' haw ha'w
+  exact pair_core hL hn (delEdge (delEdge G a w) a' w)
+    (fun e => by rw [delEdge_edgeSet, delEdge_edgeSet, and_assoc]) d2a d2a' d2w d2x hG hu ha ha'
+    hua hua' haa' huw haw ha'w hw
+
 /-! ### An obstruction -/
 
 omit [Fintype V] [DecidableRel G.Adj] in
