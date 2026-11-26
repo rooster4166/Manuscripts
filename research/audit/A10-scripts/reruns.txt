@@ -1,0 +1,25 @@
+# Re-runs of manuscripts/jm-repair/scripts (nice -n 19), referee A10, 2026-11-26
+check_colour_lemmas.py: violations 0
+check_thm7_counts.py 1500: triples 93843621 violations 0 (80 s)
+check_valid_lemma.py 5 40: colourings 306446 agree 306446 valid 12631 (exact match to log); seeds 1,2,3,7,11,40 also full agreement
+random_21 (100 trials): {'inst': 143, 'feas': 143, 'infeas': 0, 'mismatch': 0}
+random_22 (100 trials): {'inst': 156, 'feas': 156, 'infeas': 0, 'mismatch': 0}
+random_23 (100 trials): {'inst': 129, 'feas': 129, 'infeas': 0, 'mismatch': 0}
+adv_31 (100 trials): {'inst': 281, 'feas': 281, 'mism': 0, 'tightT': 86, 'tightU': 52}
+adv_32 (100 trials): {'inst': 305, 'feas': 305, 'mism': 0, 'tightT': 59, 'tightU': 39}
+adv_33 (100 trials): {'inst': 271, 'feas': 271, 'mism': 0, 'tightT': 99, 'tightU': 41}
+  rand 21 200: {'inst': 282, 'feas': 282, 'infeas': 0, 'mismatch': 0}
+  rand 22 200: {'inst': 267, 'feas': 267, 'infeas': 0, 'mismatch': 0}
+  rand 23 200: {'inst': 286, 'feas': 286, 'infeas': 0, 'mismatch': 0}
+  adv 31 120: {'inst': 309, 'feas': 309, 'mism': 0, 'tightT': 129, 'tightU': 67}
+  adv 31 150: {'inst': 406, 'feas': 406, 'mism': 0, 'tightT': 122, 'tightU': 76}
+test_random.py 21 100 twice more: inst 140, then 143 (instance generation is nondeterministic)
+test_noUbound.py 1 200: instances 822 failures 156; all 156 failures are (UH ok, LH fails at B=empty)
+test_flow_large.py 41 100: instances 425 feasible 425
+pipeline.py 11 40: 40 ok
+pipeline.py 12 40: 40 ok
+pipeline.py 13 40: 40 ok
+pipeline.py 14 40: 40 ok
+independent/thmB_exhaustive.py (3,3),(4,4),(5,3),(5,4),(4,5): 12, 450, 89, 2727, 31590 instances, 0 fails (exact match)
+independent/usize_probe.py 3 3: {1: [12, 0], 2: [24, 0], 3: [12, 12]}; 4 4: {1: [450, 0], 2: [1338, 0], 3: [1338, 0], 4: [450, 60]} (exact match)
+independent/cuts_vs_direct.py 4 4: inst 3576 agree 3576 infeasible 60 (all LH at B=empty, |U| bound violated)

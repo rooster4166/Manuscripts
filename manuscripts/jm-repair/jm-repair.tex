@@ -150,9 +150,10 @@ maximum degree~$2$ (Section~\ref{sec:reduction}).
 \item Records are exactly the integral flows in a network with lower bounds. By Hoffman's
 circulation theorem, a record exists if and only if two cut conditions (UH) and (LH) hold
 (Section~\ref{sec:flow}).
-\item We verify (UH) and (LH) by per-colour counting. In each case the counting leaves a
-deficit smaller than one unit, which an integrality argument, and in one case a parity
-argument, rules out (Sections~\ref{sec:upper} and~\ref{sec:lower}).
+\item We verify (UH) and (LH) by per-colour counting. In each case the counting shows that an
+integer slack $E$ satisfies $E\ge-1$ (in some cases directly $E\ge0$). The value $E=-1$ is then
+ruled out by an integrality argument for (UH) and by a parity argument for (LH)
+(Sections~\ref{sec:upper} and~\ref{sec:lower}).
 \end{enumerate}
 
 \begin{thmL}[Wu's conjecture]\label{thmC}
@@ -321,7 +322,8 @@ step by Theorem~\ref{thmB}. Its proof needs no balanced colourings and no pairin
 (\cite[p.~9]{JM}: ``$k\ge4$ as $r\le 2t-1$''). If $G$ has no isolated vertices, then $r\le 2t$
 with equality only for $G\cong tK_2$, so the two hypotheses agree. In the application $G=H'$,
 which has no isolated vertices, and moreover $r\le(3t-1)/2$. If $G$ may have isolated vertices,
-the literal statement fails. For example, let $n=3$, $t=1$, $r=4$, and decompose $K_4$ into three
+the literal statement fails. (Here $V(G)=V(K_r)$, so the $n-t$ edges of $(n-t)K_2$ must avoid
+$V(K_r)$; this is also where the proof of \JM\ places them.) For example, let $n=3$, $t=1$, $r=4$, and decompose $K_4$ into three
 perfect matchings $P_1,P_2,P_3$. Let $G$ consist of one edge of $P_1$ together with the two
 remaining vertices, so $G\not\cong K_2$. The size conditions hold ($|P_1|=2\ge1$ and
 $|P_2|=|P_3|=2\ge2$). But the $n-t=2$ matching edges would need four vertices outside $K_4$,
@@ -1016,21 +1018,27 @@ $2|U|\le k-2$ allows, and every $c\in U$ is tested.
   \item feasibility of the network $D$ by max-flow with lower bounds;
   \item brute force over all $B\subseteq V$ of the cut conditions (UH) and (LH).
   \end{itemize}
-  Random instances (\texttt{test\_random.py}, seeds 21--23, $n\le10$): $712$ cases.
+  Random instances (\texttt{test\_random.py}, seeds 21--23; invoked from the command line the
+  script draws $3\le n\le8$): $712$ cases.
   Adversarial instances (\texttt{test\_adversarial.py}, seeds 31--33, $n\le10$): $1013$ cases.
   Every case was feasible, and the three tests agreed in every case. For larger instances
   ($8\le n\le14$, adversarial generation, \texttt{test\_flow\_large.py}, seed 41) we ran the
   flow test alone, since the brute-force cut check is exponential in $m$. All $277$ cases were
-  feasible.
+  feasible. The instance generator calls CP-SAT with several workers and is not
+  bit-reproducible. A re-run with the same seeds gives somewhat different case counts, with the
+  same outcome (no infeasible case, no disagreement). The three tests are not fully independent
+  of the reductions: the direct search encodes (V1)--(V4), so its infeasibility verdicts rely on
+  Lemma~\ref{lem:valid}, which is checked separately below.
 
 \item \emph{The bound on $|U|$} (\texttt{test\_noUbound.py}). We took $U$ to be all colours with
-$p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible
-(the three tests again agreed). In every infeasible case (UH) held and (LH) failed already at
+$p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible.
+The direct search and the flow test agreed on every case, and on every infeasible case the
+brute-force cut check also reported a failure. In every infeasible case (UH) held and (LH) failed already at
 $B=\emptyset$. This matches Proposition~\ref{prop:UH}, which does not use the bound, and
 Remark~\ref{rem:sharp}.
 
 \item \emph{Lemma~\ref{lem:valid}} (\texttt{check\_valid\_lemma.py}). On $40$ random small
-instances ($m\le4$, $n\le4$) we enumerated all $306{,}446$ two-vertex colourings. Conditions
+instances ($m\le4$, $n\le4$; seed 5, the default) we enumerated all $306{,}446$ two-vertex colourings. Conditions
 (V1)--(V4) agreed with graph-level validity in every case; $12{,}631$ colourings were valid.
 
 \item \emph{Lemmas~\ref{lem:u} and~\ref{lem:s}} (\texttt{check\_colour\_lemmas.py}). We
@@ -1107,9 +1115,10 @@ adversarial read of Sections~\ref{sec:thmA}--\ref{sec:lower} (a separate agent) 
 mathematical error; its exposition-level comments are incorporated. The main points for a
 referee to check are Lemma~\ref{lem:valid} (the list of possible cycles),
 Proposition~\ref{prop:cuts} (the cut computation), and the final integrality and parity steps in
-Propositions~\ref{prop:UH} and~\ref{prop:LH}.
+Propositions~\ref{prop:UH} and~\ref{prop:LH}. A separate referee audit of the whole note,
+with its own computations, is \cite{A10}.
 \item The computations of Section~\ref{sec:computations} are sanity checks on small instances
-($n\le10$) and on the per-colour inequalities. No step of any proof depends on them.
+($n\le14$) and on the per-colour inequalities. No step of any proof depends on them.
 \end{itemize}
 
 \subsection*{Use elsewhere}
@@ -1117,7 +1126,9 @@ The audit \cite[\S2.2]{A4} notes that the odd-semi-clique manuscript applies \JM
 citing it as ``Theorem~3.8'', with a representative graph $G$ that may have isolated vertices
 and satisfies $r\le 2t-1$. Theorem~\ref{thmA} covers exactly this situation. A prescribed
 matching on the outside vertices is obtained by relabelling those vertices. We have not
-re-examined any other part of that manuscript's use.
+re-examined any other part of that manuscript's use. The audit \cite{A10} checked the two places
+where that manuscript uses \JM\ Theorem~8 (in the proofs of its Theorems~9 and~11) against
+Theorem~\ref{thmA}.
 
 
 
@@ -1136,6 +1147,8 @@ complete graphs, \emph{Discrete Math.} \textbf{346}(8) (2023), Art.~113479.
 \bibitem{Schrijver} A.~Schrijver, \emph{Combinatorial Optimization: Polyhedra and Efficiency},
 Vol.~A, Springer, 2003, Chapter~11 (circulations; Hoffman's circulation theorem and its integer
 version).
+\bibitem{A10} Referee audit A10 (this repository), \nolinkurl{research/audit/A10-jm-repair.md},
+26 November 2026.
 \bibitem{A4} Referee audit A4 (this repository), \nolinkurl{research/audit/A4-semi-cliques-JM.md},
 \S2 (items JM1--JM3), 26 November 2026.
 \end{thebibliography}
