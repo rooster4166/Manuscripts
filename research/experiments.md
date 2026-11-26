@@ -111,3 +111,28 @@ Command: `tools/realisable_matroid.py`
 
 - "Loopless" is exactly the rooted test, which is equivalent to Gallai.
 - "Matroid" adds exchange structure, and suggests looking for a rank formula (a min–max theorem).
+
+## E7. Uniform half-set statements
+
+Command: `tools/uhc.py`
+
+**UHC\*.** For every 2-connected graph of even order n, every set of exactly e/2 even vertices is the doubled set of some decomposition into exactly n/2 paths.
+
+**REFUTED at n = 6.** Counterexample EsQw: edges 01 02 03 05 14 25 35 45, all degrees even, p = 2 < 3. Two hubs 0 and 5 are joined by an edge and by three degree-2 routes. If both short-route vertices 2 and 3 are internal, the hub cannot be internal. This is a non-critical graph, so it is irrelevant to Gallai.
+
+**UHC (critical only, p = n/2).**
+
+- n = 6: all 21 two-connected critical graphs have uniform endpoint matroids. All three non-uniform critical graphs have a cut vertex.
+- n = 8: **REFUTED.** Counterexample GsaFC{: vertex 0 is universal; 6 sees 0, 1, 2, 7; 7 sees 0, 3, 4, 5, 6; vertices 1–5 have degree 2. Exactly the two complementary half-sets {1,2,6} and {3,4,5} are unrealisable. These are the two sides of the 2-separations at 0. The surviving 18 triples form a **sparse paving matroid**, which is loopless, so EMC survives. A second example, GsaFeW, has the same shape.
+- Remaining question: are 3-connected critical graphs uniform? The full n = 8 run is in progress.
+
+**Critical is not the same as trivially forced.**
+
+Let H be K_{2k+1} minus two disjoint edges ac and bd (k ≥ 3). Add a vertex w adjacent to a and b.
+
+- The graph is 2-connected, has n = 2k+2, Δ = n − 2 and exactly (n/2 − 1)(n − 1) edges.
+- So none of the trivial lower bounds (o/2, ⌈Δ/2⌉, ⌈m/(n−1)⌉) forces n/2.
+- But a decomposition into k paths would have to consist of k Hamilton paths. Each would contain w, which has degree 2, and that is impossible.
+- Hence p = k + 1 = n/2.
+
+So critical graphs, the only ones on which the rooted test bites, carry genuine Hamiltonian rigidity.
