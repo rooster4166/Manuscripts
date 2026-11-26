@@ -601,4 +601,34 @@ theorem tight_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V))
   have := realisable_of_fanCert hL hn M H (evenSet H) hG (subset_refl _) hM
   rwa [Finset.sdiff_self] at this
 
+/-! ### An obstruction -/
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- In any decomposition, `deg v + ends v ≤ 2 |D|`: a path has at most two edges at `v`, and one
+fewer for each of its ends at `v`. -/
+theorem PathDecomp.degree_add_ends_le (D : PathDecomp G) (v : V) [Fintype (G.neighborSet v)] :
+    G.degree v + D.ends v ≤ 2 * D.size := by
+  rw [D.degree_eq_sum v]
+  unfold PathDecomp.ends PathDecomp.size
+  rw [← sum_map_add']
+  calc (D.paths.map (fun P => P.incid v + P.endsAt v)).sum
+      ≤ (D.paths.map (fun _ => 2)).sum := sum_map_le_sum_map _ _ _ (fun P _ => by
+        have := P.incid_add_endsAt v
+        split_ifs at this <;> omega)
+    _ = 2 * D.paths.length := by
+        rw [List.map_const', List.sum_replicate, smul_eq_mul, mul_comm]
+
+/-- **Obstruction (O1).** In a tight graph every odd vertex has degree at most `#odd − 1`. For a
+graph of order `n` with exactly two even vertices this excludes an odd vertex of degree `n − 1`. -/
+theorem degree_le_of_tight {H : SimpleGraph V} [DecidableRel H.Adj] (h : Tight H) {w : V}
+    (hw : Odd (H.degree w)) : H.degree w + 1 ≤ (oddSet H).card := by
+  obtain ⟨-, D, hD⟩ := h
+  have hsz := Realises.size_eq (Finset.empty_subset _) hD
+  have h1 := D.degree_add_ends_le w
+  have hw1 : D.ends w = 1 := by rw [hD w]; simp [profile, hw]
+  obtain ⟨k, hk⟩ := H.even_card_odd_degree_vertices
+  unfold oddSet at hsz ⊢
+  rw [Finset.card_empty, add_zero] at hsz
+  omega
+
 end Gallai
