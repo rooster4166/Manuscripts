@@ -1,16 +1,32 @@
 import GallaiLean.MarkedSurgery
 
 /-!
-# Reducing the marked bound to two-connected graphs
+# Reducing the marked bound to two-connected graphs (Theorem 1)
 
-Marked-reduction manuscript, §2 and the sufficiency half of Theorem 1.
+Marked-reduction manuscript, §2 ("Bridges, pendant edges and cut vertices") and Theorem 1.
 
-The induction works inside one vertex type `W`: an instance is a graph `G` all of whose edges lie
-in a finite vertex set `U` (`EdgesIn G U`), connected on `U` (`ConnOn G U`). Sub-instances are
-restrictions `restrict G U'`. A *separation* `CutSep G U x C` is a cut vertex `x` with a nonempty
-part `C` of `U - x` that has no edges to the rest `U - x - C`.
+The induction runs inside one vertex type `W`. An instance is a graph `G` whose edges all lie in a
+finite vertex set `U` (`EdgesIn G U`) and which is connected on `U` (`ConnOn G U`). Sub-instances
+are restrictions `restrict G U'`. `CutSep G U x C` says that `x` is a cut vertex: `C` and
+`U - x - C` are nonempty and no edge joins them. `TwoConnOn G U` means `|U| ≥ 3`, connected and
+no cut vertex. `TwoConnected G := TwoConnOn G univ`.
 
-This file: restrictions, separations, leaves and the connectivity of the pieces.
+* `cutStep`: the cut-vertex reduction (manuscript p. 5) in all its cases. These are `x` marked
+  with odd/odd sides (`cut_xS_odd`), `x` marked with an even side (`cut_xS_even`, the
+  added-leaf trick), `x` unmarked with an odd side (`cut_xnS_odd`), `x` unmarked with both sides
+  even and both sides marked (`cut_xnS_marked`), and the tight unmarked side (`cut_xnS_tight`,
+  the split-and-double-join).
+* `leafStep`: the four leaf deletions (pp. 4–5). `doubleLeafStep`: two leaves at the only mark.
+* `pendantStep`: the residual pendant configuration (p. 5). This is the only place where the
+  three-end condition (`ThreeEndsTest`) is used, and only at an odd-degree root.
+* `residue_sep`: a cut vertex of `G - w` gives a good cut of `G` or a second leaf (p. 6).
+* `mbOn_of_tests`, **`markedBound_of_tests`**, **`gallai_of_tests`**: sufficiency in Theorem 1.
+* `markedTwoConnTest_of_gallai`, `threeEndsTest_of_gallai`, **`gallai_iff_tests`**: Theorem 1
+  as a full equivalence.
+
+The bridge formula of §2 is not needed. A bridge whose two sides both have at least two vertices
+is a cut vertex with sides of order at least three, unless one side is an edge, in which case it
+ends in a leaf. So `cutStep` and `leafStep` cover it.
 -/
 
 open SimpleGraph
