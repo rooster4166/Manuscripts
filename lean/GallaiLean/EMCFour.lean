@@ -869,6 +869,62 @@ theorem rooted_four (hL : LovaszStatement.{u}) (hconn : G.Connected) (hn : Even 
     _ = D.size := by simp [leafCost, hend]
     _ ≤ Fintype.card V / 2 := by omega
 
+/-- A realisation of any set gives the rooted bound at every vertex that is odd or in the set. -/
+theorem pathNumber_addLeaf_le_of_realises (hG : ∀ v, 0 < G.degree v) {S : Finset V}
+    {D : PathDecomp G} (hSE : S ⊆ evenSet G) (hD : Realises G D S) {r : V}
+    (hr : r ∈ evenSet G → r ∈ S) :
+    pathNumber (addLeaf G r) ≤ (oddSet G).card / 2 + S.card := by
+  have hend : D.ends r ≠ 0 := by
+    rw [hD r]
+    unfold profile
+    by_cases ho : Odd (G.degree r)
+    · simp [ho]
+    · have hr' : r ∈ evenSet G := mem_evenSet_iff_even.mpr ⟨hG r, Nat.not_odd_iff_even.mp ho⟩
+      simp [ho, hr hr']
+  calc pathNumber (addLeaf G r) ≤ leafCost D r := pathNumber_addLeaf_le D r
+    _ = D.size := by simp [leafCost, hend]
+    _ = _ := hD.size_eq hSE
+
+/-- **The rooted test for at most four even vertices.** If `G` is connected of even order with
+at most four even vertices, then `p(G + leaf at r) ≤ n/2` for every vertex `r`. With
+`addLeaf`, this is the floor bound for connected odd-order graphs with a pendant leaf and at most
+three even vertices. -/
+theorem rooted_le_four (hL : LovaszStatement.{u}) (hconn : G.Connected)
+    (hn : Even (Fintype.card V)) (h4 : (evenSet G).card ≤ 4) (r : V) :
+    pathNumber (addLeaf G r) ≤ Fintype.card V / 2 := by
+  have h2 : 1 < Fintype.card V := by
+    have := Fintype.card_pos_iff.mpr ⟨r⟩
+    obtain ⟨m, hm⟩ := hn
+    omega
+  obtain ⟨a, b, hab⟩ := Fintype.exists_pair_of_one_lt_card (α := V) h2
+  have hG := degree_pos_of_connected hconn hab
+  have hc := card_oddSet_add_card_evenSet hG
+  obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+  have hk' : (oddSet G).card = k + k := hk
+  have hEv : Even (evenSet G).card := by
+    obtain ⟨m, hm⟩ := hn; exact ⟨m - k, by omega⟩
+  obtain ⟨j, hj⟩ := hEv
+  have hj2 : j ≤ 2 := by omega
+  interval_cases j
+  · -- no even vertex: Lemma 2 realises the empty set
+    obtain ⟨hSE, D, hD⟩ := realisable_evenSet hL hG
+    have := pathNumber_addLeaf_le_of_realises hG hSE hD (r := r) (fun h => h)
+    omega
+  · -- two even vertices: Lemma 3
+    by_cases hr : r ∈ evenSet G
+    · obtain ⟨u, hu, hur⟩ := Finset.exists_mem_ne (show 1 < (evenSet G).card by omega) r
+      obtain ⟨hSE, D, hD⟩ := realisable_evenSet_erase hL hG hn hu
+      have := pathNumber_addLeaf_le_of_realises hG hSE hD (r := r)
+        (fun h => Finset.mem_erase.mpr ⟨Ne.symm hur, h⟩)
+      rw [Finset.card_erase_of_mem hu] at this
+      omega
+    · obtain ⟨u, hu⟩ := Finset.card_pos.mp (show 0 < (evenSet G).card by omega)
+      obtain ⟨hSE, D, hD⟩ := realisable_evenSet_erase hL hG hn hu
+      have := pathNumber_addLeaf_le_of_realises hG hSE hD (r := r) (fun h => absurd h hr)
+      rw [Finset.card_erase_of_mem hu] at this
+      omega
+  · exact rooted_four hL hconn hn (by omega) r
+
 end four
 
 end Gallai

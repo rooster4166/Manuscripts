@@ -290,6 +290,42 @@ paper (Lemma 2). Here `b(w) = D.ends w`.
   - Case IV: no edges.
 * Helpers: `delEdge G a b` (with `delEdge_edgeSet`, `delEdge_degree`, `delEdge_sum_degree`),
   `apex_none_pendant`, `LovaszStrong`, and the case lemmas `lovasz_case_even/big/matching/empty`.
+## `GallaiLean/EMCFour.lean`: two descent steps; the endpoint matroid for four even vertices
+
+Endpoint-structure manuscript, section "Two descent steps, and four even vertices". Lovász enters
+only as `LovaszStatement`; Fan's transfers are `fan_single` and `fan_grouped` from `Fan.lean`.
+
+* `delE G F` (`G.deleteEdges ↑F` with decidable adjacency), `degree_delE`,
+  `degree_delE_single`, `delE_single_facts`: degree bookkeeping for edge deletion.
+* **`realisable_of_edge`** (transfer across an even edge): if `s, t, u'` are distinct even
+  vertices, `G.Adj s t` and `¬ G.Adj s u'`, then `Ev ∖ {t, u'}` is realisable (even order,
+  no isolated vertices). Lemma 3 on `G − st`, then one single transfer.
+* **`realisable_of_star`** (star lemma): if the even vertex `y` is adjacent to the even vertices
+  `w, x, z`, then `Ev ∖ {w, x}` or `Ev ∖ {w, z}` is realisable. Lemma 2 on `G − yw − yx − yz`,
+  then a single transfer, a grouped transfer, and a single transfer away from `y`
+  (`star_finish`).
+* **`realisable_lift`**: for an odd neighbour `t` of an even `y`, a realisation of `S ∋ t` in
+  `G − yt` whose unexposed even vertices avoid `N(y)` lifts to `S − t + y` in `G`.
+* `two_step_base`, `two_step_aux` (induction on the length of a path from `y` to another even
+  vertex), **`two_step_descent`**: `G` connected, even order, `4 ≤ |Ev|`, `y ≠ w` even ⇒
+  `∃ v ∈ Ev, v ≠ y ∧ v ≠ w ∧ Realisable G ((Ev.erase w).erase v)`.
+* **`emc_four`**: with `|Ev| = 4`, for distinct even `y, x, z`, `Realisable G {y, x} ∨
+  Realisable G {y, z}`.
+* `half_le_card_of_critical` (Corollary 5, first half): in a critical graph every realisable set
+  has at least `|Ev|/2` elements. `exists_pair_subset`, **`minimal_realisable_iff`**:
+  `Minimal (Realisable G) S ↔ S.card = 2 ∧ Realisable G S` for critical `G` with `|Ev| = 4`.
+* `pair_exchange` and **`endpoint_matroid_four`**: for connected critical `G` with `|Ev| = 4`
+  there is `M : Matroid V` with `M.E = Ev`, `M.Loopless`, bases exactly the realisable pairs,
+  and `Minimal (Realisable G) S ↔ M.IsBase S`. This is the endpoint matroid conjecture for
+  `e = 4`.
+* **`rooted_four`**: `G` connected of even order with `|Ev| = 4` ⇒
+  `pathNumber (addLeaf G r) ≤ card V / 2` for every `r` (the floor bound `BP_3`), without
+  Botler–Sambinelli. `rooted_le_four` extends this to at most four even vertices (Lemmas 2
+  and 3 for zero and two), using `pathNumber_addLeaf_le_of_realises`.
+
+`#print axioms` on `two_step_descent`, `emc_four`, `endpoint_matroid_four`, `rooted_four` and
+`rooted_le_four`
+shows only `propext`, `Classical.choice` and `Quot.sound`.
 
 ## Open / not formalized
 
@@ -297,6 +333,9 @@ Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and
 left open. Lovász's theorem is proved (`lovaszStatement`), so Lemmas 2 and 3 hold
 unconditionally (`realisable_evenSet'`, `realisable_evenSet_erase'`).
 Corollary 5 and Sections 3–4 of the manuscript are not formalized. Fan's single-edge and grouped
+left open. The section "Two descent steps, and four even vertices" is formalized in full
+(`EMCFour.lean`). Lovász's theorem enters only as the explicit hypothesis `LovaszStatement`.
+Sections 3–4 of the manuscript are not formalized (the first half of Corollary 5 is `half_le_card_of_critical`). Fan's single-edge and grouped
 lemmas are proved in full, with no special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula (it
 is stated with `sInf` over a set of naturals), and versions of the results for infinite vertex
 types (`pathNumber` is `sInf ∅ = 0` there, so the statements assume `Finite`/`Fintype`).
