@@ -1,0 +1,2 @@
+bowtie: 120 random hosts (orders 9-13), every certificate node realised on the host, global blank counts = local ones (0 hosts skipped on the time limit)
+six cores: 120 random hosts (orders 7-11), every certificate node realised on the host (0 hosts skipped on the time limit)

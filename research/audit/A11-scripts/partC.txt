@@ -1,0 +1,6 @@
+Part C: exhaustive certificate search (own engine)
+  (i)   bowtie, local set T: no certificate (agrees with the end of Sec. 5)
+  (ii)  bowtie, local set T+u: 25 of 31 certified; uncertified: ['ab', 'cd', 'xab', 'xcd', 'abcd', 'xabcd']
+  (iii) bowtie, local set T+u+v: 31 of 31 certified; uncertified: []
+  (iv)  all 38 labelled non-bowtie rims certified with local set T
+  (v)   all 41 labelled one-universal cores x 31 contact sets (1271 cases) certified with T+u+v

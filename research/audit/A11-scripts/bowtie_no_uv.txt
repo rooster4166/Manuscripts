@@ -1,0 +1,3 @@
+order 7: 11 connected graphs with bowtie even subgraph (11 without (u,v)); all have p <= 3
+order 9: 60 random connected bowtie hosts without (u,v) (every odd vertex sees T); all satisfy the floor
+order 11: 60 random connected bowtie hosts without (u,v) (every odd vertex sees T); all satisfy the floor

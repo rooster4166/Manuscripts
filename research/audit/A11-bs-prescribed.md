@@ -73,7 +73,7 @@ Two things remain conditional on [25], and neither is used anywhere in MR:
 - Cor 106 in its original generality: one exception, odd order, \|U\| ≥ 7.
 - The §2.1 remark on p. 8.
 
-The fixes were textual. Five gaps were fixed in the .tex (C6, M16, S9, the Lean-scope wording in L2, and the Rem. 15(iii) and §7 additions). The recompile is clean.
+The fixes were textual. The gaps C6, M16, S9 and L2 were fixed in the .tex, and Remark 15(iii) and §7 gained short additions (§5). The recompile is clean.
 
 ---
 
@@ -280,14 +280,14 @@ All grouped moves offer donors with b = 1 and branch on every donor. The certifi
 
 | Script (A11-scripts) | Checks | Output |
 |---|---|---|
-| `cert_check.py` | A: Table 2 + A = T, transported to 93 labelled cases. B: Lemmas 10–12 on all graphs on 5 labelled vertices, and Prop 13 on 38 rims. C: own exhaustive AND–OR search (bowtie on T; T + u; T + u + v; 41 cores × 31; 38 rims on T) | `partAB.out`, `partC.out` |
-| `mutation_check.py` | each lemma hypothesis is necessary; A = T supplies 4, 3 | `mutation.out` |
+| `cert_check.py` | A: Table 2 + A = T, transported to 93 labelled cases. B: Lemmas 10–12 on all graphs on 5 labelled vertices, and Prop 13 on 38 rims. C: own exhaustive AND–OR search (bowtie on T; T + u; T + u + v; 41 cores × 31; 38 rims on T) | `partAB.txt`, `partC.txt` |
+| `mutation_check.py` | each lemma hypothesis is necessary; A = T supplies 4, 3 | `mutation.txt` |
 | `exact.py` | own DFS solver: exact end vectors; floor with an end at y | library |
-| `selftest_exact.py` | `exact.py` vs `tools/pathnum.py` (CP-SAT) on random graphs of order 5–7 | `selftest_exact.out` (308 agree, 9 CP-SAT time-outs skipped) |
-| `random_replay.py` | end-to-end replay on 120 bowtie + 120 six-core random hosts; every node realised; global = local blanks | `random_replay.out` |
-| `counterexamples.py` | first-draft G_t (t = 2, 4); order-5 example; L, D of Prop 9; exact census N = 5, 7 | `counterexamples.out` |
-| `family_tt.py` | Prop 8 for eight (t, t′); the six N = 7, e = 5 failures | `family_tt.out` |
-| `bowtie_no_uv.py` | Rem. 15(iii) without the (u, v) hypothesis: 11 connected order-7 bowtie graphs (none has a pair (u, v)), and 60 + 60 random hosts of orders 9, 11 with no pair; all satisfy the floor | `bowtie_no_uv.out` |
+| `selftest_exact.py` | `exact.py` vs `tools/pathnum.py` (CP-SAT) on random graphs of order 5–7 | `selftest_exact.txt` (308 agree, 9 CP-SAT time-outs skipped) |
+| `random_replay.py` | end-to-end replay on 120 bowtie + 120 six-core random hosts; every node realised; global = local blanks | `random_replay.txt` |
+| `counterexamples.py` | first-draft G_t (t = 2, 4); order-5 example; L, D of Prop 9; exact census N = 5, 7 | `counterexamples.txt` |
+| `family_tt.py` | Prop 8 for eight (t, t′); the six N = 7, e = 5 failures | `family_tt.txt` |
+| `bowtie_no_uv.py` | Rem. 15(iii) without the (u, v) hypothesis: 11 connected order-7 bowtie graphs (none has a pair (u, v)), and 60 + 60 random hosts of orders 9, 11 with no pair; all satisfy the floor | `bowtie_no_uv.txt` |
 
 Author scripts re-run (non-independent): `verify_certs.py` and `bowtie_table.py` (exact match); `exact_prescribed.py` on conn5 (16 failures, 5 SET pairs at e = 3); `odd_fan_game.py` on conn5 and conn7 with kmax = 4 (7/14/0 and 130/230/64/0; 2,218 pairs tested, equal to my count).
 
