@@ -50,7 +50,8 @@ A second route, through \emph{Fan descent}, controls which pair is removed. The 
 $\Ev\setminus\{u\}\to\Ev\setminus\{u,v\}$ is equivalent to the parity bound $p=|\Od|/2$ for a
 graph with exactly two even vertices, and we prove it whenever $u$ and $v$ are not twins in the
 subgraph induced by the even vertices. Without connectivity, faithful descent therefore takes its
-second step except when the even vertices are independent and have private odd neighbourhoods.
+second step except when the even vertices are independent and have private odd neighbourhoods;
+both exceptions are closed by the path induction of Theorem~\ref{thm:two} (Remark~\ref{rem:twostep}).
 Iterating the argument gives a calculus of edge-deletion moves (Fan certificates). It yields a
 sufficient condition for the rooted test that is uniform in the deletion degree. The main
 statements are formalized in Lean.
@@ -960,7 +961,7 @@ Proposition~\ref{prop:small} yields a partition into $n/2$ paths with an end at 
 but it does not show that this partition has a simple profile; Corollary~\ref{cor:R} allows an odd
 vertex with three ends.) The exceptional configuration is not reached by these moves. In
 the computations of Section~\ref{app:comp} the second step holds in every residual instance of
-Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} through order $8$.
+Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} through order $6$ (order $8$: running).
 
 
 \subsection{Further reductions}
@@ -1094,9 +1095,21 @@ least two triangle vertices and every path from a triangle vertex $a$ to $r$ mee
 both other triangle vertices in its interior (as in $K_6$ minus the three edges at $r$).
 \end{itemize}
 In both, the obstacle is the same: Fan's lemmas need fewer zero-end neighbours than available ends,
-and the configuration places a removed vertex next to every candidate. An argument for them would
-have to change a Lov\'asz partition inside a fixed graph (an exchange) rather than reduce to a smaller
-graph. %RESIDUAL
+and the configuration places a removed vertex next to every candidate.
+
+\begin{remark}[Both configurations are closed]\label{rem:twostep}
+A different argument, developed in a parallel workstream of this project, proves the second step
+without exceptions: \emph{if $G$ is connected of even order with $e\ge4$ and $y\ne w$ are even,
+then some even $v\notin\{y,w\}$ has $\Ev\setminus\{w,v\}$ realisable.} It is an induction along a
+$y$--$w$ path, using the transfer across an even edge (Lemma~\ref{lem:fandescent}) and a star step
+built from single and grouped Fan transfers. Taking $y=r$ and $w=u$ settles
+Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} in full, including $G[\Ev]=K_3+r$. The Lean
+proof is \texttt{two\_step\_descent} in \texttt{lean/GallaiLean/EMCFour.lean} on the project's base
+branch; we rebuilt it and checked that it uses only the standard axioms, with Lov\'asz as the hypothesis
+\texttt{LovaszStatement}. The results of this section remain useful for their explicit witnesses:
+the twin criterion of Corollary~\ref{cor:twins} says which pairs $\{u,v\}$ can fail, and
+Theorem~\ref{thm:pair} names the pair among which $v$ can be chosen.
+\end{remark}
 
 \section{Computational evidence}\label{app:comp}
 
@@ -1117,8 +1130,9 @@ exactly two even vertices quoted in Section~\ref{sec:obstructions} is exhaustive
 Through order $6$, every non-realisable pair $\{u,v\}$ is an E-twin pair ($384$ pairs), the pair
 step has no counterexample ($565$ instances) and every set certified by a Fan schedule is
 realisable ($657$ sets); these are checks of the proofs, which are also formalized. Through
-order~$8$ the second step of faithful descent succeeds in every residual instance of
-Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b}. %RESIDUAL8
+order~$6$ the second step of faithful descent succeeds in every residual instance of
+Corollary~\ref{cor:fd2strong} ($9$ instances) and Theorem~\ref{thm:b} ($3$ instances); at order
+$8$ there are $1357$ and $399$ such instances (check running). %RESIDUAL8
 Conjecture~\ref{conj:twoeven} also holds for $85$ random $2$-connected graphs of orders $10$ and
 $12$ with exactly two even vertices and no universal odd vertex (program
 \texttt{tools/two\_even\_random.py}).
