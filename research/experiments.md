@@ -303,7 +303,7 @@ Theorem `hub_four_ends` (Lean) is the general form.
 
 | Graph | Description | Outcome |
 | A_{4,4} | K4 core, full vertex with a leaf, four false twins | wins at k = 2 |
-| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | loses at every root with k ≤ 2; **core roots still lose with k = 3** |
+| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root with k ≤ 3** (k = 3: one root per orbit; the odd root x loses, so no play wins) |
 | B | K6 core, two adjacent full vertices, two half-contact vertices | wins at k = 1 |
 | B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | loses at every root with k ≤ 2; **wins at every root with k = 3** (star at x1 + a core triangle; new path 0–2–1–x1–5) |
 
@@ -323,7 +323,7 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
 - Degree-six hubs: with a pure star they are one receipt short at Fan's equality. By hand the gap closes by an edge count (A_{6,2} twins) or a flower (K8 − PM); the count is tight on B′.
 - The game bypasses the deficit with more held edges and a longer inserted path through the hub: K8 − PM at \|F\| = 9, and B′ with a star plus 3.
-- The resistant case we know of is the core roots of A_{6,2}, which lose with a star plus ≤ 3 held edges. General held sets at n = 10 are out of the solver's reach.
+- The resistant case we know of is A_{6,2}, which loses at every root with a star plus ≤ 3 held edges. Prop 5.2 closes its twins and odd roots by hand with the pure star: a sound count at Fan's equality would let the game do the same. Its core roots are covered by neither. General held sets at n = 10 are out of the solver's reach.
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
 
 **E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).
