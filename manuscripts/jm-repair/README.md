@@ -29,6 +29,7 @@ Status summary (Section 11 of the manuscript has the precise version):
 | `check_colour_lemmas.py` | The per-colour inequalities. |
 | `pipeline.py` | End-to-end construction for Theorem A. |
 | `check_thm7_counts.py` | The counts in JM Theorem 7. |
+| `independent/` | An internal referee agent's own direct-search checks (no flows or records), including the \|U\|-size probe. |
 
 Logs are in `data/`. To reproduce, run e.g. `cd scripts && python3 pipeline.py 11 40`. The
 scripts need `networkx` and `ortools`.
