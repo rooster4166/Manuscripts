@@ -1,0 +1,8 @@
+B-form, |F| = 3, F independent {'alpha (U-hub 4 + one double)': 30, 'beta (U-hub 6)': 6, 'gamma (full hub 5 + one double)': 18}
+B-form, |F| = 3, F clique {'alpha (U-hub 4 + one double)': 30, 'beta (U-hub 6)': 6, 'gamma (full hub 5 + one double)': 18}
+B-form, |F| = 4, F independent {'alpha (U-hub 4 + one double)': 30, 'beta (U-hub 6)': 6, 'gamma (full hub 5 + one double)': 24}
+B-form, |F| = 4, F clique {'alpha (U-hub 4 + one double)': 30, 'beta (U-hub 6)': 6, 'gamma (full hub 5 + one double)': 24}
+W-form, |F| = 0 {'alpha_W (T-hub 4)': 5}
+W-form, |F| = 2 {'alpha_W (T-hub 4)': 5}
+W-form, |F| = 3 {'alpha_W (T-hub 4)': 5}
+ok

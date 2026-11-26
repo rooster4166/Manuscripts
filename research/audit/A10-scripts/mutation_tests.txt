@@ -1,0 +1,7 @@
+# Mutation tests (detection power). Each line: mutation -> result
+indep_cuts.py, psi without the [n2>=1] bonus (seed 3, 40 trials, m,n<=4): 725 mismatches of 4980
+indep_cuts.py, bonus also for colour c (same run): 79 mismatches of 4980
+indep_aggregate.py, smax=(k-4)//2+1: LH fails at every even k in 4..40 (min sum s = -k)
+indep_aggregate.py, p_c<=k allowed: UH fails at every k in 4..40 (min sum u = -2k)
+indep_aggregate.py, psi without bonus: UH fails at every k in 4..40 (min sum u = -k)
+agg_oddcheck.py (mutant smax+1, odd k 5..99): no failures, i.e. at odd k the counting allows 2|U| <= k-1

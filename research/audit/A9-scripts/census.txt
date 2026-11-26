@@ -1,0 +1,3 @@
+n=4: two-even graphs 3, not tight 2, first class {'O1': 2}, 2-connected non-tight not (O1)-(O3): 0
+n=6: two-even graphs 47, not tight 17, first class {'O1': 16, 'O2': 1}, 2-connected non-tight not (O1)-(O3): 0
+n=8: two-even graphs 2668, not tight 372, first class {'O1': 344, 'O2': 21, 'O3': 4, 'cut': 3}, 2-connected non-tight not (O1)-(O3): 0

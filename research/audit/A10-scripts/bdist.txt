@@ -1,0 +1,1 @@
+{'only B nonempty': 837, ('LH', 'b>0'): 10120, 'B=empty among failures': 6539, ('LH', 'b=0'): 6539, ('UH', 'b>0'): 255}

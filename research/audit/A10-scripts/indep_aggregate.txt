@@ -1,0 +1,38 @@
+4 min sum u = 0  min sum s = 0
+5 min sum u = 0  min sum s = 0
+6 min sum u = 0  min sum s = 0
+7 min sum u = 0  min sum s = 0
+8 min sum u = 0  min sum s = 0
+9 min sum u = 0  min sum s = 0
+10 min sum u = 0  min sum s = 0
+11 min sum u = 0  min sum s = 0
+12 min sum u = 0  min sum s = 0
+20 min sum u = 0  min sum s = 0
+30 min sum u = 0  min sum s = 0
+40 min sum u = 0  min sum s = 0
+50 min sum u = 0  min sum s = 0
+60 min sum u = 0  min sum s = 0
+70 min sum u = 0  min sum s = 0
+80 min sum u = 0  min sum s = 0
+90 min sum u = 0  min sum s = 0
+100 min sum u = 0  min sum s = 0
+110 min sum u = 0  min sum s = 0
+120 min sum u = 0  min sum s = 0
+130 min sum u = 0  min sum s = 0
+140 min sum u = 0  min sum s = 0
+150 min sum u = 0  min sum s = 0
+160 min sum u = 0  min sum s = 0
+170 min sum u = 0  min sum s = 0
+180 min sum u = 0  min sum s = 0
+190 min sum u = 0  min sum s = 0
+200 min sum u = 0  min sum s = 0
+210 min sum u = 0  min sum s = 0
+220 min sum u = 0  min sum s = 0
+230 min sum u = 0  min sum s = 0
+240 min sum u = 0  min sum s = 0
+250 min sum u = 0  min sum s = 0
+k range 4..250: failures []
+
+real	5m49.491s
+user	5m44.857s
+sys	0m2.307s

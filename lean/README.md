@@ -344,6 +344,70 @@ shows only `propext`, `Classical.choice` and `Quot.sound`.
   hypothesis): three-step descent at an even vertex with exactly one even neighbour; reduction of
   three-step descent to the two residual cases.
 
+## `GallaiLean/Bridge.lean`: bridges, and the reduction to the branching case
+
+No hypotheses (Lovász is `lovaszStatement`). `DStmt j` (`D_j`): every connected even-order graph with
+`≥ 2j` even vertices has `j`-step descent at `(y, {w})` for all distinct even `y, w`. `BStmt j`
+(`B_j`): the same for vertices `y` with at least two even neighbours.
+
+* **`gallai_of_branching`**: `(∀ j ≥ 3, BStmt j) → GallaiConjecture`.
+* **`rooted_six_of_bstmt3`**: `BStmt 3` gives the rooted test for six even vertices.
+* **`dstmt_of_branching`** (`B_3..B_K ⇒ D_1..D_K`), `dstmt_one`, `dstmt_two`, **`dstmtE_succ`**
+  (one level, by strong induction on the number of edges).
+* **`glue_bridge`** (concatenate the two paths through a bridge edge shared by two pieces) and
+  **`glue_append`** (union, then extend a path ending at `t` by `ty`).
+* `bridge_odd`, `bridge_even`: the bridge cases with pieces `G[A ∪ {t}]`, `G[Aᶜ ∪ {y}]`, resp.
+  `G[A]`, `G[Aᶜ]`, as `restr G C` graphs on the same vertex type.
+* Infrastructure: `PathDecomp.mapInj`, `realisable_of_induce`, `desc_of_induce`,
+  `PathDecomp.exists_union`, `PathDecomp.exists_erase`, `restr`, `degree_restr_*`,
+  `realisable_evenSet_ni` (Lemma 2 with isolated vertices), `piece_desc`.
+
+`#print axioms gallai_of_branching` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
+## `GallaiLean/BranchBase.lean`: Gallai from one named hypothesis
+
+**`BranchBase k`**: in every connected graph of even order with at least `2k` even vertices, every
+even `y` with at least two even neighbours and no bridge to a vertex of degree ≥ 2 has
+`Desc H k y ∅`, i.e. lies in a realisable set `Ev ∖ R` with `|R| = k`. No vertex is prescribed for
+removal.
+
+* **`rootedTest_of_branchBase : (∀ k, BranchBase k) → RootedTest`** and
+  **`gallai_of_branchBase : (∀ k, BranchBase k) → GallaiConjecture`** (through
+  `gallai_iff_rootedTest`). `branchBase_one` and `branchBase_two` are theorems, so
+  `gallai_of_branchBase_three` needs only `k ≥ 3`.
+* `branchBase_of_bstmt`: `BStmt k → BranchBase k`, so `BranchBase` is the weaker hypothesis.
+* `dstmt0E_succ`: the one-level reduction for descent keeping `y` (`DStmt0`). Bridges are handled
+  first (`bridge_odd0`, `bridge_even0`), so `BranchBase` only sees vertices without a non-pendant
+  bridge.
+
+`#print axioms gallai_of_branchBase` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
+## `GallaiLean/FanBarrier.lean`: three even neighbours, and the last-edge barrier
+
+Manuscript: endpoint-structure §7.
+
+* `desc_succ_of_transfer_two`: let `y` have exactly two even neighbours `a ≠ b`. Then descent in
+  `G − ya` keeping `b` transfers to descent in `G` keeping `y`, one level up.
+* **`BranchBase3 k`** is `BranchBase k` restricted to `y` with three distinct even neighbours.
+  * `branchBase_of_three`: `DStmt0 k ∧ BranchBase3 (k+1) → BranchBase (k+1)`.
+  * `branchBase_of_branchBase3`: from `BranchBase3` for all `k ≥ 3` to `BranchBase` for all `k ≥ 3`.
+  * **`gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`**.
+* **`fan_transfer_barrier`**: let `D` partition `H`, with `ut ∉ E(H)`, and suppose Fan's condition
+  `#{w ∈ N_H(u) : ends w = 0} < ends t` holds. Then
+  `ends u + 2·#{w ∈ N_H(u) : deg_H w even} + 2 ≤ 3·|D|`.
+  * Helper lemmas: `PathDecomp.ends_le_size` and `card_edgeFinset_le_size_mul` (`|E(H)| ≤ |D|(n−1)`).
+* `fan_transfer_barrier_regular` (`2d + 1 ≤ 3|D|`), `newpath_barrier_regular` and
+  `insertion_barrier_regular` (`n·d ≤ 2(|D|(n−1) + |F|)`): the bounds for `d`-regular `G`, with `d`
+  even for the first.
+* `cocktail m` is `K_{2m}` minus a perfect matching, on `Fin m × Bool`. `cocktail_degree`: it is
+  `(2m−2)`-regular.
+* **`cocktail_fan_barrier`** (`m ≥ 4`): every partition of `CP(m) − ut` has at least `m` paths, and
+  more than `m` paths when Fan's condition towards `u` holds.
+* **`cocktail_insertion_barrier`**: a partition of `CP(m) − F` into at most `m − 1` paths needs
+  `|F| ≥ m − 1`.
+
+No hypotheses. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
 
 **Main result: Theorem 1 holds as a full equivalence.**
@@ -584,10 +648,15 @@ in the repository; `Prog` is the natural format for replaying them).
 | `FanCert`, **`realisable_of_fanCert`** | **Soundness of the Fan calculus**: a list of even steps and odd transfers (odd partner of degree ≥ 3) ending with at most one vertex certifies that `Ev \ X` is realisable. |
 | `Tight`, `tight_of_transfer`, `tight_of_fanCert` | The two-even-vertex problem: `Tight H := Realisable H ∅` (the parity bound `#odd/2`); the transfer lemma for graphs with `evenSet H = {u, v}`. |
 | `PathDecomp.degree_add_ends_le`, `degree_le_of_tight` | `deg v + ends v ≤ 2|D|`; obstruction (O1): in a tight graph every odd vertex has degree ≤ `#odd − 1`. |
+| **`realisable_pair`** (with `pair_core`, `pair_finish`, `degree_delEdge₂`, `edgeSet_readd`) | **Pair step** (Thm 26): `u, a, a'` distinct even, `w ≠ u` adjacent to `a, a'`; if `w` is even of degree ≥ 4, or odd with `aa' ∉ E` or `a, a' ≁ u`, then `Ev \ {u, a}` or `Ev \ {u, a'}` is realisable. Lemma 3 in `G − aw − a'w`, then `fan_grouped` at `w` and `fan_single` for the other edge. |
+| `pathMoves`, `OddPath`, `fanCert_of_oddPath`, **`realisable_of_oddPath`** | **Path transfer** (the step in Thm 28): a path from `a` through odd vertices of degree ≥ 3 not adjacent to `u`, ending at an even `t ≠ u`, `t ≁ u`, gives `Ev \ {a, u}`. |
+| `PathDecomp.ends_le_degree`, **`realisable_leaves_singleton`**, **`tight_leaves_of_lovasz`** | Move (L) for a pendant vertex at an odd vertex (in the `leaves` encoding); the leaf case of the two-even problem: `G` with at most one even vertex plus a pendant vertex at an odd `x` is tight. |
 
 `#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Lovász enters
-only as `LovaszStatement`. Not formalized from §5: the reductions (L), (S), (C) of Proposition 26,
-which delete vertices or add an edge, and the obstructions.
+only as `LovaszStatement`. Not formalized from §5: the reductions (S) and (C) of Proposition 29 (they delete a vertex),
+move (L) beyond the single-pendant form above, the combinatorial assembly of Corollary 27 and
+Theorem 28 (twin classes, a shortest path between even vertices), and the obstructions (O2), (O3)
+and the cut-vertex rule.
 
 ## `GallaiLean/MissingMove.lean`: Lovász's spare path at a hub (missing-move manuscript)
 
@@ -631,3 +700,54 @@ special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula
 at a vertex `o`. If induction returns `b(o) = 0`, the second restored edge can fail Fan's
 zero-end test at the cycle neighbour. So Fan's proof needs a stronger inductive invariant than
 "some realisable `S` with `|S| ≤ ⌊e/2⌋`".
+
+## d6-frontier hub closures (cloud session, branch `claude/lean-d6-frontier`)
+
+Manuscript `manuscripts/d6-frontier`: Lemma 2.3, Lemma 3.2, Theorem 4.1(i), Theorem 5.2 and
+**Theorem 6.1 at every deletion degree `d`**. Sorry-free; `#print axioms` on every main result
+shows only `propext`, `Classical.choice`, `Quot.sound`. Lovász enters through the theorem
+`lovaszStatement`, so the results are unconditional. Audit notes:
+`research/audit/d6-frontier-lean-audit.md`.
+
+### `GallaiLean/Relay.lean`: relays, carries and hub transfers (in `Ach` form)
+
+| Lean name | Statement |
+|---|---|
+| **`Ach.forwardRelay`** | Lemma 2.3(a): along `v₀ v₁ ⋯ v_m` with new edges, `v₀ → v₁ → ⋯ → v_m` moves one end from `v₀` to `v_m`, if `b(v₀) > bl(v₁)`, internal vertices have an end, and later receivers have `≤ 1` blank neighbour (for `mv b v₀ v₁`, which is the partition current at that moment) |
+| **`Ach.carry`** | Lemma 2.3(b): `v₁ → v₀, …, v_m → v_{m-1}` moves one end from `v_m` to `v₀`, if `v₁..v_m` have ends and no receiver is adjacent in `E` to a blank vertex other than `v₀` (weaker than the paper) |
+| `mv_mv_back`, `blankNbrs_eq_zero` | bookkeeping |
+| `hubSpokes h Z`, `recvEnds`, `giveEnds` | the spokes from a hub; end vectors after receipts / donations |
+| **`Ach.receiveMany`** | `m` grouped receipts at `h` from a set `S` of non-neighbours with one end each, if `bl(h) + j < |S| − j` for `j < m`; the donor set `Z` is existential |
+| **`Ach.giveAll`** | donations from `h` to every vertex of `R`, in any order, if every receiver has `≤ c` blank neighbours outside `R` and `c + |R| ≤ b(h)` (covers donations and paybacks) |
+
+### `GallaiLean/HubPhases.lean`: held edges, seeds, phases
+
+* `hubHeld h X C` (spokes `h–X` plus edges `C`), `hst h N B D` (hub `N`, blank `B`, doubled `D`,
+  one elsewhere), `batChords L`, **`PassesAt G r`** (a decomposition with `≤ |V|/2` paths and
+  `≥ 2` ends at `r`).
+* `mem_hubE`, `hubE_union_spokes` (inserting spokes un-holds them), `ach_of_deleteEdges`,
+  `pathDecomp_of_ach`.
+* **`seed_pair`**, **`seed_odd`**: Lemma 3.2(b), (a) (from `realisable_evenSet_erase'`,
+  `lovasz_ends`). **`degree_hubDel`**: degrees after deleting the held spokes and battery chords.
+* Phases, each keeping the form `Ach (G.edgeSet \ hubHeld h X C) (hst h N B D)`:
+  `hub_take` (single receipt), `hub_receive` (grouped receipts), `hub_give` (donations),
+  `hub_payback` (paybacks to quiet blank vertices), `hub_pay_one` (one payback with a blank
+  count), `blankNbrs_hub_le`.
+
+### `GallaiLean/D6Frontier.lean`: the theorems
+
+| Lean name | Statement |
+|---|---|
+| `hub_batteries` | carry a list of batteries `(a, b)` in order (`b → h`, `a → b`) |
+| **`hub_run`** | seed → batteries → `m` receipts from `T` → donations to `Q ∪ (T \ Z)` → paybacks to the pendant and parked vertices; ends with all edges, `Z` blank, `Q ∪ (T \ Z)` doubled |
+| `hub_seed_deg`, `card_hubX`, `root_hub_seed` | seed degrees and parities |
+| `passesAt_of_realisable` | realisable `S ∋ r` with `2|S| ≤ #even` ⇒ `r` passes |
+| **`root_hub_uniform`** (`_passes`) | **Thm 6.1(a)**, every `d`: `r` adjacent to `T = U − r`, quiet odd pendant `y` (`d(y) ≥ 3`), `β ≥ d/2 − 3` quiet batteries (`L.Pairwise`: `a_i b_j ∉ E` for `i < j`; `b_i ∉ N(y)`), `d(r) ≥ d + 2 + 2β` ⇒ some `S ∋ r`, `|S| = d/2`, is realisable |
+| **`full_hub_uniform`** (`_passes`) | **Thm 6.1(b)**, every `d`: `x` adjacent to all of `U`, `β ≥ d/2 − 1` quiet batteries ⇒ every `r ∈ U` |
+| **`full_hub_pendant_uniform`** (`_passes`) | **Thm 6.1(b)** with `β ≥ d/2 − 2` batteries, a quiet pendant and a further neighbour of `x` |
+| **`full_hub_six`**, **`full_hub_six_pendant`** | **Thm 5.2** (`d = 6`), in the paper's wording |
+| **`root_hub_six`** (`_passes`) | **Thm 4.1(i)** (`d = 6`): `r` adjacent to `T`, `d(r) ≥ 8`, odd `y ∈ N(r)` with `d(y) ≥ 3`, `|N(y) ∩ T| ≤ 2` ⇒ some `S ∋ r`, `|S| = 3`, realisable. Controlled first receipt `p → r`, two grouped receipts, receivers ordered after the fact |
+
+No lower bound on `d` is assumed in Theorem 6.1 (the paper's `d ≥ 4` is not used). Not
+formalized from the manuscript: Theorems 3.1/3.2 (terminal step), 4.1(ii)/(iii), 4.2, 4.4,
+Corollary 4.5, Proposition 7.1.

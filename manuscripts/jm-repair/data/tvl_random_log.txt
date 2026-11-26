@@ -1,0 +1,4 @@
+{'inst': 256, 'feas': 256, 'infeas': 0, 'mismatch': 0}
+{'inst': 218, 'feas': 218, 'infeas': 0, 'mismatch': 0}
+{'inst': 238, 'feas': 238, 'infeas': 0, 'mismatch': 0}
+DONE

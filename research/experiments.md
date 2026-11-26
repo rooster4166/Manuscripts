@@ -221,6 +221,51 @@ Soundness check: on P₃ ∪ (K₅ − e), the game loses exactly at the middle 
 The first genuine loser is GsRvnk. It has a clique Q = {0,5,6,7} of even vertices of degree 6. Vertex 1 is adjacent to Q and to a leaf 4. Vertices 2 and 3 are false twins, each adjacent to exactly Q. Roots 2 and 3 lose. The graph is not critical: p = 3, realised by (1,0,6,2,7,5,3), (2,0,5,6,3,7,1,4), (2,5,1,6,7,0,3). **So Lovász seeds with Fan transfers do not suffice for the rooted test.** The obstruction is the full-vertex configuration (connections §J; d6-frontier Thm 3.1, the terminal-step classification).
 
 **Inductive seeds** (`fan_game.py FILE kmax ind`). The seed on K = G − F may also come from the induction hypothesis: the simple-profile rooted test on the smaller connected K, with r' prescribed and the rest of the half-set S' chosen by an adversary. With \|F\| ≤ 3 this still loses on 38 of the 50 graphs. Prescribing one vertex leaves the adversary free to put zeros next to every re-inserted edge. **An induction through Fan transfers needs a stronger hypothesis than (R)**, one that controls where the zeros of S' lie (as in EMC or FD), or a move beyond Fan's inequality.
+## E13. Two-even-vertex problem and the second descent step (cloud session `claude/two-even-lovasz`)
+
+Command: `tools/two_even.py {census,twins,pair,residual,schedule} n`. Exhaustive over `data/conn{n}.g6`. All checks are sanity checks of proved statements (endpoint-structure §5, Lean `TwoEven.lean`), except the census and the residual check.
+
+**Census of connected graphs with exactly two even vertices** (tight = meets p = |Od|/2):
+
+| n | graphs | not tight | (O1) odd vertex of degree n − 1 | (O2) degree-2 triangle | (O3) K4 − e pendant | cut vertex, side infeasible |
+|---|---|---|---|---|---|---|
+| 4 | 3 | 2 | 2 | – | – | – |
+| 6 | 47 | 17 | 16 | 1 | – | – |
+| 8 | 2668 | 372 | 344 | 21 | 4 | 3 (GsPDD_, GsPDDc, GsPDdc) |
+
+At n = 8, 274 of the (O1) graphs are 2-connected; no other 2-connected graph fails. **Conjecture 31** (manuscript): a 2-connected graph with exactly two even vertices is tight unless an odd vertex is universal. The (O1) graphs at n = 8 were not solved: (O1) is a proved obstruction (Lean `degree_le_of_tight`).
+
+Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathnum2`): 2-connected graphs with exactly two even vertices and no universal odd vertex, all tight:
+
+| n | edge probability | graphs |
+|---|---|---|
+| 10 | 0.3–0.8 | 40 |
+| 10 | 0.8–0.95 | 30 |
+| 12 | 0.3–0.9 | 15 |
+
+**Proof checks (n ≤ 6):**
+
+| Check | Result |
+| non-realisable pairs are E-twins | 384 pairs, 0 violations |
+| pair step | 565 instances, 0 violations |
+| Fan schedules | 657 certified sets, all realisable |
+| Fan calculus (E, O) vs truth, all pairs, n = 6 | 300 of 431 pairs certified; adding (S), (L), (C) gives 358 |
+
+**Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances, and the step succeeds in all of them. n = 8: see the end of this entry.
+
+**E13 addendum (path insertion; independent re-check).** Command: `python3 tools/fan_game.py lose8.g6 6 np`. The file holds the 50 graphs that lose with \|F\| ≤ 4; the tool includes the split rule and per-F cache clearing. **6 graphs still lose, all critical** (pathnum: p = 4 = n/2):
+
+| graph | κ | losing roots |
+|---|---|---|
+| Guv]}{ (K7 + leaf at 0) | 1 | all |
+| Guv]z{ | 2 | 1,3,4,5,6 |
+| Guv]~{ | 2 | 2 |
+| Gut~~w | 4 | 1,3,4 |
+| Gu^v~w | 5 | 6,7 |
+| Gr~v~w = K8 − perfect matching = K_{2,2,2,2} | 6 | all |
+
+The earlier kmax-8 run without np was OOM-killed before it reached these graphs. The critical Gqz~vw wins with `6 np`. The cocktail party graph, in which every vertex is a degree-6 hub, is the smallest instance of the degree-six obstruction.
+**Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances; at n = 8 there are 1357 and 399. The step succeeds in every one (`tools/two_even.py residual 8`).
 
 ## E14. The missing move: path insertion (Fan game, continued)
 
@@ -257,7 +302,6 @@ Theorem `hub_four_ends` (Lean) is the general form.
 **Results at n = 10** (`scripts/families.py`; F = a full star plus k ≤ 2 edges, `np hubs`):
 
 | Graph | Description | Outcome |
-|---|---|---|
 | A_{4,4} | K4 core, full vertex with a leaf, four false twins | wins at k = 2 |
 | A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root with k ≤ 3** (k = 3: one root per orbit; the odd root x loses, so no play wins) |
 | B | K6 core, two adjacent full vertices, two half-contact vertices | wins at k = 1 |
@@ -281,3 +325,64 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 - The game bypasses the deficit with more held edges and a longer inserted path through the hub: K8 − PM at \|F\| = 9, and B′ with a star plus 3.
 - The resistant case we know of is A_{6,2}, which loses at every root with a star plus ≤ 3 held edges. Prop 5.2 closes its twins and odd roots by hand with the pure star: a sound count at Fan's equality would let the game do the same. Its core roots are covered by neither. General held sets at n = 10 are out of the solver's reach.
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
+
+**E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).
+## E15. Oracle seeds, the last-edge barrier, and EMC at n = 8 (cloud session `claude/emc-four-even`, route (H))
+
+Tools:
+- `tools/realis.c` with its front end `tools/realis.py`: an exact realisability oracle. It runs a depth-first search for the paths one at a time, with necessary-condition pruning and memoised failures. A whole realisable family at n = 8 takes milliseconds.
+- `tools/fan_oracle.py`: the Fan game of E13 with **oracle seeds**. The seed on G − F (F ≠ ∅) is any realisable simple profile, or with `+gen` any realisable end profile.
+- `tools/emc_sweep.py`: EMC, plus the transfer test at branching vertices.
+
+Cross-check: the oracle agrees with the CP-SAT oracle (`faithful_descent.make_oracle`) on the full realisable families of 60 random graphs at n = 6 and 35 random graphs at n = 8 (9–18 edges). There were no mismatches. The ILP is too slow on the densest graphs, so they were not cross-checked.
+
+**EMC at n = 8 (complete).**
+- All 1,082 connected critical graphs satisfy EMC: the minimal realisable sets all have size e/2, satisfy basis exchange and are loopless.
+- 1,030 of them are uniform, including **every 3-connected one** (476).
+- The 52 non-uniform graphs:
+  - κ = 1: 46;
+  - κ = 2: 6 (GsaFC{, GsaFeW, GsbFEo, GsbFeW, GsbfMo, GsPI^{), all with e = 6.
+- n ≤ 6 reproduces E6: 3 + 34 critical graphs.
+
+**Transfer test at branching vertices** (Lemma 51 of endpoint-structure). For critical G at n = 8:
+
+| m = \|N_E(y)\| | instances | no a with N_E(y) − a ⊆ S_K, \|S_K\| ≤ e/2 − 1 in G − ya |
+|---|---|---|
+| 2 | 964 | 0 |
+| 3 | 656 | 403 |
+| 4 | 215 | 209 |
+| ≥ 5 | 154 | 154 |
+
+- Restricted to e = 6 and m = 3: 22 of 275 instances fail.
+- With m = 2 and a non-bridge even edge, all 13,360 (n = 8) and 92 (n = 6) instances pass with the root b prescribed (Cor 52, `branchBase_of_three`).
+
+**Oracle game** (even roots).
+
+| n | seeds | \|F\| | graphs with a losing root |
+|---|---|---|---|
+| 4 | simple | 1 | 0 |
+| 6 | simple | 1 | 1 (K_{2,2,2}, all roots) |
+| 6 | simple | ≤ 2 | 0 |
+| 6 | general | 1 | 0 |
+| 8 | simple | 1 | 6 (Gqzn^[, Gq~v~w, Gr~v~w, Gr~v~{, Gut~~w, Gu^~v{) |
+| 8 | simple | ≤ 2, ≤ 3 | 3 (Gqzn^[ root 1; Gr~v~w all roots; Gut~~w roots 1, 3, 4) |
+| 8 | general | 1 | **1: Gr~v~w = K8 − perfect matching** |
+| Gr~v~w | simple, orbit-reduced | ≤ 4 | loses |
+| Gr~v~w | general, orbit-reduced | ≤ 3 | loses |
+
+Gqz~vw at root 3 wins with |F| = 1 in two ways:
+- F = {01}: seed {3} in the non-critical G − 01 (3 paths), then a new path 01;
+- F = {31}: seed {5, 7}, then a single transfer, which gives {3, 5, 7}.
+
+**Explanation of the Gr~v~w loss (proved, Lean `cocktail_fan_barrier`, `cocktail_insertion_barrier`).**
+- Take CP(m) = K_{2m} − PM with m ≥ 4, and let D be any partition of CP(m) − ut.
+- If Fan's condition for ut towards u holds, then 3|D| ≥ 4m − 3, so |D| > m.
+- A new path made of the held edges F, added to a partition into ≤ m − 1 paths, needs |F| ≥ m − 1.
+- So no oracle play with one-edge new paths can win, for any F.
+
+**Reading.**
+- The strongest hypothesis on end profiles of G − e, played through Fan's moves on e, certifies (R) at every even root of every connected graph with n ≤ 8, except K8 − PM.
+- K8 − PM is critical with uniform endpoint matroid U_{4,8}, so the failure lies in the moves.
+- Its only possible finish is a ≥ 3-edge spare path into a 3-path partition, i.e. three Hamiltonian paths. That is the flower of missing-move Prop 5.5.
+
+**E14 addendum 2 (independent).** `one_root.py Gr~v~w 0 9` (path insertion, \|F\| ≤ 9): **WIN** at root 0, and hence at every root by vertex-transitivity. F is the full star at 0 together with {13, 14, 24}. The Lovász seed is b = (0,1,0,1,1,1,1,1). Together with Guv]}{ (root 0, \|F\| = 7; checked independently above), this confirms the missing-move session's claim: **the extended game (Lovász + Fan + path insertion) wins every root of every connected graph of order 8 with \|F\| ≤ 9.** The flower lemma (Prop 5.5) gives a shorter proof for K8 − PM, but at n = 8 it is not needed.

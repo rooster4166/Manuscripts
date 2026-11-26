@@ -1,10 +1,11 @@
 import GallaiLean.Realisable
 import GallaiLean.Fan
+import GallaiLean.LeafDictionary
 
 /-!
 # The second descent step and the two-even-vertex problem
 
-(endpoint-structure manuscript, Section "Fan descent")
+(endpoint-structure manuscript, Section 5; theorem numbers as in the current PDF)
 
 `rmEdge G a b` is `G` without the edge `ab`.
 
@@ -25,6 +26,11 @@ import GallaiLean.Fan
   odd transfers that ends with at most one vertex certifies that `Ev \ X` is realisable.
 * `Tight`, `tight_of_transfer`, `tight_of_fanCert`: the two-even-vertex problem (parity bound
   `#odd / 2`).
+* `realisable_pair` (**pair step**, Theorem 26): Fan's grouped lemma at a common neighbour `w` of
+  two twins `a, a'` gives `Ev \ {u, a}` or `Ev \ {u, a'}`.
+* `OddPath`, `realisable_of_oddPath` (**path transfer**, the step in Theorem 28).
+* `degree_le_of_tight` (obstruction (O1)); `realisable_leaves_singleton`,
+  `tight_leaves_of_lovasz` (move (L) and the leaf case of the two-even problem).
 -/
 
 open SimpleGraph
@@ -951,6 +957,96 @@ theorem realisable_pair (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
     (fun e => by rw [rmEdge_edgeSet, rmEdge_edgeSet, and_assoc]) d2a d2a' d2w d2x hG hu ha ha'
     hua hua' haa' huw haw ha'w hw
 
+/-! ### Certificates along paths -/
+
+/-- The moves along a path `x, y₁, …, y_k`. -/
+def pathMoves : V → List V → List (V × V)
+  | _, [] => []
+  | x, y :: l => (x, y) :: pathMoves y l
+
+/-- `OddPath G u x l`: `x, l` is a walk ending at an even vertex `t ≠ u` with `t ≁ u`, whose
+interior vertices are odd of degree at least `3`, different from `u` and not adjacent to `u`. -/
+def OddPath (G : SimpleGraph V) [DecidableRel G.Adj] (u : V) : V → List V → Prop
+  | _, [] => False
+  | x, [t] => G.Adj x t ∧ t ∈ evenSet G ∧ t ≠ u ∧ ¬ G.Adj t u
+  | x, y :: z :: l => G.Adj x y ∧ Odd (G.degree y) ∧ 1 < G.degree y ∧ y ≠ u ∧ ¬ G.Adj y u ∧
+      OddPath G u y (z :: l)
+
+/-- Deleting an edge `ab` with `a` off the path and `b` off its tail keeps an `OddPath`. -/
+theorem OddPath.rmEdge {u a b : V} : ∀ {y : V} {l : List V}, OddPath G u y l → a ∉ y :: l →
+    b ∉ l → OddPath (rmEdge G a b) u y l
+  | _, [], h, _, _ => h.elim
+  | y, [t], ⟨hyt, ht, htu, htu'⟩, ha, hb => by
+    have hat : t ≠ a := fun h => ha (by simp [h])
+    have hbt : t ≠ b := fun h => hb (by simp [h])
+    refine ⟨⟨hyt, fun he => ?_⟩, ?_, htu, fun h => htu' h.1⟩
+    · rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+      · exact ha (by simp [h1])
+      · exact hat h2
+    · have := rmEdge_degree_of_ne (G := G) hat hbt
+      simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and, this] at ht ⊢
+      exact ht
+  | y, z :: w :: l, ⟨hyz, hzo, hz3, hzu, hzu', hP⟩, ha, hb => by
+    have haz : z ≠ a := fun h => ha (by simp [h])
+    have hbz : z ≠ b := fun h => hb (by simp [h])
+    have hdz := rmEdge_degree_of_ne (G := G) haz hbz
+    refine ⟨?_, hdz ▸ hzo, hdz ▸ hz3, hzu, fun h => hzu' h.1,
+      OddPath.rmEdge hP (fun h => ha (List.mem_cons_of_mem _ h))
+        (fun h => hb (List.mem_cons_of_mem _ h))⟩
+    refine ⟨hyz, fun he => ?_⟩
+    rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+    · exact ha (by simp [h1])
+    · exact haz h2
+
+/-- The moves along an `OddPath` from `x` form a Fan certificate for `{x, u}`: odd transfers along
+the interior, then an even step into the last vertex. -/
+theorem fanCert_of_oddPath {u : V} : ∀ {x : V} {l : List V} (G : SimpleGraph V)
+    [DecidableRel G.Adj], OddPath G u x l → (x :: l).Nodup → x ≠ u →
+    FanCert G {x, u} (pathMoves x l)
+  | _, [], _, _, h, _, _ => h.elim
+  | x, [t], G, _, ⟨hxt, ht, htu, htu'⟩, hnd, hxu => by
+    have hxt' : x ≠ t := G.ne_of_adj hxt
+    have hXe : ({x, u} : Finset V).erase x = {u} :=
+      Finset.erase_insert (by simp [hxu])
+    refine ⟨Finset.mem_insert_self _ _, hxt, ?_, Or.inl ⟨ht, ?_, ?_⟩⟩
+    · intro y hy hyx
+      rw [Finset.mem_insert, Finset.mem_singleton] at hy
+      rcases hy with rfl | rfl
+      · exact absurd rfl hyx
+      · exact htu'
+    · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+      exact ⟨Ne.symm hxt', htu⟩
+    · show (({x, u} : Finset V).erase x).card ≤ 1
+      rw [hXe, Finset.card_singleton]
+  | x, y :: z :: l, G, _, ⟨hxy, hyo, hy3, hyu, hyu', hP⟩, hnd, hxu => by
+    have hXe : ({x, u} : Finset V).erase x = {u} :=
+      Finset.erase_insert (by simp [hxu])
+    refine ⟨Finset.mem_insert_self _ _, hxy, ?_, Or.inr ⟨hyo, hy3, ?_⟩⟩
+    · intro w hw hwx
+      rw [Finset.mem_insert, Finset.mem_singleton] at hw
+      rcases hw with rfl | rfl
+      · exact absurd rfl hwx
+      · exact hyu'
+    · have hins : insert y (({x, u} : Finset V).erase x) = {y, u} := by rw [hXe]
+      rw [hins]
+      have hnd' := List.nodup_cons.mp hnd
+      exact fanCert_of_oddPath (rmEdge G x y) (hP.rmEdge hnd'.1
+        (List.nodup_cons.mp hnd'.2).1) hnd'.2 hyu
+
+/-- **Path transfer.** Let `a ≠ u` be even and let `a, l` be an `OddPath` for `u` (odd interior
+vertices of degree `≥ 3` not adjacent to `u`, ending at an even vertex `t ∉ {u}` with `t ≁ u`), with
+distinct vertices. Then `Ev \ {a, u}` is realisable. -/
+theorem realisable_of_oddPath (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
+    (hn : Even (Fintype.card V)) {u a : V} {l : List V} (ha : a ∈ evenSet G)
+    (hu : u ∈ evenSet G) (hau : a ≠ u) (hP : OddPath G u a l) (hnd : (a :: l).Nodup) :
+    Realisable G (((evenSet G).erase a).erase u) := by
+  have h := realisable_of_fanCert hL hn (pathMoves a l) G {a, u} hG
+    (Finset.insert_subset ha (Finset.singleton_subset_iff.mpr hu)) (fanCert_of_oddPath G hP hnd hau)
+  have : evenSet G \ {a, u} = ((evenSet G).erase a).erase u := by
+    ext x; simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, Finset.mem_erase]
+    tauto
+  rwa [this] at h
+
 /-! ### An obstruction -/
 
 omit [Fintype V] [DecidableRel G.Adj] in
@@ -980,5 +1076,114 @@ theorem degree_le_of_tight {H : SimpleGraph V} [DecidableRel H.Adj] (h : Tight H
   unfold oddSet at hsz ⊢
   rw [Finset.card_empty, add_zero] at hsz
   omega
+
+/-! ### The leaf move (L) and the leaf case of the two-even problem -/
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- A path decomposition has no more ends at a vertex than the vertex has edges. -/
+theorem PathDecomp.ends_le_degree (D : PathDecomp G) (v : V) [Fintype (G.neighborSet v)] :
+    D.ends v ≤ G.degree v := by
+  rw [D.degree_eq_sum v]
+  unfold PathDecomp.ends
+  apply sum_map_le_sum_map
+  intro P _
+  have h := P.incid_add_endsAt v
+  have hne := P.src_ne_tgt
+  unfold GPath.endsAt at h ⊢
+  split_ifs at h ⊢ with h1 h2 h2 <;> simp_all
+
+/-- **Move (L)**, in the language of `leaves`: attach a pendant vertex at an odd vertex `x`.
+A realisation of `S` in `G` gives a realisation of the same set in `G` plus the pendant edge, in
+which `x` (now even) has no end. -/
+theorem realisable_leaves_singleton {S : Finset V} {x : V} (hx : Odd (G.degree x))
+    (h : Realisable G S) :
+    Realisable (leaves G (insert x ∅)) (S.map Function.Embedding.inl) := by
+  obtain ⟨hS, D, hD⟩ := h
+  obtain ⟨D₁, -, he₁⟩ := leaves_empty_decomp (G := G) D
+  have hpos : 0 < D₁.ends (.inl x) := by rw [he₁ x, hD x]; simp [profile, hx]
+  obtain ⟨D₂, -, he₂⟩ := D₁.extend_pendant (leaves_insert_edgeSet (G := G))
+    (leaves_inr_isolated (G := G) (Finset.notMem_empty x)) ⟨rfl, Finset.mem_insert_self _ _⟩ hpos
+  have hxS : x ∉ S := fun h => not_odd_of_mem_evenSet (hS h) hx
+  have hiso : ∀ v, D₁.ends (.inr v) = 0 := by
+    intro v
+    have := D₁.ends_le_degree (.inr v)
+    rw [leaves_degree_inr] at this
+    simpa using this
+  have hdl : ∀ v, (leaves G (insert x ∅)).degree (.inl v) = G.degree v + if v = x then 1 else 0 := by
+    intro v
+    rw [leaves_degree_inl]
+    congr 1
+    simp only [Finset.mem_insert, Finset.notMem_empty, or_false]
+  have hdr : ∀ v, (leaves G (insert x ∅)).degree (.inr v) = if v = x then 1 else 0 := by
+    intro v
+    rw [leaves_degree_inr]
+    simp only [Finset.mem_insert, Finset.notMem_empty, or_false]
+  have hml : ∀ v, (Sum.inl v : V ⊕ V) ∈ S.map Function.Embedding.inl ↔ v ∈ S := by
+    intro v; simp
+  have hmr : ∀ v, (Sum.inr v : V ⊕ V) ∉ S.map Function.Embedding.inl := by
+    intro v; simp
+  refine ⟨?_, D₂, fun w => ?_⟩
+  · intro y hy
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_map.mp hy
+    have hsx : s ≠ x := fun h => hxS (h ▸ hs)
+    have := (Finset.mem_filter.mp (hS hs)).2
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    rw [Function.Embedding.inl_apply, hdl s]
+    simp only [hsx, ite_false, add_zero]
+    exact this
+  · have hw := he₂ w
+    unfold profile
+    rcases w with v | v
+    · simp only [hdl v, hml v]
+      by_cases hvx : v = x
+      · subst hvx
+        have hDv : D.ends v = 1 := by have := hD v; simpa [profile, hx] using this
+        have h0 : D₂.ends (.inl v) = 0 := by
+          have := hw; simp only [ite_true, reduceCtorEq, ite_false, add_zero, he₁, hDv] at this
+          omega
+        have : ¬ Odd (G.degree v + 1) := by rw [Nat.odd_add_one]; exact not_not.mpr hx
+        simp only [ite_true, this, hxS, ite_false, h0]
+      · simp only [Sum.inl.injEq, Ne.symm hvx, ite_false, reduceCtorEq, add_zero, he₁] at hw
+        simp only [hw, hvx, ite_false, add_zero]
+        exact hD v
+    · simp only [hdr v, hmr v, ite_false]
+      by_cases hvx : v = x
+      · subst hvx
+        have h1 : D₂.ends (.inr v) = 1 := by
+          have := hw
+          simp only [reduceCtorEq, ite_false, add_zero, ite_true, hiso] at this
+          omega
+        rw [h1]
+        simp only [ite_true]
+        decide
+      · have h0 : D₂.ends (.inr v) = 0 := by
+          have := hw
+          simp only [reduceCtorEq, ite_false, Sum.inr.injEq, Ne.symm hvx, add_zero, hiso] at this
+          exact this
+        convert h0 using 1
+        simp [hvx]
+
+/-- **The leaf case of the two-even problem**: if `G` has at most one even vertex and `x` is odd,
+then `G` plus a pendant vertex at `x` is tight. -/
+theorem tight_leaves_of_lovasz (hL : LovaszStatement.{u}) {x : V}
+    (h1 : (Finset.univ.filter (fun v => Even (G.degree v))).card ≤ 1) (hx : Odd (G.degree x)) :
+    Tight (leaves G (insert x ∅)) := by
+  have hR : Realisable G ∅ := by
+    obtain ⟨D, hD⟩ := pathNumber_spec G
+    have hle := hL V G h1
+    have hcard : 2 * D.size ≤ (Finset.univ.filter (fun v => Odd (G.degree v))).card := by
+      have hc := Finset.card_filter_add_card_filter_not
+        (s := (Finset.univ : Finset V)) (fun v => Odd (G.degree v))
+      have he : Finset.univ.filter (fun v => ¬ Odd (G.degree v)) =
+          Finset.univ.filter (fun v => Even (G.degree v)) := by
+        ext v; simp [Nat.not_odd_iff_even]
+      rw [he, Finset.card_univ] at hc
+      obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+      omega
+    refine ⟨Finset.empty_subset _, D, fun v => ?_⟩
+    rw [PathDecomp.ends_eq_of_tight D hcard v]
+    simp [profile]
+  have := realisable_leaves_singleton hx hR
+  simpa using this
 
 end Gallai

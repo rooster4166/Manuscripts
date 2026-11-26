@@ -77,7 +77,8 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
         # rem: frozenset of held edges; b: profile tuple; R, A: rotations / activations left
         s = sum(b)
         if not rem:
-            return s <= n and b[r] >= 1
+            # b(r) >= 1, or room to split a path at r (r has positive degree)
+            return (s <= n and b[r] >= 1) or s <= n - 2
         # adjacency of the current graph H = G - rem
         remmask = [0] * n
         for a, c in rem:
