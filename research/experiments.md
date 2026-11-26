@@ -265,3 +265,4 @@ Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathn
 | Gr~v~w = K8 − perfect matching = K_{2,2,2,2} | 6 | all |
 
 The earlier kmax-8 run without np was OOM-killed before it reached these graphs. The critical Gqz~vw wins with `6 np`. The cocktail party graph, in which every vertex is a degree-6 hub, is the smallest instance of the degree-six obstruction.
+**Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances; at n = 8 there are 1357 and 399. The step succeeds in every one (`tools/two_even.py residual 8`).
