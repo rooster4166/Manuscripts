@@ -967,8 +967,8 @@ def OddPath (G : SimpleGraph V) [DecidableRel G.Adj] (u : V) : V → List V → 
       OddPath G u y (z :: l)
 
 /-- Deleting an edge `ab` with `a` off the path and `b` off its tail keeps an `OddPath`. -/
-theorem OddPath.delEdge {u a b : V} : ∀ {y : V} {l : List V}, OddPath G u y l → a ∉ y :: l →
-    b ∉ l → OddPath (delEdge G a b) u y l
+theorem OddPath.rmEdge {u a b : V} : ∀ {y : V} {l : List V}, OddPath G u y l → a ∉ y :: l →
+    b ∉ l → OddPath (rmEdge G a b) u y l
   | _, [], h, _, _ => h.elim
   | y, [t], ⟨hyt, ht, htu, htu'⟩, ha, hb => by
     have hat : t ≠ a := fun h => ha (by simp [h])
@@ -977,15 +977,15 @@ theorem OddPath.delEdge {u a b : V} : ∀ {y : V} {l : List V}, OddPath G u y l 
     · rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
       · exact ha (by simp [h1])
       · exact hat h2
-    · have := delEdge_degree_of_ne (G := G) hat hbt
+    · have := rmEdge_degree_of_ne (G := G) hat hbt
       simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and, this] at ht ⊢
       exact ht
   | y, z :: w :: l, ⟨hyz, hzo, hz3, hzu, hzu', hP⟩, ha, hb => by
     have haz : z ≠ a := fun h => ha (by simp [h])
     have hbz : z ≠ b := fun h => hb (by simp [h])
-    have hdz := delEdge_degree_of_ne (G := G) haz hbz
+    have hdz := rmEdge_degree_of_ne (G := G) haz hbz
     refine ⟨?_, hdz ▸ hzo, hdz ▸ hz3, hzu, fun h => hzu' h.1,
-      OddPath.delEdge hP (fun h => ha (List.mem_cons_of_mem _ h))
+      OddPath.rmEdge hP (fun h => ha (List.mem_cons_of_mem _ h))
         (fun h => hb (List.mem_cons_of_mem _ h))⟩
     refine ⟨hyz, fun he => ?_⟩
     rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
@@ -1024,7 +1024,7 @@ theorem fanCert_of_oddPath {u : V} : ∀ {x : V} {l : List V} (G : SimpleGraph V
     · have hins : insert y (({x, u} : Finset V).erase x) = {y, u} := by rw [hXe]
       rw [hins]
       have hnd' := List.nodup_cons.mp hnd
-      exact fanCert_of_oddPath (delEdge G x y) (hP.delEdge hnd'.1
+      exact fanCert_of_oddPath (rmEdge G x y) (hP.rmEdge hnd'.1
         (List.nodup_cons.mp hnd'.2).1) hnd'.2 hyu
 
 /-- **Path transfer.** Let `a ≠ u` be even and let `a, l` be an `OddPath` for `u` (odd interior
