@@ -192,7 +192,7 @@ Lemma 2.3:
 
 ### 2.3 Root hubs: recomputed Fan counts
 
-Notation: supply / worst-case |Z| (over all labelled configurations and all donors, from `worst.out`) / printed bound. In every row the worst case equals the printed bound, and supply = bound + 1.
+Notation: supply / worst-case |Z| (over all labelled configurations and all donors, from `A9-scripts/worst.txt`) / printed bound. In every row the worst case equals the printed bound, and supply = bound + 1.
 
 **Thm 4.1(i).** Held: rT and ry.
 - B₀: d(r) − 6 ≥ 2 (needs d(r) ≥ 8), d(y) − 1 ≥ 2 (needs d(y) ≥ 3), T odd, so Ev(B₀) = {r, y}.
