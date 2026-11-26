@@ -19,11 +19,19 @@ Let G have even order n. A play consists of the following steps.
        or all b(v) of them pass through u; their predecessors of u (read from v) form a set
        W of b(v) neighbours of u in H chosen by the opponent, we pick w in W, and the path is
        rotated: H becomes H + uv - uw (uw is now held instead of uv), b(v) -= 1, b(w) += 1.
-       Soundness: `rotation_or_append` (lean/GallaiLean/MissingMove.lean).
+       Soundness: missing-move Lemma 4.1; it is the one-step case of `fan_reroute_exec` together
+       with `PathDecomp.append_move` (lean/GallaiLean/MissingMove.lean, FanMoves.lean).
+     * [option "altR"] Fan's alternative, at most R times in a play: for a set T of held edges ut
+       with 1 <= sum_T b <= |Z_H(u)|, either some t in T gives an end to u (the opponent picks
+       t), or the opponent picks a set W of at least sum_T b blank neighbours of u; we pick z in
+       W, the opponent picks t in T, the end moves from t to z, and the held edge ut is replaced
+       by uz. Soundness: `fan_alternative` (lean/GallaiLean/MissingMove.lean). It dominates
+       rotation as a move (missing-move manuscript, Section 4).
   3. The play wins for the root r if, once F is used up, sum b <= n and b(r) >= 1.
-Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, or the
-rotation lemma, applied to a realising partition, so a winning play gives a partition of G into
-at most n/2 paths with an end at r. Hence p(G + leaf at r) <= n/2, which is the rooted test R.
+Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, the rotation
+lemma or Fan's alternative, applied to a realising partition, so a winning play gives a partition
+of G into at most n/2 paths with an end at r. Hence p(G + leaf at r) <= n/2, which is the rooted
+test R. Results: experiments E13 (original game) and E14 (the new options).
 
 Inductive variant ("ind"): the seed may also come from the induction hypothesis on a smaller
 connected spanning K = G - F (F nonempty). For a chosen r' in Ev(K), the adversary picks any
