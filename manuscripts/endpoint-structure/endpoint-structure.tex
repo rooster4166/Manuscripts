@@ -288,7 +288,6 @@ partition of Lemma~\ref{lem:faithful}, and the test asks for $d/2$ descent steps
 conjectures treat every $d$ at once.
 \end{remark}
 
-<<<<<<< HEAD
 \section{Two descent steps, and four even vertices}\label{sec:four}
 
 In this section every graph has no isolated vertices. For a partition $D$ of a graph $K$ and a
@@ -576,8 +575,8 @@ Corollary~\ref{cor:three} (\texttt{desc\_three\_of\_unique}) and the reduction o
 to the two residual cases (\texttt{desc\_three\_reduction}). Primed versions of the last two discharge
 the Lov\'asz hypothesis with the library's proof of Lov\'asz's theorem.
 \end{remark}
-=======
-\section{The second descent step}\label{sec:second}
+
+\section{Fan descent, Fan certificates, and the second step for arbitrary pairs}\label{sec:second}
 
 Throughout this section $G$ has no isolated vertex. By Lemma~\ref{lem:minus} every set
 $\Ev\setminus\{u\}$ is realisable. We show that the next step, from $\Ev\setminus\{u\}$ to
@@ -616,7 +615,7 @@ equivalence.)
 
 \subsection{Fan's lemma}
 
-\begin{lemma}[Fan~\cite{Fan}, Lemma~3.4]\label{lem:fan}
+\begin{lemma}[Fan~\cite{Fan}, Lemma~3.4]\label{lem:fan-b}
 Let $ab\in E(G)$ and let $D'$ be a partition of $G-ab$. If fewer than $b_{D'}(b)$ neighbours $x$ of
 $a$ in $G-ab$ have $b_{D'}(x)=0$, then $G$ has a partition $D$ with $|D|=|D'|$,
 $b_D(a)=b_{D'}(a)+1$, $b_D(b)=b_{D'}(b)-1$, and $b_D(x)=b_{D'}(x)$ for every $x\ne a,b$.
@@ -643,7 +642,7 @@ so $\Ev(G')=\Ev\setminus\{u,w\}$ and $\Od(G')=\Od\cup\{u,w\}$. Let $D'$ realise
 $S'=S\setminus\{u,w\}$ in $G'$. Then $b_{D'}=1$ on $\Od\cup\{u,w\}$, $b_{D'}=2$ on $S'$, and
 $b_{D'}=0$ exactly on $\Ev\setminus S$. A neighbour $x$ of $w$ in $G'$ is neither $w$ nor $u$, so if
 $b_{D'}(x)=0$ then $x$ is an even vertex of $G$ outside $S$; by hypothesis there is no such
-neighbour. As $b_{D'}(u)=1>0$, Lemma~\ref{lem:fan} with $(a,b)=(w,u)$ gives a partition $D$ of $G$
+neighbour. As $b_{D'}(u)=1>0$, Lemma~\ref{lem:fan-b} with $(a,b)=(w,u)$ gives a partition $D$ of $G$
 with $|D|=|D'|$, $b_D(w)=2$, $b_D(u)=0$ and all other end counts as in $D'$. Since $u$ and $w$ are
 even in $G$, $D$ realises $S\setminus\{u\}$.
 \end{proof}
@@ -660,7 +659,7 @@ $G$.
 In $G'=G-uw$ the vertex $u$ is odd and $w$ is even, so $S\subseteq\Ev(G')$ and $w\notin S$. Let $D'$
 realise $S$ in $G'$; then $b_{D'}(u)=1$ and $b_{D'}(w)=0$. A neighbour $x$ of $w$ in $G'$ with
 $b_{D'}(x)=0$ is an even vertex of $G$ different from $u$ and $w$ and not in $S$; there is none.
-Lemma~\ref{lem:fan} with $(a,b)=(w,u)$ gives $D$ on $G$ with $b_D(w)=1$, $b_D(u)=0$ and all other
+Lemma~\ref{lem:fan-b} with $(a,b)=(w,u)$ gives $D$ on $G$ with $b_D(w)=1$, $b_D(u)=0$ and all other
 counts unchanged, and $D$ realises $S$ in $G$.
 \end{proof}
 
@@ -827,7 +826,6 @@ even when $xy\in E(H)$ (transfer along $u,x,y$, after which $u$ is a pendant ver
 \end{itemize}
 
 %PART2
->>>>>>> 3f62252d6d12ff250ed2216faf5244d47a4fa76d
 
 \section*{Computational evidence}\label{app:comp}
 
@@ -848,8 +846,6 @@ were found by the same exhaustive searches.
 \bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
 117--125.
 \bibitem{Cai} M.~Cai, Faithful path partitions (as cited in the short-faithful manuscript).
-\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
-(2005) 117--125.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
 Academic Press, 1968, 231--236.
 \bibitem{MR} J.~Williams, Cut vertices and cycle intersections in Gallai's path decomposition problem,
