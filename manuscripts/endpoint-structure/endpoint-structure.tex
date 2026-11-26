@@ -242,6 +242,24 @@ some $u\in S\setminus\{r\}$ with $S\setminus\{u\}\in\cF(G)$.
 Starting from Lemma~\ref{lem:faithful} and descending, Conjecture~\ref{conj:fd} yields (R). By
 Lemma~\ref{lem:minus} its first step always succeeds.
 
+\begin{proposition}[Small even sets]\label{prop:small}
+Let $H$ be connected and critical. If $e\le 2$, every even vertex lies in a realisable set of size $e/2$.
+If $e=4$, the same holds provided the floor bound holds for odd-order graphs with a leaf and exactly
+three even vertices (which follows from the theorem of Botler and Sambinelli~\cite{BS}).
+\end{proposition}
+
+\begin{proof}
+For $e=2$ and $\Ev=\{r,s\}$, Lemma~\ref{lem:minus} with $u=s$ shows that $\{r\}$ is realisable. For $e=4$,
+attach a leaf at $r$. The resulting odd-order graph has exactly the three even vertices $\Ev\setminus\{r\}$,
+and its even subgraph lies in the Botler--Sambinelli family, since every graph on three vertices does.
+So it has a partition into $n/2$ paths. Trimming the leaf exposes $r$ twice, or releases a path that
+pays for a split at $r$.
+\end{proof}
+
+Thus looplessness in Conjecture~\ref{conj:emc} is known for $e\le4$. The first case with content in the
+matroid part is $e=4$: if $\{1,2\}$ and $\{3,4\}$ are realisable, the conjecture requires $\{1,3\}$ or
+$\{1,4\}$ to be realisable as well.
+
 \begin{remark}[Relation to the deletion tests]
 In the three-connected reduction of~\cite{MR}, $J$ has a unique even vertex $z$ of degree $d$,
 $B=J-z$ has $\Ev(B)=N_J(z)$, and one asks for a partition of $B$ into $(|J|-1)/2$ paths with two ends
@@ -261,6 +279,7 @@ $2$-connected. [Order eight: in progress.] The examples of Propositions~\ref{pro
 were found by the same exhaustive searches.
 
 \begin{thebibliography}{9}
+\bibitem{BS} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph Theory 97 (2021) 161--184.
 \bibitem{Cai} M.~Cai, Faithful path partitions (as cited in the short-faithful manuscript).
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
 Academic Press, 1968, 231--236.
