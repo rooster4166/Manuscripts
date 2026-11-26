@@ -162,6 +162,18 @@ triple rectangles of Cor~5.
 finite check; include the selection-lemma and five-edge tables.
 \end{enumerate}
 
+
+\section{External dependency: Chu--Fan--Zhou Lemma~2.4}
+The manuscripts use [Chu--Fan--Zhou, Lemma~2.4] in the form: a path $P$ with $|V(P)|\le4$ and $q$
+edge-disjoint cycles meeting it, with $|V(P)|+q\le7$, partition into $q+1$ paths. The only verifiable
+published statement (Chu--Wang, Lemma~2.2) has $|V(P)|+q\le6$. The note \texttt{manuscripts/cfz-lemma} proves
+the needed form when every cycle passes through a common vertex of $P$, with $|V(P)|+q\le7$. It
+contains one finite ingredient, a six-contact path--cycle lemma (1{,}257 compressed cases, agreeing with
+\S6 of marked-reduction). Every use with sum seven satisfies the common-vertex hypothesis:
+marked-reduction Lemma~21, Prop.~33, Cor.~35, Thm.~177, and even-degrees with $m=6$. The remaining uses need only
+the sum-six form. At $m=7$, even-degrees should cite marked-reduction Theorem~38 instead. Cite the note at
+these places.
+
 \section{External dependency: the rainbow Hamiltonian decomposition theorem}\label{sec:jm}
 
 The odd semi-clique theorem (Theorem~4 of odd-semi-clique-boundary and the September note), its
