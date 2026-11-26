@@ -1,0 +1,13 @@
+complement (the matching): [(0, 3), (1, 2), (4, 5), (6, 7)]
+automorphisms: 384
+(a) F = [(0, 1), (0, 2), (0, 4), (0, 5), (0, 6), (0, 7), (1, 3), (1, 4), (2, 4)] seed lovasz (0, 1, 0, 1, 1, 1, 1, 1) winning roots: [0, 1, 3, 4]
+(b) |F| = 0 orbit representatives with a seed: 0 winning roots: [] 0 s, states 5145
+(b) |F| = 1 orbit representatives with a seed: 0 winning roots: [] 0 s, states 5145
+(b) |F| = 2 orbit representatives with a seed: 0 winning roots: [] 0 s, states 5145
+(b) |F| = 3 orbit representatives with a seed: 3 winning roots: [] 0 s, states 5154
+(b) |F| = 4 orbit representatives with a seed: 13 winning roots: [] 0 s, states 5309
+(b) |F| = 5 orbit representatives with a seed: 47 winning roots: [] 2 s, states 6532
+(b) |F| = 6 orbit representatives with a seed: 115 winning roots: [] 6 s, states 12460
+(b) |F| = 7 orbit representatives with a seed: 262 winning roots: [] 17 s, states 39541
+(b) |F| = 8 orbit representatives with a seed: 499 winning roots: [] 41 s, states 142025
+(b) |F| = 9 orbit representatives with a seed: 885 winning roots: [0, 1, 3, 4, 6] 82 s, states 482798
