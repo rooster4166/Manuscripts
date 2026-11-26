@@ -493,6 +493,129 @@ only if there is an admissible record $\rho$ with $a_i(\rho)\ge\delta_i$ for eve
 The hypotheses give $\delta_i\le4$ for $i\in T\cup S$ (as $p_i\le k$, and $p_i\le k-1$ on $S$)
 and $\delta_c\le2$ (as $p_c\le k-1$). So $\delta_i$ never exceeds the caps in~(R1).
 
+\section{A flow network for records}\label{sec:flow}
+
+Keep the notation of Section~\ref{sec:reduction}. Let $\kappa_i=4$ for $i\ne c$ and
+$\kappa_c=2$. For a component $C$ of $Q_i$ and $v\in V$, let $\sigma_C(v)\in\{0,1,2\}$ be the
+number of slots of $C$ at~$v$. If $\sigma_i(v)\ge1$, then $v$ is an end vertex of exactly one
+component of $Q_i$, namely its own component.
+
+\begin{definition}[the network $D$]
+The nodes of $D$ are: $s$ and $t$; a node $v$ for each $v\in V$; a node $C$ for each component
+$C$ of each $Q_i$ (components of different colours are different nodes); and nodes $h_i$ and
+$g_i$ for each $i\in[n]$. The arcs, each with lower and upper bounds $[l,u]$, are:
+\[
+\begin{array}{lll}
+(t,s):[0,\infty), & (s,v):[2,2]\ \ (v\in V), & (v,C):[0,\sigma_C(v)]\ \ (\sigma_C(v)\ge1),\\[2pt]
+(C,g_i):[0,1],\ \ (C,h_i):[0,1] & (C \text{ a component of } Q_i), & (h_i,g_i):[0,1-[i=c]],\\[2pt]
+(g_i,t):[\delta_i,\kappa_i].
+\end{array}
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:flow-record}
+Integral circulations in $D$ correspond to admissible records $\rho$ with
+$a_i(\rho)\ge\delta_i$ for all~$i$. In particular, such a record exists if and only if $D$
+has a circulation.
+\end{lemma}
+
+\begin{proof}
+Let $f$ be an integral circulation. For $v$ with $\sigma_i(v)\ge1$, let $\rho(v,i)=f(v,C)$,
+where $C$ is the component of $Q_i$ containing~$v$; let $\rho(v,i)=0$ if $\sigma_i(v)=0$. Then
+$\rho(v,i)\le\sigma_i(v)$, and $\sum_i\rho(v,i)=f(s,v)=2$. The flow into a node $C$ is
+$\rho(C)\le2$. It leaves along $(C,g_i)$ and $(C,h_i)$, each of capacity~$1$, so
+$\rho(C)=2$ forces $f(C,h_i)=1$. Hence the number of components $C$ of $Q_i$ with
+$\rho(C)=2$ is at most $f(h_i,g_i)\le 1-[i=c]$, which is (R2). Finally,
+$a_i(\rho)=f(g_i,t)\in[\delta_i,\kappa_i]$, which gives (R1) and the demands.
+
+Conversely, given such a record, set
+$f(s,v)=2$, $f(v,C)=\rho(v,i)$ for the component $C$ of $Q_i$ at $v$,
+$f(C,g_i)=\min\{1,\rho(C)\}$, $f(C,h_i)=[\rho(C)=2]$,
+$f(h_i,g_i)=|\{C:\rho(C)=2\}|$, $f(g_i,t)=a_i(\rho)$ and $f(t,s)=2m$.
+This is a circulation within the bounds. The last sentence of the lemma follows from the
+integrality part of Theorem~\ref{thm:hoffman}.
+\end{proof}
+
+For $B\subseteq V$ and a colour $i$, let $N_i(B)$ be the number of components of $Q_i$ having
+at least one slot at a vertex of~$B$. Define
+\[
+\psi_i(B)\;:=\;N_i(B)+[i\ne c]\cdot\bigl[\text{some component of $Q_i$ has both slots in $B$}\bigr].
+\]
+
+\begin{lemma}\label{lem:psi}
+Fix $B\subseteq V$ and $i\in[n]$. Let $D_i$ be the sub-network formed by the component nodes
+of $Q_i$ and the nodes $h_i,g_i$. Feed it from a source joined to each component node $C$ by
+an arc of capacity $\sigma_C(B):=\sum_{v\in B}\sigma_C(v)$. Then the maximum flow from the
+source into $g_i$ is $\psi_i(B)$. The maximum flow into $t$, through the arc $(g_i,t)$ of
+capacity $\kappa_i$, is $\min\{\kappa_i,\psi_i(B)\}$.
+\end{lemma}
+
+\begin{proof}
+A component node $C$ can forward at most $\min\{1,\sigma_C(B)\}$ units directly to $g_i$. It
+can forward one further unit through $h_i$ only if $\sigma_C(B)=2$, and the arc $(h_i,g_i)$
+carries at most $1-[i=c]$ units in total. This bound is attained.
+\end{proof}
+
+\begin{proposition}[cut conditions]\label{prop:cuts}
+$D$ has a circulation if and only if, for every $B\subseteq V$,
+\begin{align}
+\textup{(UH)}\qquad & 2|B|\;\le\;\sum_{i=1}^n\min\{\kappa_i,\psi_i(B)\}, \label{eq:UH}\\
+\textup{(LH)}\qquad & \sum_{i=1}^n\pos{\delta_i-\psi_i(B)}\;\le\;2|V\setminus B|. \label{eq:LH}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Every arc has $l\le u$, since $\delta_i\le\kappa_i$ (end of Section~\ref{sec:reduction}). We
+apply Theorem~\ref{thm:hoffman}. Let $X\subseteq V(D)$ and put $B=X\cap V$. Positive lower
+bounds occur only on the arcs $(s,v)$ and $(g_i,t)$. An arc entering $X$ contributes its
+lower bound to the left side of Hoffman's inequality, and an arc leaving $X$ contributes its
+upper bound to the right side.
+
+\emph{$s\in X$, $t\notin X$.} No arc with a positive lower bound enters $X$, so the inequality
+holds trivially.
+
+\emph{$t\in X$, $s\notin X$.} The arc $(t,s)$ leaves $X$ and has $u=\infty$, so the
+inequality holds trivially.
+
+\emph{$s,t\notin X$.} The arcs entering $X$ with positive lower bound are the arcs $(s,v)$
+with $v\in B$, contributing $2|B|$. The arcs leaving $X$ are of three kinds: arcs from $B$ into
+some $D_i\setminus X$; arcs inside some $D_i$; and arcs $(g_i,t)$ with $g_i\in X$. For fixed
+$B$, the choice of $X\cap D_i$ that minimises the capacity of the colour-$i$ arcs leaving $X$
+gives a minimum cut between $B$ and $t$ through $D_i$. By Lemma~\ref{lem:psi} and the
+max-flow min-cut theorem, its capacity is $\min\{\kappa_i,\psi_i(B)\}$. Arcs from $V\setminus B$
+into $X$ have lower bound $0$ and do not matter. So the inequalities of this type, for all
+$X$ with $X\cap V=B$, amount to~(UH).
+
+\emph{$s,t\in X$.} The arcs entering $X$ with positive lower bound are the arcs $(g_i,t)$
+with $g_i\notin X$, contributing $\sum_{i\in I}\delta_i$, where $I=\{i:g_i\notin X\}$. The arcs
+leaving $X$ are the arcs $(s,v)$ with $v\notin B$, contributing $2|V\setminus B|$, together
+with colour-$i$ arcs as before. For $i\notin I$, putting all of $D_i$ into $X$ makes the
+colour-$i$ contribution $0$. For $i\in I$, the minimum colour-$i$ contribution is the minimum
+cut between $B$ and $g_i$, which is $\psi_i(B)$ by Lemma~\ref{lem:psi}. So the inequalities of
+this type amount to
+$\sum_{i\in I}\delta_i\le 2|V\setminus B|+\sum_{i\in I}\psi_i(B)$ for all $I$. Taking
+$I=\{i:\delta_i>\psi_i(B)\}$ gives the strongest one, which is~(LH).
+\end{proof}
+
+By Corollary~\ref{cor:record}, Lemma~\ref{lem:flow-record} and
+Proposition~\ref{prop:cuts}, Theorem~\ref{thmB} follows once we show that (UH) and (LH) hold
+for every $B\subseteq V$. We do this in Sections~\ref{sec:upper} and~\ref{sec:lower}.
+
+\subsection*{Counting notation}
+Fix $B\subseteq V$ and let $A=V\setminus B$, $a=|A|$, $b=|B|$. For each colour $i$, let
+$n_0^i,n_1^i,n_2^i$ be the numbers of components of $Q_i$ with exactly $0$, $1$ and $2$ slots
+in $B$. Then $n_0^i+n_1^i+n_2^i=p_i$, and
+\[
+f_i(B):=\sum_{v\in B}\sigma_i(v)=n_1^i+2n_2^i,\qquad f_i(A):=\sum_{v\in A}\sigma_i(v)=2n_0^i+n_1^i,
+\]
+\[
+\psi_i(B)=n_1^i+n_2^i+[i\ne c][n_2^i\ge1]\;\ge\;p_i-n_0^i .
+\]
+By Lemma~\ref{lem:slots},
+\begin{equation}\label{eq:slotsum}
+\sum_{i=1}^n f_i(B)=kb,\qquad \sum_{i=1}^n f_i(A)=ka .
+\end{equation}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
