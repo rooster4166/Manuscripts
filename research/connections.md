@@ -450,6 +450,25 @@ The question (coordinator, route (H)): is there an induction hypothesis stronger
   - Every 3-connected one is uniform (476). This answers E7's question at n = 8.
   - The 52 non-uniform ones have κ = 1 (46) or κ = 2 (6: GsaFC{, GsaFeW, GsbFEo, GsbFeW, GsbfMo, GsPI^{).
 
+### The flower move (follow-up 5)
+
+**Grade: Proved (Lean `Flower.lean`, no hypotheses; standard axioms); one open lemma (rainbow transversals) with computation.** Manuscript: endpoint-structure §7, "The flower move" (Lemma 60 – Question 66). This is the positive counterpart of the last-edge barrier.
+
+- **Flower lemma** (Lean `flower_decomp`, from `exists_close_cut`). Close paths P_1..P_k into cycles C(P_i) = P_i + (src, tgt). Let L be a path whose edges are one e_i ∈ C(P_i) each. Then the paths C(P_i) − e_i, together with L, are k + 1 paths. They cover all the cycle edges, with b = 2 on V(L) and 0 elsewhere.
+- **Equality forces a flower** (Lean `hub_cycles`). Suppose b(s) = |T|, b = 1 on T and 0 elsewhere. Then |D| = |T|, every path joins s to T, and each t ∈ T ends exactly one path. With the edges st, the paths close into edge-disjoint cycles through s.
+- **Receipts at a hub.** With the seed b = 1 on N(s), the j-th grouped receipt has supply d(s) − j against j blanks. So it succeeds iff j < d(s)/2; at j = d(s)/2 we reach exactly the equality state. "Either a further receipt succeeds or the paths close into cycles."
+  - A Lovász seed provides this when d(s) = n − 2, N(s) ⊆ Ev(G) and the non-neighbour s* is even.
+- **Flower move** (Thm 62). A transversal through s gives |D| + 1 paths with b(s) = 2.
+  - Within budget iff |D| ≤ n/2 − 1, i.e. there was a spare path.
+  - The move itself needs no edge count. Hamiltonicity only matters for the existence of a transversal.
+  - L has |T| = d(s)/2 edges. For CP(m) this is m − 1, the barrier's minimum.
+- **CP(m)** (Thm 63; Lean `cocktail_passes_of_rt`, `cocktail_rooted_of_rt`). Lovász on CP(m) − star(s), with m − 1 paths. Then m − 1 receipts: supplies 2m − 2 − j > j. Equality follows, and the cycles are Hamiltonian by the edge count 2m(m − 1) = (m − 1)·2m. A transversal finishes the proof. So **the rooted test for CP(m) ⇐ RainbowTransversal(m − 1).**
+- **Transversals for ≤ 4 cycles** (Prop 64; Lean `rainbowTransversal_three`, `rainbowTransversal_four`).
+  - Greedy s a_1 a_2 a_3 settles k ≤ 3.
+  - For k = 4, if a_3's two C_4-neighbours are s and a_1, the path a_2 a_3 s a_1 x works, where x is a_1's other C_2-neighbour.
+  - **So CP(4) and CP(5) pass, unconditionally** (Lean `cocktail_passes_four`, `cocktail_passes_five`). CP(4) is missing-move Prop 5.5; CP(5) is new (n = 10).
+- **Open: rainbow transversals for k ≥ 5** (Question 66). No failures for m ≤ 10 (E16). Random greedy fails 5–15% of the time, so a proof needs rotations.
+
 ## R. Lovász–Fan certificates are a game on profiles, and the game is incomplete (2026-11-26, night)
 
 **Grade: Observed (computation, small); conceptual consequence.**
