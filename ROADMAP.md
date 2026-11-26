@@ -138,10 +138,12 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Session | Branch | Target |
 |---|---|---|
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator; odd component case done) and Thm 114 |
-| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | delivered two-step descent, EMC(e=4), KStep reduction. **Now:** the bridge base case of three-step descent, and the reduction for general k with exactly two base cases |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | delivered KStep and the bridge gluing. **Thm 29 / Cor 30 (human proof): B_3 ∧ … ∧ B_k ⇒ D_k, so B_k for all k ⇒ Gallai**, where B_k is k-step descent at a y with ≥ 2 even neighbours. **Now:** Lean for Thm 29 / Cor 30 (Bridge.lean) |
 | session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | delivered the Fan calculus, E-twins and the pair step. **Now:** the base case "y has ≥ 2 even neighbours" of three-step descent, which closes T(6)-i |
-| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | delivered six-clique Thm 1 (Lean). **Now:** Lean for the d6-frontier certificates (relay/carry, root hub, full hub, all-d versions) |
-| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 (no push yet; reminded) |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | **done**: six-clique Thm 1 in Lean. Idle; it took no new assignment without the owner's go-ahead |
+| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | **done**: JM Thm 8 repair (16 pp.). Its own referee pass on §§5–8 is running. Idle otherwise; it took no new assignment without the owner's go-ahead |
+| session_01FxXpVhzpjnfPb4S9qT66Vk | `claude/bs-prescribed` | **remove Shaik**: Botler–Sambinelli Thm 13 with a prescribed end, then the corrected MR Cor 106 one-exception case (connections §L) |
+| session_01FxXpViByhUwk1GmmqirzRR | `claude/lean-d6-frontier` | Lean for d6-frontier: relay/carry, root hub, full hub, and the all-d versions (Thm 6.1) |
 | session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
@@ -208,3 +210,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
+- **Gallai reduced to one family of base cases** (endpoint-structure Thm 29, Cor 30; emc-four session). B_k for all k ≥ 3 implies Gallai, where B_k is k-step descent at an even y with ≥ 2 even neighbours. B_3 is equivalent to T(6)-i. Gqz~vw shows that B_3 is not provable by Lovász + Fan certificates with ≤ 8 held edges.
