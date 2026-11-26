@@ -54,3 +54,60 @@ Both satisfy the floor p = 3.
 **Status: REFUTED as stated.** CP is strictly stronger than Bonamy–Perrett, and it fails through degree saturation in dense odd-order graphs.
 
 The obvious relaxation, |D1| + |D2| ≤ n + 1, is just Gallai: take D1 = D2. A degree-restricted version (for example Δ ≤ n − 2) is untested.
+
+## E3. M-convexity of optimal endpoint vectors (Conjecture M)
+
+Command: `tools/endpoint_matroid.py`
+
+- **k = p (optimal decompositions):** C_p(G) is M-convex for all 142 connected graphs with n ≤ 6.
+- **k = p + 1:** 3 violations at n = 6. So the property is specific to optimal decompositions.
+- n = 7 (k = p) and n = 8 (critical graphs only) are running.
+
+## E4. Plain level descent (U\*)
+
+Command: `tools/descent.py`
+
+- **With odd roots allowed** (three ends at an odd r): fails already at n = 4, e.g. K4. This version is irrelevant to the rooted test.
+- **With even roots only:** holds at n = 4. Fails at n = 6, but only on vectors where r carries ≥ 4 ends, which a descent from a faithful decomposition never passes through.
+
+The test was superseded by E5.
+
+## E5. Faithful descent (FD)
+
+Command: `tools/faithful_descent.py`
+
+**Definitions.** S ⊆ E (the even vertices) is *realisable* if some decomposition has exactly 2 ends on S, 0 on E − S, and 1 at each odd vertex.
+
+- Cai: E itself is realisable. Equivalently, apply Lovász to B + z, where z is joined to E.
+- The realisable family is an up-set: split a path at an unexposed even vertex to add it.
+
+**FD:** every realisable S with |S| > e/2 has, for each r ∈ S, some u ≠ r with S − u realisable.
+
+FD implies the even-order rooted test, and hence Gallai.
+
+**Result:**
+
+| n | FD | rooted test (FD-reach) |
+|---|---|---|
+| 4 | 4/4 graphs | holds |
+| 6 | 99/99 graphs with even vertices | holds |
+| 8 | running | running |
+
+**Odd-order chain version** (`tools/faithful_descent_odd.py`): is there any chain E ⊃ … ⊃ S with |S| = (e−1)/2? Such a chain gives the floor.
+
+- n = 5: the chain fails exactly on K5 and K5−e (the semi-cliques). All 19 other graphs pass.
+- n = 7: one non-semi-clique failure so far, K3 ∨ 4K1, where the floor holds. Its optimal decompositions must give an odd vertex 3 ends: all three even vertices have degree 6 = 2·3, so none of them can end a path. The odd-order chain restricted to simple profiles is therefore strictly stronger than the floor.
+- At even order, no even vertex can be saturated at level n/2, since that would need degree n.
+
+## E6. Realisable family as matroid spanning sets (EMC)
+
+Command: `tools/realisable_matroid.py`
+
+| | Critical graphs (p = n/2) | Noncritical graphs (p < n/2) |
+|---|---|---|
+| n = 4 and 6 | 37/37: minimal realisable sets have size e/2 and satisfy basis exchange, i.e. the bases of a matroid of rank e/2; all loopless | 16 of 65 are not matroids (minimal sizes {1,2} or {2,3}), as expected |
+
+**Endpoint Matroid Conjecture (EMC).** For every connected B of even order with p(B) = |B|/2, the minimal realisable sets are the bases of a loopless matroid on the even vertices, of rank e/2.
+
+- "Loopless" is exactly the rooted test, which is equivalent to Gallai.
+- "Matroid" adds exchange structure, and suggests looking for a rank formula (a min–max theorem).
