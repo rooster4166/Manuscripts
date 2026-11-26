@@ -32,7 +32,11 @@ This is the single source of truth for the proof architecture. Every node is a s
 
 **Weaker single hypothesis (BranchBase.lean): `gallai_of_branchBase_three : (∀ k ≥ 3, BranchBase k) → GallaiConjecture`.** `BranchBase k`: in every connected even-order H with ≥ 2k even vertices, every even y that has two even neighbours, and every bridge at which leads to a leaf, lies in a realisable (e − k)-set (`Desc H k y ∅`). There is no prescribed removed vertex. `branchBase_of_bstmt` shows it is weaker than `BStmt`. Gqz~vw at y = 3 is an instance of `BranchBase 3`.
 
-**Everything now hinges on proving `BranchBase k` (equivalently, it suffices to prove `BStmt j`).** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
+**Sharper still (FanBarrier.lean): `gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`.** It suffices to treat even y with **three** even neighbours, because the two-neighbour case reduces (`desc_succ_of_transfer_two`).
+
+**Barrier theorem (Lean, `cocktail_fan_barrier`).** For the cocktail party graph CP(m) = K_{2m} − perfect matching, m ≥ 4, every decomposition of CP(m) − ut has ≥ m paths, and > m if Fan's condition for a transfer towards u holds. So **no certificate whose last step is a Fan transfer or a new one-edge path proves Gallai for CP(m)**, whatever the seed or induction hypothesis. Any proof of `BranchBase3` must end with a different kind of move, such as path insertion or the flower recombination (missing-move Prop 5.5), at least on these graphs.
+
+**Everything now hinges on proving `BranchBase3 k`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
 
 ## Top-level chain
 
@@ -246,3 +250,5 @@ Candidate uniform mechanisms (`research/connections.md`):
   - First gap of the extended game: A_{6,2} at n = 10, a degree-six hub one receipt short. The receipt sits at Fan's equality and is forced by an edge count (manuscript Prop 5.2). This is the d6 frontier's "short by one".
   - `tools/fan_game.py` gains the options `np`, `rotR`, `altR` and `hubs`. Manuscript `manuscripts/missing-move`; connections §S (and a correction note in §R).
 - **n = 8 status after path insertion (reconciled).** With \|F\| ≤ 6 and `np`, 6 critical graphs lose (independent run). The missing-move session (E14, orbit runs, \|F\| ≤ 8) reports wins for five of them at \|F\| = 7–8: Gut~~w, Gu^v~w, Guv]}{, Guv]z{ at 7, and Guv]~{ at 8. **Independently confirmed** for Guv]}{ root 0 at \|F\| = 7: F = {01,02,03,04,15,56,57}, with the leaf 2 isolated, which supplies the spare path. **K8 − perfect matching is settled by hand** (missing-move Prop 5.5, **flower lemma**). Lovász on G − s and three Fan receipts give b(s) = 3. The fourth receipt fails at equality, which forces the three paths to close into three Hamiltonian cycles through s. Cutting one edge per cycle along a transversal path gives 4 paths with b(s) = 2. This is the first concrete **two-end move at Fan's equality**. It uses an edge count that the profile cannot see. Checked by hand here.
+- **FanBarrier.lean** (emc-four, route H). It proves `gallai_of_branchBase3`, so only y with ≥ 3 even neighbours remain, and the **barrier theorem** `cocktail_fan_barrier`: Fan moves on the last edge can never decompose CP(m) into m paths. Tools: an exact realisability oracle (`tools/realis.c`), an oracle-seeded Fan game, and an EMC sweep.
+- d6-frontier in Lean: Thm 6.1(a), 6.1(b) at every deletion degree d, and Thm 5.2.
