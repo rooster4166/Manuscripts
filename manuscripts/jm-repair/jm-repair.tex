@@ -789,6 +789,108 @@ $B=\emptyset$. In \JM\ this bound is exactly the hypothesis $r\le 2t-1$ (proof o
 Theorem~\ref{thmA}).
 \end{remark}
 
+\section{\JM\ Theorem 7, the transfer lemma, and Wu's conjecture}\label{sec:thm7}
+
+\subsection{The transfer lemma (repair of JM1)}
+The proof of \JM\ Theorem~7 repeatedly moves edges from a ``donor'' linear forest $D$ into a
+``receiver'' linear forest $R$, and the receiver must remain a linear forest. In \JM, the edges
+to be withheld are described by a separation condition (``$a$ and $b$ are in different
+components of $P_j\setminus\{e_1,e_2\}$'', and its analogue in Case~2). As the audit observed
+\cite[\S2.3]{A4}, that condition is not sufficient.
+\begin{itemize}[leftmargin=*]
+\item In Case~1, let $a$ be an internal vertex of $D$ that is already separated from $b$. The
+rule allows $e_1$ to be absent, and then $a$ can receive degree~$3$.
+\item In Case~2, let $R\supseteq\{z_1w_1,z_2w_2\}$ consist of two paths, and
+$D\supseteq\{w_1x,xz_2,w_2y,yz_1\}$. The stated condition holds with nothing withheld, but
+moving these edges creates the cycle $z_1w_1xz_2w_2yz_1$.
+\end{itemize}
+The following lemma, which is the audit's fix, gives the same counts.
+
+\begin{lemma}[transfer lemma]\label{lem:transfer}
+Let $R$ and $D$ be edge-disjoint linear forests on the same vertex set. Then there is a set
+$X\subseteq D$ with $|X|\le 2|R|$ such that $R\cup Y$ is a linear forest for every
+$Y\subseteq D\setminus X$. If $R=\{ab\}$ is a single edge, $X$ can be taken to consist of at
+most one edge of $D$ at $a$ and at most one edge of $D$ at~$b$.
+\end{lemma}
+
+\begin{proof}
+Orient each path of $D$ from one end to the other, so that every vertex has in- and
+out-degree at most $1$ in $D$. Let $I$ be the set of internal vertices of the paths of $R$,
+and $J$ the set of end vertices of its nontrivial paths. Let $X$ consist of all edges of $D$
+incident with $I$, together with the out-edge in $D$ (if any) of each vertex of $J$. A path of
+$R$ with $e\ge1$ edges has $e-1$ internal vertices and $2$ ends. Hence
+$|X|\le 2|I|+|J|=2|R|$, and if $R=\{ab\}$ then $I=\emptyset$, $J=\{a,b\}$.
+
+It suffices to treat $Y=D\setminus X$. Vertices in $I$ have $R$-degree $2$ and $Y$-degree
+$0$. Vertices in $J$ have $R$-degree $1$ and $Y$-degree at most $1$, since only their in-edge
+can remain. All other vertices have $R$-degree $0$. So $R\cup Y$ has maximum degree~$2$.
+
+Suppose $R\cup Y$ contains a cycle $Z$. Since $R$ and $Y$ are acyclic, $Z$ splits into
+maximal segments that alternate between $R$ and $Y$. Each $Y$-segment is a directed subpath of
+an oriented path of $D$. Its endpoints lie on $R$-segments, so they have positive $R$-degree
+and $Y$-degree, which forces them to be in $J$. But the first vertex of a directed $Y$-segment
+has an out-edge in $Y$, while vertices of $J$ have out-degree $0$ in $Y$. This is a
+contradiction.
+\end{proof}
+
+\subsection{\JM\ Theorem 7}
+A \emph{minimal counterexample} is a counterexample $H\subseteq K_{2n+1}$ to
+Theorem~\ref{thm:wu} with $n$ as small as possible. Every graph with fewer than $n$ edges
+satisfies Theorem~\ref{thm:wu}. The proof of Theorem~7 uses minimality only in this form.
+
+\begin{theorem}[\JM\ Theorem 7]\label{thm:jm7}
+Let $H$ be a minimal counterexample with $n$ edges. Let $H'$ be the union of the components of
+$H$ not isomorphic to $K_2$, with $r$ vertices and $t$ edges, and identify $V(H')$ with $V(K_r)$.
+Then $K_r$ has an edge decomposition $(P_1,\dots,P_n)$ into linear forests in which each of
+$P_1,\dots,P_t$ contains exactly one edge of $H'$, and
+\[
+|P_i|\ge 2r-2n-1\ (i\le t),\qquad |P_i|\ge 2r-2n\ (i>t).
+\]
+\end{theorem}
+
+We give the proof in full, following \JM\ step by step. The transfer steps are replaced by
+Lemma~\ref{lem:transfer}, and every count is the same as in \JM.
+
+\begin{proof}[Proof, part 1: set-up]
+By \cite{LC} (Theorem~2 of \JM), $n\ge6$ and $H$ is not a linear forest. Each component of
+$H'$ has at least two edges, and at least one component, which is not a path, has at least
+three. A component with $e$ edges has at most $e+1$ vertices. Hence $H'$ has at most $(t-1)/2$
+components, and
+\begin{equation}\label{eq:r-t}
+r\le t+\tfrac{t-1}{2}=\tfrac{3t-1}{2},\qquad\text{in particular } r\le 2t-1,\ \ t\ge3 .
+\end{equation}
+
+\emph{The case $r\le n$.} Add edges to $H'$ inside $V(H')$ until there are $n$ edges, or until
+$V(H')$ is complete. In the second case continue with pendant edges, each at a new vertex.
+This gives $\widehat H\supseteq H'$ with $v(\widehat H)\le e(\widehat H)=n$. (If $V(H')$ is
+filled first, then $r\le\binom r2$ because $r\ge3$, and pendant edges keep $v\le e$.) By
+\cite{LC}, $K_{2n+1}$ has a Hamiltonian decomposition in which $\widehat H$ is rainbow. Rename
+the colours so that the edges of $H'$ lie in classes $1,\dots,t$, and restrict to $V(H')$. The
+restrictions are linear forests, and the size conditions hold trivially because $2r-2n-1<0$.
+
+\emph{The case $r\ge n+1$.} Put $s=\lceil r/2\rceil$, so $2s=r+\delta$ with $\delta=r\bmod 2$.
+By \eqref{eq:r-t}, $s\le t$, and $s<n$. Choose $H''\subseteq H'$ with $s$ edges. By minimality,
+$K_{2s+1}$ has a Hamiltonian decomposition $(C_1,\dots,C_s)$ in which $H''$ is rainbow. Since
+$v(H'')\le r=2s+1-(1+\delta)$, we can delete $1+\delta$ vertices outside $V(H'')$. This leaves a
+decomposition $(P_1,\dots,P_s)$ of $K_r$ into linear forests with $H''$ rainbow. Each $P_i$ has
+$r-1$ edges if $r$ is even, and at least $r-2$ edges if $r$ is odd. Identify $V(K_r)$ with
+$V(H')$ extending $V(H'')$. Move each of the $t-s$ edges of $H'\setminus H''$ out of its class
+into its own new class $P_{s+1},\dots,P_t$, and let $P_{t+1},\dots,P_n$ be empty. Let $e'_i$ be
+the edge of $H''$ in $P_i$ ($i\le s$). Renumber $P_1,\dots,P_s$, together with their edges
+$e'_i$, so that $|P_1|\ge\dots\ge|P_s|$. All classes are linear forests. Each class with $i\le t$
+contains exactly one edge of $H'$. Every class with $i\le s$ has lost at most $t-s$ edges, and
+\begin{equation}\label{eq:nondonor}
+|P_i|\ \ge\ r-2-(t-s)\ \ge\ 2r-2n-1\qquad(i\le s).
+\end{equation}
+The second inequality is $2n+s-t-1\ge r$. It holds because $t\le n$, $s\ge r/2$, and
+$r\le(3n-1)/2\le 2n-2$.
+
+It remains to raise $|P_i|$ to $2r-2n-1$ for $i\in[s+1,t]$ (these classes have one edge) and
+to $2r-2n$ for $i\in[t+1,n]$ (these are empty). Donor classes $P_j$ with small $j$ supply the
+edges, and each donor keeps its edge $e'_j$ and at least $2r-2n-1$ edges. The two cases
+$r\le(4n-1)/3$ and $r\ge 4n/3$ cover all integers $r\ge n+1$.
+\end{proof}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
