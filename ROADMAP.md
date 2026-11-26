@@ -122,6 +122,27 @@ Candidate uniform mechanisms (`research/connections.md`):
 3. **Close T(6)-i** using the shape reductions as a testbed for the uniform mechanism.
 
 
+
+## Active workstreams (2026-11-26, evening)
+
+**Direction from the project lead:** concept-level theorems, each formalized in Lean. Computation only as small sanity checks.
+
+**Cloud sessions** (separate compute; each pushes to its own branch, which is then merged here):
+
+| Session | Branch | Target |
+|---|---|---|
+| session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+
+**Local agents:**
+
+- Lean: Lovász's theorem (discharges LovaszStatement).
+- Lean: the 2-connected reduction for MR Thm 1, and `pathNumber_gt_of_low_degree` (Critical.lean).
+- JM Thm 8 repair (conceptual).
+- Chu–Fan–Zhou Lemma 2.4 resolution (conceptual).
+- d = 6 frontier, Q2 (conceptual).
+
 ## Work queue (next wave)
 
 | # | Item | Purpose |
