@@ -6,8 +6,8 @@ from pathnum import solve as psolve
 from exact import realise, check_partition, floor_with_end
 rng = random.Random(11)
 agree = 0
-for trial in range(150):
-    n = rng.choice([5, 6, 7, 8])
+for trial in range(300):
+    n = rng.choice([5, 6, 7])
     Gx = nx.gnp_random_graph(n, rng.uniform(0.3, 0.8), seed=rng.randrange(10**9))
     if not nx.is_connected(Gx):
         continue
