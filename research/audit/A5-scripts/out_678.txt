@@ -1,0 +1,4 @@
+h=6 path: orders=38 minimal sets=254 failing=0 [] (0.0s)
+h=6 cycle: orders=12 minimal sets=240 failing=0 [] (0.0s)
+h=7 path: orders=192 minimal sets=1348 failing=0 [] (0.2s)
+h=7 cycle: orders=39 minimal sets=989 failing=0 [] (0.2s)

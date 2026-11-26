@@ -1,0 +1,16 @@
+E doubled links: [(3, 4), (6, 7), (1, 2)]
+orders with omitted site 0: ['25618347', '27634185', '41856327']
+match claimed set (up to reversal): True
+end pairs: [(2, 7), (2, 5), (4, 7)]
+triple classes: [(0, 1, 2), (0, 1, 3), (0, 1, 4), (0, 1, 5), (0, 2, 4), (0, 2, 5), (0, 3, 6)]
+choices per representative triple: {(0, 1, 2): 0, (0, 1, 3): 0, (0, 1, 4): 0, (0, 1, 5): 0, (0, 2, 4): 0, (0, 2, 5): 0, (0, 3, 6): 4}
+labelled configurations total: 12
+orbits: [(((0, 3, 4, 8, 6, 1, 2, 5), (2, 8, 7, 3, 5, 1, 0, 6), (3, 6, 7, 2, 0, 4, 5, 8)), 3), (((0, 3, 4, 8, 6, 1, 2, 5), (2, 6, 7, 1, 0, 3, 5, 8), (3, 8, 7, 4, 5, 2, 0, 6)), 9)]
+orbit rep ['25618347', '58042671', '82375014'] repeated compulsory chords: [] compulsory on C9: []
+orbit rep ['25618347', '51067428', '17523084'] repeated compulsory chords: [(2, 5), (4, 7)] compulsory on C9: []
+table row 1 canon in orbits: True omitted: [7, 4, 1]
+table row 2 canon in orbits: True omitted: [7, 4, 1]
+rows partition C,A,B labelled links: True
+ row 1 variable A links: 3 variable B links: 0 ends: 0 5
+ row 2 variable A links: 0 variable B links: 1 ends: 2 4
+ row 3 variable A links: 0 variable B links: 2 ends: 4 6

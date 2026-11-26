@@ -1,0 +1,2 @@
+cycle templates: 202
+simple sets of size<=1: 403 failing: 403 ; minimal sets of size>=2: 5172 failing: 0

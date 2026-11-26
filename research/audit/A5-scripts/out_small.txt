@@ -1,0 +1,18 @@
+h=2 path: tested=8 failing=0 by #subdivided={}
+h=2 cycle: tested=5 failing=0 by #subdivided={}
+h=3 path: tested=108 failing=0 by #subdivided={}
+h=3 cycle: tested=54 failing=0 by #subdivided={}
+h=4 path: tested=1776 failing=0 by #subdivided={}
+h=4 cycle: tested=738 failing=0 by #subdivided={}
+h=5 path: tested=36020 failing=10 by #subdivided={0: 10}
+   e.g. (0, 2, 4, 1, 3) () []
+   e.g. (0, 3, 1, 4, 2) () []
+   e.g. (1, 3, 0, 2, 4) () []
+h=5 cycle: tested=12614 failing=22 by #subdivided={0: 2, 1: 20}
+   e.g. (0, 2, 4, 1, 3) () []
+   e.g. (0, 2, 4, 1, 3) (0,) [(0, 1)]
+   e.g. (0, 2, 4, 1, 3) (1,) [(1, 2)]
+h=6 path ALL simple sets with >= 1 subdivided: tested=46258 failing=0 [] (1s)
+h=6 cycle ALL simple sets with >= 2 subdivided: tested=25640 failing=0 [] (3s)
+h=7 path ALL simple sets with >= 1 subdivided: tested=936206 failing=0 [] (37s)
+h=7 cycle ALL simple sets with >= 2 subdivided: tested=357332 failing=0 [] (94s)

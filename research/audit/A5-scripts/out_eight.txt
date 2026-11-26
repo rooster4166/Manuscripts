@@ -1,0 +1,7 @@
+path templates: 1320
+orders with simple unsubdivided core: 137  of which fail: 137
+orders failing with >=1 subdivision (minimal sets): [(0, 3, 4, 7, 6, 1, 2, 5)] E canon: (0, 3, 4, 7, 6, 1, 2, 5)
+ order (0, 3, 4, 7, 6, 1, 2, 5) parallel classes [[(1, 2), (1, 2)], [(3, 4), (3, 4)], [(6, 7), (7, 6)]]
+  pair-only sets: 27 failing: 27
+  + one non-pair segment: 243 failing: 0
+(2s)

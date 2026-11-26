@@ -136,3 +136,19 @@ Let H be K_{2k+1} minus two disjoint edges ac and bd (k ≥ 3). Add a vertex w a
 - Hence p = k + 1 = n/2.
 
 So critical graphs, the only ones on which the rooted test bites, carry genuine Hamiltonian rigidity.
+
+## E8. Terminal-edge prescriptions in Lovász's theorem
+
+Commands: `tools/terminal_edge.py`, `tools/terminal_edge1.py`
+
+| Variant | Statement | Result |
+|---|---|---|
+| TEL1 | In an all-odd graph, for any vertex v and edge vy, some decomposition with one end per vertex has v's end on vy | holds for all all-odd connected graphs with n ≤ 6 |
+| TEL2 | the same with two simultaneous prescriptions | **fails** already in K4, e.g. (2 via 21, 3 via 31) |
+| TEL1′ | TEL1 for graphs with exactly one even vertex | **fails** at n = 5 (graph Dqw) |
+
+Motivation: TEL1′ applied to G + z with z ∼ E − u would make E − {u, v} realisable for *all* pairs. That cannot hold in general, since uniformity is refuted (E7). So the terminal-edge route only yields a second descent step under extra hypotheses.
+
+## E9. EMC on the critical-but-not-forced family
+
+The graph K7 − {ac, bd} plus a vertex w ∼ {a, b} (n = 8, p = 4, E of size 6): all 20 half-sets are realisable, so its endpoint matroid is uniform.

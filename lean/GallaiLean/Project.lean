@@ -200,15 +200,15 @@ theorem Sym2.map_injOn' {f : V → V'} {T : Set V} (hinj : Set.InjOn f T) {e₁ 
   · exact Or.inr ⟨hinj ha hd h1, hinj hb hc h2⟩
 
 theorem filterMap_flatMap_perm (f : V → V') (S : Sym2 V → Bool)
-    (g : GPath G → Option (GPath G'))
-    (hg : ∀ P, (optEdges (g P)).Perm ((P.edges.filter S).map (Sym2.map f)))
-    (l : List (GPath G)) :
+    (g : GPath G → Option (GPath G')) (l : List (GPath G))
+    (hg : ∀ P ∈ l, (optEdges (g P)).Perm ((P.edges.filter S).map (Sym2.map f))) :
     ((l.filterMap g).flatMap GPath.edges).Perm
       (((l.flatMap GPath.edges).filter S).map (Sym2.map f)) := by
   induction l with
   | nil => simp
   | cons P l ih =>
-    have h1 := hg P
+    have h1 := hg P List.mem_cons_self
+    have ih := ih (fun Q hQ => hg Q (List.mem_cons_of_mem _ hQ))
     rw [List.filterMap_cons, List.flatMap_cons, List.filter_append, List.map_append]
     cases hP : g P with
     | none =>
@@ -220,17 +220,45 @@ theorem filterMap_flatMap_perm (f : V → V') (S : Sym2 V → Bool)
       simp only [List.flatMap_cons]
       exact h1.append ih
 
-/-- **Projection lemma**, with the location of the pieces: every path of `D` with a kept edge
-has its piece among the paths of the new decomposition. -/
-theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)
+/-- The number of ends of a path at `v` is `1` if it has exactly one edge at `v` and `0`
+otherwise; in particular it only depends on the edge list. -/
+theorem GPath.endsAt_eq_ite [DecidableEq V] (P : GPath G) (v : V) :
+    P.endsAt v = if P.incid v = 1 then 1 else 0 := by
+  have h := P.incid_add_endsAt v
+  have hne := P.src_ne_tgt
+  have hle : P.endsAt v ≤ 1 := by
+    unfold GPath.endsAt
+    by_cases hs : P.src = v
+    · have : P.tgt ≠ v := fun ht => hne (hs.trans ht.symm)
+      simp [hs, this]
+    · simp only [hs, ite_false, zero_add]
+      split_ifs <;> omega
+  split_ifs at h ⊢ <;> omega
+
+/-- **Projection lemma**, full form: pieces are only needed for the paths of `D`; every path of
+`D` with a kept edge has its piece among the new paths; and the new end counts are computed from
+the images of the kept edges path by path. -/
+theorem PathDecomp.project_full [DecidableEq V'] (D : PathDecomp G) (f : V → V')
+    (S : Sym2 V → Bool) (T : Set V)
     (hinj : Set.InjOn f T) (hT : ∀ e ∈ G.edgeSet, S e = true → ∀ x ∈ e, x ∈ T)
     (hcov : ∀ e', e' ∈ G'.edgeSet ↔ ∃ e ∈ G.edgeSet, S e = true ∧ e.map f = e')
-    (hpiece : ∀ P : GPath G, HasPiece G' f S P) :
+    (hpiece : ∀ P ∈ D.paths, HasPiece G' f S P) :
     ∃ D' : PathDecomp G', D'.size ≤ D.paths.countP (fun P => P.edges.any S) ∧
-      ∀ P ∈ D.paths, P.edges.any S = true →
-        ∃ Q ∈ D'.paths, Q.edges.Perm ((P.edges.filter S).map (Sym2.map f)) := by
-  choose g hg using hpiece
-  have key := filterMap_flatMap_perm f S g hg D.paths
+      (∀ P ∈ D.paths, P.edges.any S = true →
+        ∃ Q ∈ D'.paths, Q.edges.Perm ((P.edges.filter S).map (Sym2.map f))) ∧
+      ∀ v', D'.ends v' = (D.paths.map (fun P =>
+        if ((P.edges.filter S).map (Sym2.map f)).countP (fun e => decide (v' ∈ e)) = 1
+        then 1 else 0)).sum := by
+  classical
+  have hex : ∀ P : GPath G, ∃ o : Option (GPath G'), P ∈ D.paths →
+      (optEdges o).Perm ((P.edges.filter S).map (Sym2.map f)) := by
+    intro P
+    by_cases hP : P ∈ D.paths
+    · obtain ⟨o, ho⟩ := hpiece P hP
+      exact ⟨o, fun _ => ho⟩
+    · exact ⟨none, fun h => absurd h hP⟩
+  choose g hg using hex
+  have key := filterMap_flatMap_perm f S g D.paths hg
   have hnd : (((D.paths.flatMap GPath.edges).filter S).map (Sym2.map f)).Nodup := by
     refine (D.nodup_edges.filter _).map_on ?_
     intro x hx y hy hxy
@@ -238,7 +266,7 @@ theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V �
     have hxG := (D.covers x).2 hx.1
     have hyG := (D.covers y).2 hy.1
     exact Sym2.map_injOn' hinj (hT x hxG hx.2) (hT y hyG hy.2) hxy
-  refine ⟨⟨D.paths.filterMap g, key.nodup_iff.mpr hnd, ?_⟩, ?_, ?_⟩
+  refine ⟨⟨D.paths.filterMap g, key.nodup_iff.mpr hnd, ?_⟩, ?_, ?_, ?_⟩
   · intro e'
     rw [key.mem_iff, hcov]
     simp only [List.mem_map, List.mem_filter, ← D.covers]
@@ -248,9 +276,9 @@ theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V �
   · show (D.paths.filterMap g).length ≤ _
     rw [List.length_filterMap_eq_countP]
     apply List.countP_mono_left
-    intro P _ hP
+    intro P hPD hP
     obtain ⟨Q, hQ⟩ := Option.isSome_iff_exists.mp hP
-    have h1 := hg P
+    have h1 := hg P hPD
     rw [hQ, optEdges_some] at h1
     have hne : P.edges.filter S ≠ [] := by
       intro h
@@ -260,7 +288,7 @@ theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V �
     rw [List.mem_filter] at he
     exact List.any_eq_true.mpr ⟨e, he⟩
   · intro P hP hS
-    have h1 := hg P
+    have h1 := hg P hP
     cases hgP : g P with
     | none =>
       rw [hgP, optEdges_none] at h1
@@ -272,6 +300,41 @@ theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V �
     | some Q =>
       rw [hgP, optEdges_some] at h1
       exact ⟨Q, List.mem_filterMap.mpr ⟨P, hP, hgP⟩, h1⟩
+  · intro v'
+    show ((D.paths.filterMap g).map (fun P => P.endsAt v')).sum = _
+    have : ∀ l : List (GPath G), (∀ P ∈ l, P ∈ D.paths) →
+        ((l.filterMap g).map (fun P => P.endsAt v')).sum = (l.map (fun P =>
+          if ((P.edges.filter S).map (Sym2.map f)).countP (fun e => decide (v' ∈ e)) = 1
+          then 1 else 0)).sum := by
+      intro l hl
+      induction l with
+      | nil => simp
+      | cons P l ih =>
+        have h1 := hg P (hl P List.mem_cons_self)
+        have ih := ih (fun Q hQ => hl Q (List.mem_cons_of_mem _ hQ))
+        rw [List.filterMap_cons, List.map_cons, List.sum_cons]
+        cases hgP : g P with
+        | none =>
+          rw [hgP, optEdges_none] at h1
+          rw [← h1.nil_eq]
+          simpa using ih
+        | some Q =>
+          rw [hgP, optEdges_some] at h1
+          rw [List.map_cons, List.sum_cons, ih, Q.endsAt_eq_ite, GPath.incid, h1.countP_eq]
+    exact this D.paths (fun _ h => h)
+
+/-- **Projection lemma**, with the location of the pieces: every path of `D` with a kept edge
+has its piece among the paths of the new decomposition. -/
+theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)
+    (hinj : Set.InjOn f T) (hT : ∀ e ∈ G.edgeSet, S e = true → ∀ x ∈ e, x ∈ T)
+    (hcov : ∀ e', e' ∈ G'.edgeSet ↔ ∃ e ∈ G.edgeSet, S e = true ∧ e.map f = e')
+    (hpiece : ∀ P : GPath G, HasPiece G' f S P) :
+    ∃ D' : PathDecomp G', D'.size ≤ D.paths.countP (fun P => P.edges.any S) ∧
+      ∀ P ∈ D.paths, P.edges.any S = true →
+        ∃ Q ∈ D'.paths, Q.edges.Perm ((P.edges.filter S).map (Sym2.map f)) := by
+  classical
+  obtain ⟨D', h₁, h₂, -⟩ := D.project_full f S T hinj hT hcov (fun P _ => hpiece P)
+  exact ⟨D', h₁, h₂⟩
 
 /-- **Projection lemma.** -/
 theorem PathDecomp.project (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)

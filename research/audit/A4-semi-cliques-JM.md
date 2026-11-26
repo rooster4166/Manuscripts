@@ -279,7 +279,7 @@ All code is in `research/audit/A4-scripts/` (copied from the scratchpad). It use
 | Thm 11 estimates k ≥ 130 | every inequality, 130 ≤ k < 1500 (9,075,959 triples) | 0 failures |
 | Thm 43 | all connected X with 2–5 vertices, every root, h = 1, 2 (254 instances) | identity holds |
 | Prop 45 hub formula 3(p+η)−1 | connected X with ≤ 4 vertices, every root (32) | holds |
-| Thm 50: p_i = p(D + i leaves); bridge/diamond identities | 2-connected cores with ≤ 6 vertices (one root per degree / neighbour-degree class) | see §4.1 |
+| Thm 50: p_i = p(D + i leaves); bridge/diamond identities | Exhaustive for 2-connected cores on 3–4 vertices: 12 p_i instances, 2 bridge doubles. Spot checks: diamond doubles of K_{2,3} and the house graph (p = 5 = 2p_2 − 1). Exhaustive 5–6-vertex runs were too slow (dense 12-vertex hosts) and are incomplete. | all identities hold |
 
 ### 4.1 Consequences and limits
 
