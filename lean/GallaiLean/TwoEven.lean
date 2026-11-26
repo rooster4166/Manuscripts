@@ -20,6 +20,11 @@ import GallaiLean.Fan
 * `etwin_of_not_realisable`: if `Ev \ {a, b}` is not realisable, then `a` and `b` have the same
   neighbours among the other even vertices.
 * `fd_second_step`: the second step of faithful descent from `Ev \ {u}` keeping a root `r`.
+* `FanSchedule`, `realisable_of_fanSchedule`: iterated Fan descent (even steps only).
+* `FanCert`, `realisable_of_fanCert` (**soundness of the Fan calculus**): a list of even steps and
+  odd transfers that ends with at most one vertex certifies that `Ev \ X` is realisable.
+* `Tight`, `tight_of_transfer`, `tight_of_fanCert`: the two-even-vertex problem (parity bound
+  `#odd / 2`).
 -/
 
 open SimpleGraph
@@ -439,5 +444,161 @@ theorem realisable_of_fanSchedule (hL : LovaszStatement.{u}) (hn : Even (Fintype
         Finset.mem_erase]
       tauto
     rw [this]; exact key
+
+/-! ### The Fan calculus: even steps and odd transfers -/
+
+/-- The even vertices of `G − aw` for `a` even and `w` odd of degree at least `3`. -/
+theorem evenSet_delEdge_odd {a w : V} (haw : G.Adj a w) (ha : a ∈ evenSet G)
+    (hw : Odd (G.degree w)) (hw3 : 1 < G.degree w) :
+    evenSet (delEdge G a w) = insert w ((evenSet G).erase a) := by
+  have hne : a ≠ w := G.ne_of_adj haw
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_erase]
+  by_cases hxa : x = a
+  · subst hxa
+    simp only [hne, false_or, ne_eq, not_true_eq_false, false_and, iff_false]
+    intro hx
+    exact Nat.not_odd_iff_even.mpr (Finset.mem_filter.mp hx).2.2
+      (odd_delEdge_left haw (Finset.mem_filter.mp ha).2.2)
+  · by_cases hxw : x = w
+    · subst hxw
+      simp only [true_or, iff_true]
+      have h1 := delEdge_degree_right haw
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, by omega, even_delEdge_right haw hw⟩
+    · simp only [hxw, false_or, evenSet, Finset.mem_filter, Finset.mem_univ, true_and,
+        delEdge_degree_of_ne hxa hxw]
+      tauto
+
+/-- A **Fan certificate** for removing the set `X` of even vertices: a list of moves `(x, w)`,
+processed from the head. Each move deletes an edge `xw` with `x ∈ X` such that `w` is adjacent to
+no other vertex of `X`. If `w` is even (and outside `X`) the move removes `x` from `X`
+(*even step*); if `w` is odd of degree at least `3` the move replaces `x` by `w` (*odd transfer*).
+The list ends when at most one vertex is left. -/
+def FanCert : (G : SimpleGraph V) → [DecidableRel G.Adj] → Finset V → List (V × V) → Prop
+  | _, _, X, [] => X.card ≤ 1
+  | G, _, X, (x, w) :: M => x ∈ X ∧ G.Adj x w ∧ (∀ y ∈ X, y ≠ x → ¬ G.Adj w y) ∧
+      ((w ∈ evenSet G ∧ w ∉ X ∧ FanCert (delEdge G x w) (X.erase x) M) ∨
+       (Odd (G.degree w) ∧ 1 < G.degree w ∧
+         FanCert (delEdge G x w) (insert w (X.erase x)) M))
+
+/-- **Soundness of the Fan calculus.** At even order and without isolated vertices, if `X ⊆ Ev`
+has a Fan certificate, then `Ev \ X` is realisable. -/
+theorem realisable_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) :
+    ∀ (M : List (V × V)) (G : SimpleGraph V) [DecidableRel G.Adj] (X : Finset V),
+    (∀ v, 0 < G.degree v) → X ⊆ evenSet G → FanCert G X M → Realisable G (evenSet G \ X)
+  | [], G, _, X, hG, hX, hM => by
+    rcases Finset.eq_empty_or_nonempty X with rfl | ⟨x, hx⟩
+    · rw [Finset.sdiff_empty]; exact realisable_evenSet hL hG
+    · have hX1 : X = {x} := Finset.eq_singleton_iff_unique_mem.mpr
+        ⟨hx, fun y hy => Finset.card_le_one.mp hM y hy x hx⟩
+      subst hX1
+      rw [Finset.sdiff_singleton_eq_erase]
+      exact realisable_evenSet_erase hL hG hn (hX (Finset.mem_singleton_self x))
+  | (x, w) :: M, G, _, X, hG, hX, ⟨hxX, hxw, hwX, hM⟩ => by
+    have hx := hX hxX
+    have hne : x ≠ w := G.ne_of_adj hxw
+    rcases hM with ⟨hw, hwX', hM⟩ | ⟨hw, hw3, hM⟩
+    · -- even step
+      have hEv := evenSet_delEdge hxw hx hw
+      have ih := realisable_of_fanCert hL hn M (delEdge G x w) (X.erase x)
+        (delEdge_degree_pos hxw hx hw hG)
+        (by
+          intro y hy
+          rw [hEv]
+          obtain ⟨hyx, hyX⟩ := Finset.mem_erase.mp hy
+          exact Finset.mem_erase.mpr ⟨fun h => hwX' (h ▸ hyX), Finset.mem_erase.mpr ⟨hyx, hX hyX⟩⟩)
+        hM
+      rw [hEv] at ih
+      have key := realisable_erase_of_fan (S := evenSet G \ X.erase x) hxw
+        (Finset.mem_sdiff.mpr ⟨hx, fun h => (Finset.mem_erase.mp h).1 rfl⟩)
+        (Finset.mem_sdiff.mpr ⟨hw, fun h => hwX' (Finset.mem_of_mem_erase h)⟩) Finset.sdiff_subset
+        (by
+          intro y hwy hy
+          refine Finset.mem_sdiff.mpr ⟨hy, fun h => ?_⟩
+          obtain ⟨hyx, hyX⟩ := Finset.mem_erase.mp h
+          exact hwX y hyX hyx hwy)
+        (by
+          have : ((evenSet G \ X.erase x).erase x).erase w =
+              ((evenSet G).erase x).erase w \ X.erase x := by
+            ext y; simp only [Finset.mem_erase, Finset.mem_sdiff]; tauto
+          rw [this]; exact ih)
+      have : (evenSet G \ X.erase x).erase x = evenSet G \ X := by
+        ext y
+        simp only [Finset.mem_erase, Finset.mem_sdiff]
+        constructor
+        · rintro ⟨hyx, hy, hyX⟩; exact ⟨hy, fun h => hyX ⟨hyx, h⟩⟩
+        · rintro ⟨hy, hyX⟩
+          exact ⟨fun h => hyX (h ▸ hxX), hy, fun h => hyX h.2⟩
+      rw [← this]; exact key
+    · -- odd transfer
+      have hEv := evenSet_delEdge_odd hxw hx hw hw3
+      have hdeg : ∀ v, 0 < (delEdge G x w).degree v := by
+        intro v
+        by_cases hvx : v = x
+        · subst hvx
+          have h1 := delEdge_degree_left hxw
+          have h2 := (Finset.mem_filter.mp hx).2
+          rcases h2.2 with ⟨k, hk⟩
+          omega
+        · by_cases hvw : v = w
+          · subst hvw
+            have h1 := delEdge_degree_right hxw
+            omega
+          · rw [delEdge_degree_of_ne hvx hvw]; exact hG v
+      have ih := realisable_of_fanCert hL hn M (delEdge G x w) (insert w (X.erase x)) hdeg
+        (by
+          rw [hEv]
+          exact Finset.insert_subset_insert _ (Finset.erase_subset_erase _ hX))
+        hM
+      rw [hEv] at ih
+      have hwE : w ∉ evenSet G := fun h => not_odd_of_mem_evenSet h hw
+      have : insert w ((evenSet G).erase x) \ insert w (X.erase x) = evenSet G \ X := by
+        ext y
+        simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_erase]
+        constructor
+        · rintro ⟨h1 | ⟨hyx, hy⟩, h2⟩
+          · exact absurd (Or.inl h1) h2
+          · exact ⟨hy, fun hyX => h2 (Or.inr ⟨hyx, hyX⟩)⟩
+        · rintro ⟨hy, hyX⟩
+          refine ⟨Or.inr ⟨fun h => hyX (h ▸ hxX), hy⟩, ?_⟩
+          rintro (rfl | ⟨-, h⟩)
+          · exact hwE hy
+          · exact hyX h
+      rw [this] at ih
+      exact realisable_of_fan_transfer hxw hx (fun h => (Finset.mem_sdiff.mp h).2 hxX) hw
+        Finset.sdiff_subset
+        (by
+          intro y hyx hwy hy
+          exact Finset.mem_sdiff.mpr ⟨hy, fun hyX => hwX y hyX hyx hwy⟩)
+        ih
+
+/-! ### The two-even-vertex problem -/
+
+/-- `H` is **tight** if it has a decomposition with one end at every odd vertex and none at the
+even vertices, i.e. into `#odd / 2` paths (the parity bound). This is `Realisable H ∅`. -/
+abbrev Tight (H : SimpleGraph V) [DecidableRel H.Adj] : Prop := Realisable H ∅
+
+/-- **Transfer lemma** for graphs with exactly two even vertices `u, v`: if `w` is an odd
+neighbour of `u` not adjacent to `v`, and `H − uw` (whose even vertices are `w, v`) is tight, then
+`H` is tight. -/
+theorem tight_of_transfer {H : SimpleGraph V} [DecidableRel H.Adj] {u v w : V}
+    (hEv : evenSet H = {u, v}) (huw : H.Adj u w) (hw : Odd (H.degree w)) (hwv : ¬ H.Adj w v)
+    (h : Tight (delEdge H u w)) : Tight H := by
+  have hu : u ∈ evenSet H := by rw [hEv]; simp
+  refine realisable_of_fan_transfer huw hu (Finset.notMem_empty u) hw (Finset.empty_subset _)
+    ?_ h
+  intro x hxu hwx hx
+  rw [hEv, Finset.mem_insert, Finset.mem_singleton] at hx
+  rcases hx with rfl | rfl
+  · exact absurd rfl hxu
+  · exact absurd hwx hwv
+
+/-- A graph (even order, no isolated vertex) whose even set has a Fan certificate is tight. For a
+graph with exactly two even vertices this is a sufficient condition for the parity bound. -/
+theorem tight_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V))
+    {H : SimpleGraph V} [DecidableRel H.Adj] (hG : ∀ v, 0 < H.degree v) {M : List (V × V)}
+    (hM : FanCert H (evenSet H) M) : Tight H := by
+  have := realisable_of_fanCert hL hn M H (evenSet H) hG (subset_refl _) hM
+  rwa [Finset.sdiff_self] at this
 
 end Gallai
