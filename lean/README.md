@@ -364,6 +364,24 @@ No hypotheses (Lovász is `lovaszStatement`). `DStmt j` (`D_j`): every connected
 
 `#print axioms gallai_of_branching` shows only `propext`, `Classical.choice` and `Quot.sound`.
 
+## `GallaiLean/BranchBase.lean`: Gallai from one named hypothesis
+
+**`BranchBase k`**: in every connected graph of even order with at least `2k` even vertices, every
+even `y` with at least two even neighbours and no bridge to a vertex of degree ≥ 2 has
+`Desc H k y ∅`, i.e. lies in a realisable set `Ev ∖ R` with `|R| = k`. No vertex is prescribed for
+removal.
+
+* **`rootedTest_of_branchBase : (∀ k, BranchBase k) → RootedTest`** and
+  **`gallai_of_branchBase : (∀ k, BranchBase k) → GallaiConjecture`** (through
+  `gallai_iff_rootedTest`). `branchBase_one` and `branchBase_two` are theorems, so
+  `gallai_of_branchBase_three` needs only `k ≥ 3`.
+* `branchBase_of_bstmt`: `BStmt k → BranchBase k`, so `BranchBase` is the weaker hypothesis.
+* `dstmt0E_succ`: the one-level reduction for descent keeping `y` (`DStmt0`). Bridges are handled
+  first (`bridge_odd0`, `bridge_even0`), so `BranchBase` only sees vertices without a non-pendant
+  bridge.
+
+`#print axioms gallai_of_branchBase` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
 
 **Main result: Theorem 1 holds as a full equivalence.**

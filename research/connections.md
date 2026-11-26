@@ -402,3 +402,15 @@ Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching cas
   - `dstmt_of_branching`, with `dstmtE_succ` as the one-level step.
   - Pieces are `restr G C` graphs on the same vertex type, with isolated vertices allowed. The level statements apply to them through `H.induce {non-isolated}` (`desc_of_dstmt`).
   - Gluing (1) is `glue_bridge`: erase the B⁺ bridge path, take the union, replace the A⁺ bridge path by the concatenation. Gluing (2) is `glue_append`: union, then `append_move`.
+
+### The single named hypothesis (follow-up 3)
+
+`lean/GallaiLean/BranchBase.lean` contains **`gallai_of_branchBase : (∀ k, BranchBase k) → GallaiConjecture`** and **`rootedTest_of_branchBase : (∀ k, BranchBase k) → RootedTest`**. No sorry, standard axioms.
+
+**BranchBase k** is the weakest base statement the reduction supports. It is required only in connected even-order graphs with e ≥ 2k, and only at even vertices y such that:
+- y has ≥ 2 even neighbours, and
+- y has **no bridge to a vertex of degree ≥ 2**, because bridges are handled before the branching case.
+
+The conclusion is **Desc H k y ∅**: y lies in a realisable (e − k)-set, with no prescribed removed vertex. `branchBase_one` and `branchBase_two` are theorems, so `gallai_of_branchBase_three` needs only k ≥ 3. `branchBase_of_bstmt` shows that BranchBase is weaker than BStmt.
+
+Coordinator's finding (base branch, E13 / §R): Lovász seeds + Fan transfers do not prove three-step descent in general. Gqz~vw at y = 3 has no certificate with ≤ 8 held edges. So BranchBase k for k ≥ 3 needs a new ingredient.
