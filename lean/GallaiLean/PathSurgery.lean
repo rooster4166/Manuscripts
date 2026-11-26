@@ -191,7 +191,7 @@ theorem plusEdge_adj {p q : V} :
   Iff.rfl
 
 instance plusEdge.decRel [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj] (a b : V) :
-    DecidableRel (plusEdge G a b).Adj := fun p q => inferInstanceAs (Decidable (_ ∨ _))
+    DecidableRel (plusEdge G a b).Adj := fun _ _ => inferInstanceAs (Decidable (_ ∨ _))
 
 theorem le_plusEdge : G ≤ plusEdge G a b := fun _ _ h => Or.inl h
 
@@ -434,5 +434,130 @@ theorem exists_subst_list (L : List (TPath V)) {a b : V} (hab : s(a, b) ∈ edge
     · exact Or.inl ⟨Q, by simp [hQ], hw⟩
 
 end subst
+
+/-! ### Grafting paths at a vertex or at a deleted edge -/
+
+section graft
+
+variable [DecidableEq V]
+
+/-- **Graft**: cut `R` at `p` into `q₁` (ending at `p`) and `q₂` (starting at `p`), and attach
+`X₁` (starting at `p`) after `q₁` and the reverse of `X₂` (starting at `p`) before `q₂`. Two
+paths replace three, and `p` loses two ends. -/
+theorem exists_graft (R X₁ X₂ : TPath V) {p : V} (q₁ : (⊤ : SimpleGraph V).Walk R.src p)
+    (q₂ : (⊤ : SimpleGraph V).Walk p R.tgt) (hR : R.walk = q₁.append q₂)
+    (h1 : X₁.src = p) (h2 : X₂.src = p)
+    (hd1 : ∀ w ∈ X₁.walk.support, w ∈ q₁.support → w = p)
+    (hd2 : ∀ w ∈ X₂.walk.support, w ∈ q₂.support → w = p) :
+    ∃ N₁ N₂ : TPath V,
+      (N₁.edges : Multiset (Sym2 V)) + N₂.edges = R.edges + X₁.edges + X₂.edges ∧
+      (∀ v, N₁.endsAt v + N₂.endsAt v + 2 * (if p = v then 1 else 0) =
+        R.endsAt v + X₁.endsAt v + X₂.endsAt v) ∧
+      (∀ w ∈ N₁.walk.support, w ∈ R.walk.support ∨ w ∈ X₁.walk.support) ∧
+      (∀ w ∈ N₂.walk.support, w ∈ R.walk.support ∨ w ∈ X₂.walk.support) := by
+  have hRn := R.support_nodup
+  rw [hR] at hRn
+  have hq₁ := support_nodup_of_append_left hRn
+  have hq₂ := support_nodup_of_append_right hRn
+  let X₁w := X₁.walk.copy h1 rfl
+  let X₂w := (X₂.walk.copy h2 rfl).reverse
+  have hX₁ : X₁w.support.Nodup := by simpa [X₁w] using X₁.support_nodup
+  have hX₂ : X₂w.support.Nodup := by simpa [X₂w] using X₂.support_nodup
+  let N₁ := joinT q₁ X₁w hq₁ hX₁ (fun w hw hw' => hd1 w (by simpa [X₁w] using hw') hw)
+    (by have := X₁.pos; simp only [X₁w, Walk.length_copy]; omega)
+  let N₂ := joinT X₂w q₂ hX₂ hq₂ (fun w hw hw' => hd2 w (by simpa [X₂w] using hw) hw')
+    (by have := X₂.pos; simp only [X₂w, Walk.length_reverse, Walk.length_copy]; omega)
+  refine ⟨N₁, N₂, ?_, fun v => ?_, fun w hw => ?_, fun w hw => ?_⟩
+  · simp only [N₁, N₂, joinT_edges, X₁w, X₂w, Walk.edges_reverse, Walk.edges_copy,
+      ← Multiset.coe_add, Multiset.coe_reverse]
+    show _ = ((R.walk.edges : Multiset (Sym2 V)) + X₁.walk.edges) + X₂.walk.edges
+    rw [hR, Walk.edges_append, ← Multiset.coe_add]
+    abel
+  · simp only [N₁, N₂, GPath.endsAt, joinT_src, joinT_tgt, h1, h2]
+    by_cases e1 : R.src = v <;> by_cases e2 : R.tgt = v <;> by_cases e3 : X₁.tgt = v <;>
+      by_cases e4 : X₂.tgt = v <;> by_cases e5 : p = v <;> simp [e1, e2, e3, e4, e5]
+  · rw [mem_joinT_support] at hw
+    rcases hw with hw | hw
+    · left; rw [hR]; exact Walk.mem_support_append_iff q₁ q₂ |>.mpr (Or.inl hw)
+    · right; simpa [X₁w] using hw
+  · rw [mem_joinT_support] at hw
+    rcases hw with hw | hw
+    · right; simpa [X₂w] using hw
+    · left; rw [hR]; exact Walk.mem_support_append_iff q₁ q₂ |>.mpr (Or.inr hw)
+
+/-- The oriented core of `exists_cut_edge`. -/
+theorem cut_edge_aux (R X Y : TPath V) {c d : V} (hcd : (⊤ : SimpleGraph V).Adj c d)
+    (q : (⊤ : SimpleGraph V).Walk R.src c) (q' : (⊤ : SimpleGraph V).Walk d R.tgt)
+    (hR : R.walk = q.append (Walk.cons hcd q')) (hX : X.src = c) (hY : Y.src = d)
+    (hdX : ∀ w ∈ X.walk.support, w ∈ R.walk.support → w = c ∨ w = d)
+    (hdY : ∀ w ∈ Y.walk.support, w ∈ R.walk.support → w = c ∨ w = d) :
+    ∃ N₁ N₂ : TPath V,
+      (N₁.edges : Multiset (Sym2 V)) + N₂.edges + {s(c, d)} = R.edges + X.edges + Y.edges ∧
+      ∀ v, N₁.endsAt v + N₂.endsAt v + (if c = v then 1 else 0) + (if d = v then 1 else 0) =
+        R.endsAt v + X.endsAt v + Y.endsAt v := by
+  have hRn := R.support_nodup
+  rw [hR] at hRn
+  have hqn := support_nodup_of_append_left hRn
+  have hq'n' := support_nodup_of_append_right hRn
+  have hq'n : q'.support.Nodup := by
+    rw [Walk.support_cons, List.nodup_cons] at hq'n'; exact hq'n'.2
+  have hRd := ((nodup_support_append q _).mp hRn).2.2
+  have hdq : d ∉ q.support := by
+    intro h
+    have := hRd d h (by rw [Walk.support_cons]; exact List.mem_cons_of_mem _ q'.start_mem_support)
+    exact hcd.ne this.symm
+  have hcq' : c ∉ q'.support := by
+    rw [Walk.support_cons, List.nodup_cons] at hq'n'; exact hq'n'.1
+  have hmemR : ∀ w, w ∈ q.support ∨ w ∈ q'.support → w ∈ R.walk.support := by
+    intro w hw
+    rw [hR, Walk.mem_support_append_iff, Walk.support_cons, List.mem_cons]
+    tauto
+  let Xw := X.walk.copy hX rfl
+  let Yw := (Y.walk.copy hY rfl).reverse
+  have hXn : Xw.support.Nodup := by simpa [Xw] using X.support_nodup
+  have hYn : Yw.support.Nodup := by simpa [Yw] using Y.support_nodup
+  let N₁ := joinT q Xw hqn hXn (fun w hw hw' => by
+      rcases hdX w (by simpa [Xw] using hw') (hmemR w (Or.inl hw)) with h | h
+      · exact h
+      · subst h; exact absurd hw hdq)
+    (by have := X.pos; simp only [Xw, Walk.length_copy]; omega)
+  let N₂ := joinT Yw q' hYn hq'n (fun w hw hw' => by
+      rcases hdY w (by simpa [Yw] using hw) (hmemR w (Or.inr hw')) with h | h
+      · subst h; exact absurd hw' hcq'
+      · exact h)
+    (by have := Y.pos; simp only [Yw, Walk.length_reverse, Walk.length_copy]; omega)
+  refine ⟨N₁, N₂, ?_, fun v => ?_⟩
+  · simp only [N₁, N₂, joinT_edges, Xw, Yw, Walk.edges_reverse, Walk.edges_copy,
+      ← Multiset.coe_add, Multiset.coe_reverse]
+    show _ = ((R.walk.edges : Multiset (Sym2 V)) + X.walk.edges) + Y.walk.edges
+    rw [hR, Walk.edges_append, Walk.edges_cons, ← Multiset.coe_add, ← Multiset.cons_coe,
+      ← Multiset.singleton_add]
+    abel
+  · simp only [N₁, N₂, GPath.endsAt, joinT_src, joinT_tgt, hX, hY]
+    by_cases e1 : R.src = v <;> by_cases e2 : R.tgt = v <;> by_cases e3 : X.tgt = v <;>
+      by_cases e4 : Y.tgt = v <;> by_cases e5 : c = v <;> by_cases e6 : d = v <;>
+      simp [e1, e2, e3, e4, e5, e6]
+
+/-- **Cut at an edge**: delete the edge `ab` from `R`, attach `X` (starting at `a`) to the side
+ending at `a` and `Y` (starting at `b`) to the side starting at `b`. Two paths replace three, and
+`a`, `b` lose one end each. -/
+theorem exists_cut_edge (R X Y : TPath V) {a b : V} (hab : s(a, b) ∈ R.edges)
+    (hX : X.src = a) (hY : Y.src = b)
+    (hdX : ∀ w ∈ X.walk.support, w ∈ R.walk.support → w = a ∨ w = b)
+    (hdY : ∀ w ∈ Y.walk.support, w ∈ R.walk.support → w = a ∨ w = b) :
+    ∃ N₁ N₂ : TPath V,
+      (N₁.edges : Multiset (Sym2 V)) + N₂.edges + {s(a, b)} = R.edges + X.edges + Y.edges ∧
+      ∀ v, N₁.endsAt v + N₂.endsAt v + (if a = v then 1 else 0) + (if b = v then 1 else 0) =
+        R.endsAt v + X.endsAt v + Y.endsAt v := by
+  obtain ⟨c, d, hcd, q, q', he, hR⟩ := Walk.exists_append_cons_of_mem_edges R.walk hab
+  rcases Sym2.eq_iff.mp he with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+  · exact cut_edge_aux R X Y hcd q q' hR hX hY hdX hdY
+  · obtain ⟨N₁, N₂, h1, h2⟩ := cut_edge_aux R Y X hcd q q' hR hY hX
+      (fun w hw hw' => (hdY w hw hw').symm) (fun w hw hw' => (hdX w hw hw').symm)
+    refine ⟨N₁, N₂, ?_, fun v => ?_⟩
+    · rw [Sym2.eq_swap, h1]; abel
+    · have := h2 v; omega
+
+end graft
 
 end Gallai
