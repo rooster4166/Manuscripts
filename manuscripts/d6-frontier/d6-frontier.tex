@@ -1,0 +1,681 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+\newcommand{\tr}{\rightarrowtail}   % transfer of one end
+\newcommand{\bl}{\mathrm{bl}}
+
+\title[Hub transfers at deletion degree six]{Hub transfers at deletion degree six:\\
+closures and obstructions for the clique core with full exterior vertices}
+\author{Working draft for the Gallai path-decomposition programme}
+\date{26 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+The open case of the deletion-degree-six rooted test (T(6)-i) asks, for a connected graph $B$ of
+order $2k$ with exactly six even vertices $U$ and a prescribed $r\in U$, for a partition of $E(B)$
+into at most $k$ paths with two ends at $r$. When $B[U]=K_6$ the only unresolved instances have an
+exterior vertex adjacent to all of $U$ (a \emph{full} vertex). We do not close this case. We prove
+four kinds of results, each by an explicit short sequence of Fan addible-edge transfers starting
+from a Lov\'asz seed, so that each is directly expressible with the formally verified lemmas
+\texttt{fan\_single}, \texttt{fan\_grouped} and \texttt{realisable\_evenSet\_erase}.
+(1) A \emph{terminal-step classification}: if all held edges lie in $U$ together with the full
+vertices, the last Fan step of any such certificate can only end at one of three ``hub'' profiles.
+It can never end at the standard profile with three doubled core vertices. This is the precise
+form of the obstruction behind the ``off-by-one'' failures of single-edge returns.
+(2) \emph{Root-hub closures}: if $r$ has an odd neighbour $y$ with at most two neighbours in
+$U-r$, then $r$ passes. Similar small-contact witnesses (a triangle at $r$, a pair of resources,
+or a relay path to a vertex with no core neighbour) close the root positions of every residual
+core shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$.
+(3) A \emph{full-hub closure}: a full vertex carrying two ``quiet batteries'' (triangles through
+it whose parked vertex has no core neighbour) closes the test at every root.
+(4) Uniform-in-$d$ versions of (2) and (3) for every deletion degree $d$. They include the first
+closures of the open test T(8)-i at roots adjacent to all other even vertices.
+We also show by an exhaustive (small) search that no single-stage program inserts a pair of full
+vertices in the six-clique stage framework. This explains why that method stops at five contacts.
+All certificates were replayed on concrete graphs by an independent implementation of Fan's
+construction.
+\end{abstract}
+
+\maketitle
+
+\section{Setting and summary}\label{sec:intro}
+
+Graphs are finite and simple. A \emph{path} is a nonempty simple path. A \emph{partition} of a graph
+is a partition of its edge set into paths. For a partition $D$ and a vertex $v$, let $b_D(v)$ be the
+number of path ends at $v$. Then
+\begin{equation}\label{eq:parity}
+b_D(v)\equiv d(v)\pmod 2,\qquad \sum_v b_D(v)=2|D|.
+\end{equation}
+Write $\Od(G)$ and $\Ev(G)$ for the odd-degree and even-degree vertices.
+
+\subsection*{The test} Throughout, $B$ has even order $2k$, $U=\Ev(B)$ has six vertices, $r\in U$
+and $T=U-r$. \emph{$r$ passes} if $B$ has a partition into at most $k$ paths with $b(r)\ge 2$. By
+the private-leaf equivalence and Marked Reduction Thm.~114, Gallai's conjecture at deletion
+degree~6 is equivalent to: every $r$ passes in every $B$ of the apex class. In the apex class,
+$J=B+z$ with $N(z)=U$ is $3$-connected, $\delta(B)\ge 6$, and so on; see the status map
+\texttt{research/notes/reader-six-even-program.md}. With $D=K_6-B[U]$, the shape theorem leaves
+$D\in\{\emptyset,K_2,P_3,K_3,C_4\}$ with restricted roots. Six-clique Thm.~6 closes $D=\emptyset$
+unless some exterior vertex is \emph{full}, i.e.\ adjacent to all of $U$.
+
+A partition into $k$ paths with $b=1$ on $\Od(B)$ has $2k-(2k-6)=6$ ends on $U$. If moreover $b\le2$
+on $U$, exactly three core vertices are \emph{doubled} ($b=2$) and three are \emph{blank} ($b=0$).
+We call this the \emph{standard profile}. A vertex with $b=0$ in the current partition is
+\emph{blank}.
+
+\subsection*{Results} Table~\ref{tab:summary} lists what is proved here. ``New'' is relative to the
+collection as summarised in the status map and audit A6.
+
+\begin{table}[ht]
+\small
+\begin{tabular}{p{3.3cm}p{8.2cm}p{2.2cm}}
+\toprule
+Result & Statement (informal) & Status\\
+\midrule
+Thm.~\ref{thm:terminal} & last Fan step with local held edges ends at a hub profile, never at the standard profile & proved\\
+Thm.~\ref{thm:roothub} & root-hub witnesses close every residual root position: (i) $D=\emptyset$ or $r\notin V(D)$, odd $y\in N(r)$ with $|N(y)\cap T|\le2$; (ii), (iii) one or two core non-neighbours of $r$, a triangle $rab$ with a small-contact $a$ & proved (new for $|S(y)|=3$, i.e.\ $S(y)=N(y)\cap U$ of size three, and for (ii), (iii))\\
+Thm.~\ref{thm:tworesources} & $D=\emptyset$: any odd $y\in N(r)$ plus a triangle $rab$, under mild contact conditions & proved\\
+Thm.~\ref{thm:relay} & $D=\emptyset$: relay path from a non-$T$-full neighbour of $r$ to a vertex with no core neighbour & proved\\
+Thm.~\ref{thm:fullhub} & a full vertex with two quiet batteries closes every root & proved\\
+Thm.~\ref{thm:general} & all of the above for every deletion degree $d$, incl.\ T(8)-i at universal roots & proved\\
+Prop.~\ref{prop:stage} & no single-stage full-pair program in the six-clique framework & exhaustive (small) search\\
+\midrule
+Q2 & $D=\emptyset$ with full vertices, in general & \textbf{open}; residual in Cor.~\ref{cor:residual}\\
+\bottomrule
+\end{tabular}
+\caption{Summary.}\label{tab:summary}
+\end{table}
+
+\subsection*{Inputs} Only three facts are used.
+\begin{enumerate}[label=(\Alph*)]
+\item Lov\'asz~\cite{L68}: a graph on $N$ vertices with at most one even vertex has a partition into
+$\lfloor N/2\rfloor$ paths. In Lean this is the explicit hypothesis \texttt{LovaszStatement}.
+\item Endpoint-structure Lemma~3~\cite{ES}, a consequence of (A). If $G$ has even order and no
+isolated vertex and $u\in\Ev(G)$, then $G$ has a partition with $b=2$ on $\Ev(G)-u$, $b=0$ at $u$ and
+$b=1$ on $\Od(G)$. In Lean this is \texttt{realisable\_evenSet\_erase}.
+\item Fan's Lemmas 3.3 and 3.4~\cite{Fan}, stated below. In Lean these are \texttt{fan\_grouped}
+and \texttt{fan\_single}.
+\end{enumerate}
+
+\section{Transfers, seeds and relays}\label{sec:tools}
+
+\begin{lemma}[Fan~\cite{Fan}]\label{lem:fan}
+Let $D$ be a partition of a graph $H$, let $v\in V(H)$, and let $S$ be a set of vertices that are
+not adjacent to $v$ in $H$, with $v\notin S$. Write
+$\bl_H(v)=|\{w\in N_H(v):b_D(w)=0\}|$. If $\sum_{s\in S}b_D(s)>\bl_H(v)$, then for some $s\in S$
+the graph $H+sv$ has a partition $D'$ with $|D'|=|D|$, $b_{D'}(v)=b_D(v)+1$,
+$b_{D'}(s)=b_D(s)-1$ and $b_{D'}=b_D$ elsewhere. If $S=\{s\}$ the conclusion holds for this $s$.
+\end{lemma}
+
+We write $s\tr v$ (``$s$ gives an end to $v$'') for one such insertion. For $S=\{s\}$ it is
+\emph{single}; otherwise it is \emph{grouped}, and the donor is not under our control. In a
+certificate every quantity we use is either the current end vector or an upper bound on
+$\bl_H(v)$. We record each step as a pair (supply, bound).
+
+\begin{lemma}[Seeds]\label{lem:seeds}
+Let $G$ have even order and no isolated vertex.
+\begin{enumerate}[label=(\alph*)]
+\item If $\Ev(G)=\emptyset$, then $G$ has a partition into $|G|/2$ paths with $b=1$ everywhere.
+\item If $\Ev(G)=\{u,w\}$, then $G$ has a partition into $|G|/2$ paths with $b(u)=2$, $b(w)=0$ and
+$b=1$ on $\Od(G)$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(a) Apply (A). The partition has at most $|G|/2$ paths, and every vertex is odd and so needs at
+least one end. Counting ends by \eqref{eq:parity} gives exactly one end at each vertex. (b) is (B)
+with $\Ev(G)-w=\{u\}$. The number of paths is $(|G|-2)/2+1$.
+\end{proof}
+
+A certificate in this paper always has the same shape. Choose a set $H$ of \emph{held} edges so
+that $B-H$ satisfies Lemma~\ref{lem:seeds}. Take the seed. Then re-insert the held edges one at a
+time by Lemma~\ref{lem:fan}. The path count never changes, so a certificate that ends with all
+edges present and $b(r)\ge2$ shows that $r$ passes.
+
+\begin{lemma}[Relay]\label{lem:relay}
+Let $D$ be a partition of $H$ and let $v_0v_1\cdots v_m$ $(m\ge1)$ be a path whose edges are not
+in $H$. Put $H_i=H+v_0v_1+\cdots+v_{i-1}v_i$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Forward relay.} Suppose $b(v_i)=1$ for $1\le i<m$, that $b(v_0)>\bl_{H}(v_1)$, and
+that $\bl_{H_{i-1}}(v_i)\le1$ for $2\le i\le m$. Then $H_m$ has a partition with the same number of
+paths, $b(v_0)$ decreased by one, $b(v_m)$ increased by one, and all other counts unchanged.
+\item \emph{Carry.} Suppose $b(v_i)=1$ for $1\le i\le m$, that $\bl_H(v_0)=0$, and that, for
+$1\le i<m$, $v_i$ has no blank neighbour other than itself in $H_{i}$ at the moment it receives.
+Then the transfers $v_1\tr v_0,\ v_2\tr v_1,\dots,v_m\tr v_{m-1}$ succeed. Afterwards $b(v_0)$ is
+increased by one, $b(v_m)=0$, and all other counts are unchanged.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(a) Apply single transfers $v_0\tr v_1,\ v_1\tr v_2,\dots$ in turn. The first needs
+$b(v_0)>\bl_H(v_1)$. After $v_{i-2}\tr v_{i-1}$ the vertex $v_{i-1}$ has two ends, so
+$v_{i-1}\tr v_i$ needs $\bl_{H_{i-1}}(v_i)\le 1$. It then leaves $v_{i-1}$ with one end again.
+(b) After $v_i\tr v_{i-1}$ the vertex $v_i$ has no end. The next transfer $v_{i+1}\tr v_i$ has
+supply $1$ and needs $\bl(v_i)=0$.
+\end{proof}
+
+A carry followed later by a single transfer $v_0\tr v_m$ along a further edge $v_0v_m$ is a
+\emph{battery}. While $v_m$ is \emph{parked} (blank), $v_0$ holds one extra end, and the final
+transfer returns it.
+
+\section{The terminal-step classification}\label{sec:terminal}
+
+The next theorem explains why returns of local edges fail ``by one'' in the clique case. Examples
+are connections \S J and false-twin-return Prop.~4.
+
+\begin{theorem}[Terminal step]\label{thm:terminal}
+Let $B$ have order $2k$, $U=\Ev(B)$, $|U|=6$, $B[U]=K_6$. Let $F\subseteq\Od(B)$ be a set of
+vertices each adjacent to all of $U$, and put $L=U\cup F$. Let $e=uv$ be an edge with $u,v\in L$.
+Let $D'$ be a partition of $B-e$ into $k$ paths with
+$b_{D'}(u)>\bl_{B-e}(v)$. Let $D$ be the partition of $B$ produced by Lemma~\ref{lem:fan}
+(single, $u\tr v$). If $b_D(w)\ge2$ for some $w\in U$, then exactly one of the following holds.
+\begin{enumerate}[label=($\alpha$)]
+\item[($\alpha$)] $u\in U$, $b_D(u)=4$, there is exactly one $w\in U-u$ with $b_D(w)=2$, $b_D=0$ on
+the other four vertices of $U$, $b_D=1$ on $\Od(B)$, and $v\in\{w\}\cup F$.
+\item[($\beta$)] $u\in U$, $b_D(u)=6$, $b_D=0$ on $U-u$, $b_D=1$ on $\Od(B)$, and $v\in F$.
+\item[($\gamma$)] $u\in F$, $b_D(u)=5$, exactly one $w\in U$ has $b_D(w)=2$, $b_D=0$ on $U-w$,
+$b_D=1$ on $\Od(B)-u$, and $v\in\{w\}\cup(F-u)$.
+\end{enumerate}
+In particular $D$ never has the standard profile.
+\end{theorem}
+
+\begin{proof}
+Write $b=b_D$. Then $b_{D'}=b+e_u-e_v$, so $b(v)\ge1$. Define the excess $\varepsilon(w)=b(w)$ for
+$w\in U$ and $\varepsilon(w)=b(w)-1$ for $w$ odd. By \eqref{eq:parity} every $\varepsilon(w)$ is
+even and nonnegative, and $\sum_w\varepsilon(w)=2k-(2k-6)=6$. Let $Z=\{w\in U:b(w)=0\}$ and
+$\beta=|Z|$. Every vertex of $U-Z$ has $b\ge2$, so $2(6-\beta)\le 6$ and $\beta\ge3$.
+
+The vertex $v$ lies in $L$, so it is adjacent in $B$ to every vertex of $U-v$, and $v\notin Z$. A
+vertex $w\in Z-\{u\}$ has $b_{D'}(w)=0$ and is adjacent to $v$ in $B-e$. Hence
+$\bl_{B-e}(v)\ge|Z-\{u\}|$, and Fan's hypothesis gives
+\begin{equation}\label{eq:term}
+b(u)+1=b_{D'}(u)>|Z-\{u\}|.
+\end{equation}
+
+\emph{Case $u\in Z$.} Then \eqref{eq:term} reads $1>\beta-1$, so $\beta\le1$, which contradicts
+$\beta\ge3$.
+
+\emph{Case $u\in U-Z$.} Now $b(u)\ge\beta$. The other $5-\beta$ vertices of $U-Z$ each carry excess
+at least $2$, so $b(u)+2(5-\beta)\le6$, that is $b(u)\le2\beta-4$. Together with $b(u)\ge\beta$
+this gives $\beta\ge4$. If $\beta=4$, then $b(u)=4$, the one remaining vertex $w$ of $U-Z-u$ has
+$b(w)=2$, and no excess is left. That is ($\alpha$). If $\beta=5$, then $b(u)\ge5$ is even, so
+$b(u)=6$ and all excess is at $u$. That is ($\beta$). In both cases $v\ne u$ needs $b(v)\ge1$ with
+no excess, so $v=w$ or $v\in F$ in ($\alpha$), and $v\in F$ in ($\beta$).
+
+\emph{Case $u\in F$.} Write $b(u)=1+2a$. Then \eqref{eq:term} gives $2+2a>\beta$. The excess count
+gives $2a+2(6-\beta)\le6$, so $a\le\beta-3$. Hence $2+2(\beta-3)>\beta$, that is $\beta\ge5$. The
+hypothesis that some $w\in U$ has $b(w)\ge2$ forces $\beta=5$. Then $a\ge2$ from $2+2a>5$, and
+$a\le2$, so $b(u)=5$, $b(w)=2$ for the unique $w\in U-Z$, and there is no other excess. The receiver
+must then be $w$ or a vertex of $F-u$.
+\end{proof}
+
+\begin{theorem}[Terminal step, leaf form]\label{thm:terminalW}
+Let $W=B+\ell$, where $\ell$ is a new leaf at $r$, so that $|W|=2k+1$ and $\Ev(W)=T$. With
+$B[U]=K_6$ and $F$ as above, put $L=T\cup\{r\}\cup F$. If the last edge $uv$, with $u,v\in L$, is
+inserted by a single Fan step into a partition of $W-uv$ into $k$ paths, then either
+\begin{enumerate}[label=($\alpha_W$)]
+\item[($\alpha_W$)] $u\in T$, $b(u)=4$, $b=0$ on $T-u$, $b=1$ on $\Od(W)$, and $v\in\{r\}\cup F$; or
+\item[($\gamma_W$)] $u\in\{r\}\cup F$, $b(u)=5$, $b=0$ on $T$, $b=1$ on $\Od(W)-u$, and
+$v\in(\{r\}\cup F)-u$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+The argument is the same, with total excess $2k-(2k-4)=4$ and $|T|=5$. One gets $\beta\ge3$ and
+\eqref{eq:term}. The case $u\in Z$ is impossible. For $u\in T-Z$ one gets $b(u)\le2\beta-4$ and
+$b(u)\ge\beta$, hence $\beta=4$ and $b(u)=4$. For $u$ odd one gets $\beta=5$ and $b(u)=5$.
+\end{proof}
+
+\begin{corollary}\label{cor:nonlocal}
+Consider any certificate (\S\ref{sec:tools}) for the rooted test at $D=\emptyset$ that ends at the
+standard profile, or any certificate for the floor bound of $W$. Its last inserted edge has an end
+outside $L$, unless it passes through a hub profile ($\alpha$)--($\gamma$), resp.\
+($\alpha_W$), ($\gamma_W$). In particular, returning a single edge $rx$ at a full $x$ from a
+partition of $B-rx$ rooted at $x$ is never justified by Fan's inequality when the outcome is
+standard. This is the numerical obstruction of false-twin-return Prop.~4.
+\end{corollary}
+
+\begin{remark}[Hub capacity]\label{rem:capacity}
+The hub profiles need a vertex with $4$--$6$ ends. Fan receipts cannot produce these from the
+clique alone. Let a vertex $h$ have no blank neighbour, and let it receive successively from $m$
+non-neighbours, each with exactly one end, where each spent donor becomes a blank neighbour of
+$h$. After $j$ receipts the remaining supply is $m-j$ and $h$ has $j$ blank neighbours, so at most
+$\lceil m/2\rceil$ receipts are possible. With $m=5$, the hub $r$ (or a full $x$) collects three
+ends from $T$. A hub that must then donate to receivers adjacent to all three new blanks needs
+supply at least $4$ at each donation. The \emph{root hub} $r$ makes two such donations and ends
+with two ends. The \emph{full hub} makes three and ends with one. Counting ends, the root hub is
+short by exactly one unit and the full hub by exactly two. The resources of
+\S\S\ref{sec:roothub}--\ref{sec:fullhub} supply these units through non-local edges, as
+Corollary~\ref{cor:nonlocal} requires.
+\end{remark}
+
+\section{Root hubs}\label{sec:roothub}
+
+In this section $Q=T-N(r)$ is the set of core non-neighbours of $r$. Note $|Q|=\deg_D(r)$. The
+residual root positions of the shape theorem have $|Q|=0$ (all roots for $D=\emptyset$, and roots
+off the edge for $D=K_2$), $|Q|=1$ (the roots on the edge for $D=K_2$), and $|Q|=2$ (the middle of
+$P_3$, a vertex of $K_3$, a vertex of $C_4$). The theorems below do not assume a shape. They use
+only $|Q|$.
+
+\begin{theorem}[Root hub]\label{thm:roothub}
+Let $B$ have even order $2k$, $U=\Ev(B)$, $|U|=6$, $r\in U$, $T=U-r$, $Q=T-N(r)$.
+\begin{enumerate}[label=(\roman*)]
+\item If $Q=\emptyset$, $d(r)\ge8$, and $r$ has an odd neighbour $y$ with $d(y)\ge3$ and
+$|N(y)\cap T|\le2$, then $r$ passes.
+\item If $Q=\{q\}$, $d(r)\ge8$, and $r$ has two adjacent odd neighbours $a,b$ with
+$|N(a)\cap T|\le2$ and $bq\notin E(B)$, then $r$ passes.
+\item If $Q=\{q_1,q_2\}$ and $r$ has two adjacent odd neighbours $a,b$ with
+$|N(a)\cap N_T(r)|\le1$ and $bq_2\notin E(B)$, then $r$ passes.
+\end{enumerate}
+In each case the partition has exactly $k$ paths, one end at every odd vertex, and three doubled
+vertices of $U$, one of which is $r$.
+\end{theorem}
+
+\begin{proof}
+(i) Hold $H=\{rt:t\in T\}\cup\{ry\}$. In $B_0=B-H$ the vertex $r$ has even degree $d(r)-6\ge2$, $y$
+has even degree $d(y)-1\ge2$, the vertices of $T$ are odd, and nothing else changed. So
+$\Ev(B_0)=\{r,y\}$ and $B_0$ has no isolated vertex. Lemma~\ref{lem:seeds}(b) gives a seed with
+$k$ paths, $b(r)=2$, $b(y)=0$ and $b=1$ elsewhere. The only blank vertex is $y$, and $y$ is not
+adjacent to $r$ in $B_0$. Write $N(y)\cap T\subseteq\{p,p'\}$. If $N(y)\cap T$ is empty, let $p$ be
+any vertex of $T$. Perform:
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+step & transfer & (supply, bound on $\bl$) & reason for the bound\\
+\midrule
+1 & $p\tr r$ (single) & $(1,0)$ & no blank neighbour of $r$ ($ry$ held)\\
+2 & $(T-p)\tr r$ (grouped), donor $z_2$ & $(4,1)$ & blank neighbours of $r$: $p$\\
+3 & $(T-\{p,z_2\})\tr r$, donor $z_3$ & $(3,2)$ & $p,z_2$\\
+4 & $r\tr s_1$ & $(5,4)$ & $Z=\{p,z_2,z_3\}$, and possibly $y$\\
+5 & $r\tr s_2$ & $(4,3)$ & $Z$ only\\
+6 & $r\tr y$ & $(3,2)$ & $N(y)\cap Z\subseteq\{p,p'\}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Here $\{s_1,s_2\}=T-Z$, ordered so that $s_1=p'$ if $p'\in T-Z$. Since $p\in Z$, at most one of
+$s_1,s_2$ is adjacent to the blank vertex $y$, and if one is, it is $s_1$. In steps 4--5 the blank
+vertices are $Z$ and $y$, so $\bl(s_1)\le4$ and $\bl(s_2)\le3$. At step 6 the blank vertices are
+$Z$ alone, and $y$ sees at most $p,p'$ of them. Every step satisfies Lemma~\ref{lem:fan}, all held
+edges are restored, and the final counts are $b(r)=2$, $b(s_1)=b(s_2)=2$, $b=0$ on $Z$ and $b(y)=1$.
+
+(ii) Hold $H=\{rt:t\in T-q\}\cup\{ra,rb,ab\}$. In $B_0$, $r$ has even degree $d(r)-6\ge2$, $q$ is
+untouched and even, $T-q$, $a$ and $b$ are odd. Lemma~\ref{lem:seeds}(b) gives $b(r)=2$, $b(q)=0$,
+and $b=1$ elsewhere. The blank vertex $q$ is adjacent neither to $r$ nor to $b$. Let $z_1$ be a
+vertex of $N(a)\cap(T-q)$ if this set is nonempty, and any vertex of $T-q$ otherwise.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+step & transfer & (supply, bound) & reason\\
+\midrule
+1 & $b\tr r$ & $(1,0)$ & $q\notin N(r)$; $ra$ held\\
+2 & $a\tr b$ & $(1,0)$ & $q\notin N(b)$; $a$ is now parked\\
+3 & $z_1\tr r$ & $(1,0)$ & $a$, $q$ not adjacent to $r$\\
+4 & $(T-q-z_1)\tr r$, donor $z_2$ & $(3,1)$ & $z_1$\\
+5 & $r\tr s_1$ & $(5,4)$ & $Z=\{q,z_1,z_2\}$, and possibly $a$\\
+6 & $r\tr s_2$ & $(4,3)$ & $Z$\\
+7 & $r\tr a$ & $(3,2)$ & $|N(a)\cap Z|\le|N(a)\cap T|\le2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Here $\{s_1,s_2\}=T-Z$, and $N(a)\cap(T-q)\subseteq\{z_1,w\}$, so at most one receiver ($w$) is
+adjacent to the parked vertex $a$. Order it first. The final counts are $b(r)=2$, two doubled
+receivers and $Z$ blank.
+
+(iii) Let $N_T(r)=\{t_1,t_2,t_3\}$ and hold $H=\{rt_1,rt_2,rt_3,ra,rb,ab\}$. In $B_0$, $r$ has odd
+degree $d(r)-5$, $q_1,q_2$ are untouched and even, and the rest is odd. So $\Ev(B_0)=\{q_1,q_2\}$,
+and Lemma~\ref{lem:seeds}(b) gives $b(q_1)=2$, $b(q_2)=0$, $b(r)=1$ and $b=1$ elsewhere. Let $z_1$
+be the vertex of $N(a)\cap N_T(r)$ if there is one, and any $t_i$ otherwise.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+step & transfer & (supply, bound) & reason\\
+\midrule
+1 & $b\tr r$ & $(1,0)$ & $q_1,q_2\notin N(r)$\\
+2 & $a\tr b$ & $(1,0)$ & $q_2\notin N(b)$; $a$ parked\\
+3 & $z_1\tr r$ & $(1,0)$ & \\
+4 & $(N_T(r)-z_1)\tr r$, donor $z_2$ & $(2,1)$ & $z_1$\\
+5 & $r\tr s$ & $(4,3)$ & $Z=\{q_2,z_1,z_2\}$; $s\notin N(a)$\\
+6 & $r\tr a$ & $(3,2)$ & $N(a)\cap Z\subseteq\{q_2,z_1\}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Here $s$ is the third vertex of $N_T(r)$. It is not adjacent to $a$ because
+$N(a)\cap N_T(r)\subseteq\{z_1\}$. The final counts are $b(r)=b(q_1)=b(s)=2$ and $b=0$ on $Z$.
+\end{proof}
+
+\begin{remark}
+Part (i) overlaps six-even-incidence Thm.~1(1) when $|S(y)|\le2$, where $S(y)=N(y)\cap U$. That
+theorem allows any odd vertex with one or two core neighbours, but its proof rests on the
+unreplayed trees of Lemma~2. Part (i) is new for $|S(y)|=3$, i.e.\ $S(y)=\{r,p,p'\}$, for every
+exterior degree. The four-exterior-neighbors analysis left the type $(|S|,e)=(3,4)$ open for two
+masks and $(3,\ge6)$ open in general. Parts (ii) and (iii) are, as far as we can tell, the first
+closures specific to $D=K_2$ with $r$ on the edge and to the $P_3$, $K_3$ and $C_4$ root positions.
+\end{remark}
+
+\begin{theorem}[Two resources]\label{thm:tworesources}
+Let $Q=\emptyset$ and $d(r)\ge10$. Suppose $r$ has distinct odd neighbours $y,a,b$ with $ab\in E$,
+$y\notin N(a)\cup N(b)$, $|N(a)\cap T|\le4$ and $|N(y)\cap N(a)\cap T|\le2$, and $d(y)\ge3$. Then
+$r$ passes. No bound on $|N(y)\cap T|$ is needed.
+\end{theorem}
+\begin{proof}
+Hold $\{rt:t\in T\}\cup\{ry,ra,rb,ab\}$. Then $\Ev(B_0)=\{r,y\}$, with $r$ of degree
+$d(r)-8\ge2$. The seed has $b(r)=2$ and $b(y)=0$. Let $z_1\in T-N(a)$, which exists since
+$|N(a)\cap T|\le4$, and let $C=N(y)\cap N(a)\cap T$.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+step & transfer & (supply, bound) & reason\\
+\midrule
+1, 2 & $b\tr r$, $a\tr b$ & $(1,0)$, $(1,0)$ & $y\notin N(r)$ in $B_0$, $y\notin N(b)$\\
+3 & $z_1\tr r$ & $(1,0)$ & \\
+4 & $P_2\tr r$, donor $z_2$ & $(2\text{ or }4,1)$ & $P_2=C$ if $|C|=2$, else $P_2=T-z_1$\\
+5 & $(T-\{z_1,z_2\})\tr r$ & $(3,2)$ & \\
+6 & $r\tr s_1$ & $(6,5)$ & $Z$, plus possibly $y$ and $a$\\
+7 & $r\tr s_2$ & $(5,4)$ & $Z$, plus at most one of $y,a$\\
+8 & $r\tr y$ & $(4,3)$ & $|N(y)\cap Z|\le3$, and $y\notin N(a)$\\
+9 & $r\tr a$ & $(3,2)$ & $z_1\in Z-N(a)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A receiver $s\in T-Z$ sees the parked $y$ and $a$ only if $s\in N(y)$, resp.\ $N(a)$. Both happen
+only if $s\in C$. Since $z_1\notin N(a)\supseteq C$, we have $C\subseteq T-z_1$. If $|C|=2$,
+step 4 offers $P_2=C$, so $|C\cap(T-Z)|\le1$. If $|C|\le1$, this holds trivially. Ordering the
+receivers with the one in $C$ (if any) first gives the bounds in steps 6--7. Finally
+$b(r)=2+1+3-2-2=2$.
+\end{proof}
+
+\begin{theorem}[Relay to a quiet vertex]\label{thm:relay}
+Let $Q=\emptyset$ and $d(r)\ge8$. Suppose $r c_1c_2\cdots c_m a$ $(m\ge1)$ is a path of odd
+vertices such that:
+\begin{itemize}
+\item $|N(c_1)\cap T|\le4$;
+\item $N(c_i)\cap U=\emptyset$ for $2\le i\le m$;
+\item $N(a)\cap U=\emptyset$, $a\notin N(r)$, and $a\notin N(c_i)$ for $i<m$;
+\item $d(a)\ge3$.
+\end{itemize}
+Then $r$ passes.
+\end{theorem}
+\begin{proof}
+Hold $\{rt:t\in T\}$ and the edges of the path. Then $\Ev(B_0)=\{r,a\}$, and the seed has
+$b(r)=2$, $b(a)=0$. Choose $z_1\in T-N(c_1)$. Perform $z_1\tr r$ $(1,0)$, two grouped receipts at
+$r$ $(4,1)$ and $(3,2)$, and $r\tr s_1$, $r\tr s_2$ $(5,3)$ and $(4,3)$. In these steps $a$ is the
+only blank vertex outside $Z$. It is adjacent to no vertex of $U$, so the bounds hold. Then apply
+the forward relay (Lemma~\ref{lem:relay}(a)) along $rc_1\cdots c_ma$. The first step is
+$r\tr c_1$ with supply $3$ and $\bl(c_1)\le|N(c_1)\cap Z|\le2$, since $z_1\notin N(c_1)$ and $c_1a$
+is held or $c_1\notin N(a)$. Every later receiver sees at most the blank $a$, and only along the
+held edge $c_ma$. Finally $b(r)=2$.
+\end{proof}
+
+\begin{corollary}[Residual constraints at $D=\emptyset$]\label{cor:residual}
+Let $r$ be a root that fails, in a graph with $B[U]=K_6$ (with or without full vertices), with
+$d(r)\ge10$ and $\delta(B)\ge3$. Then:
+\begin{enumerate}[label=(\alph*)]
+\item every odd neighbour of $r$ has at least three neighbours in $T$, so $|S(y)|\ge4$ for
+$y\in N(r)\cap\Od(B)$;
+\item no odd neighbour $c$ of $r$ with $|N(c)\cap T|\le4$ is joined to a vertex with no core
+neighbour by a path through vertices with no core neighbour, as in Theorem~\ref{thm:relay};
+\item for every triangle $rab$ of odd vertices with $|N(a)\cap T|\le4$, every other odd neighbour
+$y$ of $r$ is adjacent to $a$ or $b$ or satisfies $|N(y)\cap N(a)\cap T|\ge3$;
+\item no vertex adjacent to all of $U$ satisfies the hypotheses of Theorem~\ref{thm:fullhub}.
+\end{enumerate}
+\end{corollary}
+
+\section{Full hubs and batteries}\label{sec:fullhub}
+
+\begin{definition}
+Let $x\in\Od(B)$ be adjacent to all of $U$. A \emph{quiet battery} at $x$ is a triangle $xab$ with
+$a,b\in\Od(B)$ and $N(a)\cap U=\emptyset$. The vertex $a$ is the \emph{parked} vertex. A
+\emph{quiet pendant} at $x$ is an odd neighbour $y$ of $x$ with $N(y)\cap U=\emptyset$ and
+$d(y)\ge3$.
+\end{definition}
+
+\begin{theorem}[Full hub]\label{thm:fullhub}
+Let $B$ have even order, $U=\Ev(B)$, $|U|=6$, with any core $B[U]$, and let $x\in\Od(B)$ be
+adjacent to all of $U$. Suppose $x$ carries quiet batteries $xa_1b_1$ and $xa_2b_2$ on five
+distinct vertices with $a_1b_2\notin E$. Then every $r\in U$ passes. The same holds if $x$ carries
+one quiet battery $xa_1b_1$ and a quiet pendant $y\notin\{a_1,b_1\}$ with $yb_1\notin E$, provided
+$x$ has a neighbour outside $U\cup\{a_1,b_1,y\}$.
+\end{theorem}
+\begin{proof}
+Two batteries. Hold $\{xu:u\in U\}$ and the six battery edges. In $B_0$ every vertex is odd:
+$x$ lost ten edges, $a_i$ and $b_i$ lost two, and the vertices of $U$ lost one. The seed
+(Lemma~\ref{lem:seeds}(a)) has $b=1$ everywhere. Fix $r\in U$.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+step & transfer & (supply, bound) & reason\\
+\midrule
+1, 2 & $b_1\tr x$, $a_1\tr b_1$ & $(1,0)$, $(1,0)$ & carry; $a_1$ parked\\
+3, 4 & $b_2\tr x$, $a_2\tr b_2$ & $(1,0)$, $(1,0)$ & $xa_1$ held; $b_2\notin N(a_1)$; $a_2$ parked\\
+5--7 & three grouped receipts $(U-r)\tr x$ & $(5,0)$, $(4,1)$, $(3,2)$ & spent donors; $a_i$ not adjacent to $x$\\
+8--10 & $x\tr u$ for $u\in\{r\}\cup(T-Z)$ & $(6,3)$, $(5,3)$, $(4,3)$ & $|Z|=3$; the $a_i$ have no core neighbour\\
+11 & $x\tr a_1$ & $(3,1)$ & $N(a_1)\cap Z=\emptyset$; possibly $a_2$\\
+12 & $x\tr a_2$ & $(2,0)$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The final counts are $b(x)=1+2+3-3-2=1$, $b=2$ on $r$ and on the two receivers in $T-Z$, $b=0$ on
+$Z$, and $b=1$ on all odd vertices.
+
+Pendant and battery. Hold $\{xu\}$, $xy$ and the battery. Now $x$ (degree $d(x)-9\ge2$) and $y$ are
+the even vertices of $B_0$. Lemma~\ref{lem:seeds}(b) doubles $x$ and leaves $y$ blank. Carry on the
+battery $(1,0)$, $(1,0)$, using $yb_1\notin E$. Then $x$ has $4$ ends. Do three receipts and
+reach $6$. The donations and the paybacks to $y$ and $a_1$ have the same bounds as above, because
+$y$ and $a_1$ have no core neighbour.
+\end{proof}
+
+\begin{remark}[Full vertices are not resources for the root hub]\label{rem:fullnot}
+A full vertex can serve as the pendant of Theorem~\ref{thm:roothub}(i) only with
+$|N(y)\cap T|=5$. While parked it is a blank neighbour of every receiver in $T-Z$. This costs one
+unit at each donation, which cancels the unit it supplies. This is why the residual
+(Corollary~\ref{cor:residual}) is reached exactly when all of $r$'s odd neighbours are
+``core-heavy''. The false-twin example $B=K_{10}$ minus the six edges from $9$ to $U$ satisfies
+none of the hypotheses of \S\S\ref{sec:roothub}--\ref{sec:fullhub}. Every odd neighbour of $r$ is
+full, and the only vertex with no core neighbour, $9$, supports a single battery. Yet $B$ passes,
+by direct computation (every triple of $U$ is realisable).
+\end{remark}
+
+\section{All deletion degrees}\label{sec:general}
+
+The counting of Remark~\ref{rem:capacity} is uniform in $d$. Let $|U|=d$ (even), $T=U-r$.
+
+\begin{theorem}[Hubs at deletion degree $d$]\label{thm:general}
+Let $B$ have even order with $\Ev(B)=U$, $|U|=d\ge4$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Root hub.} Let $r\in U$ be adjacent to all of $T$. Suppose $r$ has a quiet odd
+neighbour $y$ ($N(y)\cap T=\emptyset$, $d(y)\ge3$). Suppose also that $r$ carries $\beta\ge d/2-3$
+quiet battery triangles $ra_ib_i$ ($a_i,b_i$ odd, $N(a_i)\cap T=\emptyset$), all vertices
+distinct, with $b_i\notin N(y)$ and $a_ib_j\notin E$ for $i<j$. Finally suppose $d(r)\ge d+2+2\beta$.
+Then $r$ passes.
+\item \emph{Full hub.} Let $x\in\Od(B)$ be adjacent to all of $U$ and carry $\beta\ge d/2-1$ quiet
+batteries $xa_ib_i$ (distinct vertices, $N(a_i)\cap U=\emptyset$, $a_ib_j\notin E$ for $i<j$).
+Then every $r\in U$ passes. The same holds with $\beta\ge d/2-2$ batteries and one quiet pendant
+$y$ with $b_i\notin N(y)$, if $x$ has a further neighbour.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) Hold $\{rt:t\in T\}$, $ry$ and the battery triangles. Then $\Ev(B_0)=\{r,y\}$, since $r$ lost
+$d+2\beta$ edges and the battery vertices lost two each. The seed has $b(r)=2$, $b(y)=0$. Carry
+each battery: $b_i\tr r$, then $a_i\tr b_i$, with bounds $0$ because $y$ and the earlier parked
+$a_j$ are not adjacent to $b_i$. Now $b(r)=2+\beta$. Receive $d/2$ times from $T$. The $j$-th
+receipt ($0\le j<d/2$) has supply $d-1-j>j$ blank neighbours. Then $b(r)=2+\beta+d/2$ and
+$|Z|=d/2$. Donate to the $d/2-1$ vertices of $T-Z$. The $i$-th donation has supply
+$2+\beta+d/2-i>d/2\ge\bl$, because $i\le d/2-2\le\beta+1$ and the parked vertices have no
+neighbour in $T$. Then $b(r)=\beta+3$. Pay back $y,a_1,\dots,a_\beta$. The $j$-th payback has
+supply $\beta+3-j$ against at most $\beta-j$ parked blank neighbours. The final count is
+$b(r)=2$.
+
+(b) The same computation applies with seed $b(x)=1$ (Lemma~\ref{lem:seeds}(a)), $d/2$ receipts and
+$d/2$ donations (to $r$ and to $T-Z$). The $i$-th donation has supply $1+\beta+d/2-i>d/2$ for
+$i\le d/2-1\le\beta$. Then there are $\beta$ paybacks. With a pendant, the seed is $b(x)=2$ by
+Lemma~\ref{lem:seeds}(b).
+\end{proof}
+
+\begin{remark}
+For $d=4$ the root hub needs no battery and no quietness. The single donation has supply $4$
+against at most $3$ blank neighbours, and the payback has supply $3$ against at most $2$. This
+recovers T(4)-i at every universal root, consistently with Fan--Hou--Zhou. For $d=8$, (a) needs
+one battery and (b) needs three batteries (or two and a pendant). These are, to our knowledge, the
+first closures of the open test T(8)-i at roots adjacent to all other even vertices. The gap
+between (a) and (b) is the gap of Remark~\ref{rem:capacity}: a root hub ends with two ends, a full
+hub with one.
+\end{remark}
+
+\section{Full pairs do not fit the six-clique stages}\label{sec:stage}
+
+Six-clique Thm.~1 and Cor.~5 use three stages. At each stage two clique vertices are blank, the
+present clique edges form $D_0=\{23,45\}$, $D_1=D_0+\{02,13\}$ or
+$D_2=D_1+\{14,01,03,35\}$, and Lemma~4 inserts all spokes of a pair of equal-type exterior vertices
+while restoring the end vector. Cor.~5 requires $|A|<6$ so that some stage has a blank pair
+meeting $A$ at most once.
+
+\begin{proposition}\label{prop:stage}
+At each of the three stages, with blanks $\{0,1\}$, $\{2,3\}$, $\{4,5\}$ and present clique edges
+$D_0,D_1,D_2$ respectively, consider two full vertices $x,y$ with one end each and no spoke
+present. No sequence of Fan transfers (Lemma~\ref{lem:fan}, grouped offers branching on every
+donor, worst-case blank counting with exterior vertices never blank) inserts all twelve spokes
+and restores all end counts. This holds whether or not $xy\in E$, and also when $x,y$ start with a
+two-spoke seed row $xpy$ through any clique vertex $p$. The same search re-finds Lemma~4 for
+five-contact pairs.
+\end{proposition}
+\begin{proof}
+Exhaustive AND--OR search over all receivers and all inclusion-minimal donor sets; script
+\texttt{scripts/stage\_search.py}, output \texttt{scripts/stage\_search.out}.
+\end{proof}
+
+So any extension of six-clique Thm.~1 or Thm.~6 to full vertices must interleave a full pair with
+the core transfers across stages, or change the core sequence. Corollary~\ref{cor:nonlocal} says
+the final step must then be non-local, as the final clique path of six-clique Thm.~1 is.
+
+\section{What is closed and what remains}\label{sec:remains}
+
+\subsection*{Closed} For every residual core shape and every residual root position: the
+small-contact witnesses of Theorems~\ref{thm:roothub}--\ref{thm:relay}. For $D=\emptyset$ with full
+vertices: any full vertex with two quiet batteries, or a quiet pendant and one quiet battery
+(Theorem~\ref{thm:fullhub}). For every $d$: Theorem~\ref{thm:general}.
+
+\subsection*{Not closed} Q2 itself. A failure at a root $r$ with $D=\emptyset$ and $d(r)\ge10$
+must satisfy Corollary~\ref{cor:residual} as well as the earlier constraints: the bad-vertex list,
+$\delta\ge6$, $3$-connectivity of $J$, and $|S(x)|\notin\{1,2\}$. In particular all odd neighbours
+of $r$ are core-heavy ($|S|\ge4$), and vertices with no core neighbour are separated from $r$'s
+non-$T$-full neighbours.
+
+\subsection*{Where the method stops} Three limitations are visible.
+\begin{enumerate}
+\item \emph{Donor control.} Grouped receipts return an uncontrolled donor. With
+$|N(y)\cap T|=3$ in Theorem~\ref{thm:roothub}(i), an adversarial choice of $z_2,z_3$ can always
+defeat the payback. Full control of $Z$ would close $|N(y)\cap T|=3$.
+\item \emph{No resources.} If every odd vertex within distance two of $r$ is core-heavy, the
+counting in Remark~\ref{rem:capacity} leaves the root hub one unit short. The full hub is two
+units short without quiet structure. The false-twin example is of this kind.
+\item \emph{Inequality versus chain.} Fan's inequality is only sufficient. At equality the
+transfer fails only if every donor-ending path reaches the receiver through a distinct blank
+predecessor. In the stuck state of the root hub ($b(r)=3$, receiver $s_2$, three blanks) this
+means all three $r$-ending paths enter $s_2$ from distinct vertices of $Z$. A structural use of
+this rigidity, a genuine ``two-end transfer'', is the most promising missing ingredient.
+\end{enumerate}
+
+\begin{question}
+In the apex class with $D=\emptyset$, does every root have, within distance two, an odd vertex
+whose core neighbourhood is small enough to act as a pendant or a battery?
+\end{question}
+
+\subsection*{Observation (small computation)} In nine random graphs with $B[U]=K_6$ and one or two
+full vertices (orders $10$ and $12$), \emph{every} 3-subset of $U$ was realisable, and so was the
+false-twin example. This is consistent with uniformity of the endpoint matroid
+(connections~\S M(a)) in this class. It is evidence only.
+
+\section{Formalization notes}\label{sec:lean}
+
+All results except Proposition~\ref{prop:stage} are finite compositions of three formalized
+statements: \texttt{realisable\_evenSet\_erase} (or \texttt{LovaszStatement} with
+\texttt{PathDecomp.ends\_eq\_of\_tight}) for the seed, and \texttt{fan\_single} /
+\texttt{fan\_grouped} for each row of a step table. The intended Lean shape is described below.
+
+\begin{itemize}
+\item \emph{Statements.} \texttt{G : SimpleGraph V}, \texttt{[Fintype V] [DecidableEq V]
+[DecidableRel G.Adj]}, \texttt{evenSet G = U}, \texttt{U.card = 6}, and adjacency hypotheses as
+\texttt{G.Adj}/\texttt{¬ G.Adj} facts and \texttt{Finset} cardinality bounds on
+\texttt{(G.neighborFinset y ∩ T)}. Conclusion:
+\texttt{∃ D : PathDecomp G, D.size ≤ Fintype.card V / 2 ∧ 2 ≤ D.ends r}, under
+\texttt{LovaszStatement}.
+\item \emph{Seed.} \texttt{G₀ := G.deleteEdges H}. Prove \texttt{evenSet G₀ = \{r, y\}} from
+degree bookkeeping, then apply \texttt{realisable\_evenSet\_erase}. \texttt{Realises.size\_eq}
+gives the size $k$.
+\item \emph{Steps.} Each row is one call. The hypothesis
+\texttt{\#\{w ∈ N(u) : ends w = 0\} < supply} follows from an explicit description of the blank set
+(for example $Z\cup\{y\}$) and an inclusion of finsets. Grouped rows existentially introduce the
+donor, as in \texttt{fan\_grouped}'s conclusion. The proof then continues uniformly in the donor,
+with no case split on its identity, only on membership facts such as $p\in Z$. A reusable
+\emph{schedule lemma}, ``a list of rows each satisfying its inequality yields the final
+decomposition'', would make all certificates one-liners. This dovetails with the insertion-schedule
+lemma planned in the \texttt{claude/lean-six-clique} workstream.
+\item \emph{Terminal theorem.} Pure counting on \texttt{D.ends}, using \texttt{sum\_ends},
+\texttt{ends\_mod\_two} and the clique adjacency. It needs no path surgery and is the easiest
+target.
+\item \emph{Relay lemma.} Induction on the path length with \texttt{fan\_single}.
+\end{itemize}
+
+\section*{Computational checks}
+
+All scripts are in \texttt{scripts/} and use \texttt{tools/pathnum2.py} only to compute seeds
+(partitions with exact end vectors, which exist by Lemma~\ref{lem:seeds}). The certificates
+themselves are executed by \texttt{scripts/fan\_engine.py}. This is an independent implementation
+of Fan's chain construction, self-tested by \texttt{test\_engine.py} on $800$ random instances.
+Every step asserts that the actual number of blank neighbours is at most the bound used in the
+proof, and every output partition is verified edge by edge.
+
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+script & checks & result\\
+\midrule
+\texttt{terminal\_check.py} & Thms.~\ref{thm:terminal}, \ref{thm:terminalW}: all excess distributions & only hub profiles survive\\
+\texttt{replay\_root\_hub.py} & Thm.~\ref{thm:roothub}(i), $|N(y)\cap T|\in\{0,1,2\}$, $n=12,14$ & 10/10 verified\\
+\texttt{replay\_shapes.py} & Thm.~\ref{thm:roothub}(ii), (iii): $D=K_2,P_3,K_3,C_4$ & 8/8 verified\\
+\texttt{replay\_two\_resources.py} & Thm.~\ref{thm:tworesources}, $|N(a)\cap T|=3$ & 4/4 verified\\
+\texttt{replay\_relay.py} & Thm.~\ref{thm:relay}, $m=1,2$ & 5/5 verified\\
+\texttt{replay\_full\_hub.py} & Thm.~\ref{thm:fullhub}, every root & 3 graphs $\times$ 6 roots\\
+\texttt{replay\_general\_d.py} & Thm.~\ref{thm:general}, $d=8$, root and full hub & 3/3 verified\\
+\texttt{stage\_search.py} & Prop.~\ref{prop:stage} & no program; Lemma 4 re-found\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{9}
+\bibitem{ES} Endpoint sets of path decompositions at the Gallai budget, working draft
+(\texttt{manuscripts/endpoint-structure}), Lemmas 1--4; formalized in
+\texttt{lean/GallaiLean/Realisable.lean}.
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J.\ Combin.\ Theory Ser.~B 93
+(2005) 117--125, Lemmas 3.3--3.4; formalized in \texttt{lean/GallaiLean/Fan.lean}.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Tihany 1966), Academic
+Press, 1968, 231--236.
+\bibitem{6CL} Prescribed path ends at a clique of six even vertices (six-clique-prescribed-ends),
+November 2026; Lemmas 2--4, Thm.~1, Cor.~5, Thm.~6.
+\bibitem{FTR} A false-twin return at a full exterior vertex, technical note, November 2026.
+\end{thebibliography}
+
+\end{document}
