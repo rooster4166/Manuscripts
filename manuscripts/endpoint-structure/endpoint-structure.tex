@@ -520,7 +520,10 @@ different from $y$, so they are not adjacent to $y$, and Lemma~\ref{lem:lift} gi
 $\Ev\setminus R\in\cF(G)$.
 \end{proof}
 
-Neither parity nor criticality is used. Connectivity matters for $k\ge3$. The proof of
+Neither parity nor criticality is used, and the induction never changes the vertex set, so the
+theorem also holds for graphs on a fixed vertex set, in particular of fixed even order; this is the
+form combined with Corollary~\ref{cor:three} below (and the form of \texttt{desc\_reduction}).
+Connectivity matters for $k\ge3$. The proof of
 Theorem~\ref{thm:two} is a path induction that never needs connectivity of the graph, but the
 corresponding base statement fails for disconnected graphs when $k=3$. In $(K_5-e)\sqcup(K_5-e)$
 ($n=10$, $e=6$) every even vertex has an even neighbour, yet every realisable set has at least four
@@ -582,7 +585,8 @@ $\Ev(A^+)=\Ev\cap A$; symmetrically $\Ev(B^+)=\Ev\cap B$.
 Let $yt$ be a bridge of $G$.
 \begin{enumerate}
 \item If $S_A\in\cF(A^+)$ and $S_B\in\cF(B^+)$, then $S_A\cup S_B\in\cF(G)$.
-\item Let $y$ be even in $G$, $S_A\in\cF(G[A])$ and $S_B\in\cF(G[B])$, where $t\in S_B$ if $t$ is
+\item Let $y$ be even in $G$ and $d(t)\ge2$ (so that $G[B]$ has no isolated vertex),
+$S_A\in\cF(G[A])$ and $S_B\in\cF(G[B])$, where $t\in S_B$ if $t$ is
 even in $G[B]$. Then $S_A\cup(S_B\setminus\{t\})\cup\{y\}\in\cF(G)$.
 \end{enumerate}
 \end{lemma}
@@ -699,8 +703,11 @@ $G^{\Ev\setminus\{u\}}$ has the single even vertex $u$ and $n+e-1$ vertices; sin
 e\pmod 2$, this number is odd, so Lov\'asz's theorem gives a partition into
 $(n+e-2)/2=|\Od(G^{\Ev\setminus\{u\}})|/2$ paths, and Lemma~\ref{lem:dict} shows that
 $\Ev\setminus\{u\}$ is realisable. In the same way $G^{\Ev}$ has no even vertex, which gives
-Lemma~\ref{lem:faithful}. (The Lean proofs use the apex form and keep the hypothesis $n$ even;
-everything in this section is formalized for even $n$.)
+Lemma~\ref{lem:faithful}. (The Lean proofs use the apex form and keep the hypothesis $n$ even. The main statements of this
+section are formalized for even $n$; not formalized are the moves (S) and (C) of
+Proposition~\ref{prop:moves}, the classification in Corollary~\ref{cor:fd2},
+Corollary~\ref{cor:fd2strong}, the assembly of Theorem~\ref{thm:b}, and (O2), (O3) and the
+cut-vertex criterion of Section~\ref{sec:obstructions}.)
 \end{remark}
 
 \subsection{Tight graphs}
@@ -832,7 +839,8 @@ Conversely each of the four graphs makes all of $\Ev\setminus\{r\}$ pairwise twi
 
 So the second step of faithful descent is proved, for every root, except when the E-subgraph is
 complete or edgeless up to the edges at the root; Theorem~\ref{thm:pair} below removes most of
-these exceptions.
+these exceptions, and for connected $G$ Theorem~\ref{thm:two} removes all of them
+(Remark~\ref{rem:twostep}).
 
 \subsection{Fan certificates}
 
@@ -926,8 +934,9 @@ $\Ev\setminus\{u,r\}$, or
 \begin{proof}
 Suppose no $v$ works. By Corollary~\ref{cor:fd2}, $G[\Ev\setminus\{r\}]$ is complete or edgeless
 and $r$ is adjacent to all or none of $\Ev\setminus\{r\}$. If $G[\Ev\setminus\{r\}]$ is complete
-and $e\ge6$, any three vertices $a,a',w$ of $\Ev\setminus\{u,r\}$ satisfy Theorem~\ref{thm:pair}
-($d(w)\ge e-2\ge4$). If it is complete, $e=4$ and $r$ is adjacent to $\Ev\setminus\{r\}$, take
+and $e\ge5$ (odd orders are allowed in this section), any three vertices $a,a',w$ of
+$\Ev\setminus\{u,r\}$ satisfy Theorem~\ref{thm:pair} ($d(w)\ge e-2\ge3$, hence $d(w)\ge4$ as $w$
+is even). If it is complete, $e=4$ and $r$ is adjacent to $\Ev\setminus\{r\}$, take
 $\{a,a'\}=\Ev\setminus\{u,r\}$ and $w=r$, which has degree at least $3$, hence at least $4$. If
 $G[\Ev\setminus\{r\}]$ is edgeless and $r$ is adjacent to all of it, take $w=r$ again, now with
 $d(r)\ge e-1\ge3$. In the remaining edgeless case, an odd vertex with two neighbours
@@ -962,7 +971,8 @@ Theorem~\ref{thm:fancert}.
 
 For $e=4$ a set $\Ev\setminus\{u,v\}$ with $u,v\ne r$ is a realisable set of size $e/2$ containing $r$,
 so Theorem~\ref{thm:b} proves the case $e=4$ of Proposition~\ref{prop:small}, for all connected
-graphs and without Botler--Sambinelli, except when $G[\Ev]=K_3+r$. (The proof given for
+graphs and without Botler--Sambinelli, except when $G[\Ev]=K_3+r$; Corollary~\ref{cor:four}
+already does so with no exception. (The proof given for
 Proposition~\ref{prop:small} yields a partition into $n/2$ paths with an end at $r$, which is (R),
 but it does not show that this partition has a simple profile; Corollary~\ref{cor:R} allows an odd
 vertex with three ends.) The exceptional configuration is not reached by these moves. In
@@ -1104,11 +1114,12 @@ In both, the obstacle is the same: Fan's lemmas need fewer zero-end neighbours t
 and the configuration places a removed vertex next to every candidate.
 
 \begin{remark}[Both configurations are closed]\label{rem:twostep}
-A different argument, developed in a parallel workstream of this project, proves the second step
-without exceptions: \emph{if $G$ is connected of even order with $e\ge4$ and $y\ne w$ are even,
-then some even $v\notin\{y,w\}$ has $\Ev\setminus\{w,v\}$ realisable.} It is an induction along a
-$y$--$w$ path, using the transfer across an even edge (Lemma~\ref{lem:fandescent}) and a star step
-built from single and grouped Fan transfers. Taking $y=r$ and $w=u$ settles
+Theorem~\ref{thm:two} of Section~\ref{sec:four} proves the second step without exceptions:
+\emph{if $G$ is connected of even order with $e\ge4$ and $y\ne w$ are even, then some even
+$v\notin\{y,w\}$ has $\Ev\setminus\{w,v\}$ realisable.} It is an induction along a path from $y$ to
+another even vertex, using the transfer across an even edge (Lemma~\ref{lem:edge}, which is the case
+$S=\Ev\setminus\{v\}$ of Lemma~\ref{lem:fandescent}), the star lemma (Lemma~\ref{lem:star}) and the
+lift along an odd neighbour (Lemma~\ref{lem:lift}). Taking $y=r$ and $w=u$ settles
 Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b} in full, including $G[\Ev]=K_3+r$. The Lean
 proof is \texttt{two\_step\_descent} in \texttt{lean/GallaiLean/EMCFour.lean} on the project's base
 branch; we rebuilt it and checked that it uses only the standard axioms, with Lov\'asz as the hypothesis
