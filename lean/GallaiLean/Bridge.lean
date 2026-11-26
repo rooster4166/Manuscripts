@@ -414,6 +414,287 @@ theorem PathDecomp.exists_erase {K K' : SimpleGraph V} (D : PathDecomp K) {P : G
       List.map_cons, List.sum_append, List.sum_cons]
     omega
 
+/-- A vertex of a path all of whose path edges equal one edge is an end of the path. -/
+theorem GPath.end_of_unique_edge {K : SimpleGraph V} (P : GPath K) {x : V} {e₀ : Sym2 V}
+    (hx : x ∈ P.walk.support) (huniq : ∀ e ∈ P.edges, x ∈ e → e = e₀) :
+    P.src = x ∨ P.tgt = x := by
+  have hinc : P.incid x ≤ 1 := by
+    unfold GPath.incid
+    have hnd : (P.edges.filter (fun e => decide (x ∈ e))).Nodup :=
+      P.isPath.isTrail.edges_nodup.filter _
+    rw [List.countP_eq_length_filter, ← List.toFinset_card_of_nodup hnd]
+    calc _ ≤ ({e₀} : Finset (Sym2 V)).card := by
+          apply Finset.card_le_card
+          intro e he
+          simp only [List.mem_toFinset, List.mem_filter, decide_eq_true_eq] at he
+          simp [huniq e he.1 he.2]
+      _ = 1 := Finset.card_singleton _
+  have h := P.incid_add_endsAt x
+  simp only [hx, ite_true] at h
+  have : 1 ≤ P.endsAt x := by omega
+  unfold GPath.endsAt at this
+  by_contra hne
+  push Not at hne
+  simp [hne.1, hne.2] at this
+
+/-- The first step of a path from a vertex whose only neighbour is `z`. -/
+theorem GPath.exists_first_step {K : SimpleGraph V} (Q : GPath K) {x z : V} (hx : Q.src = x)
+    (huniq : ∀ c, K.Adj x c → c = z) :
+    ∃ (b : V) (R : K.Walk z b), K.Adj x z ∧ Q.tgt = b ∧ Q.walk.support = x :: R.support ∧
+      Q.edges = s(x, z) :: R.edges ∧ R.IsPath ∧ x ∉ R.support := by
+  obtain ⟨src, tgt, walk, hpath, hpos⟩ := Q
+  simp only at hx
+  subst hx
+  cases walk with
+  | nil => exact absurd hpos (by simp)
+  | cons h R =>
+    obtain rfl := huniq _ h
+    rw [Walk.cons_isPath_iff] at hpath
+    exact ⟨tgt, R, h, rfl, rfl, rfl, hpath.1, hpath.2⟩
+
+omit [Fintype V] [DecidableEq V] in
+/-- A walk that starts in `C`, never visits `X`, and can only leave `C` through `X`, stays in
+`C`. -/
+theorem walk_support_subset {K : SimpleGraph V} {C X : Set V} {a b : V} (p : K.Walk a b)
+    (ha : a ∈ C) (hstep : ∀ x c, K.Adj x c → x ∈ C → c ∉ X → c ∈ C)
+    (hX : ∀ c ∈ p.support, c ∉ X) : ∀ c ∈ p.support, c ∈ C := by
+  induction p with
+  | nil => intro c hc; rw [Walk.support_nil, List.mem_singleton] at hc; exact hc ▸ ha
+  | @cons a d b h q ih =>
+    intro c hc
+    rw [Walk.support_cons, List.mem_cons] at hc
+    have hd : d ∈ C := hstep a d h ha (hX d (by simp))
+    rcases hc with rfl | hc
+    · exact ha
+    · exact ih hd (fun c hc' => hX c (by simp [hc'])) c hc
+
+/-- **Bridge gluing (1)**: concatenate the two paths through the shared bridge edge `yt`. Here
+`GA` is the `y`-side plus the pendant edge `yt` and `GB` the `t`-side plus `yt`. -/
+theorem glue_bridge {GA GB G : SimpleGraph V} (DA : PathDecomp GA) (DB : PathDecomp GB)
+    {y t : V} {A B : Set V} (hyA : y ∈ A) (htB : t ∈ B) (hAB : ∀ x, x ∈ A → x ∉ B)
+    (hGAyt : GA.Adj y t) (hGByt : GB.Adj y t)
+    (hGA : ∀ a b, GA.Adj a b → s(a, b) ≠ s(y, t) → a ∈ A ∧ b ∈ A)
+    (hGB : ∀ a b, GB.Adj a b → s(a, b) ≠ s(y, t) → a ∈ B ∧ b ∈ B)
+    (hG : ∀ e, e ∈ G.edgeSet ↔ e ∈ GA.edgeSet ∨ e ∈ GB.edgeSet) :
+    ∃ D : PathDecomp G, D.size + 1 = DA.size + DB.size ∧
+      ∀ v, D.ends v + (if t = v then 1 else 0) + (if y = v then 1 else 0) =
+        DA.ends v + DB.ends v := by
+  have htA : t ∉ A := fun h => hAB t h htB
+  have hyB : y ∉ B := fun h => hAB y hyA h
+  have hyt : y ≠ t := hGAyt.ne
+  -- the two paths through `yt`
+  obtain ⟨QA, hQA, hytA⟩ := List.mem_flatMap.mp ((DA.covers s(y, t)).1 hGAyt)
+  obtain ⟨QB, hQB, hytB⟩ := List.mem_flatMap.mp ((DB.covers s(y, t)).1 hGByt)
+  -- `t` is an end of `QA`, `y` an end of `QB`
+  have hAuniq : ∀ c, GA.Adj t c → c = y := by
+    intro c h
+    by_contra hc
+    have := hGA t c h (by
+      intro he; rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+      · exact hyt h1.symm
+      · exact hc h2)
+    exact htA this.1
+  have hBuniq : ∀ c, GB.Adj y c → c = t := by
+    intro c h
+    by_contra hc
+    have := hGB y c h (by
+      intro he; rcases Sym2.eq_iff.mp he with ⟨-, h2⟩ | ⟨h1, -⟩
+      · exact hc h2
+      · exact hyt h1)
+    exact hyB this.1
+  have hendA : QA.src = t ∨ QA.tgt = t := by
+    refine QA.end_of_unique_edge (e₀ := s(y, t))
+      (QA.walk.snd_mem_support_of_mem_edges hytA) ?_
+    intro e he hte
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+      have hadj : GA.Adj a b := QA.walk.edges_subset_edgeSet he
+      rcases Sym2.mem_iff.mp hte with rfl | rfl
+      · obtain rfl := hAuniq b hadj; exact Sym2.eq_swap
+      · obtain rfl := hAuniq a hadj.symm; rfl
+  have hendB : QB.src = y ∨ QB.tgt = y := by
+    refine QB.end_of_unique_edge (e₀ := s(y, t))
+      (QB.walk.fst_mem_support_of_mem_edges hytB) ?_
+    intro e he hye
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+      have hadj : GB.Adj a b := QB.walk.edges_subset_edgeSet he
+      rcases Sym2.mem_iff.mp hye with rfl | rfl
+      · obtain rfl := hBuniq b hadj; rfl
+      · obtain rfl := hBuniq a hadj.symm; exact Sym2.eq_swap
+  obtain ⟨QA', hQA's, hQA'perm, hQA'ends, hQA'supp⟩ := QA.exists_orient hendA
+  obtain ⟨QB', hQB's, hQB'perm, hQB'ends, hQB'supp⟩ := QB.exists_orient hendB
+  obtain ⟨a, RA, hty, hQA't, hQA'support, hQA'edges, hRA, htRA⟩ :=
+    QA'.exists_first_step hQA's hAuniq
+  obtain ⟨b, RB, hyt', hQB't, hQB'support, hQB'edges, hRB, hyRB⟩ :=
+    QB'.exists_first_step hQB's hBuniq
+  -- supports
+  have hRAA : ∀ c ∈ RA.support, c ∈ A := walk_support_subset RA hyA (X := {t})
+    (fun x c h hx hc => by
+      refine (hGA x c h ?_).2
+      intro he; rcases Sym2.eq_iff.mp he with ⟨-, h2⟩ | ⟨h1, -⟩
+      · exact hc h2
+      · exact htA (h1 ▸ hx))
+    (fun c hc hct => htRA (by rw [Set.mem_singleton_iff] at hct; exact hct ▸ hc))
+  have hRBB : ∀ c ∈ RB.support, c ∈ B := walk_support_subset RB htB (X := {y})
+    (fun x c h hx hc => by
+      refine (hGB x c h ?_).2
+      intro he; rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+      · exact hyB (h1 ▸ hx)
+      · exact hc h2)
+    (fun c hc hcy => hyRB (by rw [Set.mem_singleton_iff] at hcy; exact hcy ▸ hc))
+  -- the glued path
+  have hRAG : ∀ e ∈ RA.edges, e ∈ G.edgeSet := fun e he =>
+    (hG e).2 (Or.inl (RA.edges_subset_edgeSet he))
+  have hRBG : ∀ e ∈ RB.edges, e ∈ G.edgeSet := fun e he =>
+    (hG e).2 (Or.inr (RB.edges_subset_edgeSet he))
+  have hytG : G.Adj y t := by
+    rw [← mem_edgeSet, hG]; exact Or.inl hGAyt
+  let W : G.Walk a b := (RA.transfer G hRAG).reverse.append (Walk.cons hytG (RB.transfer G hRBG))
+  have hWpath : W.IsPath := by
+    rw [Walk.isPath_def]
+    simp only [W, Walk.support_append, Walk.support_reverse, Walk.support_cons,
+      Walk.support_transfer, List.tail_cons]
+    rw [List.nodup_append]
+    refine ⟨List.nodup_reverse.mpr hRA.support_nodup, hRB.support_nodup, ?_⟩
+    intro c hc d hd hcd
+    subst hcd
+    rw [List.mem_reverse] at hc
+    exact hAB c (hRAA c hc) (hRBB c hd)
+  have hWedges : W.edges = RA.edges.reverse ++ s(y, t) :: RB.edges := by
+    simp [W, Walk.edges_append, Walk.edges_reverse, Walk.edges_transfer]
+  let P' : GPath G := ⟨a, b, W, hWpath, by
+    simp only [W, Walk.length_append, Walk.length_reverse, Walk.length_cons]; omega⟩
+  -- erase `QB`, take the union with `DA`, and replace `QA` by the glued path
+  obtain ⟨DB', hDB'size, hDB'ends⟩ := DB.exists_erase (K' := GB.deleteEdges {e | e ∈ QB.edges})
+    hQB (fun e => by simp [edgeSet_deleteEdges])
+  have hRBe : ∀ e ∈ RB.edges, e ∈ QB.edges := fun e he =>
+    hQB'perm.mem_iff.mp (by rw [hQB'edges]; exact List.mem_cons_of_mem _ he)
+  have hytRB : s(y, t) ∉ RB.edges := by
+    have := hQB'perm.nodup_iff.mpr QB.isPath.isTrail.edges_nodup
+    rw [hQB'edges] at this
+    exact (List.nodup_cons.mp this).1
+  have hGAinside : ∀ e ∈ GA.edgeSet, e ≠ s(y, t) → ∀ c ∈ e, c ∈ A := by
+    intro e he hne c hc
+    induction e using Sym2.inductionOn with
+    | hf p q =>
+      have := hGA p q he hne
+      rcases Sym2.mem_iff.mp hc with rfl | rfl
+      · exact this.1
+      · exact this.2
+  have hGBinside : ∀ e ∈ GB.edgeSet, e ≠ s(y, t) → ∀ c ∈ e, c ∈ B := by
+    intro e he hne c hc
+    induction e using Sym2.inductionOn with
+    | hf p q =>
+      have := hGB p q he hne
+      rcases Sym2.mem_iff.mp hc with rfl | rfl
+      · exact this.1
+      · exact this.2
+  obtain ⟨D₀, hD₀size, hD₀ends, hD₀A, -⟩ := PathDecomp.exists_union (K := G.deleteEdges
+      {e | e ∈ RB.edges}) DA DB'
+    (by
+      intro e heA heB
+      simp only [edgeSet_deleteEdges, Set.mem_sdiff, Set.mem_ofPred_eq] at heB
+      have hne : e ≠ s(y, t) := fun h => heB.2 (h ▸ hytB)
+      obtain ⟨c, hc⟩ : ∃ c, c ∈ e := ⟨e.out.1, Sym2.out_fst_mem e⟩
+      exact hAB c (hGAinside e heA hne c hc) (hGBinside e heB.1 hne c hc))
+    (by
+      intro e
+      simp only [edgeSet_deleteEdges, Set.mem_sdiff, Set.mem_ofPred_eq]
+      rw [hG]
+      constructor
+      · rintro ⟨hA | hB, hR⟩
+        · exact Or.inl hA
+        · by_cases hQ : e ∈ QB.edges
+          · left
+            have hQ' := hQB'perm.mem_iff.mpr hQ
+            rw [hQB'edges, List.mem_cons] at hQ'
+            rcases hQ' with rfl | h
+            · exact hGAyt
+            · exact absurd h hR
+          · exact Or.inr ⟨hB, hQ⟩
+      · rintro (hA | ⟨hB, hQ⟩)
+        · refine ⟨Or.inl hA, fun hR => ?_⟩
+          have hne : e ≠ s(y, t) := fun h => hytRB (h ▸ hR)
+          obtain ⟨c, hc⟩ : ∃ c, c ∈ e := ⟨e.out.1, Sym2.out_fst_mem e⟩
+          exact hAB c (hGAinside e hA hne c hc)
+            (hGBinside e (RB.edges_subset_edgeSet hR) hne c hc)
+        · exact ⟨Or.inr hB, fun hR => hQ (hRBe e hR)⟩)
+  obtain ⟨Q₀, hQ₀, hQ₀s, hQ₀t, -, hQ₀e⟩ := hD₀A QA hQA
+  have hQAe : ∀ e, e ∈ QA.edges ↔ e = s(y, t) ∨ e ∈ RA.edges := by
+    intro e
+    rw [← hQA'perm.mem_iff, hQA'edges, List.mem_cons, Sym2.eq_swap]
+  obtain ⟨D, hDsize, -, hDends, -⟩ := D₀.replace hQ₀ P'
+    (by
+      intro e
+      simp only [edgeSet_deleteEdges, Set.mem_sdiff, Set.mem_ofPred_eq, hQ₀e]
+      change e ∈ G.edgeSet ↔ _ ∨ e ∈ W.edges
+      rw [hWedges, List.mem_append, List.mem_reverse, List.mem_cons]
+      constructor
+      · intro he
+        by_cases hR : e ∈ RB.edges
+        · exact Or.inr (Or.inr (Or.inr hR))
+        · by_cases hQ : e ∈ QA.edges
+          · rcases (hQAe e).1 hQ with h | h
+            · exact Or.inr (Or.inr (Or.inl h))
+            · exact Or.inr (Or.inl h)
+          · exact Or.inl ⟨⟨he, hR⟩, hQ⟩
+      · rintro (⟨⟨he, -⟩, -⟩ | h | rfl | h)
+        · exact he
+        · exact hRAG e h
+        · exact hytG
+        · exact hRBG e h)
+    (by
+      intro e he
+      change e ∈ W.edges at he
+      rw [hWedges, List.mem_append, List.mem_reverse, List.mem_cons] at he
+      rw [hQ₀e]
+      rcases he with h | rfl | h
+      · exact Or.inl ((hQAe e).2 (Or.inr h))
+      · exact Or.inl ((hQAe _).2 (Or.inl rfl))
+      · right
+        simp only [edgeSet_deleteEdges, Set.mem_sdiff, Set.mem_ofPred_eq, not_and, not_not]
+        exact fun _ => h)
+  refine ⟨D, by omega, fun v => ?_⟩
+  have h1 := hDends v
+  have h2 := hD₀ends v
+  have h3 := hDB'ends v
+  have hQ₀ends : Q₀.endsAt v = QA.endsAt v := by simp [GPath.endsAt, hQ₀s, hQ₀t]
+  rw [hQ₀ends, ← hQA'ends v] at h1
+  rw [← hQB'ends v] at h3
+  simp only [GPath.endsAt, hQA's, hQA't, hQB's, hQB't, P'] at h1 h3
+  split_ifs at h1 h3 ⊢ <;> omega
+
+/-- **Bridge gluing (2)**: realisations of the two sides of `G − yt` glue by extending a path
+of the `t`-side that ends at `t` with the edge `ty`. -/
+theorem glue_append {GA GB K G : SimpleGraph V} (DA : PathDecomp GA) (DB : PathDecomp GB)
+    {y t : V} (hdisj : ∀ e, e ∈ GA.edgeSet → e ∉ GB.edgeSet)
+    (hK : ∀ e, e ∈ K.edgeSet ↔ e ∈ GA.edgeSet ∨ e ∈ GB.edgeSet)
+    (hG : ∀ e, e ∈ G.edgeSet ↔ e ∈ K.edgeSet ∨ e = s(t, y)) (hKty : ¬ K.Adj t y)
+    (hBy : ∀ P ∈ DB.paths, y ∉ P.walk.support) (ht : 0 < DB.ends t) :
+    ∃ D : PathDecomp G, D.size = DA.size + DB.size ∧
+      ∀ v, D.ends v + (if t = v then 1 else 0) = DA.ends v + DB.ends v + (if y = v then 1 else 0) := by
+  obtain ⟨D₀, hD₀size, hD₀ends, -, hD₀B⟩ := PathDecomp.exists_union DA DB hdisj hK
+  obtain ⟨P, hP, hPt⟩ : ∃ P ∈ DB.paths, 0 < P.endsAt t := by
+    by_contra h
+    push Not at h
+    have : DB.ends t = 0 := by
+      unfold PathDecomp.ends
+      apply List.sum_eq_zero
+      intro n hn
+      obtain ⟨Q, hQ, rfl⟩ := List.mem_map.mp hn
+      exact Nat.le_zero.mp (h Q hQ)
+    omega
+  obtain ⟨Q, hQ, hQs, hQt, hQsupp, -⟩ := hD₀B P hP
+  have hend : Q.src = t ∨ Q.tgt = t := by
+    unfold GPath.endsAt at hPt
+    by_contra hne
+    push Not at hne
+    rw [hQs, hQt] at hne
+    simp [hne.1, hne.2] at hPt
+  obtain ⟨D, hDsize, hDends⟩ := D₀.append_move hKty hG hQ hend (by rw [hQsupp]; exact hBy P hP)
+  exact ⟨D, by omega, fun v => by have := hDends v; rw [hD₀ends] at this; omega⟩
+
 end glue
 
 end Gallai
