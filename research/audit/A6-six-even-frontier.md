@@ -254,6 +254,7 @@ The cycles are random, through w, edge-disjoint, and biased to intersect P heavi
 | Four-edge path with w internal + 2 cycles ⇒ 3 paths (the "full tails" theorem used by D10) | 1,500 | 0 |
 | Five-edge path, w third or fourth, + 2 cycles, ≥ 2 of the 4 spokes off P ⇒ 3 paths (D10 clique case) | 1,500 | 0 |
 | Sharpness: Z7, steps 1 and 2 cycles, P of step 3, w = 6 | p = 4 | (as claimed) |
+| D10 headline: w adjacent to the 5 other even vertices and exactly 5 odd ones ⇒ ≤ n/2 paths with ≥ 2 ends at w (clique, independent and mixed F) | 120 random on 12 vertices + 60 on 14 vertices (`t_d10.py`) | 0 (consistency only: implied by Gallai) |
 
 The early "FAIL" printed in a first run was a solver timeout on the loaded machine. Rechecked: p = 3. The script now separates timeouts.
 
