@@ -647,8 +647,14 @@ If $\mathrm{B}_k$ holds for every $k\ge3$, then Gallai's conjecture holds. If $\
 then the rooted test (R) holds for every connected graph with six even vertices.
 \end{corollary}
 
-The statement $\mathrm{B}_3$ (three-step descent at an even vertex with at least two even neighbours)
-is the current target of the third descent step. Theorem~\ref{thm:branching} also disposes of the
+The proof of Theorem~\ref{thm:branching} works verbatim without the prescribed vertex $w$, and Case~2
+may be applied before Case~1. So the hypothesis can be weakened to $\mathrm{B}^0_k$: \emph{in every
+connected graph of even order with at least $2k$ even vertices, every even vertex $y$ with at least two
+even neighbours and no bridge to a vertex of degree at least two lies in a realisable set
+$\Ev\setminus R$ with $|R|=k$}. If $\mathrm{B}^0_k$ holds for all $k\ge3$, Gallai's conjecture holds
+(Lean: \texttt{BranchBase}, \texttt{gallai\_of\_branchBase}). The statement $\mathrm{B}_3$ (three-step
+descent at an even vertex with at least two even neighbours) is the current target of the third
+descent step. Theorem~\ref{thm:branching} also disposes of the
 all-bridges case left open in Theorem~\ref{thm:reduction}.
 
 \begin{remark}[Formalisation]\sloppy
