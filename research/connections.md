@@ -379,3 +379,21 @@ Manuscript `endpoint-structure`, subsection "k-step descent" (Lemma 24, Thms 25�
 
   Case (i) is where the obstruction of Remark 23 lives: the second deleted vertex must avoid N(y).
 - The n = 8 e=4 exhaustive run was stopped at the coordinator's request after ≥ 500 of 5,523 graphs, with no exception.
+
+### Bridges and the branching reduction (follow-up 2)
+
+Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching case), Cor 30.
+
+- **Bridge gluing.** Let yt be a bridge with sides A ∋ y and B ∋ t, and set A⁺ = G[A ∪ {t}], B⁺ = G[B ∪ {y}].
+  - (1) F(A⁺) × F(B⁺) → F(G) by union. Concatenate the two paths through yt: P_A·yt·P_B.
+  - (2) If y is even, realisations of G[A] and G[B] glue by extending a path of G[B] that ends at t with the edge ty. This removes t if t is even in G, and needs t kept in G[B] if t is odd in G.
+- **Theorem (B_3 ∧ … ∧ B_k ⇒ D_k).** D_j means j-step descent at (y, {w}) in every connected even-order graph with e ≥ 2j. B_j is D_j restricted to y having ≥ 2 even neighbours. The proof is an induction on k, then on |E|:
+  - Case 1: y has ≥ 2 even neighbours (B_{k+1}).
+  - Case 2: y has a non-pendant bridge (gluing).
+    - If |A| is odd, use A⁺ and B⁺.
+    - If |A| is even, use G[A] and G[B].
+    - The capacities always add up to e/2, or to e/2 − 1 plus the forced removal of t.
+  - Case 3: y has exactly one even neighbour and yt is not a bridge. Transfer from D_k in G − yt.
+  - Case 4: y has no even neighbour, and some edge yt is neither pendant nor a bridge. Thm 25 step.
+- **Corollary.** B_k for all k ≥ 3 implies Gallai, through (R) at e = 2k. B_3 implies (R) for e = 6, i.e. T(6)-i. **The only open input is therefore "y has ≥ 2 even neighbours" at each level.** The all-bridges case of `desc_three_reduction` is closed by Case 2.
+- Lean: in progress. Pieces are induced subgraphs on subtypes, and realisations are transported back along `Subtype.val`.
