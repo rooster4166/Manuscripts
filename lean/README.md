@@ -255,10 +255,15 @@ paper (Lemma 2). Here `b(w) = D.ends w`.
 | `FanCert`, **`realisable_of_fanCert`** | **Soundness of the Fan calculus**: a list of even steps and odd transfers (odd partner of degree ≥ 3) ending with at most one vertex certifies that `Ev \ X` is realisable. |
 | `Tight`, `tight_of_transfer`, `tight_of_fanCert` | The two-even-vertex problem: `Tight H := Realisable H ∅` (the parity bound `#odd/2`); the transfer lemma for graphs with `evenSet H = {u, v}`. |
 | `PathDecomp.degree_add_ends_le`, `degree_le_of_tight` | `deg v + ends v ≤ 2|D|`; obstruction (O1): in a tight graph every odd vertex has degree ≤ `#odd − 1`. |
+| **`realisable_pair`** (with `pair_core`, `pair_finish`, `degree_delEdge₂`, `edgeSet_readd`) | **Pair step** (Thm 26): `u, a, a'` distinct even, `w ≠ u` adjacent to `a, a'`; if `w` is even of degree ≥ 4, or odd with `aa' ∉ E` or `a, a' ≁ u`, then `Ev \ {u, a}` or `Ev \ {u, a'}` is realisable. Lemma 3 in `G − aw − a'w`, then `fan_grouped` at `w` and `fan_single` for the other edge. |
+| `pathMoves`, `OddPath`, `fanCert_of_oddPath`, **`realisable_of_oddPath`** | **Path transfer** (the step in Thm 28): a path from `a` through odd vertices of degree ≥ 3 not adjacent to `u`, ending at an even `t ≠ u`, `t ≁ u`, gives `Ev \ {a, u}`. |
+| `PathDecomp.ends_le_degree`, **`realisable_leaves_singleton`**, **`tight_leaves_of_lovasz`** | Move (L) for a pendant vertex at an odd vertex (in the `leaves` encoding); the leaf case of the two-even problem: `G` with at most one even vertex plus a pendant vertex at an odd `x` is tight. |
 
 `#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Lovász enters
-only as `LovaszStatement`. Not formalized from §5: the reductions (L), (S), (C) of Proposition 26,
-which delete vertices or add an edge, and the obstructions.
+only as `LovaszStatement`. Not formalized from §5: the reductions (S) and (C) of Proposition 29 (they delete a vertex),
+move (L) beyond the single-pendant form above, the combinatorial assembly of Corollary 27 and
+Theorem 28 (twin classes, a shortest path between even vertices), and the obstructions (O2), (O3)
+and the cut-vertex rule.
 
 ## Open / not formalized
 

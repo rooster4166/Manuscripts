@@ -670,7 +670,17 @@ $H_1=H[\{x,y,u,v\}]\cong K_4-e$, $c=x$.
 
 \emph{Census.} Among the connected graphs with exactly two even vertices there are $3$ of order
 $4$ ($2$ not tight, both (O1)), none of order~$5$, $47$ of order $6$ ($17$ not tight: $16$ are (O1) and one
-is (O2)), and $2668$ of order $8$, of which %CENSUS8
+is (O2)), and $2668$ of order $8$, of which $372$ are not tight: $344$ are (O1), $21$ are (O2), $4$
+are (O3), and the remaining $3$ have a cut vertex at which one side has no admissible partition
+(a dense block next to a vertex with two pendant neighbours). In particular every non-tight
+$2$-connected graph of order at most $8$ with exactly two even vertices is (O1). We ask whether
+this holds in general:
+
+\begin{conjecture}\label{conj:twoeven}
+A $2$-connected graph with exactly two even vertices is tight unless some odd vertex is adjacent
+to all other vertices.
+\end{conjecture}
+
 For the second descent step only graphs $G^{\Ev\setminus\{u,v\}}$ matter, in which every vertex other
 than $u,v$ that is even in $G$ carries a pendant vertex; (O1) is then impossible once $e\ge4$, since
 the order is $n+e-2$ and the degrees are at most $n$.
@@ -711,6 +721,14 @@ Conjectures~\ref{conj:emc} and~\ref{conj:fd} hold; the realisable family of ever
 order four or six is the spanning family of a loopless matroid, uniform whenever the graph is
 $2$-connected. [Order eight: in progress.] The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
 were found by the same exhaustive searches.
+
+For Section~\ref{sec:second} (program \texttt{tools/two\_even.py}): the census of graphs with
+exactly two even vertices quoted in Section~\ref{sec:obstructions} is exhaustive through order~$8$.
+Through order $6$, every non-realisable pair $\{u,v\}$ is an E-twin pair ($384$ pairs), the pair
+step has no counterexample ($565$ instances) and every set certified by a Fan schedule is
+realisable ($657$ sets); these are checks of the proofs, which are also formalized. Through
+order~$8$ the second step of faithful descent succeeds in every residual instance of
+Corollary~\ref{cor:fd2strong} and Theorem~\ref{thm:b}. %RESIDUAL8
 
 \begin{thebibliography}{9}
 \bibitem{BS} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph Theory 97 (2021) 161--184.

@@ -189,3 +189,28 @@ Command: `tools/emc_cones.py 10 12 5`
 9 random cones K1 ∨ H with e ∈ {4, 6} even vertices (3 trials were skipped for having e < 4). **All have uniform, loopless endpoint matroids.**
 
 **Heuristic for conjecture (a).** The only non-realisability mechanism found so far, the theta obstruction (several degree-2 routes between two hubs), needs vertices of degree 2. In a 3-connected graph every vertex has degree ≥ 3, so every even vertex has degree ≥ 4.
+
+## E13. Two-even-vertex problem and the second descent step (cloud session `claude/two-even-lovasz`)
+
+Command: `tools/two_even.py {census,twins,pair,residual,schedule} n`. Exhaustive over `data/conn{n}.g6`. All checks are sanity checks of proved statements (endpoint-structure §5, Lean `TwoEven.lean`), except the census and the residual check.
+
+**Census of connected graphs with exactly two even vertices** (tight = meets p = |Od|/2):
+
+| n | graphs | not tight | (O1) odd vertex of degree n − 1 | (O2) degree-2 triangle | (O3) K4 − e pendant | cut vertex, side infeasible |
+|---|---|---|---|---|---|---|
+| 4 | 3 | 2 | 2 | – | – | – |
+| 6 | 47 | 17 | 16 | 1 | – | – |
+| 8 | 2668 | 372 | 344 | 21 | 4 | 3 (GsPDD_, GsPDDc, GsPDdc) |
+
+At n = 8, 274 of the (O1) graphs are 2-connected; no other 2-connected graph fails. **Conjecture 31** (manuscript): a 2-connected graph with exactly two even vertices is tight unless an odd vertex is universal. The (O1) graphs at n = 8 were not solved: (O1) is a proved obstruction (Lean `degree_le_of_tight`).
+
+**Proof checks (n ≤ 6):**
+
+| Check | Result |
+|---|---|
+| non-realisable pairs are E-twins | 384 pairs, 0 violations |
+| pair step | 565 instances, 0 violations |
+| Fan schedules | 657 certified sets, all realisable |
+| Fan calculus (E, O) vs truth, all pairs, n = 6 | 300 of 431 pairs certified; adding (S), (L), (C) gives 358 |
+
+**Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances, and the step succeeds in all of them. n = 8: see the end of this entry.
