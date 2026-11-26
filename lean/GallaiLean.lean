@@ -37,3 +37,4 @@ import GallaiLean.BranchBase
 import GallaiLean.MissingMove
 import GallaiLean.Relay
 import GallaiLean.HubPhases
+import GallaiLean.D6Frontier
