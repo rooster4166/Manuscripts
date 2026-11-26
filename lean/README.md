@@ -243,6 +243,7 @@ paper (Lemma 2). Here `b(w) = D.ends w`.
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
 left open. Lovász's theorem enters only as the explicit hypothesis `LovaszStatement`.
-Corollary 5 and Sections 3–4 of the manuscript are not formalized. Not formalized: an `ℕ∞`/`iInf` form of the formula (it
+Corollary 5 and Sections 3–4 of the manuscript are not formalized. Fan's single-edge and grouped
+lemmas are proved in full, with no special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula (it
 is stated with `sInf` over a set of naturals), and versions of the results for infinite vertex
 types (`pathNumber` is `sInf ∅ = 0` there, so the statements assume `Finite`/`Fintype`).
