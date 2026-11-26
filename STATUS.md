@@ -228,6 +228,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | SP doubling equivalence and the Thm 10.16 chain; Thm 12.28, Cors 13.5, 13.12 (A3) | **sound** modulo JM; two citation gaps |
 | OSB Thm 4 and §15 equivalences (A4) | **sound** modulo JM; e(G) notation errors in statements (proofs fine); Cor 44 quantifier |
 | block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
+| d6-frontier; endpoint-structure §§5–6, including the bridge reduction to BranchBase (A9) | **sound**: no error in any theorem or proof; 13 gaps fixed; one abstract error fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
