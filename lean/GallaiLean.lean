@@ -11,3 +11,5 @@ import GallaiLean.Marked
 import GallaiLean.FanMoves
 import GallaiLean.Fan
 import GallaiLean.ThreeConnected
+import GallaiLean.PathSurgery
+import GallaiLean.SmallBounds
