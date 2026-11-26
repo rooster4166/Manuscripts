@@ -863,7 +863,7 @@ theorem rooted_four (hL : LovaszStatement.{u}) (hconn : G.Connected) (hn : Even 
     unfold profile
     by_cases ho : Odd (G.degree r)
     · simp [ho]
-    · have hr : r ∈ evenSet G := mem_evenSet_iff.mpr ⟨hG r, Nat.not_odd_iff_even.mp ho⟩
+    · have hr : r ∈ evenSet G := mem_evenSet_iff_even.mpr ⟨hG r, Nat.not_odd_iff_even.mp ho⟩
       simp [ho, hrS hr]
   calc pathNumber (addLeaf G r) ≤ leafCost D r := pathNumber_addLeaf_le D r
     _ = D.size := by simp [leafCost, hend]
