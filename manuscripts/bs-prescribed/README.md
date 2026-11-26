@@ -45,5 +45,11 @@ python3 random_hosts.py 11 40 leaf
 
 ## Lean
 
-`lean/GallaiLean/FiveEven.lean` and `FiveEvenCerts.lean` contain `five_even_local` and
-`five_even_bowtie`. They are sorry-free and use only the standard axioms.
+`lean/GallaiLean/FiveEven.lean` and `FiveEvenCerts.lean` contain:
+* `five_even_local` and `five_even_bowtie`: the certificate theorems for labelled models;
+* `exists_uv`: Lemma 14;
+* **`five_even_floor`**: Theorem 1 on the host graph. If W is connected, has exactly five even
+  vertices of which exactly one is universal among them, and has a leaf at an odd support, then
+  W has a partition D with 2|D| + 1 = |V|.
+
+They are sorry-free and use only the standard axioms.
