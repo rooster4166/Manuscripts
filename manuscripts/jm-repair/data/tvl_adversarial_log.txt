@@ -1,0 +1,4 @@
+{'inst': 337, 'feas': 337, 'mism': 0, 'tightT': 116, 'tightU': 47}
+{'inst': 380, 'feas': 380, 'mism': 0, 'tightT': 70, 'tightU': 41}
+{'inst': 296, 'feas': 296, 'mism': 0, 'tightT': 112, 'tightU': 61}
+DONE

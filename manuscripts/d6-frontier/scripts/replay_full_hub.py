@@ -1,4 +1,4 @@
-"""Replay of the full-hub battery certificate (Theorem 6 of d6-frontier.tex).
+"""Replay of the full-hub battery certificate (Theorem 5.2 of d6-frontier.tex).
 
 Hypotheses: U = {0..5} = even vertices (here inducing K6), x = 6 adjacent to all of U,
 batteries: triangles x a1 b1, x a2 b2 (a_i = 7, 9; b_i = 8, 10) with N(a_i) & U empty and

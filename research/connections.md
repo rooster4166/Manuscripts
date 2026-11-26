@@ -380,6 +380,33 @@ Manuscript `endpoint-structure`, subsection "k-step descent" (Lemma 24, Thms 25�
   Case (i) is where the obstruction of Remark 23 lives: the second deleted vertex must avoid N(y).
 - The n = 8 e=4 exhaustive run was stopped at the coordinator's request after ≥ 500 of 5,523 graphs, with no exception.
 
+## R. Lovász–Fan certificates are a game on profiles, and the game is incomplete (2026-11-26, night)
+
+**Grade: Observed (computation, small); conceptual consequence.**
+
+Fan's single and grouped transfers have hypotheses that depend only on the end profile b and on the current graph. So every argument of the form "Lovász seed, then re-insert edges by Fan transfers" is a play in a finite game on (graph, profile). The following are all such plays:
+- Lovász from Fan (manuscripts/lovasz-fan), with one induction;
+- Lemma 3;
+- the two descent steps;
+- the star lemma;
+- Fan schedules and FanCert;
+- Pyber's theorem (Lean, Pyber.lean);
+- the six-clique insertion schedules;
+- every d6-frontier certificate.
+
+A winning play is a short certificate that can be checked without exhibiting paths (E13).
+
+- At n = 6 the game wins every root of every connected graph. The restricted calculus FanCert does not.
+- At n = 8 it does not. The obstruction is a clique of even vertices with full exterior vertices, two of them false twins (GsRvnk, E13). d6-frontier Thm 3.1 is the local form of the same phenomenon: if every held edge lies in U ∪ {full vertices}, the last Fan step cannot produce the standard profile.
+- Inductive seeds that use only (R) do not repair this. The adversary keeps the freedom to place zeros next to the re-inserted edges.
+
+> **Correction (§S, cloud session missing-move).** The incompleteness at n = 8 is an artefact of the game allowing only one-edge new paths. With *path insertion* (a new path of any length made of held edges) the game wins every root of every connected graph of order 8 with |F| ≤ 6. Pósa moves at the profile level repair none of the losers. The paragraph below stands as originally written. Read "Lovász + Fan transfers alone" as "with one-edge new paths only".
+
+**Consequence for the programme.** Full Gallai cannot come from Lovász + Fan transfers alone, even with (R) as the induction hypothesis. One of two ingredients is needed:
+- **(M) a move beyond Fan's inequality.** Fan's lemma is iterated Pósa rotation. When the inequality is tight, a rotation still moves the missing edge from uv to uw and moves an end from v to w. A two-end transfer at equality, as the d6-frontier agent suggests, is of this kind.
+- **(H) a stronger induction hypothesis** that controls the zero set of the seed. Candidates are EMC (matroid exchange) and FD with several prescribed vertices.
+
+The n = 8 losers are the natural test bed: the right move or hypothesis must make every one of them winnable. Cloud session "missing-move" (ROADMAP).
 ### Bridges and the branching reduction (follow-up 2)
 
 Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching case), Cor 30.
@@ -396,6 +423,69 @@ Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching cas
   - Case 3: y has exactly one even neighbour and yt is not a bridge. Transfer from D_k in G − yt.
   - Case 4: y has no even neighbour, and some edge yt is neither pendant nor a bridge. Thm 25 step.
 - **Corollary.** B_k for all k ≥ 3 implies Gallai, through (R) at e = 2k. B_3 implies (R) for e = 6, i.e. T(6)-i. **The only open input is therefore "y has ≥ 2 even neighbours" at each level.** The all-bridges case of `desc_three_reduction` is closed by Case 2.
+- Lean: in progress. Pieces are induced subgraphs on subtypes, and realisations are transported back along `Subtype.val`.
+## P. Two-even-vertex problem (cloud session)
+
+*Session branch `claude/two-even-lovasz`. Manuscript: `manuscripts/endpoint-structure`, §5 (Remark 15 to Proposition 30); numbers below are the current PDF's. Lean: `lean/GallaiLean/TwoEven.lean`, sorry-free, standard axioms only, Lovász only as `LovaszStatement`. Sanity checks: `tools/two_even.py`.*
+
+### P.1 Dictionary
+
+The leaf dictionary (Lemma 5) gives an exact equivalence:
+
+> Ev − {u, v} is realisable ⇔ G^{Ev−{u,v}} is **tight**, i.e. meets the parity bound p = |Od|/2.
+
+Here G^{Ev−{u,v}} is G with a pendant vertex at every other even vertex, and it has exactly two even vertices. So the second descent step *is* the two-even problem for these graphs. The apex graph G + z + ℓ of §O gives only the sufficient direction.
+
+Side remark (Remark 15): Lemmas 3 and 4 (faithful partitions; removing one vertex, "Lemma 3" in older notes) hold at every order. Use pendant vertices instead of the apex.
+
+### P.2 The mechanism
+
+This answers the "Fan moves preserve the number of paths, descent needs a merge" gap.
+
+1. Delete an edge uw between two even vertices. Both become odd, so Lemma 4 in G − uw already has the descended size: o/2 rises by one and |S| falls by two.
+2. Fan's Lemma 3.4 then puts uw back at constant size, moving u's end to w.
+3. Its hypothesis, "fewer zero-end neighbours of w than ends at u", becomes: w has no neighbour among the removed even vertices.
+
+When w is adjacent to a removed vertex, Fan's **grouped** lemma takes over, with two candidate edges into w. This is the pair step.
+
+### P.3 Results
+
+| # | Statement | Status |
+|---|---|---|
+| Lemma 18 (Fan descent) | u, w ∈ S ⊆ Ev, uw ∈ E, N(w) ∩ (Ev − S) = ∅, S − {u,w} realisable in G − uw ⇒ S − u realisable | **proved, lean** `realisable_erase_of_fan` |
+| Lemma 19 (Fan transfer) | u ∈ Ev − S, w odd, uw ∈ E, the even neighbours of w other than u lie in S, S realisable in G − uw ⇒ S realisable in G | **proved, lean** `realisable_of_fan_transfer` |
+| **Thm 20 (second step)** | u, v, w distinct even, uw ∈ E, vw ∉ E ⇒ Ev − {u, v} realisable | **proved, lean** `realisable_evenSet_erase_pair` |
+| **Cor 22** | non-realisable pairs {u, v} are **E-twins** (same neighbours among the other even vertices); twin classes are cliques or independent sets of G[Ev] | **proved, lean** `etwin_of_not_realisable` |
+| Cor 23 | FD step 2 from Ev − u with root r fails only if Ev − r lies in u's twin class: G[Ev] ∈ {K_e, empty, K_{e−1} + isolated r, star at r} | proved; lean `fd_second_step` (non-twin form) |
+| Thm 24 (Fan certificates) | even steps (E) and odd transfers (O) compose; soundness | **proved, lean** `FanCert`, `realisable_of_fanCert` |
+| **Cor 25 (uniform in d)** | a semi-induced matching x_i w_i in G[Ev] (w_i ≁ x_k for k < i), with j = e/2 and r ∉ {x_i}, gives (R) at r for critical G. In MR Thm 114(i) this is a condition on J[N(z)] alone, for every d. | **proved, lean** `realisable_of_fanSchedule` |
+| **Thm 26 (pair step)** | u, a, a' distinct even; w ≠ u a common neighbour of a, a'. If w is even of degree ≥ 4, or w is odd with aa' ∉ E or a, a' ≁ u, then Ev − {u,a} or Ev − {u,a'} is realisable. Uses Fan's grouped lemma, then the single lemma. | **proved, lean** `realisable_pair` |
+| **Cor 27 (FD step 2)** | e ≥ 4, u ≠ r. Some v ∉ {u, r} works unless (i) G[Ev] is edgeless and the N(a), a ∈ Ev − {u, r}, are pairwise disjoint, or (ii) e = 4 and G[Ev] = K_3 + isolated r | proved (manuscript); ingredients in lean |
+| **Thm 28 (goal (b))** | G connected, e ≥ 4, r ∈ Ev ⇒ there are u ≠ v in Ev − r with Ev − {u, v} realisable, **unless e = 4 and G[Ev] = K_3 + r**. The edgeless case uses a shortest path between even vertices as a Fan certificate. | proved (manuscript); path step in lean (`OddPath`, `realisable_of_oddPath`) |
+| Prop 29 (moves L, S, C) | pendant neighbour; degree 2 with non-adjacent neighbours (suppression); all neighbours even and kept (star) | proved; not in lean (vertex deletion) |
+| Prop 30 (obstructions) | (O1) odd vertex of degree n − 1 (this contains the edge bound); (O2) triangle uvx with d(u) = d(v) = 2; (O3) N(u) = N(v) = {x, y}, xy ∈ E, d(y) = 3; exact gluing rule at a cut vertex | proved; (O1) in lean `degree_le_of_tight` |
+
+**Link to `claude/emc-four-even`.** For e = 4, Cor 22 says: if a 2-set {x, y} of even vertices is not realisable, then its complement {u, v} is an E-twin pair. Equivalently, x and y see u and v alike. This constrains which 2-sets can be non-bases, independently of the matroid axioms.
+
+### P.4 What is left of the second step
+
+- **Prescribed u, Cor 27(i).** The even vertices are independent, and each a ∈ Ev − {u, r} has a private set of odd neighbours. Paths avoiding N(u) still give certificates (Thm 28's argument), so only a u whose neighbourhood blocks all such paths resists.
+- **Four even vertices, triangle plus isolated r.**
+
+Both resist Fan moves, since every move sees a zero-end neighbour. Neither case produces a failure through n = 8: at n = 8 there are 1357 instances of Cor 27(i)/(ii) and 399 of the Thm 28 exception, all succeed.
+
+**Update: both are closed by `two_step_descent`** (`lean/GallaiLean/EMCFour.lean`, base branch `claude/quirky-dirac-d9km1q`, emc-four workstream). It says: connected G, even order, e ≥ 4, y ≠ w even ⇒ some even v ∉ {y, w} has Ev − {w, v} realisable. I rebuilt the base branch in a scratch worktree: the build is green, and `#print axioms two_step_descent` shows only the standard axioms (Lovász enters as the hypothesis `LovaszStatement`). With y = r and w = u it settles Thm 28, and Cor 27 for connected G, in full, K_3 + r included (manuscript Remark 32). Connectivity matters: P_3 ⊔ (K_5 − e) with r the middle vertex of P_3 is a disconnected instance of exception (ii) where no v works. The twin criterion (Cor 22) and the pair step (Thm 26) still give explicit information: which pairs can fail, and which candidates suffice.
+
+### P.5 Corrections to §O, and computations
+
+- "u, v degree-2 twins" is **not** an obstruction: in K_{2,4} plus an edge, every twin pair of degree-2 vertices is realisable. K4 − e fails by (O1).
+- Prop 13 (e = 4) proves (R), i.e. r is an end of some n/2-partition. Its statement claims a realisable 2-set, and the proof does not show the profile is simple (Cor 6 allows an odd vertex with 3 ends). The claim needs a check.
+- Census of two-even graphs (experiments E13):
+  - n = 4: 3 graphs, 2 not tight, both (O1).
+  - n = 6: 47 graphs, 17 not tight: 16 (O1), 1 (O2).
+  - n = 8: 2668 graphs, 372 not tight: 344 (O1), 21 (O2), 4 (O3), and 3 with a cut vertex where one side is infeasible.
+- **Every non-tight 2-connected graph with n ≤ 8 is (O1).** Conjecture 31: a 2-connected two-even graph is tight unless an odd vertex is universal.
+- At n = 6: every non-realisable pair is an E-twin pair (384 pairs in graphs with e ≥ 3; 12 non-realisable pairs when e ≥ 4); 565 pair-step instances, no violation; 657 Fan-schedule certificates, all realisable; 3 + 9 residual instances of Thm 28 / Cor 27, all succeed.
 - **Lean: done** (`lean/GallaiLean/Bridge.lean`, about 2,000 lines, no sorry, standard axioms, no Lovász hypothesis).
   - **`gallai_of_branching : (∀ j ≥ 3, BStmt j) → GallaiConjecture`.**
   - `rooted_six_of_bstmt3`: B_3 gives the rooted test for six even vertices.
@@ -414,3 +504,57 @@ Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching cas
 The conclusion is **Desc H k y ∅**: y lies in a realisable (e − k)-set, with no prescribed removed vertex. `branchBase_one` and `branchBase_two` are theorems, so `gallai_of_branchBase_three` needs only k ≥ 3. `branchBase_of_bstmt` shows that BranchBase is weaker than BStmt.
 
 Coordinator's finding (base branch, E13 / §R): Lovász seeds + Fan transfers do not prove three-step descent in general. Gqz~vw at y = 3 has no certificate with ≤ 8 held edges. So BranchBase k for k ≥ 3 needs a new ingredient.
+
+**Update (path insertion).** The missing-move session found that the n = 8 losers need no move beyond Fan's inequality. They need *path insertion*: a Lovász seed on G − F with an isolated vertex leaves one spare path, and it pays for re-inserting two held edges as one new path through the hub. With path insertion the game wins the five non-critical n = 8 losers and the critical Gqz~vw (independently re-checked). **But an independent re-check of all 50 kmax-4 losers with `6 np` leaves 6 losers, all critical.** They are Guv]}{ (K7 + leaf), Guv]z{, Guv]~{, Gut~~w, Gu^v~w, and the cocktail party graph K_{2,2,2,2} = Gr~v~w (every vertex a degree-6 hub). So the degree-six obstruction already appears at order 8. The original §R list was incomplete: the kmax-8 run was OOM-killed before reaching these graphs. The degree-six obstruction is also visible at order 10 (`manuscripts/missing-move`). There the spare path pays for one receipt too few, and the deficit sits at Fan's equality.
+
+## S. The missing move is Lovász's spare path, not a move beyond Fan's inequality (2026-11-26, cloud session missing-move)
+
+**Grade: Proved (hub lemma, degree-four hubs; Lean `MissingMove.lean`); computation (completeness at n = 8; Pósa moves negative; n = 10 test bed).** Manuscript `manuscripts/missing-move`.
+
+**The spare path.**
+- Isolate a vertex s in K = G − F. If K has at most one even vertex of positive degree, Lovász gives |Od(K)|/2 ≤ n/2 − 1 paths. One path of the budget is spare.
+- Fan transfers keep the path count, so the spare path can only be spent by a new path.
+- The game of §R allowed new paths of length one only.
+
+**Hub lemma** (`Ach.hub_four`). Let s be isolated in K, with b ≥ 1 at a, c, d, and let x be a fourth vertex. Re-insert sa, sc, sd, sx as follows:
+- a single transfer sa towards s;
+- a grouped transfer {sc, sd} towards s, with supply 2 > 1 blank;
+- the new path y′ s x.
+
+The cost is exactly one path. The profile changes by +2 at s, −1 at a and at the adversary's y ∈ {c, d}, and +1 at the other y′ and at x. The lemma accepts any seed.
+
+**Degree-four hubs** (`hub_four_ends`, `hub_four_rooted`; unconditional, via `lovasz_ends`). Hypotheses: d(s) = 4, every neighbour of s is even, and at most one even vertex lies outside N[s]. Then G has a partition into ≤ n/2 paths with b(s) = 2 and b(x) = 2, for any prescribed neighbour x. So (R) holds at s and at N(s). This closes GsRvnk (roots s, s′). The hypotheses force e ≤ 6, the BP_5 regime.
+
+**Completeness at n = 8** (E14). *Not reproduced: see the correction in §R. An independent run leaves 6 critical losers, including K_{2,2,2,2}.* The session reported that, with path insertion, the game wins every root of every connected graph of order 8:
+- |F| ≤ 4 suffices for all but 47 graphs;
+- the 47 win with |F| ∈ {5, 6}.
+
+All the certificates found for the five §R losers are hub-shaped: an isolated hub, receipts, then one new path through the hub, sometimes extended along a further held edge. A hub of degree d with b ≥ 1 on its neighbours absorbs ⌈d/2⌉ adversarial receipts. So the spare path closes it iff d ≤ 5.
+
+**Pósa moves fail at the profile level.** Two candidate moves were proved and tested.
+- *Rotation* (Lemma 4.1 in the manuscript): either uv appends, or the opponent picks W ⊆ N(u) of size b(v), we pick w ∈ W, and the held edge becomes uw.
+- *Fan's alternative* (Lemma 4.2, new): either some t ∈ T transfers, or at least Σ_T b blank neighbours z of u can each be *activated* (end t → z, held edge tu → zu). This is the "rigidity at equality" of d6-frontier §8, made into a statement. As game moves it dominates rotation.
+
+Neither repairs any losing root: rotation with ≤ 2 uses and |F| ≤ 4; the alternative with ≤ 2 uses and |F| ≤ 4, or 1 use and |F| ≤ 6.
+
+Why: the losers need the spare path to be spent on a 2-edge path c–s–d through the hub. Imitating it with a one-edge path cs plus a transfer of sd needs to know that one of the three paths ending at s is cs, which avoids d. The profile forgets this. *Path insertion is the memory of one explicit path.* The obstruction at n = 8 is budget allocation, not exchange.
+
+**Degree six: one receipt short** (manuscript §5). A degree-6 hub absorbs 3 adversarial receipts. Closing it with one spare path needs 4, and the 4th is exactly at Fan's equality (supply 3, three blanks).
+
+On A_{6,2} (K6 core of degree-8 vertices, a full vertex x with a leaf ℓ, two false twins on the core; n = 10) the 4th receipt is forced by **append-or-through plus an edge count**:
+- if every path ending at T = the remaining core neighbours passed through s, then, since b(s) = d_H(s), the three s-paths would join T to s;
+- the fourth path would then be ℓx;
+- so 30 edges would have to fit in three paths of ≤ 8 edges, which is impossible.
+
+This is the d6 frontier's "short by one" (Remark 3.5), and the "two-end transfer at equality" made concrete. The rigid configuration must be refuted by information *outside* the profile (path lengths).
+
+On K8 minus a perfect matching (n = 8, 6-regular) the 4th receipt *always* fails: all three Lovász paths of G − s end at the hub. The count then makes the three paths plus the held edges three Hamiltonian cycles through s, a **flower**. Cutting one edge from each so that the three cut edges form a path s–a–w–z spends the spare path and gives (R) (manuscript Lemma 5.4, Prop 5.5). This is a genuine two-end move at equality: the ends move from T to the transversal path. It too is invisible in the profile.
+
+The extended game (path insertion, F = full star plus ≤ 2 edges) loses A_{6,2} at every root, odd roots included. It also loses the Q2-type graph B′ (K6 core, a full vertex with a leaf, two adjacent full vertices) at every root with a star plus ≤ 1 edge; see E14 for k = 2.
+
+**Consequences.**
+- §R's "Lovász + Fan is incomplete" is corrected: at n = 8 the missing move was path insertion, which is already in the Lean insertion library (`Ach.addPath`).
+- Inductive seeds have Σb = n and so no spare path. The spare path is the floor ⌊N/2⌋ at odd order. An induction that keeps it needs the floor bounds BP_t, and the hub lemma converts them into (R) at degree-four vertices.
+- The first genuine gap is at n = 10, at degree-six hubs. The next ingredient is a non-profile count at Fan's equality: Question 5.6 of the manuscript.
+
+**Reconciliation (n = 8).** The six critical graphs that lose with \|F\| ≤ 6 are closed as follows. Five win with \|F\| = 7–8 (missing-move E14, orbit runs; Guv]}{ root 0 independently confirmed at \|F\| = 7). K8 − perfect matching is settled by the flower lemma (missing-move Prop 5.5): when the fourth Fan receipt at a degree-6 hub fails at equality, the three paths close into Hamiltonian cycles through the hub, and cutting them along a transversal path gives the two ends. So at n = 8 the rooted test follows from Lovász + Fan + path insertion + the flower move. The open question is a *profile-level* version of the equality move (missing-move Question 5.6), which would make the game self-contained at n = 10.

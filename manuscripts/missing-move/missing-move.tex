@@ -1,0 +1,556 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\emergencystretch=2em
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+
+\title{Lov\'asz's spare path: the missing move in the Fan game}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+
+\begin{abstract}
+Fan's addible-edge transfers have hypotheses that depend only on the end profile of a path
+partition. Starting from a Lov\'asz partition of $G-F$ and re-inserting $F$ by Fan transfers is
+therefore a finite game on profiles. This game wins the rooted Gallai test at every root of every
+connected graph of order~$6$, but it loses on five graphs of order~$8$, the smallest being a $K_4$
+of even vertices with a full vertex carrying a leaf and two false twins. We show that the missing
+move is not a move beyond Fan's inequality. It is \emph{path insertion}: a new path of length at
+least two made of held edges, paid for by the spare path that Lov\'asz's theorem leaves when $G-F$
+has an isolated vertex. The key instance is a \emph{hub lemma}. Re-inserting the four edges at an
+isolated vertex costs exactly one path: two edges are received by Fan transfers, and the other
+two become one new path through the hub. It yields the rooted test at every degree-four vertex all
+of whose neighbours are even, provided at most one further vertex is even. With path insertion
+the game wins every root of every connected graph of order~$8$, with at most six held edges.
+Profile-level P\'osa moves do not help. These are rotation at equality, and a strengthening of
+Fan's lemma that we prove (\emph{Fan's alternative}: either the transfer succeeds, or at least
+$\sum_T b$ blank neighbours of the receiver can each be given an end). Neither repairs a single
+losing root. At a hub of degree six the spare path pays for one receipt too few. We show on the
+first example of order~$10$ that the missing receipt sits at Fan's equality and is forced by a
+global edge count that the profile cannot see. The hub lemma and the degree-four theorem are
+formalised in Lean~4.
+\end{abstract}
+
+\maketitle
+
+\section{Setting and summary}\label{sec:intro}
+
+Graphs are finite and simple. A \emph{path} is a nonempty simple path, and a \emph{partition} of a
+graph is a partition of its edge set into paths. For a partition $D$ and a vertex $v$ let $b_D(v)$
+be the number of path ends at $v$. Then
+\begin{equation}\label{eq:parity}
+b_D(v)\equiv d(v)\pmod 2,\qquad \sum_v b_D(v)=2|D|.
+\end{equation}
+$\Ev(G)$ and $\Od(G)$ are the sets of vertices of positive even degree and of odd degree. For a
+vertex $u$ of a graph $H$ with partition $D$, the \emph{blank neighbours} of $u$ are
+$Z_D(u)=\{w\in N_H(u):b_D(w)=0\}$.
+
+\subsection*{The rooted test} Gallai's conjecture is equivalent to the following statement
+(R)~\cite{ES}. \emph{For every connected graph $G$ of even order $n$ and every vertex $r$, the
+graph $G$ has a partition into at most $n/2$ paths with an end at $r$.} Equivalently, $G$ plus a
+pendant leaf at $r$ has at most $n/2$ paths.
+
+\subsection*{Inputs} Only two classical facts are used.
+\begin{enumerate}[label=(\Alph*)]
+\item \emph{Lov\'asz~\cite{L68}.} A graph whose vertices of positive degree include at most one
+of even degree has a partition with $b=d\bmod 2$. Such a partition has $|\Od|/2$ paths. If the
+graph has $N$ vertices, none of them isolated, this is at most $\lfloor N/2\rfloor$. Isolated
+vertices cost nothing. (Lean: \texttt{lovasz\_ends}.)
+\item \emph{Fan~\cite{Fan}, Lemmas 3.3--3.4.} Let $D$ be a partition of $H$, let $u$ be a vertex,
+and let $T$ be a set of non-neighbours of $u$ with $u\notin T$. If
+$\sum_{t\in T}b_D(t)>|Z_D(u)|$, then for some $t\in T$ with $b_D(t)\ge1$ the graph $H+tu$ has a
+partition $D'$ with $|D'|=|D|$ and $b_{D'}=b_D+e_u-e_t$. We say that $t$ \emph{gives an end to}
+$u$, or that $u$ \emph{receives} from $t$. (Lean: \texttt{fan\_grouped}, \texttt{fan\_single}.)
+\end{enumerate}
+
+\subsection*{The Fan game}\label{sec:game}
+Fan's hypothesis depends only on the current graph and the current profile, so the following is
+a game on pairs $(H,b)$.
+
+\begin{definition}[The Fan game]\label{def:game}
+Let $G$ have even order $n$ and let $r\in V(G)$.
+\begin{enumerate}
+\item Choose a set $F$ of \emph{held} edges and put $K=G-F$. Start from a profile that Lov\'asz
+guarantees on $K$:
+\begin{itemize}
+\item $b=d_K\bmod 2$ if $K$ has at most one vertex of positive even degree; or
+\item $b=1$ on $\Od(K)$, $b=2$ at $v$ and $b=0$ at $u$, if $K$ has no isolated vertex and
+$\Ev(K)=\{u,v\}$ (endpoint-structure Lemma~3~\cite{ES}).
+\end{itemize}
+\item Re-insert the held edges. Let $H$ be the current graph. The moves are the following.
+\begin{itemize}
+\item \emph{Single transfer} of a held edge $tu$ towards $u$, if $b(t)>|Z(u)|$.
+\item \emph{Grouped transfer} at $u$ with a set $T$ of held edges $tu$, if
+$\sum_Tb>|Z(u)|$. The opponent chooses the donor $t$, among those with $b(t)\ge1$.
+\item \emph{New edge}: a held edge $tu$ becomes a new one-edge path, and $b(t),b(u)$ increase by one.
+\end{itemize}
+\item The play wins if $F$ is used up with $\sum b\le n$ and $b(r)\ge1$.
+\end{enumerate}
+\end{definition}
+Every move is an instance of (B), or the addition of a new path. So a winning play is a certificate
+for (R) at $(G,r)$ that never exhibits a path. Every Lov\'asz--Fan argument in the project has
+this form: Lov\'asz from Fan, the two descent steps, the star lemma, Pyber's theorem, the
+six-clique schedules and the $d=6$ frontier certificates~\cite{ES,D6}. The game wins every root
+of every connected graph of order $6$. It loses on $50$ connected graphs of order $8$ with
+$|F|\le4$, and five of them still lose with $|F|\le 8$~\cite[E13]{EXP}:
+\begin{center}
+\texttt{GsRvnk}, \texttt{GsZvnk}, \texttt{Gqrvn[}, \texttt{Gqzvn[}, \texttt{Gqzl|\char123}.
+\end{center}
+The smallest, \texttt{GsRvnk}, consists of a clique $Q=\{q_1,\dots,q_4\}$ whose vertices have
+degree $6$, a vertex $x$ adjacent to $Q$ and to a leaf $\ell$, and two false twins $s,s'$
+adjacent exactly to $Q$. It loses at the roots $s,s'$. The same experiment showed that inductive
+seeds, i.e.\ the rooted test on $G-F$ with an adversarial half-set, do not repair it.
+
+\subsection*{Results} Write \emph{path insertion} for the move
+\begin{itemize}
+\item \emph{New path}: a path $P$ all of whose edges are held is added as one new path, and $b$
+increases by one at each end of $P$.
+\end{itemize}
+It is sound for the same reason as the new-edge move. The following are proved here or computed.
+\begin{enumerate}
+\item \emph{The hub lemma} (Lemma~\ref{lem:hub}): re-inserting four edges at an isolated vertex
+costs one path, and the profile changes are controlled. \emph{Degree-four hubs}
+(Theorem~\ref{thm:hub4}): if $d(s)=4$, every neighbour of $s$ is even, and at most one even vertex
+lies outside $N[s]$, then (R) holds at $s$ and at every neighbour of $s$. Both are formalised in
+Lean.
+\item \emph{Completeness at order $8$} (Theorem~\ref{thm:complete8}, computation): the game with
+path insertion wins every root of every connected graph of order $8$. The certificates found for
+the five losers all have the shape of the hub lemma.
+\item \emph{P\'osa moves at the profile level fail} (Section~\ref{sec:posa}). We prove a rotation
+lemma and \emph{Fan's alternative} (Lemma~\ref{lem:alt}). The alternative strictly dominates
+rotation as a game move. Neither repairs any losing root, with up to two uses per play and
+$|F|\le4$, or one use and $|F|\le6$. We explain why: the losers' obstruction is budget
+allocation, not exchange.
+\item \emph{Degree six} (Section~\ref{sec:six}): at a hub of degree six the spare path pays for
+three receipts, and four are needed. On the order-$10$ analogue of \texttt{GsRvnk}, the fourth
+receipt is at Fan's equality. It is forced by an elementary append-or-through argument combined
+with a count of edges against path lengths (Proposition~\ref{prop:A62}). The game with path
+insertion and hub-shaped held sets loses this graph at every root, and also a $K_6$ core with
+three full exterior vertices.
+\end{enumerate}
+For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
+incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
+two, not because of Fan's inequality. The first gaps we know of appear at order $10$, at
+degree-six hubs. There the missing ingredient is a non-profile count at Fan's equality: the
+``short by one'' of the $d=6$ frontier~\cite[Remark~3.5]{D6}.
+
+\section{The spare path and the hub lemma}\label{sec:hub}
+
+\subsection*{The spare path} Let $G$ have even order $n$, let $F\subseteq E(G)$, and suppose some
+vertex $s$ is isolated in $K=G-F$. Then $K$ has at most $n-1$ vertices of positive degree. If
+these include at most one even vertex, Lov\'asz's partition has $|\Od(K)|/2\le\lfloor
+(n-1)/2\rfloor=n/2-1$ paths. In the game this means $\sum b\le n-2$ at the start. One new path,
+of any length, can be afforded. Fan transfers never change the number of paths, so the spare path
+can only be spent by a new path. Before this note the game allowed new paths of length one only.
+
+\begin{lemma}[Hub lemma]\label{lem:hub}
+Let $D$ be a partition of a graph $K$, and let $s$ be a vertex isolated in $K$. Let $a,c,d,x$ be
+distinct vertices other than $s$, with $b_D(a),b_D(c),b_D(d)\ge1$. Then for some labelling
+$\{y,y'\}=\{c,d\}$ the graph $K+sa+sc+sd+sx$ has a partition $D'$ with $|D'|=|D|+1$ and
+\[
+b_{D'}=b_D+2e_s-e_a-e_y+e_{y'}+e_x .
+\]
+In particular $b_{D'}(s)=2$ and $b_{D'}(x)=b_D(x)+1$.
+\end{lemma}
+
+\begin{proof}
+\emph{Step 1.} $s$ has no neighbour in $K$, so $Z_D(s)=\emptyset$ and $b_D(a)\ge1>0$. A single
+transfer of $sa$ towards $s$ gives a partition $D_1$ of $K+sa$ with $b_{D_1}=b_D+e_s-e_a$.
+
+\emph{Step 2.} The only neighbour of $s$ in $K+sa$ is $a$, so $|Z_{D_1}(s)|\le1$, while
+$b_{D_1}(c)+b_{D_1}(d)=b_D(c)+b_D(d)\ge2$. A grouped transfer with $T=\{c,d\}$ gives, for some
+$y\in\{c,d\}$, a partition $D_2$ of $K+sa+sy$ with $b_{D_2}=b_{D_1}+e_s-e_y$.
+
+\emph{Step 3.} Let $y'$ be the other vertex of $\{c,d\}$. The edges $sy'$ and $sx$ are not in
+$K+sa+sy$, and $y'sx$ is a path. Adding it as a new path gives $D'=D_2+y'sx$, with $|D'|=|D|+1$
+and the stated profile.
+\end{proof}
+
+In Lean this is \texttt{Ach.hub\_four}, stated for the end-vector bookkeeping \texttt{Ach} of the
+insertion library. It holds for any partition $D$, not only a Lov\'asz partition. The vertex $x$ is
+prescribed. The first donor $a$ is prescribed. Only the second donor is chosen by the adversary.
+
+\begin{theorem}[Degree-four hubs]\label{thm:hub4}
+Let $G$ have even order $n$ and let $s$ be a vertex of degree $4$ all of whose neighbours have
+even degree. Suppose at most one vertex of $\Ev(G)$ lies outside $N[s]$. Then for every
+neighbour $x$ of $s$, $G$ has a partition into at most $n/2$ paths with $b(s)=2$ and $b(x)=2$.
+Consequently (R) holds at $s$ and at every neighbour of $s$.
+\end{theorem}
+
+\begin{proof}
+Let $K=G-\{sw:w\in N(s)\}$, i.e.\ $G$ with $s$ isolated. A neighbour $w$ of $s$ has
+$d_K(w)=d_G(w)-1$, which is odd. A vertex $w\notin N[s]$ has $d_K(w)=d_G(w)$. Hence the vertices
+of positive even degree in $K$ are the even vertices of $G$ outside $N[s]$, and there is at most
+one of them. By (A), $K$ has a partition $D$ with $b_D=d_K\bmod 2$. Every vertex of $K$ of odd
+degree has one end, and $s$ has none. So $b_D(w)=1$ for each of the four neighbours of $s$, and
+$2|D|=|\Od(K)|\le n-1$. Since $n$ is even and $|\Od(K)|$ is even, $2|D|\le n-2$.
+
+Write $N(s)=\{a,c,d,x\}$ and apply Lemma~\ref{lem:hub}. The result is a partition $D'$ of $G$ with
+$2|D'|=2|D|+2\le n$, $b_{D'}(s)=2$ and $b_{D'}(x)=b_D(x)+1=2$. For the last statement apply this
+with any neighbour $x$ when $r=s$, and with $x=r$ when $r\in N(s)$.
+\end{proof}
+
+In Lean: \texttt{hub\_four\_ends}, and \texttt{hub\_four\_rooted} for the private-leaf form
+$p(G+\text{leaf at }r)\le n/2$. The hypothesis on even vertices is stated as
+$|\{v\in\Ev(G):v\ne s,\ sv\notin E\}|\le1$. Lov\'asz's theorem is the library's
+\texttt{lovasz\_ends}, so the theorem is unconditional.
+
+\begin{corollary}\label{cor:GsRvnk}
+In \texttt{GsRvnk}, (R) holds at the roots $s$ and $s'$, where the original game loses.
+\end{corollary}
+\begin{proof}
+$d(s)=4$ and $N(s)=Q$ consists of even vertices. The only even vertex outside $N[s]$ is $s'$.
+Apply Theorem~\ref{thm:hub4} at $s$, and symmetrically at $s'$.
+\end{proof}
+
+Theorem~\ref{thm:hub4} has two features worth noting.
+\begin{itemize}
+\item Its hypothesis forces $|\Ev(G)|\le6$, so it lives in the regime of the open floor bound
+$\mathrm{BP}_5$. It applies to vertices of degree four. In the apex class of the three-connected
+deletion test $\delta\ge6$, so it does not apply there directly (Section~\ref{sec:six}).
+\item Lemma~\ref{lem:hub} accepts any seed. Hence a floor bound for the odd-order graph $G-s$,
+i.e.\ a partition into $n/2-1$ paths with an end at each neighbour of $s$, converts into the
+rooted test at $s$ whenever $d(s)=4$. This is a small instance of the private-leaf duality
+between the floor bound at odd order and (R) at even order.
+\end{itemize}
+
+\begin{remark}[Variants; the other four losers]\label{rem:variants}
+The same scheme, receipts at an isolated hub followed by one new path through it, has several
+variants. The certificates found for the other losers use the following (printed by
+\texttt{scripts/certificate.py}).
+\begin{itemize}
+\item \texttt{Gqzl|\char123}, root $1$: the hub has degree $4$, but one neighbour is odd. One more
+edge at that neighbour is held, so it is odd in $K$, and the new path continues along it:
+$5\,1\,3\,6$ or $4\,1\,3\,6$.
+\item \texttt{GsZvnk}, root $4$: a hub of degree $5$. It receives from $0$ and passes the end on
+to $4$ by a single transfer. A grouped receipt and the new path $y'\,1\,7$ follow.
+\item \texttt{Gqzvn[}, root $4$: the hub $3$ has degree $3$, and the new path $6\,3\,5\,7$
+extends through a further held edge. The root receives by a single transfer from the seed.
+\item \texttt{Gqrvn[}, root $2$: as \texttt{GsRvnk}.
+\end{itemize}
+A hub of degree $d$ with $b\ge1$ on its neighbours absorbs $\lceil d/2\rceil$ receipts against
+an adversary. After $j$ receipts the supply is $d-j$ and at most $j$ neighbours are blank. So the
+spare path closes the hub exactly when $d-\lceil d/2\rceil\le2$, i.e.\ $d\le5$.
+\end{remark}
+
+\section{Completeness at order eight}\label{sec:eight}
+
+\begin{theorem}[computation]\label{thm:complete8}
+The Fan game with path insertion wins every root of every connected graph of order $8$ (all
+$11{,}117$ graphs). For all but $47$ graphs a held set with $|F|\le4$ suffices. For the remaining
+$47$ graphs it suffices to take $|F|=5$ for $40$ of them and $|F|=6$ for the other $7$.
+\end{theorem}
+
+The $47$ graphs are mostly the ones that need large held sets in any case, such as $K_{2,6}$. With
+$|F|\le4$ the game with path insertion has $47$ losing graphs and the original game has $50$. The
+three graphs repaired at $|F|\le4$ include \texttt{GsRvnk} and \texttt{Gqrvn[}. Scripts and logs
+are listed in Section~\ref{sec:scripts}. The sweep took a few seconds per graph, and every
+certificate was found by the solver \texttt{scripts/fan\_game.py}.
+
+Independently of the game, \texttt{scripts/rootcheck.py} confirms (R) at every root of the five
+losers and of the order-$10$ examples below by a direct CP-SAT search for partitions.
+
+\section{P\'osa moves at the profile level}\label{sec:posa}
+
+Fan's lemma is iterated P\'osa rotation. Two profile-level versions of the iteration suggest
+themselves. Both are sound, and both are useless on the losers.
+
+For a path $P$ of a partition $D$ with an end $x$ and with $u\in V(P)$, let $\pi_P(x)$ be the
+neighbour of $u$ on $P$ on the side of $x$, i.e.\ the vertex before $u$ when $P$ is read from $x$.
+
+\begin{lemma}[Rotation]\label{lem:rot}
+Let $D$ be a partition of $K$, $u\ne v$, $uv\notin E(K)$ and $b_D(v)\ge1$. Then one of the
+following holds.
+\begin{enumerate}[label=(\alph*)]
+\item $K+uv$ has a partition $D'$ with $|D'|=|D|$ and $b_{D'}=b_D+e_u-e_v$.
+\item There is a set $W\subseteq N_K(u)$ with $|W|=b_D(v)$ such that for every $w\in W$ the graph
+$K+uv-uw$ has a partition $D_w$ with $|D_w|=|D|$ and $b_{D_w}=b_D-e_v+e_w$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+If some path ending at $v$ avoids $u$, append $uv$ to it, which is (a). Otherwise each of the
+$b_D(v)$ paths ending at $v$ contains $u$. These paths are distinct, since a path has distinct
+ends. Their edges $u\,\pi_P(v)$ are distinct, so $W=\{\pi_P(v)\}$ has $b_D(v)$ elements, and $v\notin
+W$ because $uv\notin E(K)$. Write $P=v\cdots w\,u\cdots$ with $w=\pi_P(v)$, and replace $P$ by
+$w\cdots v\,u\cdots$. This is a path on the same vertex set, using $vu$ instead of $wu$, and it
+moves the end from $v$ to $w$.
+\end{proof}
+
+Fan's counting argument gives more: the rotation can always be steered to a \emph{blank} vertex,
+and it can be steered to as many blank vertices as the supply.
+
+\begin{lemma}[Fan's alternative]\label{lem:alt}
+Let $D$ be a partition of $K$, let $u$ be a vertex, and let $T$ be a set of non-neighbours of $u$
+with $u\notin T$. Then one of the following holds.
+\begin{enumerate}[label=(\alph*)]
+\item Some $t\in T$ with $b_D(t)\ge1$ gives an end to $u$: $K+tu$ has a partition $D'$ with
+$|D'|=|D|$ and $b_{D'}=b_D+e_u-e_t$.
+\item There is a set $W\subseteq Z_D(u)$ with $|W|\ge\sum_{t\in T}b_D(t)$ such that for each
+$z\in W$ there are $t\in T$ with $b_D(t)\ge1$ and a partition $D_z$ of $K+tu-zu$ with
+$|D_z|=|D|$ and $b_{D_z}=b_D-e_t+e_z$.
+\end{enumerate}
+\end{lemma}
+In particular, if $\sum_Tb>|Z_D(u)|$, then (b) is impossible. This is (B).
+
+\begin{proof}
+A \emph{chain} is a sequence $t=x_0,x_1,\dots,x_k$ of distinct vertices with $t\in T$ such that for
+each $i<k$ some path $P_i\in D$ has an end at $x_i$, contains $u$, and has
+$\pi_{P_i}(x_i)=x_{i+1}$. Let $R$ be the set of last vertices of chains.
+
+\emph{Executing a chain.} For a chain from $t$ to $z$ with $k\ge1$, the graph $K+tu-zu$ has a
+partition with the same number of paths and profile $b_D-e_t+e_z$. Rotate $P_0$ at $u$ as in
+Lemma~\ref{lem:rot}: the end moves from $x_0$ to $x_1$, and the edge $x_1u$ is replaced by $x_0u$.
+The other paths are unchanged. In $P_0$ the side of $u$ towards its other end is unchanged, and
+$x_1$ is interior to $P_0$, since it lies between $x_0$ and $u$. Hence $x_1,\dots,x_k$ is a chain
+of the new partition: its steps use paths other than $P_0$, or $P_0$ read from its unchanged end
+$\ne x_0$ (the $x_i$ are distinct). Induct on $k$. This is the reroute step of Fan's proof
+(\texttt{PathDecomp.reroute\_move}, \texttt{fanChain\_transport} in the Lean library).
+
+\emph{Case 1: some chain ends at a vertex $x_k$ with an end on a path avoiding $u$.} Execute the
+chain and append $x_ku$ to that path. This gives (a) for $t=x_0$, and $b_D(t)\ge1$ because $P_0$
+ends at $t$ (or $k=0$ and $t$ itself has the avoiding end).
+
+\emph{Case 2: otherwise.} Every end at a vertex of $R$ lies on a path through $u$. Map each such
+end $(P,x)$ to the edge $u\,\pi_P(x)$. By the definition of chains $\pi_P(x)\in R$; we may assume
+$x_{k+1}=\pi_P(x)$ is new, or else $\pi_P(x)$ already occurs in the chain, and in both cases it is
+the last vertex of some chain. The map is injective, since paths are edge-disjoint and the two ends
+of one path lie on the two sides of $u$. Its image consists of edges from $u$ to $N(u)\cap R$. Also
+$R\subseteq T\cup N(u)$, and $T\cap N(u)=\emptyset$. So
+\[
+\sum_{t\in T}b(t)+\sum_{w\in N(u)\cap R}b(w)\ \le\ \sum_{x\in R}b(x)\ \le\ |N(u)\cap R|.
+\]
+Every $w\in N(u)\cap R$ with $b(w)\ge1$ contributes at least $1$ on the left. Hence
+$\sum_Tb\le|Z_D(u)\cap R|$. Put $W=Z_D(u)\cap R$. A vertex $z\in W$ is not in $T$, so it is the end
+of a chain with $k\ge1$ from some $t\in T$. Its first step uses a path ending at $t$, so
+$b_D(t)\ge1$. Executing the chain gives (b).
+\end{proof}
+
+Lemma~\ref{lem:alt} is the ``rigidity at equality'' asked for in~\cite[\S8]{D6}. When
+$\sum_Tb=|Z(u)|$ and the transfer fails, every blank neighbour of $u$ is reachable, and each one can
+be \emph{activated}: it is given an end, while the held edge moves to it.
+
+\subsection*{As game moves} In the game, Lemma~\ref{lem:rot} gives the following move for a held
+edge $uv$: the direct outcome must win, and the opponent may also choose $W\subseteq N_H(u)$ with
+$|W|=b(v)$, after which we pick $w\in W$. Lemma~\ref{lem:alt} gives the same kind of move with
+$W\subseteq Z_H(u)$, $|W|\ge\sum_Tb$, and any $T$. For $T=\{v\}$ the outcomes are the same states,
+and the losing choices in $Z_H(u)$ are among those in $N_H(u)$. So the alternative wins whenever
+rotation does: as moves, rotation is dominated. A rotated or activated state has the same number of
+held edges, so plays are bounded by a budget of such moves.
+
+\begin{proposition}[computation]\label{prop:posa}
+On the five losers, adding rotations (at most two per play, $|F|\le4$) or Fan's alternative (at most
+two per play with $|F|\le4$, or one per play with $|F|\le6$) to the original game repairs
+\emph{none} of the losing roots: $s,s'$ in \texttt{GsRvnk}, and the single losing root of each of
+the other four.
+\end{proposition}
+
+\subsection*{Why} Every P\'osa-type move keeps the number of paths. The losers need the spare
+path to be spent on a path of length two through the hub, and in the original game this can only
+be imitated in two steps. First a new edge $cs$ is added, so $b(s)$ rises to $3$. Then the
+transfer of $sd$ towards $d$ is needed. In the true partition this is an append: the path $cs$
+ends at $s$ and avoids $d$. The profile has forgotten which of the three paths ending at $s$ is
+$cs$, and both Fan's inequality and the rotation adversary now place $d$ on all of them. Path
+insertion is exactly the memory of one explicit path. The missing ingredient at order $8$ is thus
+budget allocation, not exchange.
+
+\section{Degree six: one receipt short}\label{sec:six}
+
+The $d=6$ frontier of the three-connected test has $\delta\ge6$, and its residual case is a $K_6$
+of even vertices with full exterior vertices~\cite[\S\S1, 3]{D6}. Remark~\ref{rem:variants} shows what
+goes wrong. A hub of degree six with $b\ge1$ on its neighbours absorbs three receipts against an
+adversary. Closing it with the spare path needs four receipts and one new path. The fourth receipt
+has supply $3$ against three blank neighbours: it is exactly at Fan's equality.
+
+The order-$10$ analogue of \texttt{GsRvnk} is the graph $A_{6,2}$. It has a clique
+$Q=\{q_1,\dots,q_6\}$ of vertices of degree $8$, a vertex $x$ adjacent to $Q$ and to a leaf
+$\ell$, and false twins $s,s'$ adjacent exactly to $Q$. So $n=10$, $|E|=34$ and
+$\Ev=Q\cup\{s,s'\}$.
+
+\begin{lemma}[Append or through]\label{lem:through}
+Let $D$ be a partition of $H$ and $t,u$ non-adjacent with $b_D(t)\ge1$. If no path ending at $t$
+avoids $u$ then every path ending at $t$ contains $u$. If moreover $b_D(u)=d_H(u)$, then every
+path containing $u$ ends at $u$, so every path ending at $t$ joins $t$ to $u$.
+\end{lemma}
+\begin{proof}
+The first sentence restates the hypothesis. A path through $u$ that does not end at $u$ uses two
+edges at $u$ that carry no end at $u$, so $b_D(u)\le d_H(u)-2$.
+\end{proof}
+
+\begin{proposition}\label{prop:A62}
+$A_{6,2}$ has a partition into $5$ paths with $b(s)=4$. Hence (R) holds at $s$, at $s'$, and at
+the odd vertices.
+\end{proposition}
+\begin{proof}
+Let $K=G-s$, with $s$ isolated. Then $d_K(q)=7$, $d_K(x)=7$, $d_K(\ell)=1$, and $s'$ is the only
+even vertex of positive degree. By (A), $K$ has a partition $D$ into $4$ paths with $b=1$ on
+$Q\cup\{x,\ell\}$. Exactly as in Lemma~\ref{lem:hub}, a single transfer and two grouped transfers
+towards $s$ (supplies $1>0$, $5>1$, $4>2$) produce a partition $D_3$ of $H=K+sy_1+sy_2+sy_3$ into
+$4$ paths, for some distinct $y_i\in Q$. In $D_3$ we have $b(s)=3=d_H(s)$, $b=1$ on
+$T=Q\setminus\{y_1,y_2,y_3\}$ and on $x,\ell$, and $b=0$ on $y_1,y_2,y_3,s'$.
+
+\emph{Claim: some $t\in T$ has a path ending at $t$ that avoids $s$.} Suppose not. By
+Lemma~\ref{lem:through} each of the three ends at $T$ lies on a path joining $T$ to $s$. These are
+three distinct paths, since each has only one end in $T$, and so they are all three paths ending at
+$s$. The fourth path has its ends at the remaining vertices with ends, $x$ and $\ell$. As $\ell$ is
+a leaf at $x$, it is the edge $\ell x$. So the three $s$-paths cover $E(H)-\ell x$, which has
+$34-3-1=30$ edges. But they avoid $\ell$, so each has at most $8$ edges, and $3\cdot8<30$. This
+contradiction proves the claim.
+
+Append $ts$ to that path. Now $b(s)=4$, and the two remaining edges $st'$, $st''$ at $s$ form the
+new path $t'st''$. The result has $5=n/2$ paths and $b(s)=4$. For $s'$ use symmetry. For odd roots
+any partition into $5$ paths has an end there by~\eqref{eq:parity}.
+\end{proof}
+
+The argument is a two-end phenomenon at equality, but it is not a transfer rule: it combines the
+rigidity of Lemma~\ref{lem:through} with the number of edges, which the profile does not record.
+In the game, the alternative of Lemma~\ref{lem:alt} at this state only activates a blank $y_i$. That
+produces the same configuration with the labels permuted.
+
+\begin{proposition}[computation]\label{prop:A62game}
+The Fan game with path insertion, with $F$ a full star plus at most two further edges, loses
+$A_{6,2}$ at every root, the odd ones included. (The CP-SAT check confirms (R) at every root.)
+\end{proposition}
+
+So $A_{6,2}$ is a loser of the extended game, at least for hub-shaped held sets; at order $10$ a
+search over all held sets of size $\ge6$ is out of reach of the solver. Three further test graphs
+of order $10$ were run with the same held sets (\texttt{scripts/families.py}).
+\begin{itemize}
+\item $A_{4,4}$ ($Q=K_4$ with four false twins): it wins, and the twins need a star plus two
+further held edges.
+\item $B$ (a $K_6$ core $U$ of even vertices, two adjacent full vertices, and two vertices
+each adjacent to half of $U$): it wins with a star plus one edge. The half vertices have small
+contact, which makes them resources in the sense of~\cite[\S4]{D6}.
+\item $B'$ (a $K_6$ core, a full vertex with a leaf, and two adjacent full vertices): it loses at
+every root with a star plus at most two edges. This is the residual case Q2 of the $d=6$
+frontier, all exterior vertices being full. The count of Proposition~\ref{prop:A62} does not
+close it. At the fourth receipt of the hub $x_1$ the fourth path joins the two other full vertices,
+and $31$ edges meet a capacity of $3\cdot8+7=31$.
+\end{itemize}
+
+The rigid configuration can also be useful in itself. Here is the order-$8$ graph on which the
+hub argument meets it head-on.
+
+\begin{lemma}[Flowers]\label{lem:flower}
+Let $C_1,\dots,C_j$ be edge-disjoint cycles, and let $e_i\in E(C_i)$ be edges that are the
+consecutive edges of a path $L$. Then $C_1\cup\dots\cup C_j$ has a partition into $j+1$ paths with
+two ends at every vertex of $L$ and no end elsewhere.
+\end{lemma}
+\begin{proof}
+The paths are $C_i-e_i$ for $i\le j$, and $L$. The path $C_i-e_i$ ends at the two ends of $e_i$.
+An interior vertex of $L$ lies on two of the $e_i$ and is interior to $L$. An end of $L$ lies on
+one $e_i$ and ends $L$.
+\end{proof}
+
+\begin{proposition}\label{prop:K8M}
+Let $M_8$ be $K_8$ minus a perfect matching. Then (R) holds at every vertex of $M_8$, by
+Lov\'asz's partition of $M_8-s$, three Fan receipts at $s$, and Lemma~\ref{lem:flower}.
+\end{proposition}
+\begin{proof}
+$M_8$ is $6$-regular and vertex-transitive, so let $s$ be the root and $s^*$ its non-neighbour. In
+$K=M_8-s$ the six neighbours of $s$ have degree $5$ and $s^*$ is the only even vertex. By (A), $K$
+has a partition into $3$ paths with $b=1$ on $N(s)$. As in Lemma~\ref{lem:hub}, three receipts at
+$s$ (supplies $1>0$, $5>1$, $4>2$) give a partition $D_3$ of $H=K+sy_1+sy_2+sy_3$ into $3$ paths,
+with $b(s)=3$ and $b=1$ on the three other neighbours $T$. The three paths have six ends, three at
+$s$ and three in $T$. A path has at most one end at $s$, so every path joins $s$ to $T$. The held
+edges $st$, $t\in T$, close them into three edge-disjoint cycles $C_1,C_2,C_3$ through $s$ that
+cover $E(M_8)$. A cycle has at most $8$ edges and $|E(M_8)|=24$, so the $C_i$ are Hamiltonian.
+
+Choose a neighbour $a$ of $s$ on $C_1$, and put $e_1=sa$. The cycle $C_2$ passes through $a$. Its
+two edges there avoid $s$, because $sa\in C_1$. Choose one, $e_2=aw$. The cycle $C_3$ passes
+through $w$. Its two edges there avoid $a$, because $aw\in C_2$, and at most one of them goes to
+$s$. Choose $e_3=wz$ with $z\ne s$. Then $s,a,w,z$ are distinct and $L=s\,a\,w\,z$ is a path.
+Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
+\end{proof}
+
+Here the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's chain from
+$t\in T$ stops at a blank donor. The spare path is spent on recombining the flower instead. This
+is a two-end move at equality. It moves the ends from $T$ to the transversal $L$, and it is again
+invisible in the profile: it needs the three cycles, whose existence follows from a count of
+edges.
+
+\begin{question}\label{q:count}
+Is there a sound profile-level move, using only $H$ and $b$, that captures
+Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that the paths of $D$ avoiding
+$u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus counting into a move. Does
+such a move make the extended game complete at order $10$?
+\end{question}
+
+\section{Consequences}\label{sec:conseq}
+
+\begin{enumerate}
+\item The conclusion of connections~\S R needs correcting. Lov\'asz seeds with Fan transfers were
+incomplete at order $8$ only because path insertion was missing, and path insertion is already in
+the Lean insertion library (\texttt{Ach.addPath}). With it, the game is complete at order $8$.
+\item Inductive seeds, the rooted test on a connected spanning $G-F$, have $\sum b=n$, so they have
+no spare path. The spare path comes from the floor $\lfloor N/2\rfloor$ at odd order, i.e.\ from
+Lov\'asz's theorem with an isolated vertex. An induction that keeps it needs the floor bound for
+odd-order graphs, namely the bounds $\mathrm{BP}_t$ of the roadmap. Lemma~\ref{lem:hub} converts
+them into (R) at degree-four vertices.
+\item P\'osa moves at the profile level (rotation at equality, Fan's alternative) add nothing at
+order $8$. The first real gap is at order $10$, at a degree-six hub. There the missing receipt is
+forced by a global edge count. This makes the ``two-end transfer at equality'' of~\cite{D6}
+concrete: the rigid configuration of Lemma~\ref{lem:alt} must be refuted by information outside the
+profile.
+\end{enumerate}
+
+\section{Formalisation and scripts}\label{sec:scripts}
+
+\subsection*{Lean} File \texttt{lean/GallaiLean/MissingMove.lean} of the project repository (Lean~4,
+Mathlib v4.36.0). It has no \texttt{sorry}, and \texttt{\#print axioms} reports only
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+\begin{itemize}
+\item \texttt{Ach.hub\_four}: Lemma~\ref{lem:hub}, for the bookkeeping predicate
+\texttt{Ach E b} (the graph with edge set $E$ has a partition with end vector $b$). The profile
+identity is stated without subtraction:
+$b'(v)+[v=a]+[v=y]=b(v)+2[v=s]+[v=y']+[v=x]$.
+\item \texttt{hub\_four\_ends}, \texttt{hub\_four\_rooted}: Theorem~\ref{thm:hub4}, with
+Lov\'asz's theorem from the library (\texttt{lovasz\_ends}).
+\item Helpers: \texttt{isolate} ($G$ with every edge at $s$ removed), \texttt{isolate\_degree},
+\texttt{isolate\_edgeSet}, and \texttt{Ach.decomp\_of\_edgeSet}, \texttt{Ach.of\_decomp}.
+\end{itemize}
+Lemmas~\ref{lem:rot} and~\ref{lem:alt} are single steps and partial chains of Fan's proof, which is
+formalised as \texttt{fan\_exec} and \texttt{fan\_exists\_chain} in \texttt{Fan.lean}. Since they do
+not help, they are not formalised separately.
+
+\subsection*{Scripts} In \texttt{scripts/}:
+\begin{itemize}
+\item \texttt{fan\_game.py}: the game solver, a copy of \texttt{tools/fan\_game.py}. Its options
+are \texttt{np} (path insertion), \texttt{rotR} (at most $R$ rotations), \texttt{altR} (at most $R$
+uses of Fan's alternative), \texttt{ind} (inductive seeds) and \texttt{hubs} (held sets of the
+form ``full star plus $k$ edges'').
+\item \texttt{certificate.py}: prints a winning strategy tree, with path insertion, for one graph and
+root.
+\item \texttt{stepper.sh}: for each graph, raises $|F|$ from $5$ to $8$ until every root wins.
+\item \texttt{families.py}: the order-$10$ test graphs $A_{4,4}$, $A_{6,2}$, $B$, $B'$.
+\item \texttt{rootcheck.py}, with \texttt{pathnum2.py}: an independent CP-SAT check of (R).
+\item \texttt{run\_all.sh}: reproduces every table. The outputs are in \texttt{scripts/outputs/}.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.\
+Tihany 1966), Academic Press, 1968, 231--236.
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J.\ Combin.\ Theory Ser.\
+B} 93 (2005) 117--125.
+\bibitem{ES} J.~Williams, Endpoint sets of path decompositions at the Gallai budget, working draft,
+\texttt{manuscripts/endpoint-structure}.
+\bibitem{D6} The $d=6$ frontier: transfers, relays and the terminal step, working draft,
+\texttt{manuscripts/d6-frontier}.
+\bibitem{EXP} Project experiment log, \texttt{research/experiments.md}, entry E13.
+\end{thebibliography}
+
+\end{document}

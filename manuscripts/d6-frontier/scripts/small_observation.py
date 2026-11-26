@@ -1,4 +1,4 @@
-"""Small observation (Section 8 of d6-frontier.tex): realisability of every 3-subset of U
+"""Small observation (Section 8, Observation, of d6-frontier.tex): realisability of every 3-subset of U
 (b = 2 on the triple, 0 on the rest of U, 1 on odd vertices, k paths) in
  (1) the false-twin example K10 minus the six edges from 9 to U = {0..5};
  (2) nine random graphs with B[U] = K6 and one or two full exterior vertices

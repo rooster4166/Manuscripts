@@ -1,4 +1,4 @@
-"""Replay of the distant-pendant root-hub certificate (Theorem 6 of d6-frontier.tex).
+"""Replay of the distant-pendant root-hub certificate (Theorem 4.4 of d6-frontier.tex).
 
 Hypotheses (d = 6): U = {0..5} induces K6, r = 0, d(r) >= 8; a path r c_1 ... c_m a of odd
 vertices with |N(c_1) & T| <= 4, c_2..c_m and a without neighbours in U, a not adjacent to

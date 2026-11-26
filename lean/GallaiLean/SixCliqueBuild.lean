@@ -46,18 +46,21 @@ section helpers
 
 variable {V : Type u} [DecidableEq V]
 
+omit [DecidableEq V] in
 theorem lEdges_map {W : Type*} (f : W → V) (a : W) (l : List W) :
     lEdges (f a) (l.map f) = (lEdges a l).map (Sym2.map f) := by
   induction l generalizing a with
   | nil => rfl
   | cons b l ih => simp [ih]
 
+omit [DecidableEq V] in
 theorem lastOf_map {W : Type*} (f : W → V) (a : W) (l : List W) :
     lastOf (f a) (l.map f) = f (lastOf a l) := by
   induction l generalizing a with
   | nil => rfl
   | cons b l ih => simp [ih]
 
+omit [DecidableEq V] in
 theorem img_ofSym_eq {n : ℕ} (ι : Fin n → V) (L : List (Sym2 (Fin n))) :
     img ι (ofSym L) = {e | ∃ x ∈ L, e = x.map ι} := by
   ext e
@@ -69,6 +72,7 @@ theorem img_ofSym_eq {n : ℕ} (ι : Fin n → V) (L : List (Sym2 (Fin n))) :
     induction x using Sym2.ind with
     | _ a b => exact ⟨a, b, hx, rfl⟩
 
+omit [DecidableEq V] in
 theorem img_ofSym_append {n : ℕ} (ι : Fin n → V) (L₁ L₂ : List (Sym2 (Fin n))) :
     img ι (ofSym (L₁ ++ L₂)) = img ι (ofSym L₁) ∪ img ι (ofSym L₂) := by
   simp only [img_ofSym_eq, List.mem_append]
@@ -232,7 +236,7 @@ theorem ty_prs_nc {p : V × V} (hp : p ∈ S.prs) : S.nc p.1 ∧ S.nc p.2 := by
 
 /-- Core edges of a state are allowed by `cupS`. -/
 theorem core_mem {L : List (Sym2 (Fin 12))} {A : Set V} (hA : ∀ v ∈ A, S.nc v) {a a' : Fin 12}
-    (h : a ≠ a') (hm : s(S.ι a, S.ι a') ∈ S.St L A) : cupS L a a' = true := by
+    (_h : a ≠ a') (hm : s(S.ι a, S.ι a') ∈ S.St L A) : cupS L a a' = true := by
   unfold St at hm
   simp only [cupS, Bool.or_eq_true]
   rcases hm with ((hm | ⟨v, hv, he⟩) | hm) | ⟨v, hvA, k, -, -, he⟩
@@ -259,7 +263,7 @@ theorem core_mem {L : List (Sym2 (Fin 12))} {A : Set V} (hA : ∀ v ∈ A, S.nc 
     · exact hA v hvA ⟨a', h1⟩
 
 /-- A non-core vertex outside `A` meets the core only at its seed vertex and at representatives. -/
-theorem nc_mem {L : List (Sym2 (Fin 12))} {A : Set V} (hA : ∀ v ∈ A, S.nc v) {v : V}
+theorem nc_mem {L : List (Sym2 (Fin 12))} {A : Set V} (_hA : ∀ v ∈ A, S.nc v) {v : V}
     (hv : S.nc v) (hvA : v ∉ A) {i : Fin 12} (hm : s(v, S.ι i) ∈ S.St L A) :
     i = ptc (S.ty v) ∨ 6 ≤ i.val := by
   unfold St at hm
@@ -362,7 +366,7 @@ theorem pair_step {L : List (Sym2 (Fin 12))} {A : Set V} (hA : ∀ v ∈ A, S.nc
     intro a
     unfold ext14
     by_cases ha : a.val < 12
-    · rw [iota14_lt ha, B_iota, dif_pos ha]
+    · rw [iota14_lt ha, B_iota, dite_eq_left ha]
     · rw [dite_eq_right ha]
       rcases hιxy a (by omega) with h | h <;> rw [h]
       · exact B_nc c hx
@@ -386,14 +390,14 @@ theorem pair_step {L : List (Sym2 (Fin 12))} {A : Set V} (hA : ∀ v ∈ A, S.nc
     intro a a' haa' hm
     unfold cup14
     by_cases ha : a.val < 12 <;> by_cases ha' : a'.val < 12
-    · rw [dif_pos ⟨ha, ha'⟩]
+    · rw [dite_eq_left ⟨ha, ha'⟩]
       rw [iota14_lt ha, iota14_lt ha'] at hm
       exact core_mem hA (fun h => haa' (Fin.ext (by simpa using congrArg Fin.val h))) hm
-    · rw [dite_eq_right (by omega), if_pos ha]
+    · rw [dite_eq_right (by omega), ite_eq_left ha]
       have := key a' a (by omega) ha (by rwa [Sym2.eq_swap])
       simp only [Bool.or_eq_true] at this ⊢
       exact Or.inr this
-    · rw [dite_eq_right (by omega), if_neg ha]
+    · rw [dite_eq_right (by omega), ite_eq_right ha]
       have := key a a' (by omega) ha' hm
       simp only [Bool.or_eq_true] at this ⊢
       exact Or.inr this
@@ -618,7 +622,7 @@ theorem seed_pairs : ∀ P : List (V × V), (∀ p ∈ P, p ∈ S.prs) →
       (by simp [hpx, hpy, hxy])
       (by
         intro e he hmem
-        simp only [lEdges_cons, lEdges_nil, List.mem_cons, List.mem_singleton,
+        simp only [lEdges_cons, lEdges_nil, List.mem_cons,
           List.not_mem_nil, or_false] at he
         rcases hmem with ⟨a, b, -, hab⟩ | ⟨u, hu, hue⟩
         · rcases he with rfl | rfl
@@ -631,7 +635,7 @@ theorem seed_pairs : ∀ P : List (V × V), (∀ p ∈ P, p ∈ S.prs) →
         · have hunc : S.nc u := by
             obtain ⟨q, hq, hq'⟩ := List.mem_flatMap.mp hu
             have := S.prs_nc q (hP q (by simp [hq]))
-            simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hq'
+            simp only [List.mem_cons, List.not_mem_nil, or_false] at hq'
             rcases hq' with rfl | rfl
             · exact this.1
             · exact this.2.1
@@ -645,7 +649,7 @@ theorem seed_pairs : ∀ P : List (V × V), (∀ p ∈ P, p ∈ S.prs) →
     refine h.congr ?_ ?_
     · ext e
       simp only [Set.mem_union, Set.mem_ofPred_eq, lEdges_cons, lEdges_nil, List.mem_cons,
-        List.mem_singleton, List.not_mem_nil, or_false, List.flatMap_cons, List.mem_append]
+        List.not_mem_nil, or_false, List.flatMap_cons, List.mem_append]
       constructor
       · rintro ((h | ⟨u, hu, rfl⟩) | (rfl | rfl))
         · exact Or.inl h
@@ -674,7 +678,7 @@ theorem seed : Ach (img S.ι (ofSym seedE) ∪ S.seedP) (S.B c1) := by
     intro u hu
     obtain ⟨q, hq, hq'⟩ := List.mem_flatMap.mp hu
     have := S.prs_nc q hq
-    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hq'
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hq'
     rcases hq' with rfl | rfl
     · exact this.1
     · exact this.2.1

@@ -1,4 +1,4 @@
-"""Brute-force check of the terminal-step classification (Theorem 2 of d6-frontier.tex).
+"""Brute-force check of the terminal-step classification (Theorems 3.1 and 3.2 of d6-frontier.tex).
 
 B-form: U = {0..5} induces K6; F = full vertices (adjacent to all of U; F-F adjacency
 given).  A final partition into k paths has excess sum 6, where excess = b - 1 on odd

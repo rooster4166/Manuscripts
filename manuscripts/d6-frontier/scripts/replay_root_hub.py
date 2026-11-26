@@ -1,4 +1,4 @@
-"""Replay of the root-hub certificate (Theorem 4 of d6-frontier.tex) on random graphs.
+"""Replay of the root-hub certificate (Theorem 4.1(i) of d6-frontier.tex) on random graphs.
 
 Hypotheses: G has even order, its six even vertices U = {0..5} induce K6 (so the root
 r = 0 is adjacent to all of T = U - r), d(r) >= 8, and r has an odd neighbour y with

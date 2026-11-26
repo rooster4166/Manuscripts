@@ -486,6 +486,172 @@ statements are otherwise identical to the originals.
 `#print axioms` on `pyber`, `pyber_claim`, `bp3_pathNumber`, `realisable_pair_of_four`,
 `rooted_four'`, `endpoint_matroid_four'` and `two_step_descent'` shows only `propext`,
 `Classical.choice` and `Quot.sound`.
+## `GallaiLean/KStep.lean`: k-step descent
+
+`Desc G k y W₀`: some `k`-set `R` of even vertices with `W₀ ⊆ R`, `y ∉ R` and `Ev ∖ R` realisable.
+
+* `realisable_transfer`: for adjacent even `s, t`, `S` realisable in `G − st` with `N(s)`
+  disjoint from the unexposed even vertices gives `insert s S` realisable in `G`.
+* `delE_reach_or_reach`, `connected_delE_of_not_isBridge`, `evenSet_delE_odd`,
+  `evenSet_delE_even`, `card_edgeFinset_delE_lt`: bookkeeping for deleting one edge.
+* **`desc_reduction`**: `Desc · k y W₀` in connected graphs with `≥ m` even vertices reduces to
+  the cases where `y` has an even neighbour or every edge at `y` is a bridge (`IsBridge`).
+* **`desc_succ_of_unique`**: if `y` has exactly one even neighbour `t`, then `Desc G (k+1) y {w}`
+  follows from `k`-step descent (`k ≥ 2`) in graphs where the kept vertex is joined to another
+  even vertex. `desc_two_of_reachable` supplies `k = 2` from `two_step_aux`.
+* **`desc_three_of_unique`**, **`desc_three_reduction`** (and primed forms without the Lovász
+  hypothesis): three-step descent at an even vertex with exactly one even neighbour; reduction of
+  three-step descent to the two residual cases.
+
+## Six-clique theorem (cloud session)
+
+Theorem 1 of *Prescribed path ends at a clique of six even vertices*
+(`gallai/04-research-studies/six-clique-prescribed-ends.pdf`; audit A6 §1.3) is **fully
+formalized**. There is no `sorry`, and `#print axioms Gallai.six_clique_prescribed_ends` shows only
+`propext`, `Classical.choice` and `Quot.sound`. The finite bookkeeping of the paper's Section 4 is
+checked by `decide +kernel`, which is kernel evaluation (no `native_decide`, no extra axiom).
+`SixCliqueModel.lean` takes about 30 s to build, and each of the other new files a few seconds.
+`Basic.lean` and `Fan.lean` are unchanged.
+
+**Statement** (`GallaiLean/SixClique.lean`):
+
+```lean
+theorem six_clique_prescribed_ends (G : SimpleGraph V) [DecidableRel G.Adj] (U : Finset V)
+    (hU : U.card = 6) (hclique : ∀ a ∈ U, ∀ b ∈ U, a ≠ b → G.Adj a b)
+    (heven : ∀ u ∈ U, Even (G.degree u)) (hodd : ∀ x ∉ U, Odd (G.degree x))
+    (hfive : ∀ x ∉ U, (U.filter (G.Adj x)).card = 5)
+    (T : Finset V) (hTU : T ⊆ U) (hT : T.card = 3) :
+    ∃ D : PathDecomp G, 2 * D.size = Uᶜ.card + 6 ∧
+      ∀ v, D.ends v = if v ∈ T then 2 else if v ∈ U then 0 else 1
+```
+
+The paper's hypothesis "`|X|` even" is derived from the handshake lemma rather than assumed.
+The module docstring of `SixClique.lean` writes out the whole proof. It also expands the two
+points the audit asked for: Lemma 2's chain step (F10) and Corollary 5's triple rectangle (F11).
+
+### `GallaiLean/Insertion.lean`: decompositions as (edge set, end vector)
+
+* `Ach E b`: `fromEdgeSet E` has a path decomposition with exactly `b v` ends at every `v`. The
+  number of paths is not tracked, because `PathDecomp.sum_ends` recovers it.
+* `blankNbrs E b u`: the number of neighbours of `u` with no end. `mv b t u` moves one end from
+  `t` to `u`.
+* **`Ach.grouped`**: Fan's grouped transfer in edge-set form (from `fan_grouped`). If
+  `blankNbrs E b u < ∑_{t ∈ T} b t` and no `t ∈ T` is adjacent to `u`, then some `t ∈ T` with
+  `b t ≥ 1` gives `Ach (insert s(t,u) E) (mv b t u)`. `Ach.transfer` is the case of one donor.
+* `lEdges a l`, `lastOf a l`, `mem_lEdges_iff`: vertex lists and their consecutive edges.
+  **`Ach.addPath`** adds a new row from a duplicate-free vertex list whose edges are all new.
+
+### `GallaiLean/Schedule.lean`: the insertion-schedule lemma (reusable)
+
+* `Prog n`: a program of transfers on a finite model `Fin n`. `offer ds r k` offers the donors
+  `ds` to the receiver `r` and continues with `k t` for the returned donor `t`. `tr` is a single
+  transfer and `ofList` a list of them.
+* `Prog.ok T tgt adj ins c`: a Boolean checker. `adj` is an *upper bound* for the present edges
+  among model vertices; unknown edges may be included, which only raises blank counts. At an
+  offer, the receiver's model blank count must be below the total supply. Every branch with a
+  positive donor is checked. At a leaf, the inserted edges must be exactly `T` and the end vector
+  must be `tgt`.
+* **`Prog.sound`** (and `Prog.sound₀`, starting with nothing inserted): let `ι : Fin n → V` be
+  injective, let every vertex outside the image of `ι` have an end, and let every present edge
+  between model vertices be allowed by `adj`. Then a checked program inserts `ι(T)` into any
+  state, with end vector `tgt` on the model and unchanged elsewhere. Each offer is one
+  `Ach.grouped`. Real blank neighbours inject into model blank neighbours
+  (`blankNbrs_le_mblank`).
+* So a finite certificate of grouped transfers (as in the six-clique, incidence and root-shape
+  papers) can be verified on its model with `decide` and applied to graphs of any size.
+
+### `GallaiLean/EvenInsert.lean`: Lemma 3 of the paper
+
+* `Ach.chain`: the transfers `x → c₁ → ⋯ → z` along a list, under local blank-count hypotheses.
+* `Ach.insert_cycle`: inserting a cycle none of whose vertex pairs is present. Offer the two
+  cycle neighbours of `a` to `a`, then carry the extra end back around the other arc. When the
+  other neighbour is returned, use the reversed cycle.
+* `exists_cyc`, `exists_chordless`: an even finite edge set with an edge contains a cycle, and a
+  shortest cycle has no chord (`shorter_of_chord`). `even_cycle_degree`: every vertex meets an
+  even number of edges of a cycle.
+* **`Ach.insert_even`** (Lemma 3): let `S` be independent in `E`, and let every `v ∈ S` have at
+  least one end and at most one blank neighbour. Then any finite even graph on `S` can be inserted
+  with the end vector unchanged. The proof is a strong induction that peels off a shortest cycle.
+
+### `GallaiLean/SixCliqueModel.lean`: the finite core (Section 4)
+
+On `Fin 12`, clique vertices are `0..5` and the representative of type `i` is `6 + i`.
+`mpaths` holds the five seed paths and `seedE` their 24 edges. `seg1`, `seg2` and `seg3` are the
+2 + 8 + 6 single transfers. `E1..E4` and `c1..c4` give the core edges and core end vectors at
+each stage. `finalE` is the final path `(0,5,1,2,4,3)` and `cfin = (2,0,2,2,0,0 | 1⁶)`.
+On `Fin 14`, `pairProg h` is Lemma 4 for a pair `12, 13` of type `h`: its two rectangles, with
+`(j,u,v,w)` read from a table. All 18 finite facts are proved by `decide +kernel`. They cover the
+seed, the segment and rectangle programs (`seg*_ok`, `pair_ok`, 4 leaves per type), the
+completeness and soundness of the core edge set, and the final vector.
+
+### `GallaiLean/SixCliqueBuild.lean`: the construction on labelled data
+
+* `SixData V`: the graph with `ι : Fin 12 → V` (clique, then representatives), the type function,
+  the list of pairs, and the hypotheses of Theorem 1 in labelled form.
+* `St L A`: the state edge set. It consists of the core edges `ι(L)`, every pair's seed spoke,
+  the whole exterior graph `F`, and all spokes of the completed vertices `A`. `B c` is `c` on the
+  core and `1` elsewhere.
+* `seed` (five model paths via `Ach.addMapPaths`, plus one row `x, p, y` per pair), `after_F`
+  (Lemma 3), `pair_step` and `stage` (Lemma 4 for every pair of a stage, via `Prog.sound₀` on
+  `Fin 14`), `segment` (the core transfers, via `Prog.sound₀` on `Fin 12`), `final_edges` (the
+  resulting edge set is exactly `E(G)`), **`SixData.main`**.
+
+### `GallaiLean/SixClique.lean`
+
+`exists_pairing` splits an even finite set into disjoint pairs. The main theorem labels `U` with
+`T` at `0, 2, 3`. It then derives the type function, uses the handshake lemma for `m` even and
+`d(h) = 5 + m − n_h` for `n_h` odd, chooses representatives and pairings, builds `SixData`, and
+reads off the ends and the size.
+
+**Not formalized from this paper:** Corollary 5 (other proper neighbourhoods; its triple
+rectangle is written out in the docstring) and Theorem 6 (its 31,442 certificate records are not
+in the repository; `Prog` is the natural format for replaying them).
+## `GallaiLean/TwoEven.lean`: the second descent step and the Fan calculus (endpoint-structure §5)
+
+`delEdge G a b` is `G` without the edge `ab` (`delEdge_edgeSet`, degree lemmas
+`delEdge_degree_left/right/of_ne`, `evenSet_delEdge`, `evenSet_delEdge_odd`).
+
+| Lean name | Statement |
+|---|---|
+| **`realisable_erase_of_fan`** | **Fan descent.** `u, w ∈ S ⊆ Ev`, `uw ∈ E(G)`, every even neighbour of `w` lies in `S`, and `S \ {u, w}` is realisable in `G − uw` ⇒ `S \ {u}` is realisable in `G`. One application of `fan_single` (gainer `w`, loser `u`). |
+| **`realisable_of_fan_transfer`** | **Fan transfer.** `u ∈ Ev \ S`, `w` odd, `uw ∈ E(G)`, every even neighbour `x ≠ u` of `w` lies in `S`, and `S` is realisable in `G − uw` ⇒ `S` is realisable in `G`. |
+| **`realisable_evenSet_erase_pair`** | **Second descent step** (needs `LovaszStatement`, even order, no isolated vertex): distinct even `a, b, w` with `aw ∈ E`, `bw ∉ E` ⇒ `Ev \ {a, b}` is realisable. Lemma 3 in `G − aw`, then Fan descent. |
+| **`etwin_of_not_realisable`** | If `Ev \ {a, b}` is not realisable then `a, b` have the same neighbours among the other even vertices (E-twins). |
+| `fd_second_step` | The second step of faithful descent from `Ev \ {u}` keeping a root `r`, given a non-twin `v`. |
+| `FanSchedule`, **`realisable_of_fanSchedule`** | Iterated Fan descent with even steps only (semi-induced matchings in `G[Ev]`). |
+| `FanCert`, **`realisable_of_fanCert`** | **Soundness of the Fan calculus**: a list of even steps and odd transfers (odd partner of degree ≥ 3) ending with at most one vertex certifies that `Ev \ X` is realisable. |
+| `Tight`, `tight_of_transfer`, `tight_of_fanCert` | The two-even-vertex problem: `Tight H := Realisable H ∅` (the parity bound `#odd/2`); the transfer lemma for graphs with `evenSet H = {u, v}`. |
+| `PathDecomp.degree_add_ends_le`, `degree_le_of_tight` | `deg v + ends v ≤ 2|D|`; obstruction (O1): in a tight graph every odd vertex has degree ≤ `#odd − 1`. |
+| **`realisable_pair`** (with `pair_core`, `pair_finish`, `degree_delEdge₂`, `edgeSet_readd`) | **Pair step** (Thm 26): `u, a, a'` distinct even, `w ≠ u` adjacent to `a, a'`; if `w` is even of degree ≥ 4, or odd with `aa' ∉ E` or `a, a' ≁ u`, then `Ev \ {u, a}` or `Ev \ {u, a'}` is realisable. Lemma 3 in `G − aw − a'w`, then `fan_grouped` at `w` and `fan_single` for the other edge. |
+| `pathMoves`, `OddPath`, `fanCert_of_oddPath`, **`realisable_of_oddPath`** | **Path transfer** (the step in Thm 28): a path from `a` through odd vertices of degree ≥ 3 not adjacent to `u`, ending at an even `t ≠ u`, `t ≁ u`, gives `Ev \ {a, u}`. |
+| `PathDecomp.ends_le_degree`, **`realisable_leaves_singleton`**, **`tight_leaves_of_lovasz`** | Move (L) for a pendant vertex at an odd vertex (in the `leaves` encoding); the leaf case of the two-even problem: `G` with at most one even vertex plus a pendant vertex at an odd `x` is tight. |
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Lovász enters
+only as `LovaszStatement`. Not formalized from §5: the reductions (S) and (C) of Proposition 29 (they delete a vertex),
+move (L) beyond the single-pendant form above, the combinatorial assembly of Corollary 27 and
+Theorem 28 (twin classes, a shortest path between even vertices), and the obstructions (O2), (O3)
+and the cut-vertex rule.
+
+## `GallaiLean/MissingMove.lean`: Lovász's spare path at a hub (missing-move manuscript)
+
+The Fan game of connections §R lost on five graphs of order 8. The missing move is *path insertion*
+(a new path of any length made of held edges), paid for by the spare path that Lovász's theorem
+leaves when `G − F` has an isolated vertex. Manuscript `manuscripts/missing-move`.
+
+| Lean name | Statement |
+|---|---|
+| `isolate G s`, `isolate_edgeSet`, `isolate_degree`, `isolate_degree_self` | `G` with every edge at `s` removed, and its degrees |
+| `Ach.decomp_of_edgeSet`, `Ach.of_decomp` | `Ach G.edgeSet b` ⇔ a decomposition of `G` with end vector `b` |
+| `blankNbrs_eq_zero_of_isolated` | an isolated receiver has no blank neighbour |
+| `Ach.hub_close` | the last two steps of the hub: the new path `y' s x` |
+| **`Ach.hub_four`** | **Hub lemma** (Lemma 2.1). If `s` meets no edge of `E`, and `a, c, d` have ends, then inserting `sa, sc, sd, sx` costs one extra path. For some `{y, y'} = {c, d}`: `b' v + [v=a] + [v=y] = b v + 2[v=s] + [v=y'] + [v=x]`. The steps are `Ach.transfer`, then `Ach.grouped`, then `Ach.addPath`. |
+| **`hub_four_ends`** | **Degree-four hubs** (Thm 2.2). Even order, `d(s) = 4`, all neighbours of `s` even, `#{v ∈ Ev : v ≠ s, sv ∉ E} ≤ 1` ⇒ for every neighbour `x` there is a decomposition with `2·size ≤ n`, `ends s = 2`, `ends x = 2`. Lovász is `lovasz_ends`, so this is unconditional. |
+| **`hub_four_rooted`** | the same hypotheses ⇒ `pathNumber (addLeaf G r) ≤ n/2` for `r = s` and for every neighbour `r` of `s` |
+
+`#print axioms`: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Not formalized:
+Lemmas 4.1–4.2 (rotation; Fan's alternative), which are a single step and partial chains of
+`fan_exec` / `fan_exists_chain` and do not help in the game; Proposition 5.2 (degree-six hub of
+`A_{6,2}`).
 
 ## Open / not formalized
 

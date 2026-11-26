@@ -1,0 +1,11 @@
+seed 11 instances-x-demands 9600 feasible 2224 mismatches 0 instances with full Hoffman enumeration 0
+seed 12 instances-x-demands 12045 feasible 3656 mismatches 0 instances with full Hoffman enumeration 0
+seed 13 instances-x-demands 7395 feasible 2163 mismatches 0 instances with full Hoffman enumeration 0
+seed 21 instances-x-demands 3435 feasible 1112 mismatches 0 instances with full Hoffman enumeration 0
+seed 22 instances-x-demands 2895 feasible 848 mismatches 0 instances with full Hoffman enumeration 0
+seed 31 instances-x-demands 16110 feasible 2521 mismatches 0 instances with full Hoffman enumeration 0
+seed 32 instances-x-demands 9780 feasible 1249 mismatches 0 instances with full Hoffman enumeration 0
+seed 41 instances-x-demands 5610 feasible 702 mismatches 0 instances with full Hoffman enumeration 29
+seed 42 instances-x-demands 4590 feasible 608 mismatches 0 instances with full Hoffman enumeration 29
+seed 2 instances-x-demands 1920 feasible 677 mismatches 0 instances with full Hoffman enumeration 40
+seed 3 instances-x-demands 4980 feasible 1470 mismatches 0 instances with full Hoffman enumeration 0

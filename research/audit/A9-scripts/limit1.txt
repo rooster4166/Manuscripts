@@ -1,0 +1,2 @@
+adversarial donors: some first donor p succeeds against every z2, z3: False
+controlled donors:  some p and some z2, z3 succeed: True

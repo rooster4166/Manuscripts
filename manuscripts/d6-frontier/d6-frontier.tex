@@ -30,8 +30,8 @@ closures and obstructions for the clique core with full exterior vertices}
 \begin{abstract}
 The open case of the deletion-degree-six rooted test (T(6)-i) asks, for a connected graph $B$ of
 order $2k$ with exactly six even vertices $U$ and a prescribed $r\in U$, for a partition of $E(B)$
-into at most $k$ paths with two ends at $r$. When $B[U]=K_6$ the only unresolved instances have an
-exterior vertex adjacent to all of $U$ (a \emph{full} vertex). We do not close this case. We prove
+into at most $k$ paths with two ends at $r$. When $B[U]=K_6$, by six-clique Thm.~6~\cite{6CL} the only unresolved
+instances have an exterior vertex adjacent to all of $U$ (a \emph{full} vertex). We do not close this case. We prove
 four kinds of results, each by an explicit short sequence of Fan addible-edge transfers starting
 from a Lov\'asz seed, so that each is directly expressible with the formally verified lemmas
 \texttt{fan\_single}, \texttt{fan\_grouped} and \texttt{realisable\_evenSet\_erase}.
@@ -39,10 +39,11 @@ from a Lov\'asz seed, so that each is directly expressible with the formally ver
 vertices, the last Fan step of any such certificate can only end at one of three ``hub'' profiles.
 It can never end at the standard profile with three doubled core vertices. This is the precise
 form of the obstruction behind the ``off-by-one'' failures of single-edge returns.
-(2) \emph{Root-hub closures}: if $r$ is adjacent to all other even vertices and has an odd
-neighbour $y$ with at most two neighbours in $U-r$, then $r$ passes. Similar small-contact witnesses (a triangle at $r$, a pair of resources,
-or a relay path to a vertex with no core neighbour) close the root positions of every residual
-core shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$.
+(2) \emph{Root-hub closures}: if $r$ is adjacent to all other even vertices, has degree at least
+$8$, and has an odd neighbour $y$ of degree at least $3$ with at most two neighbours in $U-r$, then
+$r$ passes. Similar small-contact witnesses (a triangle at $r$, a pair of resources,
+or a relay path to a vertex with no core neighbour) give closures, under analogous hypotheses, at
+the root positions of every residual core shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$.
 (3) A \emph{full-hub closure}: a full vertex carrying two ``quiet batteries'' (triangles through
 it whose parked vertex has no core neighbour) closes the test at every root.
 (4) Uniform-in-$d$ versions of (2) and (3) for every deletion degree $d$. They include the first
@@ -65,8 +66,9 @@ b_D(v)\equiv d(v)\pmod 2,\qquad \sum_v b_D(v)=2|D|.
 \end{equation}
 Write $\Od(G)$ and $\Ev(G)$ for the odd-degree and even-degree vertices.
 
-\subsection*{The test} Throughout, $B$ has even order $2k$, $U=\Ev(B)$ has six vertices, $r\in U$
-and $T=U-r$. \emph{$r$ passes} if $B$ has a partition into at most $k$ paths with $b(r)\ge 2$. By
+\subsection*{The test} Throughout, $B$ has even order $2k$ and no isolated vertex (seeds need
+this, and so does the count $|\Od(B)|=2k-6$), $U=\Ev(B)$ has six vertices, $r\in U$
+and $T=U-r$. For a vertex $x$ write $S(x)=N(x)\cap U$. \emph{$r$ passes} if $B$ has a partition into at most $k$ paths with $b(r)\ge 2$. By
 the private-leaf equivalence and Marked Reduction Thm.~114, Gallai's conjecture at deletion
 degree~6 is equivalent to: every $r$ passes in every $B$ of the apex class. In the apex class,
 $J=B+z$ with $N(z)=U$ is $3$-connected, $\delta(B)\ge 6$, and so on; see the status map
@@ -178,7 +180,7 @@ transfer returns it.
 \section{The terminal-step classification}\label{sec:terminal}
 
 The next theorem explains why returns of local edges fail ``by one'' in the clique case. Examples
-are connections \S J and false-twin-return Prop.~4.
+are connections \S J and false-twin-return Prop.~4~\cite{FTR}.
 
 \begin{theorem}[Terminal step]\label{thm:terminal}
 Let $B$ have order $2k$, $U=\Ev(B)$, $|U|=6$, $B[U]=K_6$. Let $F\subseteq\Od(B)$ be a set of
@@ -245,8 +247,10 @@ $b(u)\ge\beta$, hence $\beta=4$ and $b(u)=4$. For $u$ odd one gets $\beta=5$ and
 \begin{corollary}\label{cor:nonlocal}
 Consider any certificate (\S\ref{sec:tools}) for the rooted test at $D=\emptyset$ that ends at the
 standard profile, or any certificate for the floor bound of $W$. Its last inserted edge has an end
-outside $L$, unless it passes through a hub profile ($\alpha$)--($\gamma$), resp.\
-($\alpha_W$), ($\gamma_W$). In particular, returning a single edge $rx$ at a full $x$ from a
+outside $L$, unless the certificate ends at a hub profile ($\alpha$)--($\gamma$), resp.\
+($\alpha_W$), ($\gamma_W$). (The last step of a certificate is always a single transfer: every
+donor offered in a grouped step must be the far end of a held edge at the receiver, and only one
+held edge is left. So Theorems~\ref{thm:terminal} and~\ref{thm:terminalW} apply to it.) In particular, returning a single edge $rx$ at a full $x$ from a
 partition of $B-rx$ rooted at $x$ is never justified by Fan's inequality when the outcome is
 standard. This is the numerical obstruction of false-twin-return Prop.~4.
 \end{corollary}
@@ -436,8 +440,9 @@ $r$ $(4,1)$ and $(3,2)$, and $r\tr s_1$, $r\tr s_2$ $(5,3)$ and $(4,3)$. In thes
 only blank vertex outside $Z$. It is adjacent to no vertex of $U$, so the bounds hold. Then apply
 the forward relay (Lemma~\ref{lem:relay}(a)) along $rc_1\cdots c_ma$. The first step is
 $r\tr c_1$ with supply $3$ and $\bl(c_1)\le|N(c_1)\cap Z|\le2$, since $z_1\notin N(c_1)$ and $c_1a$
-is held or $c_1\notin N(a)$. Every later receiver sees at most the blank $a$, and only along the
-held edge $c_ma$. Finally $b(r)=2$.
+is held or $c_1\notin N(a)$. Every later receiver ($c_2,\dots,c_m$ and finally $a$) has no blank neighbour: these vertices have
+no core neighbour, $a$ is adjacent to no $c_i$ with $i<m$, and $c_ma$ is held until the last step.
+Finally $b(r)=2$.
 \end{proof}
 
 \begin{corollary}[Residual constraints at $D=\emptyset$]\label{cor:residual}
@@ -447,7 +452,9 @@ $d(r)\ge10$ and $\delta(B)\ge3$. Then:
 \item every odd neighbour of $r$ has at least three neighbours in $T$, so $|S(y)|\ge4$ for
 $y\in N(r)\cap\Od(B)$;
 \item no odd neighbour $c$ of $r$ with $|N(c)\cap T|\le4$ is joined to a vertex with no core
-neighbour by a path through vertices with no core neighbour, as in Theorem~\ref{thm:relay};
+neighbour by a path through vertices with no core neighbour, as in Theorem~\ref{thm:relay} (take
+a shortest such path; then $a$ is adjacent to no $c_i$ with $i<m$, and $a\notin N(r)$ because $a$
+has no core neighbour);
 \item for every triangle $rab$ of odd vertices with $|N(a)\cap T|\le4$, every other odd neighbour
 $y$ of $r$ is adjacent to $a$ or $b$ or satisfies $|N(y)\cap N(a)\cap T|\ge3$;
 \item no vertex adjacent to all of $U$ satisfies the hypotheses of Theorem~\ref{thm:fullhub}.
@@ -500,11 +507,11 @@ $y$ and $a_1$ have no core neighbour.
 \end{proof}
 
 \begin{remark}[Full vertices are not resources for the root hub]\label{rem:fullnot}
-A full vertex can serve as the pendant of Theorem~\ref{thm:roothub}(i) only with
+A full vertex used as the pendant $y$ in the proof of Theorem~\ref{thm:roothub}(i) has
 $|N(y)\cap T|=5$. While parked it is a blank neighbour of every receiver in $T-Z$. This costs one
-unit at each donation, which cancels the unit it supplies. This is why the residual
-(Corollary~\ref{cor:residual}) is reached exactly when all of $r$'s odd neighbours are
-``core-heavy''. The false-twin example $B=K_{10}$ minus the six edges from $9$ to $U$ satisfies
+unit at each donation, which cancels the unit it supplies. So full vertices do not help the root
+hub. This is why the residual of Corollary~\ref{cor:residual} consists of roots all of whose odd
+neighbours are ``core-heavy''. The false-twin example $B=K_{10}$ minus the six edges from $9$ to $U$ satisfies
 none of the hypotheses of \S\S\ref{sec:roothub}--\ref{sec:fullhub}. Every odd neighbour of $r$ is
 full, and the only vertex with no core neighbour, $9$, supports a single battery. Yet $B$ passes,
 by direct computation (every triple of $U$ is realisable).
@@ -515,7 +522,7 @@ by direct computation (every triple of $U$ is realisable).
 The counting of Remark~\ref{rem:capacity} is uniform in $d$. Let $|U|=d$ (even), $T=U-r$.
 
 \begin{theorem}[Hubs at deletion degree $d$]\label{thm:general}
-Let $B$ have even order with $\Ev(B)=U$, $|U|=d\ge4$.
+Let $B$ have even order and no isolated vertex, with $\Ev(B)=U$, $|U|=d\ge4$.
 \begin{enumerate}[label=(\alph*)]
 \item \emph{Root hub.} Let $r\in U$ be adjacent to all of $T$. Suppose $r$ has a quiet odd
 neighbour $y$ ($N(y)\cap T=\emptyset$, $d(y)\ge3$). Suppose also that $r$ carries $\beta\ge d/2-3$
@@ -525,7 +532,7 @@ Then $r$ passes.
 \item \emph{Full hub.} Let $x\in\Od(B)$ be adjacent to all of $U$ and carry $\beta\ge d/2-1$ quiet
 batteries $xa_ib_i$ (distinct vertices, $N(a_i)\cap U=\emptyset$, $a_ib_j\notin E$ for $i<j$).
 Then every $r\in U$ passes. The same holds with $\beta\ge d/2-2$ batteries and one quiet pendant
-$y$ with $b_i\notin N(y)$, if $x$ has a further neighbour.
+$y$, distinct from the battery vertices, with $b_i\notin N(y)$, if $x$ has a further neighbour.
 \end{enumerate}
 \end{theorem}
 
@@ -550,7 +557,9 @@ Lemma~\ref{lem:seeds}(b).
 \begin{remark}
 For $d=4$ the root hub needs no battery and no quietness. The single donation has supply $4$
 against at most $3$ blank neighbours, and the payback has supply $3$ against at most $2$. This
-recovers T(4)-i at every universal root, consistently with Fan--Hou--Zhou. For $d=8$, (a) needs
+recovers T(4)-i at every universal root with at least three odd neighbours, one of them of degree
+at least $3$, consistently with
+Fan--Hou--Zhou. For $d=8$, (a) needs
 one battery and (b) needs three batteries (or two and a pendant). These are, to our knowledge, the
 first closures of the open test T(8)-i at roots adjacent to all other even vertices. The gap
 between (a) and (b) is the gap of Remark~\ref{rem:capacity}: a root hub ends with two ends, a full
@@ -559,7 +568,7 @@ hub with one.
 
 \section{Full pairs do not fit the six-clique stages}\label{sec:stage}
 
-Six-clique Thm.~1 and Cor.~5 use three stages. At each stage two clique vertices are blank, the
+Six-clique Thm.~1 and Cor.~5~\cite{6CL} use three stages. At each stage two clique vertices are blank, the
 present clique edges form $D_0=\{23,45\}$, $D_1=D_0+\{02,13\}$ or
 $D_2=D_1+\{14,01,03,35\}$, and Lemma~4 inserts all spokes of a pair of equal-type exterior vertices
 while restoring the end vector. Cor.~5 requires $|A|<6$ so that some stage has a blank pair
@@ -585,8 +594,9 @@ the final step must then be non-local, as the final clique path of six-clique Th
 
 \section{What is closed and what remains}\label{sec:remains}
 
-\subsection*{Closed} For every residual core shape and every residual root position: the
-small-contact witnesses of Theorems~\ref{thm:roothub}--\ref{thm:relay}. For $D=\emptyset$ with full
+\subsection*{Closed} At every residual root position: the small-contact witnesses of
+Theorem~\ref{thm:roothub}. At roots adjacent to all of $T$: also those of
+Theorems~\ref{thm:tworesources} and~\ref{thm:relay}. For $D=\emptyset$ with full
 vertices: any full vertex with two quiet batteries, or a quiet pendant and one quiet battery
 (Theorem~\ref{thm:fullhub}). For every $d$: Theorem~\ref{thm:general}.
 
@@ -663,7 +673,10 @@ All scripts are in \texttt{scripts/} and use \texttt{tools/pathnum2.py} only to 
 themselves are executed by \texttt{scripts/fan\_engine.py}. This is an independent implementation
 of Fan's chain construction, self-tested by \texttt{test\_engine.py} on $800$ random instances.
 Every step asserts that the actual number of blank neighbours is at most the bound used in the
-proof, and every output partition is verified edge by edge.
+proof, and every output partition is verified edge by edge. In a grouped step a replay follows the
+donor chosen by the engine; the argument for an arbitrary donor is the one in the proofs.
+\texttt{scripts/run\_all.sh}
+re-runs everything and regenerates the \texttt{.out} files.
 
 \begin{center}\footnotesize
 \begin{tabular}{lll}
@@ -675,9 +688,10 @@ script & checks & result\\
 \texttt{replay\_shapes.py} & Thm.~\ref{thm:roothub}(ii), (iii): $D=K_2,P_3,K_3,C_4$ & 8/8 verified\\
 \texttt{replay\_two\_resources.py} & Thm.~\ref{thm:tworesources}, $|N(a)\cap T|=3$ & 4/4 verified\\
 \texttt{replay\_relay.py} & Thm.~\ref{thm:relay}, $m=1,2$ & 5/5 verified\\
-\texttt{replay\_full\_hub.py} & Thm.~\ref{thm:fullhub}, every root & 3 graphs $\times$ 6 roots\\
+\texttt{replay\_full\_hub.py} & Thm.~\ref{thm:fullhub} (two batteries), every root & 3 graphs $\times$ 6 roots\\
 \texttt{replay\_general\_d.py} & Thm.~\ref{thm:general}, $d=8$, root and full hub & 3/3 verified\\
 \texttt{stage\_search.py} & Prop.~\ref{prop:stage} & no program; Lemma 4 re-found\\
+\texttt{small\_observation.py} & \S\ref{sec:remains}, Observation & all triples realisable (10 graphs)\\
 \bottomrule
 \end{tabular}
 \end{center}
