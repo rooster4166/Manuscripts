@@ -552,7 +552,9 @@ capacity $\kappa_i$, is $\min\{\kappa_i,\psi_i(B)\}$.
 \begin{proof}
 A component node $C$ can forward at most $\min\{1,\sigma_C(B)\}$ units directly to $g_i$. It
 can forward one further unit through $h_i$ only if $\sigma_C(B)=2$, and the arc $(h_i,g_i)$
-carries at most $1-[i=c]$ units in total. This bound is attained.
+carries at most $1-[i=c]$ units in total. The bound is attained by sending one unit directly
+from every $C$ with $\sigma_C(B)\ge1$ and, if $i\ne c$ and some $C$ has $\sigma_C(B)=2$, one
+further unit from that $C$ through~$h_i$. The arc $(g_i,t)$ then caps the flow at~$\kappa_i$.
 \end{proof}
 
 \begin{proposition}[cut conditions]\label{prop:cuts}
