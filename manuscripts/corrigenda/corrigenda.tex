@@ -57,6 +57,17 @@ $E$-subgraph; the doubling step of \S2.1 is sensitive to this.
 \item \textbf{Fan's lemmas [14, Lemmas 3.3--3.4].} Quote them once verbatim, including the clause
 ``all other end counts are unchanged'', which every application uses.
 \item \textbf{p.\,130.} ``$K_2\vee K_3$'' should read $K_2\vee\overline{K_3}$ (three independent pages).
+\item \textbf{Theorem~144 can be made independent of [25].} At the step ``$r\in T$'' replace
+[25, Cor.~1.2] by Botler--Sambinelli [7, Thm~13]: $B$ has four even vertices, so $\Delta(EV(B))\le3$, and
+$B$ has even order, so it is not a SET graph. Replace ``By Corollary~106 with mark $r$, at least two
+vertices of $K$ have degree four'' by ``by [7, Thm~13] together with Lemma~133''. Cite [7] in the two
+remaining uses of Corollary~106 that have at most four unmarked even vertices. Theorem~144 then rests
+only on refereed results. Corollary~106 itself, in its one-exception odd-order case, still uses [25].
+\item \textbf{Lemma~133.} Its proof uses only connectivity of $B$. Weaken the hypothesis from
+``two-connected'' to ``connected'', which is needed for the use above.
+\item \textbf{Corollary~138} rests on the tables of Theorem~135 (9{,}330 entries) and Theorem~137 (235
+cases) and on Lemma~121. Include them; they are now the main unreplayed inputs of the deletion-degree-six
+programme.
 \item \textbf{Addendum (Theorem~113).} The proof uses only that $B$ is $2$-connected and that both tests
 hold on smaller members of $\mathcal C$. Stating it in this generality makes the later uses
 (Theorems~144, 145, Corollary~146) transparent.
@@ -124,6 +135,24 @@ at degree $8$.
 \item \textbf{pp.\,5--7, 10.} ``Two different segments'' must allow both members of one parallel class.
 \item \textbf{p.\,53.} The appendix check of Theorem~2 for seven-vertex components omits cases of maximum
 degree above $7$ (paths through a cut vertex). It is not load-bearing.
+\end{enumerate}
+
+\section{Deletion-degree-six studies}
+
+An independent exhaustive search re-derived the certificate banks of six-even-root-shapes (contact table
+K0--K3 with 31/30/27/15 certified; all seven one-universal cores $\times$ 31 contact sets; all 32 masks of
+the K2 refinement) and matched the printed survivors exactly. The banks should be published or replaced
+by that search. Fan's Lemma~3.3 (grouped transfer) has been checked verbatim against the primary source,
+and both of Fan's lemmas are now formally verified in Lean.
+
+\begin{enumerate}
+\item \textbf{six-even-incidence.} Cite Botler--Sambinelli (Thm 13) for the subcubic case. Cross-reference
+six-clique Thm~1 for the circulant family, which is already covered there. Supply or remove the
+``separate argument'' for separating clique edges.
+\item \textbf{six-clique, Lemma~2.} Expand the chain step (Fan's backward uniqueness); also expand the
+triple rectangles of Cor~5.
+\item \textbf{degree-ten-marked-root.} Quote Chu--Fan--Zhou Lemma~2.4 exactly or replace it by a direct
+finite check; include the selection-lemma and five-edge tables.
 \end{enumerate}
 
 \section{External dependency: the rainbow Hamiltonian decomposition theorem}\label{sec:jm}

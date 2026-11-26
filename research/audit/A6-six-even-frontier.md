@@ -207,8 +207,12 @@ I also recorded whether 3 paths already suffice ("slack") or not ("tight").
 - Second bank (K2, A = abcd and A = abde, x ~ r): **all 32** x-masks certified, matching RS.
 - Logs: `bank1_K.out`, `bank1_U.out`, `bank2_K2.out`.
 
+**Cross-check against the printed table (`crosscheck.py`).**
+- For each of the 32,768 labelled cores C on U and each root r, I derived the candidate status from the recomputed banks alone, plus BS for subcubic B[T] and the K0 exclusion for isolated roots. Survivors are mapped through an explicit isomorphism to K0–K3.
+- Compared with RS's printed table of D-shapes and root positions: **0 mismatches**. So the theorem's table *is exactly* what the banks yield.
+
 Consequences:
-- The shape theorem's case analysis (RS3, RS5, RS7) is confirmed independently of the missing banks, modulo Lovász, Fan 3.3/3.4 and BS 13 (all published and checked).
+- The shape theorem's case analysis (RS3, RS5, RS7, RS8) is confirmed independently of the missing banks, modulo Lovász, Fan 3.3/3.4 and BS 13 (all published and checked).
 - The 66-pattern list is *optimal* for single seven-site certificates.
 
 ### 3.3 End-to-end replay on concrete hosts (`replay_cert.py`)
