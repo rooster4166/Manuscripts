@@ -455,7 +455,7 @@ theorem exists_split (P : GPath G) {x : W} (hx : x ∈ P.walk.support) (hs : P.s
     exact (Walk.mem_support_append_iff _ _).mpr (Or.inr hv)
 
 /-- Every vertex of a path lies on one of its edges. -/
-theorem exists_edge_of_mem_support (P : GPath G) {v : W} (hv : v ∈ P.walk.support) :
+theorem exists_mem_edge_of_support (P : GPath G) {v : W} (hv : v ∈ P.walk.support) :
     ∃ e ∈ P.edges, v ∈ e := by
   obtain ⟨a, b, p, hp, hpos⟩ := P
   simp only [GPath.edges] at hv ⊢
@@ -478,7 +478,7 @@ theorem exists_edge_of_mem_support (P : GPath G) {v : W} (hv : v ∈ P.walk.supp
 theorem support_subset_of_edges (P : GPath G) {U : Set W} (h : ∀ e ∈ P.edges, ∀ v ∈ e, v ∈ U) :
     ∀ v ∈ P.walk.support, v ∈ U := by
   intro v hv
-  obtain ⟨e, he, hve⟩ := P.exists_edge_of_mem_support hv
+  obtain ⟨e, he, hve⟩ := P.exists_mem_edge_of_support hv
   exact h e he v hve
 
 theorem edges_nodup (P : GPath G) : P.edges.Nodup := P.isPath.isTrail.edges_nodup

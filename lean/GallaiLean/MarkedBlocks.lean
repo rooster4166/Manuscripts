@@ -1880,4 +1880,243 @@ theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
       subst hyv
       exact hdouble w b y (Ne.symm hbw) hl hlb
 
+/-! ### Theorem 1, sufficiency -/
+
+/-- **Theorem 1, sufficiency** (marked-reduction manuscript): the marked bound on two-connected
+graphs together with the three-end condition on tight odd two-connected graphs gives the marked
+bound on every connected graph. -/
+theorem markedBound_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
+    MarkedBound.{u} := by
+  intro V _ _ F hF S hS
+  have := mbOn_of_tests hA hB _ F Finset.univ rfl
+    (fun _ _ _ => ⟨Finset.mem_univ _, Finset.mem_univ _⟩)
+    (fun a _ b _ => hF.preconnected a b) S (Finset.subset_univ _) hS
+  rwa [Finset.card_univ] at this
+
+/-- **Theorem 1, sufficiency**: the two assertions imply Gallai's conjecture. -/
+theorem gallai_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
+    GallaiConjecture.{u} :=
+  gallai_iff_markedBound.mpr (markedBound_of_tests hA hB)
+
+theorem TwoConnected.connected {V : Type u} [Fintype V] [DecidableEq V] {G : SimpleGraph V}
+    (h : TwoConnected G) : G.Connected := by
+  have hne : Nonempty V := by
+    have := h.1
+    rw [Finset.card_univ] at this
+    exact Fintype.card_pos_iff.mp (by omega)
+  exact { preconnected := fun a b => h.2.1 a (Finset.mem_univ _) b (Finset.mem_univ _),
+          nonempty := hne }
+
+/-- **Theorem 1, necessity of the first assertion**: Gallai's conjecture gives the marked bound on
+two-connected graphs. -/
+theorem markedTwoConnTest_of_gallai (hG : GallaiConjecture.{u}) : MarkedTwoConnTest.{u} :=
+  fun _ _ _ _ hTC _ hS => markedNumber_le_of_gallai hG hTC.connected hS
+
+/-! ### Theorem 1, necessity of the second assertion -/
+
+section necessity
+
+variable {V : Type u} {J : SimpleGraph V}
+
+theorem cone_connected (hJ : J.Connected) {S : Finset V} (hS : S.Nonempty) :
+    (cone J S).Connected := by
+  obtain ⟨s, hs⟩ := hS
+  have hreach : ∀ y, (cone J S).Reachable none y := by
+    intro y
+    rcases y with _ | a
+    · exact Reachable.refl _
+    · have h1 : (cone J S).Adj none (some s) := hs
+      let φ : J →g cone J S := { toFun := some, map_rel' := fun h => h }
+      exact h1.reachable.trans ((hJ.preconnected s a).map φ)
+  exact { preconnected := fun a b => (hreach a).symm.trans (hreach b), nonempty := ⟨none⟩ }
+
+/-- A path of the cone avoiding the apex is a path of the base graph. -/
+theorem exists_lift_path {S : Finset V} (P : GPath (cone J S)) (hn : none ∉ P.walk.support) :
+    ∃ Q : GPath J, P.src = some Q.src ∧ P.tgt = some Q.tgt ∧
+      Q.edges.map (Sym2.map some) = P.edges := by
+  obtain ⟨a, b, q', ha, hb, hs, he⟩ := cone_walk_lift P.walk hn
+  exact ⟨⟨a, b, q', cone_lift_isPath hs P.isPath, by rw [cone_lift_length he]; exact P.pos⟩,
+    ha, hb, he⟩
+
+/-- Paths of the cone covering exactly the edges of the base graph give a decomposition of it with
+the same ends. -/
+theorem exists_decomp_of_pmp [DecidableEq V] {S : Finset V} {T : Finset (Option V)}
+    (M : PMP (cone J S) {e | ∃ e' ∈ J.edgeSet, e'.map some = e} T) :
+    ∃ D : PathDecomp J, D.size = M.paths.length ∧
+      ∀ v, D.ends v = (M.paths.map (fun y => y.1.endsAt (some v))).sum := by
+  have havoid : ∀ y ∈ M.paths, none ∉ y.1.walk.support := by
+    intro y hy hn
+    have := M.support_subset (U := {x | x ≠ none}) (fun e he x hx => by
+      obtain ⟨e', -, rfl⟩ := he
+      obtain ⟨a, -, rfl⟩ := Sym2.mem_map.mp hx
+      simp) hy none hn
+    exact this rfl
+  have hex : ∀ P : GPath (cone J S), ∃ o : Option (GPath J), (none ∉ P.walk.support) →
+      ∃ Q, o = some Q ∧ P.src = some Q.src ∧ P.tgt = some Q.tgt ∧
+        Q.edges.map (Sym2.map some) = P.edges := by
+    intro P
+    by_cases hn : none ∉ P.walk.support
+    · obtain ⟨Q, hQ⟩ := exists_lift_path P hn
+      exact ⟨some Q, fun _ => ⟨Q, rfl, hQ⟩⟩
+    · exact ⟨none, fun h => absurd h hn⟩
+  choose g hg using hex
+  let L := M.paths.filterMap (fun y => g y.1)
+  have hL : ∀ l : List (GPath (cone J S) × Option (Option V)), (∀ y ∈ l, none ∉ y.1.walk.support) →
+      (((l.filterMap (fun y => g y.1)).flatMap GPath.edges).map (Sym2.map some) = mEdges l ∧
+        (l.filterMap (fun y => g y.1)).length = l.length ∧
+        ∀ v, ((l.filterMap (fun y => g y.1)).map (fun Q => Q.endsAt v)).sum =
+          (l.map (fun y => y.1.endsAt (some v))).sum) := by
+    intro l hl
+    induction l with
+    | nil => simp [mEdges]
+    | cons y l ih =>
+      obtain ⟨ih1, ih2, ih3⟩ := ih (fun z hz => hl z (List.mem_cons_of_mem _ hz))
+      obtain ⟨Q, hQ, hs, ht, he⟩ := hg y.1 (hl y List.mem_cons_self)
+      have hcons : (y :: l).filterMap (fun y => g y.1) = Q :: l.filterMap (fun y => g y.1) := by
+        simp [hQ]
+      rw [hcons]
+      refine ⟨?_, by simp [ih2], fun v => ?_⟩
+      · rw [List.flatMap_cons, List.map_append, he, ih1, mEdges_cons]
+      · simp only [List.map_cons, List.sum_cons, ih3]
+        congr 1
+        simp only [GPath.endsAt, hs, ht, Option.some.injEq]
+  obtain ⟨h1, h2, h3⟩ := hL M.paths havoid
+  have hinj : Function.Injective (Sym2.map (some : V → Option V)) :=
+    Sym2.map.injective (Option.some_injective V)
+  refine ⟨⟨L, ?_, ?_⟩, h2, h3⟩
+  · have := M.nodup
+    rw [← h1] at this
+    exact this.of_map _
+  · intro e
+    rw [← List.mem_map_of_injective hinj, h1, ← M.covers]
+    simp only [Set.mem_ofPred_eq]
+    exact ⟨fun he => ⟨e, he, rfl⟩, fun ⟨e', he', hee⟩ => hinj hee ▸ he'⟩
+
+theorem cone_single_edges [DecidableEq V] {x : V} :
+    (cone J {x}).edgeSet \ {e | e ∈ [s(some x, none)]} =
+      {e | ∃ e' ∈ J.edgeSet, e'.map some = e} := by
+  ext e
+  simp only [Set.mem_sdiff, Set.mem_ofPred_eq, List.mem_singleton, mem_cone_edgeSet_iff,
+    Finset.mem_singleton]
+  constructor
+  · rintro ⟨h | ⟨s, rfl, rfl⟩, hne⟩
+    · exact h
+    · exact absurd Sym2.eq_swap hne
+  · rintro h
+    refine ⟨Or.inl h, ?_⟩
+    obtain ⟨e', -, rfl⟩ := h
+    intro h'
+    have : none ∈ e'.map some := h' ▸ Sym2.mem_mk_right _ _
+    simp [Sym2.mem_map] at this
+
+/-- **Theorem 1, necessity of the second assertion** (marked-reduction manuscript, p. 6):
+attach a leaf at the odd vertex, use the marked bound with that single mark and trim the leaf. -/
+theorem threeEndsTest_of_gallai (hG : GallaiConjecture.{u}) : ThreeEndsTest.{u} := by
+  intro V _ _ J _ hTC k hcard hp x hodd
+  classical
+  have hq := markedNumber_le_of_gallai hG (cone_connected hTC.connected (Finset.singleton_nonempty x))
+    (Finset.singleton_nonempty (some x))
+  rw [Fintype.card_option, hcard, Finset.card_singleton] at hq
+  obtain ⟨M₀, hM₀⟩ := markedNumber_spec (cone J {x}) {some x}
+  let M : PMP (cone J {x}) (cone J {x}).edgeSet {some x} :=
+    ⟨M₀.paths, M₀.nodup_edges, M₀.covers, M₀.site_ok, M₀.sites_nodup⟩
+  have hMc : M.cost ≤ k := by
+    show markedCost M₀ ≤ k
+    rw [hM₀]; omega
+  have hMl : M.paths.length ≤ k + 1 := by
+    have := length_eq_mCost_add M.paths
+    have := M.sites_length_le
+    rw [Finset.card_singleton] at this
+    have : M.cost = mCost M.paths := rfl
+    omega
+  have hleaf : s(some x, none) ∈ (cone J {x}).edgeSet := by
+    show (cone J {x}).Adj (some x) none
+    simp
+  have hy : ∀ e ∈ (cone J {x}).edgeSet, none ∈ e → e = s(some x, none) := by
+    intro e he hn
+    rcases mem_cone_edgeSet_iff.mp he with ⟨e', -, rfl⟩ | ⟨s, hs, rfl⟩
+    · simp [Sym2.mem_map] at hn
+    · rw [Finset.mem_singleton] at hs; subst hs; exact Sym2.eq_swap
+  have hyS : (none : Option V) ∉ ({some x} : Finset (Option V)) := by simp
+  -- a decomposition of `J` with at most `k` paths is impossible
+  have hno : ∀ D : PathDecomp J, k + 1 ≤ D.size := fun D => hp ▸ pathNumber_le D
+  rcases M.exists_trim (by simp) hleaf hy hyS with
+    ⟨M₁, hc₁, hl₁⟩ | ⟨M₁, hc₁, hl₁, hx₁⟩ | ⟨M₁, L, o, rest, hp₁, hL, ho, hc₁, hl₁⟩
+  · obtain ⟨D, hD, -⟩ := exists_decomp_of_pmp (M₁.castE cone_single_edges)
+    have := hno D
+    have : (M₁.castE cone_single_edges).paths.length = M₁.paths.length := rfl
+    omega
+  · obtain ⟨D, hD, -⟩ := exists_decomp_of_pmp (M₁.castE cone_single_edges)
+    have := hno D
+    have h0 : mSites M₁.paths = [] := by
+      apply List.eq_nil_iff_forall_not_mem.mpr
+      intro s hs
+      have := M₁.sites_mem hs
+      rw [Finset.mem_singleton] at this
+      exact hx₁ (this ▸ hs)
+    have := length_eq_mCost_add M₁.paths
+    rw [h0] at this
+    have : (M₁.castE cone_single_edges).paths.length = M₁.paths.length := rfl
+    have : M₁.cost = mCost M₁.paths := rfl
+    have : M.cost = mCost M.paths := rfl
+    simp at *
+    omega
+  · have ho' : o = none := by
+      cases o with
+      | none => rfl
+      | some s =>
+        have := (M₁.site_ok (L, some s) (by rw [hp₁]; exact List.mem_cons_self) s rfl).1
+        rw [Finset.mem_singleton] at this
+        exact absurd this (ho s rfl)
+    subst ho'
+    obtain ⟨D, hD, hends⟩ := exists_decomp_of_pmp (M₁.castE cone_single_edges)
+    have hlen := length_eq_mCost_add M₁.paths
+    by_cases hx₁ : some x ∈ mSites M₁.paths
+    · rw [hp₁] at hx₁
+      simp only [mSites_cons, Option.toList_none, List.nil_append] at hx₁
+      obtain ⟨⟨Q, oQ⟩, hQ, hQx⟩ := List.mem_filterMap.mp hx₁
+      simp only at hQx
+      subst hQx
+      have hQend := (M₁.site_ok (Q, some (some x)) (by rw [hp₁]; exact List.mem_cons_of_mem _ hQ)
+        (some x) rfl).2
+      refine ⟨D, ?_, ?_⟩
+      · have := hno D
+        have : (M₁.castE cone_single_edges).paths.length = M₁.paths.length := rfl
+        omega
+      · have h2 : 2 ≤ D.ends x := by
+          rw [hends x]
+          show 2 ≤ (M₁.paths.map (fun y => y.1.endsAt (some x))).sum
+          rw [hp₁, List.map_cons, List.sum_cons]
+          dsimp only
+          have hL1 : L.endsAt (some x) = 1 := (L.endsAt_eq_one_iff _).mpr (Or.inl hL)
+          have hQ1 : Q.endsAt (some x) = 1 := (Q.endsAt_eq_one_iff _).mpr hQend
+          have := List.le_sum_of_mem (List.mem_map_of_mem (f := fun y => y.1.endsAt (some x)) hQ)
+          simp only at this
+          omega
+        have hpar := D.ends_mod_two x
+        rw [Nat.odd_iff] at hodd
+        omega
+    · exfalso
+      have h0 : mSites M₁.paths = [] := by
+        apply List.eq_nil_iff_forall_not_mem.mpr
+        intro s hs
+        have := M₁.sites_mem hs
+        rw [Finset.mem_singleton] at this
+        exact hx₁ (this ▸ hs)
+      rw [h0] at hlen
+      have := hno D
+      have : (M₁.castE cone_single_edges).paths.length = M₁.paths.length := rfl
+      have : M₁.cost = mCost M₁.paths := rfl
+      simp at hlen
+      omega
+
+/-- **Theorem 1** (marked-reduction manuscript): Gallai's conjecture is equivalent to the marked
+bound on two-connected graphs together with the three-end condition on tight odd two-connected
+graphs. -/
+theorem gallai_iff_tests : GallaiConjecture.{u} ↔ MarkedTwoConnTest.{u} ∧ ThreeEndsTest.{u} :=
+  ⟨fun hG => ⟨markedTwoConnTest_of_gallai hG, threeEndsTest_of_gallai hG⟩,
+    fun h => gallai_of_tests h.1 h.2⟩
+
+end necessity
+
 end Gallai

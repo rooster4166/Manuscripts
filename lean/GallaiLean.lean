@@ -16,3 +16,5 @@ import GallaiLean.ThreeConnected
 import GallaiLean.Insertion
 import GallaiLean.Schedule
 import GallaiLean.EvenInsert
+import GallaiLean.BP3
+import GallaiLean.EMCFourFree
