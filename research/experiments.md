@@ -345,6 +345,25 @@ The final profile is simple: it realises {0, 3, 7} or {0, 3, 5}. The Lean versio
 
 The flower's last step is the insertion of the path L, which has m − 1 held edges. This attains `cocktail_insertion_barrier` (FanBarrier.lean).
 
+**Receipt or flower with a count** (option `rf`, manuscript Lemma 5.9, after endpoint-structure Thm 67), and the **orbit rule** (option `orbit`: an end anywhere in the root's automorphism orbit wins).
+
+*Correction:* A_{6,2} is closed at **every** root by hand. In Prop 5.2 two core vertices end with two ends each, and Sym(Q) acts by automorphisms. The earlier "core roots open" was wrong; the emc-four session pointed this out. B′ is closed by hand in endpoint-structure Prop 68.
+
+| Test (F = one star, `np rf`) | Without `orbit` | With `orbit` |
+|---|---|---|
+| A_{6,2} | wins except at the core roots | **wins every root** |
+| B′ | wins except at the core roots | **wins every root** |
+| CP(4), CP(5) | wins every root | wins every root |
+
+On the core roots without `orbit`: the opponent can make the root a donor, and the hand proofs also use symmetry.
+
+**Sample** (`rf_sample.sh`): ten random critical n = 10 graphs with a degree-6 vertex, held sets = a star plus k ≤ 2 edges, `np orbit` with and without `rf`.
+- Nine win, at k = 1 or 2, and `rf` changes nothing.
+- **First miss: Inv~|~zbw**, i.e. K10 − {02, 17, 19, 24, 29, 39, 58}: 6-connected, 8 even vertices, critical. It loses at roots 2 and 3 with or without `rf`; (R) holds by CP-SAT.
+- At root 2 (a degree-6 hub with two odd neighbours), holding star(2) + 10 + 64 gives a Lovász seed. At the 4th receipt the count is |E(H)| = 33 < 3·9 + 8 = 35, so neither case of Lemma 5.9 is decided.
+- A star plus 3 held edges is being tested; see `outputs/miss1_k3.log`.
+
+
 
 **Reading.**
 - At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
