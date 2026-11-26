@@ -14,3 +14,4 @@ import GallaiLean.ThreeConnected
 import GallaiLean.PathSurgery
 import GallaiLean.SmallBounds
 import GallaiLean.SeparatorSetup
+import GallaiLean.SeparatorOdd
