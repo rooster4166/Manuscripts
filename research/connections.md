@@ -292,3 +292,26 @@ So Lovász's theorem, covering at most one even vertex, gives the first descent 
 **Why it matters.** A characterization, even a sufficient local condition such as "u and v are not degree-2 twins", would give the second faithful-descent step for most pairs.
 
 **Natural tools.** Fan's grouped transfer (now formalized), applied to the Lovász decomposition of G + z_u.
+
+## P. Two-even-vertex problem (cloud session)
+
+*Session `claude/two-even-lovasz`. Manuscript: `manuscripts/endpoint-structure`, §5 (Theorem 20 to Proposition 27). Lean: `lean/GallaiLean/TwoEven.lean`, sorry-free, standard axioms, Lovász only as `LovaszStatement`.*
+
+**Exact dictionary.** By the leaf dictionary (Lemma 5), Ev − {u, v} is realisable iff G^{Ev−{u,v}} (pendant vertices at all other even vertices) is *tight*, i.e. meets the parity bound |Od|/2. This graph has exactly two even vertices. So the second descent step is the two-even problem for these graphs, as an equivalence. The graph G + z + ℓ of §O gives only the sufficient direction.
+
+**The mechanism (answers the "Fan moves don't merge" gap).** Delete an edge uw between two even vertices. Both become odd, so Lemma 4 (removing one vertex; "Lemma 3" in the older notes) in G − uw already pays for the merge: o/2 goes up by one and |S| goes down by two. Then Fan's Lemma 3.4 puts uw back at constant size, moving u's end to w. Its condition is "no zero-end neighbour of w", i.e. w has no neighbour among the removed even vertices.
+
+| Result | Statement | Status |
+|---|---|---|
+| Fan descent (Lemma 18) | u, w ∈ S, uw ∈ E, N(w) ∩ (Ev − S) = ∅, S − {u,w} realisable in G − uw ⇒ S − u realisable | **proved, lean** (`realisable_erase_of_fan`) |
+| Fan transfer (Lemma 19) | u ∈ Ev − S, w odd, uw ∈ E, even nbrs of w other than u lie in S, S realisable in G − uw ⇒ S realisable in G | **proved, lean** (`realisable_of_fan_transfer`) |
+| **Second descent step (Thm 20)** | u, v, w distinct even, uw ∈ E, vw ∉ E ⇒ Ev − {u, v} realisable | **proved, lean** (`realisable_evenSet_erase_pair`) |
+| **Cor 22** | non-realisable pairs {u,v} (at level e − 2) are **E-twins**: same neighbours among the other even vertices | **proved, lean** (`etwin_of_not_realisable`) |
+| **Cor 23 (FD step 2)** | for e ≥ 4 and any root r, FD's second step from Ev − u keeping r succeeds unless Ev − r lies in one twin class of G[Ev], i.e. G[Ev] ∈ {K_e, empty, K_{e−1} + isolated r, star at r} | **proved**, lean for the non-twin form (`fd_second_step`) |
+| Fan certificates (Thm 24) | moves (E) even step, (O) odd transfer; soundness | **proved, lean** (`FanCert`, `realisable_of_fanCert`) |
+| Cor 25 (uniform in d) | semi-induced matching x_i w_i in G[Ev] (w_i ≁ x_k for k < i) with j = e/2 and r ∉ {x_i} ⇒ (R) at r for critical G. In MR Thm 114(i) this is a condition on J[N(z)] alone, the same for every d. | **proved, lean** (`realisable_of_fanSchedule`) |
+| Prop 26 (moves L, S, C) | pendant neighbour; degree 2 with non-adjacent neighbours (suppression); all neighbours even and kept (star) | proved (manuscript); not in Lean (vertex deletion) |
+| Remark 15 | Lemmas 3 and 4 (faithful partitions; removing one vertex) hold at every order, via the leaf form of the apex trick | proved |
+| Obstructions (Prop 27) | (O1) odd vertex of degree n − 1 (contains the edge bound); (O2) triangle u v x with d(u) = d(v) = 2; (O3) N(u) = N(v) = {x, y}, xy ∈ E, d(y) = 3; cut-vertex gluing rule (exact) | proved; (O1) in Lean (`degree_le_of_tight`) |
+
+**Corrections to §O.** "u, v degree-2 twins" is not an obstruction. In K_{2,4} plus an edge, every twin pair of degree-2 vertices is realisable. K4 − e fails by (O1).
