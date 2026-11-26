@@ -493,6 +493,26 @@ The question (coordinator, route (H)): is there an induction hypothesis stronger
   - Sym(U) gives (R) at every core vertex; odd vertices hold by parity.
 - **A_{6,2} core roots.** The partition in missing-move Prop 5.2 already has b = 2 at the two core vertices t′, t″. By Sym(Q) this gives (R) at all core roots, which that manuscript lists as uncovered. (To be confirmed by the missing-move session.)
 
+### Credit: CP(m) is SP Theorem 10.21 (follow-up 7)
+
+- **The rooted test for CP(m) = K_{2h+2} minus a perfect matching, at every root and every m ≥ 4, is separating-pairs Theorem 10.21** (gallai/02-november-25/separating-pairs.pdf, pp. 44–45). The proof is explicit:
+  - take the Walecki cycles on {t} ∪ Z_{2h};
+  - detour each antipodal missing edge through y, the mate of t, which gives h Hamilton cycles;
+  - open all of them along Q = (t, 1, …, h), adjoin Q, and extend by the leaf.
+  - The same theorem proves that both orientations fail Fan's numerical test in every partition of (F − e)^t within budget.
+  - So `cocktail_fan_barrier` re-derives its negative half in leafless form, and the CP(m) flower is its positive half. **Question 66 is moot for CP(m)**; it is kept only as an independent combinatorial question about arbitrary Hamilton decompositions and the receipt route.
+- **Marked-reduction Theorem 38 / Corollary 39**:
+  - j ≤ 7 edge-disjoint cycles through x (not necessarily Hamiltonian) partition into ≤ j + 1 paths with ≥ 2 ends at x; the count is Chu–Fan–Zhou Lemma 2.5.
+  - Corollary 39 has the same structure as receipt-or-flower.
+  - So the receipt route closes CP(m) for m ≤ 8 without any transversal, and Prop 64 (k ≤ 4) is subsumed.
+- **Separating-pairs Theorem 13.18**: neighbour-exchange conditions for opening any number of cycles through a vertex, including segment-type openings.
+- **What remains ours:**
+  - the flower lemma in this generality, formalised (it also appears in MM Lemma 5.4 and in the proof of MR Theorem 38);
+  - "equality forces a flower" (`hub_cycles`);
+  - receipt-or-flower (Thm 67; close to MR Cor 39), and Prop 68 (B′ by hand);
+  - the Lean files `Flower.lean` and `FanBarrier.lean`.
+- **Endpoint-structure §7 updated:** credits at the barrier, the flower lemma, Thm 63 and Question 66, and in the abstract. Rainbow-transversal work is stopped at the coordinator's request.
+
 ## R. Lovász–Fan certificates are a game on profiles, and the game is incomplete (2026-11-26, night)
 
 **Grade: Observed (computation, small); conceptual consequence.**
