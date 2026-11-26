@@ -505,7 +505,7 @@ The conclusion is **Desc H k y ∅**: y lies in a realisable (e − k)-set, with
 
 Coordinator's finding (base branch, E13 / §R): Lovász seeds + Fan transfers do not prove three-step descent in general. Gqz~vw at y = 3 has no certificate with ≤ 8 held edges. So BranchBase k for k ≥ 3 needs a new ingredient.
 
-**Update (path insertion).** The missing-move session found that the n = 8 losers need no move beyond Fan's inequality. They need *path insertion*: a Lovász seed on G − F with an isolated vertex leaves one spare path, and it pays for re-inserting two held edges as one new path through the hub. With path insertion and ≤ 6 held edges the game wins every root of every connected graph of order 8, including the critical Gqz~vw (independently re-checked). The first open case is a hub of degree six at order 10 (`manuscripts/missing-move`). There the spare path pays for one receipt too few, and the deficit sits at Fan's equality.
+**Update (path insertion).** The missing-move session found that the n = 8 losers need no move beyond Fan's inequality. They need *path insertion*: a Lovász seed on G − F with an isolated vertex leaves one spare path, and it pays for re-inserting two held edges as one new path through the hub. With path insertion the game wins the five non-critical n = 8 losers and the critical Gqz~vw (independently re-checked). **But an independent re-check of all 50 kmax-4 losers with `6 np` leaves 6 losers, all critical.** They are Guv]}{ (K7 + leaf), Guv]z{, Guv]~{, Gut~~w, Gu^v~w, and the cocktail party graph K_{2,2,2,2} = Gr~v~w (every vertex a degree-6 hub). So the degree-six obstruction already appears at order 8. The original §R list was incomplete: the kmax-8 run was OOM-killed before reaching these graphs. The degree-six obstruction is also visible at order 10 (`manuscripts/missing-move`). There the spare path pays for one receipt too few, and the deficit sits at Fan's equality.
 
 ## S. The missing move is Lovász's spare path, not a move beyond Fan's inequality (2026-11-26, cloud session missing-move)
 
@@ -525,7 +525,7 @@ The cost is exactly one path. The profile changes by +2 at s, −1 at a and at t
 
 **Degree-four hubs** (`hub_four_ends`, `hub_four_rooted`; unconditional, via `lovasz_ends`). Hypotheses: d(s) = 4, every neighbour of s is even, and at most one even vertex lies outside N[s]. Then G has a partition into ≤ n/2 paths with b(s) = 2 and b(x) = 2, for any prescribed neighbour x. So (R) holds at s and at N(s). This closes GsRvnk (roots s, s′). The hypotheses force e ≤ 6, the BP_5 regime.
 
-**Completeness at n = 8** (E14). With path insertion the game wins every root of every connected graph of order 8:
+**Completeness at n = 8** (E14). *Not reproduced: see the correction in §R. An independent run leaves 6 critical losers, including K_{2,2,2,2}.* The session reported that, with path insertion, the game wins every root of every connected graph of order 8:
 - |F| ≤ 4 suffices for all but 47 graphs;
 - the 47 win with |F| ∈ {5, 6}.
 

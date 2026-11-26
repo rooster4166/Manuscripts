@@ -252,3 +252,16 @@ Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathn
 | Fan calculus (E, O) vs truth, all pairs, n = 6 | 300 of 431 pairs certified; adding (S), (L), (C) gives 358 |
 
 **Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances, and the step succeeds in all of them. n = 8: see the end of this entry.
+
+**E13 addendum (path insertion; independent re-check).** Command: `python3 tools/fan_game.py lose8.g6 6 np`. The file holds the 50 graphs that lose with \|F\| ≤ 4; the tool includes the split rule and per-F cache clearing. **6 graphs still lose, all critical** (pathnum: p = 4 = n/2):
+
+| graph | κ | losing roots |
+|---|---|---|
+| Guv]}{ (K7 + leaf at 0) | 1 | all |
+| Guv]z{ | 2 | 1,3,4,5,6 |
+| Guv]~{ | 2 | 2 |
+| Gut~~w | 4 | 1,3,4 |
+| Gu^v~w | 5 | 6,7 |
+| Gr~v~w = K8 − perfect matching = K_{2,2,2,2} | 6 | all |
+
+The earlier kmax-8 run without np was OOM-killed before it reached these graphs. The critical Gqz~vw wins with `6 np`. The cocktail party graph, in which every vertex is a degree-6 hub, is the smallest instance of the degree-six obstruction.
