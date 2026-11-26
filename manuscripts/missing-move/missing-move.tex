@@ -129,8 +129,8 @@ costs one path, and the profile changes are controlled. \emph{Degree-four hubs}
 lies outside $N[s]$, then (R) holds at $s$ and at every neighbour of $s$. Both are formalised in
 Lean.
 \item \emph{Completeness at order $8$} (Theorem~\ref{thm:complete8}, computation): the game with
-path insertion wins every root of every connected graph of order $8$ with $|F|\le6$. Every
-certificate for the five losers has the shape of the hub lemma.
+path insertion wins every root of every connected graph of order $8$. The certificates found for
+the five losers all have the shape of the hub lemma.
 \item \emph{P\'osa moves at the profile level fail} (Section~\ref{sec:posa}). We prove a rotation
 lemma and \emph{Fan's alternative} (Lemma~\ref{lem:alt}). The alternative strictly dominates
 rotation as a game move. Neither repairs any losing root, with up to two uses per play and
@@ -140,12 +140,13 @@ allocation, not exchange.
 three receipts, and four are needed. On the order-$10$ analogue of \texttt{GsRvnk}, the fourth
 receipt is at Fan's equality. It is forced by an elementary append-or-through argument combined
 with a count of edges against path lengths (Proposition~\ref{prop:A62}). The game with path
-insertion and hub-shaped held sets loses this graph at every root.
+insertion and hub-shaped held sets loses this graph at every root, and also a $K_6$ core with
+three full exterior vertices.
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
-two, not because of Fan's inequality. The first genuine gap appears at order $10$, at a degree-six
-hub. There the missing ingredient is a non-profile count at Fan's equality: the
+two, not because of Fan's inequality. The first gaps we know of appear at order $10$, at
+degree-six hubs. There the missing ingredient is a non-profile count at Fan's equality: the
 ``short by one'' of the $d=6$ frontier~\cite[Remark~3.5]{D6}.
 
 \section{The spare path and the hub lemma}\label{sec:hub}
@@ -421,14 +422,25 @@ In the game, the alternative of Lemma~\ref{lem:alt} at this state only activates
 produces the same configuration with the labels permuted.
 
 \begin{proposition}[computation]\label{prop:A62game}
-The Fan game with path insertion, with $F$ a full star plus at most one further edge, loses
+The Fan game with path insertion, with $F$ a full star plus at most two further edges, loses
 $A_{6,2}$ at every root, the odd ones included. (The CP-SAT check confirms (R) at every root.)
 \end{proposition}
 
-So $A_{6,2}$ is a loser of the extended game, and it is the first one we know. On the other test
-graphs at order $10$ the extended game wins. One is $A_{4,4}$ ($Q=K_4$ with four false twins),
-where the twins need a star plus two further held edges. The others are $K_6$ cores with full
-exterior vertices; see \texttt{scripts/outputs}.
+So $A_{6,2}$ is a loser of the extended game, at least for hub-shaped held sets; at order $10$ a
+search over all held sets of size $\ge6$ is out of reach of the solver. Three further test graphs
+of order $10$ were run with the same held sets (\texttt{scripts/families.py}).
+\begin{itemize}
+\item $A_{4,4}$ ($Q=K_4$ with four false twins): it wins, and the twins need a star plus two
+further held edges.
+\item $B$ (a $K_6$ core $U$ of even vertices, two adjacent full vertices, and two vertices
+each adjacent to half of $U$): it wins with a star plus one edge. The half vertices have small
+contact, which makes them resources in the sense of~\cite[\S4]{D6}.
+\item $B'$ (a $K_6$ core, a full vertex with a leaf, and two adjacent full vertices): it loses at
+every root with a star plus at most two edges. This is the residual case Q2 of the $d=6$
+frontier, all exterior vertices being full. The count of Proposition~\ref{prop:A62} does not
+close it. At the fourth receipt of the hub $x_1$ the fourth path joins the two other full vertices,
+and $31$ edges meet a capacity of $3\cdot8+7=31$.
+\end{itemize}
 
 \begin{question}\label{q:count}
 Is there a sound profile-level move, using only $H$ and $b$, that captures

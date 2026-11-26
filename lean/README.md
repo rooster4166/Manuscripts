@@ -589,6 +589,27 @@ in the repository; `Prog` is the natural format for replaying them).
 only as `LovaszStatement`. Not formalized from §5: the reductions (L), (S), (C) of Proposition 26,
 which delete vertices or add an edge, and the obstructions.
 
+## `GallaiLean/MissingMove.lean`: Lovász's spare path at a hub (missing-move manuscript)
+
+The Fan game of connections §R lost on five graphs of order 8. The missing move is *path insertion*
+(a new path of any length made of held edges), paid for by the spare path that Lovász's theorem
+leaves when `G − F` has an isolated vertex. Manuscript `manuscripts/missing-move`.
+
+| Lean name | Statement |
+|---|---|
+| `isolate G s`, `isolate_edgeSet`, `isolate_degree`, `isolate_degree_self` | `G` with every edge at `s` removed, and its degrees |
+| `Ach.decomp_of_edgeSet`, `Ach.of_decomp` | `Ach G.edgeSet b` ⇔ a decomposition of `G` with end vector `b` |
+| `blankNbrs_eq_zero_of_isolated` | an isolated receiver has no blank neighbour |
+| `Ach.hub_close` | the last two steps of the hub: the new path `y' s x` |
+| **`Ach.hub_four`** | **Hub lemma** (Lemma 2.1). If `s` meets no edge of `E`, and `a, c, d` have ends, then inserting `sa, sc, sd, sx` costs one extra path. For some `{y, y'} = {c, d}`: `b' v + [v=a] + [v=y] = b v + 2[v=s] + [v=y'] + [v=x]`. The steps are `Ach.transfer`, then `Ach.grouped`, then `Ach.addPath`. |
+| **`hub_four_ends`** | **Degree-four hubs** (Thm 2.2). Even order, `d(s) = 4`, all neighbours of `s` even, `#{v ∈ Ev : v ≠ s, sv ∉ E} ≤ 1` ⇒ for every neighbour `x` there is a decomposition with `2·size ≤ n`, `ends s = 2`, `ends x = 2`. Lovász is `lovasz_ends`, so this is unconditional. |
+| **`hub_four_rooted`** | the same hypotheses ⇒ `pathNumber (addLeaf G r) ≤ n/2` for `r = s` and for every neighbour `r` of `s` |
+
+`#print axioms`: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Not formalized:
+Lemmas 4.1–4.2 (rotation; Fan's alternative), which are a single step and partial chains of
+`fan_exec` / `fan_exists_chain` and do not help in the game; Proposition 5.2 (degree-six hub of
+`A_{6,2}`).
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
