@@ -442,9 +442,50 @@ close it. At the fourth receipt of the hub $x_1$ the fourth path joins the two o
 and $31$ edges meet a capacity of $3\cdot8+7=31$.
 \end{itemize}
 
+The rigid configuration can also be useful in itself. Here is the order-$8$ graph on which the
+hub argument meets it head-on.
+
+\begin{lemma}[Flowers]\label{lem:flower}
+Let $C_1,\dots,C_j$ be edge-disjoint cycles, and let $e_i\in E(C_i)$ be edges that are the
+consecutive edges of a path $L$. Then $C_1\cup\dots\cup C_j$ has a partition into $j+1$ paths with
+two ends at every vertex of $L$ and no end elsewhere.
+\end{lemma}
+\begin{proof}
+The paths are $C_i-e_i$ for $i\le j$, and $L$. The path $C_i-e_i$ ends at the two ends of $e_i$.
+An interior vertex of $L$ lies on two of the $e_i$ and is interior to $L$. An end of $L$ lies on
+one $e_i$ and ends $L$.
+\end{proof}
+
+\begin{proposition}\label{prop:K8M}
+Let $M_8$ be $K_8$ minus a perfect matching. Then (R) holds at every vertex of $M_8$, by
+Lov\'asz's partition of $M_8-s$, three Fan receipts at $s$, and Lemma~\ref{lem:flower}.
+\end{proposition}
+\begin{proof}
+$M_8$ is $6$-regular and vertex-transitive, so let $s$ be the root and $s^*$ its non-neighbour. In
+$K=M_8-s$ the six neighbours of $s$ have degree $5$ and $s^*$ is the only even vertex. By (A), $K$
+has a partition into $3$ paths with $b=1$ on $N(s)$. As in Lemma~\ref{lem:hub}, three receipts at
+$s$ (supplies $1>0$, $5>1$, $4>2$) give a partition $D_3$ of $H=K+sy_1+sy_2+sy_3$ into $3$ paths,
+with $b(s)=3$ and $b=1$ on the three other neighbours $T$. The three paths have six ends, three at
+$s$ and three in $T$. A path has at most one end at $s$, so every path joins $s$ to $T$. The held
+edges $st$, $t\in T$, close them into three edge-disjoint cycles $C_1,C_2,C_3$ through $s$ that
+cover $E(M_8)$. A cycle has at most $8$ edges and $|E(M_8)|=24$, so the $C_i$ are Hamiltonian.
+
+Choose a neighbour $a$ of $s$ on $C_1$, and put $e_1=sa$. The cycle $C_2$ passes through $a$. Its
+two edges there avoid $s$, because $sa\in C_1$. Choose one, $e_2=aw$. The cycle $C_3$ passes
+through $w$. Its two edges there avoid $a$, because $aw\in C_2$, and at most one of them goes to
+$s$. Choose $e_3=wz$ with $z\ne s$. Then $s,a,w,z$ are distinct and $L=s\,a\,w\,z$ is a path.
+Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
+\end{proof}
+
+Here the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's chain from
+$t\in T$ stops at a blank donor. The spare path is spent on recombining the flower instead. This
+is a two-end move at equality. It moves the ends from $T$ to the transversal $L$, and it is again
+invisible in the profile: it needs the three cycles, whose existence follows from a count of
+edges.
+
 \begin{question}\label{q:count}
 Is there a sound profile-level move, using only $H$ and $b$, that captures
-Proposition~\ref{prop:A62}? For instance, a bound on the number of edges that the paths of $D$ avoiding
+Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that the paths of $D$ avoiding
 $u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus counting into a move. Does
 such a move make the extended game complete at order $10$?
 \end{question}

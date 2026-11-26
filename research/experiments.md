@@ -270,6 +270,8 @@ Theorem `hub_four_ends` (Lean) is the general form.
 
 So the receipt succeeds and (R) holds at the twins. On B′ the same count is tight (31 = 3·8 + 7) and does not decide.
 
+**K8 − perfect matching by hand** (manuscript Prop 5.5). Here the 4th receipt at the degree-6 hub always fails, because all three paths end at the hub. The rigid configuration is a flower of three Hamiltonian cycles through s, and a transversal path of cut edges closes it (Lemma 5.4).
+
 **Reading.**
 - At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
