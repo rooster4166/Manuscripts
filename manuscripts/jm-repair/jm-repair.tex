@@ -674,6 +674,121 @@ Thus $b=2|H|+\tfrac32$, which is not an integer, a contradiction. Hence $E\ge0$,
 
 The bound $2|U|\le k-2$ is not needed for (UH).
 
+\section{The lower condition (LH)}\label{sec:lower}
+
+Now assume all hypotheses of Theorem~\ref{thmB}. Recall $S=U\setminus\{c\}$. From
+$2|U|\le k-2$ we get
+\begin{equation}\label{eq:Sbound}
+|S|\le\frac{k-4}{2}.
+\end{equation}
+In particular $S=\emptyset$ when $k\le5$. Fix $B\subseteq V$ and put
+\[
+\Delta_i:=\pos{\delta_i-\psi_i(B)},\qquad s_i:=2f_i(A)-k\Delta_i .
+\]
+By \eqref{eq:slotsum}, $\sum_is_i=k\bigl(2a-\sum_i\Delta_i\bigr)$. Write
+$\varepsilon_i=4,3,5$ according as $i\in T$, $i=c$, $i\in S$, so that
+$\delta_i=\pos{p_i+\varepsilon_i-k}$. Since $\psi_i(B)\ge p_i-n_0^i$,
+\begin{equation}\label{eq:Delta}
+\Delta_i>0\ \Longrightarrow\ \Delta_i\le n_0^i+\varepsilon_i-k,
+\qquad\text{and always}\qquad f_i(A)=2n_0^i+n_1^i\ge 2n_0^i .
+\end{equation}
+
+\begin{lemma}\label{lem:s}
+Write $n_j=n_j^i$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=*]
+\item If $i\in T$, then $s_i\ge0$. If moreover $\Delta_i$ is odd, then $s_i\ge k-4$.
+\item $s_c\ge0$. If $\Delta_c$ is odd, then $s_c\ge 3k-8$.
+\item Let $i\in S$. Then $s_i\ge-4$.
+  \begin{itemize}
+  \item If $n_0=k-1$, then $\Delta_i=4$ and $s_i=-4$.
+  \item If $n_0\le k-2$, then $s_i\ge\min\{0,k-8\}$.
+  \item If $n_0\le k-2$ and $\Delta_i$ is odd, then $s_i\ge k-6$, except when $n_0=k-2$ and
+  $n_1=0$; in that case $s_i=k-8$.
+  \end{itemize}
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+If $\Delta_i=0$, then $s_i=2f_i(A)\ge0$. Every lower bound claimed for this case is at most
+$0$, or concerns odd $\Delta_i$, so we may assume $\Delta_i>0$. Then
+$s_i\ge 4n_0-k\Delta_i\ge 4n_0-k(n_0+\varepsilon_i-k)$ by \eqref{eq:Delta}.
+
+(a) Here $\varepsilon_i=4$ and $n_0\le p_i\le k$. So
+$s_i\ge 4n_0-k(n_0+4-k)=(k-n_0)(k-4)\ge0$. If $\Delta_i\in\{1,3\}$, then
+$n_0\ge k-4+\Delta_i$ by \eqref{eq:Delta}, and
+$s_i\ge 4(k-4+\Delta_i)-k\Delta_i=(k-4)(4-\Delta_i)\ge k-4$.
+
+(b) Here $\varepsilon_c=3$ and $n_0\le p_c\le k-1$. So
+$s_c\ge k(k-3)-(k-4)n_0\ge k(k-3)-(k-4)(k-1)=2k-4\ge0$. Since $\delta_c\le2$, odd means
+$\Delta_c=1$. Then $n_0\ge k-2$ and $s_c\ge 4(k-2)-k=3k-8$.
+
+(c) Here $\varepsilon_i=5$ and $n_0\le p_i\le k-1$. So $s_i\ge k(k-5)-(k-4)n_0$.
+
+For $n_0=k-1$ this gives $s_i\ge -4$. In this case $n_0=p_i$, so no component of $Q_i$ has
+a slot in $B$. Hence $\psi_i(B)=0$ and $\Delta_i=\delta_i=4$. Also $f_i(A)=2(k-1)$, so
+$s_i=-4$ exactly.
+
+For $n_0\le k-2$ the bound gives $s_i\ge k(k-5)-(k-4)(k-2)=k-8$. Together with the case
+$\Delta_i=0$ this gives $s_i\ge\min\{0,k-8\}$.
+
+Now let $\Delta_i$ be odd, with $n_0\le k-2$. If $\Delta_i=1$, then $n_0\ge k-4$ and
+$s_i\ge 4(k-4)-k=3k-16\ge k-6$, using $k\ge5$. (Note $S\ne\emptyset$ forces $k\ge6$ by
+\eqref{eq:Sbound}.) If $\Delta_i=3$, then $n_0\ge k-2$, so $n_0=k-2$, and
+$s_i=2\bigl(2(k-2)+n_1\bigr)-3k=k-8+2n_1$. This is $\ge k-6$ unless $n_1=0$, and equals $k-8$
+when $n_1=0$.
+\end{proof}
+
+\begin{proposition}\label{prop:LH}
+Under the hypotheses of Theorem~\ref{thmB}, \textup{(LH)} holds for every $B\subseteq V$.
+\end{proposition}
+
+\begin{proof}
+Let $E:=2a-\sum_i\Delta_i$. This is an integer, and $kE=\sum_is_i$. We must show $E\ge0$.
+
+\emph{Case $k\le7$.} By \eqref{eq:Sbound}, $|S|\le1$. By Lemma~\ref{lem:s}, $s_i\ge0$ for
+$i\notin S$ and $s_i\ge-4$ for $i\in S$. Hence $kE\ge-4>-k$, so $E\ge0$.
+
+\emph{Case $k\ge8$.} Let $J=\{i\in S:n_0^i=k-1\}$ and $j=|J|$. By Lemma~\ref{lem:s},
+$s_i\ge0$ for every $i\notin J$, and $s_i=-4$ for $i\in J$. Hence
+\[
+kE\ \ge\ -4j\ \ge\ -4|S|\ \ge\ -2(k-4)\ >\ -2k ,
+\]
+so $E\ge-1$. Suppose $E=-1$. Then
+\begin{equation}\label{eq:tight}
+\sum_{i\notin J}s_i=4j-k,
+\end{equation}
+and $\sum_i\Delta_i=2a+1$ is odd. Since $\Delta_i=4$ for $i\in J$, some colour $i_0\notin J$
+has $\Delta_{i_0}$ odd. All $s_i$ with $i\notin J$ are nonnegative, so \eqref{eq:tight} gives
+$s_{i_0}\le 4j-k$. By Lemma~\ref{lem:s} there are two possibilities.
+\begin{itemize}[leftmargin=*]
+\item $s_{i_0}\ge k-6$. Then $4j\ge 2k-6$, so $j\ge (k-3)/2>(k-4)/2\ge|S|\ge j$, a
+contradiction.
+\item $i_0\in S\setminus J$ and $s_{i_0}=k-8$. Then $4j\ge 2k-8$, so $j\ge(k-4)/2\ge|S|$. But
+$J\subseteq S\setminus\{i_0\}$, so $j\le|S|-1$, a contradiction.
+\end{itemize}
+Hence $E\ge0$, which is (LH).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thmB}]
+By Propositions~\ref{prop:UH} and~\ref{prop:LH}, the conditions (UH) and (LH) hold for every
+$B\subseteq V$. By Proposition~\ref{prop:cuts} and Lemma~\ref{lem:flow-record} there is an
+admissible record $\rho$ with $a_i(\rho)\ge\delta_i$ for all~$i$. Corollary~\ref{cor:record}
+gives the required extension $\Q'$.
+\end{proof}
+
+\begin{remark}[where the hypotheses are used]\label{rem:sharp}
+The condition $k\ge4$ is used in Lemmas~\ref{lem:u} and~\ref{lem:s}. The bounds $p_i\le k$ and
+$p_i\le k-1$ are used throughout. The bound $2|U|\le k-2$ is used only in
+Proposition~\ref{prop:LH}, through \eqref{eq:Sbound}, and it cannot simply be dropped. Take
+$n=3$ and $m=3$, so $k=4$, and let $T=\emptyset$, $U=\{1,2,3\}$, $c=2$. Let $Q_1$ be a path on
+the three vertices, $Q_2$ the remaining edge, and $Q_3=\emptyset$. Then $p=(1,2,3)$, and the
+demands are $\delta_1=2$, $\delta_2=1$, $\delta_3=4$. So (LH) fails at $B=\emptyset$:
+$\sum_i\delta_i=7>6=2m$. In random experiments without the bound on $|U|$
+(Section~\ref{sec:computations}), every failure we saw was of this type, with
+$B=\emptyset$. In \JM\ this bound is exactly the hypothesis $r\le 2t-1$ (proof of
+Theorem~\ref{thmA}).
+\end{remark}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
