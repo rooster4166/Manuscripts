@@ -1007,7 +1007,10 @@ $2|U|\le k-2$ allows, and every $c\in U$ is tested.
   \end{itemize}
   Random instances (\texttt{test\_random.py}, seeds 21--23, $n\le10$): $712$ cases.
   Adversarial instances (\texttt{test\_adversarial.py}, seeds 31--33, $n\le10$): $1013$ cases.
-  Every case was feasible, and the three tests agreed in every case.
+  Every case was feasible, and the three tests agreed in every case. For larger instances
+  ($8\le n\le14$, adversarial generation, \texttt{test\_flow\_large.py}, seed 41) we ran the
+  flow test alone, since the brute-force cut check is exponential in $m$. All $277$ cases were
+  feasible.
 
 \item \emph{The bound on $|U|$} (\texttt{test\_noUbound.py}). We took $U$ to be all colours with
 $p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible

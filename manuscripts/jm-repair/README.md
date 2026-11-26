@@ -23,7 +23,7 @@ Status summary (Section 11 of the manuscript has the precise version):
 |---|---|
 | `lf.py` | Shared utilities. |
 | `solvers.py` | Shared CP-SAT and flow solvers. |
-| `test_random.py`, `test_adversarial.py` | Theorem B three ways: direct search, flow, cut conditions. |
+| `test_random.py`, `test_adversarial.py`, `test_flow_large.py` | Theorem B three ways: direct search, flow, cut conditions. |
 | `test_noUbound.py` | That the bound 2\|U\| ≤ k − 2 is needed. |
 | `check_valid_lemma.py` | Exhaustive check of Lemma 5.1. |
 | `check_colour_lemmas.py` | The per-colour inequalities. |
