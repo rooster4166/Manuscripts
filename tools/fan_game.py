@@ -1,21 +1,29 @@
-"""The pure Fan game: Lovász's theorem plus Fan's transfers, played on end-count profiles.
+"""The Fan game: Lovász's theorem plus Fan's transfers, played on end-count profiles.
 
 Let G have even order n. A play consists of the following steps.
   1. Choose an edge set F and put K = G - F. The start profile b on V is one Lovász guarantees:
      (a) if K has at most one vertex of positive even degree: b = d_K mod 2 (Lovász, strong form);
      (b) if K has no isolated vertex and exactly two even vertices u, v: b = 1 on odd vertices,
          b(v) = 2 and b(u) = 0 (Lemma 3: Ev(K) - u is realisable).
-  2. Re-add the edges of F one at a time. The current graph is H; Z_H(u) is the set of
-     neighbours of u in H with b = 0. Each step adds edges in one of three ways:
+  2. Re-add the edges of F. The current graph is H = G - rem, where rem is the set of edges still
+     held; Z_H(u) is the set of neighbours of u in H with b = 0. The moves are:
      * single transfer of ut towards u, allowed if b(t) > |Z_H(u)|: b(u) += 1, b(t) -= 1;
      * grouped transfer at u with a set T (|T| >= 2) of remaining F-edges ut, allowed if
        sum_{t in T} b(t) > |Z_H(u)|. The opponent picks t in T with b(t) >= 1, and ut is added
        with b(u) += 1, b(t) -= 1;
-     * new one-edge path ut: b(u) += 1, b(t) += 1 (raises sum b by 2).
+     * new one-edge path ut: b(u) += 1, b(t) += 1 (raises sum b by 2);
+     * [option "np"] new path: any path P of length >= 2 all of whose edges are held is added as
+       one new path: b += 1 at each end of P (raises sum b by 2). Soundness: D + P.
+     * [option "rotR"] rotation (Pósa) of a held edge uv with b(v) >= 1, at most R times in a
+       play. Either some path ending at v avoids u, and uv is appended (b(u) += 1, b(v) -= 1),
+       or all b(v) of them pass through u; their predecessors of u (read from v) form a set
+       W of b(v) neighbours of u in H chosen by the opponent, we pick w in W, and the path is
+       rotated: H becomes H + uv - uw (uw is now held instead of uv), b(v) -= 1, b(w) += 1.
+       Soundness: `rotation_or_append` (lean/GallaiLean/MissingMove.lean).
   3. The play wins for the root r if, once F is used up, sum b <= n and b(r) >= 1.
-Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`; Lean) applied to a realising
-partition, so a winning play gives a partition of G into at most n/2 paths with an end at r.
-Hence p(G + leaf at r) <= n/2, which is the rooted test R for (G, r).
+Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, or the
+rotation lemma, applied to a realising partition, so a winning play gives a partition of G into
+at most n/2 paths with an end at r. Hence p(G + leaf at r) <= n/2, which is the rooted test R.
 
 Inductive variant ("ind"): the seed may also come from the induction hypothesis on a smaller
 connected spanning K = G - F (F nonempty). For a chosen r' in Ev(K), the adversary picks any
@@ -23,7 +31,10 @@ half-set S' of Ev(K) containing r'; the profile is 1 on odd vertices, 2 on S' an
 We must win against every choice of S'. If every connected even-order graph has a winning
 inductive play, Gallai follows by induction on the number of edges.
 
-Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind]
+Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR]
+  e.g. python3 tools/fan_game.py data/conn8.g6 4 np      (Fan + multi-edge new paths)
+       python3 tools/fan_game.py FILE 4 rot2              (Fan + at most two rotations)
+Without "np" and "rotR" the game is the original one of experiments E13.
 """
 import sys
 from functools import lru_cache
@@ -32,7 +43,7 @@ from itertools import combinations
 import networkx as nx
 
 
-def solve_graph(G, kmax=4, roots=None, inductive=False):
+def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -45,9 +56,12 @@ def solve_graph(G, kmax=4, roots=None, inductive=False):
     def popc(x):
         return bin(x).count("1")
 
+    def key(a, c):
+        return (a, c) if a < c else (c, a)
+
     @lru_cache(maxsize=None)
-    def win(rem, b, r):
-        # rem: frozenset of remaining F-edges; b: profile tuple
+    def win(rem, b, r, R=0):
+        # rem: frozenset of held edges; b: profile tuple; R: rotations still allowed
         s = sum(b)
         if not rem:
             # b(r) >= 1, or room to split a path at r (r has positive degree)
@@ -61,22 +75,71 @@ def solve_graph(G, kmax=4, roots=None, inductive=False):
         for v in range(n):
             if b[v] == 0:
                 zero |= 1 << v
+
         def Z(u):
             return popc(nbr[u] & ~remmask[u] & zero)
+
         for (a, c) in rem:
             rest = rem - {(a, c)}
             for u, t in ((a, c), (c, a)):
                 if b[t] > Z(u):
                     nb = list(b); nb[u] += 1; nb[t] -= 1
-                    if win(rest, tuple(nb), r):
+                    if win(rest, tuple(nb), r, R):
                         return True
             if s + 2 <= n:
                 nb = list(b); nb[a] += 1; nb[c] += 1
-                if win(rest, tuple(nb), r):
+                if win(rest, tuple(nb), r, R):
                     return True
+        # new paths of length >= 2 made of held edges
+        if newpath and s + 2 <= n:
+            radj = {}
+            for a, c in rem:
+                radj.setdefault(a, []).append(c)
+                radj.setdefault(c, []).append(a)
+
+            def dfs(path, used):
+                if len(path) >= 3 and path[0] < path[-1]:
+                    nb = list(b); nb[path[0]] += 1; nb[path[-1]] += 1
+                    if win(rem - used, tuple(nb), r, R):
+                        return True
+                for w in radj.get(path[-1], ()):
+                    if w in path:
+                        continue
+                    if dfs(path + [w], used | {key(path[-1], w)}):
+                        return True
+                return False
+
+            for v0 in radj:
+                if dfs([v0], frozenset()):
+                    return True
+        # rotations: uv held, b(v) >= 1; the direct outcome must win, and fewer than b(v)
+        # neighbours w of u in H may lose after rotating to H + uv - uw.
+        if R > 0:
+            for (a, c) in rem:
+                rest = rem - {(a, c)}
+                for u, v in ((a, c), (c, a)):
+                    if b[v] == 0:
+                        continue
+                    if b[v] > Z(u):
+                        continue  # Fan's single transfer already covers this edge
+                    nb = list(b); nb[u] += 1; nb[v] -= 1
+                    if not win(rest, tuple(nb), r, R):
+                        continue
+                    losing = 0
+                    Nu = nbr[u] & ~remmask[u]
+                    for w in range(n):
+                        if not (Nu >> w) & 1:
+                            continue
+                        nb = list(b); nb[v] -= 1; nb[w] += 1
+                        if not win(rest | {key(u, w)}, tuple(nb), r, R - 1):
+                            losing += 1
+                            if losing >= b[v]:
+                                break
+                    if losing < b[v]:
+                        return True
         # grouped transfers
         for u in range(n):
-            cands = [t for t in range(n) if (min(u, t), max(u, t)) in rem]
+            cands = [t for t in range(n) if key(u, t) in rem]
             if len(cands) < 2:
                 continue
             z = Z(u)
@@ -84,18 +147,16 @@ def solve_graph(G, kmax=4, roots=None, inductive=False):
                 for T in combinations(cands, k):
                     if sum(b[t] for t in T) <= z:
                         continue
-                    if all(b[t] == 0 or b[t] > z or True for t in T):
-                        ok = True
-                        for t in T:
-                            if b[t] == 0:
-                                continue
-                            e = (min(u, t), max(u, t))
-                            nb = list(b); nb[u] += 1; nb[t] -= 1
-                            if not win(rem - {e}, tuple(nb), r):
-                                ok = False
-                                break
-                        if ok:
-                            return True
+                    ok = True
+                    for t in T:
+                        if b[t] == 0:
+                            continue
+                        nb = list(b); nb[u] += 1; nb[t] -= 1
+                        if not win(rem - {key(u, t)}, tuple(nb), r, R):
+                            ok = False
+                            break
+                    if ok:
+                        return True
         return False
 
     def starts(F):
@@ -150,14 +211,14 @@ def solve_graph(G, kmax=4, roots=None, inductive=False):
         for k in range(0, kmax + 1):
             for F in combinations(E, k):
                 for b0 in starts(F):
-                    if win(frozenset(F), b0, r):
+                    if win(frozenset(F), b0, r, rot):
                         found = (F, b0)
                         break
                 if found:
                     break
                 if inductive and k >= 1:
                     for rp, profs in ind_seeds(F):
-                        if all(win(frozenset(F), b0, r) for b0 in profs):
+                        if all(win(frozenset(F), b0, r, rot) for b0 in profs):
                             found = (F, ("IH", rp))
                             break
                 if found:
@@ -168,23 +229,38 @@ def solve_graph(G, kmax=4, roots=None, inductive=False):
     return result
 
 
+def parse_opts(args):
+    kmax, inductive, newpath, rot = 4, False, False, 0
+    for a in args:
+        if a == "ind":
+            inductive = True
+        elif a == "np":
+            newpath = True
+        elif a.startswith("rot"):
+            rot = int(a[3:] or 1)
+        else:
+            kmax = int(a)
+    return kmax, inductive, newpath, rot
+
+
 def main():
     path = sys.argv[1]
-    kmax = int(sys.argv[2]) if len(sys.argv) > 2 else 4
-    inductive = len(sys.argv) > 3 and sys.argv[3] == "ind"
+    kmax, inductive, newpath, rot = parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
-        res = solve_graph(G, kmax, inductive=inductive)
+        res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
             d = dict(G.degree())
             print("LOSE", nx.to_graph6_bytes(G, header=False).strip().decode(), sorted(G.edges()),
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
-    print(f"{len(graphs)} graphs, {bad} with a losing root (kmax={kmax})", flush=True)
+    opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
+        (f", rot{rot}" if rot else "")
+    print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 
 if __name__ == "__main__":
