@@ -28,7 +28,7 @@
 Fan's addible-edge transfers have hypotheses that depend only on the end profile of a path
 partition. Starting from a Lov\'asz partition of $G-F$ and re-inserting $F$ by Fan transfers is
 therefore a finite game on profiles. This game wins the rooted Gallai test at every root of every
-connected graph of order~$6$, but it loses on five graphs of order~$8$, the smallest being a $K_4$
+connected graph of order~$6$, but it loses on some graphs of order~$8$, the smallest being a $K_4$
 of even vertices with a full vertex carrying a leaf and two false twins. We show that the missing
 move is not a move beyond Fan's inequality. It is \emph{path insertion}: a new path of length at
 least two made of held edges, paid for by the spare path that Lov\'asz's theorem leaves when $G-F$
@@ -109,10 +109,12 @@ for (R) at $(G,r)$ that never exhibits a path. Every Lov\'asz--Fan argument in t
 this form: Lov\'asz from Fan, the two descent steps, the star lemma, Pyber's theorem, the
 six-clique schedules and the $d=6$ frontier certificates~\cite{ES,D6}. The game wins every root
 of every connected graph of order $6$. It loses on $50$ connected graphs of order $8$ with
-$|F|\le4$, and five of them still lose with $|F|\le 8$~\cite[E13]{EXP}:
+$|F|\le4$. The experiment log lists five that still lose with $|F|\le 8$~\cite[E13]{EXP}:
 \begin{center}
 \texttt{GsRvnk}, \texttt{GsZvnk}, \texttt{Gqrvn[}, \texttt{Gqzvn[}, \texttt{Gqzl|\char123}.
 \end{center}
+A sixth is $K_8$ minus a perfect matching. It loses with $|F|\le8$ even with the move introduced
+below (Theorem~\ref{thm:complete8}), and therefore also in the original game.
 The smallest, \texttt{GsRvnk}, consists of a clique $Q=\{q_1,\dots,q_4\}$ whose vertices have
 degree $6$, a vertex $x$ adjacent to $Q$ and to a leaf $\ell$, and two false twins $s,s'$
 adjacent exactly to $Q$. It loses at the roots $s,s'$. The same experiment showed that inductive

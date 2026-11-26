@@ -243,7 +243,9 @@ Tool: `tools/fan_game.py`, with new options. Manuscript `manuscripts/missing-mov
 | the five losers, `rot2` \|F\| ≤ 4; `alt2` \|F\| ≤ 4; `alt1` \|F\| ≤ 6 | **no losing root repaired** (GsRvnk 2, 3; GsZvnk 4; Gqrvn[ 2; Gqzvn[ 4; Gqzl\|{ 1) |
 | (R) by CP-SAT on the five losers | holds at every root |
 
-So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S). The certificate for GsRvnk, root 2, is the following:
+So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S).
+
+*Correction to E13.* K8 − perfect matching loses with path insertion at every \|F\| ≤ 8, so it also loses the original game there. The E13 list of five genuine losers at \|F\| ≤ 8 is therefore incomplete: K8 − PM is a sixth. With path insertion it wins at \|F\| = 9. The certificate for GsRvnk, root 2, is the following:
 - hold the star at 2;
 - take Lovász on G − 2 (3 paths, one spare);
 - single transfer 0 → 2;
