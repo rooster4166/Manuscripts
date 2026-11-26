@@ -51,7 +51,7 @@ def search(D, blanks0, contacts, pre=(), xy=False, b_pair=(1, 1)):
     return win(0, tuple(b0))
 
 # ---------------------------------------------------------------------------
-# Full-pair programs at the three stages of six-clique Theorem 1 (Proposition 10).
+# Full-pair programs at the three stages of six-clique Theorem 1 (Proposition 7.1 of d6-frontier.tex).
 STAGES = {
     'stage 1 (D0, blanks 0,1)': ([(2, 3), (4, 5)], (0, 1)),
     'stage 2 (D1, blanks 2,3)': ([(2, 3), (4, 5), (0, 2), (1, 3)], (2, 3)),

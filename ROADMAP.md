@@ -180,3 +180,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
 - **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- 2026-11-26 (same session, follow-up): **k-step infrastructure** (`lean/GallaiLean/KStep.lean`, manuscript Lemma 24–Cor 27):
+  - general transfer;
+  - connected reduction of k-step descent to "y has an even neighbour" or "all edges at y are bridges";
+  - the one-even-neighbour case of (k+1)-step descent from k-step descent;
+  - **three-step descent at vertices with exactly one even neighbour**, hence test (i) at d = 6 at every r ∈ N(z) with exactly one neighbour in N(z).
+
+  Three-step descent is reduced to: y has ≥ 2 even neighbours, or y is an all-bridge vertex with no even neighbour.

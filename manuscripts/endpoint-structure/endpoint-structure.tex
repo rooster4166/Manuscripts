@@ -468,8 +468,94 @@ For a third step one may delete an edge $yt$ with $t$ even and apply Theorem~\re
 $K=G-yt$, obtaining $\Ev(K)\setminus\{w',v'\}\in\cF(K)$; a single transfer of $yt$ towards $y$ then
 gives $\Ev\setminus\{t,w',v'\}\in\cF(G)$, provided $K$ is connected and neither $w'$ nor $v'$ is
 adjacent to $y$. The vertex $w'$ can be prescribed, but $v'$ cannot. So the third step needs a version
-of Theorem~\ref{thm:two} in which the second deleted vertex avoids a prescribed set of vertices.
+of Theorem~\ref{thm:two} in which the second deleted vertex avoids a prescribed set of vertices. When
+$y$ has exactly one even neighbour this obstruction disappears (Theorem~\ref{thm:unique} below).
 \end{remark}
+
+\subsection*{$k$-step descent}
+
+For an even vertex $y$, a set $W_0\subseteq\Ev\setminus\{y\}$ and $k\ge1$, we say that $G$ has
+\emph{$k$-step descent at $(y,W_0)$} if some $k$-set $R\subseteq\Ev\setminus\{y\}$ with $W_0\subseteq R$
+has $\Ev\setminus R\in\cF(G)$. Lemma~\ref{lem:minus} is $1$-step descent at $(y,\{w\})$, and
+Theorem~\ref{thm:two} is $2$-step descent at $(y,\{w\})$. For a critical graph with $e=2k$, $k$-step
+descent at $(y,\emptyset)$ is the simple-profile form of (R) at $y$. Prescribing $w$ is a convenience
+of the induction: at the bottom level $w$ may be a coloop of the endpoint matroid.
+
+\begin{lemma}[General transfer across an even edge]\label{lem:transfer}
+Let $s,t$ be adjacent even vertices of $G$ and $K=G-st$. If $S\in\cF(K)$ and $s$ has no neighbour in
+$\Ev(K)\setminus S$, then $S\cup\{s\}\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+In $K$ both $s$ and $t$ are odd. Let $D$ realise $S$ in $K$. By~\eqref{eq:passing}, $Z_D(s)=\emptyset$,
+and $b_D(t)=1$. A single transfer of $st$ towards $s$ gives $s$ two ends and $t$ none.
+\end{proof}
+
+Lemma~\ref{lem:edge} is the case $S=\Ev\setminus\{s,t,u'\}$, supplied by Lemma~\ref{lem:minus}.
+
+\begin{theorem}[Connected reduction]\label{thm:reduction}
+Fix $k\ge1$, $m$ and a finite set $W_0$. Suppose that in every connected graph with at least $m$ even
+vertices, $k$-step descent holds at $(y,W_0)$ for every even $y\notin W_0$ (with $W_0\subseteq\Ev$)
+that has an even neighbour or all of whose edges are bridges. Then it holds for every even
+$y\notin W_0$ in every connected graph with at least $m$ even vertices containing $W_0$.
+\end{theorem}
+
+\begin{proof}
+Induction on $|E(G)|$. If $y$ is not covered by the hypothesis, then $y$ has no even neighbour and some
+edge $yt$ is not a bridge, so $t$ is odd and $K=G-yt$ is connected. In $K$ the vertex $y$ is odd and
+$t$ is even, so $\Ev(K)=(\Ev\setminus\{y\})\cup\{t\}$ has as many elements as $\Ev$, and
+$W_0\subseteq\Ev(K)\setminus\{t\}$. By induction there is a $k$-set $R\subseteq\Ev(K)\setminus\{t\}$
+with $W_0\subseteq R$ and $\Ev(K)\setminus R\in\cF(K)$. The vertices of $R$ are even in $G$ and
+different from $y$, so they are not adjacent to $y$, and Lemma~\ref{lem:lift} gives
+$\Ev\setminus R\in\cF(G)$.
+\end{proof}
+
+Neither parity nor criticality is used. Connectivity matters for $k\ge3$. The proof of
+Theorem~\ref{thm:two} is a path induction that never needs connectivity of the graph, but the
+corresponding base statement fails for disconnected graphs when $k=3$. In $(K_5-e)\sqcup(K_5-e)$
+($n=10$, $e=6$) every even vertex has an even neighbour, yet every realisable set has at least four
+elements, since each copy needs two ($p(K_5-e)=3$). When every edge at $y$ is a bridge, deleting one
+of them splits $G$, possibly into parts of odd order, where descent is the floor problem; this case
+is not reduced here.
+
+\begin{theorem}[One even neighbour]\label{thm:unique}
+Let $k\ge2$, let $G$ be connected with at least $2k+2$ even vertices, let the even vertex $y$ have
+exactly one even neighbour $t$, and let $w\ne y$ be even. Suppose that $k$-step descent holds at
+$(y',\{w'\})$ in every graph on $V(G)$ without isolated vertices and with at least $2k$ even vertices, for all
+distinct even $y',w'$ such that $y'$ is joined by a path to another even vertex. Then $G$ has
+$(k+1)$-step descent at $(y,\{w\})$.
+\end{theorem}
+
+\begin{proof}
+Let $K=G-yt$. Then $y$ and $t$ are odd in $K$, $\Ev(K)=\Ev\setminus\{y,t\}$ has at least $2k\ge4$
+elements, and $K$ has no isolated vertex. Since $G$ is connected, every vertex of $K$ is joined in $K$
+to $y$ or to $t$; as $\Ev(K)$ has at least four elements, two distinct even vertices $a,b$ of $K$ lie
+in one component of $K$. Let $y'$ be
+one of them with $y'\ne w$, and let $w'=w$ if $w\ne t$ and $w'$ be the other of $a,b$ if $w=t$. The
+hypothesis gives a $k$-set $W\subseteq\Ev(K)\setminus\{y'\}$ with $w'\in W$ and
+$\Ev(K)\setminus W\in\cF(K)$. As $t$ is the only even neighbour of $y$ and $W\subseteq\Ev\setminus\{y,t\}$,
+the vertex $y$ has no neighbour in $W$, and Lemma~\ref{lem:transfer} gives
+$(\Ev(K)\setminus W)\cup\{y\}=\Ev\setminus(W\cup\{t\})\in\cF(G)$. The set $R=W\cup\{t\}$ has $k+1$
+elements, contains $w$ and avoids $y$.
+\end{proof}
+
+The proof of Theorem~\ref{thm:two} is an induction along a path from $y$ to another even vertex that
+uses neither connectivity nor criticality, so it supplies the hypothesis of Theorem~\ref{thm:unique}
+for $k=2$, in graphs of even order.
+
+\begin{corollary}[Three steps]\label{cor:three}
+Let $G$ be connected of even order with $e\ge6$, and let the even vertex $y$ have exactly one even
+neighbour. Then for every even $w\ne y$ some $3$-set $R\ni w$ of even vertices avoiding $y$ has
+$\Ev\setminus R\in\cF(G)$. If $e=6$, then $y$ lies in a realisable $3$-set and the rooted test (R)
+holds at $y$.
+\end{corollary}
+
+In the language of the deletion tests: if $J$ is $3$-connected with unique even vertex $z$ of degree
+$6$, then test~(i) holds at every $r\in N(z)$ that has exactly one neighbour in $N(z)$ (apply
+Corollary~\ref{cor:three} to $B=J-z$, which is connected, has even order and $\Ev(B)=N(z)$). Combined with
+Theorem~\ref{thm:reduction}, three-step descent in connected graphs of even order with $e\ge6$
+reduces to two cases: $y$ has at least two even neighbours, or $y$ has no even neighbour and every
+edge at $y$ is a bridge.
 
 \begin{remark}[Formalisation]\sloppy
 Lemmas~\ref{lem:edge}--\ref{lem:lift}, Theorem~\ref{thm:two}, Corollaries~\ref{cor:four}
@@ -482,7 +568,12 @@ vertices). The matroid of
 Theorem~\ref{thm:emc4} is built as a Mathlib \texttt{Matroid} and proved loopless. There is no
 \texttt{sorry}, and the only axioms are \texttt{propext}, \texttt{Classical.choice} and
 \texttt{Quot.sound}. Lov\'asz's theorem is an explicit hypothesis (\texttt{LovaszStatement}); Fan's
-transfers are proved in the library.
+transfers are proved in the library. The $k$-step material is in \texttt{lean/GallaiLean/KStep.lean}:
+Lemma~\ref{lem:transfer} (\texttt{realisable\_transfer}), Theorem~\ref{thm:reduction}
+(\texttt{desc\_reduction}), Theorem~\ref{thm:unique} (\texttt{desc\_succ\_of\_unique}),
+Corollary~\ref{cor:three} (\texttt{desc\_three\_of\_unique}) and the reduction of three-step descent
+to the two residual cases (\texttt{desc\_three\_reduction}). Primed versions of the last two discharge
+the Lov\'asz hypothesis with the library's proof of Lov\'asz's theorem.
 \end{remark}
 
 \section*{Computational evidence}\label{app:comp}
@@ -492,7 +583,11 @@ enumerating simple paths and solving an exact-cover integer program (OR-Tools CP
 partition returned was independently checked. On all connected graphs of order at most six,
 Conjectures~\ref{conj:emc} and~\ref{conj:fd} hold; the realisable family of every critical graph of
 order four or six is the spanning family of a loopless matroid, uniform whenever the graph is
-$2$-connected. [Order eight: in progress.] The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
+$2$-connected. [Order eight: in progress.] For four even vertices, Corollary~\ref{cor:four} was checked
+on all connected graphs of order at most six (critical or not) and on the first 500 of the $5{,}523$
+connected graphs of order eight with four even vertices, with no exception (\texttt{tools/emc\_four.py});
+the run was stopped once the corollary was proved. In every critical graph found with a non-realisable
+pair there are exactly two such pairs, and they are disjoint. The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
 were found by the same exhaustive searches.
 
 \begin{thebibliography}{9}

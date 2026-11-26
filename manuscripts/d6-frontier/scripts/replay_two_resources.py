@@ -1,4 +1,4 @@
-"""Replay of the two-resource root-hub certificate (Theorem 5 of d6-frontier.tex).
+"""Replay of the two-resource root-hub certificate (Theorem 4.3 of d6-frontier.tex).
 
 d = 6, U = {0..5} induces K6, r = 0.  Pendant y (any number of T-neighbours), battery
 triangle r a b with |N(a) & T| <= 4, y adjacent to neither a nor b, and

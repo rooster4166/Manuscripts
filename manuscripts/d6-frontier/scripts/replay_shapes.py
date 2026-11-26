@@ -1,4 +1,4 @@
-"""Replay of the root-hub battery certificates for non-universal roots (Theorem 4(ii),(iii)
+"""Replay of the root-hub battery certificates for non-universal roots (Theorem 4.1(ii),(iii)
 of d6-frontier.tex): core shapes D = K2 with r on the missing edge (|Q| = 1), and
 D in {P3 (r the middle vertex), K3 (r a triangle vertex), C4 (r a cycle vertex)} (|Q| = 2),
 where Q = T - N(r).  Battery: triangle r a b of odd vertices; |Q| = 1: |N(a) & T| <= 2 and

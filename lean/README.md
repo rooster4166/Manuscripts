@@ -431,6 +431,22 @@ statements are otherwise identical to the originals.
 `#print axioms` on `pyber`, `pyber_claim`, `bp3_pathNumber`, `realisable_pair_of_four`,
 `rooted_four'`, `endpoint_matroid_four'` and `two_step_descent'` shows only `propext`,
 `Classical.choice` and `Quot.sound`.
+## `GallaiLean/KStep.lean`: k-step descent
+
+`Desc G k y W₀`: some `k`-set `R` of even vertices with `W₀ ⊆ R`, `y ∉ R` and `Ev ∖ R` realisable.
+
+* `realisable_transfer`: for adjacent even `s, t`, `S` realisable in `G − st` with `N(s)`
+  disjoint from the unexposed even vertices gives `insert s S` realisable in `G`.
+* `delE_reach_or_reach`, `connected_delE_of_not_isBridge`, `evenSet_delE_odd`,
+  `evenSet_delE_even`, `card_edgeFinset_delE_lt`: bookkeeping for deleting one edge.
+* **`desc_reduction`**: `Desc · k y W₀` in connected graphs with `≥ m` even vertices reduces to
+  the cases where `y` has an even neighbour or every edge at `y` is a bridge (`IsBridge`).
+* **`desc_succ_of_unique`**: if `y` has exactly one even neighbour `t`, then `Desc G (k+1) y {w}`
+  follows from `k`-step descent (`k ≥ 2`) in graphs where the kept vertex is joined to another
+  even vertex. `desc_two_of_reachable` supplies `k = 2` from `two_step_aux`.
+* **`desc_three_of_unique`**, **`desc_three_reduction`** (and primed forms without the Lovász
+  hypothesis): three-step descent at an even vertex with exactly one even neighbour; reduction of
+  three-step descent to the two residual cases.
 
 ## Open / not formalized
 

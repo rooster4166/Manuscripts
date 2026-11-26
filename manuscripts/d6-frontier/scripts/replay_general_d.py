@@ -1,4 +1,4 @@
-"""Replay of the general-d hub certificates (Theorems 7 and 8 of d6-frontier.tex) at
+"""Replay of the general-d hub certificates (Theorem 6.1 of d6-frontier.tex) at
 deletion degree d = 8 (eight even vertices inducing K8), and d = 6 for comparison.
 
 root  : C-universal root r = 0 with a quiet pendant y and beta = d/2 - 3 quiet battery
