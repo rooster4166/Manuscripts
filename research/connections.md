@@ -469,6 +469,30 @@ The question (coordinator, route (H)): is there an induction hypothesis stronger
   - **So CP(4) and CP(5) pass, unconditionally** (Lean `cocktail_passes_four`, `cocktail_passes_five`). CP(4) is missing-move Prop 5.5; CP(5) is new (n = 10).
 - **Open: rainbow transversals for k ≥ 5** (Question 66). No failures for m ≤ 10 (E16). Random greedy fails 5–15% of the time, so a proof needs rotations.
 
+### Rainbow transversals and receipt-or-flower (follow-up 6)
+
+**Grade: Proved (receipt-or-flower; B′ by hand; Lean `flower_decomp_rest`); rainbow-transversal lemma for k ≥ 5 still open, with literature and computation.** Manuscript: endpoint-structure §7, after Question 66 (Theorem 67, Proposition 68).
+
+- **Literature.** Nothing covers our case: colour degree exactly k with every colour class 2-regular, path length k, at a prescribed vertex.
+  - Chen–Li: colour degree ≥ k gives a rainbow path of length ≥ k − 1 for 3 ≤ k ≤ 7, and ≥ ⌈2k/3⌉ + 1 for k ≥ 8. The conjecture k − 1 is open.
+  - Andersen's n − 2 conjecture for proper colourings of K_n holds asymptotically (Alon–Pokrovskiy–Sudakov).
+  - Gyárfás–Mhalla: length (2n + 1)/3 in 1-factorisations. Maamoun–Meyniel: no rainbow Hamilton path in some 1-factorisations of K_{2^t}.
+  - Graph systems (Joos–Kim): these need minimum degree n/2 in each graph.
+- **Computation** (`tools/rainbow_variants.py`).
+  - The transversal starting at s exists also for random 2-factorisations with short cycles (m ≤ 8). So Hamiltonicity is not the point.
+  - Warnsdorff greedy without backtracking fails in about 1% of cases from m = 8.
+  - Segment transversals (one contiguous segment per cycle; the flower lemma extends verbatim) were always found by a no-backtracking rule, m ≤ 11. This is a promising route for a proof.
+- **Receipt or flower** (Thm 67). Let b_D(s) = d_H(s), and let b = 1 on T (non-neighbours of s in H). Then either
+  - some t ∈ T ends a path avoiding s, and appending ts works (missing-move Lemma 5.1); or
+  - the T-paths all join T to s, close into cycles, and any transversal L gives |D| + 1 paths with b' = b − |T|·[s] − 1_T + 2·1_{V(L)}. Other paths are untouched (Lean `flower_decomp_rest`).
+  - With a Lovász seed and receipts from all of N(s), no other paths are left exactly when G is Eulerian, n is even and d(s) = n − 2.
+- **B′ resolved by hand** (Prop 68): K6 core U, a full vertex x1 with a leaf ℓ, and adjacent full vertices x3, x4.
+  - Setup: Lovász on B′ − x1 gives 4 paths. Three receipts follow (supplies 1 > 0, 5 > 1, 4 > 2).
+  - Case (1): append tx1, then the leaf edge, then the new path t′x1t″. This gives b = 2 at core vertices.
+  - Case (2): the count 31 = 3·8 + 7 is tight, so the cycles are Hamiltonian on V − ℓ. RT_3 then gives a transversal x1 a1 a2 a3, and the flower plus the leaf edge give 5 paths with b(a1) = 2, a1 ∈ U.
+  - Sym(U) gives (R) at every core vertex; odd vertices hold by parity.
+- **A_{6,2} core roots.** The partition in missing-move Prop 5.2 already has b = 2 at the two core vertices t′, t″. By Sym(Q) this gives (R) at all core roots, which that manuscript lists as uncovered. (To be confirmed by the missing-move session.)
+
 ## R. Lovász–Fan certificates are a game on profiles, and the game is incomplete (2026-11-26, night)
 
 **Grade: Observed (computation, small); conceptual consequence.**

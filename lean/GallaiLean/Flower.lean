@@ -206,6 +206,23 @@ theorem flower_decomp [Fintype V] {G : SimpleGraph V} [DecidableRel G.Adj]
   obtain ⟨D, hsize, hD⟩ := exists_decomp_of_edgesM (G := G) (Qs ++ [L]) (by rw [hE, hG])
   exact ⟨D, by rw [hsize]; simp [hlen], fun v => by rw [hD v, hends v]⟩
 
+/-- **The flower lemma with untouched paths** (the receipt-or-flower move): the cut cycles, the
+transversal `L`, and a list `rest` of further paths together decompose `G` into
+`|ps| + 1 + |rest|` paths, with `2` extra ends on `L`. -/
+theorem flower_decomp_rest [Fintype V] {G : SimpleGraph V} [DecidableRel G.Adj]
+    (ps : List (TPath V × Sym2 V)) (hcut : ∀ x ∈ ps, OnCycle x.1 x.2)
+    (L : TPath V) (hL : (L.edges : Multiset (Sym2 V)) = (ps.map Prod.snd : Multiset (Sym2 V)))
+    (rest : List (TPath V))
+    (hG : edgesM (ps.map Prod.fst) + ((ps.map (fun x => s(x.1.src, x.1.tgt))) : Multiset (Sym2 V)) +
+      edgesM rest = G.edgeFinset.val) :
+    ∃ D : PathDecomp G, D.size = ps.length + 1 + rest.length ∧
+      ∀ v, D.ends v = (if v ∈ L.walk.support then 2 else 0) + endsL rest v := by
+  obtain ⟨Qs, hlen, hE, hends⟩ := flower_list ps hcut L hL
+  obtain ⟨D, hsize, hD⟩ := exists_decomp_of_edgesM (G := G) ((Qs ++ [L]) ++ rest)
+    (by rw [edgesM_append, hE, hG])
+  refine ⟨D, by rw [hsize]; simp [hlen]; omega, fun v => ?_⟩
+  rw [hD v, endsL_append, hends v]
+
 end close
 
 /-! ### Equality forces a flower -/
