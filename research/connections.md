@@ -341,7 +341,7 @@ When w is adjacent to a removed vertex, Fan's **grouped** lemma takes over, with
 - **Prescribed u, Cor 27(i).** The even vertices are independent, and each a ∈ Ev − {u, r} has a private set of odd neighbours. Paths avoiding N(u) still give certificates (Thm 28's argument), so only a u whose neighbourhood blocks all such paths resists.
 - **Four even vertices, triangle plus isolated r.**
 
-Both need an exchange inside a fixed graph, since every Fan move sees a zero-end neighbour. Neither case occurs as a failure through n = 8 (see P.5).
+Both need an exchange inside a fixed graph, since every Fan move sees a zero-end neighbour. Neither case produces a failure through n = 6; the n = 8 check (1357 + 399 instances) is running.
 
 ### P.5 Corrections to §O, and computations
 
