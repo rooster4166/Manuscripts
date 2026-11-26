@@ -220,4 +220,200 @@ theorem desc_of_induce (hs : ∀ a b, H.Adj a b → a ∈ s) {k : ℕ} {y : s} {
 
 end induce
 
+/-! ## Part 2: the statements `DStmt`, `BStmt` and their form on graphs with isolated vertices -/
+
+/-- `D_j`: `j`-step descent at `(y, {w})` for all distinct even `y, w` in every connected graph of
+even order with at least `2j` even vertices (all vertex types in universe `u`). -/
+def DStmt (j : ℕ) : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) [DecidableRel H.Adj],
+    H.Connected → Even (Fintype.card W) → 2 * j ≤ (evenSet H).card →
+    ∀ y w, y ∈ evenSet H → w ∈ evenSet H → y ≠ w → Desc H j y {w}
+
+/-- `B_j`: `D_j` restricted to vertices `y` with at least two even neighbours. -/
+def BStmt (j : ℕ) : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) [DecidableRel H.Adj],
+    H.Connected → Even (Fintype.card W) → 2 * j ≤ (evenSet H).card →
+    ∀ y w, y ∈ evenSet H → w ∈ evenSet H → y ≠ w →
+    (∃ v₁ ∈ evenSet H, ∃ v₂ ∈ evenSet H, v₁ ≠ v₂ ∧ H.Adj y v₁ ∧ H.Adj y v₂) → Desc H j y {w}
+
+section general
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- The non-isolated vertices. -/
+def nonIso (H : SimpleGraph V) [DecidableRel H.Adj] : Finset V :=
+  Finset.univ.filter (fun v => 0 < H.degree v)
+
+/-- `H` is connected on its non-isolated vertices. -/
+def NIConn (H : SimpleGraph V) [DecidableRel H.Adj] : Prop :=
+  ∀ a b, 0 < H.degree a → 0 < H.degree b → H.Reachable a b
+
+omit [Fintype V] [DecidableEq V] in
+theorem walk_support_pos {H : SimpleGraph V} [DecidableRel H.Adj] [Fintype V] {a b : V}
+    (p : H.Walk a b) (ha : 0 < H.degree a) : ∀ x ∈ p.support, 0 < H.degree x := by
+  induction p with
+  | nil => intro x hx; rw [Walk.support_nil, List.mem_singleton] at hx; exact hx ▸ ha
+  | @cons a c b h q ih =>
+    intro x hx
+    rw [Walk.support_cons, List.mem_cons] at hx
+    rcases hx with rfl | hx
+    · exact ha
+    · exact ih (by rw [degree_pos_iff_exists_adj]; exact ⟨a, h.symm⟩) x hx
+
+variable {H : SimpleGraph V} [DecidableRel H.Adj]
+
+theorem induce_nonIso_connected (hconn : NIConn H) {y : V} (hy : 0 < H.degree y) :
+    (H.induce {v | 0 < H.degree v}).Connected := by
+  have : Nonempty {v | 0 < H.degree v} := ⟨⟨y, hy⟩⟩
+  refine ⟨fun a b => ?_⟩
+  obtain ⟨p⟩ := hconn a.1 b.1 a.2 b.2
+  exact ⟨Walk.induce {v | 0 < H.degree v} p (walk_support_pos p a.2)⟩
+
+/-- Conversion: `DStmt j` gives descent on a graph that may have isolated vertices. -/
+theorem desc_of_dstmt {j : ℕ} (hD : DStmt.{u} j) (hconn : NIConn H) (hev : Even (nonIso H).card)
+    (h2j : 2 * j ≤ (evenSet H).card) {y w : V} (hy : y ∈ evenSet H) (hw : w ∈ evenSet H)
+    (hyw : y ≠ w) : Desc H j y {w} := by
+  have hs : ∀ a b, H.Adj a b → a ∈ {v | 0 < H.degree v} := fun a b h => by
+    simp only [Set.mem_ofPred_eq]; rw [degree_pos_iff_exists_adj]; exact ⟨b, h⟩
+  have hy' : y ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hy).1
+  have hw' : w ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hw).1
+  have hcard : Fintype.card {v | 0 < H.degree v} = (nonIso H).card := by
+    rw [Fintype.card_subtype]; rfl
+  have hEv : (evenSet (H.induce {v | 0 < H.degree v})).card = (evenSet H).card := by
+    rw [← evenSet_induce_map hs, Finset.card_map]
+  have h := hD _ (H.induce {v | 0 < H.degree v}) (induce_nonIso_connected hconn hy')
+    (hcard ▸ hev) (hEv ▸ h2j) ⟨y, hy'⟩ ⟨w, hw'⟩ ((mem_evenSet_induce hs _).2 hy)
+    ((mem_evenSet_induce hs _).2 hw) (fun h => hyw (congrArg Subtype.val h))
+  have := desc_of_induce hs h
+  simpa using this
+
+/-- Conversion: `BStmt j` gives descent on a graph that may have isolated vertices. -/
+theorem desc_of_bstmt {j : ℕ} (hB : BStmt.{u} j) (hconn : NIConn H) (hev : Even (nonIso H).card)
+    (h2j : 2 * j ≤ (evenSet H).card) {y w : V} (hy : y ∈ evenSet H) (hw : w ∈ evenSet H)
+    (hyw : y ≠ w)
+    (h2 : ∃ v₁ ∈ evenSet H, ∃ v₂ ∈ evenSet H, v₁ ≠ v₂ ∧ H.Adj y v₁ ∧ H.Adj y v₂) :
+    Desc H j y {w} := by
+  have hs : ∀ a b, H.Adj a b → a ∈ {v | 0 < H.degree v} := fun a b h => by
+    simp only [Set.mem_ofPred_eq]; rw [degree_pos_iff_exists_adj]; exact ⟨b, h⟩
+  have hy' : y ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hy).1
+  have hw' : w ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hw).1
+  have hcard : Fintype.card {v | 0 < H.degree v} = (nonIso H).card := by
+    rw [Fintype.card_subtype]; rfl
+  have hEv : (evenSet (H.induce {v | 0 < H.degree v})).card = (evenSet H).card := by
+    rw [← evenSet_induce_map hs, Finset.card_map]
+  obtain ⟨v₁, hv₁, v₂, hv₂, h12, ha₁, ha₂⟩ := h2
+  have hv₁' : v₁ ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hv₁).1
+  have hv₂' : v₂ ∈ {v | 0 < H.degree v} := (mem_evenSet_iff_even.mp hv₂).1
+  have h := hB _ (H.induce {v | 0 < H.degree v}) (induce_nonIso_connected hconn hy')
+    (hcard ▸ hev) (hEv ▸ h2j) ⟨y, hy'⟩ ⟨w, hw'⟩ ((mem_evenSet_induce hs _).2 hy)
+    ((mem_evenSet_induce hs _).2 hw) (fun h => hyw (congrArg Subtype.val h))
+    ⟨⟨v₁, hv₁'⟩, (mem_evenSet_induce hs _).2 hv₁, ⟨v₂, hv₂'⟩, (mem_evenSet_induce hs _).2 hv₂,
+      fun h => h12 (congrArg Subtype.val h), ha₁, ha₂⟩
+  have := desc_of_induce hs h
+  simpa using this
+
+end general
+
+/-! ## Part 3: union, erasing a path, and the two bridge gluings -/
+
+section glue
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **Union** of decompositions of two edge-disjoint graphs. Every path of either decomposition
+survives (as a path of the union with the same ends, support and edges). -/
+theorem PathDecomp.exists_union {G₁ G₂ K : SimpleGraph V} (D₁ : PathDecomp G₁)
+    (D₂ : PathDecomp G₂) (hdisj : ∀ e, e ∈ G₁.edgeSet → e ∉ G₂.edgeSet)
+    (hK : ∀ e, e ∈ K.edgeSet ↔ e ∈ G₁.edgeSet ∨ e ∈ G₂.edgeSet) :
+    ∃ D : PathDecomp K, D.size = D₁.size + D₂.size ∧ (∀ v, D.ends v = D₁.ends v + D₂.ends v) ∧
+      (∀ P ∈ D₁.paths, ∃ Q ∈ D.paths, Q.src = P.src ∧ Q.tgt = P.tgt ∧
+        Q.walk.support = P.walk.support ∧ Q.edges = P.edges) ∧
+      (∀ P ∈ D₂.paths, ∃ Q ∈ D.paths, Q.src = P.src ∧ Q.tgt = P.tgt ∧
+        Q.walk.support = P.walk.support ∧ Q.edges = P.edges) := by
+  have H₁ : ∀ Q ∈ D₁.paths, ∀ e ∈ Q.edges, e ∈ K.edgeSet := fun Q hQ e he =>
+    (hK e).2 (Or.inl ((D₁.covers e).2 (List.mem_flatMap.mpr ⟨Q, hQ, he⟩)))
+  have H₂ : ∀ Q ∈ D₂.paths, ∀ e ∈ Q.edges, e ∈ K.edgeSet := fun Q hQ e he =>
+    (hK e).2 (Or.inr ((D₂.covers e).2 (List.mem_flatMap.mpr ⟨Q, hQ, he⟩)))
+  let L₁ := D₁.paths.pmap (fun Q hQ => Q.transfer hQ) H₁
+  let L₂ := D₂.paths.pmap (fun Q hQ => Q.transfer hQ) H₂
+  have hflat : (L₁ ++ L₂).flatMap GPath.edges =
+      D₁.paths.flatMap GPath.edges ++ D₂.paths.flatMap GPath.edges := by
+    rw [List.flatMap_append, flatMap_pmap_transfer, flatMap_pmap_transfer]
+  let D : PathDecomp K :=
+    { paths := L₁ ++ L₂
+      nodup_edges := by
+        rw [hflat, List.nodup_append]
+        refine ⟨D₁.nodup_edges, D₂.nodup_edges, ?_⟩
+        intro a ha b hb hab
+        subst hab
+        exact hdisj a ((D₁.covers a).2 ha) ((D₂.covers a).2 hb)
+      covers := by
+        intro e
+        rw [hflat, List.mem_append, hK, D₁.covers, D₂.covers] }
+  refine ⟨D, by simp [D, PathDecomp.size, L₁, L₂], fun v => ?_, ?_, ?_⟩
+  · simp only [PathDecomp.ends, D, List.map_append, List.sum_append, L₁, L₂,
+      sum_endsAt_pmap_transfer]
+  · intro P hP
+    refine ⟨P.transfer (H₁ P hP), List.mem_append_left _ ?_, rfl, rfl,
+      by simp [GPath.transfer], by simp⟩
+    exact List.mem_pmap.mpr ⟨P, hP, rfl⟩
+  · intro P hP
+    refine ⟨P.transfer (H₂ P hP), List.mem_append_right _ ?_, rfl, rfl,
+      by simp [GPath.transfer], by simp⟩
+    exact List.mem_pmap.mpr ⟨P, hP, rfl⟩
+
+/-- **Erasing a path**: the other paths decompose the graph without its edges. -/
+theorem PathDecomp.exists_erase {K K' : SimpleGraph V} (D : PathDecomp K) {P : GPath K}
+    (hP : P ∈ D.paths) (hK' : ∀ e, e ∈ K'.edgeSet ↔ e ∈ K.edgeSet ∧ e ∉ P.edges) :
+    ∃ D' : PathDecomp K', D'.size + 1 = D.size ∧ (∀ v, D'.ends v + P.endsAt v = D.ends v) := by
+  obtain ⟨l₁, l₂, hl⟩ := List.append_of_mem hP
+  have hnd := D.nodup_edges
+  rw [hl, List.flatMap_append, List.flatMap_cons] at hnd
+  have hnd' := List.nodup_append.mp hnd
+  have hnd'' := List.nodup_append.mp hnd'.2.1
+  -- disjointness facts
+  have h1P : ∀ e ∈ l₁.flatMap GPath.edges, e ∉ P.edges := fun e he hPe =>
+    hnd'.2.2 e he e (List.mem_append_left _ hPe) rfl
+  have h2P : ∀ e ∈ l₂.flatMap GPath.edges, e ∉ P.edges := fun e he hPe =>
+    hnd''.2.2 e hPe e he rfl
+  have hmemK : ∀ e, e ∈ K.edgeSet ↔
+      e ∈ l₁.flatMap GPath.edges ∨ e ∈ P.edges ∨ e ∈ l₂.flatMap GPath.edges := by
+    intro e
+    rw [D.covers, hl, List.flatMap_append, List.flatMap_cons, List.mem_append, List.mem_append]
+  have H : ∀ Q ∈ l₁ ++ l₂, ∀ e ∈ Q.edges, e ∈ K'.edgeSet := by
+    intro Q hQ e he
+    rcases List.mem_append.mp hQ with hQ | hQ
+    · have hm : e ∈ l₁.flatMap GPath.edges := List.mem_flatMap.mpr ⟨Q, hQ, he⟩
+      exact (hK' e).2 ⟨(hmemK e).2 (Or.inl hm), h1P e hm⟩
+    · have hm : e ∈ l₂.flatMap GPath.edges := List.mem_flatMap.mpr ⟨Q, hQ, he⟩
+      exact (hK' e).2 ⟨(hmemK e).2 (Or.inr (Or.inr hm)), h2P e hm⟩
+  let L := (l₁ ++ l₂).pmap (fun Q hQ => Q.transfer hQ) H
+  let D' : PathDecomp K' :=
+    { paths := L
+      nodup_edges := by
+        rw [flatMap_pmap_transfer, List.flatMap_append, List.nodup_append]
+        refine ⟨hnd'.1, hnd''.2.1, ?_⟩
+        intro a ha b hb hab
+        exact hnd'.2.2 a ha b (List.mem_append_right _ hb) hab
+      covers := by
+        intro e
+        rw [flatMap_pmap_transfer, hK', hmemK, List.flatMap_append, List.mem_append]
+        constructor
+        · rintro ⟨h | h | h, h'⟩
+          · exact Or.inl h
+          · exact absurd h h'
+          · exact Or.inr h
+        · rintro (h | h)
+          · exact ⟨Or.inl h, h1P e h⟩
+          · exact ⟨Or.inr (Or.inr h), h2P e h⟩ }
+  refine ⟨D', ?_, fun v => ?_⟩
+  · simp only [D', PathDecomp.size, L, List.length_pmap, hl, List.length_append,
+      List.length_cons]
+    omega
+  · simp only [PathDecomp.ends, D', L, sum_endsAt_pmap_transfer, hl, List.map_append,
+      List.map_cons, List.sum_append, List.sum_cons]
+    omega
+
+end glue
+
 end Gallai
