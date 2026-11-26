@@ -22,6 +22,7 @@ bookkeeping (the cost is the number of unassigned paths):
 -/
 
 open SimpleGraph
+open scoped List
 
 namespace Gallai
 
@@ -84,6 +85,11 @@ theorem length_eq_mCost_add (l : List (GPath G × Option W)) :
 /-- Sites are in `S` and are ends of their paths. -/
 def SiteOK (S : Finset W) (l : List (GPath G × Option W)) : Prop :=
   ∀ y ∈ l, ∀ s, y.2 = some s → s ∈ S ∧ (y.1.src = s ∨ y.1.tgt = s)
+
+theorem nodup_of_subperm {α : Type*} {l₁ l₂ : List α} (h : l₁.Subperm l₂) (h2 : l₂.Nodup) :
+    l₁.Nodup := by
+  obtain ⟨l, hp, hs⟩ := h
+  exact hp.nodup_iff.mp (hs.nodup h2)
 
 theorem SiteOK.of_subset {S : Finset W} {l l' : List (GPath G × Option W)} (h : SiteOK S l)
     (h' : ∀ y ∈ l', y ∈ l) : SiteOK S l' := fun y hy => h y (h' y hy)
@@ -150,7 +156,7 @@ def empty (S : Finset W) : PMP G ∅ S where
   paths := []
   nodup := List.nodup_nil
   covers e := by simp
-  site_ok := fun y hy => by simp at hy
+  site_ok := fun _ hy => by simp at hy
   sites_nodup := List.nodup_nil
 
 /-- Union over disjoint edge sets, when no site is used on both sides. -/
@@ -222,7 +228,7 @@ theorem sites_nodup_of_subperm (M : PMP G E S) {A B rest : List (GPath G × Opti
     (mSites B ++ mSites rest).Nodup := by
   have h1 : (mSites (A ++ rest)).Nodup := (mSites_perm hM).nodup_iff.mp M.sites_nodup
   rw [mSites_append] at h1
-  exact (h.append_right _).nodup h1
+  exact nodup_of_subperm ((List.subperm_append_right _).mpr h) h1
 
 /-- The site condition for a replacement adding one new site. -/
 theorem sites_nodup_of_new (M : PMP G E S) {A B rest : List (GPath G × Option W)}
@@ -231,7 +237,7 @@ theorem sites_nodup_of_new (M : PMP G E S) {A B rest : List (GPath G × Option W
   have h1 : (mSites (A ++ rest)).Nodup := (mSites_perm hM).nodup_iff.mp M.sites_nodup
   have hw' : w ∉ mSites (A ++ rest) := fun h => hw ((mSites_perm hM).mem_iff.mpr h)
   rw [mSites_append] at h1 hw'
-  exact ((h.append_right _).nodup (List.nodup_cons.mpr ⟨hw', h1⟩))
+  exact nodup_of_subperm ((List.subperm_append_right _).mpr h) (List.nodup_cons.mpr ⟨hw', h1⟩)
 
 /-- Replace the paths `A` by `B`, whose edges are those of `A` minus the edges `Y`. -/
 def replaceSub (M : PMP G E S) (A B rest : List (GPath G × Option W)) (hM : M.paths.Perm (A ++ rest))
@@ -256,7 +262,7 @@ def replaceSub (M : PMP G E S) (A B rest : List (GPath G × Option W)) (hM : M.p
         _ ~ mEdges A ++ mEdges rest := hB.append_right _
         _ ~ mEdges M.paths := by rw [← mEdges_append]; exact (mEdges_perm hM).symm
     have hnd := h1.nodup_iff.mpr M.nodup
-    rw [Set.mem_diff, M.covers, ← h1.mem_iff, List.mem_append]
+    rw [Set.mem_sdiff, M.covers, ← h1.mem_iff, List.mem_append]
     constructor
     · rintro ⟨h | h, hY⟩
       · exact h

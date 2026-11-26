@@ -134,6 +134,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | Q6: the two-even-vertex Lovász problem (second faithful-descent step), with conceptual proofs and Lean |
 
 **Local agents:**
 
