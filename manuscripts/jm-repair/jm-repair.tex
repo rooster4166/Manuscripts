@@ -327,6 +327,53 @@ $|P_2|=|P_3|=2\ge2$). But the $n-t=2$ matching edges would need four vertices ou
 and $K_7$ has only three. Theorem~\ref{thmA} uses the hypothesis $r\le 2t-1$.
 \end{remark}
 
+\section{Theorem~\ref{thmA} from Theorem~\ref{thmB}}\label{sec:thmA}
+
+\begin{proof}[Proof of Theorem~\ref{thmA}, assuming Theorem~\ref{thmB}]
+Note that $r\le 2t-1\le 2n-1$.
+
+\emph{Case $t=n$.} There is nothing to add. Since $p(P_i)=r-|P_i|\le 2n+1-r$ for every $i$,
+Theorem~\ref{thm:hilton} gives a Hamiltonian decomposition $(C_i)$ with $P_i\subseteq C_i$.
+Each $C_i$ ($i\in[n]$) contains exactly one edge of~$G$.
+
+\emph{Case $t<n$.} For $s=0,1,\dots,n-t$ we construct decompositions $\Q^{(s)}$ of
+$K_{m_s}$ into linear forests, where $m_s=r+2s$. Each $\Q^{(s)}$ extends $\PP$; its vertex set is
+$V(K_r)\cup\{x_0,y_0,\dots,x_{s-1},y_{s-1}\}$ with all these vertices distinct, and
+$x_jy_j\in Q^{(s)}_{t+j+1}$ for $j<s$. Put
+\[
+k_s=2n+1-m_s,\qquad T_s=[t+s],\qquad U_s=[t+s+1,n].
+\]
+We maintain the invariant
+\[
+p_i(\Q^{(s)})\le k_s\ \ (i\in T_s),\qquad p_i(\Q^{(s)})\le k_s-1\ \ (i\in U_s). \tag{I$_s$}
+\]
+For $s=0$ take $\Q^{(0)}=\PP$. Then (I$_0$) is exactly the size hypothesis, because
+$p(P_i)=r-|P_i|$ and $k_0=2n+1-r$. For every $s$,
+\[
+(k_s-2)-2|U_s| \;=\; (2n-1-r-2s)-2(n-t-s) \;=\; 2t-1-r\;\ge\;0 .
+\]
+So while $U_s\neq\emptyset$ we have $2|U_s|\le k_s-2$, and in particular $k_s\ge 4$.
+
+Let $s<n-t$. Apply Theorem~\ref{thmB} to $\Q^{(s)}$ with $T=T_s$, $U=U_s$, $c=t+s+1$, and new
+vertices $x_s,y_s$. This gives $\Q^{(s+1)}$ with $x_sy_s\in Q^{(s+1)}_{t+s+1}$. It satisfies
+$p_i\le k_s-2=k_{s+1}$ for $i\in T_s\cup\{c\}=T_{s+1}$ and $p_i\le k_s-3=k_{s+1}-1$ for
+$i\in U_s\setminus\{c\}=U_{s+1}$. This is (I$_{s+1}$).
+
+At $s=n-t$ we have $m:=m_{n-t}=r+2(n-t)\le 2n-1$ and $p_i(\Q^{(n-t)})\le k_{n-t}$ for every
+$i$, i.e.\ $|Q^{(n-t)}_i|\ge 2m-2n-1$. By Theorem~\ref{thm:hilton}, $\Q^{(n-t)}$ extends to a
+Hamiltonian decomposition $(C_1,\dots,C_n)$ of $K_{2n+1}$. Then $P_i\subseteq C_i$, and the edges
+$e_{t+j+1}:=x_jy_j\in C_{t+j+1}$ ($0\le j<n-t$) are pairwise disjoint and avoid $V(K_r)$.
+Each of $C_1,\dots,C_t$ contains exactly one edge of $G$. Each of $C_{t+1},\dots,C_n$ contains
+exactly one of the edges $e_i$, and no edge of $G$, because $G\subseteq P_1\cup\dots\cup P_t$.
+\end{proof}
+
+\begin{remark}
+The colour order $c=t+s+1$ is the one used in \JM; Theorem~\ref{thmB} allows any $c\in U_s$.
+Every step of the construction is effective. Theorem~\ref{thmB} is proved by a max-flow
+computation and a 2-edge-colouring (Section~\ref{sec:reduction}). Hilton's theorem is
+constructive as well.
+\end{remark}
+
 %%BODY%%
 
 \begin{thebibliography}{99}
