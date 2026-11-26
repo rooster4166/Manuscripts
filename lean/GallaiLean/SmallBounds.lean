@@ -87,14 +87,14 @@ theorem lovasz_on [Fintype V] (hL : LovaszStatement.{u}) [DecidableRel G.Adj]
   rw [this] at hp
   omega
 
-/-- **Lovász, tight form**: if `|U|` is odd and exactly one vertex of `U` is even, some
-decomposition has `(|U| − 1)/2` paths, one end at every odd vertex and none elsewhere. -/
+/-- **Lovász, tight form**: if at most one vertex of `U` is even, some decomposition has
+`(|U| − #even)/2` paths, one end at every odd vertex and none elsewhere. -/
 theorem lovasz_tight [Fintype V] (hL : LovaszStatement.{u}) [DecidableRel G.Adj]
-    (hU : ∀ a b, G.Adj a b → a ∈ U) (hodd : Odd U.card)
-    (heven : (U.filter (fun v => Even (G.degree v))).card = 1) :
-    ∃ D : PathDecomp G, 2 * D.size + 1 = U.card ∧
+    (hU : ∀ a b, G.Adj a b → a ∈ U)
+    (heven : (U.filter (fun v => Even (G.degree v))).card ≤ 1) :
+    ∃ D : PathDecomp G, 2 * D.size + (U.filter (fun v => Even (G.degree v))).card = U.card ∧
       ∀ v, D.ends v = if Odd (G.degree v) then 1 else 0 := by
-  obtain ⟨D, hD⟩ := lovasz_on hL hU heven.le
+  obtain ⟨D, hD⟩ := lovasz_on hL hU heven
   have hodd_eq : Finset.univ.filter (fun v => Odd (G.degree v)) =
       U.filter (fun v => Odd (G.degree v)) := by
     ext v
@@ -109,8 +109,10 @@ theorem lovasz_tight [Fintype V] (hL : LovaszStatement.{u}) [DecidableRel G.Adj]
   have hsplit := Finset.card_filter_add_card_filter_not (s := U) (fun v => Even (G.degree v))
   have hneg : U.filter (fun v => ¬ Even (G.degree v)) = U.filter (fun v => Odd (G.degree v)) := by
     ext v; simp [Nat.not_even_iff_odd]
-  rw [hneg, heven] at hsplit
-  obtain ⟨k, hk⟩ := hodd
+  rw [hneg] at hsplit
+  have hhand := G.even_card_odd_degree_vertices
+  rw [hodd_eq] at hhand
+  obtain ⟨k, hk⟩ := hhand
   have htight : 2 * D.size ≤ (Finset.univ.filter (fun v => Odd (G.degree v))).card := by
     rw [hodd_eq]; omega
   have hends := D.ends_eq_of_tight htight
@@ -120,6 +122,23 @@ theorem lovasz_tight [Fintype V] (hL : LovaszStatement.{u}) [DecidableRel G.Adj]
     rw [Finset.card_filter]; exact Finset.sum_congr rfl (fun v _ => hends v)
   rw [hodd_eq] at this
   omega
+
+omit [DecidableEq V] in
+/-- Every vertex of a path of `G` is in `U` when all edges of `G` are inside `U`. -/
+theorem GPath.support_subset (hU : ∀ a b, G.Adj a b → a ∈ U) (P : GPath G) :
+    ∀ w ∈ P.walk.support, w ∈ U := by
+  obtain ⟨c, hc, q, hq⟩ := Walk.exists_eq_cons_of_length_pos P.walk P.pos
+  have key : ∀ {a b : V} (p : G.Walk a b), a ∈ U → ∀ w ∈ p.support, w ∈ U := by
+    intro a b p
+    induction p with
+    | nil => intro ha w hw; simp at hw; subst hw; exact ha
+    | cons h p ih =>
+      intro ha w hw
+      rw [Walk.support_cons, List.mem_cons] at hw
+      rcases hw with rfl | hw
+      · exact ha
+      · exact ih (hU _ _ h.symm) w hw
+  exact key P.walk (hU _ _ hc)
 
 /-- **A single mark is a private leaf**: some decomposition has leaf cost at most `q(F, {a}) + 1`. -/
 theorem exists_leafCost_le_markedNumber {W : Type u} [Finite W] [DecidableEq W]

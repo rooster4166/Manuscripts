@@ -26,3 +26,4 @@ import GallaiLean.PathSurgery
 import GallaiLean.SmallBounds
 import GallaiLean.SixCliqueModel
 import GallaiLean.SixCliqueBuild
+import GallaiLean.SeparatorSetup
