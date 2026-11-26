@@ -98,10 +98,26 @@ def prove(P, Cs):
     for F, X, Y, tag in ((S, A, B, 'opt1'), (S, B, A, 'opt2')):
         r = two_end(F, X, Y)
         if r: return tag, r
-    # failure cases (F1)/(F2)/(F3): hold back A or B
-    for F, X, Y, tag in ((A, S, B, 'F-A1'), (A, B, S, 'F-A2'), (B, S, A, 'F-B1'), (B, A, S, 'F-B2')):
-        r = two_end(F, X, Y)
-        if r: return tag, r
+    # failure cases: the proof asserts that one of (F1), (F2), (F3) holds
+    al = set(nb(A, p1)) - set(P); be = set(nb(B, p1)) - set(P)
+    al4 = set(nb(A, p4)) - set(P); be4 = set(nb(B, p4)) - set(P)
+    cross = lambda C: set(nb(C, p1)) == {P[2], P[3]} and set(nb(C, p4)) == {P[0], P[1]}
+    if cross(A) or cross(B):
+        Fc = A if cross(A) else B; Oc = B if Fc is A else A
+        # (F1)/(F2): hold back the cross cycle, open the other one and S at the two ends
+        for X, Y, tag in ((Oc, S, 'F1-a'), (S, Oc, 'F1-b')):
+            r = two_end(Fc, X, Y)
+            if r: return tag, r
+        raise AssertionError(("F1 unresolved", P, Cs))
+    assert len(al) == len(be) == len(al4) == len(be4) == 1 and al == be4 and be == al4, ("not F3", P, Cs)
+    # (F3): F = the cycle containing p1p4, X = S at p1, Y = the other cycle at p4
+    Fc = A if P[3] in nb(A, p1) else B; Oc = B if Fc is A else A
+    v = (set(nb(Oc, p4)) - set(P)).pop()
+    for t in nb(S, p1):
+        assert t not in P and t != v
+        R = [t] + P + [v]
+        assert not set(Fc) <= set(R)
+        return 'F3', finish([opened(S, p1, t), opened(Oc, p4, v)], pe(R) + cedges(Fc), 2)
     raise AssertionError(("unhandled", P, Cs))
 
 if __name__ == '__main__':
