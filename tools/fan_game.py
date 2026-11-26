@@ -31,10 +31,12 @@ half-set S' of Ev(K) containing r'; the profile is 1 on odd vertices, 2 on S' an
 We must win against every choice of S'. If every connected even-order graph has a winning
 inductive play, Gallai follows by induction on the number of edges.
 
-Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR]
+Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs]
   e.g. python3 tools/fan_game.py data/conn8.g6 4 np      (Fan + multi-edge new paths)
        python3 tools/fan_game.py FILE 4 rot2              (Fan + at most two rotations)
-Without "np" and "rotR" the game is the original one of experiments E13.
+       python3 tools/fan_game.py FILE 2 np hubs           (F = a full star plus <= 2 edges)
+Without "np", "rotR" and "altR" the game is the original one of experiments E13. With "hubs",
+kmax counts the edges held besides one full star.
 """
 import sys
 from functools import lru_cache
@@ -43,7 +45,7 @@ from itertools import combinations
 import networkx as nx
 
 
-def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0):
+def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -242,12 +244,24 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
             out.append((rp, profs))
         return out
 
+    def hub_sets(k):
+        """Held sets of the form star(h) + k further edges (option "hubs"; for n >= 10)."""
+        seen = set()
+        for h in range(n):
+            star = [e for e in E if h in e]
+            rest = [e for e in E if h not in e]
+            for X in combinations(rest, k):
+                F = tuple(sorted(star + list(X)))
+                if F not in seen:
+                    seen.add(F)
+                    yield F
+
     roots = range(n) if roots is None else roots
     result = {}
     for r in roots:
         found = None
         for k in range(0, kmax + 1):
-            for F in combinations(E, k):
+            for F in (hub_sets(k) if hubs else combinations(E, k)):
                 for b0 in starts(F):
                     if win(frozenset(F), b0, r, rot, alt):
                         found = (F, b0)
@@ -269,10 +283,12 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
 
 
 def parse_opts(args):
-    kmax, inductive, newpath, rot, alt = 4, False, False, 0, 0
+    kmax, inductive, newpath, rot, alt, hubs = 4, False, False, 0, 0, False
     for a in args:
         if a == "ind":
             inductive = True
+        elif a == "hubs":
+            hubs = True
         elif a == "np":
             newpath = True
         elif a.startswith("rot"):
@@ -281,18 +297,19 @@ def parse_opts(args):
             alt = int(a[3:] or 1)
         else:
             kmax = int(a)
-    return kmax, inductive, newpath, rot, alt
+    return kmax, inductive, newpath, rot, alt, hubs
 
 
 def main():
     path = sys.argv[1]
-    kmax, inductive, newpath, rot, alt = parse_opts(sys.argv[2:])
+    kmax, inductive, newpath, rot, alt, hubs = parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
-        res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt)
+        res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt,
+                          hubs=hubs)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
@@ -300,7 +317,7 @@ def main():
             print("LOSE", nx.to_graph6_bytes(G, header=False).strip().decode(), sorted(G.edges()),
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
     opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
-        (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "")
+        (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "") + (", hubs" if hubs else "")
     print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 
