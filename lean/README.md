@@ -384,6 +384,54 @@ Here `residue_sep` does that job instead.
 has `degree < k`, then `k + 1 ≤ pathNumber G`. The hypothesis `k ≥ 1` is automatic, so it is
 dropped. Helpers: `PathDecomp.sum_length_eq_card` and `GPath.one_le_incid`.
 
+## `GallaiLean/BP3.lean`: BP₃ and realisable pairs, a second argument
+
+This is an alternative to `rooted_four` in `EMCFour.lean`, under distinct names. It needs no
+even-order hypothesis and calls Lovász only through `lovasz_ends`.
+
+* **`two_even`**: if `deg u` is even and at most one other vertex has positive even degree,
+  then some `D` has `D.ends w = deg w % 2` for all `w ≠ u` and `D.ends u ∈ {0, 2}`. The proof
+  attaches a leaf at `u`, applies Lovász, and deletes the leaf.
+* **`four_even_pair`**: suppose `evenSet G = {r} ∪ T` with `|T| = 3`, and some path joins `r`
+  to `T`. Then `{r, w}` is realisable for some `w ∈ T`. The proof has three cases: `r` adjacent
+  to part of `T`, to all of `T`, or to none (recurse along a shortest path).
+* **`realisable_pair_of_four`**: if `G` is connected and `|Ev| = 4`, every even `r` lies in a
+  realisable pair. There is no parity hypothesis on `|V|`.
+* **`bp3`**, **`bp3_pathNumber`**: if `W` is connected, has a leaf, and has exactly three even
+  vertices, then `W` realises some `S` with `|S| ≤ 1`, so `pathNumber W ≤ ⌊|W|/2⌋`.
+* Helpers: `delEdge_degree_of_ne/left/right`, `realises_of`, `ends_of_realises`,
+  `PathDecomp.exists_end_of_pos`.
+
+## `GallaiLean/EMCFourFree.lean`: the four-even results with no hypothesis
+
+`EMCFour.lean`'s results take `(hL : LovaszStatement)`. That hypothesis is now discharged by
+`lovaszStatement`, giving `two_step_descent'`, `emc_four'`, `exists_pair_subset'`,
+`minimal_realisable_iff'`, `pair_exchange'`, `endpoint_matroid_four'` and `rooted_four'`. Their
+statements are otherwise identical to the originals.
+
+## `GallaiLean/Pyber.lean`: Pyber's theorem (1996)
+
+* **`pyber`**: if every cycle of `G` passes through a vertex of odd degree (equivalently, the
+  even-degree vertices induce a forest), then `pathNumber G ≤ card V / 2`. No connectivity is
+  needed. **`pyber_of_indep`** is the special case where the even vertices are independent.
+* **`pyber_claim`** (realisable form): under the same hypothesis (`OddOnCycles G`), some
+  `S ⊆ Ev` with `|S| ≤ ⌊|Ev|/2⌋` is realisable.
+* The proof is a strong induction on `4|Ev| + ∑ deg`, using only `lovasz_ends`,
+  `fan_single` and `fan_grouped`. The file header gives the paper proof.
+  - Leaf case (`pyber_case_leaf`): `G[Ev]` has an edge. Then some even vertex has exactly
+    one even neighbour (`exists_even_leaf`, by a longest-path argument). Delete that edge,
+    apply induction, and restore the edge by Fan.
+  - Independent case (`pyber_case_indep`): take an odd `o` next to `Ev`. Cut all edges from `o`
+    to `Y = N(o) ∩ Ev` (`cut G o Y`), apply induction, and put the edges back. First come
+    `(|Y| + 1 − b(o))/2` grouped transfers into `o` (`cut_phase1`), then single transfers out of
+    `o` (`cut_phase2`).
+* Helpers: `cut`, `cut_adj`, `cut_empty`, `cut_edgeSet_erase`, `cut_degree`, `cut_sum_degree`,
+  `oddOnCycles_of_indep`, `oddOnCycles_delEdge`, `PathDecomp.ends_cast`.
+
+`#print axioms` on `pyber`, `pyber_claim`, `bp3_pathNumber`, `realisable_pair_of_four`,
+`rooted_four'`, `endpoint_matroid_four'` and `two_step_descent'` shows only `propext`,
+`Classical.choice` and `Quot.sound`.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
@@ -396,3 +444,10 @@ Sections 3–4 of the manuscript are not formalized (the first half of Corollary
 lemmas are proved in full, with no special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula (it
 is stated with `sInf` over a set of naturals), and versions of the results for infinite vertex
 types (`pathNumber` is `sInf ∅ = 0` there, so the statements assume `Finite`/`Fintype`).
+
+**Fan (2005)** is not formalized: each block of the even subgraph triangle-free with `Δ ≤ 3` ⇒
+`p ≤ ⌊n/2⌋`. Mathlib has no block decomposition, and the primary text was not available. The
+`Pyber.lean` method does not extend directly. When `G[Ev]` has a cycle, cut the two cycle edges
+at a vertex `o`. If induction returns `b(o) = 0`, the second restored edge can fail Fan's
+zero-end test at the cycle neighbour. So Fan's proof needs a stronger inductive invariant than
+"some realisable `S` with `|S| ≤ ⌊e/2⌋`".

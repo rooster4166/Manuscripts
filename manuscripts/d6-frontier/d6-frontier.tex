@@ -38,8 +38,8 @@ from a Lov\'asz seed, so that each is directly expressible with the formally ver
 vertices, the last Fan step of any such certificate can only end at one of three ``hub'' profiles.
 It can never end at the standard profile with three doubled core vertices. This is the precise
 form of the obstruction behind the ``off-by-one'' failures of single-edge returns.
-(2) \emph{Root-hub closures}: if $r$ has an odd neighbour $y$ with at most two neighbours in
-$U-r$, then $r$ passes. Similar small-contact witnesses (a triangle at $r$, a pair of resources,
+(2) \emph{Root-hub closures}: if $r$ is adjacent to all other even vertices and has an odd
+neighbour $y$ with at most two neighbours in $U-r$, then $r$ passes. Similar small-contact witnesses (a triangle at $r$, a pair of resources,
 or a relay path to a vertex with no core neighbour) close the root positions of every residual
 core shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$.
 (3) A \emph{full-hub closure}: a full vertex carrying two ``quiet batteries'' (triangles through
@@ -150,11 +150,13 @@ edges present and $b(r)\ge2$ shows that $r$ passes.
 Let $D$ be a partition of $H$ and let $v_0v_1\cdots v_m$ $(m\ge1)$ be a path whose edges are not
 in $H$. Put $H_i=H+v_0v_1+\cdots+v_{i-1}v_i$.
 \begin{enumerate}[label=(\alph*)]
-\item \emph{Forward relay.} Suppose $b(v_i)=1$ for $1\le i<m$, that $b(v_0)>\bl_{H}(v_1)$, and
-that $\bl_{H_{i-1}}(v_i)\le1$ for $2\le i\le m$. Then $H_m$ has a partition with the same number of
-paths, $b(v_0)$ decreased by one, $b(v_m)$ increased by one, and all other counts unchanged.
-\item \emph{Carry.} Suppose $b(v_i)=1$ for $1\le i\le m$, that $\bl_H(v_0)=0$, and that, for
-$1\le i<m$, $v_i$ has no blank neighbour other than itself in $H_{i}$ at the moment it receives.
+\item \emph{Forward relay.} Suppose $b(v_i)=1$ for $1\le i<m$ and $b(v_0)>\bl_{H}(v_1)$.
+Suppose also that, for $2\le i\le m$, the vertex $v_i$ has at most one blank neighbour in
+$H_{i-1}$, counted for the partition current at that moment. Then $H_m$ has a partition with the
+same number of paths, $b(v_0)$ decreased by one, $b(v_m)$ increased by one, and all other counts
+unchanged.
+\item \emph{Carry.} Let $B_0$ be the set of blank vertices of $D$. Suppose $b(v_i)=1$ for
+$1\le i\le m$ and that none of $v_0,\dots,v_{m-1}$ is adjacent in $H_m$ to a vertex of $B_0$.
 Then the transfers $v_1\tr v_0,\ v_2\tr v_1,\dots,v_m\tr v_{m-1}$ succeed. Afterwards $b(v_0)$ is
 increased by one, $b(v_m)=0$, and all other counts are unchanged.
 \end{enumerate}
@@ -163,8 +165,9 @@ increased by one, $b(v_m)=0$, and all other counts are unchanged.
 (a) Apply single transfers $v_0\tr v_1,\ v_1\tr v_2,\dots$ in turn. The first needs
 $b(v_0)>\bl_H(v_1)$. After $v_{i-2}\tr v_{i-1}$ the vertex $v_{i-1}$ has two ends, so
 $v_{i-1}\tr v_i$ needs $\bl_{H_{i-1}}(v_i)\le 1$. It then leaves $v_{i-1}$ with one end again.
-(b) After $v_i\tr v_{i-1}$ the vertex $v_i$ has no end. The next transfer $v_{i+1}\tr v_i$ has
-supply $1$ and needs $\bl(v_i)=0$.
+(b) The first transfer $v_1\tr v_0$ has supply $1$, and $v_0$ has no blank neighbour. After
+$v_i\tr v_{i-1}$ the vertex $v_i$ has no end, and the blank vertices are $B_0\cup\{v_i\}$. The
+next transfer $v_{i+1}\tr v_i$ has supply $1$, and $v_i$ is adjacent to no vertex of $B_0$.
 \end{proof}
 
 A carry followed later by a single transfer $v_0\tr v_m$ along a further edge $v_0v_m$ is a
@@ -365,8 +368,8 @@ $N(a)\cap N_T(r)\subseteq\{z_1\}$. The final counts are $b(r)=b(q_1)=b(s)=2$ and
 Part (i) overlaps six-even-incidence Thm.~1(1) when $|S(y)|\le2$, where $S(y)=N(y)\cap U$. That
 theorem allows any odd vertex with one or two core neighbours, but its proof rests on the
 unreplayed trees of Lemma~2. Part (i) is new for $|S(y)|=3$, i.e.\ $S(y)=\{r,p,p'\}$, for every
-exterior degree. The four-exterior-neighbors analysis left the type $(|S|,e)=(3,4)$ open for two
-masks and $(3,\ge6)$ open in general. Parts (ii) and (iii) are, as far as we can tell, the first
+exterior degree. The four-exterior-neighbors analysis left the type $(|S|,e)=(3,4)$ open for four of
+64 masks and $(3,\ge6)$ open in general. Parts (ii) and (iii) are, as far as we can tell, the first
 closures specific to $D=K_2$ with $r$ on the edge and to the $P_3$, $K_3$ and $C_4$ root positions.
 \end{remark}
 
@@ -481,8 +484,7 @@ $Z$, and $b=1$ on all odd vertices.
 
 Pendant and battery. Hold $\{xu\}$, $xy$ and the battery. Now $x$ (degree $d(x)-9\ge2$) and $y$ are
 the even vertices of $B_0$. Lemma~\ref{lem:seeds}(b) doubles $x$ and leaves $y$ blank. Carry on the
-battery $(1,0)$, $(1,0)$, using $yb_1\notin E$. Then $x$ has $4$ ends. Do three receipts and
-reach $6$. The donations and the paybacks to $y$ and $a_1$ have the same bounds as above, because
+battery $(1,0)$, $(1,0)$, using $yb_1\notin E$. Then $b(x)=3$, and three receipts bring it to $6$. The donations and the paybacks to $y$ and $a_1$ have the same bounds as above, because
 $y$ and $a_1$ have no core neighbour.
 \end{proof}
 
@@ -591,10 +593,12 @@ defeat the payback. Full control of $Z$ would close $|N(y)\cap T|=3$.
 \item \emph{No resources.} If every odd vertex within distance two of $r$ is core-heavy, the
 counting in Remark~\ref{rem:capacity} leaves the root hub one unit short. The full hub is two
 units short without quiet structure. The false-twin example is of this kind.
-\item \emph{Inequality versus chain.} Fan's inequality is only sufficient. At equality the
-transfer fails only if every donor-ending path reaches the receiver through a distinct blank
-predecessor. In the stuck state of the root hub ($b(r)=3$, receiver $s_2$, three blanks) this
-means all three $r$-ending paths enter $s_2$ from distinct vertices of $Z$. A structural use of
+\item \emph{Inequality versus chain.} Fan's inequality is only sufficient. At equality Fan's
+injection (from end occurrences at the reachable set into edges at the receiver) is a bijection,
+and every blank neighbour of the receiver is reached. In the stuck state of the root hub
+($b(r)=3$, receiver $s_2$, three blanks) this means the predecessor chains from the three
+$r$-ending paths reach all of $Z$ through $s_2$, and every non-blank vertex they reach has exactly
+one end. A structural use of
 this rigidity, a genuine ``two-end transfer'', is the most promising missing ingredient.
 \end{enumerate}
 
@@ -618,15 +622,15 @@ statements: \texttt{realisable\_evenSet\_erase} (or \texttt{LovaszStatement} wit
 \begin{itemize}
 \item \emph{Statements.} \texttt{G : SimpleGraph V}, \texttt{[Fintype V] [DecidableEq V]
 [DecidableRel G.Adj]}, \texttt{evenSet G = U}, \texttt{U.card = 6}, and adjacency hypotheses as
-\texttt{G.Adj}/\texttt{¬ G.Adj} facts and \texttt{Finset} cardinality bounds on
-\texttt{(G.neighborFinset y ∩ T)}. Conclusion:
-\texttt{∃ D : PathDecomp G, D.size ≤ Fintype.card V / 2 ∧ 2 ≤ D.ends r}, under
+\texttt{G.Adj}/\texttt{\textasciitilde{} G.Adj} facts and \texttt{Finset} cardinality bounds on
+\texttt{(G.neighborFinset y $\cap$ T)}. Conclusion:
+\texttt{$\exists$ D : PathDecomp G, D.size $\le$ Fintype.card V / 2 $\wedge$ 2 $\le$ D.ends r}, under
 \texttt{LovaszStatement}.
-\item \emph{Seed.} \texttt{G₀ := G.deleteEdges H}. Prove \texttt{evenSet G₀ = \{r, y\}} from
+\item \emph{Seed.} \texttt{G0 := G.deleteEdges H}. Prove \texttt{evenSet G0 = \{r, y\}} from
 degree bookkeeping, then apply \texttt{realisable\_evenSet\_erase}. \texttt{Realises.size\_eq}
 gives the size $k$.
 \item \emph{Steps.} Each row is one call. The hypothesis
-\texttt{\#\{w ∈ N(u) : ends w = 0\} < supply} follows from an explicit description of the blank set
+\texttt{\#\{w $\in$ N(u) : ends w = 0\} < supply} follows from an explicit description of the blank set
 (for example $Z\cup\{y\}$) and an inclusion of finsets. Grouped rows existentially introduce the
 donor, as in \texttt{fan\_grouped}'s conclusion. The proof then continues uniformly in the donor,
 with no case split on its identity, only on membership facts such as $p\in Z$. A reusable
