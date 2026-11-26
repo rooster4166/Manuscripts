@@ -32,6 +32,8 @@ Let G have even order n. A play consists of the following steps.
      * [option "rf"] receipt or flower (endpoint-structure Thm 67) with a sound edge count that
        refutes or certifies the flower case (missing-move Lemma 5.9; see the comment in win()).
      * [option "orbit"] the win condition accepts an end anywhere in the automorphism orbit of r.
+     * [option "simple"] the win condition is a simple profile realising a set that contains r
+       (the target Desc of BranchBase3), instead of b(r) >= 1.
   3. The play wins for the root r if, once F is used up, sum b <= n and b(r) >= 1.
 Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, the rotation
 lemma or Fan's alternative, applied to a realising partition, so a winning play gives a partition
@@ -45,12 +47,13 @@ We must win against every choice of S'. If every connected even-order graph has 
 inductive play, Gallai follows by induction on the number of edges.
 
 Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs] [flower] [rf]
-       [orbit]
+       [orbit] [simple] [hubroot]
   e.g. python3 tools/fan_game.py data/conn8.g6 4 np      (Fan + multi-edge new paths)
        python3 tools/fan_game.py FILE 4 rot2              (Fan + at most two rotations)
        python3 tools/fan_game.py FILE 2 np hubs           (F = a full star plus <= 2 edges)
 Without "np", "rotR" and "altR" the game is the original one of experiments E13. With "hubs",
-kmax counts the edges held besides one full star.
+kmax counts the edges held besides one full star; with "hubroot" that star is the star of the
+root (this implies "hubs").
 """
 import sys
 from functools import lru_cache
@@ -62,7 +65,7 @@ CACHE_CAP = 3_000_000  # states kept in the memo table before it is flushed
 
 
 def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False,
-                kmin=0, flower=False, rf=False, orbit=False):
+                kmin=0, flower=False, rf=False, orbit=False, simple=False, hubroot=False):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -73,6 +76,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
         nbr[b] |= 1 << a
     # option "orbit": (R) is invariant under automorphisms, so an end anywhere in the orbit of the
     # root suffices
+    dg = [bin(nbr[v]).count("1") for v in range(n)]
     orb = {v: (v,) for v in range(n)}
     if orbit:
         from networkx.algorithms.isomorphism import GraphMatcher
@@ -92,6 +96,14 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
         s = sum(b)
         if not rem:
             # b(r) >= 1, or room to split a path at r (r has positive degree)
+            if simple:
+                # option "simple": the target of BranchBase3 / Desc, a realisable set containing r:
+                # b = 1 on odd vertices, b in {0, 2} on even ones, b(r) = 2. A blank vertex of
+                # positive degree is interior to a path, so if sum b <= n - 2 and b(r) = 0 we may
+                # split there (b(r) becomes 2).
+                if s > n or any((b[v] != 1) if dg[v] % 2 else (b[v] not in (0, 2)) for v in range(n)):
+                    return False
+                return any(b[v] == 2 or (b[v] == 0 and s <= n - 2) for v in orb[r])
             return (s <= n and any(b[v] >= 1 for v in orb[r])) or s <= n - 2
         # adjacency of the current graph H = G - rem
         remmask = [0] * n
@@ -397,10 +409,11 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
             out.append((rp, profs))
         return out
 
-    def hub_sets(k):
-        """Held sets of the form star(h) + k further edges (option "hubs"; for n >= 10)."""
+    def hub_sets(k, centres):
+        """Held sets of the form star(h) + k further edges (option "hubs"; for n >= 10).
+        With option "hubroot" the centre h is the root itself."""
         seen = set()
-        for h in range(n):
+        for h in centres:
             star = [e for e in E if h in e]
             rest = [e for e in E if h not in e]
             for X in combinations(rest, k):
@@ -414,7 +427,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
     for r in roots:
         found = None
         for k in range(kmin, kmax + 1):
-            for F in (hub_sets(k) if hubs else combinations(E, k)):
+            for F in (hub_sets(k, [r] if hubroot else range(n)) if hubs else combinations(E, k)):
                 for b0 in starts(F):
                     if win(frozenset(F), b0, r, rot, alt):
                         found = (F, b0)
@@ -439,7 +452,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
 
 def parse_opts(args):
     kmax, inductive, newpath, rot, alt, hubs, flower = 4, False, False, 0, 0, False, False
-    rf = orbit = False
+    rf = orbit = simple = hubroot = False
     for a in args:
         if a == "ind":
             inductive = True
@@ -449,8 +462,12 @@ def parse_opts(args):
             rf = True
         elif a == "orbit":
             orbit = True
+        elif a == "simple":
+            simple = True
         elif a == "hubs":
             hubs = True
+        elif a == "hubroot":
+            hubs = hubroot = True
         elif a == "np":
             newpath = True
         elif a.startswith("rot"):
@@ -459,19 +476,21 @@ def parse_opts(args):
             alt = int(a[3:] or 1)
         else:
             kmax = int(a)
-    return kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit
+    return kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit, simple, hubroot
 
 
 def main():
     path = sys.argv[1]
-    kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit = parse_opts(sys.argv[2:])
+    kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit, simple, hubroot = \
+        parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
         res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt,
-                          hubs=hubs, flower=flower, rf=rf, orbit=orbit)
+                          hubs=hubs, flower=flower, rf=rf, orbit=orbit, simple=simple,
+                          hubroot=hubroot)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
@@ -480,7 +499,8 @@ def main():
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
     opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
         (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "") + (", hubs" if hubs else "") + \
-        (", flower" if flower else "") + (", rf" if rf else "") + (", orbit" if orbit else "")
+        (", flower" if flower else "") + (", rf" if rf else "") + (", orbit" if orbit else "") + \
+        (", simple" if simple else "") + (", hubroot" if hubroot else "")
     print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 

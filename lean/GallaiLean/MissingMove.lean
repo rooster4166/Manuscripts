@@ -29,6 +29,15 @@ step of Lovász's own induction, and it is the move that the n = 8 losers of the
   `p = n/2`), which the original game loses at the root `3`, satisfies the rooted test there.
   The hypotheses of `hub_four_odd_rooted` are checked by `decide`.
 
+* **Arbitrary degree.** `Ach.hub_receipts`: if `s` meets no edge of a set `T` of receivers with
+  one or two ends each, `r ≤ |T|`, and `blank(s) + 2r ≤ ∑_T b + 1`, then `r` of the edges `ts`
+  are received at `s` by grouped transfers, each moving one end from its `t` to `s`.
+  **`Ach.hub_general`** (general hub lemma): an isolated `s` with `d ≥ 2` such neighbours and
+  `∑_N b ≥ 2d - 5` is re-inserted at the cost of one path (`d - 2` receipts and the new path
+  `y s y'`). **`Ach.two_hub`** (two hubs): two isolated hubs `s₁, s₂` with private neighbour
+  sets `N₁, N₂` (supply `∑_{N_i} b ≥ 2|N_i| - 3`) and a common neighbour `m` are re-inserted at
+  the cost of one path in all: `|N_i| - 1` receipts at each hub, and the path `y₁ s₁ m s₂ y₂`.
+
 * **`fan_alternative`** (Fan's alternative, manuscript Lemma 4.2): either some `t ∈ T` gives an
   end to `u` (Fan's conclusion), or at least `∑_T ends` blank neighbours `z` of `u` can each be
   activated: `K + tu - zu` has a decomposition of the same size with an end moved from `t` to `z`.
@@ -717,6 +726,330 @@ theorem hub_four_odd_rooted (hn : Even (Fintype.card V)) {s x z : V} (hdeg : G.d
 
 
 end rootedTail
+
+/-! ### Hubs of arbitrary degree -/
+
+section general
+
+variable [Fintype V]
+
+omit [Fintype V] in
+/-- Inserting `ts` and moving an end from `t` to `s` creates at most one new blank neighbour of
+`s`, namely `t`, and only when `t` had exactly one end. -/
+theorem blankNbrs_insert_le [Finite V] {E : Set (Sym2 V)} {b : V → ℕ} {s t : V} (hts : t ≠ s)
+    (hbt : 1 ≤ b t) :
+    blankNbrs (insert s(t, s) E) (mv b t s) s ≤
+      blankNbrs E b s + (if b t = 1 then 1 else 0) := by
+  unfold blankNbrs
+  have hsub : {w | s(s, w) ∈ insert s(t, s) E ∧ w ≠ s ∧ mv b t s w = 0} ⊆
+      {w | s(s, w) ∈ E ∧ w ≠ s ∧ b w = 0} ∪ (if b t = 1 then {t} else ∅) := by
+    rintro w ⟨hw, hws, hb0⟩
+    by_cases hwt : w = t
+    · subst hwt
+      rw [mv_apply_donor _ hts] at hb0
+      have h1 : b w = 1 := by omega
+      right; simp [h1]
+    · left
+      rw [mv_apply_other _ hwt hws] at hb0
+      refine ⟨?_, hws, hb0⟩
+      rcases Set.mem_insert_iff.mp hw with h | h
+      · rw [Sym2.eq_iff] at h
+        rcases h with ⟨h1, -⟩ | ⟨-, h1⟩
+        · exact absurd h1.symm hts
+        · exact absurd h1 hwt
+      · exact h
+  calc _ ≤ ({w | s(s, w) ∈ E ∧ w ≠ s ∧ b w = 0} ∪ (if b t = 1 then {t} else ∅)).ncard :=
+        Set.ncard_le_ncard hsub (Set.toFinite _)
+    _ ≤ _ := by
+        refine (Set.ncard_union_le _ _).trans ?_
+        split_ifs <;> simp
+
+/-- **Receipts at a hub.** Let `T` be a set of non-neighbours of `s` with one or two ends each,
+and suppose `∑_T b ≥ blank(s) + 2r - 1`. Then `r` grouped transfers towards `s` succeed: for some
+`R ⊆ T` with `|R| = r`, the graph with the edges `sR` added has a decomposition with the same
+number of paths, `r` more ends at `s` and one fewer at each vertex of `R`. Each receipt lowers
+`∑_T b - blank(s)` by at most two (`blankNbrs_insert_le`). -/
+theorem Ach.hub_receipts {s : V} : ∀ (r : ℕ) {E : Set (Sym2 V)} {b : V → ℕ} (T : Finset V),
+    Ach E b → s ∉ T → (∀ t ∈ T, s(t, s) ∉ E) → (∀ t ∈ T, 1 ≤ b t ∧ b t ≤ 2) → r ≤ T.card →
+    blankNbrs E b s + 2 * r ≤ ∑ t ∈ T, b t + 1 →
+    ∃ R ⊆ T, R.card = r ∧ ∃ b' : V → ℕ, Ach (E ∪ {e | ∃ t ∈ R, e = s(t, s)}) b' ∧
+      ∀ v, b' v + (if v ∈ R then 1 else 0) = b v + r * (if v = s then 1 else 0)
+  | 0, E, b, T, h, _, _, _, _, _ => ⟨∅, Finset.empty_subset _, rfl, b, h.congr (by simp) (fun _ => rfl),
+      fun v => by simp⟩
+  | r + 1, E, b, T, h, hsT, hT, hb, hr, hsum => by
+    classical
+    have hpos : blankNbrs E b s < ∑ t ∈ T, b t := by omega
+    obtain ⟨t, ht, hbt, h1⟩ := h.grouped s T hsT hT hpos
+    have hts : t ≠ s := fun h' => hsT (h' ▸ ht)
+    have hbl := blankNbrs_insert_le (E := E) (b := b) hts hbt
+    have hsum' : ∑ u ∈ T.erase t, mv b t s u + b t = ∑ u ∈ T, b u := by
+      rw [← Finset.sum_erase_add _ _ ht]
+      congr 1
+      refine Finset.sum_congr rfl (fun u hu => ?_)
+      exact mv_apply_other _ (Finset.ne_of_mem_erase hu)
+        (fun h' => hsT (by rw [← h']; exact Finset.mem_of_mem_erase hu))
+    have hbt2 := (hb t ht).2
+    obtain ⟨R, hRT, hRc, b', hb', hid⟩ := Ach.hub_receipts r (T.erase t) h1
+      (fun h' => hsT (Finset.mem_of_mem_erase h'))
+      (fun u hu h' => by
+        rcases Set.mem_insert_iff.mp h' with h'' | h''
+        · rw [Sym2.eq_iff] at h''
+          rcases h'' with ⟨h3, -⟩ | ⟨h3, -⟩
+          · exact Finset.ne_of_mem_erase hu h3
+          · exact hsT (by rw [← h3]; exact Finset.mem_of_mem_erase hu)
+        · exact hT u (Finset.mem_of_mem_erase hu) h'')
+      (fun u hu => by
+        have hus : u ≠ s := fun h' => hsT (by rw [← h']; exact Finset.mem_of_mem_erase hu)
+        rw [mv_apply_other _ (Finset.ne_of_mem_erase hu) hus]
+        exact hb u (Finset.mem_of_mem_erase hu))
+      (by rw [Finset.card_erase_of_mem ht]; omega)
+      (by split_ifs at hbl <;> omega)
+    have htR : t ∉ R := fun h' => (Finset.mem_erase.mp (hRT h')).1 rfl
+    refine ⟨insert t R, Finset.insert_subset ht (hRT.trans (Finset.erase_subset _ _)),
+      by rw [Finset.card_insert_of_notMem htR, hRc], b', hb'.congr ?_ (fun _ => rfl), fun v => ?_⟩
+    · ext e
+      simp only [Set.mem_union, Set.mem_insert_iff, Set.mem_ofPred_eq, Finset.mem_insert]
+      constructor
+      · rintro ((h' | h') | ⟨u, hu, rfl⟩)
+        · exact Or.inr ⟨t, Or.inl rfl, h'⟩
+        · exact Or.inl h'
+        · exact Or.inr ⟨u, Or.inr hu, rfl⟩
+      · rintro (h' | ⟨u, hu | hu, rfl⟩)
+        · exact Or.inl (Or.inr h')
+        · exact Or.inl (Or.inl (by rw [hu]))
+        · exact Or.inr ⟨u, hu, rfl⟩
+    · have := hid v
+      unfold mv at this
+      by_cases hvs : v = s
+      · subst hvs
+        simp only [ite_true, Finset.mem_insert, hts.symm, false_or] at this ⊢
+        have hvR : v ∉ R := fun h' => hsT (Finset.mem_of_mem_erase (hRT h'))
+        simp only [hvR, ite_false] at this ⊢
+        nlinarith
+      · by_cases hvt : v = t
+        · subst hvt
+          simp only [hvs, ite_false, ite_true, Finset.mem_insert, true_or, htR] at this ⊢
+          omega
+        · simp only [hvs, hvt, ite_false, Finset.mem_insert, false_or, mul_zero, add_zero]
+            at this ⊢
+          omega
+
+/-- **The hub lemma, arbitrary degree.** Let `s` meet no edge of `E`, and let `N` be a set of
+`d ≥ 2` vertices, `s ∉ N`, with one or two ends each and `∑_N b ≥ 2d - 5`. Then inserting the
+`d` edges `sN` costs **one** extra path: `d - 2` grouped receipts at `s` (from a set `R`), and the
+last two edges `sy, sy'` form the new path `y s y'`. So `s` gets `d - 2` ends. For `d ≤ 5` the
+supply condition holds as soon as `b ≥ 1` on `N`; at degree six one neighbour needs two ends. -/
+theorem Ach.hub_general {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) {s : V} (N : Finset V)
+    (hs : ∀ w, s(s, w) ∉ E) (hsN : s ∉ N) (hb : ∀ t ∈ N, 1 ≤ b t ∧ b t ≤ 2) (hd : 2 ≤ N.card)
+    (hσ : 2 * N.card ≤ ∑ t ∈ N, b t + 5) :
+    ∃ R ⊆ N, R.card = N.card - 2 ∧ ∃ y y', y ∈ N ∧ y' ∈ N ∧ y ≠ y' ∧ y ∉ R ∧ y' ∉ R ∧
+      ∃ b' : V → ℕ, Ach (E ∪ {e | ∃ t ∈ N, e = s(s, t)}) b' ∧
+        ∀ v, b' v + (if v ∈ R then 1 else 0) =
+          b v + (N.card - 2) * (if v = s then 1 else 0) + (if v = y then 1 else 0) +
+            (if v = y' then 1 else 0) := by
+  classical
+  have hT : ∀ t ∈ N, s(t, s) ∉ E := fun t _ h' => hs t (by rw [Sym2.eq_swap]; exact h')
+  obtain ⟨R, hRN, hRc, b1, hb1, hid1⟩ := h.hub_receipts (N.card - 2) N hsN hT hb (by omega)
+    (by rw [blankNbrs_eq_zero_of_isolated hs]; omega)
+  have hrest : (N \ R).card = 2 := by rw [Finset.card_sdiff_of_subset hRN, hRc]; omega
+  obtain ⟨y, y', hyy', hNR⟩ := Finset.card_eq_two.mp hrest
+  have hy : y ∈ N \ R := by rw [hNR]; simp
+  have hy' : y' ∈ N \ R := by rw [hNR]; simp
+  rw [Finset.mem_sdiff] at hy hy'
+  have hsy : s ≠ y := fun h' => hsN (h' ▸ hy.1)
+  have hsy' : s ≠ y' := fun h' => hsN (h' ▸ hy'.1)
+  have hnd : [y, s, y'].Nodup := by simp [hyy', Ne.symm hsy, hsy']
+  have hnew : ∀ e ∈ lEdges y [s, y'], e ∉ E ∪ {e | ∃ t ∈ R, e = s(t, s)} := by
+    intro e he
+    simp only [lEdges_cons, lEdges_nil, List.mem_cons, List.not_mem_nil, or_false] at he
+    simp only [Set.mem_union, Set.mem_ofPred_eq, not_or, not_exists, not_and]
+    rcases he with rfl | rfl
+    · refine ⟨fun h' => hs y (by rw [Sym2.eq_swap]; exact h'), fun t ht h' => ?_⟩
+      rw [Sym2.eq_iff] at h'
+      rcases h' with ⟨h1, -⟩ | ⟨h1, -⟩
+      · exact hy.2 (h1 ▸ ht)
+      · exact hsy h1.symm
+    · refine ⟨hs y', fun t ht h' => ?_⟩
+      rw [Sym2.eq_iff] at h'
+      rcases h' with ⟨h1, -⟩ | ⟨h1, h2⟩
+      · exact hsN (h1 ▸ hRN ht)
+      · exact hy'.2 (h2 ▸ ht)
+  have h2 := hb1.addPath y [s, y'] (by simp) hnd hnew
+  refine ⟨R, hRN, hRc, y, y', hy.1, hy'.1, hyy', hy.2, hy'.2, _, h2.congr ?_ (fun _ => rfl),
+    fun v => ?_⟩
+  · ext e
+    simp only [lEdges_cons, lEdges_nil, Set.mem_union, Set.mem_ofPred_eq, List.mem_cons,
+      List.not_mem_nil, or_false]
+    constructor
+    · rintro ((h' | ⟨t, ht, rfl⟩) | h' | h')
+      · exact Or.inl h'
+      · exact Or.inr ⟨t, hRN ht, Sym2.eq_swap⟩
+      · exact Or.inr ⟨y, hy.1, by rw [h', Sym2.eq_swap]⟩
+      · exact Or.inr ⟨y', hy'.1, h'⟩
+    · rintro (h' | ⟨t, ht, rfl⟩)
+      · exact Or.inl (Or.inl h')
+      · by_cases htR : t ∈ R
+        · exact Or.inl (Or.inr ⟨t, htR, Sym2.eq_swap⟩)
+        · have : t ∈ N \ R := Finset.mem_sdiff.mpr ⟨ht, htR⟩
+          rw [hNR] at this
+          simp only [Finset.mem_insert, Finset.mem_singleton] at this
+          rcases this with rfl | rfl
+          · exact Or.inr (Or.inl Sym2.eq_swap)
+          · exact Or.inr (Or.inr rfl)
+  · have := hid1 v
+    simp only [lastOf_cons, lastOf_nil]
+    have e1 := Ne.symm hsy; have e2 := Ne.symm hsy'; have e3 := Ne.symm hyy'
+    have hsR : s ∉ R := fun h' => hsN (hRN h')
+    by_cases hvs : v = s
+    · subst hvs
+      simp [hsy, hsy', e1, e2, hsR] at this ⊢
+      omega
+    by_cases hvy : v = y
+    · subst hvy
+      simp [hy.2, hvs, hyy', e3] at this ⊢
+      omega
+    by_cases hvy' : v = y'
+    · subst hvy'
+      simp [hy'.2, hvs, hvy, hyy'] at this ⊢
+      omega
+    · simp [hvs, hvy, hvy', Ne.symm hvy, Ne.symm hvy'] at this ⊢
+      omega
+
+/-- **Two hubs share one spare path.** Let `s₁ ≠ s₂` meet no edge of `E`, with neighbour sets
+`N₁ ∪ {m}` and `N₂ ∪ {m}` (`N₁, N₂` disjoint, `m ∉ N₁ ∪ N₂`, `s₁, s₂, m` outside them). If each
+`N_i` carries one or two ends per vertex and `∑_{N_i} b ≥ 2|N_i| - 3`, then inserting both stars
+costs one extra path: `|N_i| - 1` receipts at each hub, and the new path `y₁ s₁ m s₂ y₂`. -/
+theorem Ach.two_hub {E : Set (Sym2 V)} {b : V → ℕ} (h : Ach E b) {s₁ s₂ m : V}
+    (N₁ N₂ : Finset V) (hs₁ : ∀ w, s(s₁, w) ∉ E) (hs₂ : ∀ w, s(s₂, w) ∉ E) (h12 : s₁ ≠ s₂)
+    (hm₁ : m ≠ s₁) (hm₂ : m ≠ s₂) (hmN₁ : m ∉ N₁) (hmN₂ : m ∉ N₂) (hdisj : Disjoint N₁ N₂)
+    (hs₁N : s₁ ∉ N₁ ∪ N₂) (hs₂N : s₂ ∉ N₁ ∪ N₂)
+    (hb₁ : ∀ t ∈ N₁, 1 ≤ b t ∧ b t ≤ 2) (hb₂ : ∀ t ∈ N₂, 1 ≤ b t ∧ b t ≤ 2)
+    (hd₁ : 1 ≤ N₁.card) (hd₂ : 1 ≤ N₂.card)
+    (hσ₁ : 2 * N₁.card ≤ ∑ t ∈ N₁, b t + 3) (hσ₂ : 2 * N₂.card ≤ ∑ t ∈ N₂, b t + 3) :
+    ∃ R₁ ⊆ N₁, R₁.card = N₁.card - 1 ∧ ∃ R₂ ⊆ N₂, R₂.card = N₂.card - 1 ∧
+      ∃ y₁ ∈ N₁, y₁ ∉ R₁ ∧ ∃ y₂ ∈ N₂, y₂ ∉ R₂ ∧
+      ∃ b' : V → ℕ, Ach (E ∪ {e | ∃ t ∈ N₁, e = s(s₁, t)} ∪ {e | ∃ t ∈ N₂, e = s(s₂, t)} ∪
+          {s(s₁, m), s(s₂, m)}) b' ∧
+        ∀ v, b' v + (if v ∈ R₁ then 1 else 0) + (if v ∈ R₂ then 1 else 0) =
+          b v + (N₁.card - 1) * (if v = s₁ then 1 else 0) +
+            (N₂.card - 1) * (if v = s₂ then 1 else 0) + (if v = y₁ then 1 else 0) +
+              (if v = y₂ then 1 else 0) := by
+  classical
+  have hs₁N₁ : s₁ ∉ N₁ := fun h' => hs₁N (Finset.mem_union_left _ h')
+  have hs₁N₂ : s₁ ∉ N₂ := fun h' => hs₁N (Finset.mem_union_right _ h')
+  have hs₂N₁ : s₂ ∉ N₁ := fun h' => hs₂N (Finset.mem_union_left _ h')
+  have hs₂N₂ : s₂ ∉ N₂ := fun h' => hs₂N (Finset.mem_union_right _ h')
+  have hT₁ : ∀ t ∈ N₁, s(t, s₁) ∉ E := fun t _ h' => hs₁ t (by rw [Sym2.eq_swap]; exact h')
+  obtain ⟨R₁, hR₁, hR₁c, b1, hb1, hid1⟩ := h.hub_receipts (N₁.card - 1) N₁ hs₁N₁ hT₁ hb₁
+    (by omega) (by rw [blankNbrs_eq_zero_of_isolated hs₁]; omega)
+  have hb1N₂ : ∀ t ∈ N₂, b1 t = b t := by
+    intro t ht
+    have h1 := hid1 t
+    have htR : t ∉ R₁ := fun h' => Finset.disjoint_left.mp hdisj (hR₁ h') ht
+    have hts : t ≠ s₁ := fun h' => hs₁N₂ (h' ▸ ht)
+    simp [htR, hts] at h1
+    omega
+  -- `s₂` is still isolated after the first receipts.
+  have hs₂' : ∀ w, s(s₂, w) ∉ E ∪ {e | ∃ t ∈ R₁, e = s(t, s₁)} := by
+    intro w h'
+    simp only [Set.mem_union, Set.mem_ofPred_eq] at h'
+    rcases h' with h' | ⟨t, ht, h'⟩
+    · exact hs₂ w h'
+    · rw [Sym2.eq_iff] at h'
+      rcases h' with ⟨h1, -⟩ | ⟨h1, -⟩
+      · exact hs₂N₁ (h1 ▸ hR₁ ht)
+      · exact h12 h1.symm
+  have hT₂ : ∀ t ∈ N₂, s(t, s₂) ∉ E ∪ {e | ∃ t ∈ R₁, e = s(t, s₁)} :=
+    fun t _ h' => hs₂' t (by rw [Sym2.eq_swap]; exact h')
+  have hsum : ∑ t ∈ N₂, b1 t = ∑ t ∈ N₂, b t := Finset.sum_congr rfl hb1N₂
+  obtain ⟨R₂, hR₂, hR₂c, b2, hb2, hid2⟩ := hb1.hub_receipts (N₂.card - 1) N₂ hs₂N₂ hT₂
+    (fun t ht => hb1N₂ t ht ▸ hb₂ t ht) (by omega)
+    (by rw [blankNbrs_eq_zero_of_isolated hs₂', hsum]; omega)
+  have hr₁ : (N₁ \ R₁).card = 1 := by rw [Finset.card_sdiff_of_subset hR₁, hR₁c]; omega
+  have hr₂ : (N₂ \ R₂).card = 1 := by rw [Finset.card_sdiff_of_subset hR₂, hR₂c]; omega
+  obtain ⟨y₁, hy₁e⟩ := Finset.card_eq_one.mp hr₁
+  obtain ⟨y₂, hy₂e⟩ := Finset.card_eq_one.mp hr₂
+  have hy₁ : y₁ ∈ N₁ \ R₁ := by rw [hy₁e]; simp
+  have hy₂ : y₂ ∈ N₂ \ R₂ := by rw [hy₂e]; simp
+  rw [Finset.mem_sdiff] at hy₁ hy₂
+  have hy12 : y₁ ≠ y₂ := fun h' => Finset.disjoint_left.mp hdisj hy₁.1 (h' ▸ hy₂.1)
+  have hy₁s₁ : y₁ ≠ s₁ := fun h' => hs₁N₁ (h' ▸ hy₁.1)
+  have hy₁s₂ : y₁ ≠ s₂ := fun h' => hs₂N₁ (h' ▸ hy₁.1)
+  have hy₁m : y₁ ≠ m := fun h' => hmN₁ (h' ▸ hy₁.1)
+  have hy₂s₁ : y₂ ≠ s₁ := fun h' => hs₁N₂ (h' ▸ hy₂.1)
+  have hy₂s₂ : y₂ ≠ s₂ := fun h' => hs₂N₂ (h' ▸ hy₂.1)
+  have hy₂m : y₂ ≠ m := fun h' => hmN₂ (h' ▸ hy₂.1)
+  have hnd : [y₁, s₁, m, s₂, y₂].Nodup := by
+    simp [hy12, hy₁s₁, hy₁s₂, hy₁m, Ne.symm hm₁, h12, Ne.symm hy₂s₁, hm₂, Ne.symm hy₂m,
+      Ne.symm hy₂s₂]
+  have hnew : ∀ e ∈ lEdges y₁ [s₁, m, s₂, y₂],
+      e ∉ E ∪ {e | ∃ t ∈ R₁, e = s(t, s₁)} ∪ {e | ∃ t ∈ R₂, e = s(t, s₂)} := by
+    intro e he h'
+    simp only [lEdges_cons, lEdges_nil, List.mem_cons, List.not_mem_nil, or_false] at he
+    simp only [Set.mem_union, Set.mem_ofPred_eq] at h'
+    rcases h' with (h' | ⟨t, ht, h'⟩) | ⟨t, ht, h'⟩
+    · rcases he with rfl | rfl | rfl | rfl
+      · exact hs₁ y₁ (by rw [Sym2.eq_swap]; exact h')
+      · exact hs₁ m h'
+      · exact hs₂ m (by rw [Sym2.eq_swap]; exact h')
+      · exact hs₂ y₂ h'
+    · rcases he with rfl | rfl | rfl | rfl <;> rw [Sym2.eq_iff] at h' <;>
+        rcases h' with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · exact hy₁.2 (h1 ▸ ht)
+      · exact hs₁N₁ (h2 ▸ hR₁ ht)
+      · exact hs₁N₁ (h1 ▸ hR₁ ht)
+      · exact hmN₁ (h2 ▸ hR₁ ht)
+      · exact hmN₁ (h1 ▸ hR₁ ht)
+      · exact hm₁ h1
+      · exact hs₂N₁ (h1 ▸ hR₁ ht)
+      · exact h12 h1.symm
+    · rcases he with rfl | rfl | rfl | rfl <;> rw [Sym2.eq_iff] at h' <;>
+        rcases h' with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · exact h12 h2
+      · exact hy₁s₂ h1
+      · exact hs₁N₂ (h1 ▸ hR₂ ht)
+      · exact h12 h1
+      · exact hmN₂ (h1 ▸ hR₂ ht)
+      · exact hm₂ h1
+      · exact hs₂N₂ (h1 ▸ hR₂ ht)
+      · exact hy₂.2 (h2 ▸ ht)
+  have h3 := hb2.addPath y₁ [s₁, m, s₂, y₂] (by simp) hnd hnew
+  refine ⟨R₁, hR₁, hR₁c, R₂, hR₂, hR₂c, y₁, hy₁.1, hy₁.2, y₂, hy₂.1, hy₂.2, _,
+    h3.congr ?_ (fun _ => rfl), fun v => ?_⟩
+  · ext e
+    simp only [lEdges_cons, lEdges_nil, Set.mem_union, Set.mem_ofPred_eq, List.mem_cons,
+      List.not_mem_nil, or_false, Set.mem_insert_iff, Set.mem_singleton_iff]
+    constructor
+    · rintro (((h' | ⟨t, ht, rfl⟩) | ⟨t, ht, rfl⟩) | rfl | rfl | rfl | rfl)
+      · exact Or.inl (Or.inl (Or.inl h'))
+      · exact Or.inl (Or.inl (Or.inr ⟨t, hR₁ ht, Sym2.eq_swap⟩))
+      · exact Or.inl (Or.inr ⟨t, hR₂ ht, Sym2.eq_swap⟩)
+      · exact Or.inl (Or.inl (Or.inr ⟨y₁, hy₁.1, Sym2.eq_swap⟩))
+      · exact Or.inr (Or.inl rfl)
+      · exact Or.inr (Or.inr Sym2.eq_swap)
+      · exact Or.inl (Or.inr ⟨y₂, hy₂.1, rfl⟩)
+    · rintro (((h' | ⟨t, ht, rfl⟩) | ⟨t, ht, rfl⟩) | rfl | rfl)
+      · exact Or.inl (Or.inl (Or.inl h'))
+      · by_cases htR : t ∈ R₁
+        · exact Or.inl (Or.inl (Or.inr ⟨t, htR, Sym2.eq_swap⟩))
+        · have : t ∈ N₁ \ R₁ := Finset.mem_sdiff.mpr ⟨ht, htR⟩
+          rw [hy₁e, Finset.mem_singleton] at this
+          subst this
+          exact Or.inr (Or.inl Sym2.eq_swap)
+      · by_cases htR : t ∈ R₂
+        · exact Or.inl (Or.inr ⟨t, htR, Sym2.eq_swap⟩)
+        · have : t ∈ N₂ \ R₂ := Finset.mem_sdiff.mpr ⟨ht, htR⟩
+          rw [hy₂e, Finset.mem_singleton] at this
+          subst this
+          exact Or.inr (Or.inr (Or.inr (Or.inr rfl)))
+      · exact Or.inr (Or.inr (Or.inl rfl))
+      · exact Or.inr (Or.inr (Or.inr (Or.inl Sym2.eq_swap)))
+  · have k1 := hid1 v
+    have k2 := hid2 v
+    simp only [lastOf_cons, lastOf_nil, @eq_comm _ y₁ v, @eq_comm _ y₂ v]
+    omega
+
+end general
 
 /-! ### Fan's alternative -/
 
