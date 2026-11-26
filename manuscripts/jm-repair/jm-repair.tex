@@ -1,0 +1,188 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amssymb,amsmath,enumitem,booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{thmL}{Theorem}
+\renewcommand{\thethmL}{\Alph{thmL}}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\pos}[1]{\left(#1\right)^{+}}
+\newcommand{\JM}{\textup{[JM]}}
+
+\title[Repairing the extension step of Javadi--Miralaei]{Rainbow Hamiltonian cycle decompositions:\\
+a repair of the extension step in the Javadi--Miralaei proof\\ of Wu's conjecture}
+\date{26 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+Wu conjectured that for every subgraph $H$ of $K_{2n+1}$ with $n$ edges, $K_{2n+1}$ has a
+decomposition into $n$ Hamiltonian cycles in which the edges of $H$ lie in distinct cycles.
+Javadi and Miralaei (arXiv:2403.17290; Discrete Math.\ 349 (2026) 114676) proved this by
+combining a reduction (their Theorem~7) with an extension theorem (their Theorem~8). An
+independent audit found a substantive gap in the proof of Theorem~8: the ``pairing'' step of
+Claim~12 does not establish the properties that are later used, and those properties would not
+suffice anyway. The audit also found a smaller, fixable gap in the transfer steps of
+Theorem~7.
+
+We give a new and complete proof of Theorem~8 under the hypothesis $r\le 2t-1$. For graphs
+without isolated vertices this hypothesis is equivalent to the authors' hypothesis
+$G\not\cong tK_2$, and it holds in their application. The new proof does not use Claim~12.
+Its core is a two-vertex extension lemma, which we reduce to the feasibility of an integral flow
+in a small network. We verify the two cut conditions given by Hoffman's circulation theorem by a
+counting argument that ends in an integrality and parity step. We also state and prove the
+corrected transfer lemma for Theorem~7. Combined with the remaining steps of the authors'
+proof of Theorem~7, these give a complete proof of Wu's conjecture. We re-checked those steps,
+including all their inequalities. The only external inputs are the theorems of Hilton (1984),
+Hoffman (1960) and Liu--Chen (2023). We list precisely what we did not re-prove. Computer
+checks of every reduction and of every per-colour inequality agree with the proofs. These checks
+are a sanity test, not part of any proof.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction and summary}\label{sec:intro}
+
+A \emph{Hamiltonian decomposition} of $K_{2n+1}$ is a partition of its edge set into $n$
+Hamiltonian cycles. A subgraph $H$ is \emph{rainbow} in a decomposition $(C_1,\dots,C_n)$ if no
+two edges of $H$ lie in the same $C_i$.
+
+\begin{theorem}[Wu's conjecture {\cite[Conj.~1]{JM}}]\label{thm:wu}
+Let $H\subseteq K_{2n+1}$ have exactly $n$ edges. Then $K_{2n+1}$ has a Hamiltonian
+decomposition in which $H$ is rainbow.
+\end{theorem}
+
+Liu and Chen \cite{LC} proved Theorem~\ref{thm:wu} when $|V(H)|\le n+1$, when $H$ is a linear
+forest, and when $n\le5$. Javadi and Miralaei \cite{JM} (hereafter \JM) proved the general case.
+The structure of their proof is as follows. Let $H$ be a minimal counterexample. Let $H'$ be the
+union of the components of $H$ that are not isomorphic to $K_2$, with $r$ vertices and $t$ edges.
+\begin{itemize}[leftmargin=*]
+\item \JM\ Theorem~7 embeds $H'$ into a decomposition $(P_1,\dots,P_n)$ of $K_r$ into linear
+forests. In this decomposition $H'$ is rainbow in $P_1,\dots,P_t$, and the size conditions
+$|P_i|\ge 2r-2n-1$ ($i\le t$) and $|P_i|\ge 2r-2n$ ($i>t$) hold.
+\item \JM\ Theorem~8 extends any such decomposition to a Hamiltonian decomposition of
+$K_{2n+1}$ in which $H'\cup(n-t)K_2$ is rainbow. That is, the $n-t$ components $K_2$ of $H$ are
+realised by a matching on the vertices outside $K_r$, one edge in each of the remaining colours.
+\end{itemize}
+The tool for both steps is Hilton's extension theorem \cite{Hilton} (Theorem~\ref{thm:hilton}
+below).
+
+\subsection*{The gaps}
+An adversarial audit of \JM\ (in this repository, \texttt{research/audit/A4-semi-cliques-JM.md},
+\S2) found three problems.
+\begin{enumerate}[label=\textup{(JM\arabic*)},leftmargin=*]
+\item \emph{Theorem~7, transfer steps.} The rule that decides which edges of a donor class
+may be moved into a receiver class does not keep the receiver a linear forest in general. The
+audit proposed a fix that uses an orientation and does not change any count. We state and
+prove it as Lemma~\ref{lem:transfer}.
+\item \emph{Theorem~8, Claim~12.} This is substantive. The two new vertices $u',u''$ are joined
+to the old vertices through subgraphs $G_1,G_2$ of an auxiliary bipartite multigraph. These are
+obtained from a balanced colouring, a ``pairing'' colouring (Hilton's Lemma~10) and a final
+balanced 2-colouring. The pairing is not well defined when both duplicates of an endpoint
+edge survive into the multigraph $L'$, and nothing prevents that. Moreover, the conditions
+(i)--(v) that Claim~12 asserts do not imply the conclusion drawn from them, namely that every
+class remains a linear forest. Section~\ref{sec:gap} gives the details and an explicit example.
+\item \emph{Theorem~8, hypothesis.} The proof uses $r\le 2t-1$ (``$k\ge4$ as $r\le 2t-1$''),
+but the hypothesis is stated as $G\not\cong tK_2$. The two agree for graphs without isolated
+vertices; see Remark~\ref{rem:hyp}.
+\end{enumerate}
+
+\subsection*{What this note proves}
+\begin{thmL}[repaired \JM\ Theorem~8]\label{thmA}
+Let $n\ge t\ge1$ and $r\le 2t-1$. Let $\PP=(P_1,\dots,P_n)$ be an edge decomposition of
+$K_r$ in which every $P_i$ induces a linear forest, with
+\[
+|P_i|\ge 2r-2n-1\quad(i\in[t]),\qquad |P_i|\ge 2r-2n\quad(i\in[t+1,n]).
+\]
+Let $G\subseteq K_r$ be a graph with exactly one edge in each of $P_1,\dots,P_t$ and no other
+edges. Then $K_r\subseteq K_{2n+1}$ has a Hamiltonian decomposition $(C_1,\dots,C_n)$ with
+$P_i\subseteq C_i$ for all $i$, together with pairwise vertex-disjoint edges
+$e_{t+1},\dots,e_n$ such that $e_i\in C_i$ and no $e_i$ meets $V(K_r)$. In particular the graph
+$G\cup\{e_{t+1},\dots,e_n\}\cong G\cup(n-t)K_2$ is rainbow.
+\end{thmL}
+
+The proof (Sections~\ref{sec:reduction}--\ref{sec:lower}) replaces Claim~12 by the following
+lemma. The new vertices are added in pairs, and every pair receives the edge between them in a
+colour not used so far. Write $p_i(\Q)=m-|Q_i|$ for the number of components of the spanning
+linear forest $(V(K_m),Q_i)$.
+
+\begin{thmL}[two-vertex extension]\label{thmB}
+Let $m\ge1$, and set $k:=2n+1-m$; assume $k\ge4$. Let $\Q=(Q_1,\dots,Q_n)$ be an edge
+decomposition of $K_m$ into linear forests. Let $[n]=T\sqcup U$ and $c\in U$, and suppose that
+\[
+p_i(\Q)\le k\ (i\in T),\qquad p_i(\Q)\le k-1\ (i\in U),\qquad 2|U|\le k-2 .
+\]
+Then $\Q$ extends to an edge decomposition $\Q'$ of $K_{m+2}=K_m+\{x,y\}$ into linear forests
+with $Q_i\subseteq Q'_i$, $xy\in Q'_c$, and
+\[
+p_i(\Q')\le k-2\ \ (i\in T\cup\{c\}),\qquad p_i(\Q')\le k-3\ \ (i\in U\setminus\{c\}).
+\]
+\end{thmL}
+
+Here $k$ is the number of vertices of $K_{2n+1}$ still to be added. Hilton's condition
+$|Q_i|\ge 2m-2n-1$ reads $p_i(\Q)\le k$, and the stronger condition $|Q_i|\ge 2m-2n$ for unused
+colours reads $p_i(\Q)\le k-1$. Theorem~\ref{thmB} therefore says that the invariant (2) of
+\JM\ survives the addition of one matching edge. The hypothesis $2|U|\le k-2$ comes from
+$r\le 2t-1$. It cannot be dropped: without it the lemma fails already for $B=\emptyset$ in the
+cut condition (Remark~\ref{rem:sharp}).
+
+The proof of Theorem~\ref{thmB} has three steps.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item We characterise valid two-vertex extensions and reduce them to \emph{attachment
+records}. In a record, each old vertex makes two attachments to path ends, at most one path per
+colour is attached at both ends, and no path is attached at both ends in colour $c$. Every
+record can be split between $x$ and $y$ by properly 2-edge-colouring a bipartite graph of
+maximum degree~$2$ (Section~\ref{sec:reduction}).
+\item Records are exactly the integral flows in a network with lower bounds. By Hoffman's
+circulation theorem, a record exists if and only if two cut conditions (UH) and (LH) hold
+(Section~\ref{sec:flow}).
+\item We verify (UH) and (LH) by per-colour counting. In each case the counting leaves a
+deficit smaller than one unit, which an integrality argument, and in one case a parity
+argument, rules out (Sections~\ref{sec:upper} and~\ref{sec:lower}).
+\end{enumerate}
+
+\begin{thmL}[Wu's conjecture]\label{thmC}
+Theorem~\ref{thm:wu} holds. The proof uses: \JM\ Theorem~7, with its transfer steps
+replaced by Lemma~\ref{lem:transfer}; Theorem~\ref{thmA}; the theorems of Hilton
+\cite{Hilton}, Hoffman \cite{Hoffman} and Liu--Chen \cite{LC}.
+\end{thmL}
+
+Section~\ref{sec:thm7} explains precisely which parts of \JM\ Theorem~7 we re-proved, which
+parts we checked but did not rewrite, and how the pieces fit together. Section~\ref{sec:status}
+lists what is not proved here.
+
+%%BODY%%
+
+\begin{thebibliography}{99}
+\bibitem{Hilton} A.~J.~W.~Hilton, Hamiltonian decompositions of complete graphs,
+\emph{J. Combin. Theory Ser.~B} \textbf{36} (1984), 125--134.
+\bibitem{Hoffman} A.~J.~Hoffman, Some recent applications of the theory of linear inequalities
+to extremal combinatorial analysis, in: \emph{Combinatorial Analysis}, Proc.\ Sympos.\ Appl.\
+Math.\ \textbf{10}, Amer.\ Math.\ Soc., 1960, 113--127.
+\bibitem{JM} R.~Javadi, M.~Miralaei, A conjecture on rainbow Hamiltonian cycle decomposition,
+arXiv:2403.17290v1 (26 March 2024); published in \emph{Discrete Math.} \textbf{349}(1) (2026),
+Art.~114676, doi:10.1016/j.disc.2025.114676. (We worked from the arXiv text; we could not
+access the published version.)
+\bibitem{LC} Y.~Liu, Y.~Chen, Rainbow subgraphs in Hamiltonian cycle decompositions of
+complete graphs, \emph{Discrete Math.} \textbf{346}(8) (2023), Art.~113479.
+\bibitem{Schrijver} A.~Schrijver, \emph{Combinatorial Optimization: Polyhedra and Efficiency},
+Vol.~A, Springer, 2003, Chapter~11 (circulations; Hoffman's circulation theorem and its integer
+version).
+\bibitem{A4} Referee audit A4 (this repository), \texttt{research/audit/A4-semi-cliques-JM.md},
+\S2 (items JM1--JM3), 26 November 2026.
+\end{thebibliography}
+
+\end{document}
