@@ -5,7 +5,7 @@ import GallaiLean.LeafDictionary
 /-!
 # The second descent step and the two-even-vertex problem
 
-(endpoint-structure manuscript, Section "Fan descent")
+(endpoint-structure manuscript, Section 5; theorem numbers as in the current PDF)
 
 `delEdge G a b` is `G` without the edge `ab`.
 
@@ -26,6 +26,11 @@ import GallaiLean.LeafDictionary
   odd transfers that ends with at most one vertex certifies that `Ev \ X` is realisable.
 * `Tight`, `tight_of_transfer`, `tight_of_fanCert`: the two-even-vertex problem (parity bound
   `#odd / 2`).
+* `realisable_pair` (**pair step**, Theorem 26): Fan's grouped lemma at a common neighbour `w` of
+  two twins `a, a'` gives `Ev \ {u, a}` or `Ev \ {u, a'}`.
+* `OddPath`, `realisable_of_oddPath` (**path transfer**, the step in Theorem 28).
+* `degree_le_of_tight` (obstruction (O1)); `realisable_leaves_singleton`,
+  `tight_leaves_of_lovasz` (move (L) and the leaf case of the two-even problem).
 -/
 
 open SimpleGraph
