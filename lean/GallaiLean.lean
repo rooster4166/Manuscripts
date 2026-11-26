@@ -12,3 +12,4 @@ import GallaiLean.FanMoves
 import GallaiLean.Fan
 import GallaiLean.Lovasz
 import GallaiLean.EMCFour
+import GallaiLean.ThreeConnected

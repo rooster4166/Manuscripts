@@ -1,5 +1,32 @@
 # GallaiLean
 
+## Spine 113/114 (cloud session)
+
+Branch `claude/lean-spine-113-114`. New file `GallaiLean/ThreeConnected.lean` (sorry-free;
+`#print axioms` shows only `propext`, `Classical.choice`, `Quot.sound`).
+
+**Status (interim):** (a) Gallai ⇒ both tests: **proved**. (b) apex construction and its
+3-connectivity: **proved**. (d) converse: **proved modulo explicit hypotheses** `LovaszStatement`,
+`Thm59Statement`, `SeparatorStatement`. (c) Theorem 113 (`SeparatorStatement`): in progress.
+
+| Lean name | Statement |
+|---|---|
+| `KConnected k G` | `k + 1 ≤ \|V\|` and `G.induce Xᶜ` is connected for every `X` with `\|X\| < k` |
+| `delVert J z` | `J − z` (induced on `{v \| v ≠ z}`) |
+| `HasMatchingCut`, `InClassC` | matching cut; the class `C` (2-connected, no matching cut) |
+| `Test1 J z`, `Test2 J z` | assertions 1 and 2 of marked-reduction Thm 114 |
+| `SpineTests`, `SpineTestsNMC` | both tests on every 3-connected `J` (resp. only when `J − z` has no matching cut) |
+| **`spineTests_of_gallai`** | `GallaiConjecture → SpineTests` (forward direction of Thm 114) |
+| `PathDecomp.trim_ends` | trimming the private leaf: same size and `+1` end at `x`, or one path less and `−1` end |
+| `exists_two_ends`, `exists_three_ends` | `F₂` from leaf cost, `F₃` from any decomposition (split at an internal visit) |
+| **`apex_kConnected_three`** | `B` 2-connected, `\|S\| ≥ 3`, every component of `B − {x,y}` meets `S` ⇒ `apex B S` is 3-connected |
+| `RootedAt B x` | the two rooted assertions of Thm 59 at `x` |
+| `SmallBlocks F m`, `MarkedBoundUpTo m` | blocks of order `≤ m` (2-connected induced subgraphs); marked bound (1) on such graphs |
+| `Thm59Statement` | **hypothesis**: Thm 59, finite-order form (audit F1) |
+| `IsSepComponent`, `SeparatorStatement` | Thm 113 in the audit's F7 form (hypothesis until proved) |
+| `rootedAt_of_few_even` | `\|{even} ∪ {r}\| ≤ 2` ⇒ rooted test at `r` (Lovász) |
+| **`gallai_of_spineTestsNMC`** | `LovaszStatement → Thm59Statement → SeparatorStatement → SpineTestsNMC → GallaiConjecture` |
+
 Lean 4 + Mathlib (v4.36.0) formalization of foundational lemmas for the Gallai path
 decomposition program. Everything listed below is proved with no `sorry`; `#print axioms`
 shows only the standard `propext`, `Classical.choice`, `Quot.sound`.
