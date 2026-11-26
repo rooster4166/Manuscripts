@@ -230,6 +230,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
 | d6-frontier; endpoint-structure §§5–6, including the bridge reduction to BranchBase (A9) | **sound**: no error in any theorem or proof; 13 gaps fixed; one abstract error fixed |
 | JM repair: new proof of JM Thm 8, transfer lemma, Thm 7 (A10) | **sound**: no error, no substantive gap; independent brute-force checks agree |
+| bs-prescribed: five-even floor bound, Shaik removal (A11) | **sound**: scope verified against every Cor 106 use; certificates independently checked |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
