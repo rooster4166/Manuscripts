@@ -606,15 +606,15 @@ theorem tight_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V))
 /-- Second half of the pair step: one application of `fan_single` at the edge `t'w`. -/
 theorem pair_finish {u t t' w : V} (ht'w : G.Adj t' w) (ht : t ∈ evenSet G)
     (ht' : t' ∈ evenSet G) (hut : u ≠ t) (hut' : u ≠ t') (htt' : t ≠ t')
-    (D' : PathDecomp (delEdge G t' w)) (hDt : D'.ends t = 0) (hDt' : D'.ends t' = 1)
+    (D' : PathDecomp (rmEdge G t' w)) (hDt : D'.ends t = 0) (hDt' : D'.ends t' = 1)
     (hDx : ∀ x, x ≠ t → x ≠ t' → x ≠ w → D'.ends x = profile G ((evenSet G).erase u) x)
     (hDw : D'.ends w = profile G (((evenSet G).erase u).erase t) w + 1)
     (hcond : (Finset.univ.filter
-      (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0)).card < D'.ends w) :
+      (fun x => (rmEdge G t' w).Adj t' x ∧ D'.ends x = 0)).card < D'.ends w) :
     Realisable G (((evenSet G).erase u).erase t) := by
   have hne : t' ≠ w := G.ne_of_adj ht'w
-  obtain ⟨D, -, hDt'', hDw'', hrest⟩ := fan_single (G := G) (G' := delEdge G t' w) (u := t')
-    (v := w) ht'w (fun e => delEdge_edgeSet t' w e) D' hcond
+  obtain ⟨D, -, hDt'', hDw'', hrest⟩ := fan_single (G := G) (G' := rmEdge G t' w) (u := t')
+    (v := w) ht'w (fun e => rmEdge_edgeSet t' w e) D' hcond
   refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), D, fun x => ?_⟩
   by_cases hxt' : x = t'
   · subst hxt'
@@ -637,29 +637,29 @@ theorem pair_finish {u t t' w : V} (ht'w : G.Adj t' w) (ht : t ∈ evenSet G)
 
 /-- Degree bookkeeping for `G − aw − a'w`. -/
 theorem degree_delEdge₂ {a a' w : V} (haa' : a ≠ a') (haw : G.Adj a w) (ha'w : G.Adj a' w) :
-    (delEdge (delEdge G a w) a' w).degree a + 1 = G.degree a ∧
-    (delEdge (delEdge G a w) a' w).degree a' + 1 = G.degree a' ∧
-    (delEdge (delEdge G a w) a' w).degree w + 2 = G.degree w ∧
-    ∀ x, x ≠ a → x ≠ a' → x ≠ w → (delEdge (delEdge G a w) a' w).degree x = G.degree x := by
+    (rmEdge (rmEdge G a w) a' w).degree a + 1 = G.degree a ∧
+    (rmEdge (rmEdge G a w) a' w).degree a' + 1 = G.degree a' ∧
+    (rmEdge (rmEdge G a w) a' w).degree w + 2 = G.degree w ∧
+    ∀ x, x ≠ a → x ≠ a' → x ≠ w → (rmEdge (rmEdge G a w) a' w).degree x = G.degree x := by
   have hne : a ≠ w := G.ne_of_adj haw
   have hne' : a' ≠ w := G.ne_of_adj ha'w
-  have h1 : (delEdge G a w).Adj a' w := (delEdge_adj_of_ne (Ne.symm haa') hne').mpr ha'w
+  have h1 : (rmEdge G a w).Adj a' w := (rmEdge_adj_of_ne (Ne.symm haa') hne').mpr ha'w
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [delEdge_degree_of_ne haa' hne]; exact delEdge_degree_left haw
-  · rw [← delEdge_degree_of_ne (G := G) (Ne.symm haa') hne']; exact delEdge_degree_left h1
-  · have := delEdge_degree_right h1
-    have := delEdge_degree_right (G := G) haw
+  · rw [rmEdge_degree_of_ne haa' hne]; exact rmEdge_degree_left haw
+  · rw [← rmEdge_degree_of_ne (G := G) (Ne.symm haa') hne']; exact rmEdge_degree_left h1
+  · have := rmEdge_degree_right h1
+    have := rmEdge_degree_right (G := G) haw
     omega
   · intro x hxa hxa' hxw
-    rw [delEdge_degree_of_ne hxa' hxw, delEdge_degree_of_ne hxa hxw]
+    rw [rmEdge_degree_of_ne hxa' hxw, rmEdge_degree_of_ne hxa hxw]
 
 omit [Fintype V] [DecidableRel G.Adj] in
 theorem edgeSet_readd {G2 : SimpleGraph V} {a a' w t t' : V}
     (hE2 : ∀ e, e ∈ G2.edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(a, w) ∧ e ≠ s(a', w))
     (h : (t = a ∧ t' = a') ∨ (t = a' ∧ t' = a))
     (haa' : a ≠ a') (haw : G.Adj a w) (ha'w : G.Adj a' w) (e : Sym2 V) :
-    e ∈ (delEdge G t' w).edgeSet ↔ e ∈ G2.edgeSet ∨ e = s(t, w) := by
-  rw [delEdge_edgeSet, hE2]
+    e ∈ (rmEdge G t' w).edgeSet ↔ e ∈ G2.edgeSet ∨ e = s(t, w) := by
+  rw [rmEdge_edgeSet, hE2]
   have hst : s(a, w) ≠ s(a', w) := by
     intro he
     rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨h1, h2⟩
@@ -843,7 +843,7 @@ theorem pair_core (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) {u a a
       rcases htt with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
       · exact ⟨h1, h2⟩
       · exact ⟨h2, h1⟩
-    obtain ⟨D', -, hD'⟩ := hK (delEdge G t' w)
+    obtain ⟨D', -, hD'⟩ := hK (rmEdge G t' w)
       (edgeSet_readd hE2 htt haa' haw ha'w)
     have hDt : D'.ends t = 0 := by
       have := hD' t
@@ -865,7 +865,7 @@ theorem pair_core (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) {u a a
       rw [this]
       exact hD2x x (hnot x h1 h2).1 (hnot x h1 h2).2 h3
     -- zeros of `D'` next to `t'` are among `t, u`
-    have hz : ∀ x, (delEdge G t' w).Adj t' x → D'.ends x = 0 → x = t ∨ x = u := by
+    have hz : ∀ x, (rmEdge G t' w).Adj t' x → D'.ends x = 0 → x = t ∨ x = u := by
       intro x hx h0
       by_cases hxt : x = t
       · exact Or.inl hxt
@@ -889,7 +889,7 @@ theorem pair_core (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) {u a a
     rw [hDw, hD2w]
     rcases hw with ⟨hwE, -⟩ | ⟨hodd, hcase⟩
     · -- even `w`: at most two zeros, and `D'` has three ends at `w`
-      have hsub : Finset.univ.filter (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆
+      have hsub : Finset.univ.filter (fun x => (rmEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆
           {t, u} := by
         intro x hx
         rw [Finset.mem_filter] at hx
@@ -902,7 +902,7 @@ theorem pair_core (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) {u a a
       have hpw : profile G ((evenSet G).erase u) w = 1 := by simp [profile, hodd]
       rw [hpw]
       have hsub : ∃ y, Finset.univ.filter
-          (fun x => (delEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆ {y} := by
+          (fun x => (rmEdge G t' w).Adj t' x ∧ D'.ends x = 0) ⊆ {y} := by
         rcases hcase with hna | ⟨hnu, hnu'⟩
         · refine ⟨u, fun x hx => ?_⟩
           rw [Finset.mem_filter] at hx
@@ -947,8 +947,8 @@ theorem realisable_pair (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
     Realisable G (((evenSet G).erase u).erase a) ∨
       Realisable G (((evenSet G).erase u).erase a') := by
   obtain ⟨d2a, d2a', d2w, d2x⟩ := degree_delEdge₂ haa' haw ha'w
-  exact pair_core hL hn (delEdge (delEdge G a w) a' w)
-    (fun e => by rw [delEdge_edgeSet, delEdge_edgeSet, and_assoc]) d2a d2a' d2w d2x hG hu ha ha'
+  exact pair_core hL hn (rmEdge (rmEdge G a w) a' w)
+    (fun e => by rw [rmEdge_edgeSet, rmEdge_edgeSet, and_assoc]) d2a d2a' d2w d2x hG hu ha ha'
     hua hua' haa' huw haw ha'w hw
 
 /-! ### An obstruction -/
