@@ -356,3 +356,26 @@ Numbering: "Lemma 2" (faithful partition, Ev realisable) and "Lemma 3" (Ev − u
 
 - n = 6: 44 graphs, 0 failures of the strong form. The critical graphs with non-realisable pairs are Esq_, Esqo and EqhO, each with exactly two disjoint pairs.
 - n = 8: see `research/experiments.md` E13.
+
+### k-step infrastructure (follow-up, same session)
+
+Manuscript `endpoint-structure`, subsection "k-step descent" (Lemma 24, Thms 25–26, Cor 27). Lean: `lean/GallaiLean/KStep.lean` (no sorry; primed forms use `lovaszStatement`).
+
+- **Definition.** k-step descent at (y, W₀): some k-set R ⊆ Ev − y with W₀ ⊆ R has Ev − R realisable. Lemma 3 is k = 1, Thm 19 is k = 2.
+- **General transfer (Lemma 24, `realisable_transfer`).** For adjacent even s, t and K = G − st: if S ∈ F(K) and N(s) ∩ (Ev(K) − S) = ∅, then S ∪ {s} ∈ F(G).
+- **Connected reduction (Thm 25, `desc_reduction`).** k-step descent in connected graphs reduces to two base cases:
+  - y has an even neighbour, or
+  - every edge at y is a bridge.
+
+  The proof is an induction on |E|: delete a non-bridge edge yt to an odd neighbour and lift (Lemma 18). It uses no parity and no criticality.
+  - **Why connectivity, not path form:** for k = 3 the path-form base statement fails for disconnected graphs. (K5 − e) ⊔ (K5 − e) has e = 6, every even vertex has an even neighbour, and every realisable set has ≥ 4 elements.
+  - **Not reduced:** the all-bridges case. It splits G into parts that may have odd order, where descent is the floor problem.
+- **One even neighbour (Thm 26, `desc_succ_of_unique`).** If y has exactly one even neighbour t, then (k+1)-step descent at y follows from k-step descent in G − yt, at a vertex joined to another even vertex. Choose one by pigeonhole over the ≤ 2 sides of yt.
+- **Three steps (Cor 27, `desc_three_of_unique`).** Theorem 19's path induction supplies k = 2, so three-step descent holds at every even vertex with exactly one even neighbour (connected, even order, e ≥ 6).
+  - **For e = 6 this is (R) at y.** In deletion-test terms: **test (i) at d = 6 holds at every r ∈ N(z) with exactly one neighbour in N(z).**
+- **Three-step reduction (`desc_three_reduction`).** Three-step descent for connected even-order graphs with e ≥ 6 now reduces to:
+  - (i) y has ≥ 2 even neighbours;
+  - (ii) y has no even neighbour and every edge at y is a bridge.
+
+  Case (i) is where the obstruction of Remark 23 lives: the second deleted vertex must avoid N(y).
+- The n = 8 e=4 exhaustive run was stopped at the coordinator's request after ≥ 500 of 5,523 graphs, with no exception.
