@@ -28,6 +28,8 @@ and `markedNumber F S` (the manuscript's `q(F, S)`) is the least cost (`sInf`).
   `exists_side` (restrict a split decomposition to each copy, keeping its ends there).
 * **Corollary** (`markedNumber_le_of_gallai`): Gallai's conjecture implies the marked bound
   `q(F, S) ≤ (|V| - |S|) / 2` for connected `F` and nonempty `S`.
+* Converse with a single mark: `pathNumber_le_markedNumber_add` (`p(F) ≤ q(F, S) + |S|`), and
+  `gallai_iff_markedBound : GallaiConjecture ↔ MarkedBound` (unrestricted marked bound).
 -/
 
 open SimpleGraph

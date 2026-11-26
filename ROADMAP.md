@@ -121,6 +121,17 @@ Candidate uniform mechanisms (`research/connections.md`):
 2. **Uniform mechanism.** Test FD and EMC further: n = 8 exhaustive and random n = 10, 12. Then try to prove the single-descent lemma, which would give T(d) for all d. This is the only route found so far that does not grow with d.
 3. **Close T(6)-i** using the shape reductions as a testbed for the uniform mechanism.
 
+
+## Work queue (next wave)
+
+| # | Item | Purpose |
+|---|---|---|
+| Q1 | Audit or replace Shaik [25, Cor 1.2] (ceiling when ≤ 2 vertices have E-degree ≥ 4), e.g. via a componentwise Fan–Hou–Zhou Thm 5 | makes MR Thm 144 unconditional |
+| Q2 | Close D = ∅ at d = 6: clique core B[U] = K6 with full exterior vertices (six-clique Thm 6 covers ≤ 5 core neighbours; false-twin-return covers some full cases) | the largest residual d = 6 shape |
+| Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2) | provable special cases of the uniform conjecture |
+| Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
+| Q5 | Audit SP §14 (dense exact theorem) | off the Gallai-critical path; lower priority |
+
 ## Log
 
 - 2026-11-26: collection pushed; orientation `STATUS.md`; tools built.

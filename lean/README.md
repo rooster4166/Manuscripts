@@ -156,6 +156,59 @@ With `[Fintype V] [DecidableEq V] [DecidableRel G.Adj]`:
 * **`realisable_iff_leaves`**: for `S ⊆ evenSet G`,
   `Realisable G S ↔ pathNumber (leaves G S) = (oddSet (leaves G S)).card / 2`.
 
+## `GallaiLean/Marked.lean`: marked partitions and the apex reduction (marked-reduction manuscript, §1)
+
+This file covers the paragraph "Equivalence of the marked and ordinary bounds" on p. 3. Sites are
+a `Finset`, `S : Finset V`. The file builds in about 30 s.
+
+Definitions:
+
+* `MarkedPartition F S` is a list of pairs (path of `F`, optional site). Its edges partition `E(F)`,
+  with the same `nodup_edges`/`covers` fields as `PathDecomp`. Each site lies in `S` and is an end
+  of its own path (`site_ok`), and no site occurs twice (`sites_nodup`). A path carries at most
+  one site because each pair holds a single `Option`. See also `MarkedPartition.decomp` and
+  `MarkedPartition.ofDecomp`.
+* `markedCost M` is the number of unassigned paths. `markedNumber F S` is `q(F, S)`, defined as an
+  `sInf` of costs (`markedNumber_le`, `markedNumber_spec`).
+* `cone F S : SimpleGraph (Option V)` is the cone `X = F + z`. The apex `none` is adjacent exactly
+  to `S`. `mem_cone_edgeSet_iff` describes its edges, and `cone_walk_lift` turns walks that avoid
+  the apex into walks of `F`.
+* `PathDecomp.outEnds D := ∑ v, D.ends (some v)` counts the ends away from the apex. It is defined
+  for any graph on `Option U`. `outEnds_eq_sum` gives one end per path through the apex if the
+  apex is an end of it, and two per path avoiding the apex. `two_mul_size_eq` states
+  `2|D| = D.ends none + D.outEnds`.
+* `minOutEnds F S` is `h`, the `sInf` of `outEnds` over the decompositions of the cone.
+* `doubleCone F S := cone (twoCopies F) (univ ×ˢ S)` lives on `Option (Bool × V)`. It is two
+  copies of `X` with their apices identified. `wGraph F S := addLeaf (doubleCone F S) none` is
+  `W(F, S)`.
+
+| Lean name | Statement |
+|---|---|
+| `exists_outEnds_eq` | A marked partition of cost `c` gives a decomposition of the cone with `outEnds = \|S\| + 2c`. Spokes are prepended to assigned paths and each unused spoke is used singly. |
+| `exists_marked_of_split` | If the apex is only ever an end, a decomposition of the cone gives a marked partition with `\|S\| + 2·cost = outEnds`. The continuation of each spoke path is assigned to its site. |
+| `le_outEnds` | Every decomposition of the cone has `\|S\| + 2 q(F,S) ≤ outEnds`. The proof splits at the apex with `exists_split_all` and then applies the previous row. |
+| **`minOutEnds_eq`** | **Identity A**: `h(F,S) = \|S\| + 2 q(F,S)` |
+| `card_wGraph`, `wGraph_connected` | `\|V(W)\| = 2\|V\| + 2`. `W` is connected if `F` is connected and `S ≠ ∅`. |
+| `exists_double` | If the apex is only ever an end, a decomposition of `X` doubles to a decomposition of `doubleCone` of size `outEnds`. Each apex path is glued to its mirror image, and every other path is copied into both copies. |
+| `exists_side` | If the apex is only ever an end, a decomposition of `doubleCone` restricts (`project_full`) to a decomposition of `X` with the same ends in copy `β`. |
+| `pathNumber_wGraph_le` | `p(W) ≤ h + 1` |
+| `le_leafCost`, `le_pathNumber_wGraph` | `p(W) ≥ \|S\| + 2q + 1`. This uses `exists_leafCost_le`, and needs `2h` ends away from the apex plus one at the leaf. |
+| **`pathNumber_wGraph`** | **Identity B**: `p(W(F,S)) = \|S\| + 2 q(F,S) + 1`. Also `pathNumber_wGraph_eq_minOutEnds : p(W) = h + 1`. |
+| **`markedNumber_le_of_gallai`** | `GallaiConjecture.{u} → F.Connected → S.Nonempty → q(F,S) ≤ (card V - \|S\|) / 2`. This is the "Gallai ⇒ marked bound" direction of Theorem 1. |
+| `pathNumber_le_markedNumber_add` | `p(F) ≤ q(F,S) + \|S\|`: at most `\|S\|` paths are assigned. |
+| `gallai_iff_markedBound` | `GallaiConjecture.{u} ↔ MarkedBound.{u}`. `MarkedBound` is the marked bound for all connected `F` and nonempty `S`. The backward direction uses a single mark. |
+
+The file reuses `exists_split_all` (Surgery), `project_full`, `hasPiece_of_walk`, `ofPerm` and
+`flatMap` permutation lemmas (Project), and `addLeaf`, `leafCost`, `exists_leafCost_le`,
+`pathNumber_addLeaf_le_succ` and `addLeaf_connected` (Doubling/PrivateLeaf).
+
+What is proved: targets 1–4 and the single-mark converse have no `sorry`. `#print axioms` on
+`minOutEnds_eq`, `pathNumber_wGraph`, `markedNumber_le_of_gallai` and `gallai_iff_markedBound`
+shows only `propext`, `Classical.choice` and `Quot.sound`.
+
+Not formalized from Theorem 1: the reduction to two-connected graphs and even-degree sites, and
+assertion 2.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
