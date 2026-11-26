@@ -209,6 +209,36 @@ shows only `propext`, `Classical.choice` and `Quot.sound`.
 Not formalized from Theorem 1: the reduction to two-connected graphs and even-degree sites, and
 assertion 2.
 
+## `GallaiLean/FanMoves.lean`, `GallaiLean/Fan.lean`: Fan's addible-edge lemmas
+
+Fan (2005), Lemmas 3.3–3.4, as quoted by Botler–Sambinelli (Lemma 6) and in the six-clique
+paper (Lemma 2). Here `b(w) = D.ends w`.
+
+* `PathDecomp.replace` replaces one path by a path of a graph whose edge set differs only on that
+  path. The other paths are transferred unchanged, with the same ends and support.
+* `PathDecomp.append_move`: a path ending at `t` that avoids `u` absorbs the new edge `tu`.
+* `PathDecomp.reroute_move`: a path read from its end `t` reaches `u` via the edge `yu`. Reverse
+  the segment from `t` to `y` and trade `yu` for the new edge `tu`, so the end moves from `t` to
+  `y`. Readings from the path's other end are preserved.
+* `FanPred D u x z` holds when `z` is the vertex before `u` on a path of `D` read from its end
+  `x`. `FanChain` is a chain `t = x₀, x₁, …, x_k` of such steps, ending at a vertex that has a
+  path end avoiding `u`.
+* `fan_exec`: along a duplicate-free chain from a non-neighbour `t` of `u`, the edge `tu` can be
+  added. The proof is an induction that applies one reroute per step on intermediate graphs
+  `K + tu − yu`, then the append. Size is unchanged, `t` loses an end and `u` gains one.
+* `fan_exists_chain`: the counting/injection argument. Assume `R`, the set reachable from `T`,
+  has no end on a path avoiding `u`. Then the end occurrences at `R` inject into the edges from
+  `u` to `R`, which gives `∑_T b ≤ #{w ∈ N(u) : b(w) = 0}`.
+* **`fan_grouped`** (grouped transfer): if `u ∉ T`, no `t ∈ T` is adjacent to `u`, and
+  `#{w ∈ N(u) : b(w) = 0} < ∑_{t ∈ T} b(t)`, then for some `t ∈ T`, every graph `K'` with
+  `E(K') = E(K) ∪ {tu}` has a decomposition of the same size with
+  `ends' w + [t = w] = ends w + [u = w]`.
+* **`fan_single`** (Lemma 3.4): let `uv ∈ E(G)`, let `G'` have edge set `E(G) \ {uv}`, and let
+  `D'` decompose `G'`. If `#{w ∈ N_{G'}(u) : b(w) = 0} < D'.ends v`, then `G` has `D` with
+  `|D| = |D'|`, `D.ends u = D'.ends u + 1`, `D.ends v + 1 = D'.ends v`, and `D.ends w = D'.ends w`
+  for all other `w`. `fan_single_deleteEdges` is the same statement for
+  `G' = G.deleteEdges {s(u,v)}`.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is

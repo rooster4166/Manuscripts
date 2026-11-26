@@ -216,6 +216,35 @@ The spine is a genuine reduction, but it reduces Gallai to statements that are, 
 
 ---
 
+
+## 6a. Audit outcomes (updated 2026-11-26, evening)
+
+Independent adversarial audits, with reports in `research/audit/` and fixes in `manuscripts/corrigenda/`:
+
+| Audited part | Verdict |
+|---|---|
+| MR Thms 1, 7, 57, 59 (A1) | **sound**; wording gaps only |
+| MR Thms 113, 114, 145, 162–164 (A2) | **sound**; no errors |
+| SP doubling equivalence and the Thm 10.16 chain; Thm 12.28, Cors 13.5, 13.12 (A3) | **sound** modulo JM; two citation gaps |
+| OSB Thm 4 and §15 equivalences (A4) | **sound** modulo JM; e(G) notation errors in statements (proofs fine); Cor 44 quantifier |
+| block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
+| external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
+
+**Formally verified in Lean** (`lean/`, sorry-free, standard axioms only):
+
+- Gallai ⇔ the rooted private-leaf test;
+- Gallai ⇔ the marked bound;
+- the W(F,S) and cone identities;
+- the parity lemma;
+- the private-leaf formula;
+- the endpoint-structure lemmas.
+
+**Open risks:**
+
+1. **Javadi–Miralaei (Wu's conjecture).** The proof has a substantive gap in Thm 8, Claim 12. The statement has been verified by computer for k ≤ 7. It affects the semi-clique theorem's residual family and SP 10.16's equality case, not the MR spine. Repair in progress.
+2. **Chu–Fan–Zhou Lemma 2.4** is used with |V(P)| + q ≤ 7, but the only verifiable version has ≤ 6. Resolution in progress.
+3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. A public Lean formalization exists, and its statements were checked as faithful, but it could not be built here.
+
 ## 7. Process going forward
 
 See `research/README.md`. In short:
