@@ -60,7 +60,7 @@ def ofTop (P : TPath V) (G : SimpleGraph V) (h : ∀ e ∈ P.walk.edges, e ∈ G
 @[simp] theorem reverse_tgt (P : GPath G) : P.reverse.tgt = P.src := rfl
 @[simp] theorem reverse_support (P : GPath G) : P.reverse.walk.support = P.walk.support.reverse :=
   Walk.support_reverse _
-@[simp] theorem reverse_endsAt [DecidableEq V] (P : GPath G) (v : V) :
+@[simp] theorem reverse_endsAt' [DecidableEq V] (P : GPath G) (v : V) :
     P.reverse.endsAt v = P.endsAt v := by
   unfold endsAt; simp only [reverse_src, reverse_tgt]; exact add_comm _ _
 
