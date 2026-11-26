@@ -374,6 +374,125 @@ computation and a 2-edge-colouring (Section~\ref{sec:reduction}). Hilton's theor
 constructive as well.
 \end{remark}
 
+\section{Two-vertex extensions and attachment records}\label{sec:reduction}
+
+Throughout this section $\Q=(Q_1,\dots,Q_n)$ is an edge decomposition of $K_m$ (vertex set
+$V$) into linear forests, and $c\in[n]$ is fixed. We write $\sigma_i(v)=\sigma_{Q_i}(v)$ and
+$p_i=p(Q_i)$. A \emph{two-vertex extension} is a map $\chi$ from the $2m+1$ edges of
+$K_{m+2}=K_m+\{x,y\}$ not in $K_m$ to $[n]$, with $\chi(xy)=c$. It defines
+$Q'_i=Q_i\cup\chi^{-1}(i)$. The extension is \emph{valid} if every $Q'_i$ is a linear forest.
+
+For a component $C$ of $Q_i$ and $z\in\{x,y\}$, let $d_z(C)$ be the number of end vertices
+$v$ of $C$ with $\chi(zv)=i$. A trivial component $\{v\}$ has one end vertex, so
+$d_z(\{v\})\le1$. Say that $C$ is \emph{joined to both} $x$ and $y$ (in colour $i$) if
+$d_x(C)\ge1$ and $d_y(C)\ge1$.
+
+\begin{lemma}[validity]\label{lem:valid}
+The extension $\chi$ is valid if and only if, for every colour $i$, the following hold.
+\begin{enumerate}[label=\textup{(V\arabic*)},leftmargin=*]
+\item $[\chi(xv)=i]+[\chi(yv)=i]\le\sigma_i(v)$ for every $v\in V$.
+\item $|\{v:\chi(xv)=i\}|\le 2-[i=c]$ and $|\{v:\chi(yv)=i\}|\le 2-[i=c]$.
+\item $d_x(C)\le1$ and $d_y(C)\le1$ for every component $C$ of $Q_i$.
+\item The number of components of $Q_i$ joined to both $x$ and $y$ is at most $1$ if
+$i\ne c$, and is $0$ if $i=c$.
+\end{enumerate}
+Moreover $p(Q'_i)=p_i+2-a_i-[i=c]$, where
+$a_i:=|\{v:\chi(xv)=i\}|+|\{v:\chi(yv)=i\}|$.
+\end{lemma}
+
+\begin{proof}
+For $v\in V$ we have $\deg_{Q'_i}(v)=\deg_{Q_i}(v)+[\chi(xv)=i]+[\chi(yv)=i]$, so (V1) says
+exactly that $\deg_{Q'_i}(v)\le2$. Likewise (V2) says $\deg_{Q'_i}(x),\deg_{Q'_i}(y)\le2$,
+counting the edge $xy$ when $i=c$. Assume (V1) and (V2). Then $Q'_i$ is a linear forest if and
+only if it is acyclic.
+
+Let $Z$ be a cycle of $Q'_i$. Since $Q_i$ is acyclic, $Z$ passes through $x$ or $y$. By (V1),
+every new edge $zv$ of colour $i$ ($z\in\{x,y\}$) ends at a vertex $v$ with
+$\sigma_i(v)\ge1$, that is, at an end vertex of its component $C$ of $Q_i$. Every vertex of
+$C$ other than its end vertices has both of its $Q'_i$-edges inside~$C$. Hence, once $Z$ enters
+$C$ through a new edge at an end vertex $v$, it runs through all of $C$ to the other end vertex
+$w$ and leaves through a new edge at $w$. (If $C=\{v\}$ is trivial, then $w=v$ and $Z$ uses
+both new edges at $v$.) The vertices $x$ and $y$ each occur at most once on $Z$. So $Z$ has one
+of the following forms:
+$x\,C\,x$, which needs $d_x(C)=2$;
+$y\,C\,y$, which needs $d_y(C)=2$;
+$x\,C\,y\,C'\,x$ with $C\ne C'$ both joined to both;
+or, only when $i=c$, $x\,C\,y\,x$ through the edge $xy$, with $C$ joined to both.
+Conversely, each of these configurations yields a cycle. Therefore, given (V1) and (V2),
+acyclicity is equivalent to (V3) and (V4). The formula for $p(Q'_i)$ follows from
+$|Q'_i|=|Q_i|+a_i+[i=c]$.
+\end{proof}
+
+\begin{definition}[records]\label{def:record}
+A \emph{record} (for $\Q$ and $c$) is a function $\rho:V\times[n]\to\{0,1,2\}$ with
+$\rho(v,i)\le\sigma_i(v)$ and $\sum_i\rho(v,i)=2$ for every $v$. For a component $C$ of
+$Q_i$, put $\rho(C)=\rho(u,i)+\rho(w,i)$ if $C$ is a path with end vertices $u\ne w$, and
+$\rho(C)=\rho(v,i)$ if $C=\{v\}$. In both cases $\rho(C)\in\{0,1,2\}$, the number of slots of
+$C$ used by $\rho$. A record is \emph{admissible} if, for every colour $i$:
+\begin{enumerate}[label=\textup{(R\arabic*)},leftmargin=*]
+\item $a_i(\rho):=\sum_{v}\rho(v,i)\le 4$ if $i\ne c$, and $a_c(\rho)\le2$;
+\item at most one component $C$ of $Q_i$ has $\rho(C)=2$ if $i\ne c$, and none if $i=c$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[records and the split]\label{lem:record}
+\textup{(a)} If $\chi$ is valid, then $\rho(v,i):=[\chi(xv)=i]+[\chi(yv)=i]$ is an admissible
+record with $a_i(\rho)=a_i$.
+\textup{(b)} Conversely, for every admissible record $\rho$ there is a valid $\chi$ with
+$[\chi(xv)=i]+[\chi(yv)=i]=\rho(v,i)$ for all $v$ and~$i$.
+\end{lemma}
+
+\begin{proof}
+(a) We have $\rho(v,i)\le\sigma_i(v)$ by (V1). Each of $xv$ and $yv$ has exactly one colour,
+so $\sum_i\rho(v,i)=2$. (R1) follows from (V2). Let $C$ be a component of $Q_i$ with
+$\rho(C)=2$. If $C=\{v\}$, then $\chi(xv)=\chi(yv)=i$, so $C$ is joined to both. If $C$ has end
+vertices $u\ne w$, then $\rho(u,i)=\rho(w,i)=1$. By (V3) the two attachments do not both go to
+$x$, and do not both go to $y$, so again $C$ is joined to both. Hence (R2) follows from (V4).
+
+(b) Let $F$ be the bipartite multigraph with parts $V$ and $[n]$ that has $\rho(v,i)$
+parallel edges between $v$ and $i$. Then $\deg_F(v)=2$ and $\deg_F(i)=a_i(\rho)$. For $i\ne c$,
+if $Q_i$ has a (unique) component $C$ with $\rho(C)=2$, call the two edges of $F$ at $i$ that
+correspond to its two slots the \emph{special pair} at $i$. These are the two parallel edges
+$vi$ if $C=\{v\}$, and the edges $ui,wi$ otherwise.
+
+Replace each colour vertex $i\ne c$ by two vertices $i',i''$ and distribute its at most four
+edges between them, at most two at each, so that a special pair, if present, lies entirely
+at~$i'$. Keep $c$ as a single vertex, which has degree $a_c(\rho)\le2$. The resulting multigraph
+$F^\ast$ is bipartite with maximum degree~$2$. Each component is therefore a path or an even
+cycle; a pair of parallel edges counts as a cycle of length~$2$. Colouring the edges alternately
+along each component gives a proper edge colouring of $F^\ast$ with the two colours $x$
+and~$y$. For each edge of $F^\ast$ between $v$ and a copy of $i$ that has colour $z$, set
+$\chi(zv)=i$; also set $\chi(xy)=c$. Since $\deg_{F^\ast}(v)=2$, the vertex $v$ is incident with
+exactly one edge of each colour, so $\chi(xv)$ and $\chi(yv)$ are each defined exactly once.
+By construction $[\chi(xv)=i]+[\chi(yv)=i]=\rho(v,i)$.
+
+We check (V1)--(V4). (V1) holds because $\rho(v,i)\le\sigma_i(v)$. Each copy of $i$ has degree at
+most $2$ in a proper colouring, so it carries at most one $x$-edge and at most one $y$-edge;
+there are at most two copies, and only one for $c$. This gives (V2). Suppose a component $C$ of
+$Q_i$ had $d_x(C)=2$. Then $C$ is nontrivial, $\rho(C)=2$, and $i\ne c$ by (R2), so the two
+attachments of $C$ form the special pair at $i$. They lie at the same copy $i'$ and therefore
+have different colours, a contradiction. The same argument applies to $y$, which gives (V3).
+A component joined to both $x$ and $y$ has $\rho(C)=2$, so (V4) follows from (R2).
+\end{proof}
+
+For the parameters of Theorem~\ref{thmB} define the \emph{demands}
+\begin{equation}\label{eq:demands}
+\delta_i=\pos{p_i+4-k}\ (i\in T),\qquad \delta_c=\pos{p_c+3-k},\qquad
+\delta_i=\pos{p_i+5-k}\ (i\in S:=U\setminus\{c\}).
+\end{equation}
+By Lemma~\ref{lem:valid}, $p(Q'_i)=p_i+2-a_i-[i=c]$. So the targets of Theorem~\ref{thmB}
+($p(Q'_i)\le k-2$ for $i\in T\cup\{c\}$, and $p(Q'_i)\le k-3$ for $i\in S$) are equivalent to
+$a_i\ge\delta_i$ for all~$i$. Lemmas~\ref{lem:valid} and~\ref{lem:record} therefore give the
+following.
+
+\begin{corollary}\label{cor:record}
+Under the hypotheses of Theorem~\ref{thmB}, the conclusion of Theorem~\ref{thmB} holds if and
+only if there is an admissible record $\rho$ with $a_i(\rho)\ge\delta_i$ for every $i\in[n]$.
+\end{corollary}
+
+The hypotheses give $\delta_i\le4$ for $i\in T\cup S$ (as $p_i\le k$, and $p_i\le k-1$ on $S$)
+and $\delta_c\le2$ (as $p_c\le k-1$). So $\delta_i$ never exceeds the caps in~(R1).
+
 %%BODY%%
 
 \begin{thebibliography}{99}
