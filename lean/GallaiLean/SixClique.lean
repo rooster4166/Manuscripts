@@ -141,13 +141,13 @@ theorem exists_pairing {V : Type u} [DecidableEq V] :
       intro x hx y hy hxy
       subst hxy
       rw [hLs] at hy
-      simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hx
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hx
       rcases hx with rfl | rfl
       · exact Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hy) rfl
       · exact Finset.ne_of_mem_erase hy rfl
     · intro v
       rw [List.flatMap_cons, List.mem_append, hLs]
-      simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false,
+      simp only [List.mem_cons, List.not_mem_nil, or_false,
         Finset.mem_erase]
       constructor
       · rintro ((rfl | rfl) | ⟨-, -, h⟩)
@@ -214,8 +214,7 @@ theorem six_clique_prescribed_ends (G : SimpleGraph V) [DecidableRel G.Adj] (U :
     have : List.ofFn lab = [t0, t1, t2, t3, t4, t5] := by
       simp [lab, List.ofFn_succ]
     rw [this]
-    simp [h02, h03, h23, h14, h15, h45, c01, c04, c05, c21, c24, c25, c31, c34, c35,
-      Ne.symm c21, Ne.symm c31]
+    simp [h02, h03, h23, h14, h15, h45, c01, c04, c05, Ne.symm c21, c24, c25, Ne.symm c31, c34, c35]
   have hUlab : ∀ x ∈ U, ∃ k, lab k = x := by
     intro x hx
     by_cases hxT : x ∈ T
@@ -466,18 +465,18 @@ theorem six_clique_prescribed_ends (G : SimpleGraph V) [DecidableRel G.Adj] (U :
         by_cases hT1 : lab ⟨a.val, ha⟩ ∈ T
         · have h1 := (hlabT _).mp hT1
           simp only at h1
-          rw [if_pos hT1, if_pos h1]
+          rw [ite_eq_left hT1, ite_eq_left h1]
         · have h1 := mt (hlabT _).mpr hT1
           simp only at h1
-          rw [if_neg hT1, if_pos (hlabU _), if_neg h1, if_pos ha]
+          rw [ite_eq_right hT1, ite_eq_left (hlabU _), ite_eq_right h1, ite_eq_left ha]
       · have hU' : ι a ∉ U := by rw [hι_ge a ha]; exact hrepU _
         have hT'' : ι a ∉ T := fun h => hU' (hTU h)
-        rw [if_neg hT'', if_neg hU']
+        rw [ite_eq_right hT'', ite_eq_right hU']
         simp only [ha, ite_false]
         split_ifs with h <;> omega
     · rw [SixData.B_nc (S := S) _ hv]
       have hvU := ((hrange v).mp hv).1
-      rw [if_neg (fun h => hvU (hTU h)), if_neg hvU]
+      rw [ite_eq_right (fun h => hvU (hTU h)), ite_eq_right hvU]
   refine ⟨D, ?_, hends⟩
   have hsum := D.sum_ends
   have hfun : ∀ v, D.ends v = 2 * (if v ∈ T then 1 else 0) + (if v ∈ Uᶜ then 1 else 0) := by

@@ -133,7 +133,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 |---|---|---|
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
-| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
 
 **Local agents:**
 
@@ -163,3 +163,13 @@ Candidate uniform mechanisms (`research/connections.md`):
 - Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
 - Corrigenda document written (`manuscripts/corrigenda`).
 - New manuscript draft `manuscripts/endpoint-structure`.
+- Lean (cloud session, branch `claude/lean-six-clique`): **six-clique Theorem 1 formalized**
+  (`six_clique_prescribed_ends`, `lean/GallaiLean/SixClique.lean`). It is sorry-free with
+  standard axioms only, and the Section 4 bookkeeping is checked by kernel `decide`.
+  - Reusable tools: the insertion-schedule lemma `Prog.sound` (finite transfer programs checked on
+    a model and replayed on any graph), `Ach.grouped` / `Ach.addPath`, and Lemma 3
+    (`Ach.insert_even`: insert an even graph by chordless cycles).
+  - The audit's requested expansions (A6 F10: Lemma 2's chain step; F11: Cor 5's triple rectangle)
+    are written out in the `SixClique.lean` docstring.
+  - Not formalized: Cor 5 and Thm 6. `Prog` is the format for replaying Thm 6's certificate
+    records once they are in the repository.
