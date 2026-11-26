@@ -4,6 +4,7 @@
 \usepackage{booktabs}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\emergencystretch=2em
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -83,17 +84,17 @@ collection as summarised in the status map and audit A6.
 
 \begin{table}[ht]
 \small
-\begin{tabular}{p{3.3cm}p{8.2cm}p{2.2cm}}
+\begin{tabular}{p{2.3cm}p{8.6cm}p{2.9cm}}
 \toprule
 Result & Statement (informal) & Status\\
 \midrule
-Thm.~\ref{thm:terminal} & last Fan step with local held edges ends at a hub profile, never at the standard profile & proved\\
-Thm.~\ref{thm:roothub} & root-hub witnesses close every residual root position: (i) $D=\emptyset$ or $r\notin V(D)$, odd $y\in N(r)$ with $|N(y)\cap T|\le2$; (ii), (iii) one or two core non-neighbours of $r$, a triangle $rab$ with a small-contact $a$ & proved (new for $|S(y)|=3$, i.e.\ $S(y)=N(y)\cap U$ of size three, and for (ii), (iii))\\
+Thm.~\ref{thm:terminal}, \ref{thm:terminalW} & if all held edges are local, the last Fan step ends at a hub profile, never at the standard profile & proved\\
+Thm.~\ref{thm:roothub} & (i) $r$ adjacent to all of $T$ (so $D=\emptyset$, or $r\notin V(D)$), with an odd $y\in N(r)$ and $|N(y)\cap T|\le2$; (ii), (iii) $r$ has one or two core non-neighbours and a triangle $rab$ with a small-contact $a$ & proved; new for $|S(y)|=3$ and for (ii), (iii)\\
 Thm.~\ref{thm:tworesources} & $D=\emptyset$: any odd $y\in N(r)$ plus a triangle $rab$, under mild contact conditions & proved\\
-Thm.~\ref{thm:relay} & $D=\emptyset$: relay path from a non-$T$-full neighbour of $r$ to a vertex with no core neighbour & proved\\
+Thm.~\ref{thm:relay} & $D=\emptyset$: a relay path from a non-$T$-full neighbour of $r$ to a vertex with no core neighbour & proved\\
 Thm.~\ref{thm:fullhub} & a full vertex with two quiet batteries closes every root & proved\\
-Thm.~\ref{thm:general} & all of the above for every deletion degree $d$, incl.\ T(8)-i at universal roots & proved\\
-Prop.~\ref{prop:stage} & no single-stage full-pair program in the six-clique framework & exhaustive (small) search\\
+Thm.~\ref{thm:general} & hub closures for every deletion degree $d$, incl.\ T(8)-i at universal roots & proved\\
+Prop.~\ref{prop:stage} & no single-stage full-pair program in the six-clique framework & exhaustive small search\\
 \midrule
 Q2 & $D=\emptyset$ with full vertices, in general & \textbf{open}; residual in Cor.~\ref{cor:residual}\\
 \bottomrule
@@ -108,8 +109,8 @@ $\lfloor N/2\rfloor$ paths. In Lean this is the explicit hypothesis \texttt{Lova
 \item Endpoint-structure Lemma~3~\cite{ES}, a consequence of (A). If $G$ has even order and no
 isolated vertex and $u\in\Ev(G)$, then $G$ has a partition with $b=2$ on $\Ev(G)-u$, $b=0$ at $u$ and
 $b=1$ on $\Od(G)$. In Lean this is \texttt{realisable\_evenSet\_erase}.
-\item Fan's Lemmas 3.3 and 3.4~\cite{Fan}, stated below. In Lean these are \texttt{fan\_grouped}
-and \texttt{fan\_single}.
+\item Fan's Lemmas 3.3 and 3.4~\cite{Fan}, stated below. In Lean these are
+\texttt{fan\_grouped} and \texttt{fan\_single}.
 \end{enumerate}
 
 \section{Transfers, seeds and relays}\label{sec:tools}
@@ -249,6 +250,16 @@ outside $L$, unless it passes through a hub profile ($\alpha$)--($\gamma$), resp
 partition of $B-rx$ rooted at $x$ is never justified by Fan's inequality when the outcome is
 standard. This is the numerical obstruction of false-twin-return Prop.~4.
 \end{corollary}
+
+\begin{remark}[Induction on the number of full vertices]\label{rem:induction}
+Deleting the twelve spokes of two full vertices $x,x'$ keeps the class: $U$ stays even and
+$B[U]=K_6$, and there are two fewer full vertices. Deleting the single edge $rx$ also keeps the
+class, with root $x$. An induction would take a rooted partition of the smaller graph and return
+the deleted edges by Fan transfers. Every returned edge is local, so by Theorem~\ref{thm:terminal}
+the last return can only produce a hub profile. A standard rooted profile is never reached this
+way. Any induction on full vertices therefore needs either a non-Fan final step or non-local held
+edges, and the hub theorems below provide the second.
+\end{remark}
 
 \begin{remark}[Hub capacity]\label{rem:capacity}
 The hub profiles need a vertex with $4$--$6$ ends. Fan receipts cannot produce these from the
@@ -613,6 +624,7 @@ false-twin example. This is consistent with uniformity of the endpoint matroid
 (connections~\S M(a)) in this class. It is evidence only.
 
 \section{Formalization notes}\label{sec:lean}
+\sloppy
 
 All results except Proposition~\ref{prop:stage} are finite compositions of three formalized
 statements: \texttt{realisable\_evenSet\_erase} (or \texttt{LovaszStatement} with
@@ -643,6 +655,7 @@ target.
 \item \emph{Relay lemma.} Induction on the path length with \texttt{fan\_single}.
 \end{itemize}
 
+\fussy
 \section*{Computational checks}
 
 All scripts are in \texttt{scripts/} and use \texttt{tools/pathnum2.py} only to compute seeds
@@ -652,7 +665,7 @@ of Fan's chain construction, self-tested by \texttt{test\_engine.py} on $800$ ra
 Every step asserts that the actual number of blank neighbours is at most the bound used in the
 proof, and every output partition is verified edge by edge.
 
-\begin{center}\small
+\begin{center}\footnotesize
 \begin{tabular}{lll}
 \toprule
 script & checks & result\\
