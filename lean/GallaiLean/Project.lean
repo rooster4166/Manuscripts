@@ -220,12 +220,15 @@ theorem filterMap_flatMap_perm (f : V → V') (S : Sym2 V → Bool)
       simp only [List.flatMap_cons]
       exact h1.append ih
 
-/-- **Projection lemma.** -/
-theorem PathDecomp.project (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)
+/-- **Projection lemma**, with the location of the pieces: every path of `D` with a kept edge
+has its piece among the paths of the new decomposition. -/
+theorem PathDecomp.project_spec (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)
     (hinj : Set.InjOn f T) (hT : ∀ e ∈ G.edgeSet, S e = true → ∀ x ∈ e, x ∈ T)
     (hcov : ∀ e', e' ∈ G'.edgeSet ↔ ∃ e ∈ G.edgeSet, S e = true ∧ e.map f = e')
     (hpiece : ∀ P : GPath G, HasPiece G' f S P) :
-    ∃ D' : PathDecomp G', D'.size ≤ D.paths.countP (fun P => P.edges.any S) := by
+    ∃ D' : PathDecomp G', D'.size ≤ D.paths.countP (fun P => P.edges.any S) ∧
+      ∀ P ∈ D.paths, P.edges.any S = true →
+        ∃ Q ∈ D'.paths, Q.edges.Perm ((P.edges.filter S).map (Sym2.map f)) := by
   choose g hg using hpiece
   have key := filterMap_flatMap_perm f S g hg D.paths
   have hnd : (((D.paths.flatMap GPath.edges).filter S).map (Sym2.map f)).Nodup := by
@@ -235,7 +238,7 @@ theorem PathDecomp.project (D : PathDecomp G) (f : V → V') (S : Sym2 V → Boo
     have hxG := (D.covers x).2 hx.1
     have hyG := (D.covers y).2 hy.1
     exact Sym2.map_injOn' hinj (hT x hxG hx.2) (hT y hyG hy.2) hxy
-  refine ⟨⟨D.paths.filterMap g, key.nodup_iff.mpr hnd, ?_⟩, ?_⟩
+  refine ⟨⟨D.paths.filterMap g, key.nodup_iff.mpr hnd, ?_⟩, ?_, ?_⟩
   · intro e'
     rw [key.mem_iff, hcov]
     simp only [List.mem_map, List.mem_filter, ← D.covers]
@@ -256,6 +259,39 @@ theorem PathDecomp.project (D : PathDecomp G) (f : V → V') (S : Sym2 V → Boo
     obtain ⟨e, he⟩ := List.exists_mem_of_ne_nil _ hne
     rw [List.mem_filter] at he
     exact List.any_eq_true.mpr ⟨e, he⟩
+  · intro P hP hS
+    have h1 := hg P
+    cases hgP : g P with
+    | none =>
+      rw [hgP, optEdges_none] at h1
+      obtain ⟨e, he, hSe⟩ := List.any_eq_true.mp hS
+      have : Sym2.map f e ∈ (P.edges.filter S).map (Sym2.map f) :=
+        List.mem_map_of_mem (List.mem_filter.mpr ⟨he, hSe⟩)
+      rw [← h1.nil_eq] at this
+      simp at this
+    | some Q =>
+      rw [hgP, optEdges_some] at h1
+      exact ⟨Q, List.mem_filterMap.mpr ⟨P, hP, hgP⟩, h1⟩
+
+/-- **Projection lemma.** -/
+theorem PathDecomp.project (D : PathDecomp G) (f : V → V') (S : Sym2 V → Bool) (T : Set V)
+    (hinj : Set.InjOn f T) (hT : ∀ e ∈ G.edgeSet, S e = true → ∀ x ∈ e, x ∈ T)
+    (hcov : ∀ e', e' ∈ G'.edgeSet ↔ ∃ e ∈ G.edgeSet, S e = true ∧ e.map f = e')
+    (hpiece : ∀ P : GPath G, HasPiece G' f S P) :
+    ∃ D' : PathDecomp G', D'.size ≤ D.paths.countP (fun P => P.edges.any S) :=
+  (D.project_spec f S T hinj hT hcov hpiece).imp fun _ h => h.1
+
+/-- Build a decomposition from a list of paths whose edges are a permutation of a duplicate-free
+list of all edges. -/
+def PathDecomp.ofPerm (L : List (GPath G)) (M : List (Sym2 V))
+    (hperm : (L.flatMap GPath.edges).Perm M) (hnd : M.Nodup) (hcov : ∀ e, e ∈ G.edgeSet ↔ e ∈ M) :
+    PathDecomp G where
+  paths := L
+  nodup_edges := hperm.nodup_iff.mpr hnd
+  covers e := (hcov e).trans hperm.mem_iff.symm
+
+@[simp] theorem PathDecomp.ofPerm_paths (L : List (GPath G)) (M : List (Sym2 V)) (hperm) (hnd)
+    (hcov) : (PathDecomp.ofPerm L M hperm hnd hcov).paths = L := rfl
 
 /-- **Mapping along an embedding**: a decomposition of `G` maps to one of `G'` of the same size
 whenever `f` is injective and the image of `G.edgeSet` is `G'.edgeSet`. -/

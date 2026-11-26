@@ -453,7 +453,7 @@ theorem dbl_left_hasPiece (P : GPath (dbl H r)) : HasPiece (addLeaf H r) psiL SL
     rcases Sym2.eq_iff.mp he with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
     · -- crossing left to right: reverse
       have e₁ : P.walk.reverse = q₂.reverse.append (Walk.cons hcd.symm q₁.reverse) := by
-        rw [hP, Walk.reverse_append, Walk.reverse_cons, Walk.append_assoc]
+        rw [hP, Walk.reverse_append, Walk.reverse_cons, ← Walk.append_assoc]
         rfl
       exact HasPiece.of_reverse (dbl_left_piece_rl P.reverse q₂.reverse hcd.symm q₁.reverse e₁)
     · exact dbl_left_piece_rl P q₁ hcd q₂ hP
