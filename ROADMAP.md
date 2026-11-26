@@ -297,4 +297,4 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Odd-neighbour hub** (`hub_four_odd_ends`, `hub_four_odd_rooted`) closes the critical Gqz~vw at root 3; `gqz_rooted_three` is checked by `decide`.
   - **Profile-level flower move** (manuscript Lemma 5.7, transversals for j ≤ 4): the game wins CP(4) and CP(5) with one star, attaining `cocktail_insertion_barrier`. It does not help on A_{6,2} or B′ (n = 10).
   - Base branch merged into `claude/missing-move`.
-
+- **Flower move is a theorem** (Flower.lean, emc-four). `flower_decomp` is the general recombination. `hub_cycles`: at Fan's equality the paths close into cycles through the hub. CP(m) is reduced to a **rainbow-transversal lemma**, proved for ≤ 4 cycles, which gives `cocktail_passes_four` and `cocktail_passes_five` unconditionally (standard axioms; checked). It is open for m ≥ 6, with no failures for m ≤ 10 (E16). The emc-four session is now on the general rainbow lemma.
