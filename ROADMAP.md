@@ -51,7 +51,9 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived; Thm 144 can be made Shaik-free (BS Thm 13 + Lemma 133).** Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances) |
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
-| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ** | comp(n ≤ 6) |
+| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ**. **Descent steps 1 and 2 are PROVED for all even-order graphs** (Lemma 3; `two_step_descent`). Step 3 is the next target (cloud session). | **lean** (steps 1–2) |
+| T(4)-i via descent | two-end test with 4 even vertices: every even r lies in a realisable half-set | `two_step_descent` with y = r | **PROVED** (Lovász + Fan only, no Botler–Sambinelli) | **lean** |
+| EMC(e=4) | realisable pairs form a rank-2 matroid | every even vertex has ≥ 2 realisable partners (two-step) ⇒ the partner graph has min degree 2 on 4 vertices ⇒ C4, K4−e or K4 | **PROVED** (write-up in progress) | lean: core step |
 
 ## Side chains that also reach Gallai
 
@@ -68,10 +70,10 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Result | Used by | Status |
 |---|---|---|
 | Lovász mixed theorem | everything | classical. **The ≤ 1 even vertex form is proved in Lean** (`lovasz_ends`, by an original induction from Fan's lemma; manuscript `manuscripts/lovasz-fan`) |
-| **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. Repair agent running. |
+| **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. The first repair agent hit an output limit; relaunch pending. Off the spine. |
 | Fan addible-edge lemmas | six-even program; MR | **Both proved in Lean** (`fan_single`, `fan_grouped`; sorry-free). Lemma 3.4 also matches its published quotation (A7). |
 | Fan–Hou–Zhou | T(4); MR p.129 | **matches** (A7): no triangle pair, and each block has Δ ≤ 3; ceiling conclusion |
-| Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RISK** (A7): used with \|V(P)\| + q ≤ 7, but the verifiable version has ≤ 6. Repair agent running. |
+| Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RESOLVED** (`manuscripts/cfz-lemma`): the common-vertex form with \|V(P)\| + q ≤ 7 is proved, and every sum-7 use satisfies its hypothesis. The one finite ingredient is a 1,257-case six-contact lemma, which agrees with MR §6. The general form is unproved but not needed. |
 | Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | A7: Botler–Sambinelli replaces it at the Thm 144 r ∈ T step and in the zero-exception case of Cor 106. **The one-exception case of Cor 106 still needs Shaik**, so Thm 144 remains conditional. |
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
@@ -166,3 +168,6 @@ Candidate uniform mechanisms (`research/connections.md`):
 - Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
 - Corrigenda document written (`manuscripts/corrigenda`).
 - New manuscript draft `manuscripts/endpoint-structure`.
+- **Lovász's theorem proved in Lean** (an original proof from Fan's lemma; `manuscripts/lovasz-fan`).
+- **Two-step faithful descent proved in Lean** (cloud session). Consequences: the two-end test at d = 4 holds by Lovász + Fan alone, EMC holds for e = 4, and T(6)-i reduces to the third descent step.
+- **CFZ Lemma 2.4 resolved.**

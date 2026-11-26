@@ -1,7 +1,20 @@
 \documentclass[11pt]{amsart}
 \usepackage[margin=1.05in]{geometry}
-\usepackage{amssymb,amsmath,booktabs,longtable,enumitem}
+\usepackage{amssymb,amsmath,booktabs,longtable,enumitem,array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+\DeclareUnicodeCharacter{2209}{\ensuremath{\notin}}
+\DeclareUnicodeCharacter{2115}{\ensuremath{\mathbb{N}}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\to}}
+\DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
+\DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
+\DeclareUnicodeCharacter{2227}{\ensuremath{\wedge}}
+\DeclareUnicodeCharacter{2228}{\ensuremath{\vee}}
+\DeclareUnicodeCharacter{2229}{\ensuremath{\cap}}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -49,7 +62,8 @@ its Lemma~2.4 therefore remains \textbf{unverified}.
 Chu and Wang introduce their Lemma~2.2 with ``We obtain the following lemma'' and prove it
 themselves. Its hypothesis is $|V(P)|+|\cyc|\le 6$. They prove the case of six cycles through a
 vertex separately, as their Lemma~2.3. Their reference [CFZ] is the 2022 triangle-free paper
-(Discrete Math.\ 345, 112866), and they cite it only for its Theorem~3.1. So no verifiable source
+(Discrete Math.\ 345, 112866). They cite it for the triangle-free bound and for its
+Theorem~3.1, never for a path--cycle lemma. So no verifiable source
 states the $\le 7$ form, and no verifiable source states any form of Lemma~2.4 of the 2026 paper.
 
 \item \emph{Every use with sum $7$ has a common vertex.} In every application in the manuscripts with
@@ -101,8 +115,8 @@ $|V(P)|\le 4$ and $|V(P)|+q\le 7$, then the union decomposes into $q+1$ paths.
 \end{theorem}
 
 \begin{corollary}\label{cor:ends}
-In the setting of Theorem~\ref{thm:main}, suppose $q\ge 1$ or $P$ has an edge. If
-$d=\deg_{H}(x)$ in the union $H$ satisfies $d\ge 2q+1$, then every decomposition into at most $q+1$
+In the setting of Theorem~\ref{thm:main}, let $d=\deg_{H}(x)$ in the union $H$, and suppose
+$d\ge 2q+1$, that is, $x$ has an edge of $P$. Then every decomposition into at most $q+1$
 paths has exactly $q+1$ paths, all of them visit $x$, and exactly $2(q+1)-d$ of them end at $x$,
 counted with multiplicity.
 \end{corollary}
@@ -172,8 +186,8 @@ Let $c=|V(Q)\cap V(C)|$.
 \emph{Case $c\le 5$.} This is the lemma of Chu, Fan and Liu \cite[Lemma 2.1]{CFL}, quoted
 verbatim as Lemma~2.1 of \cite{CW}. A connected union of an edge-disjoint path and cycle with at
 most five common vertices decomposes into two paths, unless it is the exceptional graph. In the
-exceptional graph $C$ is a $5$-cycle all of whose vertices lie on the path, as five consecutive
-vertices, with a pendant subpath at each end of that segment. Our hypothesis excludes this:
+exceptional graph $C$ is a $5$-cycle whose five vertices are consecutive on the path, and the
+path may continue by a pendant subpath, possibly trivial, at each end of that segment. Our hypothesis excludes this:
 either $c\le 4$, or $C$ has a vertex outside $Q$.
 
 \emph{Case $c=6$.} Then $|V(Q)|=6$, $V(Q)\subseteq V(C)$, and $C$ has a vertex outside $Q$. The
@@ -402,9 +416,11 @@ that cycle's first contact. We have no proof of that case.
 
 \begin{remark}[relation to the internal results]
 The marked-reduction manuscript contains Lemma~173 (a path $(A,B,C,V,Z)$ with four cycles through
-$V$ gives five paths). Padding a path with private pendant edges, and adding dummy triangles
-through the common vertex, removes edges only from path ends. So Lemma~173 also implies
-Theorem~\ref{thm:main}, and more: it gives $|V(P)|+q\le 8$ for $|V(P)|\le 4$. Its proof, however,
+$V$ gives five paths). Pad $P$ with private pendant edges and add dummy triangles on new vertices through the common
+vertex. Deleting the padding afterwards only shortens or deletes paths. The padding vertices are new,
+and each has all its neighbours in the padding or at its attachment vertex. Hence every path meets
+the padding in a terminal segment. So Lemma~173 also implies Theorem~\ref{thm:main}, and in fact the
+common-vertex statement for every $|V(P)|\le 4$ and $q\le 4$. Its proof, however,
 rests on the computer-checked Theorem~159. Theorem~38 there (at most seven cycles through a
 vertex give $j+1$ paths with two ends at the vertex) does not use Lemma~2.4.
 \end{remark}
@@ -417,7 +433,7 @@ Line numbers refer to the text extractions. Here ``(a)'' means covered by Lemma~
 case the endpoint conclusions drawn in the manuscripts follow from degree counting at the common
 vertex (Corollary~\ref{cor:ends}).
 
-\begin{longtable}{p{3.1cm}p{5.1cm}p{1.3cm}p{4.3cm}}
+\begin{longtable}{L{3.4cm}L{5.0cm}L{1.4cm}L{4.4cm}}
 \toprule
 Place & Configuration & $(k,q)$ & Status\\
 \midrule
