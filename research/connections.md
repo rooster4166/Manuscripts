@@ -657,7 +657,9 @@ On K8 minus a perfect matching (n = 8, 6-regular) the 4th receipt *always* fails
 - *Criticality.* The five E13 losers are non-critical (p = 3) and fall to the split rule. Of the 47 `np`-losers at \|F\| ≤ 4, 19 are critical, and path insertion wins them all (\|F\| ≤ 9).
 - *The critical Gqz~vw at root 3* is closed by the **odd-neighbour hub** (Thm 2.5): s = 3 has degree 4 and one odd neighbour x = 6. Holding xz (z = 0) extends the new path to y′–s–x–z. In Lean: `hub_four_odd_ends`, and `gqz_rooted_three` by `decide`. It is an instance of BranchBase3 (k = 3), with a simple final profile {0, 3, 7}.
 - *Profile-level flower move* (Lemma 5.7; Question 5.6(b) of the earlier draft) for Hamiltonian flowers, j ≤ 4 (transversal Lemma 5.6). With it the game wins CP(4) and CP(5) at every root with one held star, attaining `cocktail_insertion_barrier` (m − 1 inserted edges). It adds nothing on A_{6,2}, B′, the other dense n = 8 graphs, or a sample of 5 critical n = 10 graphs.
-- Still open: a profile form of the A_{6,2} count; a transversal lemma for every j, which would give a flower for every CP(m) (emc-four session); completeness at n = 10, with A_{6,2} as the test (manuscript Question 5.9).
+- *Correction:* A_{6,2} is closed at every root (Prop 5.2 + Sym(Q)); B′ is closed by hand (endpoint-structure Prop 68).
+- *Receipt or flower with a count* (manuscript Lemma 5.9; option `rf`), plus the orbit rule, wins A_{6,2}, B′, CP(4) and CP(5) at every root with one held star. On a sample of ten random critical n = 10 graphs it changes nothing. The first miss is **Inv~|~zbw** (K10 − {02, 17, 19, 24, 29, 39, 58}, roots 2 and 3, star + ≤ 2). There the count 33 < 35 decides neither case: a degree-6 hub with two odd neighbours.
+- Still open: a sharper count than Lemma 5.9 (Inv~|~zbw); a transversal lemma for every j, which would give a flower for every CP(m) (emc-four session); completeness at n = 10 (manuscript Question 5.11).
 
 **Consequences.**
 - §R's "Lovász + Fan is incomplete" is corrected: at n = 8 the missing move was path insertion, which is already in the Lean insertion library (`Ach.addPath`).

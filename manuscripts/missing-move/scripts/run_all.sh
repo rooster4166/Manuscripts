@@ -39,3 +39,8 @@ python3 $D/certificate.py 'Gqz~vw' 3 5 > $O/certificate_Gqz.txt
 (cd $O && for g in A62 B2; do for k in 0 1; do echo "$g k=$k: $(python3 ../fan_game.py $g.g6 $k np flower hubs | tail -1)"; done; done > fam_flower.log)
 python3 $D/fan_game.py $O/dense7.g6 6 np flower > $O/dense7_flower6.log
 (cd $O && python3 ../sample10.py 7 5 > sample10.g6)   # five critical order-10 graphs with a degree-6 vertex
+# Lemma 5.9 / Proposition 5.10: receipt or flower with a count, and the orbit rule
+(cd $O && for g in A62 B2 cp4 cp5; do for o in "0 np rf hubs" "0 np rf orbit hubs"; do
+  echo "$g [$o]: $(python3 ../fan_game.py $g.g6 $o | tail -1)"; done; done > rf_families.log)
+(cd $O && python3 ../sample10.py 11 5 > sample10b.g6 && cat sample10.g6 sample10b.g6 > sample10all.g6 && ../rf_sample.sh sample10all.g6 > rf_sample.log)
+python3 $D/miss_k3.py 3 > $O/miss1_k3.log   # Inv~|~zbw, roots 2 and 3, star plus three edges

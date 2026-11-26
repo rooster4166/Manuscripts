@@ -29,6 +29,9 @@ Let G have even order n. A play consists of the following steps.
        rotation as a move (missing-move manuscript, Section 4).
      * [option "flower"] the profile-level flower move at a saturated hub (missing-move
        Lemma 5.6 and Lemma 5.7; see the comment in win()).
+     * [option "rf"] receipt or flower (endpoint-structure Thm 67) with a sound edge count that
+       refutes or certifies the flower case (missing-move Lemma 5.9; see the comment in win()).
+     * [option "orbit"] the win condition accepts an end anywhere in the automorphism orbit of r.
   3. The play wins for the root r if, once F is used up, sum b <= n and b(r) >= 1.
 Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`), `Ach.addPath`, the rotation
 lemma or Fan's alternative, applied to a realising partition, so a winning play gives a partition
@@ -41,7 +44,8 @@ half-set S' of Ev(K) containing r'; the profile is 1 on odd vertices, 2 on S' an
 We must win against every choice of S'. If every connected even-order graph has a winning
 inductive play, Gallai follows by induction on the number of edges.
 
-Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs] [flower]
+Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind] [np] [rotR] [altR] [hubs] [flower] [rf]
+       [orbit]
   e.g. python3 tools/fan_game.py data/conn8.g6 4 np      (Fan + multi-edge new paths)
        python3 tools/fan_game.py FILE 4 rot2              (Fan + at most two rotations)
        python3 tools/fan_game.py FILE 2 np hubs           (F = a full star plus <= 2 edges)
@@ -58,7 +62,7 @@ CACHE_CAP = 3_000_000  # states kept in the memo table before it is flushed
 
 
 def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False,
-                kmin=0, flower=False):
+                kmin=0, flower=False, rf=False, orbit=False):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -67,6 +71,14 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
     for a, b in E:
         nbr[a] |= 1 << b
         nbr[b] |= 1 << a
+    # option "orbit": (R) is invariant under automorphisms, so an end anywhere in the orbit of the
+    # root suffices
+    orb = {v: (v,) for v in range(n)}
+    if orbit:
+        from networkx.algorithms.isomorphism import GraphMatcher
+        Gi = nx.Graph(); Gi.add_nodes_from(range(n)); Gi.add_edges_from(E)
+        autos = list(GraphMatcher(Gi, Gi).isomorphisms_iter())
+        orb = {v: tuple(sorted({a[v] for a in autos})) for v in range(n)}
 
     def popc(x):
         return bin(x).count("1")
@@ -80,7 +92,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
         s = sum(b)
         if not rem:
             # b(r) >= 1, or room to split a path at r (r has positive degree)
-            return (s <= n and b[r] >= 1) or s <= n - 2
+            return (s <= n and any(b[v] >= 1 for v in orb[r])) or s <= n - 2
         # adjacency of the current graph H = G - rem
         remmask = [0] * n
         for a, c in rem:
@@ -105,6 +117,87 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
                 nb = list(b); nb[a] += 1; nb[c] += 1
                 if win(rest, tuple(nb), r, R, A):
                     return True
+        # receipt or flower (option "rf"; endpoint-structure Thm 67, missing-move Lemma 5.1): at a
+        # saturated hub u (b(u) = d_H(u) = j) with a set T of j held neighbours with b = 1, either
+        # (1) some t in T has a path avoiding u and ut is appended (the opponent picks t), or
+        # (2) the j paths at u join T to u and close into cycles C_t; the other m' = sum b/2 - j
+        # paths avoid u. Edge count: the T-paths avoid the leaves of H outside T + u, so each has
+        # at most lam = |V+| - |leaves| - 1 edges; the other paths carry at most mu edges (one
+        # path between a leaf and its neighbour: 1 edge). If |E(H)| > j lam + mu, case (2) is
+        # impossible. If equal (and j <= 4), the C_t are Hamiltonian on V* = V+ - leaves and a
+        # transversal L = u a1 ... aj exists (Lemma 5.6); the opponent picks L, b changes by
+        # -j at u, -1 on T, +2 on V(L). If smaller, the move is not available.
+        if rf:
+            degH = [popc(nbr[v] & ~remmask[v]) for v in range(n)]
+            nEH = len(E) - len(rem)
+            Vp = [v for v in range(n) if degH[v] > 0]
+            for u in range(n):
+                j = b[u]
+                if j < 1 or degH[u] != j:
+                    continue
+                elig = [t for t in range(n) if key(u, t) in rem and b[t] == 1]
+                if len(elig) < j:
+                    continue
+                for T in combinations(elig, j):
+                    Ts = set(T)
+                    leaves = [v for v in Vp if degH[v] == 1 and v != u and v not in Ts]
+                    lam = len(Vp) - len(leaves) - 1
+                    others = []
+                    for v in range(n):
+                        if v != u and v not in Ts:
+                            others += [v] * b[v]
+                    mp = len(others) // 2
+                    if mp == 0:
+                        mu = 0
+                    elif mp == 1:
+                        p_, q_ = others
+                        if p_ == q_:
+                            mu = -10 ** 9  # one path cannot have both ends at one vertex
+                        elif (degH[p_] == 1 and (nbr[p_] >> q_) & 1 and key(p_, q_) not in rem) or \
+                                (degH[q_] == 1 and (nbr[q_] >> p_) & 1 and key(p_, q_) not in rem):
+                            mu = 1
+                        else:
+                            mu = len(Vp) - 2
+                    else:
+                        mu = mp * (len(Vp) - 2)
+                    bound = j * lam + mu
+                    if nEH < bound or (nEH == bound and j > 4):
+                        continue
+                    ok = True
+                    if mp > 0:  # case (1) is possible only if some path avoids u
+                        for t in T:
+                            nb = list(b); nb[u] += 1; nb[t] -= 1
+                            if not win(rem - {key(u, t)}, tuple(nb), r, R, A):
+                                ok = False
+                                break
+                    if ok and nEH == bound:
+                        Vs = set(Vp) - set(leaves)
+                        adjp = [nbr[v] & ~remmask[v] for v in range(n)]
+                        for t in T:
+                            adjp[u] |= 1 << t
+                            adjp[t] |= 1 << u
+                        rest = rem - {key(u, t) for t in T}
+
+                        def tpaths(path):
+                            if len(path) == j + 1:
+                                yield path
+                                return
+                            x = adjp[path[-1]]
+                            for w in Vs:
+                                if (x >> w) & 1 and w not in path:
+                                    yield from tpaths(path + [w])
+
+                        for L in tpaths([u]):
+                            nb = list(b); nb[u] -= j
+                            for t in T:
+                                nb[t] -= 1
+                            for v in L:
+                                nb[v] += 2
+                            if not win(rest, tuple(nb), r, R, A):
+                                ok = False
+                                break
+                    if ok:
+                        return True
         # flower move (option "flower"; missing-move Lemma 5.7, transversals Lemma 5.6): a
         # saturated hub u whose held edges ut (t in T, |T| = j <= 4) carry b(t) = 1, with b(u) = d_H(u) = j, sum b = 2j and
         # |E(H)| + j = j |V'| (V' = vertices of positive degree in H + uT). Then every path joins
@@ -346,11 +439,16 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
 
 def parse_opts(args):
     kmax, inductive, newpath, rot, alt, hubs, flower = 4, False, False, 0, 0, False, False
+    rf = orbit = False
     for a in args:
         if a == "ind":
             inductive = True
         elif a == "flower":
             flower = True
+        elif a == "rf":
+            rf = True
+        elif a == "orbit":
+            orbit = True
         elif a == "hubs":
             hubs = True
         elif a == "np":
@@ -361,19 +459,19 @@ def parse_opts(args):
             alt = int(a[3:] or 1)
         else:
             kmax = int(a)
-    return kmax, inductive, newpath, rot, alt, hubs, flower
+    return kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit
 
 
 def main():
     path = sys.argv[1]
-    kmax, inductive, newpath, rot, alt, hubs, flower = parse_opts(sys.argv[2:])
+    kmax, inductive, newpath, rot, alt, hubs, flower, rf, orbit = parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
         res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt,
-                          hubs=hubs, flower=flower)
+                          hubs=hubs, flower=flower, rf=rf, orbit=orbit)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
@@ -382,7 +480,7 @@ def main():
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
     opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
         (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "") + (", hubs" if hubs else "") + \
-        (", flower" if flower else "")
+        (", flower" if flower else "") + (", rf" if rf else "") + (", orbit" if orbit else "")
     print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 
