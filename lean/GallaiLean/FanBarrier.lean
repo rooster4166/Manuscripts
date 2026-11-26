@@ -28,6 +28,8 @@ transfer, or as a new one-edge path. Both moves obey a counting bound.
   with `d` even.
 * `cocktail`: the cocktail party graph `CP(m) = K_{2m}` minus a perfect matching, on
   `Fin m × Bool`; `cocktail_degree`: it is `(2m − 2)`-regular.
+* `insertion_barrier_regular`, **`cocktail_insertion_barrier`**: a new path made of the held
+  edges `F` can finish `CP(m)` with at most `m` paths only if `|F| ≥ m − 1`.
 * **`cocktail_fan_barrier`**: for `m ≥ 4`, every edge `ut` of `CP(m)` and every decomposition `D`
   of `CP(m) − ut`, `m ≤ |D|`, and `m < |D|` if Fan's condition for a transfer towards `u` holds.
   So no Fan move on the last edge produces a decomposition of `CP(m)` into at most `m` paths,
@@ -295,6 +297,27 @@ theorem newpath_barrier_regular {d : ℕ} (hd : ∀ v, G.degree v = d) {u t : V}
     rw [← hhs]; exact hsum
   nlinarith
 
+/-- **Path insertion.** If `D` decomposes `G − F` for a set `F` of edges of the `d`-regular
+graph `G`, then `n·d ≤ 2(|D|(n − 1) + |F|)`. (A new path made of the held edges `F` is the only
+Fan-game move that adds a path.) -/
+theorem insertion_barrier_regular {d : ℕ} (hd : ∀ v, G.degree v = d) (F : Finset (Sym2 V))
+    (D : PathDecomp (delE G F)) :
+    Fintype.card V * d ≤ 2 * (D.size * (Fintype.card V - 1) + F.card) := by
+  have hE := card_edgeFinset_le_size_mul D
+  have hsub : G.edgeFinset ⊆ (delE G F).edgeFinset ∪ F := by
+    intro e he
+    rw [mem_edgeFinset] at he
+    rw [Finset.mem_union, mem_edgeFinset]
+    by_cases h : e ∈ F
+    · exact Or.inr h
+    · left
+      simp only [delE, edgeSet_deleteEdges, Set.mem_sdiff, Finset.mem_coe]
+      exact ⟨he, h⟩
+  have h1 := (Finset.card_le_card hsub).trans (Finset.card_union_le _ _)
+  have hhs := G.sum_degrees_eq_twice_card_edges
+  have hsum : ∑ v, G.degree v = Fintype.card V * d := by simp [hd, mul_comm]
+  omega
+
 end barrier
 
 /-! ## The cocktail party graphs -/
@@ -345,5 +368,22 @@ theorem cocktail_fan_barrier {m : ℕ} (hm : 4 ≤ m) {u t : Fin m × Bool}
     nlinarith
   · have h := fan_transfer_barrier_regular (cocktail_degree m) ⟨m - 1, by ring⟩ hut D hcond
     omega
+
+/-- **Path insertion needs a long path.** If `CP(m)` has a decomposition into at most `m` paths
+obtained from a decomposition `D` of `CP(m) − F` by adding one new path made of the edges `F`
+(so `|D| + 1 ≤ m`), then `|F| ≥ m − 1`. -/
+theorem cocktail_insertion_barrier {m : ℕ} (F : Finset (Sym2 (Fin m × Bool)))
+    (D : PathDecomp (delE (cocktail m) F)) (hD : D.size + 1 ≤ m) : m - 1 ≤ F.card := by
+  have hcard : Fintype.card (Fin m × Bool) = 2 * m := by
+    rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_bool]; ring
+  have h := insertion_barrier_regular (cocktail_degree m) F D
+  rw [hcard] at h
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  have h3 : 2 * (m' + 1) - 1 = 2 * m' + 1 := by omega
+  have h4 : m' + 1 - 1 = m' := by omega
+  rw [h3, h4] at h
+  rw [h4]
+  have h2 : D.size * (2 * m' + 1) ≤ m' * (2 * m' + 1) := Nat.mul_le_mul_right _ (by omega)
+  nlinarith
 
 end Gallai
