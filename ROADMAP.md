@@ -30,7 +30,9 @@ This is the single source of truth for the proof architecture. Every node is a s
 
 `BStmt j` says: in every connected graph H of even order with at least 2j even vertices, for every two distinct even vertices y, w such that y has two even neighbours, some j-set R ⊆ Ev with w ∈ R and y ∉ R has Ev ∖ R realisable (`Desc H j y {w}`). `rooted_six_of_bstmt3 : BStmt 3 → (R) for every connected even-order graph with 6 even vertices`, which is T(6)-i / BP₅.
 
-**Everything now hinges on proving `BStmt j`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
+**Weaker single hypothesis (BranchBase.lean): `gallai_of_branchBase_three : (∀ k ≥ 3, BranchBase k) → GallaiConjecture`.** `BranchBase k`: in every connected even-order H with ≥ 2k even vertices, every even y that has two even neighbours, and every bridge at which leads to a leaf, lies in a realisable (e − k)-set (`Desc H k y ∅`). There is no prescribed removed vertex. `branchBase_of_bstmt` shows it is weaker than `BStmt`. Gqz~vw at y = 3 is an instance of `BranchBase 3`.
+
+**Everything now hinges on proving `BranchBase k` (equivalently, it suffices to prove `BStmt j`).** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
 
 ## Top-level chain
 
@@ -225,3 +227,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
 - **Gallai reduced to one family of base cases** (endpoint-structure Thm 29, Cor 30; emc-four session). B_k for all k ≥ 3 implies Gallai, where B_k is k-step descent at an even y with ≥ 2 even neighbours. B_3 is equivalent to T(6)-i. Gqz~vw shows that B_3 is not provable by Lovász + Fan certificates with ≤ 8 held edges.
 - **`gallai_of_branching` in Lean** (emc-four session; Bridge.lean, about 2000 lines). Full Gallai follows from `∀ j ≥ 3, BStmt j`. Definitions checked faithful: `GallaiConjecture` is ⌈n/2⌉ for connected finite G, and `PathDecomp` is an exact partition into simple paths of positive length.
+- **`gallai_of_branchBase_three` in Lean** (BranchBase.lean): Gallai follows from the single named hypothesis `∀ k ≥ 3, BranchBase k`, which is weaker than BStmt (no prescribed w; y has no bridge to a vertex of degree ≥ 2).
