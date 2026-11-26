@@ -332,7 +332,7 @@ def forget [DecidableEq W] (M : PMP G E S) (s : W) : PMP G E (S.erase s) where
     obtain ⟨y₀, hy₀, rfl⟩ := List.mem_map.mp hy
     by_cases h : y₀.2 = some s
     · simp [forgetOne, h] at ht
-    · simp only [forgetOne, h, if_false] at ht ⊢
+    · simp only [forgetOne, h, ite_false] at ht ⊢
       obtain ⟨h1, h2⟩ := M.site_ok y₀ hy₀ t ht
       refine ⟨Finset.mem_erase.mpr ⟨fun hts => h (hts ▸ ht), h1⟩, h2⟩
   sites_nodup := by
@@ -630,6 +630,218 @@ theorem exists_extend (M : PMP G E S) {P : GPath G} {rest : List (GPath G × Opt
     (List.nodup_singleton _) (by simpa using hwv) hok hs, P', rfl, rfl⟩
   simp only [mEdges_cons, mEdges_nil, List.append_nil, hP'e, hP₁s]
   exact (List.perm_append_singleton _ _).symm.trans (hP₁e.append_right _)
+
+
+/-- A path starting at `y` whose only edge at `y` is `xy` is that edge, or that edge followed by a
+path from `x`. -/
+theorem _root_.Gallai.GPath.trim_start (L : GPath G) {x y : W} (hxy : x ≠ y) (hL : L.src = y)
+    (h : ∀ e ∈ L.edges, y ∈ e → e = s(x, y)) :
+    (L.edges = [s(x, y)] ∧ L.tgt = x) ∨
+      ∃ L' : GPath G, L'.src = x ∧ L'.tgt = L.tgt ∧ L.edges = s(x, y) :: L'.edges := by
+  obtain ⟨src, tgt, w, hw, hpos⟩ := L
+  simp only at hL h ⊢
+  subst hL
+  cases w with
+  | nil => simp at hpos
+  | @cons _ c _ hadj q =>
+    have hc : c = x := by
+      have := h s(src, c) (by simp [GPath.edges]) (Sym2.mem_mk_left _ _)
+      rcases Sym2.eq_iff.mp this with ⟨h1, -⟩ | ⟨-, h2⟩
+      · exact absurd h1.symm hxy
+      · exact h2
+    subst hc
+    rw [Walk.cons_isPath_iff] at hw
+    have he : s(src, c) = s(c, src) := Sym2.eq_swap
+    by_cases hq : q.length = 0
+    · have hct : c = tgt := Walk.eq_of_length_eq_zero hq
+      subst hct
+      cases q with
+      | nil => exact Or.inl ⟨by simp [GPath.edges, he], rfl⟩
+      | cons _ _ => simp at hq
+    · exact Or.inr ⟨⟨c, tgt, q, hw.1, by omega⟩, rfl, rfl, by simp [GPath.edges, he]⟩
+
+/-- **Trim a pendant edge** `xy` (with `y` not a site): either a singleton path disappears
+(unassigned, or assigned to `x`), or a longer path loses its last edge and gets an end at `x`
+that does not carry its site. -/
+theorem exists_trim [DecidableEq W] (M : PMP G E S) {x y : W} (hxy : x ≠ y) (he : s(x, y) ∈ E)
+    (hy : ∀ e ∈ E, y ∈ e → e = s(x, y)) (hyS : y ∉ S) :
+    (∃ M' : PMP G (E \ {e | e ∈ [s(x, y)]}) S, M'.cost + 1 = M.cost ∧
+        M'.paths.length + 1 = M.paths.length) ∨
+    (∃ M' : PMP G (E \ {e | e ∈ [s(x, y)]}) S, M'.cost = M.cost ∧
+        M'.paths.length + 1 = M.paths.length ∧ x ∉ mSites M'.paths) ∨
+    (∃ (M' : PMP G (E \ {e | e ∈ [s(x, y)]}) S) (L : GPath G) (o : Option W)
+        (rest : List (GPath G × Option W)), M'.paths = (L, o) :: rest ∧ L.src = x ∧
+        (∀ s, o = some s → s ≠ x) ∧ M'.cost = M.cost ∧ M'.paths.length = M.paths.length) := by
+  obtain ⟨⟨L₀, o⟩, hy₀, hey₀⟩ := M.exists_mem_of_mem_E he
+  have hM : M.paths.Perm ([(L₀, o)] ++ M.paths.erase (L₀, o)) := List.perm_cons_erase hy₀
+  set rest := M.paths.erase (L₀, o) with hrest
+  have hL₀E : ∀ e ∈ L₀.edges, e ∈ E := fun e h => M.mem_E hy₀ h
+  -- `y` is an end of `L₀`
+  have hinc : L₀.incid y = 1 := by
+    unfold GPath.incid
+    rw [List.countP_congr (q := fun e => e == s(x, y))]
+    · exact List.count_eq_one_of_mem L₀.edges_nodup hey₀
+    · intro e he'
+      simp only [decide_eq_true_eq, beq_iff_eq]
+      exact ⟨fun h => hy e (hL₀E e he') h, fun h => h ▸ Sym2.mem_mk_right _ _⟩
+  have hend : L₀.src = y ∨ L₀.tgt = y := by
+    have h1 := L₀.incid_add_endsAt y
+    have hmem : y ∈ L₀.walk.support := L₀.walk.snd_mem_support_of_mem_edges hey₀
+    simp only [hmem, ite_true, hinc] at h1
+    unfold GPath.endsAt at h1
+    by_contra hc
+    rw [not_or] at hc
+    simp [hc.1, hc.2] at h1
+  obtain ⟨L₁, hL₁s, hL₁e, -, hL₁end⟩ := L₀.exists_orient_src hend
+  have hstart : ∀ e ∈ L₁.edges, y ∈ e → e = s(x, y) :=
+    fun e h h' => hy e (hL₀E e (hL₁e.mem_iff.mp h)) h'
+  have hoM : ∀ s, o = some s → s ∈ S ∧ (L₀.src = s ∨ L₀.tgt = s) := M.site_ok _ hy₀
+  have hmid : ∀ s, o = some s → s ∈ S ∧ s ≠ y ∧ (L₁.src = s ∨ L₁.tgt = s) := by
+    intro s hs
+    obtain ⟨h1, h2⟩ := hoM s hs
+    exact ⟨h1, fun h => hyS (h ▸ h1), (hL₁end s).mpr h2⟩
+  rcases GPath.trim_start L₁ hxy hL₁s hstart with ⟨hLe, hLt⟩ | ⟨L', hL's, hL't, hL'e⟩
+  · -- the leaf path is the single edge `xy`
+    have hB : (mEdges ([] : List (GPath G × Option W)) ++ [s(x, y)]).Perm (mEdges [(L₀, o)]) := by
+      simp only [mEdges_nil, List.nil_append, mEdges_cons, List.append_nil]
+      rw [← hLe]; exact hL₁e.symm
+    let M' := M.replaceSub [(L₀, o)] [] rest hM [s(x, y)] hB (fun _ h => by simp at h)
+      (M.sites_nodup_of_subperm hM (by simp))
+    have hc : M.cost = mCost [(L₀, o)] + mCost rest := by
+      rw [cost, mCost_perm hM, mCost_append]
+    have hl : M.paths.length = 1 + rest.length := by rw [hM.length_eq]; simp
+    cases o with
+    | none =>
+      refine Or.inl ⟨M', ?_, ?_⟩
+      · show mCost ([] ++ rest) + 1 = M.cost
+        rw [hc]; simp; omega
+      · show ([] ++ rest).length + 1 = M.paths.length
+        rw [hl]; simp; omega
+    | some s =>
+      obtain ⟨-, hsy, hsend⟩ := hmid s rfl
+      have hsx : s = x := by
+        rcases hsend with h | h
+        · exact absurd (hL₁s ▸ h).symm hsy
+        · exact hLt ▸ h.symm
+      subst hsx
+      refine Or.inr (Or.inl ⟨M', ?_, ?_, ?_⟩)
+      · show mCost ([] ++ rest) = M.cost
+        rw [hc]; simp
+      · show ([] ++ rest).length + 1 = M.paths.length
+        rw [hl]; simp; omega
+      · show s ∉ mSites ([] ++ rest)
+        have h1 := (mSites_perm hM).nodup_iff.mp M.sites_nodup
+        simp only [mSites_append, mSites_cons, Option.toList_some, mSites_nil, List.append_nil,
+          List.singleton_append, List.nodup_cons] at h1
+        simpa using h1.1
+  · -- a longer path: trim its first edge
+    have hB : (mEdges [(L', o)] ++ [s(x, y)]).Perm (mEdges [(L₀, o)]) := by
+      simp only [mEdges_cons, mEdges_nil, List.append_nil]
+      refine (List.perm_append_singleton _ _).trans ?_
+      rw [← hL'e]; exact hL₁e
+    have hok : SiteOK S [(L', o)] := by
+      intro z hz s hs
+      rw [List.mem_singleton] at hz
+      subst hz
+      obtain ⟨h1, hsy, hsend⟩ := hmid s hs
+      refine ⟨h1, Or.inr ?_⟩
+      rcases hsend with h | h
+      · exact absurd (hL₁s ▸ h).symm hsy
+      · exact hL't.trans h
+    let M' := M.replaceSub [(L₀, o)] [(L', o)] rest hM [s(x, y)] hB hok
+      (M.sites_nodup_of_subperm hM (by simp))
+    have hc : M.cost = mCost [(L₀, o)] + mCost rest := by
+      rw [cost, mCost_perm hM, mCost_append]
+    refine Or.inr (Or.inr ⟨M', L', o, rest, rfl, hL's, ?_, ?_, ?_⟩)
+    · intro s hs hsx
+      obtain ⟨-, hsy, hsend⟩ := hmid s hs
+      have hne := L'.src_ne_tgt
+      rcases hsend with h | h
+      · exact hsy (hL₁s ▸ h).symm
+      · exact hne (hL's.trans (hsx.symm.trans (h.symm.trans hL't.symm)))
+    · show mCost ([(L', o)] ++ rest) = M.cost
+      rw [hc]; simp
+    · show ([(L', o)] ++ rest).length = M.paths.length
+      rw [hM.length_eq]; simp
+
+/-- A vertex on an edge of `E` that is not an end of any path is internal to some path. -/
+theorem exists_internal (M : PMP G E S) {x : W} {e : Sym2 W} (he : e ∈ E) (hxe : x ∈ e)
+    (hno : ∀ y ∈ M.paths, y.1.src ≠ x ∧ y.1.tgt ≠ x) :
+    ∃ y ∈ M.paths, x ∈ y.1.walk.support ∧ y.1.src ≠ x ∧ y.1.tgt ≠ x := by
+  obtain ⟨y, hy, hey⟩ := M.exists_mem_of_mem_E he
+  exact ⟨y, hy, Walk.mem_support_of_mem_edge _ hey hxe, hno y hy⟩
+
+/-- Paths of a partial marked partition whose edges lie inside `U` stay inside `U`. -/
+theorem support_subset (M : PMP G E S) {U : Set W} (hE : ∀ e ∈ E, ∀ v ∈ e, v ∈ U)
+    {y : GPath G × Option W} (hy : y ∈ M.paths) : ∀ v ∈ y.1.walk.support, v ∈ U :=
+  y.1.support_subset_of_edges (fun e he => hE e (M.mem_E hy he))
+
+/-- A partial marked partition of all edges is a marked partition. -/
+def toMarked (M : PMP G G.edgeSet S) : MarkedPartition G S :=
+  ⟨M.paths, M.nodup, M.covers, M.site_ok, M.sites_nodup⟩
+
+theorem markedNumber_le_cost (M : PMP G G.edgeSet S) : markedNumber G S ≤ M.cost :=
+  markedNumber_le M.toMarked
+
+/-- **Push** a marked partition along an injective map sending edges to edges. -/
+def push {W' : Type v} {G' : SimpleGraph W'} {S'' : Finset W'} (M : MarkedPartition G' S'')
+    (f : W' → W) (hf : Function.Injective f) (hadj : ∀ a b, G'.Adj a b → G.Adj (f a) (f b)) :
+    PMP G {e | ∃ e' ∈ G'.edgeSet, e'.map f = e} (S''.map ⟨f, hf⟩) where
+  paths := M.paths.map (fun y => (y.1.push f (fun e he => by
+      have := y.1.walk.edges_subset_edgeSet he
+      induction e using Sym2.inductionOn with
+      | hf a b => exact hadj a b this) (fun _ _ _ _ h => hf h), y.2.map f))
+  nodup := by
+    have : mEdges (M.paths.map (fun y => (y.1.push f (fun e he => by
+        have := y.1.walk.edges_subset_edgeSet he
+        induction e using Sym2.inductionOn with
+        | hf a b => exact hadj a b this) (fun _ _ _ _ h => hf h), y.2.map f))) =
+        ((M.paths.map Prod.fst).flatMap GPath.edges).map (Sym2.map f) := by
+      simp [mEdges, List.map_flatMap, List.flatMap_map, GPath.push_edges]
+    rw [this]
+    exact M.nodup_edges.map (Sym2.map.injective hf)
+  covers e := by
+    have : mEdges (M.paths.map (fun y => (y.1.push f (fun e he => by
+        have := y.1.walk.edges_subset_edgeSet he
+        induction e using Sym2.inductionOn with
+        | hf a b => exact hadj a b this) (fun _ _ _ _ h => hf h), y.2.map f))) =
+        ((M.paths.map Prod.fst).flatMap GPath.edges).map (Sym2.map f) := by
+      simp [mEdges, List.map_flatMap, List.flatMap_map, GPath.push_edges]
+    rw [this, List.mem_map]
+    simp only [Set.mem_setOf_eq, ← M.covers]
+  site_ok := by
+    intro z hz s hs
+    obtain ⟨y, hy, rfl⟩ := List.mem_map.mp hz
+    simp only [Option.map_eq_some_iff] at hs
+    obtain ⟨t, ht, rfl⟩ := hs
+    obtain ⟨h1, h2⟩ := M.site_ok y hy t ht
+    refine ⟨Finset.mem_map_of_mem _ h1, ?_⟩
+    rcases h2 with h2 | h2
+    · exact Or.inl (by simp [GPath.push, h2])
+    · exact Or.inr (by simp [GPath.push, h2])
+  sites_nodup := by
+    have : mSites (M.paths.map (fun y => (y.1.push f (fun e he => by
+        have := y.1.walk.edges_subset_edgeSet he
+        induction e using Sym2.inductionOn with
+        | hf a b => exact hadj a b this) (fun _ _ _ _ h => hf h), y.2.map f))) =
+        (M.paths.filterMap Prod.snd).map f := by
+      simp [mSites, List.filterMap_map, List.map_filterMap, Function.comp_def]
+    rw [this]
+    exact M.sites_nodup.map hf
+
+theorem push_cost {W' : Type v} {G' : SimpleGraph W'} {S'' : Finset W'} (M : MarkedPartition G' S'')
+    (f : W' → W) (hf : Function.Injective f) (hadj : ∀ a b, G'.Adj a b → G.Adj (f a) (f b)) :
+    (push M f hf hadj).cost = markedCost M := by
+  simp [cost, push, mCost, markedCost, List.countP_map, Function.comp_def]
+
+theorem push_paths {W' : Type v} {G' : SimpleGraph W'} {S'' : Finset W'}
+    (M : MarkedPartition G' S'') (f : W' → W) (hf : Function.Injective f)
+    (hadj : ∀ a b, G'.Adj a b → G.Adj (f a) (f b)) :
+    ∀ z ∈ (push M f hf hadj).paths, ∃ y ∈ M.paths, z.1.src = f y.1.src ∧ z.1.tgt = f y.1.tgt ∧
+      z.2 = y.2.map f := by
+  intro z hz
+  obtain ⟨y, hy, rfl⟩ := List.mem_map.mp hz
+  exact ⟨y, hy, rfl, rfl, rfl⟩
 
 end PMP
 

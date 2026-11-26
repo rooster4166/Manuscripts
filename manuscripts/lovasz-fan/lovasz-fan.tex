@@ -1,0 +1,102 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Lov\'asz's path decomposition theorem from Fan's addible-edge lemma}
+\author{Justin Williams}
+\date{November 2026}
+
+\begin{document}
+\begin{abstract}
+We give a short inductive derivation of Lov\'asz's theorem that a graph with at most one vertex of
+even degree decomposes into $\lfloor n/2\rfloor$ paths, in the strong form in which every odd vertex is
+an end of exactly one path. The only tool is Fan's addible-edge lemma. Both the derivation and Fan's
+lemma are formally verified in Lean~4 with Mathlib.
+\end{abstract}
+\maketitle
+
+Graphs are finite and simple. A \emph{path} is a nonempty simple path, and a \emph{decomposition} is a
+partition of the edge set into paths. For a decomposition $D$ write $b_D(v)$ for the number of ends of
+paths of $D$ at $v$, counted with multiplicity. Every path through $v$ uses two edges at $v$ if $v$ is
+interior to it and one if $v$ is an end, so $b_D(v)\equiv d(v)\pmod 2$.
+
+\begin{lemma}[Fan~{\cite[Lemma 3.4]{Fan}}]\label{lem:fan}
+Let $uv\in E(G)$, let $G'=G-uv$, and let $D'$ be a decomposition of $G'$. If
+\[
+b_{D'}(v) > \bigl|\{w\in N_{G'}(u): b_{D'}(w)=0\}\bigr|,
+\]
+then $G$ has a decomposition $D$ with $|D|=|D'|$, $b_D(u)=b_{D'}(u)+1$, $b_D(v)=b_{D'}(v)-1$ and $b_D(w)=b_{D'}(w)$
+for every other vertex $w$.
+\end{lemma}
+
+\begin{theorem}[Lov\'asz~\cite{L68}, strong form]\label{thm:lovasz}
+If at most one vertex of $G$ has positive even degree, then $G$ has a decomposition $D$ with
+$b_D(v)=d(v)\bmod 2$ for every vertex $v$. In particular $G$ decomposes into $|\{v:d(v)\text{ odd}\}|/2\le
+\lfloor|V(G)|/2\rfloor$ paths.
+\end{theorem}
+
+\begin{proof}
+We use strong induction on $\nu(G)=\sum_v d(v)+[\,G\text{ has no vertex of positive even degree}\,]$. Deleting an
+edge $xy$ lowers the degrees of $x$ and $y$ by one and changes no other degree.
+
+\emph{Case I: some vertex $z$ has positive even degree.} Choose a neighbour $u$ of $z$ and put $G'=G-uz$.
+In $G'$ the vertex $z$ is odd. The vertex $u$ had odd degree in $G$, so in $G'$ it is even (possibly
+isolated). Every other vertex keeps its parity. So $u$ is the only possible vertex of positive even
+degree in $G'$, and $\nu(G')\le\nu(G)-1$. By induction $G'$ has a decomposition $D'$ with
+$b_{D'}=d_{G'}\bmod2$; thus $b_{D'}(u)=0$ and $b_{D'}(z)=1$. Every neighbour of $u$ in $G'$ has positive
+degree and differs from $u$, so it is odd and has an end. The right-hand side of Lemma~\ref{lem:fan} (with
+the roles $u$, $v=z$) is therefore $0<1=b_{D'}(z)$. The lemma adds $uz$, moving an end from $z$ to $u$.
+The result has $b(u)=1$ and $b(z)=0$, matching the parities in $G$.
+
+\emph{Case II: every vertex of positive degree is odd, and some $x$ has $d(x)\ge3$.} Choose a neighbour $u$
+of $x$, and let $H$ be $G-ux$ with a new leaf $\ell$ attached at $u$. In $H$ the vertex $u$ keeps its
+degree, $\ell$ has degree $1$, and $x$ has positive even degree $d(x)-1\ge2$. So $x$ is the unique vertex of
+positive even degree in $H$, and $\nu(H)=\nu(G)-1$ (same degree sum, indicator dropped). By induction $H$
+has a decomposition $D_H$ with $b_{D_H}=d_H\bmod2$; in particular $b(x)=0$, $b(u)=1$, $b(\ell)=1$. The leaf is
+an end of its path. Deleting $\ell$ gives a decomposition $D'$ of $G'=G-ux$ in which $b_{D'}(u)\in\{0,2\}$,
+and all other end counts are unchanged. If the leaf path was the single edge $u\ell$, its only end at $u$
+disappears; otherwise $u$ becomes an end of the shortened path.
+\begin{itemize}
+\item If $b_{D'}(u)=0$, add $ux$ as a new one-edge path.
+\item If $b_{D'}(u)=2$, every neighbour of $x$ in $G'$ has an end: $u$ has two, and the others are odd. Lemma~\ref{lem:fan}
+(with roles $x$, $v=u$) adds $ux$, moving an end from $u$ to $x$.
+\end{itemize}
+In both cases the result has $b(u)=b(x)=1$, and the number of paths is that of $D'$ or one more, as
+required by the end count.
+
+\emph{Case III: every vertex has degree at most $1$ and there is an edge $ux$.} Then $G-ux$ again has no
+vertex of positive even degree and $\nu(G-ux)=\nu(G)-2$. Decompose it by induction and add $ux$ as a
+one-edge path.
+
+\emph{Case IV: $G$ has no edges.} The empty decomposition works.
+
+The number of paths is $\tfrac12\sum_v b_D(v)$, which is half the number of odd vertices.
+\end{proof}
+
+\begin{remark}[Formal verification]
+Theorem~\ref{thm:lovasz} is \texttt{lovasz\_ends} in \texttt{lean/GallaiLean/Lovasz.lean}. Lemma~\ref{lem:fan} is
+\texttt{fan\_single} in \texttt{lean/GallaiLean/Fan.lean}, together with the grouped version
+\texttt{fan\_grouped} (Fan's Lemma~3.3). Both are proved from the definitions in
+\texttt{lean/GallaiLean/Basic.lean}: a decomposition is a list of simple walks of positive length whose
+edge lists partition $E(G)$. The proofs use no \texttt{sorry}, and \texttt{\#print axioms} reports only
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+\end{remark}
+
+\begin{remark}
+We do not know whether this derivation of Lov\'asz's theorem from Fan's lemma appears in the
+literature. Fan's lemma itself is proved by an exchange argument that does not use Lov\'asz's theorem, so
+there is no circularity. Lov\'asz's original proof~\cite{L68} proceeds through the more general statement
+on decompositions into paths and cycles.
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005) 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, 1968, 231--236.
+\end{thebibliography}
+\end{document}
