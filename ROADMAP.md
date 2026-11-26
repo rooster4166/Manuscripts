@@ -45,9 +45,9 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | comp (eq. (2): 210 instances) |
 | N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
 | N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors; external paraphrases (Fan, FHZ, Shaik) being verified (A7) | lean-ext; comp (n ≤ 8) |
-| T(4) | both tests at d = 4 | MR p.129 (Fan–Hou–Zhou) | CLAIMED | — |
-| T(6)-ii | three-end test, d = 6 | MR Thm 123 | CLAIMED | — |
-| T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | CLAIMED | lean-ext? |
+| T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
+| T(6)-ii | three-end test, d = 6 | MR Thm 123 | **AUDITED** (A8) | comp (exhaustive \|J\| ≤ 10) |
+| T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | **AUDITED** (A8): **Thm 124 certificate independently replayed**. Conditional on Fan–Hou–Zhou (two seven-site shapes) and Chu–Fan–Zhou Lemma 2.1 (star lemma, unquoted) | comp |
 | T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived; Thm 144 can be made Shaik-free (BS Thm 13 + Lemma 133).** Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances) |
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
