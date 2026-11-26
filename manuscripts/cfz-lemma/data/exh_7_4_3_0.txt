@@ -1,0 +1,1 @@
+SUMMARY n=7 k=4 q=3 mode=0 xpos=0 cycles=408 tested=18222 fails=0

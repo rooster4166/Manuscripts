@@ -116,7 +116,7 @@ Sources: the raw texts in `scratchpad/raw/`, and two primaries I downloaded. The
 | D6 | "This is the three-contact argument of Marked Proposition 139" | GAP (citation) | Prop 139 assumes 2-connectivity, while the comparison may be disconnected. The note's own sketch (Pyber/Lovász seed, one single, at most one cycle) is self-contained and SOUND (F15) |
 | D7 | Clique case: finite selection lemma (2,620 partitions) | UNCLEAR | Enumeration absent |
 | D8 | Clique case physical return | SOUND given D9 and the ≤ 7-contact path–cycle results | |
-| D9 | Five-edge path + two cycles with ≥ 2 off-path spokes ⇒ 3 paths | UNCLEAR (tables absent); **tested** | See §3.6 |
+| D9 | Five-edge path + two cycles with ≥ 2 off-path spokes ⇒ 3 paths | UNCLEAR (tables absent); **no counterexample** | 1,500/1,500 random; the four-edge version also 1,500/1,500 (§3.6) |
 | D10 | Sharpness example on Z7 | SOUND | p = 4 computed (19 edges > 18) |
 | D11 | Bridge 2:3 and genuine-bridge sections | not audited in depth | Not needed for the headline claim |
 
@@ -251,8 +251,8 @@ The cycles are random, through w, edge-disjoint, and biased to intersect P heavi
 | Claim | Instances | Failures |
 |---|---|---|
 | P = (t′, t, w, e) with j ∈ {1, 2} cycles through w ⇒ j + 1 paths (the CFZ Lemma 2.4 use) | 600 | 0 |
-| Four-edge path with w internal + 2 cycles ⇒ 3 paths | [FILLED BELOW] | |
-| Five-edge path, w third or fourth, + 2 cycles, ≥ 2 of the 4 spokes off P ⇒ 3 paths | [FILLED BELOW] | |
+| Four-edge path with w internal + 2 cycles ⇒ 3 paths (the "full tails" theorem used by D10) | 1,500 | 0 |
+| Five-edge path, w third or fourth, + 2 cycles, ≥ 2 of the 4 spokes off P ⇒ 3 paths (D10 clique case) | 1,500 | 0 |
 | Sharpness: Z7, steps 1 and 2 cycles, P of step 3, w = 6 | p = 4 | (as claimed) |
 
 The early "FAIL" printed in a first run was a solver timeout on the loaded machine. Rechecked: p = 3. The script now separates timeouts.

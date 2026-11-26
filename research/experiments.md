@@ -181,3 +181,11 @@ Connected 6-vertex graphs with at least one even vertex:
 EqhO is a theta graph: two degree-3 vertices joined by three threads. The other two rigid graphs have leaves.
 
 The 3-connected n = 8 classification is running. At n ≥ 10 the j-family gives 3-connected rigid examples (E10).
+
+## E12. Cones at n = 10 (complete run)
+
+Command: `tools/emc_cones.py 10 12 5`
+
+9 random cones K1 ∨ H with e ∈ {4, 6} even vertices (3 trials were skipped for having e < 4). **All have uniform, loopless endpoint matroids.**
+
+**Heuristic for conjecture (a).** The only non-realisability mechanism found so far, the theta obstruction (several degree-2 routes between two hubs), needs vertices of degree 2. In a 3-connected graph every vertex has degree ≥ 3, so every even vertex has degree ≥ 4.
