@@ -18,3 +18,4 @@ import GallaiLean.Schedule
 import GallaiLean.EvenInsert
 import GallaiLean.BP3
 import GallaiLean.EMCFourFree
+import GallaiLean.KStep
