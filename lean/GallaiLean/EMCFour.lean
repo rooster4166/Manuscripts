@@ -1,10 +1,33 @@
 import GallaiLean.Realisable
 import GallaiLean.Fan
+import GallaiLean.PrivateLeaf
 
 /-!
 # Two-step faithful descent, and the endpoint matroid for four even vertices
 
-Endpoint-structure manuscript, section "Four even vertices".
+Endpoint-structure manuscript, section "Two descent steps, and four even vertices". Lovász's
+theorem enters only as the hypothesis `LovaszStatement`; Fan's transfers are `fan_single` and
+`fan_grouped` (proved in `Fan.lean`).
+
+## Main results
+
+* `realisable_of_edge` (transfer across an even edge): if `s, t, u'` are distinct even
+  vertices, `st ∈ E`, `su' ∉ E`, then `Ev ∖ {t, u'}` is realisable (even order).
+* `realisable_of_star` (star lemma): if the even vertex `y` is adjacent to the even vertices
+  `w, x, z`, then `Ev ∖ {w, x}` or `Ev ∖ {w, z}` is realisable.
+* `realisable_lift`: lifting a realisation of `G − yt` (with `t` an odd neighbour of `y`) back
+  to `G`.
+* **`two_step_descent`**: in a connected graph of even order with at least four even vertices,
+  for all distinct even `y, w` some even `v ∉ {y, w}` has `Ev ∖ {w, v}` realisable.
+* **`emc_four`**: with exactly four even vertices, `{y, x}` or `{y, z}` is realisable for any
+  three distinct even `y, x, z`; the non-realisable pairs are pairwise disjoint.
+* **`endpoint_matroid_four`**: for a connected critical graph with four even vertices there is
+  a loopless `Matroid` on `Ev` whose bases are the realisable pairs, and these are exactly the
+  minimal realisable sets (`minimal_realisable_iff`). This is the endpoint matroid conjecture
+  for `e = 4`.
+* **`rooted_four`**: the rooted test `p(G + leaf at r) ≤ n/2` for every vertex `r` when `G` is
+  connected of even order with exactly four even vertices (the floor bound `BP_3`), without
+  Botler–Sambinelli.
 
 ## Edge deletion
 
@@ -611,5 +634,241 @@ theorem two_step_descent (hL : LovaszStatement.{u}) (hconn : G.Connected)
     (degree_pos_of_connected hconn hyw) hy hw hyw h4 hw (Ne.symm hyw)
 
 end steps
+
+/-! ### Four even vertices -/
+
+section four
+
+variable {G : SimpleGraph V} [DecidableRel G.Adj]
+
+omit [Fintype V] [DecidableEq V] [DecidableRel G.Adj] in
+theorem eq_of_subset_card_two [DecidableEq V] {S T : Finset V} (h : S ⊆ T) (hS : S.card = 2) (hT : T.card = 2) :
+    S = T :=
+  Finset.eq_of_subset_of_card_le h (by omega)
+
+/-- **The endpoint matroid for four even vertices (pair form).** If `G` is connected of even
+order with exactly four even vertices, then for distinct even `y, x, z`, the pair `{y, x}` or
+the pair `{y, z}` is realisable. Equivalently, no two non-realisable pairs share a vertex. -/
+theorem emc_four (hL : LovaszStatement.{u}) (hconn : G.Connected) (hn : Even (Fintype.card V))
+    (h4 : (evenSet G).card = 4) {y x z : V} (hy : y ∈ evenSet G) (hx : x ∈ evenSet G)
+    (hz : z ∈ evenSet G) (hyx : y ≠ x) (hyz : y ≠ z) (hxz : x ≠ z) :
+    Realisable G {y, x} ∨ Realisable G {y, z} := by
+  have hc : 0 < ((((evenSet G).erase y).erase x).erase z).card := by
+    rw [Finset.card_erase_of_mem (by simp [hxz.symm, hyz.symm, hz]),
+      Finset.card_erase_of_mem (by simp [hyx.symm, hx]), Finset.card_erase_of_mem hy]
+    omega
+  obtain ⟨w, hw⟩ := Finset.card_pos.mp hc
+  simp only [Finset.mem_erase] at hw
+  obtain ⟨hwz, hwx, hwy, hwE⟩ := hw
+  obtain ⟨v, hv, hvy, hvw, hreal⟩ := two_step_descent hL hconn hn h4.ge hy hwE (Ne.symm hwy)
+  have hcard : (((evenSet G).erase w).erase v).card = 2 := by
+    rw [Finset.card_erase_of_mem (by simp [hvw, hv]), Finset.card_erase_of_mem hwE]
+    omega
+  by_cases hvx : v = x
+  · subst hvx
+    right
+    convert hreal using 1
+    refine eq_of_subset_card_two ?_ (Finset.card_pair hyz) hcard
+    intro a ha
+    simp only [Finset.mem_insert, Finset.mem_singleton] at ha
+    rcases ha with rfl | rfl
+    · simp [hvy.symm, hwy.symm, hy]
+    · simp [hxz.symm, hwz.symm, hz]
+  by_cases hvz : v = z
+  · subst hvz
+    left
+    convert hreal using 1
+    refine eq_of_subset_card_two ?_ (Finset.card_pair hyx) hcard
+    intro a ha
+    simp only [Finset.mem_insert, Finset.mem_singleton] at ha
+    rcases ha with rfl | rfl
+    · simp [hvy.symm, hwy.symm, hy]
+    · simp [hxz, hwx.symm, hx]
+  · -- `v` would be a fifth even vertex
+    exfalso
+    have h5 : ({y, x, z, w, v} : Finset V) ⊆ evenSet G := by
+      intro a ha
+      simp only [Finset.mem_insert, Finset.mem_singleton] at ha
+      rcases ha with rfl | rfl | rfl | rfl | rfl <;> assumption
+    have := Finset.card_le_card h5
+    rw [Finset.card_insert_of_notMem (by simp [hyx, hyz, hwy.symm, hvy.symm]),
+      Finset.card_insert_of_notMem (by simp [hxz, hwx.symm, Ne.symm hvx]),
+      Finset.card_insert_of_notMem (by simp [hwz.symm, Ne.symm hvz]),
+      Finset.card_pair (Ne.symm hvw)] at this
+    omega
+
+/-- In a critical graph every realisable set has at least half of the even vertices
+(Corollary 5, first half). -/
+theorem half_le_card_of_critical (hG : ∀ v, 0 < G.degree v)
+    (hcrit : pathNumber G = Fintype.card V / 2) {S : Finset V} (hS : Realisable G S) :
+    (evenSet G).card / 2 ≤ S.card := by
+  obtain ⟨hSE, D, hD⟩ := hS
+  have hsz := hD.size_eq hSE
+  have hp := pathNumber_le D
+  have hc := card_oddSet_add_card_evenSet hG
+  obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+  have hk' : (oddSet G).card = k + k := hk
+  omega
+
+/-- With four even vertices, every realisable set of size at least three contains a realisable
+pair. -/
+theorem exists_pair_subset (hL : LovaszStatement.{u}) (hconn : G.Connected)
+    (hn : Even (Fintype.card V)) (h4 : (evenSet G).card = 4) {S : Finset V}
+    (hS : Realisable G S) (h3 : 3 ≤ S.card) :
+    ∃ T ⊆ S, T.card = 2 ∧ Realisable G T := by
+  obtain ⟨a, ha, b, hb, c, hc, hab, hac, hbc⟩ := Finset.two_lt_card.mp h3
+  rcases emc_four hL hconn hn h4 (hS.1 ha) (hS.1 hb) (hS.1 hc) hab hac hbc with h | h
+  · exact ⟨{a, b}, by simp [Finset.insert_subset_iff, ha, hb], Finset.card_pair hab, h⟩
+  · exact ⟨{a, c}, by simp [Finset.insert_subset_iff, ha, hc], Finset.card_pair hac, h⟩
+
+/-- **Minimal realisable sets** of a critical graph with four even vertices are exactly the
+realisable pairs. -/
+theorem minimal_realisable_iff (hL : LovaszStatement.{u}) (hconn : G.Connected)
+    (hn : Even (Fintype.card V)) (h4 : (evenSet G).card = 4)
+    (hcrit : pathNumber G = Fintype.card V / 2) (S : Finset V) :
+    Minimal (Realisable G) S ↔ S.card = 2 ∧ Realisable G S := by
+  obtain ⟨a, -, b, -, hab⟩ := Finset.one_lt_card.mp (show 1 < (evenSet G).card by omega)
+  have hpos := degree_pos_of_connected hconn hab
+  constructor
+  · rintro ⟨hS, hmin⟩
+    have h2 := half_le_card_of_critical hpos hcrit hS
+    rw [h4] at h2
+    refine ⟨?_, hS⟩
+    by_contra hne2
+    obtain ⟨T, hTS, hTc, hT⟩ := exists_pair_subset hL hconn hn h4 hS (by omega)
+    have := Finset.card_le_card (hmin hT hTS)
+    omega
+  · rintro ⟨hc, hS⟩
+    refine ⟨hS, fun T hT hTS => ?_⟩
+    have h2 := half_le_card_of_critical hpos hcrit hT
+    rw [h4] at h2
+    rw [Finset.eq_of_subset_of_card_le hTS (by omega)]
+
+/-- Realisable pairs satisfy the basis exchange axiom. -/
+theorem pair_exchange (hL : LovaszStatement.{u}) (hconn : G.Connected)
+    (hn : Even (Fintype.card V)) (h4 : (evenSet G).card = 4) :
+    Matroid.ExchangeProperty
+      (fun B : Set V => ∃ T : Finset V, (T : Set V) = B ∧ T.card = 2 ∧ Realisable G T) := by
+  rintro X Y ⟨T₁, rfl, h1c, h1r⟩ ⟨T₂, rfl, h2c, h2r⟩ a ⟨haX, haY⟩
+  rw [Finset.mem_coe] at haX
+  rw [Finset.mem_coe] at haY
+  obtain ⟨c, hc⟩ := Finset.card_eq_one.mp
+    (show (T₁.erase a).card = 1 by rw [Finset.card_erase_of_mem haX]; omega)
+  have hcT₁ : c ∈ T₁ := Finset.mem_of_mem_erase (hc ▸ Finset.mem_singleton_self c)
+  have hca : c ≠ a := Finset.ne_of_mem_erase (hc ▸ Finset.mem_singleton_self c)
+  have hT₁ : T₁ = {a, c} := by
+    rw [← Finset.insert_erase haX, hc]
+  have key : ∀ b, b ∈ T₂ → b ∉ T₁ → Realisable G {b, c} →
+      ∃ b ∈ (T₂ : Set V) \ ↑T₁, ∃ T : Finset V, (T : Set V) = insert b (↑T₁ \ {a}) ∧
+        T.card = 2 ∧ Realisable G T := by
+    intro b hb hbT hr
+    refine ⟨b, ⟨hb, hbT⟩, {b, c}, ?_, Finset.card_pair ?_, hr⟩
+    · rw [← Finset.coe_erase, hc]; simp
+    · rintro rfl; exact hbT hcT₁
+  by_cases hcT₂ : c ∈ T₂
+  · obtain ⟨b, hb⟩ := Finset.card_eq_one.mp
+      (show (T₂.erase c).card = 1 by rw [Finset.card_erase_of_mem hcT₂]; omega)
+    have hbT₂ : b ∈ T₂ := Finset.mem_of_mem_erase (hb ▸ Finset.mem_singleton_self b)
+    have hbc : b ≠ c := Finset.ne_of_mem_erase (hb ▸ Finset.mem_singleton_self b)
+    have hT₂ : T₂ = {b, c} := by
+      rw [← Finset.insert_erase hcT₂, hb, Finset.pair_comm]
+    refine key b hbT₂ ?_ (hT₂ ▸ h2r)
+    rw [hT₁]
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+    exact ⟨fun h => haY (h ▸ hbT₂), hbc⟩
+  · obtain ⟨b₁, b₂, hb12, hT₂⟩ := Finset.card_eq_two.mp h2c
+    have hb₁ : b₁ ∈ T₂ := by simp [hT₂]
+    have hb₂ : b₂ ∈ T₂ := by simp [hT₂]
+    have hnot : ∀ b ∈ T₂, b ∉ T₁ := by
+      intro b hb hbT
+      rw [hT₁, Finset.mem_insert, Finset.mem_singleton] at hbT
+      rcases hbT with rfl | rfl
+      · exact haY hb
+      · exact hcT₂ hb
+    have hcb : ∀ b ∈ T₂, c ≠ b := fun b hb h => hcT₂ (h ▸ hb)
+    rcases emc_four hL hconn hn h4 (h1r.1 hcT₁) (h2r.1 hb₁) (h2r.1 hb₂) (hcb b₁ hb₁)
+        (hcb b₂ hb₂) hb12 with h | h
+    · exact key b₁ hb₁ (hnot b₁ hb₁) (Finset.pair_comm c b₁ ▸ h)
+    · exact key b₂ hb₂ (hnot b₂ hb₂) (Finset.pair_comm c b₂ ▸ h)
+
+/-- **Endpoint matroid conjecture for four even vertices.** Let `G` be connected and critical
+(even order, `p(G) = n/2`) with exactly four even vertices. Then there is a loopless matroid on
+`Ev(G)` whose bases are exactly the realisable pairs, and these are exactly the minimal
+realisable sets. -/
+theorem endpoint_matroid_four (hL : LovaszStatement.{u}) (hconn : G.Connected)
+    (hn : Even (Fintype.card V)) (h4 : (evenSet G).card = 4)
+    (hcrit : pathNumber G = Fintype.card V / 2) :
+    ∃ M : Matroid V, M.E = ↑(evenSet G) ∧ M.Loopless ∧
+      (∀ B, M.IsBase B ↔ ∃ T : Finset V, (T : Set V) = B ∧ T.card = 2 ∧ Realisable G T) ∧
+      ∀ S : Finset V, Minimal (Realisable G) S ↔ M.IsBase ↑S := by
+  -- every even vertex lies in a realisable pair
+  have hcover : ∀ y ∈ evenSet G, ∃ T : Finset V, y ∈ T ∧ T.card = 2 ∧ Realisable G T := by
+    intro y hy
+    obtain ⟨w, hw, hwy⟩ := Finset.exists_mem_ne (show 1 < (evenSet G).card by omega) y
+    obtain ⟨v, hv, hvy, hvw, hr⟩ := two_step_descent hL hconn hn h4.ge hy hw (Ne.symm hwy)
+    refine ⟨_, ?_, ?_, hr⟩
+    · simp [Ne.symm hvy, Ne.symm hwy, hy]
+    · rw [Finset.card_erase_of_mem (by simp [hvw, hv]), Finset.card_erase_of_mem hw]
+      omega
+  obtain ⟨y₀, hy₀⟩ := Finset.card_pos.mp (show 0 < (evenSet G).card by omega)
+  let M : Matroid V := Matroid.ofIsBaseOfFinite (E := ↑(evenSet G)) (Finset.finite_toSet _)
+    (fun B => ∃ T : Finset V, (T : Set V) = B ∧ T.card = 2 ∧ Realisable G T)
+    (by obtain ⟨T, -, hT⟩ := hcover y₀ hy₀; exact ⟨_, T, rfl, hT⟩)
+    (pair_exchange hL hconn hn h4)
+    (by rintro B ⟨T, rfl, -, hT⟩; exact Finset.coe_subset.mpr hT.1)
+  refine ⟨M, rfl, ?_, fun B => Iff.rfl, fun S => ?_⟩
+  · rw [Matroid.loopless_iff_forall_not_isLoop]
+    intro e he hloop
+    obtain ⟨T, heT, hT⟩ := hcover e he
+    have := (Matroid.isLoop_iff_forall_mem_compl_isBase.mp hloop) T ⟨T, rfl, hT⟩
+    exact this.2 heT
+  · rw [minimal_realisable_iff hL hconn hn h4 hcrit]
+    constructor
+    · rintro ⟨hc, hr⟩; exact ⟨S, rfl, hc, hr⟩
+    · rintro ⟨T, hT, hc, hr⟩
+      rw [Finset.coe_inj] at hT
+      subst hT
+      exact ⟨hc, hr⟩
+
+/-- **The rooted test for four even vertices**: if `G` is connected of even order `n` with
+exactly four even vertices, then `G` plus a leaf at any vertex has `p ≤ n/2`. Equivalently, the
+floor bound holds for connected odd-order graphs with a pendant leaf and exactly three even
+vertices. -/
+theorem rooted_four (hL : LovaszStatement.{u}) (hconn : G.Connected) (hn : Even (Fintype.card V))
+    (h4 : (evenSet G).card = 4) (r : V) :
+    pathNumber (addLeaf G r) ≤ Fintype.card V / 2 := by
+  obtain ⟨a, -, b, -, hab⟩ := Finset.one_lt_card.mp (show 1 < (evenSet G).card by omega)
+  have hG := degree_pos_of_connected hconn hab
+  -- a realisable pair containing `r` if `r` is even, any realisable pair otherwise
+  have : ∃ S : Finset V, S.card = 2 ∧ Realisable G S ∧ (r ∈ evenSet G → r ∈ S) := by
+    by_cases hr : r ∈ evenSet G
+    · obtain ⟨w, hw, hwr⟩ := Finset.exists_mem_ne (show 1 < (evenSet G).card by omega) r
+      obtain ⟨v, hv, hvr, hvw, hS⟩ := two_step_descent hL hconn hn h4.ge hr hw (Ne.symm hwr)
+      refine ⟨_, ?_, hS, fun _ => by simp [Ne.symm hvr, Ne.symm hwr, hr]⟩
+      rw [Finset.card_erase_of_mem (by simp [hvw, hv]), Finset.card_erase_of_mem hw]
+      omega
+    · obtain ⟨y, hy⟩ := Finset.card_pos.mp (show 0 < (evenSet G).card by omega)
+      obtain ⟨w, hw, hwy⟩ := Finset.exists_mem_ne (show 1 < (evenSet G).card by omega) y
+      obtain ⟨v, hv, -, hvw, hS⟩ := two_step_descent hL hconn hn h4.ge hy hw (Ne.symm hwy)
+      refine ⟨_, ?_, hS, fun h => absurd h hr⟩
+      rw [Finset.card_erase_of_mem (by simp [hvw, hv]), Finset.card_erase_of_mem hw]
+      omega
+  obtain ⟨S, hSc, ⟨hSE, D, hD⟩, hrS⟩ := this
+  have hsz := hD.size_eq hSE
+  have hc := card_oddSet_add_card_evenSet hG
+  obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+  have hk' : (oddSet G).card = k + k := hk
+  have hend : D.ends r ≠ 0 := by
+    rw [hD r]
+    unfold profile
+    by_cases ho : Odd (G.degree r)
+    · simp [ho]
+    · have hr : r ∈ evenSet G := mem_evenSet_iff.mpr ⟨hG r, Nat.not_odd_iff_even.mp ho⟩
+      simp [ho, hrS hr]
+  calc pathNumber (addLeaf G r) ≤ leafCost D r := pathNumber_addLeaf_le D r
+    _ = D.size := by simp [leafCost, hend]
+    _ ≤ Fintype.card V / 2 := by omega
+
+end four
 
 end Gallai
