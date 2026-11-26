@@ -13,3 +13,6 @@ import GallaiLean.Fan
 import GallaiLean.Insertion
 import GallaiLean.Schedule
 import GallaiLean.EvenInsert
+import GallaiLean.SixCliqueModel
+import GallaiLean.SixCliqueBuild
+import GallaiLean.SixClique
