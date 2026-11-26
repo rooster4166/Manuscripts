@@ -239,6 +239,27 @@ paper (Lemma 2). Here `b(w) = D.ends w`.
   for all other `w`. `fan_single_deleteEdges` is the same statement for
   `G' = G.deleteEdges {s(u,v)}`.
 
+## `GallaiLean/TwoEven.lean`: the second descent step and the Fan calculus (endpoint-structure §5)
+
+`delEdge G a b` is `G` without the edge `ab` (`delEdge_edgeSet`, degree lemmas
+`delEdge_degree_left/right/of_ne`, `evenSet_delEdge`, `evenSet_delEdge_odd`).
+
+| Lean name | Statement |
+|---|---|
+| **`realisable_erase_of_fan`** | **Fan descent.** `u, w ∈ S ⊆ Ev`, `uw ∈ E(G)`, every even neighbour of `w` lies in `S`, and `S \ {u, w}` is realisable in `G − uw` ⇒ `S \ {u}` is realisable in `G`. One application of `fan_single` (gainer `w`, loser `u`). |
+| **`realisable_of_fan_transfer`** | **Fan transfer.** `u ∈ Ev \ S`, `w` odd, `uw ∈ E(G)`, every even neighbour `x ≠ u` of `w` lies in `S`, and `S` is realisable in `G − uw` ⇒ `S` is realisable in `G`. |
+| **`realisable_evenSet_erase_pair`** | **Second descent step** (needs `LovaszStatement`, even order, no isolated vertex): distinct even `a, b, w` with `aw ∈ E`, `bw ∉ E` ⇒ `Ev \ {a, b}` is realisable. Lemma 3 in `G − aw`, then Fan descent. |
+| **`etwin_of_not_realisable`** | If `Ev \ {a, b}` is not realisable then `a, b` have the same neighbours among the other even vertices (E-twins). |
+| `fd_second_step` | The second step of faithful descent from `Ev \ {u}` keeping a root `r`, given a non-twin `v`. |
+| `FanSchedule`, **`realisable_of_fanSchedule`** | Iterated Fan descent with even steps only (semi-induced matchings in `G[Ev]`). |
+| `FanCert`, **`realisable_of_fanCert`** | **Soundness of the Fan calculus**: a list of even steps and odd transfers (odd partner of degree ≥ 3) ending with at most one vertex certifies that `Ev \ X` is realisable. |
+| `Tight`, `tight_of_transfer`, `tight_of_fanCert` | The two-even-vertex problem: `Tight H := Realisable H ∅` (the parity bound `#odd/2`); the transfer lemma for graphs with `evenSet H = {u, v}`. |
+| `PathDecomp.degree_add_ends_le`, `degree_le_of_tight` | `deg v + ends v ≤ 2|D|`; obstruction (O1): in a tight graph every odd vertex has degree ≤ `#odd − 1`. |
+
+`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Lovász enters
+only as `LovaszStatement`. Not formalized from §5: the reductions (L), (S), (C) of Proposition 26,
+which delete vertices or add an edge, and the obstructions.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is
