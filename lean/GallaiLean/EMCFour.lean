@@ -87,13 +87,13 @@ section steps
 variable {G : SimpleGraph V} [DecidableRel G.Adj]
 
 omit [DecidableEq V] in
-theorem mem_evenSet_iff {v : V} : v ∈ evenSet G ↔ 0 < G.degree v ∧ Even (G.degree v) := by
+theorem mem_evenSet_iff_even {v : V} : v ∈ evenSet G ↔ 0 < G.degree v ∧ Even (G.degree v) := by
   simp [evenSet]
 
 omit [DecidableEq V] in
 theorem odd_of_not_mem_evenSet (hG : ∀ v, 0 < G.degree v) {v : V} (hv : v ∉ evenSet G) :
     Odd (G.degree v) := by
-  rw [mem_evenSet_iff, not_and] at hv
+  rw [mem_evenSet_iff_even, not_and] at hv
   exact Nat.not_even_iff_odd.mp (hv (hG v))
 
 theorem profile_congr {K : SimpleGraph V} [DecidableRel K.Adj] {S T : Finset V} {v : V}
@@ -120,7 +120,7 @@ theorem mem_of_ends_eq_zero {S : Finset V} {D : PathDecomp G} (hD : Realises G D
   rw [hD v] at h0
   unfold profile at h0
   split_ifs at h0 with ho hS
-  refine ⟨mem_evenSet_iff.mpr ⟨hpos, Nat.not_odd_iff_even.mp ho⟩, hS⟩
+  refine ⟨mem_evenSet_iff_even.mpr ⟨hpos, Nat.not_odd_iff_even.mp ho⟩, hS⟩
 
 /-- Deleting one edge `ab` between two vertices of positive degree: the parities at `a`, `b`
 flip, the others are unchanged. -/
@@ -145,8 +145,8 @@ theorem realisable_of_edge (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree 
     Realisable G (((evenSet G).erase t).erase u') := by
   have hne : s ≠ t := hst.ne
   obtain ⟨hKs, hKt, hKo⟩ := delE_single_facts hst
-  obtain ⟨hs0, ks, hks⟩ := mem_evenSet_iff.mp hs
-  obtain ⟨ht0, kt, hkt⟩ := mem_evenSet_iff.mp ht
+  obtain ⟨hs0, ks, hks⟩ := mem_evenSet_iff_even.mp hs
+  obtain ⟨ht0, kt, hkt⟩ := mem_evenSet_iff_even.mp ht
   have hsodd : Odd ((delE G {s(s, t)}).degree s) := ⟨ks - 1, by omega⟩
   have htodd : Odd ((delE G {s(s, t)}).degree t) := ⟨kt - 1, by omega⟩
   have hKpos : ∀ v, 0 < (delE G {s(s, t)}).degree v := by
@@ -158,7 +158,7 @@ theorem realisable_of_edge (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree 
     rw [hKo v h1 h2]; exact hG v
   have hEvK : evenSet (delE G {s(s, t)}) = ((evenSet G).erase s).erase t := by
     ext v
-    simp only [Finset.mem_erase, mem_evenSet_iff]
+    simp only [Finset.mem_erase, mem_evenSet_iff_even]
     by_cases h1 : v = s
     · subst h1
       simp only [ne_eq, not_true_eq_false, false_and, and_false, iff_false, not_and]
@@ -189,12 +189,12 @@ theorem realisable_of_edge (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree 
   refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), D, fun v => ?_⟩
   by_cases h1 : v = s
   · subst h1
-    rw [hDs, hD' v, profile_odd hsodd, profile_even_mem (mem_evenSet_iff.mp hs).2 ?_]
+    rw [hDs, hD' v, profile_odd hsodd, profile_even_mem (mem_evenSet_iff_even.mp hs).2 ?_]
     simp [hne, hsu', hs]
   by_cases h2 : v = t
   · subst h2
     rw [hD' v, profile_odd htodd] at hDt
-    rw [profile_even_not_mem (mem_evenSet_iff.mp ht).2 (by simp)]
+    rw [profile_even_not_mem (mem_evenSet_iff_even.mp ht).2 (by simp)]
     omega
   rw [hDo v h1 h2, hD' v]
   apply profile_congr (hKo v h1 h2)
@@ -233,7 +233,7 @@ theorem star_finish {y w t' t'' : V} (hG : ∀ v, 0 < G.degree v) (hy : y ∈ ev
           unfold profile at h0
           split_ifs at h0 with ho hS
           exact absurd (Finset.mem_erase.mpr ⟨h3, Finset.mem_erase.mpr ⟨h2,
-            mem_evenSet_iff.mpr ⟨hG v, Nat.not_odd_iff_even.mp ho⟩⟩⟩) hS
+            mem_evenSet_iff_even.mpr ⟨hG v, Nat.not_odd_iff_even.mp ho⟩⟩⟩) hS
       _ ≤ 2 := Finset.card_le_two
       _ < 3 := by norm_num
   obtain ⟨D, -, hDt'', hDy, hDo⟩ := fan_single hadj.symm hG' D₂ hcond
@@ -242,19 +242,19 @@ theorem star_finish {y w t' t'' : V} (hG : ∀ v, 0 < G.degree v) (hy : y ∈ ev
   refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), D, fun v => ?_⟩
   by_cases h1 : v = y
   · subst h1
-    rw [profile_even_mem (mem_evenSet_iff.mp hy).2 hyS]
+    rw [profile_even_mem (mem_evenSet_iff_even.mp hy).2 hyS]
     omega
   by_cases h4 : v = t''
   · subst h4
-    rw [profile_even_mem (mem_evenSet_iff.mp ht'').2 ht''S]
+    rw [profile_even_mem (mem_evenSet_iff_even.mp ht'').2 ht''S]
     omega
   rw [hDo v h4 h1]
   by_cases h2 : v = w
   · subst h2
-    rw [h₂w, profile_even_not_mem (mem_evenSet_iff.mp hw).2 (by simp)]
+    rw [h₂w, profile_even_not_mem (mem_evenSet_iff_even.mp hw).2 (by simp)]
   by_cases h3 : v = t'
   · subst h3
-    rw [h₂t', profile_even_not_mem (mem_evenSet_iff.mp ht').2 (by simp)]
+    rw [h₂t', profile_even_not_mem (mem_evenSet_iff_even.mp ht').2 (by simp)]
   exact h₂o v h1 h2 h3 h4
 
 /-- **Star lemma.** If an even vertex `y` is adjacent to three further even vertices `w, x, z`,
@@ -289,7 +289,7 @@ theorem realisable_of_star (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree 
     rw [d2o v h1 h2, d1o v h1 h3, d0o v h1 h4]
   have oddK : ∀ v ∈ evenSet G, ∀ c, (delE (delE (delE G {s(y, z)}) {s(y, x)}) {s(y, w)}).degree v + c = G.degree v → Odd c → Odd ((delE (delE (delE G {s(y, z)}) {s(y, x)}) {s(y, w)}).degree v) := by
     intro v hv c hc hco
-    obtain ⟨-, k, hk⟩ := mem_evenSet_iff.mp hv
+    obtain ⟨-, k, hk⟩ := mem_evenSet_iff_even.mp hv
     obtain ⟨j, hj⟩ := hco
     exact ⟨k - j - 1, by omega⟩
   have oy := oddK y hy 3 hKy (by decide)
@@ -414,7 +414,7 @@ theorem realisable_lift (hG : ∀ v, 0 < G.degree v) {y t : V} (hy : y ∈ evenS
     Realisable G (insert y (S.erase t)) := by
   obtain ⟨hSE, D', hD'⟩ := hS
   obtain ⟨hKy, hKt, hKo⟩ := delE_single_facts hyt
-  obtain ⟨-, k, hk⟩ := mem_evenSet_iff.mp hy
+  obtain ⟨-, k, hk⟩ := mem_evenSet_iff_even.mp hy
   have hyodd : Odd ((delE G {s(y, t)}).degree y) := ⟨k - 1, by have := hG y; omega⟩
   have htodd : Odd (G.degree t) := odd_of_not_mem_evenSet hG ht
   have hteven : Even ((delE G {s(y, t)}).degree t) := by
@@ -438,12 +438,12 @@ theorem realisable_lift (hG : ∀ v, 0 < G.degree v) {y t : V} (hy : y ∈ evenS
     have hvK := hSE hvS
     have hvy : v ≠ y := by
       rintro rfl
-      exact (Nat.not_even_iff_odd.mpr hyodd) (mem_evenSet_iff.mp hvK).2
-    rw [mem_evenSet_iff, ← hKo v hvy hvt]
-    exact mem_evenSet_iff.mp hvK
+      exact (Nat.not_even_iff_odd.mpr hyodd) (mem_evenSet_iff_even.mp hvK).2
+    rw [mem_evenSet_iff_even, ← hKo v hvy hvt]
+    exact mem_evenSet_iff_even.mp hvK
   by_cases h1 : v = y
   · subst h1
-    rw [hDy, hD' v, profile_odd hyodd, profile_even_mem (mem_evenSet_iff.mp hy).2
+    rw [hDy, hD' v, profile_odd hyodd, profile_even_mem (mem_evenSet_iff_even.mp hy).2
       (Finset.mem_insert_self _ _)]
   by_cases h2 : v = t
   · subst h2
@@ -528,7 +528,7 @@ theorem two_step_aux (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) (k 
         subst hmem
         exact hyq (q.fst_mem_support_of_mem_edges he)
       obtain ⟨hKy, hKt, hKo⟩ := delE_single_facts hyt
-      obtain ⟨-, j, hj⟩ := mem_evenSet_iff.mp hy
+      obtain ⟨-, j, hj⟩ := mem_evenSet_iff_even.mp hy
       have hyodd : Odd ((delE G {s(y, t)}).degree y) := ⟨j - 1, by have := hG y; omega⟩
       have hteven : Even ((delE G {s(y, t)}).degree t) := by
         obtain ⟨i, hi⟩ := odd_of_not_mem_evenSet hG htE; exact ⟨i, by omega⟩
@@ -547,13 +547,13 @@ theorem two_step_aux (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V)) (k 
         by_cases h1 : v = y
         · subst h1
           simp only [hyt', false_or, ne_eq, not_true_eq_false, false_and, iff_false]
-          exact fun h => (Nat.not_even_iff_odd.mpr hyodd) (mem_evenSet_iff.mp h).2
+          exact fun h => (Nat.not_even_iff_odd.mpr hyodd) (mem_evenSet_iff_even.mp h).2
         by_cases h2 : v = t
         · subst h2
           simp only [true_or, iff_true]
-          exact mem_evenSet_iff.mpr ⟨hKpos v, hteven⟩
+          exact mem_evenSet_iff_even.mpr ⟨hKpos v, hteven⟩
         simp only [h1, h2, false_or, ne_eq, not_false_eq_true, true_and]
-        rw [mem_evenSet_iff, mem_evenSet_iff, hKo v h1 h2]
+        rw [mem_evenSet_iff_even, mem_evenSet_iff_even, hKo v h1 h2]
       have h4K : 4 ≤ (evenSet (delE G {s(y, t)})).card := by
         rw [hEvK, Finset.card_insert_of_notMem (fun h => htE (Finset.mem_of_mem_erase h)),
           Finset.card_erase_of_mem hy]
