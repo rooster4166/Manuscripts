@@ -174,8 +174,8 @@ Definitions:
   to `S`. `mem_cone_edgeSet_iff` describes its edges, and `cone_walk_lift` turns walks that avoid
   the apex into walks of `F`.
 * `PathDecomp.outEnds D := ∑ v, D.ends (some v)` counts the ends away from the apex. It is defined
-  for any graph on `Option U`. `outEnds_eq_sum` gives one end per path through the apex if the
-  apex is an end of it, and two per path avoiding the apex. `two_mul_size_eq` states
+  for any graph on `Option U`. `outEnds_eq_sum` writes it as the sum over paths of
+  `GPath.outEndsAt`, the number of ends of a path other than the apex. `two_mul_size_eq` states
   `2|D| = D.ends none + D.outEnds`.
 * `minOutEnds F S` is `h`, the `sInf` of `outEnds` over the decompositions of the cone.
 * `doubleCone F S := cone (twoCopies F) (univ ×ˢ S)` lives on `Option (Bool × V)`. It is two
@@ -198,8 +198,8 @@ Definitions:
 | `pathNumber_le_markedNumber_add` | `p(F) ≤ q(F,S) + \|S\|`: at most `\|S\|` paths are assigned. |
 | `gallai_iff_markedBound` | `GallaiConjecture.{u} ↔ MarkedBound.{u}`. `MarkedBound` is the marked bound for all connected `F` and nonempty `S`. The backward direction uses a single mark. |
 
-The file reuses `exists_split_all` (Surgery), `project_full`, `hasPiece_of_walk`, `ofPerm` and
-`flatMap` permutation lemmas (Project), and `addLeaf`, `leafCost`, `exists_leafCost_le`,
+The file reuses `exists_split_all` (Surgery), `project_full`, `hasPiece_of_walk`, `pushWalk` and
+`ofPerm` (Project), and `addLeaf`, `leafCost`, `exists_leafCost_le`,
 `pathNumber_addLeaf_le_succ` and `addLeaf_connected` (Doubling/PrivateLeaf).
 
 What is proved: targets 1–4 and the single-mark converse have no `sorry`. `#print axioms` on

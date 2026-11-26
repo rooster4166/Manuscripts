@@ -208,3 +208,19 @@ At t = 5, Botler–Sambinelli covers every E-subgraph outside the following: E-s
 **So the remaining frontier is BP_t for dense E-subgraphs.** This is the regime of Chu–Fan–Zhou's clique theorem (E-subgraph K_r with r ≤ 15 gives ⌊n/2⌋ + 1, not the floor) and of six-clique Thm 6.
 
 A uniform target suggested by this view: **the floor bound for odd-order graphs with a leaf whose E-subgraph is a clique, for every clique order.**
+
+## J. Why the full-vertex case at d = 6 resists Fan transfers (working note)
+
+**Setting.** B[U] = K6. Some exterior x sees all of U. Let H = B − rx.
+
+- The even set of H is (U − r) ∪ {x}, again a K6 core, now with root x.
+- By induction on edges, H has an optimal decomposition doubling x and two vertices of U − r.
+- Its three unexposed even vertices all lie in U − r, so all are neighbours of r.
+
+**Restoring rx fails.** Restoring rx towards r by Fan's lemma needs b(x) = 2 > #(zero-end neighbours of r) = 3, which fails.
+
+**Grouped transfers don't fix it.** They add *some* edge rt, not necessarily rx.
+
+**What is known.** The false-twin-return note handles the case where r lies in a large false-twin class of H.
+
+**What a general argument needs.** A second apex, i.e. using x itself as a parity absorber, or a transfer that moves two ends at once.
