@@ -249,9 +249,11 @@ to $4$ by a single transfer. A grouped receipt and the new path $y'\,1\,7$ follo
 extends through a further held edge. The root receives by a single transfer from the seed.
 \item \texttt{Gqrvn[}, root $2$: as \texttt{GsRvnk}.
 \end{itemize}
-A hub of degree $d$ with $b\ge1$ on its neighbours absorbs $\lceil d/2\rceil$ receipts against
-an adversary. After $j$ receipts the supply is $d-j$ and at most $j$ neighbours are blank. So the
-spare path closes the hub exactly when $d-\lceil d/2\rceil\le2$, i.e.\ $d\le5$.
+A hub of degree $d$ with $b\ge1$ on its neighbours absorbs at least $\lceil d/2\rceil$ receipts
+against an adversary. After $j$ receipts the supply is at least $d-j$ and at most $j$ neighbours
+are blank. The remaining $d-\lceil d/2\rceil$ edges fit into one new path through the hub when
+this number is at most $2$, i.e.\ $d\le5$. So the pure-star scheme closes hubs of degree at most
+$5$, and at degree $6$ it is one receipt short (Section~\ref{sec:six}).
 \end{remark}
 
 \section{Completeness at order eight}\label{sec:eight}
@@ -309,8 +311,8 @@ $w\cdots v\,u\cdots$. This is a path on the same vertex set, using $vu$ instead 
 moves the end from $v$ to $w$.
 \end{proof}
 
-Fan's counting argument gives more: the rotation can always be steered to a \emph{blank} vertex,
-and it can be steered to as many blank vertices as the supply.
+Iterating rotations along Fan's chains gives more. If the transfer fails, then at least as many
+\emph{blank} neighbours of $u$ as the supply are reachable, and each of them can be given an end.
 
 \begin{lemma}[Fan's alternative]\label{lem:alt}
 Let $D$ be a partition of $K$, let $u$ be a vertex, and let $T$ be a set of non-neighbours of $u$
@@ -344,9 +346,9 @@ chain and append $x_ku$ to that path. This gives (a) for $t=x_0$, and $b_D(t)\ge
 ends at $t$ (or $k=0$ and $t$ itself has the avoiding end).
 
 \emph{Case 2: otherwise.} Every end at a vertex of $R$ lies on a path through $u$. Map each such
-end $(P,x)$ to the edge $u\,\pi_P(x)$. By the definition of chains $\pi_P(x)\in R$; we may assume
-$x_{k+1}=\pi_P(x)$ is new, or else $\pi_P(x)$ already occurs in the chain, and in both cases it is
-the last vertex of some chain. The map is injective, since paths are edge-disjoint and the two ends
+end $(P,x)$ to the edge $u\,\pi_P(x)$. Here $\pi_P(x)\in R$. Indeed, let $x_0,\dots,x_k=x$ be a
+chain. If $\pi_P(x)$ is not among the $x_i$, it extends the chain. Otherwise it equals some $x_i$,
+which is the last vertex of the chain $x_0,\dots,x_i$. The map is injective, since paths are edge-disjoint and the two ends
 of one path lie on the two sides of $u$. Its image consists of edges from $u$ to $N(u)\cap R$. Also
 $R\subseteq T\cup N(u)$, and $T\cap N(u)=\emptyset$. So
 \[
@@ -378,8 +380,9 @@ the other four.
 \end{proposition}
 
 \subsection*{Why} Every P\'osa-type move keeps the number of paths. The losers need the spare
-path to be spent on a path of length two through the hub, and in the original game this can only
-be imitated in two steps. First a new edge $cs$ is added, so $b(s)$ rises to $3$. Then the
+path to be spent on a path of length two through the hub. In the original game this can only be
+imitated in two steps. In \texttt{GsRvnk} the two receipts leave $b(s)=2$. First a new edge $cs$
+is added, so $b(s)$ rises to $3$. Then the
 transfer of $sd$ towards $d$ is needed. In the true partition this is an append: the path $cs$
 ends at $s$ and avoids $d$. The profile has forgotten which of the three paths ending at $s$ is
 $cs$, and both Fan's inequality and the rotation adversary now place $d$ on all of them. Path
@@ -508,8 +511,8 @@ Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
 \end{proof}
 
 With the pure star the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's
-chain from $t\in T$ stops at a blank donor. (The game instead needs nine held edges.) The spare path is spent on recombining the flower instead. This
-is a two-end move at equality. It moves the ends from $T$ to the transversal $L$, and it is again
+chain from $t\in T$ stops at a blank donor. The spare path is spent on recombining the flower. (The
+game, which cannot see the flower, needs nine held edges.) This is a two-end move at equality. It moves the ends from $T$ to the transversal $L$, and it is again
 invisible in the profile: it needs the three cycles, whose existence follows from a count of
 edges.
 
