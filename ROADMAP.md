@@ -162,6 +162,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 - CP refuted at n = 7.
 - Audits A1–A6 launched.
 - Lean project created (`lean/`).
+- **Audits A1–A8 complete: no false step in any audited result.** Remaining items are wording fixes, citation fixes and absent finite data (see the corrigenda).
 - Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
 - Corrigenda document written (`manuscripts/corrigenda`).
 - New manuscript draft `manuscripts/endpoint-structure`.

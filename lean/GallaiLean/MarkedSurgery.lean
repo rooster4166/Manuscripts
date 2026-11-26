@@ -733,8 +733,7 @@ theorem exists_trim [DecidableEq W] (M : PMP G E S) {x y : W} (hxy : x ≠ y) (h
         rw [hl]; simp only [List.nil_append]; omega
       · show s ∉ mSites ([] ++ rest)
         have h1 := (mSites_perm hM).nodup_iff.mp M.sites_nodup
-        simp only [mSites_append, mSites_cons, Option.toList_some, mSites_nil, List.append_nil,
-          List.singleton_append, List.nodup_cons] at h1
+        simp only [mSites_cons, Option.toList_some, List.singleton_append, List.nodup_cons] at h1
         simpa using h1.1
   · -- a longer path: trim its first edge
     have hB : (mEdges [(L', o)] ++ [s(x, y)]).Perm (mEdges [(L₀, o)]) := by
@@ -764,7 +763,7 @@ theorem exists_trim [DecidableEq W] (M : PMP G E S) {x y : W} (hxy : x ≠ y) (h
       · exact hsy (hL₁s ▸ h).symm
       · exact hne (hL's.trans (hsx.symm.trans (h.symm.trans hL't.symm)))
     · show mCost ([(L', o)] ++ rest) = M.cost
-      rw [hc]; simp
+      rw [hc]; simp; omega
     · show ([(L', o)] ++ rest).length = M.paths.length
       rw [hM.length_eq]; simp
 
@@ -817,7 +816,7 @@ def push {W' : Type v} {G' : SimpleGraph W'} {S'' : Finset W'} (M : MarkedPartit
         ((M.paths.map Prod.fst).flatMap GPath.edges).map (Sym2.map f) := by
       simp [mEdges, pushItem, List.map_flatMap, List.flatMap_map, GPath.push_edges]
     rw [this, List.mem_map]
-    simp only [Set.mem_setOf_eq, ← M.covers]
+    simp only [Set.mem_ofPred_eq, ← M.covers]
   site_ok := by
     intro z hz s hs
     obtain ⟨y, hy, rfl⟩ := List.mem_map.mp hz

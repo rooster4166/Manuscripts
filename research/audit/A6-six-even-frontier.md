@@ -18,7 +18,7 @@ Sources: the raw texts in `scratchpad/raw/`, and two primaries I downloaded. The
 ## 0. Headline
 
 1. **No ERROR was found in any audited statement.** None of the computations found a counterexample:
-   - every connected 8-vertex graph with six even vertices, at every even root;
+   - every connected 8-vertex graph with six even vertices, at every even root (2,518 graphs, 15,108 rooted instances; 2,963 of them tight);
    - the precise end-vector claims of INC Lemma 2, 6CL Thm 1 and 6CL Thm 6, on all 8-vertex instances and on random 10–14-vertex instances;
    - Fan's grouped lemma, on 3,000 random instances;
    - the path-plus-cycles lemmas of D10.
@@ -27,6 +27,8 @@ Sources: the raw texts in `scratchpad/raw/`, and two primaries I downloaded. The
    - It reproduces RS's contact table *exactly*: K0 31, K1 30, K2 27, K3 15 certified, with exactly the printed survivors.
    - It certifies all 7 one-universal cores × 31 contact sets.
    - It certifies all 32 exterior masks of the K2 refinement.
+   - It reproduces the C4 exterior-profile list together with the conditional cde elimination.
+   - It derives RS's table of D-shapes and root positions with 0 mismatches over all 32,768 labelled cores.
    - Sixteen certificates were replayed end to end on concrete random hosts with Fan's own sequence construction. Each gave a verified floor partition.
    - So the case analysis of the shape theorem is confirmed, and the printed survivors cannot be removed by any seven-site certificate of this kind.
 3. **Fan's Lemma 3.3 now MATCHES verbatim.** I obtained the primary text. This upgrades A7 item 1c from NOT FOUND to MATCHES. The 6CL Lemma 2 statement and every use I checked agree with it.
@@ -65,7 +67,7 @@ Sources: the raw texts in `scratchpad/raw/`, and two primaries I downloaded. The
 | RS11 | Isolated-root descent (hold the approach path, H passes at y ⇒ B passes) | SOUND | Every Fan inequality checked: the receiver misses T; the only blank outside T is the receiver; the donor is untouched |
 | RS12 | "The argument neither needs nor transfers 2-connectivity…" and the Thm 144 caveat | SOUND | Correctly hedged |
 | RS13 | Example K_{m+6} minus the 5 edges r–T | SOUND | Parities, minimum degree m, no matching cut |
-| RS14 | C4 interaction: profile list {∅, abe, abcd, acde, bcde, abcde} via the bank and the cde elimination | **see §3.4** | Parity identity #acde + #abcde odd: SOUND |
+| RS14 | C4 interaction: profile list {∅, abe, abcd, acde, bcde, abcde} via the bank and the cde elimination | UNCLEAR as written; **independently confirmed** | All c,d-distinguishing masks certified; exactly the listed projections plus cde lack unconditional certificates; cde has the conditional one (§3.4). Parity identity SOUND |
 | RS15 | Joint failure ⇒ both pairs twins ⇒ automorphisms ⇒ all four cycle roots fail; hubs pass; x ≡ y ≡ p ≡ q ≡ 1 + f | SOUND | |
 | RS16 | "Small odd neighbourhoods" (2-connected hosts; ≥ 3 odd neighbours; C-universal ⇒ ≥ 5) | UNCLEAR (external inputs absent); arithmetic SOUND | Applies to 2-connected hosts only, as stated |
 | RS17 | Pendant identity p2(A + xry, r) = 1 + p(A + xr) = 1 + p2(A, x) | SOUND | 13,452 labelled inputs reproduced |
@@ -181,7 +183,30 @@ For every graph in `data/conn8.g6` with exactly six even vertices, and every eve
 
 I also recorded whether 3 paths already suffice ("slack") or not ("tight").
 
-**Result:** [FILLED BELOW]
+**Result.**
+- Of the 11,117 graphs, 2,518 have exactly six even vertices, giving **15,108 rooted instances**.
+- **All 15,108 pass**: ≤ 4 paths with ≥ 2 ends at r. None needed the infeasibility recheck.
+- 2,963 roots (in 1,389 graphs) are *tight*: 3 paths with two ends at r are impossible, so p2 = k exactly.
+
+Distribution by RS pattern (D-shape, whether r is an RS candidate):
+
+| D-shape, RS candidate? | all roots | tight roots |
+|---|---|---|
+| ∅, candidate | 24 | 24 |
+| K2, candidate | 54 | 46 |
+| P3, r middle (candidate) | 12 | 2 |
+| P3, r not middle | 60 | 48 |
+| K3, r on triangle (candidate) | 24 | 3 |
+| K3, r off triangle | 24 | 24 |
+| C4, r on cycle (candidate) | 40 | 4 |
+| C4, r off cycle | 20 | 20 |
+| other shapes, r has a core neighbour | 14,517 | 2,721 |
+| r isolated in C, C − r ∈ {K5, K5−e, K5−P3} (candidate) | 25 | 6 |
+| r isolated, other C − r | 308 | 65 |
+
+The shape theorem is necessarily vacuous on these graphs, since nothing fails. The scan shows that tightness (p2 = k) is common at *non-candidate* patterns (2,878 of 2,963 tight roots). This is consistent with RS's caveat that the candidate list describes what the tests leave, not where failures occur.
+
+The certified patterns pass because a local certificate exists, not because the instance is loose. Certificates were replayed on concrete hosts in §3.3.
 
 ### 3.2 Independent re-derivation of the RS certificate banks (`fancert.py`, `sevensite.py`, `bank2.py`)
 
@@ -232,7 +257,16 @@ Setup: K1 core with N_T(r) = abe. The exterior x has N_T(x) = S and xr ∈ {0, 1
 
 The question is which masks lack an unconditional seven-site certificate (W-setting, with B-setting as fallback). RS claims the masks without a certificate project to {∅, abe, abcd, acde, bcde, abcde, cde}, and that every mask distinguishing c, d is certified.
 
-**Result:** [FILLED BELOW]
+**Result** (`k1x_cap.py`; held sets up to 7 edges; `k1x.py` exhaustive for the ∅ masks):
+- **Every one of the 12 orbits distinguishing c and d is certified**, with |H| = 3–5, for both values of xr.
+- The other certified orbits: a, ab, acd, ae, cd, e, for both xr.
+- No certificate (cap 7) exists exactly for the projections ∅, abe, abcd, acde (∼ bcde), abcde and cde, for both xr. ∅ is confirmed exhaustively.
+- This is **exactly** RS's list. The direction that matters for soundness, that every other mask is certified, is fully confirmed.
+
+**cde elimination** (`k1x_cde.py`):
+- Assume c keeps one retained exterior edge. Its other end is an exterior vertex of type acde or abcde, which the parity identity supplies, has one end and is never held.
+- Then conditional B-setting certificates exist for both xr: hold all local edges at c and double c by the leaf trick.
+- This confirms the mechanism RS describes. So the twin conclusion for the C4 row (c, d adjacent twins throughout B in a failure at r) is SOUND.
 
 ### 3.5 Exact end-vector claims
 
@@ -242,7 +276,11 @@ The question is which masks lack an unconditional seven-site certificate (W-sett
 | 6CL Thm 1 (every x sees exactly 5, n_h odd, any triple doubled) | m = 6: all 16 iso-classes of even F × 20 triples; m = 8: 60 random | 0 |
 | 6CL Thm 6 (U = K6, every x sees ≤ 5, every r) | all 372 eight-vertex instances; 150 random on 10 vertices; 80 random on 12 vertices | 0 |
 
-The 10- and 12-vertex hosts were generated with random exterior structure and parity repaired by exterior edges (`gen.py`). These are falsification tests of the *precise endpoint vectors*, which are not implied by Gallai's conjecture.
+How the tests were run:
+- The 10- and 12-vertex hosts were generated with random exterior structure and parity repaired by exterior edges (`gen.py`).
+- All solves use the circuit model and every returned partition is verified.
+- INC Lemma 2 and Thm 6 were tested as "≤ k paths, odd ends = 1, r = 2, other U ≤ 2". This is equivalent to the exact-k profile: a partition with fewer paths can be split at internal visits of blank U-vertices until exactly two further U-vertices are doubled.
+- These are falsification tests of the *precise endpoint vectors*, which are not implied by Gallai's conjecture.
 
 ### 3.6 D10 path-plus-cycles lemmas (`pathcycle.py`)
 
@@ -279,7 +317,11 @@ All match.
 
 **F3 (RS7).** The second bank is absent; reproduced: all 32 masks.
 
-**F4 (RS14, C4 profile list).** [FILLED BELOW]
+**F4 (RS14, C4 profile list).**
+- UNCLEAR as written: the "seven-site attachment bank" is absent.
+- **Independently confirmed** (§3.4): every exterior mask outside {∅, abe, abcd, acde, bcde, abcde, cde} has an unconditional certificate, and cde has the conditional certificate RS describes.
+- The parity step (#acde + #abcde odd, with "exterior" including r) is SOUND.
+- *Presentation fix:* state that the exterior-type sum runs over all vertices outside T, r included. With r's type abe, the sum is {c, d}.
 
 **F5 (RS16).** The "small odd neighbourhoods" consequences are for *2-connected* hosts (correctly stated) and rely on external proofs not in the collection. UNCLEAR, low impact.
 
