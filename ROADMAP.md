@@ -273,3 +273,9 @@ Candidate uniform mechanisms (`research/connections.md`):
 - d6-frontier in Lean: Thm 6.1(a), 6.1(b) at every deletion degree d, and Thm 5.2.
 - 2026-11-26 (cloud, `claude/lean-d6-frontier`): **d6-frontier hub closures in Lean**, sorry-free, standard axioms, unconditional (Lovász is `lovaszStatement`). `Relay.lean`: Lemma 2.3 (`Ach.forwardRelay`, `Ach.carry`) and the hub counting (`Ach.receiveMany`, `Ach.giveAll`). `HubPhases.lean`: seeds and phases. `D6Frontier.lean`: **Thm 6.1 at every deletion degree d** (`root_hub_uniform`, `full_hub_uniform`, `full_hub_pendant_uniform`), Thm 5.2 (`full_hub_six`, `full_hub_six_pendant`), Thm 4.1(i) (`root_hub_six`). Formalization audit `research/audit/d6-frontier-lean-audit.md`: no error; two wording gaps fixed in the text (Thm 4.1(ii),(iii) need Q non-isolated; the d = 4 remark needs an odd neighbour of degree ≥ 3).
 - **n = 8 is closed by the extended game**: Lovász + Fan + path insertion, \|F\| ≤ 9, every root of every connected graph. Independently confirmed on the two hardest instances (K7 + leaf at \|F\| = 7; K8 − PM at \|F\| = 9). The cocktail party graph needs the longest inserted path, consistent with `cocktail_insertion_barrier`. The next test bed is n = 10 (degree-6 hubs: A_{6,2} core roots resist).
+- 2026-11-26 (missing-move, follow-up):
+  - The five E13 losers are non-critical (split rule). 19 of the 47 `np`-losers at \|F\| ≤ 4 are critical, and all win with path insertion.
+  - **Odd-neighbour hub** (`hub_four_odd_ends`, `hub_four_odd_rooted`) closes the critical Gqz~vw at root 3; `gqz_rooted_three` is checked by `decide`.
+  - **Profile-level flower move** (manuscript Lemma 5.7, transversals for j ≤ 4): the game wins CP(4) and CP(5) with one star, attaining `cocktail_insertion_barrier`. It does not help on A_{6,2} or B′ (n = 10).
+  - Base branch merged into `claude/missing-move`.
+

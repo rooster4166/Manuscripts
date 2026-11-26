@@ -105,8 +105,8 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
                 nb = list(b); nb[a] += 1; nb[c] += 1
                 if win(rest, tuple(nb), r, R, A):
                     return True
-        # flower move (option "flower"; missing-move Lemma 5.6): a saturated hub u whose held
-        # edges ut (t in T, |T| = j <= 4) carry b(t) = 1, with b(u) = d_H(u) = j, sum b = 2j and
+        # flower move (option "flower"; missing-move Lemma 5.7, transversals Lemma 5.6): a
+        # saturated hub u whose held edges ut (t in T, |T| = j <= 4) carry b(t) = 1, with b(u) = d_H(u) = j, sum b = 2j and
         # |E(H)| + j = j |V'| (V' = vertices of positive degree in H + uT). Then every path joins
         # u to T, the paths close into j Hamiltonian cycles through u, and a transversal path
         # L = u a1 ... aj (chosen by the opponent among all such paths in H + uT) gives j + 1

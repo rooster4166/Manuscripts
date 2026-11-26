@@ -318,6 +318,34 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 
 **K8 − perfect matching by hand** (manuscript Prop 5.5). Here the 4th receipt at the degree-6 hub always fails, because all three paths end at the hub. The rigid configuration is a flower of three Hamiltonian cycles through s, and a transversal path of cut edges closes it (Lemma 5.4).
 
+**Follow-up (cloud session missing-move, after the coordinator's notes).**
+
+Criticality (`scripts/crit.py`, CP-SAT):
+- The five E13 losers are non-critical (p = 3). The split rule Σb ≤ n − 2, now in `fan_game.py`, settles them trivially.
+- Of the 47 graphs that lose with `np` at \|F\| ≤ 4, **19 are critical**: Gqz~vw, the seven dense graphs, and 11 others. All 47 win with `np` (\|F\| ≤ 9).
+- A_{6,2} and B′ are critical; A_{4,4} and B are not.
+
+**Gqz~vw** (critical, 4-connected; the original game loses it at root 3) is won by the odd-neighbour hub (manuscript Thm 2.5, Cor 2.6):
+- held set F = star(3) + 06, with the Lovász seed;
+- single transfer 1 → 3;
+- grouped transfer {5, 7} → 3;
+- new path 0–6–3–7 (or 0–6–3–5).
+
+The final profile is simple: it realises {0, 3, 7} or {0, 3, 5}. The Lean version is `gqz_rooted_three`, checked by `decide`.
+
+**The flower move** (option `flower`; manuscript Lemmas 5.6–5.7). At a saturated hub with b(u) = d_H(u) = j = |T| ≤ 4, b = 1 on T, Σb = 2j and |E(H)| + j = j·|V′|, the paths close into j Hamiltonian cycles. A transversal path L from u, chosen by the opponent, gives j + 1 paths with b = 2 on L.
+
+| Test | Without flower | With flower |
+|---|---|---|
+| CP(4), F = one star (\|F\| = 6), all roots | loses (`np` needs \|F\| = 9) | **wins** |
+| CP(5) = K10 − PM, F = one star (\|F\| = 8) | loses (with `np` too) | **wins** |
+| A_{6,2}, B′ (star + ≤ 1) | loses | loses |
+| the 7 dense n = 8 graphs, `np`, \|F\| ≤ 6 | 5 lose | 5 still lose (CP(4) and Gut~vs win) |
+| 5 random critical n = 10 graphs with a degree-6 vertex (`sample10.py`) | win at star + ≤ 2 | win at the same size |
+
+The flower's last step is the insertion of the path L, which has m − 1 held edges. This attains `cocktail_insertion_barrier` (FanBarrier.lean).
+
+
 **Reading.**
 - At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
