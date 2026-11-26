@@ -139,17 +139,21 @@ rotation as a game move. Neither repairs any losing root, with up to two uses pe
 $|F|\le4$, or one use and $|F|\le6$. We explain why: the losers' obstruction is budget
 allocation, not exchange.
 \item \emph{Degree six} (Section~\ref{sec:six}): at a hub of degree six the spare path pays for
-three receipts, and four are needed. On the order-$10$ analogue of \texttt{GsRvnk}, the fourth
-receipt is at Fan's equality. It is forced by an elementary append-or-through argument combined
-with a count of edges against path lengths (Proposition~\ref{prop:A62}). The game with path
-insertion and hub-shaped held sets loses this graph at every root, and also a $K_6$ core with
-three full exterior vertices.
+three receipts of a pure star, and four are needed. The fourth sits at Fan's equality. Two hand
+arguments settle it there. On the order-$10$ analogue of \texttt{GsRvnk} the receipt is forced by
+an append-or-through argument and a count of edges (Proposition~\ref{prop:A62}). On $K_8$ minus a
+perfect matching it always fails, and the rigid configuration is a flower of three Hamiltonian
+cycles, which recombines (Proposition~\ref{prop:K8M}). The game compensates instead by holding
+more edges and routing the inserted path through the hub along them. The resistant case we know
+is the core roots of the order-$10$ analogue of \texttt{GsRvnk}, which lose with a star plus three
+held edges.
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
-two, not because of Fan's inequality. The first gaps we know of appear at order $10$, at
-degree-six hubs. There the missing ingredient is a non-profile count at Fan's equality: the
-``short by one'' of the $d=6$ frontier~\cite[Remark~3.5]{D6}.
+two, not because of Fan's inequality. The next difficulty is the degree-six hub, which is the
+``short by one'' of the $d=6$ frontier~\cite[Remark~3.5]{D6}. There the rigid configuration at
+Fan's equality must be refuted or recombined with information outside the profile, or bypassed by
+longer inserted paths.
 
 \section{The spare path and the hub lemma}\label{sec:hub}
 
@@ -382,13 +386,18 @@ $cs$, and both Fan's inequality and the rotation adversary now place $d$ on all 
 insertion is exactly the memory of one explicit path. The missing ingredient at order $8$ is thus
 budget allocation, not exchange.
 
-\section{Degree six: one receipt short}\label{sec:six}
+\section{Degree six: the pure star is one receipt short}\label{sec:six}
 
 The $d=6$ frontier of the three-connected test has $\delta\ge6$, and its residual case is a $K_6$
 of even vertices with full exterior vertices~\cite[\S\S1, 3]{D6}. Remark~\ref{rem:variants} shows what
 goes wrong. A hub of degree six with $b\ge1$ on its neighbours absorbs three receipts against an
 adversary. Closing it with the spare path needs four receipts and one new path. The fourth receipt
 has supply $3$ against three blank neighbours: it is exactly at Fan's equality.
+
+The game gets around this by holding further edges. Relays then feed the hub, and the new path is
+routed through the hub along the extra held edges. For $M_8$ (Theorem~\ref{thm:complete8}) the
+inserted path is $1\,4\,2\,0\,7$. We first give two hand arguments that close the pure star
+itself at equality. Both use information that the profile does not record.
 
 The order-$10$ analogue of \texttt{GsRvnk} is the graph $A_{6,2}$. It has a clique
 $Q=\{q_1,\dots,q_6\}$ of vertices of degree $8$, a vertex $x$ adjacent to $Q$ and to a leaf
@@ -440,19 +449,26 @@ The Fan game with path insertion, with $F$ a full star plus at most two further 
 $A_{6,2}$ at every root, the odd ones included. (The CP-SAT check confirms (R) at every root.)
 \end{proposition}
 
-So $A_{6,2}$ is a loser of the extended game, at least for hub-shaped held sets; at order $10$ a
-search over all held sets of size $\ge6$ is out of reach of the solver. Three further test graphs
-of order $10$ were run with the same held sets (\texttt{scripts/families.py}).
+With a star plus three further edges, $A_{6,2}$ still loses at the core roots $q\in Q$. At order
+$10$ a search over all held sets of size $\ge6$ is out of reach of the solver, so this is a loser
+only for hub-shaped held sets. Proposition~\ref{prop:A62} does not cover the core roots either.
+Three further test graphs of order $10$ were run with the same held sets
+(\texttt{scripts/families.py}).
 \begin{itemize}
 \item $A_{4,4}$ ($Q=K_4$ with four false twins): it wins, and the twins need a star plus two
 further held edges.
 \item $B$ (a $K_6$ core $U$ of even vertices, two adjacent full vertices, and two vertices
 each adjacent to half of $U$): it wins with a star plus one edge. The half vertices have small
 contact, which makes them resources in the sense of~\cite[\S4]{D6}.
-\item $B'$ (a $K_6$ core, a full vertex with a leaf, and two adjacent full vertices): it loses at
-every root with a star plus at most two edges. This is the residual case Q2 of the $d=6$
-frontier, all exterior vertices being full. The count of Proposition~\ref{prop:A62} does not
-close it. At the fourth receipt of the hub $x_1$ the fourth path joins the two other full vertices,
+\item $B'$ (a $K_6$ core, a full vertex $x_1$ with a leaf, and two adjacent full vertices): this
+is the residual case Q2 of the $d=6$ frontier, all exterior vertices being full. It loses at every
+root with a star plus at most two edges. With a star plus three edges it wins at the core roots
+and at $x_1$. The remaining roots are odd, and a play that wins at one root wins at every odd
+root, by~\eqref{eq:parity}. So $B'$ wins at every root (\texttt{outputs/famhub\_B2\_3.log}). The
+certificate for a core root holds the star at $x_1$ and a core triangle. Its play is a relay
+through the hub, then receipts, then the new path $0\,2\,1\,6\,5$ through the hub
+(\texttt{outputs/certificate\_B2.txt}). The count of Proposition~\ref{prop:A62} would not have
+closed the pure star here: at the fourth receipt the fourth path joins the two other full vertices,
 and $31$ edges meet a capacity of $3\cdot8+7=31$.
 \end{itemize}
 
@@ -491,17 +507,21 @@ $s$. Choose $e_3=wz$ with $z\ne s$. Then $s,a,w,z$ are distinct and $L=s\,a\,w\,
 Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
 \end{proof}
 
-Here the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's chain from
-$t\in T$ stops at a blank donor. The spare path is spent on recombining the flower instead. This
+With the pure star the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's
+chain from $t\in T$ stops at a blank donor. (The game instead needs nine held edges.) The spare path is spent on recombining the flower instead. This
 is a two-end move at equality. It moves the ends from $T$ to the transversal $L$, and it is again
 invisible in the profile: it needs the three cycles, whose existence follows from a count of
 edges.
 
 \begin{question}\label{q:count}
-Is there a sound profile-level move, using only $H$ and $b$, that captures
-Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that the paths of $D$ avoiding
-$u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus counting into a move. Does
-such a move make the extended game complete at order $10$?
+\begin{enumerate}[label=(\alph*)]
+\item Is the game with path insertion complete at order $10$? The core roots of $A_{6,2}$ are the
+test case.
+\item Is there a sound profile-level move, using only $H$ and $b$, that captures
+Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that
+the paths of $D$ avoiding $u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus
+counting into a move.
+\end{enumerate}
 \end{question}
 
 \section{Consequences}\label{sec:conseq}
@@ -512,14 +532,18 @@ incomplete at order $8$ only because path insertion was missing, and path insert
 the Lean insertion library (\texttt{Ach.addPath}). With it, the game is complete at order $8$.
 \item Inductive seeds, the rooted test on a connected spanning $G-F$, have $\sum b=n$, so they have
 no spare path. The spare path comes from the floor $\lfloor N/2\rfloor$ at odd order, i.e.\ from
-Lov\'asz's theorem with an isolated vertex. An induction that keeps it needs the floor bound for
-odd-order graphs, namely the bounds $\mathrm{BP}_t$ of the roadmap. Lemma~\ref{lem:hub} converts
-them into (R) at degree-four vertices.
+Lov\'asz's theorem with an isolated vertex. An induction that keeps it needs floor bounds at odd
+order. These hold only in special classes: Lov\'asz's (at most one even vertex), and the bounds
+$\mathrm{BP}_t$ of the roadmap (a pendant leaf and $t$ even vertices). Lemma~\ref{lem:hub} turns any
+such floor partition of $G-s$, with an end at each neighbour of $s$, into (R) at a degree-four
+vertex $s$.
 \item P\'osa moves at the profile level (rotation at equality, Fan's alternative) add nothing at
-order $8$. The first real gap is at order $10$, at a degree-six hub. There the missing receipt is
-forced by a global edge count. This makes the ``two-end transfer at equality'' of~\cite{D6}
-concrete: the rigid configuration of Lemma~\ref{lem:alt} must be refuted by information outside the
-profile.
+order $8$. The difficulty is the degree-six hub, where a pure star is one receipt short at Fan's
+equality. This makes the ``two-end transfer at equality'' of~\cite{D6} concrete. The rigid
+configuration of Lemmas~\ref{lem:alt} and~\ref{lem:through} must be refuted by an edge count
+(Proposition~\ref{prop:A62}) or recombined as a flower (Proposition~\ref{prop:K8M}). Both use
+information outside the profile. Otherwise it is bypassed by holding more edges and inserting a
+longer path through the hub.
 \end{enumerate}
 
 \section{Formalisation and scripts}\label{sec:scripts}

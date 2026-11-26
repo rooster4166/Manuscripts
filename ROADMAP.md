@@ -56,7 +56,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | EMC(e=4) | realisable pairs form a rank-2 matroid | every even vertex has ≥ 2 realisable partners (two-step) ⇒ the partner graph has min degree 2 on 4 vertices ⇒ C4, K4−e or K4 | **PROVED** | **lean** (`endpoint_matroid_four`) |
 | BP_3 | floor bound for odd order with a pendant leaf and 3 even vertices | `rooted_four` | **PROVED** by Lovász + Fan (no Botler–Sambinelli) | **lean** |
 | HUB4 | degree-four hubs: d(s) = 4, N(s) ⊆ Ev, ≤ 1 even vertex outside N[s] ⇒ (R) at s and at N(s) | `manuscripts/missing-move` Thm 2.2 (hub lemma 2.1: Lovász's spare path, two Fan receipts and one new path through s) | **PROVED** | **lean** (`Ach.hub_four`, `hub_four_ends`, `hub_four_rooted`; unconditional) |
-| FG8 | the Fan game with path insertion (new paths of any length) wins every root of every connected graph of order 8 | missing-move Thm 3.1; E14 | **comp(n = 8)**, \|F\| ≤ 6. Pósa moves at the profile level (rotation, Fan's alternative) repair none of the §R losers. First loser of the extended game: A_{6,2} (n = 10), a degree-six hub one receipt short, where the receipt is forced by an edge count at Fan's equality (missing-move Prop 5.2) | comp |
+| FG8 | the Fan game with path insertion (new paths of any length) wins every root of every connected graph of order 8 | missing-move Thm 3.1; E14 | **comp(n = 8)**, \|F\| ≤ 9 (9 needed for K8 − perfect matching). Pósa moves at the profile level (rotation, Fan's alternative) repair none of the §R losers. Degree-six hubs: the pure star is one receipt short at Fan's equality (missing-move §5: edge count, flower). The resistant case known: A_{6,2} core roots (n = 10), which lose with a star plus 3 held edges | comp |
 
 ## Side chains that also reach Gallai
 
@@ -141,7 +141,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
 | session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
 | session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
-| session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **delivered**: the missing move of the Fan game is path insertion funded by Lovász's spare path (hub lemma, degree-four hubs; Lean `MissingMove.lean`); completeness at n = 8; Pósa moves negative; the degree-six hub gap at n = 10 (manuscript `missing-move`, connections §S, E14) |
+| session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **delivered**: the missing move of the Fan game is path insertion funded by Lovász's spare path (hub lemma, degree-four hubs; Lean `MissingMove.lean`); completeness at n = 8; Pósa moves negative (Fan's alternative in Lean); degree-six hubs and the resistant A_{6,2} core roots at n = 10 (manuscript `missing-move`, connections §S, E14) |
 
 **Local agents:**
 
@@ -208,8 +208,8 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
 - 2026-11-26 (cloud session, branch `claude/missing-move`): **the Fan game's missing move found.** It is path insertion (a new path of length ≥ 2 made of held edges), paid for by Lovász's spare path when G − F has an isolated vertex. It is not a move beyond Fan's inequality.
   - **Hub lemma** (`Ach.hub_four`) and **degree-four hubs** (`hub_four_ends`, `hub_four_rooted`, Lean, unconditional, standard axioms): if d(s) = 4, N(s) ⊆ Ev, and at most one even vertex lies outside N[s], then (R) holds at s and at N(s). This closes GsRvnk.
-  - **With path insertion the game wins every root of every connected graph of order 8** (\|F\| ≤ 6; E14).
-  - Rotation at equality and **Fan's alternative** (new lemma: either the transfer succeeds, or ≥ Σ_T b blank neighbours can each be activated) are sound but repair none of the losers (E14).
-  - First gap of the extended game: A_{6,2} at n = 10, a degree-six hub one receipt short. The receipt sits at Fan's equality and is forced by an edge count (manuscript Prop 5.2). This is the d6 frontier's "short by one".
+  - **With path insertion the game wins every root of every connected graph of order 8** (\|F\| ≤ 9, which is attained by K8 − perfect matching; E14).
+  - Rotation at equality and **Fan's alternative** (new lemma: either the transfer succeeds, or ≥ Σ_T b blank neighbours can each be activated; Lean `fan_alternative`) are sound but repair none of the losers (E14).
+  - Degree-six hubs: a pure star is one receipt short at Fan's equality (the d6 frontier's "short by one"). By hand the rigid configuration is refuted by an edge count (A_{6,2}, Prop 5.2) or recombined as a flower (K8 − PM, Prop 5.5). The game instead holds more edges and inserts a longer path through the hub. Resistant case: the A_{6,2} core roots (n = 10, a star plus ≤ 3 held edges).
   - `tools/fan_game.py` gains the options `np`, `rotR`, `altR` and `hubs`. Manuscript `manuscripts/missing-move`; connections §S (and a correction note in §R).
 
