@@ -1325,9 +1325,39 @@ theorem doubleLeafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) {
     rw [GPath.ofAdj_edges, List.mem_singleton] at he; subst he
     have := (mem_restrict_edgeSet.mp h').2 w (Sym2.mem_mk_right _ _)
     simp [hU'] at this
-  let M₁ := M.addPath (GPath.ofAdj hl.1.symm) none (by intro y _ s hs; simp at hs ⊢; sorry) hvw
-    (by simp)
-  sorry
+  let M₁ := M.addPath (GPath.ofAdj hl.1.symm) none
+    (by intro y hy t ht; rw [List.mem_singleton] at hy; subst hy; simp at ht) hvw (by simp)
+  have hw' : w' ∉ (GPath.ofAdj hl.1.symm).walk.support := by
+    simp only [GPath.ofAdj, Walk.support_cons, Walk.support_nil, List.mem_cons, List.mem_singleton,
+      List.not_mem_nil, or_false, not_or]
+    exact ⟨hl'.ne, Ne.symm hww⟩
+  have hwv : s(w', v) ∉ (restrict G (U'.erase w')).edgeSet ∪
+      {e | e ∈ (GPath.ofAdj hl.1.symm).edges} := by
+    rintro (h' | h')
+    · have := (mem_restrict_edgeSet.mp h').2 w' (Sym2.mem_mk_left _ _)
+      simp at this
+    · simp only [GPath.ofAdj_edges, Set.mem_ofPred_eq, List.mem_singleton, Sym2.eq_iff] at h'
+      rcases h' with ⟨h1, -⟩ | ⟨h1, -⟩
+      · exact hl'.ne h1
+      · exact hww h1.symm
+  obtain ⟨M₂, P', hM₂, -⟩ := M₁.exists_extend (P := GPath.ofAdj hl.1.symm) (rest := M.paths)
+    (List.Perm.refl _) (Or.inl rfl) hl'.1 hw' hwv none (Or.inl rfl)
+  have hedge1 := hl.edgeSet_eq hE
+  have hedge2 := hl''.edgeSet_eq (edgesIn_restrict U')
+  rw [restrict_restrict (Finset.erase_subset _ _)] at hedge2
+  have hedge : G.edgeSet = ((restrict G (U'.erase w')).edgeSet ∪
+      {e | e ∈ (GPath.ofAdj hl.1.symm).edges}) ∪ {e | e ∈ [s(w', v)]} := by
+    rw [hedge1, hedge2, show s(w', v) = s(v, w') from Sym2.eq_swap]
+    ext e
+    simp only [Set.mem_union, Set.mem_ofPred_eq, List.mem_singleton, GPath.ofAdj_edges]
+    tauto
+  have := (M₂.castE hedge.symm).markedNumber_le_cost
+  have e1 : (M₂.castE hedge.symm).cost = mCost M.paths + 1 := by
+    show mCost M₂.paths = _
+    rw [hM₂]; simp
+  have hpos : 1 ≤ (U'.erase w').card := Finset.card_pos.mpr ⟨v, hvU''⟩
+  have : M.cost = mCost M.paths := rfl
+  omega
 
 end leaf
 

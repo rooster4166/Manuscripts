@@ -134,9 +134,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Session | Branch | Target |
 |---|---|---|
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
-| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | **delivered `two_step_descent` (merged)**; now writing it up and the e = 4 matroid consequence |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
-| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | Q6: the two-even-vertex Lovász problem (second faithful-descent step), with conceptual proofs and Lean |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
+| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
 
 **Local agents:**
 
