@@ -266,3 +266,58 @@ Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathn
 
 The earlier kmax-8 run without np was OOM-killed before it reached these graphs. The critical Gqz~vw wins with `6 np`. The cocktail party graph, in which every vertex is a degree-6 hub, is the smallest instance of the degree-six obstruction.
 **Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances; at n = 8 there are 1357 and 399. The step succeeds in every one (`tools/two_even.py residual 8`).
+
+## E14. The missing move: path insertion (Fan game, continued)
+
+Tool: `tools/fan_game.py`, with new options. Manuscript `manuscripts/missing-move`, whose `scripts/` and `scripts/outputs/` hold copies of the solver, the drivers and every log.
+
+| Option | Move added |
+|---|---|
+| `np` | **path insertion**: a path of length ≥ 2 made of held edges becomes one new path |
+| `rotR` | at most R Pósa rotations: direct append, or the opponent picks W ⊆ N(u) of size b(v), we pick w, and the held edge uv becomes uw |
+| `altR` | at most R uses of **Fan's alternative** (manuscript Lemma 4.2): the transfer, or ≥ Σ_T b blank neighbours of u can be activated |
+| `hubs` | held sets restricted to "a full star plus k edges" (for n = 10) |
+
+**Results at n = 8.**
+
+| Test | Outcome |
+|---|---|
+| `np`, all 11,117 connected graphs, \|F\| ≤ 4 | 47 graphs with a losing root (base game: 50) |
+| the 47, `np`, \|F\| raised from 5 | every root wins. 35 graphs at \|F\| = 5 and 5 at \|F\| = 6 (all roots); the 7 dense graphs (complements of ≤ 6 edges), one root per automorphism orbit (`orbit_run.py`): Gut~vs at \|F\| = 6; Gut~~w, Gu^v~w, Guv]}{, Guv]z{ at 7; Guv]~{ at 8 (root 2); K8 − perfect matching (Gr~v~w) PENDING |
+| the five §R losers, `np` | win; every certificate found is hub-shaped (`outputs/certificates.txt`) |
+| the five losers, `rot2` \|F\| ≤ 4; `alt2` \|F\| ≤ 4; `alt1` \|F\| ≤ 6 | **no losing root repaired** (GsRvnk 2, 3; GsZvnk 4; Gqrvn[ 2; Gqzvn[ 4; Gqzl\|{ 1) |
+| (R) by CP-SAT on the five losers | holds at every root |
+
+So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S). The certificate for GsRvnk, root 2, is the following:
+- hold the star at 2;
+- take Lovász on G − 2 (3 paths, one spare);
+- single transfer 0 → 2;
+- grouped transfer {5, 6} → 2;
+- new path y′–2–7.
+
+Theorem `hub_four_ends` (Lean) is the general form.
+
+**Results at n = 10** (`scripts/families.py`; F = a full star plus k ≤ 2 edges, `np hubs`):
+
+| Graph | Description | Outcome |
+| A_{4,4} | K4 core, full vertex with a leaf, four false twins | wins at k = 2 |
+| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root** (k ≤ 2) |
+| B | K6 core, two adjacent full vertices, two half-contact vertices | wins at k = 1 |
+| B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | **loses at every root** (k ≤ 2) |
+
+(R) holds at every root of all four (CP-SAT).
+
+**A_{6,2} by hand** (manuscript Prop 5.2). The hub s has degree 6. After three adversarial receipts, b(s) = 3 = d_H(s), and the 4th receipt is at Fan's equality. If it failed:
+- every path ending in T would join T to s (append-or-through);
+- the fourth Lovász path would be the leaf edge ℓx;
+- 30 edges would then have to fit in three paths of ≤ 8 edges, which is impossible.
+
+So the receipt succeeds and (R) holds at the twins. On B′ the same count is tight (31 = 3·8 + 7) and does not decide.
+
+**K8 − perfect matching by hand** (manuscript Prop 5.5). Here the 4th receipt at the degree-6 hub always fails, because all three paths end at the hub. The rigid configuration is a flower of three Hamiltonian cycles through s, and a transversal path of cut edges closes it (Lemma 5.4).
+
+**Reading.**
+- At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
+- Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
+- The first gaps of the extended game we know of are degree-six hubs at n = 10, one receipt short. There a non-profile count at Fan's equality can close the gap (A_{6,2}) or be tight (B′).
+- Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.

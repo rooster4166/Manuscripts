@@ -548,10 +548,12 @@ On A_{6,2} (K6 core of degree-8 vertices, a full vertex x with a leaf ℓ, two f
 
 This is the d6 frontier's "short by one" (Remark 3.5), and the "two-end transfer at equality" made concrete. The rigid configuration must be refuted by information *outside* the profile (path lengths).
 
+On K8 minus a perfect matching (n = 8, 6-regular) the 4th receipt *always* fails: all three Lovász paths of G − s end at the hub. The count then makes the three paths plus the held edges three Hamiltonian cycles through s, a **flower**. Cutting one edge from each so that the three cut edges form a path s–a–w–z spends the spare path and gives (R) (manuscript Lemma 5.4, Prop 5.5). This is a genuine two-end move at equality: the ends move from T to the transversal path. It too is invisible in the profile.
+
 The extended game (path insertion, F = full star plus ≤ 2 edges) loses A_{6,2} at every root, odd roots included. It also loses the Q2-type graph B′ (K6 core, a full vertex with a leaf, two adjacent full vertices) at every root with a star plus ≤ 1 edge; see E14 for k = 2.
 
 **Consequences.**
 - §R's "Lovász + Fan is incomplete" is corrected: at n = 8 the missing move was path insertion, which is already in the Lean insertion library (`Ach.addPath`).
 - Inductive seeds have Σb = n and so no spare path. The spare path is the floor ⌊N/2⌋ at odd order. An induction that keeps it needs the floor bounds BP_t, and the hub lemma converts them into (R) at degree-four vertices.
-- The first genuine gap is at n = 10, at degree-six hubs. The next ingredient is a non-profile count at Fan's equality: Question 5.4 of the manuscript.
+- The first genuine gap is at n = 10, at degree-six hubs. The next ingredient is a non-profile count at Fan's equality: Question 5.6 of the manuscript.
 
