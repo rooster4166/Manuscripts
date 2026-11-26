@@ -230,20 +230,33 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
-**Formally verified in Lean** (`lean/`, sorry-free, standard axioms only):
+**Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
 
-- Gallai ⇔ the rooted private-leaf test;
-- Gallai ⇔ the marked bound;
-- the W(F,S) and cone identities;
-- the parity lemma;
-- the private-leaf formula;
-- the endpoint-structure lemmas.
+- **Spine:**
+  - Gallai ⇔ the rooted private-leaf test (`gallai_iff_rootedTest`);
+  - Gallai ⇔ the marked bound;
+  - **MR Thm 1** (`gallai_iff_tests`: Gallai ⇔ marked 2-connected test ∧ three-end test);
+  - MR Thm 114 setup and Gallai ⇒ both 3-connected tests, together with large parts of Thm 113 (separator; odd and even component cases).
+- **Classical theorems, proved from first principles:**
+  - Fan's addible-edge lemmas (single and grouped);
+  - **Lovász's theorem**, by an original induction from Fan's lemma;
+  - **Pyber's theorem**, from Lovász and Fan.
+- **New results:**
+  - endpoint-structure Lemmas 1–4;
+  - **two-step faithful descent**;
+  - **EMC for four even vertices** (as a Mathlib `Matroid`);
+  - **BP₃**;
+  - k-step descent infrastructure, with three-step descent reduced to two base cases;
+  - Fan descent, Fan transfer, E-twins, Fan certificates;
+  - **six-clique Thm 1** (prescribed ends at a clique of six even vertices).
 
 **Open risks:**
 
-1. **Javadi–Miralaei (Wu's conjecture).** The proof has a substantive gap in Thm 8, Claim 12. The statement has been verified by computer for k ≤ 7. It affects the semi-clique theorem's residual family and SP 10.16's equality case, not the MR spine. Repair in progress.
-2. **Chu–Fan–Zhou Lemma 2.4** is used with |V(P)| + q ≤ 7, but the only verifiable version has ≤ 6. Resolution in progress.
-3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. A public Lean formalization exists, and its statements were checked as faithful, but it could not be built here.
+1. **Javadi–Miralaei (Wu's conjecture).** A new proof of JM Thm 8 is written, under r ≤ 2t − 1, which is the case the semi-clique manuscript uses (`manuscripts/jm-repair`). Its independent audit (A10) is running. Off the MR spine.
+2. ~~Chu–Fan–Zhou Lemma 2.4~~: **resolved** (`manuscripts/cfz-lemma`). The common-vertex form with sum ≤ 7 is proved.
+3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. The missing lemma is Botler–Sambinelli Thm 13 with one prescribed end; a cloud session is working on it. At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3.
+
+**Frontier, conceptual** (connections §R, experiments E13). Lovász's theorem with Fan's transfers is a finite game on end profiles. It proves the rooted test for every graph at n = 6, but not at n = 8. The single critical failure is Gqz~vw (4-connected) at a degree-4 root. **So full Gallai needs either a move beyond Fan's inequality or a stronger induction hypothesis.** This is now the central open problem of the programme (cloud session "missing-move").
 
 ## 7. Process going forward
 
