@@ -18,4 +18,15 @@ import GallaiLean.Schedule
 import GallaiLean.EvenInsert
 import GallaiLean.BP3
 import GallaiLean.EMCFourFree
+import GallaiLean.Critical
+import GallaiLean.MarkedSurgery
+import GallaiLean.MarkedBlocks
+import GallaiLean.TwoEven
+import GallaiLean.PathSurgery
+import GallaiLean.SmallBounds
+import GallaiLean.SixCliqueModel
+import GallaiLean.SixCliqueBuild
+import GallaiLean.SeparatorSetup
 import GallaiLean.KStep
+import GallaiLean.SixClique
+import GallaiLean.Pyber

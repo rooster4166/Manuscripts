@@ -1,16 +1,32 @@
 import GallaiLean.MarkedSurgery
 
 /-!
-# Reducing the marked bound to two-connected graphs
+# Reducing the marked bound to two-connected graphs (Theorem 1)
 
-Marked-reduction manuscript, §2 and the sufficiency half of Theorem 1.
+Marked-reduction manuscript, §2 ("Bridges, pendant edges and cut vertices") and Theorem 1.
 
-The induction works inside one vertex type `W`: an instance is a graph `G` all of whose edges lie
-in a finite vertex set `U` (`EdgesIn G U`), connected on `U` (`ConnOn G U`). Sub-instances are
-restrictions `restrict G U'`. A *separation* `Sep G U x C` is a cut vertex `x` with a nonempty
-part `C` of `U - x` that has no edges to the rest `U - x - C`.
+The induction runs inside one vertex type `W`. An instance is a graph `G` whose edges all lie in a
+finite vertex set `U` (`EdgesIn G U`) and which is connected on `U` (`ConnOn G U`). Sub-instances
+are restrictions `restrict G U'`. `CutSep G U x C` says that `x` is a cut vertex: `C` and
+`U - x - C` are nonempty and no edge joins them. `TwoConnOn G U` means `|U| ≥ 3`, connected and
+no cut vertex. `TwoConnected G := TwoConnOn G univ`.
 
-This file: restrictions, separations, leaves and the connectivity of the pieces.
+* `cutStep`: the cut-vertex reduction (manuscript p. 5) in all its cases. These are `x` marked
+  with odd/odd sides (`cut_xS_odd`), `x` marked with an even side (`cut_xS_even`, the
+  added-leaf trick), `x` unmarked with an odd side (`cut_xnS_odd`), `x` unmarked with both sides
+  even and both sides marked (`cut_xnS_marked`), and the tight unmarked side (`cut_xnS_tight`,
+  the split-and-double-join).
+* `leafStep`: the four leaf deletions (pp. 4–5). `doubleLeafStep`: two leaves at the only mark.
+* `pendantStep`: the residual pendant configuration (p. 5). This is the only place where the
+  three-end condition (`ThreeEndsTest`) is used, and only at an odd-degree root.
+* `residue_sep`: a cut vertex of `G - w` gives a good cut of `G` or a second leaf (p. 6).
+* `mbOn_of_tests`, **`markedBound_of_tests`**, **`gallai_of_tests`**: sufficiency in Theorem 1.
+* `markedTwoConnTest_of_gallai`, `threeEndsTest_of_gallai`, **`gallai_iff_tests`**: Theorem 1
+  as a full equivalence.
+
+The bridge formula of §2 is not needed. A bridge whose two sides both have at least two vertices
+is a cut vertex with sides of order at least three, unless one side is an edge, in which case it
+ends in a leaf. So `cutStep` and `leafStep` cover it.
 -/
 
 open SimpleGraph
@@ -68,12 +84,12 @@ def Closed (G : SimpleGraph W) (x : W) (C : Finset W) : Prop :=
 
 /-- A separation of `U` at the cut vertex `x`: `C` and `U - x - C` are nonempty and have no edge
 between them. -/
-def Sep (G : SimpleGraph W) (U : Finset W) (x : W) (C : Finset W) : Prop :=
+def CutSep (G : SimpleGraph W) (U : Finset W) (x : W) (C : Finset W) : Prop :=
   x ∈ U ∧ C ⊆ U.erase x ∧ C.Nonempty ∧ (U.erase x \ C).Nonempty ∧ Closed G x C
 
 /-- Two-connected on `U`: at least three vertices, connected, and no cut vertex. -/
 def TwoConnOn (G : SimpleGraph W) (U : Finset W) : Prop :=
-  3 ≤ U.card ∧ ConnOn G U ∧ ∀ x C, ¬ Sep G U x C
+  3 ≤ U.card ∧ ConnOn G U ∧ ∀ x C, ¬ CutSep G U x C
 
 /-- The marked bound on `U`. -/
 def MBOn (G : SimpleGraph W) (U : Finset W) : Prop :=
@@ -126,11 +142,11 @@ theorem Closed.reach {x : W} {C : Finset W} (hcl : Closed G x C) {a b : W} (p : 
     · exact (show (restrict G (insert c C)).Adj a c from
         ⟨hac, Finset.mem_insert_of_mem ha, Finset.mem_insert_self _ _⟩).reachable
 
-namespace Sep
+namespace CutSep
 
 variable {U : Finset W} {x : W} {C : Finset W}
 
-theorem closed_compl (hE : EdgesIn G U) (h : Sep G U x C) : Closed G x (U.erase x \ C) := by
+theorem closed_compl (hE : EdgesIn G U) (h : CutSep G U x C) : Closed G x (U.erase x \ C) := by
   intro a ha b hab
   rw [Finset.mem_sdiff, Finset.mem_erase] at ha
   by_cases hbx : b = x
@@ -142,13 +158,13 @@ theorem closed_compl (hE : EdgesIn G U) (h : Sep G U x C) : Closed G x (U.erase 
     · exact ha.2 h'
     · exact ha.1.1 h'
 
-theorem symm (hE : EdgesIn G U) (h : Sep G U x C) : Sep G U x (U.erase x \ C) := by
+theorem symm (hE : EdgesIn G U) (h : CutSep G U x C) : CutSep G U x (U.erase x \ C) := by
   refine ⟨h.1, Finset.sdiff_subset, h.2.2.2.1, ?_, h.closed_compl hE⟩
   rw [Finset.sdiff_sdiff_eq_self h.2.1]
   exact h.2.2.1
 
 /-- A part with one vertex is a leaf at the cut vertex. -/
-theorem leaf_of_card_one (hC : ConnOn G U) (h : Sep G U x C) (h1 : C.card = 1) :
+theorem leaf_of_card_one (hC : ConnOn G U) (h : CutSep G U x C) (h1 : C.card = 1) :
     ∃ a, C = {a} ∧ IsLeafAt G a x := by
   obtain ⟨a, rfl⟩ := Finset.card_eq_one.mp h1
   refine ⟨a, rfl, ?_, ?_⟩
@@ -171,7 +187,7 @@ theorem leaf_of_card_one (hC : ConnOn G U) (h : Sep G U x C) (h1 : C.card = 1) :
     · exact hc
 
 /-- Every edge lies in one of the two sides. -/
-theorem edge_cases (hE : EdgesIn G U) (h : Sep G U x C) {a b : W} (hab : G.Adj a b) :
+theorem edge_cases (hE : EdgesIn G U) (h : CutSep G U x C) {a b : W} (hab : G.Adj a b) :
     (a ∈ insert x C ∧ b ∈ insert x C) ∨
       (a ∈ insert x (U.erase x \ C) ∧ b ∈ insert x (U.erase x \ C)) := by
   have hD := h.closed_compl hE
@@ -193,7 +209,7 @@ theorem edge_cases (hE : EdgesIn G U) (h : Sep G U x C) {a b : W} (hab : G.Adj a
       · exact Or.inr ⟨Finset.mem_insert_of_mem haD, Finset.mem_insert_of_mem hb⟩
       · exact Or.inr ⟨Finset.mem_insert_of_mem haD, hb ▸ Finset.mem_insert_self _ _⟩
 
-theorem sides_inter (_h : Sep G U x C) {v : W} (h1 : v ∈ insert x C)
+theorem sides_inter (_h : CutSep G U x C) {v : W} (h1 : v ∈ insert x C)
     (h2 : v ∈ insert x (U.erase x \ C)) : v = x := by
   rcases Finset.mem_insert.mp h1 with h1 | h1
   · exact h1
@@ -201,7 +217,7 @@ theorem sides_inter (_h : Sep G U x C) {v : W} (h1 : v ∈ insert x C)
     · exact h2
     · exact absurd h1 (Finset.mem_sdiff.mp h2).2
 
-theorem card_sides (h : Sep G U x C) :
+theorem card_sides (h : CutSep G U x C) :
     U.card = (insert x C).card + (insert x (U.erase x \ C)).card - 1 := by
   have hxC : x ∉ C := fun hx => (Finset.mem_erase.mp (h.2.1 hx)).1 rfl
   have hxD : x ∉ U.erase x \ C := fun hx => (Finset.mem_erase.mp (Finset.mem_sdiff.mp hx).1).1 rfl
@@ -212,7 +228,7 @@ theorem card_sides (h : Sep G U x C) :
   have := Finset.card_pos.mpr ⟨x, h.1⟩
   omega
 
-theorem conn_side (hC : ConnOn G U) (h : Sep G U x C) :
+theorem conn_side (hC : ConnOn G U) (h : CutSep G U x C) :
     ConnOn (restrict G (insert x C)) (insert x C) := by
   have hxC : x ∉ C := fun hx => (Finset.mem_erase.mp (h.2.1 hx)).1 rfl
   have key : ∀ a ∈ insert x C, (restrict G (insert x C)).Reachable a x := by
@@ -225,12 +241,12 @@ theorem conn_side (hC : ConnOn G U) (h : Sep G U x C) :
   intro a ha b hb
   exact (key a ha).trans (key b hb).symm
 
-theorem conn_side' (hE : EdgesIn G U) (hC : ConnOn G U) (h : Sep G U x C) :
+theorem conn_side' (hE : EdgesIn G U) (hC : ConnOn G U) (h : CutSep G U x C) :
     ConnOn (restrict G (insert x (U.erase x \ C))) (insert x (U.erase x \ C)) :=
   (h.symm hE).conn_side hC
 
 /-- The edges of `G` are those of the two sides. -/
-theorem edgeSet_eq (hE : EdgesIn G U) (h : Sep G U x C) :
+theorem edgeSet_eq (hE : EdgesIn G U) (h : CutSep G U x C) :
     G.edgeSet = (restrict G (insert x C)).edgeSet ∪
       (restrict G (insert x (U.erase x \ C))).edgeSet := by
   ext e
@@ -244,7 +260,7 @@ theorem edgeSet_eq (hE : EdgesIn G U) (h : Sep G U x C) :
     · exact Or.inr ⟨hab, h'⟩
   · rintro (h' | h') <;> exact h'.1
 
-theorem edges_disjoint (h : Sep G U x C) :
+theorem edges_disjoint (h : CutSep G U x C) :
     ∀ e ∈ (restrict G (insert x C)).edgeSet, e ∉ (restrict G (insert x (U.erase x \ C))).edgeSet := by
   intro e h1 h2
   induction e using Sym2.inductionOn with
@@ -257,7 +273,7 @@ theorem edges_disjoint (h : Sep G U x C) :
   exact G.loopless.irrefl _ h1.1
 
 /-- The cut vertex has a neighbour in each part. -/
-theorem exists_adj (hC : ConnOn G U) (h : Sep G U x C) : ∃ y ∈ C, G.Adj x y := by
+theorem exists_adj (hC : ConnOn G U) (h : CutSep G U x C) : ∃ y ∈ C, G.Adj x y := by
   obtain ⟨c, hc⟩ := h.2.2.1
   have hxC : x ∉ C := fun hx => (Finset.mem_erase.mp (h.2.1 hx)).1 rfl
   obtain ⟨p⟩ := (h.conn_side hC) x (Finset.mem_insert_self _ _) c (Finset.mem_insert_of_mem hc)
@@ -269,7 +285,7 @@ theorem exists_adj (hC : ConnOn G U) (h : Sep G U x C) : ∃ y ∈ C, G.Adj x y 
     · exact absurd hxy.1 (hy ▸ G.loopless.irrefl x)
     · exact ⟨y, hy, hxy.1⟩
 
-end Sep
+end CutSep
 
 /-! ### Leaves -/
 
@@ -585,8 +601,8 @@ structure CutSides (G : SimpleGraph W) (U : Finset W) (x : W) (U₁ U₂ : Finse
   big₁ : 3 ≤ U₁.card
   big₂ : 3 ≤ U₂.card
 
-theorem Sep.cutSides {U : Finset W} {x : W} {C : Finset W} (hE : EdgesIn G U) (hC : ConnOn G U)
-    (h : Sep G U x C) (h1 : 2 ≤ C.card) (h2 : 2 ≤ (U.erase x \ C).card) :
+theorem CutSep.cutSides {U : Finset W} {x : W} {C : Finset W} (hE : EdgesIn G U) (hC : ConnOn G U)
+    (h : CutSep G U x C) (h1 : 2 ≤ C.card) (h2 : 2 ≤ (U.erase x \ C).card) :
     CutSides G U x (insert x C) (insert x (U.erase x \ C)) where
   hx₁ := Finset.mem_insert_self _ _
   hx₂ := Finset.mem_insert_self _ _
@@ -1556,7 +1572,7 @@ theorem exists_two_of_sum {α : Type*} (l : List α) (f : α → ℕ) (hf : ∀ 
         _ ~ a' :: a :: b' :: rest := List.Perm.swap _ _ _
         _ ~ a' :: b' :: a :: rest := (List.Perm.swap _ _ _).cons _
 
-theorem GPath.endsAt_le_one {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
+theorem GPath.endsAt_le_one_of_simple {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
     (v : V) : P.endsAt v ≤ 1 := by
   rw [P.endsAt_eq_ite]; split_ifs <;> omega
 
@@ -1676,7 +1692,7 @@ theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : F
         have h0 : M.decomp.ends v' % 2 = 0 := by rw [hpar]; exact Nat.even_iff.mp hodd
         exact ⟨M.decomp, by omega, by omega⟩
     obtain ⟨P₁, P₂, rest, hperm, h1, h2⟩ :=
-      exists_two_of_sum D.paths (fun P => P.endsAt v') (fun P _ => P.endsAt_le_one v') hends
+      exists_two_of_sum D.paths (fun P => P.endsAt v') (fun P _ => P.endsAt_le_one_of_simple v') hends
     obtain ⟨M₀, hM₀⟩ := hdec D
     set Q₁ := (f (P₁, none)).1 with hQ₁
     set Q₂ := (f (P₂, none)).1 with hQ₂
@@ -1720,8 +1736,8 @@ theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : F
 /-- A cut vertex of `G - w` (for a leaf `w`) gives a good separation of `G` or a second leaf. -/
 theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U)
     (hl : IsLeafAt G w v) {x : W} {C : Finset W}
-    (hsep : Sep (restrict G (U.erase w)) (U.erase w) x C) :
-    (∃ x C, Sep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card) ∨
+    (hsep : CutSep (restrict G (U.erase w)) (U.erase w) x C) :
+    (∃ x C, CutSep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card) ∨
       (∃ b y, b ≠ w ∧ IsLeafAt G b y) := by
   obtain ⟨hwU, hvU⟩ := hl.mem hE
   have hJadj : ∀ a b, G.Adj a b → a ≠ w → b ≠ w → (restrict G (U.erase w)).Adj a b :=
@@ -1738,7 +1754,7 @@ theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U
     exact this
   by_cases hxv : x = v
   · subst hxv
-    have hsepG : Sep G U x C := by
+    have hsepG : CutSep G U x C := by
       refine ⟨hxU, fun c hc => ?_, hsep.2.2.1, ?_, ?_⟩
       · have := Finset.mem_erase.mp (hsep.2.1 hc)
         exact Finset.mem_erase.mpr ⟨this.1, (Finset.mem_erase.mp this.2).2⟩
@@ -1770,7 +1786,7 @@ theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U
       obtain ⟨a, rfl, hla⟩ := hsepG.leaf_of_card_one hC h1
       exact Or.inr ⟨a, x, fun h => hwC _ hsep.2.1 (h ▸ Finset.mem_singleton_self a), hla⟩
   · -- `v` lies in one of the two parts; put `w` there
-    obtain ⟨C', hsep', hvC'⟩ : ∃ C', Sep (restrict G (U.erase w)) (U.erase w) x C' ∧ v ∈ C' := by
+    obtain ⟨C', hsep', hvC'⟩ : ∃ C', CutSep (restrict G (U.erase w)) (U.erase w) x C' ∧ v ∈ C' := by
       have hvU'' : v ∈ (U.erase w).erase x :=
         Finset.mem_erase.mpr ⟨Ne.symm hxv, Finset.mem_erase.mpr ⟨hl.ne.symm, hvU⟩⟩
       by_cases hvC : v ∈ C
@@ -1780,7 +1796,7 @@ theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U
       ext y
       simp only [Finset.mem_sdiff, Finset.mem_erase, Finset.mem_insert, not_or]
       tauto
-    have hsepG : Sep G U x (insert w C') := by
+    have hsepG : CutSep G U x (insert w C') := by
       refine ⟨hxU, ?_, Finset.insert_nonempty _ _, ?_, ?_⟩
       · intro c hc
         rcases Finset.mem_insert.mp hc with rfl | hc
@@ -1828,7 +1844,7 @@ theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
   · exact baseStep hE h2
   by_cases hTC : TwoConnOn G U
   · exact twoConnStep hA hE hTC
-  by_cases hcut : ∃ x C, Sep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card
+  by_cases hcut : ∃ x C, CutSep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card
   · obtain ⟨x, C, hs, h1, h2'⟩ := hcut
     exact cutStep (hs.cutSides hE hC h1 h2') IH
   intro S hSU hS
@@ -1844,7 +1860,7 @@ theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
     exact doubleLeafStep IH hE hC hl hl' hww
   push Not at hdouble
   have h3 : 3 ≤ U.card := by omega
-  obtain ⟨x, C, hs⟩ : ∃ x C, Sep G U x C := by
+  obtain ⟨x, C, hs⟩ : ∃ x C, CutSep G U x C := by
     unfold TwoConnOn at hTC
     push Not at hTC
     exact hTC h3 hC
