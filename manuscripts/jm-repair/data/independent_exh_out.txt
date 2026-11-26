@@ -1,0 +1,3 @@
+n=4 m=5 k=4: decomps=233160 instances(dedup colour-perm)=31590 fails=0
+n=5 m=3 k=8: decomps=120 instances(dedup colour-perm)=89 fails=0
+n=5 m=4 k=7: decomps=11820 instances(dedup colour-perm)=2727 fails=0
