@@ -281,3 +281,5 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Every Cor 106 use has ≤ 5 unmarked even vertices. **BP_5 with one universal vertex is proved** from Lovász + Fan: three local lemmas for 6 cores (no leaf needed), and 11 certificates for the bowtie (leaf at an odd support).
   - Lean `FiveEven.lean` and `FiveEvenCerts.lean`: 131 kernel-checked certificates, `five_even_local`, `five_even_bowtie`.
   - Corrigenda section added. The odd-order Fan game with a prescribed end is far from complete: 58 of 64 e = 5 losses at n = 7 are search failures (E14).
+- **The critical Gqz~vw is closed in Lean** (`gqz_rooted_three`, standard axioms; definition checked faithful). It follows from the odd-neighbour hub lemma `hub_four_odd_rooted`: the rooted test at a degree-4 hub with one odd neighbour (missing-move session). `fan_game.py` also gains a profile-level flower move (option `flower`).
+- Five-even floor end to end in Lean (`five_even_floor`, bs-prescribed).
