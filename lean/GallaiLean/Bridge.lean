@@ -895,4 +895,362 @@ theorem piece_desc {P : SimpleGraph V} [DecidableRel P.Adj] {k M r : ℕ}
 
 end restr
 
+/-! ## Part 5: the bridge cases -/
+
+section bridge
+
+variable {V : Type u} [Fintype V] [DecidableEq V] {G : SimpleGraph V} [DecidableRel G.Adj]
+
+theorem split_cap (T c₁ c₂ : ℕ) (h : T ≤ c₁ + c₂) (hc₁ : 1 ≤ c₁) (hT : 1 ≤ T) :
+    ∃ r₁ r₂, r₁ + r₂ = T ∧ r₁ ≤ c₁ ∧ r₂ ≤ c₂ ∧ 1 ≤ r₁ := by
+  by_cases h' : c₁ ≤ T
+  · exact ⟨c₁, T - c₁, by omega, le_rfl, by omega, hc₁⟩
+  · exact ⟨T, 0, by omega, by omega, by omega, hT⟩
+
+theorem profile_zero_of_degree {H : SimpleGraph V} [DecidableRel H.Adj] {S : Finset V} {v : V}
+    (hS : S ⊆ evenSet H) (hd : H.degree v = 0) : profile H S v = 0 := by
+  have hv : v ∉ S := fun h => by
+    have := (mem_evenSet_iff_even.mp (hS h)).1; omega
+  unfold profile
+  rw [hd]
+  simp [hv]
+
+omit [Fintype V] [DecidableEq V] [DecidableRel G.Adj] in
+theorem restr_walk_support {C : Finset V} {a b : V} (p : (restr G C).Walk a b)
+    (hp : 0 < p.length) : ∀ x ∈ p.support, x ∈ C := by
+  induction p with
+  | nil => simp at hp
+  | @cons a c b h q ih =>
+    intro x hx
+    rw [Walk.support_cons, List.mem_cons] at hx
+    rcases hx with rfl | hx
+    · exact h.2.1
+    · cases q with
+      | nil =>
+        rw [Walk.support_nil, List.mem_singleton] at hx
+        exact hx ▸ h.2.2
+      | cons h' q' => exact ih (by simp) x hx
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- Every vertex of a path of `restr G C` lies in `C`. -/
+theorem restr_path_support {C : Finset V} (P : GPath (restr G C)) :
+    ∀ x ∈ P.walk.support, x ∈ C :=
+  restr_walk_support P.walk P.pos
+
+/-- **Bridge case, odd side.** `yt` is a bridge, `A` the vertex set of the side of `y`, with
+`|A|` odd. Descend in `A⁺ = G[A ∪ {t}]` keeping `y` and in `B⁺ = G[Aᶜ ∪ {y}]`, and glue. -/
+theorem bridge_odd {k M : ℕ} (hlow : ∀ j, 1 ≤ j → j ≤ k → DStmt.{u} j)
+    (hIH : DStmtE.{u} (k + 1) M) (hG : ∀ v, 0 < G.degree v) (hn : Even (Fintype.card V))
+    (hEM : G.edgeFinset.card ≤ M + 1) (h2k : 2 * (k + 1) ≤ (evenSet G).card) {y w t : V}
+    (hy : y ∈ evenSet G) (hw : w ∈ evenSet G) (hyw : y ≠ w) (hyt : G.Adj y t)
+    (hdt : 2 ≤ G.degree t) {A : Finset V} (hyA : y ∈ A) (htA : t ∉ A)
+    (hcross : ∀ a b, G.Adj a b → a ∈ A → b ∉ A → a = y ∧ b = t)
+    (hreachA : ∀ v ∈ A, (restr G A).Reachable y v)
+    (hreachB : ∀ v ∉ A, (restr G Aᶜ).Reachable t v) (hAodd : Odd A.card) :
+    Desc G (k + 1) y {w} := by
+  have hyt' : y ≠ t := hyt.ne
+  have nbrA : ∀ v ∈ A, v ≠ y → ∀ b, G.Adj v b → b ∈ A := fun v hv hvy b h => by
+    by_contra hb; exact hvy (hcross v b h hv hb).1
+  have nbrB : ∀ v, v ∉ A → v ≠ t → ∀ b, G.Adj v b → b ∉ A := fun v hv hvt b h hb =>
+    hvt (hcross b v h.symm hb hv).2
+  have nbrY : ∀ b, G.Adj y b → b ≠ t → b ∈ A := fun b h hbt => by
+    by_contra hb; exact hbt (hcross y b h hyA hb).2
+  have nbrT : ∀ b, G.Adj t b → b ≠ y → b ∉ A := fun b h hby hb =>
+    hby (hcross b t h.symm hb htA).1
+  -- degrees in the pieces
+  have dA_A : ∀ v ∈ A, (restr G (insert t A)).degree v = G.degree v := by
+    intro v hv
+    refine degree_restr_full (Finset.mem_insert_of_mem hv) (fun b h => ?_)
+    by_cases hvy : v = y
+    · subst hvy
+      by_cases hbt : b = t
+      · exact hbt ▸ Finset.mem_insert_self _ _
+      · exact Finset.mem_insert_of_mem (nbrY b h hbt)
+    · exact Finset.mem_insert_of_mem (nbrA v hv hvy b h)
+  have dA_t : (restr G (insert t A)).degree t = 1 := degree_restr_one (Finset.mem_insert_self _ _) hyt.symm
+    (Finset.mem_insert_of_mem hyA) (fun b h hb => by
+      rcases Finset.mem_insert.mp hb with rfl | hb
+      · exact absurd h (G.loopless.irrefl _)
+      · by_contra hby; exact nbrT b h hby hb)
+  have dA_out : ∀ v, v ∉ A → v ≠ t → (restr G (insert t A)).degree v = 0 := fun v hv hvt =>
+    degree_restr_out (by simp [hv, hvt])
+  have dB_B : ∀ v, v ∉ A → (restr G (insert y Aᶜ)).degree v = G.degree v := by
+    intro v hv
+    refine degree_restr_full (Finset.mem_insert_of_mem (Finset.mem_compl.mpr hv))
+      (fun b h => ?_)
+    by_cases hvt : v = t
+    · subst hvt
+      by_cases hby : b = y
+      · exact hby ▸ Finset.mem_insert_self _ _
+      · exact Finset.mem_insert_of_mem (Finset.mem_compl.mpr (nbrT b h hby))
+    · exact Finset.mem_insert_of_mem (Finset.mem_compl.mpr (nbrB v hv hvt b h))
+  have dB_y : (restr G (insert y Aᶜ)).degree y = 1 := degree_restr_one (Finset.mem_insert_self _ _) hyt
+    (Finset.mem_insert_of_mem (Finset.mem_compl.mpr htA)) (fun b h hb => by
+      rcases Finset.mem_insert.mp hb with rfl | hb
+      · exact absurd h (G.loopless.irrefl _)
+      · by_contra hbt; exact Finset.mem_compl.mp hb (nbrY b h hbt))
+  have dB_out : ∀ v ∈ A, v ≠ y → (restr G (insert y Aᶜ)).degree v = 0 := fun v hv hvy =>
+    degree_restr_out (by simp [hv, hvy])
+  -- even vertices of the pieces
+  have EvA : evenSet (restr G (insert t A)) = (evenSet G).filter (· ∈ A) := by
+    ext v
+    simp only [Finset.mem_filter]
+    by_cases hv : v ∈ A
+    · rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dA_A v hv]; simp [hv]
+    · simp only [hv, and_false, iff_false]
+      by_cases hvt : v = t
+      · subst hvt; rw [mem_evenSet_iff_even, dA_t]; decide
+      · rw [mem_evenSet_iff_even, dA_out v hv hvt]; simp
+  have EvB : evenSet (restr G (insert y Aᶜ)) = (evenSet G).filter (· ∉ A) := by
+    ext v
+    simp only [Finset.mem_filter]
+    by_cases hv : v ∈ A
+    · simp only [hv, not_true_eq_false, and_false, iff_false]
+      by_cases hvy : v = y
+      · subst hvy; rw [mem_evenSet_iff_even, dB_y]; decide
+      · rw [mem_evenSet_iff_even, dB_out v hv hvy]; simp
+    · rw [mem_evenSet_iff_even, mem_evenSet_iff_even, dB_B v hv]; simp [hv]
+  have hEvsum : (evenSet (restr G (insert t A))).card + (evenSet (restr G (insert y Aᶜ))).card = (evenSet G).card := by
+    rw [EvA, EvB]; exact Finset.card_filter_add_card_filter_not (fun v => v ∈ A)
+  -- non-isolated vertices, connectivity, parity
+  have nonA : nonIso (restr G (insert t A)) = insert t A := by
+    ext v
+    simp only [nonIso, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert]
+    by_cases hv : v ∈ A
+    · rw [dA_A v hv]; simp [hv, hG v]
+    · by_cases hvt : v = t
+      · subst hvt; rw [dA_t]; simp
+      · rw [dA_out v hv hvt]; simp [hv, hvt]
+  have nonB : nonIso (restr G (insert y Aᶜ)) = insert y Aᶜ := by
+    ext v
+    simp only [nonIso, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert,
+      Finset.mem_compl]
+    by_cases hv : v ∈ A
+    · by_cases hvy : v = y
+      · subst hvy; rw [dB_y]; simp
+      · rw [dB_out v hv hvy]; simp [hv, hvy]
+    · rw [dB_B v hv]; simp [hv, hG v]
+  have hevA : Even (nonIso (restr G (insert t A))).card := by
+    rw [nonA, Finset.card_insert_of_notMem htA]; exact hAodd.add_one
+  have hevB : Even (nonIso (restr G (insert y Aᶜ))).card := by
+    rw [nonB, Finset.card_insert_of_notMem (by simp [hyA]), Finset.card_compl]
+    have := Finset.card_le_univ A
+    obtain ⟨m, hm⟩ := hn
+    obtain ⟨j, hj⟩ := hAodd
+    exact ⟨m - j, by omega⟩
+  have hconnA : NIConn (restr G (insert t A)) := by
+    have key : ∀ v, 0 < (restr G (insert t A)).degree v → (restr G (insert t A)).Reachable y v := by
+      intro v hv
+      by_cases hvA : v ∈ A
+      · exact (hreachA v hvA).mono (by
+          intro a b h; exact ⟨h.1, Finset.mem_insert_of_mem h.2.1, Finset.mem_insert_of_mem h.2.2⟩)
+      · by_cases hvt : v = t
+        · rw [hvt]
+          exact (show (restr G (insert t A)).Adj y t from ⟨hyt, Finset.mem_insert_of_mem hyA,
+            Finset.mem_insert_self _ _⟩).reachable
+        · rw [dA_out v hvA hvt] at hv; exact absurd hv (lt_irrefl 0)
+    exact fun a b ha hb => (key a ha).symm.trans (key b hb)
+  have hconnB : NIConn (restr G (insert y Aᶜ)) := by
+    have key : ∀ v, 0 < (restr G (insert y Aᶜ)).degree v → (restr G (insert y Aᶜ)).Reachable t v := by
+      intro v hv
+      by_cases hvA : v ∈ A
+      · by_cases hvy : v = y
+        · rw [hvy]
+          exact (show (restr G (insert y Aᶜ)).Adj t y from ⟨hyt.symm, Finset.mem_insert_of_mem
+            (Finset.mem_compl.mpr htA), Finset.mem_insert_self _ _⟩).reachable
+        · rw [dB_out v hvA hvy] at hv; exact absurd hv (lt_irrefl 0)
+      · exact (hreachB v hvA).mono (by
+          intro a b h; exact ⟨h.1, Finset.mem_insert_of_mem h.2.1, Finset.mem_insert_of_mem h.2.2⟩)
+    exact fun a b ha hb => (key a ha).symm.trans (key b hb)
+  -- fewer edges
+  obtain ⟨c, hc, hcy⟩ : ∃ c, G.Adj t c ∧ c ≠ y := by
+    have : 1 < (G.neighborFinset t).card := by rw [card_neighborFinset_eq_degree]; omega
+    obtain ⟨c, hc, hcy⟩ := Finset.exists_mem_ne this y
+    exact ⟨c, (mem_neighborFinset _ _ _).mp hc, hcy⟩
+  obtain ⟨d, hd, hdt'⟩ : ∃ d, G.Adj y d ∧ d ≠ t := by
+    have hdy : 2 ≤ G.degree y := by
+      obtain ⟨hp, j, hj⟩ := mem_evenSet_iff_even.mp hy; omega
+    have : 1 < (G.neighborFinset y).card := by rw [card_neighborFinset_eq_degree]; omega
+    obtain ⟨d, hd, hdt'⟩ := Finset.exists_mem_ne this t
+    exact ⟨d, (mem_neighborFinset _ _ _).mp hd, hdt'⟩
+  have hEA : (restr G (insert t A)).edgeFinset.card ≤ M := by
+    have := card_edgeFinset_restr_lt (C := insert t A) hc (fun h => by
+      have := h.2; simp only [Finset.mem_insert] at this
+      rcases this with rfl | h'
+      · exact G.loopless.irrefl _ hc
+      · exact nbrT c hc hcy h')
+    omega
+  have hEB : (restr G (insert y Aᶜ)).edgeFinset.card ≤ M := by
+    have := card_edgeFinset_restr_lt (C := insert y Aᶜ) hd (fun h => by
+      have := h.2; simp only [Finset.mem_insert, Finset.mem_compl] at this
+      rcases this with rfl | h'
+      · exact G.loopless.irrefl _ hd
+      · exact h' (nbrY d hd hdt'))
+    omega
+  -- distribute the `k + 1` removals
+  have hyEA : y ∈ evenSet (restr G (insert t A)) := by rw [EvA]; simp [hy, hyA]
+  obtain ⟨a2, ha2⟩ := even_card_evenSet_of_nonIso hevA
+  obtain ⟨b2, hb2⟩ := even_card_evenSet_of_nonIso hevB
+  obtain ⟨rA, rB, hsum, hrA, hrB, hwr⟩ : ∃ rA rB, rA + rB = k + 1 ∧ rA ≤ a2 ∧ rB ≤ b2 ∧
+      (w ∈ A → 1 ≤ rA) ∧ (w ∉ A → 1 ≤ rB) := by
+    by_cases hwA : w ∈ A
+    · have hc1 : 1 ≤ a2 := by
+        have : 2 ≤ (evenSet (restr G (insert t A))).card := by
+          rw [EvA]
+          have : ({y, w} : Finset V) ⊆ (evenSet G).filter (· ∈ A) := by
+            intro x hx; simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+            rcases hx with rfl | rfl <;> simp [*]
+          have := Finset.card_le_card this
+          rwa [Finset.card_pair hyw] at this
+        omega
+      obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap (k + 1) a2 b2 (by omega) hc1 (by omega)
+      exact ⟨r₁, r₂, h1, h2, h3, fun _ => h4, fun h => absurd hwA h⟩
+    · have hc1 : 1 ≤ b2 := by
+        have : w ∈ evenSet (restr G (insert y Aᶜ)) := by rw [EvB]; simp [hw, hwA]
+        have := Finset.card_pos.mpr ⟨w, this⟩
+        omega
+      obtain ⟨r₁, r₂, h1, h2, h3, h4⟩ := split_cap (k + 1) b2 a2 (by omega) hc1 (by omega)
+      exact ⟨r₂, r₁, by omega, h3, h2, fun h => absurd h hwA, fun _ => h4⟩
+  -- descents in the pieces
+  obtain ⟨RA, hRAE, hRAc, hwRA, hyRA, -, DA, hDA⟩ := by
+    classical
+    exact piece_desc (r := rA) hlow hIH hEA (by omega) hconnA hevA (by omega) y
+      ((({w} : Finset V)).filter (· ∈ A))
+      (fun x hx => by
+        simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+        rw [EvA]; simp [hx.1 ▸ hw, hx.2])
+      (by apply (Finset.card_filter_le _ _).trans; simp)
+      (by simp [hyw])
+      (fun ⟨x, hx⟩ => by
+        simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+        exact hwr.1 (hx.1 ▸ hx.2))
+  obtain ⟨RB, hRBE, hRBc, hwRB, -, -, DB, hDB⟩ := by
+    classical
+    exact piece_desc (r := rB) hlow hIH hEB (by omega) hconnB hevB (by omega) y
+      ((({w} : Finset V)).filter (· ∉ A))
+      (fun x hx => by
+        simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+        rw [EvB]; simp [hx.1 ▸ hw, hx.2])
+      (by apply (Finset.card_filter_le _ _).trans; simp)
+      (by simp [hyw])
+      (fun ⟨x, hx⟩ => by
+        simp only [Finset.mem_filter, Finset.mem_singleton] at hx
+        exact hwr.2 (hx.1 ▸ hx.2))
+  -- glue
+  obtain ⟨D, -, hD⟩ := glue_bridge DA DB (A := (A : Set V)) (B := ((Aᶜ : Finset V) : Set V))
+    hyA (by simp [htA]) (fun x hx => by simpa using hx)
+    ⟨hyt, Finset.mem_insert_of_mem hyA, Finset.mem_insert_self _ _⟩
+    ⟨hyt, Finset.mem_insert_self _ _, Finset.mem_insert_of_mem (Finset.mem_compl.mpr htA)⟩
+    (fun a b h hne => by
+      obtain ⟨hab, ha, hb⟩ := h
+      simp only [Finset.mem_insert] at ha hb
+      rcases ha with rfl | ha
+      · rcases hb with rfl | hb
+        · exact absurd hab (G.loopless.irrefl _)
+        · obtain ⟨rfl, -⟩ := hcross b a hab.symm hb htA
+          exact absurd Sym2.eq_swap hne
+      rcases hb with rfl | hb
+      · obtain ⟨rfl, -⟩ := hcross a b hab ha htA
+        exact absurd rfl hne
+      exact ⟨ha, hb⟩)
+    (fun a b h hne => by
+      obtain ⟨hab, ha, hb⟩ := h
+      simp only [Finset.mem_insert, Finset.mem_compl] at ha hb
+      rcases ha with rfl | ha
+      · rcases hb with rfl | hb
+        · exact absurd hab (G.loopless.irrefl _)
+        · obtain ⟨-, rfl⟩ := hcross a b hab hyA hb
+          exact absurd rfl hne
+      rcases hb with rfl | hb
+      · obtain ⟨-, rfl⟩ := hcross b a hab.symm hyA ha
+        exact absurd Sym2.eq_swap hne
+      exact ⟨by simpa using ha, by simpa using hb⟩)
+    (fun e => by
+      induction e using Sym2.inductionOn with
+      | hf a b =>
+        simp only [mem_edgeSet, restr_adj, Finset.mem_insert, Finset.mem_compl]
+        constructor
+        · intro h
+          by_cases ha : a ∈ A
+          · by_cases hb : b ∈ A
+            · exact Or.inl ⟨h, Or.inr ha, Or.inr hb⟩
+            · obtain ⟨rfl, rfl⟩ := hcross a b h ha hb
+              exact Or.inl ⟨h, Or.inr ha, Or.inl rfl⟩
+          · by_cases hb : b ∈ A
+            · obtain ⟨rfl, rfl⟩ := hcross b a h.symm hb ha
+              exact Or.inl ⟨h, Or.inl rfl, Or.inr hb⟩
+            · exact Or.inr ⟨h, Or.inr ha, Or.inr hb⟩
+        · rintro (⟨h, -⟩ | ⟨h, -⟩) <;> exact h)
+  -- the result
+  refine ⟨RA ∪ RB, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x hx
+    rcases Finset.mem_union.mp hx with h | h
+    · have := hRAE h; rw [EvA] at this; exact (Finset.mem_filter.mp this).1
+    · have := hRBE h; rw [EvB] at this; exact (Finset.mem_filter.mp this).1
+  · rw [Finset.card_union_of_disjoint (by
+      rw [Finset.disjoint_left]
+      intro x h1 h2
+      have := hRAE h1; rw [EvA] at this
+      have := hRBE h2; rw [EvB] at this
+      simp_all), hRAc, hRBc, hsum]
+  · intro x hx
+    rw [Finset.mem_singleton] at hx
+    subst hx
+    by_cases hwA : x ∈ A
+    · exact Finset.mem_union_left _ (hwRA (by simp [hwA]))
+    · exact Finset.mem_union_right _ (hwRB (by simp [hwA]))
+  · intro h
+    rcases Finset.mem_union.mp h with h | h
+    · exact hyRA h
+    · have := hRBE h; rw [EvB] at this; exact (Finset.mem_filter.mp this).2 hyA
+  · refine ⟨Finset.sdiff_subset, D, fun v => ?_⟩
+    have h1 := hD v
+    have hA' := hDA v
+    have hB' := hDB v
+    have hRAA : ∀ x ∈ RA, x ∈ A := fun x hx => by
+      have := hRAE hx; rw [EvA] at this; exact (Finset.mem_filter.mp this).2
+    have hRBB : ∀ x ∈ RB, x ∉ A := fun x hx => by
+      have := hRBE hx; rw [EvB] at this; exact (Finset.mem_filter.mp this).2
+    by_cases hvy : v = y
+    · subst hvy
+      rw [profile_even_mem (mem_evenSet_iff_even.mp hyEA).2 (Finset.mem_sdiff.mpr ⟨hyEA, hyRA⟩)]
+        at hA'
+      rw [profile_odd (by rw [dB_y]; decide)] at hB'
+      rw [profile_even_mem (mem_evenSet_iff_even.mp hy).2 (Finset.mem_sdiff.mpr ⟨hy, by
+        simp only [Finset.mem_union, not_or]; exact ⟨hyRA, fun h => hRBB v h hyA⟩⟩)]
+      simp only [Ne.symm hyt', ite_false, ite_true] at h1
+      omega
+    by_cases hvt : v = t
+    · subst hvt
+      rw [profile_odd (by rw [dA_t]; decide)] at hA'
+      have : D.ends v = DB.ends v := by
+        simp only [hvy, Ne.symm hvy, ite_false, ite_true] at h1; omega
+      rw [this, hB']
+      apply profile_congr (dB_B v htA)
+      rw [EvB]
+      simp only [Finset.mem_sdiff, Finset.mem_filter, Finset.mem_union, not_or]
+      constructor
+      · rintro ⟨⟨h, -⟩, h'⟩; exact ⟨h, fun h'' => htA (hRAA v h''), h'⟩
+      · rintro ⟨h, -, h'⟩; exact ⟨⟨h, htA⟩, h'⟩
+    simp only [Ne.symm hvy, Ne.symm hvt, ite_false, add_zero] at h1
+    by_cases hvA : v ∈ A
+    · rw [profile_zero_of_degree Finset.sdiff_subset (dB_out v hvA hvy)] at hB'
+      rw [h1, hA', hB', add_zero]
+      apply profile_congr (dA_A v hvA)
+      rw [EvA]
+      simp only [Finset.mem_sdiff, Finset.mem_filter, Finset.mem_union, not_or]
+      constructor
+      · rintro ⟨⟨h, -⟩, h'⟩; exact ⟨h, h', fun h'' => hRBB v h'' hvA⟩
+      · rintro ⟨h, h', -⟩; exact ⟨⟨h, hvA⟩, h'⟩
+    · rw [profile_zero_of_degree Finset.sdiff_subset (dA_out v hvA hvt)] at hA'
+      rw [h1, hA', hB', zero_add]
+      apply profile_congr (dB_B v hvA)
+      rw [EvB]
+      simp only [Finset.mem_sdiff, Finset.mem_filter, Finset.mem_union, not_or]
+      constructor
+      · rintro ⟨⟨h, -⟩, h'⟩; exact ⟨h, fun h'' => hvA (hRAA v h''), h'⟩
+      · rintro ⟨h, -, h'⟩; exact ⟨⟨h, hvA⟩, h'⟩
+
+end bridge
+
 end Gallai
