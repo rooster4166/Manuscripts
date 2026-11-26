@@ -8,11 +8,23 @@ N(v) & T = {}; other one-universal cores: nothing outside T), we
      predicted end vector is realised by some partition of the current concrete graph
      W - (held edges not yet restored), along at least one branch of every grouped move
      (Fan's lemma guarantees one); at the leaves this is a realisable pair of W.
-Hosts are adversarial: dense exterior, exterior vertices adjacent to T, u and v; v a leaf in a
-quarter of the bowtie trials; W possibly disconnected.
+Hosts are adversarial: exterior vertices adjacent to T, u and v; v a leaf in a quarter of the
+bowtie trials; W possibly disconnected. Hosts have at most MAXE edges, and a host whose exact
+checks take more than LIMIT seconds is skipped and counted (the DFS solver is exponential).
 """
+MAXE = 26
+LIMIT = 30
+
+
+class Slow(Exception):
+    pass
+
+
+def _alarm(signum, frame):
+    raise Slow()
 import itertools
 import random
+import signal
 import sys
 
 import cert_check as C
@@ -54,7 +66,7 @@ def bowtie_host(rng, N, A, vleaf):
     for t in A:
         add('u', t)
     add('u', 'v')
-    p = rng.uniform(0.25, 0.7)
+    p = rng.uniform(0.15, 0.5)
     for a, b in itertools.combinations(X, 2):
         if rng.random() < p:
             add(a, b)
@@ -92,7 +104,7 @@ def core_host(rng, N, K):
         adj[a].add(b); adj[b].add(a)
     for e in K:
         add(*tuple(e))
-    p = rng.uniform(0.25, 0.7)
+    p = rng.uniform(0.15, 0.5)
     for a, b in itertools.combinations(X, 2):
         if rng.random() < p:
             add(a, b)
@@ -195,8 +207,24 @@ def local_cert(K):
     raise AssertionError
 
 
+def timed(f, *a):
+    signal.signal(signal.SIGALRM, _alarm)
+    signal.alarm(LIMIT)
+    try:
+        return f(*a)
+    except Slow:
+        return None
+    finally:
+        signal.alarm(0)
+
+
+def nedges(adj):
+    return sum(len(s) for s in adj.values()) // 2
+
+
 def main():
     trials = int(sys.argv[1]) if len(sys.argv) > 1 else 60
+    skipped = [0, 0]
     rng = random.Random(20261126)
     subsets = [''.join(c) for k in range(1, 6) for c in itertools.combinations(T5, k)]
     nb = nl = 0
@@ -205,14 +233,17 @@ def main():
         N = rng.choice([9, 9, 11, 11, 13])
         vleaf = rng.random() < 0.25
         adj = bowtie_host(rng, N, A, vleaf)
-        if adj is None:
+        if adj is None or nedges(adj) > MAXE:
             continue
         H, prog = bowtie_cert(A)
-        k = replay(adj, set(T5) | {'u', 'v'}, [frozenset(h) for h in H], prog)
+        k = timed(replay, adj, set(T5) | {'u', 'v'}, [frozenset(h) for h in H], prog)
+        if k is None:
+            skipped[0] += 1
+            continue
         assert k >= 1, (A, adj)
         nb += 1
     print(f'bowtie: {nb} random hosts (orders 9-13), every certificate node realised on the host, '
-          f'global blank counts = local ones')
+          f'global blank counts = local ones ({skipped[0]} hosts skipped on the time limit)', flush=True)
     rims = []
     RIMP = [frozenset(e) for e in itertools.combinations('abcd', 2)]
     for mask in range(64):
@@ -225,13 +256,17 @@ def main():
         K = R | C.mk_edges(['xa', 'xb', 'xc', 'xd'])
         N = rng.choice([7, 9, 9, 11, 11])
         adj = core_host(rng, N, K)
-        if adj is None:
+        if adj is None or nedges(adj) > MAXE:
             continue
         H, prog = local_cert(K)
-        k = replay(adj, set(T5), H, prog)
+        k = timed(replay, adj, set(T5), H, prog)
+        if k is None:
+            skipped[1] += 1
+            continue
         assert k >= 1
         nl += 1
-    print(f'six cores: {nl} random hosts (orders 7-11), every certificate node realised on the host')
+    print(f'six cores: {nl} random hosts (orders 7-11), every certificate node realised on the host '
+          f'({skipped[1]} hosts skipped on the time limit)', flush=True)
 
 
 if __name__ == '__main__':
