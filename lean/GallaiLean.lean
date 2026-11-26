@@ -3,3 +3,7 @@ import GallaiLean.Parity
 import GallaiLean.Project
 import GallaiLean.Doubling
 import GallaiLean.PrivateLeaf
+import GallaiLean.Surgery
+import GallaiLean.Retract
+import GallaiLean.Realisable
+import GallaiLean.LeafDictionary

@@ -255,7 +255,6 @@ theorem delete [DecidableEq U] [DecidableEq V] (D : PathDecomp K)
         apply List.map_congr_left
         intro P _
         simp only [k, List.countP_filter, Function.comp_apply]
-        rfl
       rw [h1]
       apply countP_le_one_of_nodup D.nodup_edges
       intro x hx y hy hpx hpy

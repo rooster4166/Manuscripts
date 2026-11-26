@@ -21,7 +21,9 @@ Sources:
   - the parity and end-count bookkeeping is correct in every case I checked.
 - **Javadi–Miralaei uses.** Every use is the main theorem with at most h distinct marks in K_{2h+1}, padded by an arbitrary extra mark when only h−1 are needed. That is exactly the hypothesis of JM (Wu's conjecture, proved for all n and every n-edge subgraph). JM's Theorem 8 (the matching-extension result) is never used. I independently confirmed the JM statement for n ≤ 5, all H up to isomorphism.
 - **Theorem 10.15 is not used in the proof of Theorem 10.16.** The JM equality case ("exactly h holes ⇒ p ≤ h") is invoked directly in the proof of 10.16, twice. Theorem 10.15 enters only later, via Cor 10.17 → Prop 10.18 → Cor 12.14 → … → Lemma 12.27, that is, in chain (3).
-- **(3) Thm 12.28, Cor 13.5 and Cor 13.12 are sound modulo two citation-level gaps (G1, G2).** Both are fixable without new mathematics. This part was audited by careful spot-checking of each lemma used; it was not re-derived line by line for every sub-case of §12.3–12.11.
+- **(3) Thm 12.28, Cor 13.5 and Cor 13.12 are sound modulo two citation-level items.**
+  - **G1 (UNCLEAR).** The connectivity of admissible spanning trees under single exchanges, as used in Thm 12.6, is attributed partly to a transversal-matroid paper [6]. Its validity hinges on the exact statement of Farber–Richter–Shank [5].
+  - **G2 (GAP).** The external lemma used in Thm 12.29 is replaceable by the paper's own Lemma 13.6. This part was audited by careful spot-checking of each lemma used; it was not re-derived line by line for every sub-case of §12.3–12.11.
 - One trivial point: the Eulerian clause of Thm 10.16 (δ ≥ 6) follows from δ ≥ 5 and even degrees, so it needs no argument.
 
 ## 1. Verdict table
@@ -72,14 +74,14 @@ Sources:
 | Lemma 11.1 / Thm 11.2 / Cor 11.4 | 45–48 | SOUND | Threshold D ≥ 2U−1 derived correctly. Cor 11.4's deferral and seeding cases checked. Lemma 11.1 verified on small graphs (T7). |
 | Lemma 12.1, Thm 12.2 (+ physical-edge form) | 57–58 | SOUND | Density bound 2h−m−3 ≥ h−m needs h ≥ 3. That holds wherever it is used, via Cor 12.14 (d(t) ≥ 6). |
 | Cor 12.3, Thm 12.4, Thm 12.8 (+ Lemma 12.7), Thm 12.10, Thm 12.11, Lemmas 12.12–12.13 | 58–66 | SOUND (spot-checked) | Thm 12.8's three lift sub-cases checked in full. In Thm 12.10, the contact lemma and the both-at-a sub-case were checked. |
-| Thm 12.6 | 60–61 | **GAP (G1, citation)** | The center-uniqueness argument is correct. However, "the unused slot is part of this theorem [6]" cites Farber's paper on *transversal* matroids, which do not cover graphic matroids. See G1. |
+| Thm 12.6 | 60–61 | **UNCLEAR (G1, citation)** | The center-uniqueness argument is correct. However, "the unused slot is part of this theorem [6]" cites Farber's paper on *transversal* matroids, which do not cover graphic matroids. See G1. |
 | Cor 12.14, Thm 12.16, Cor 12.17 | 67–69 | SOUND | Prop 10.18 gives \|B\|≠1. Thm 12.16's final case uses kl ≥ 2h−1 ≥ h+1 missing cross pairs plus Cor 8.7. Cor 12.17's complementary-pair analysis is complete. |
 | Cor 12.18 | 69–70 | not re-audited | Load-bearing Lean/Python finite check ("FiveTip.dense"). Not needed for 12.27/12.28. |
 | Lemmas 12.19–12.20, Thm 12.21, Lemma 12.22 | 70–72 | SOUND | 12.21 uses Cor 5.2: a root-free odd component with a single edge to y makes y a leaf of the closure. Lemma 12.22 depends on Thm 12.6 (G1). |
 | Lemma 12.23 | 72–74 | SOUND | Covers: two-port even shore (pattern 3,1); odd shores (triple port excluded; two 2-matchings); even shores with ≥3 ports (one deletion, or the opposite-wedges route). The r=x even case goes via Cor 11.4. |
 | Lemma 12.24, Thm 12.25 | 74–75 | SOUND | All three route cases (t∈B; t∈A with b∈U or b∉U) checked. The protected peripheral cycle only needs separators avoiding g. |
-| Lemma 12.27 | 76–77 | SOUND (given G1) | Partition-maximiser argument: parts carry two trees and R is simple and a union of two forests. Basis-extension count gives 4p−2e ≥ 4b. Components with 2–4 labels are excluded via Lemmas 12.19/12.20 and Cor 12.17. The absorption process terminates in a part with ≤ 3+1 boundary edges, giving the proper 4-bond. |
-| **Thm 12.28** | 77 | **SOUND (given G1)** | 10.16 → 12.25 (5-edge-connected) contradicts the 4-bond of 12.27. |
+| Lemma 12.27 | 76–77 | SOUND given G1 | Partition-maximiser argument: parts carry two trees and R is simple and a union of two forests. Basis-extension count gives 4p−2e ≥ 4b. Components with 2–4 labels are excluded via Lemmas 12.19/12.20 and Cor 12.17. The absorption process terminates in a part with ≤ 3+1 boundary edges, giving the proper 4-bond. |
+| **Thm 12.28** | 77 | **SOUND given G1** | 10.16 → 12.25 (5-edge-connected) contradicts the 4-bond of 12.27. |
 | Thm 13.3 | 88–89 | SOUND | Two-port shore excluded by parity (q_x, q_w odd, sum 5). Covers: matching colouring 3+2; triple in A; triple in B with y≠z or y=z; residual-leaf installation for patterns 3 / 2,1 / 1,1,1. |
 | Thm 13.4 | 89–90 | SOUND | Covers: repeated port x≠t; t repeated (route, or the component argument via Cor 4.2 / Thm 4.1 showing the crossings from A−t number ≥ 4); unrooted-shore h+3 bound for patterns 1^5, 2111, 41, 3·(deg 6/≥7), 221 (degrees 5/6/≥7). |
 | **Cor 13.5** | 91 | **SOUND** | |
