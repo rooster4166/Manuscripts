@@ -249,6 +249,20 @@ So the bound transfers for free when n − |S| is odd. When n − |S| is even, t
 
 **Conclusion.** Every gadget costs exactly one unit of budget. The missing ingredient is the floor with one prescribed even vertex when Δ(EV) ≤ 3, i.e. Botler–Sambinelli Thm 13 with a prescribed end. That is a natural lemma to aim for.
 
+**Outcome (2026-11-26, cloud session `claude/bs-prescribed`; manuscript `manuscripts/bs-prescribed`).**
+- **The prescribed-end lemma is false.**
+  - Lemma (forcing): a cycle whose vertices other than one have degree 2 contains an end of every partition.
+  - Family G_{t,t'}: y has degree 2 between two odd vertices s, s′, and s, s′ carry t, t′ pendant triangles. For every odd N ≥ 5, y cannot be an end of a floor partition. This is precisely the x–y–x′ gadget's configuration.
+  - Exact census at n = 7, Δ(EV) ≤ 3: 6 failures with e = 5, 101 with e = 3, and all 130 with e = 1 (E14).
+- **The gadget cannot be rescued by restricting the class.** Take the order-9 graph L in which x carries two pendant triangles. Its even subgraph is a bowtie, it has a leaf at an odd support, and p(L) = 4. Its 17-vertex double D still has no 8-path partition with an end at y: four forced triangle ends plus y.
+- **What Cor 106 needs is BP_5 with one universal vertex**: every MR use has ≤ 5 unmarked even vertices. This is now **proved from Lovász + Fan**.
+  - Six cores need no leaf. Three local lemmas cover them: two disjoint even edges, the odd star, and the universal star.
+  - The bowtie needs adjacent odd u, v with N(u)∩T ≠ ∅ = N(v)∩T. A leaf at an odd support plus connectivity supplies them through a shortest path.
+  - The bowtie is closed by 11 orbit certificates. All 131 labelled certificates are in Lean (`FiveEvenCerts.lean`).
+- **Lesson for the uniform programme (§R).**
+  - At odd order with a prescribed end, Lovász–Fan certificates are far from complete even for subcubic E-subgraphs: 58 of the 64 game losses with e = 5 at n = 7 are search failures.
+  - The useful prescriptions are those that are not forced against. Theorem 1 prescribes nothing at all: it realises a 2-set in W directly.
+
 ## M. A 2-sum picture for the endpoint matroid (conjecture, being tested)
 
 **Observation.** Every non-uniform endpoint matroid found so far (at n = 6 with a cut vertex; at n = 8 with κ = 2) has its non-bases exactly equal to the sides of a 2-separation. Example: GsaFC{ is a sparse paving matroid whose two circuit-hyperplanes are the two sides of the separations at the universal vertex.

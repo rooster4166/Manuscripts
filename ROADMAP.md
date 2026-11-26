@@ -48,7 +48,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
 | T(6)-ii | three-end test, d = 6 | MR Thm 123 | **AUDITED** (A8) | comp (exhaustive \|J\| ≤ 10) |
 | T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | **AUDITED** (A8): **Thm 124 certificate independently replayed**. Conditional on Fan–Hou–Zhou (two seven-site shapes) and Chu–Fan–Zhou Lemma 2.1 (star lemma, unquoted) | comp |
-| T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived; Thm 144 can be made Shaik-free (BS Thm 13 + Lemma 133).** Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances) |
+| T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived.** **MR Thm 144 is now Shaik-free** (bs-prescribed: its ≤ 1-universal case is proved, Lean). Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances); **lean** (≤ 1 universal: `five_even_local`/`five_even_bowtie`) |
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
 | U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ**. **Descent steps 1 and 2 PROVED** for all even-order graphs (Lemma 3; `two_step_descent`). **Step 3 reduced in Lean** (`desc_three_of_unique`, `desc_three_reduction`, KStep.lean) to two base cases: y has ≥ 2 even neighbours, or y has no even neighbour and every edge at y is a bridge. Sound move systems in Lean: Fan schedules, the Fan calculus `FanCert` (`realisable_of_fanCert`). FanCert is not complete (6 failures at n = 6); see the Fan game (connections §R) | **lean** (steps 1–2, step-3 reduction) |
@@ -78,7 +78,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Fan addible-edge lemmas | six-even program; MR | **Both proved in Lean** (`fan_single`, `fan_grouped`; sorry-free). Lemma 3.4 also matches its published quotation (A7). |
 | Fan–Hou–Zhou | T(4); MR p.129 | **matches** (A7): no triangle pair, and each block has Δ ≤ 3; ceiling conclusion |
 | Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RESOLVED** (`manuscripts/cfz-lemma`): the common-vertex form with \|V(P)\| + q ≤ 7 is proved, and every sum-7 use satisfies its hypothesis. The one finite ingredient is a 1,257-case six-contact lemma, which agrees with MR §6. The general form is unproved but not needed. |
-| Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | A7: Botler–Sambinelli replaces it at the Thm 144 r ∈ T step and in the zero-exception case of Cor 106. **The one-exception case of Cor 106 still needs Shaik**, so Thm 144 remains conditional. | **Being attacked** (jm-repair session, `manuscripts/bs-prescribed`): Botler–Sambinelli Thm 13 with a prescribed end (connections §L). At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3 (E13).
+| Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106, Thm 114 remark | **REMOVED (no longer needed by MR)** (`manuscripts/bs-prescribed`, corrigenda §Shaik). Every use of Cor 106 in MR has ≤ 5 unmarked even vertices. That case is BP_5 with one universal vertex, now proved from Lovász + Fan alone: six of the seven cores by three local lemmas, which need no leaf; the bowtie by 11 certificates, which need a leaf at an odd support. **Lean** (`FiveEven.lean`, `FiveEvenCerts.lean`: `five_even_local`, `five_even_bowtie`; 131 kernel-checked certificates). The prescribed-end version of BS Thm 13 is **false** (counterexample family G_{t,t'} at every odd N ≥ 5; the x–y–x′ gadget fails on an order-9 bowtie instance). Open without Shaik: Cor 106 one-exception odd case with ≥ 7 unmarked even vertices, which MR does not use. |
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
 ### Contingency if the Javadi–Miralaei repair fails
@@ -107,7 +107,7 @@ So **Gallai ⇔ BP_t for every odd t** (restricted to the apex class), where:
 |---|---|---|
 | 1 | proved | Lovász |
 | 3 | proved; **now also in Lean** by Lovász + Fan (`rooted_four`) | Fan–Hou–Zhou / Botler–Sambinelli; `two_step_descent` |
-| 5 | **open** | test (i) at d = 6, i.e. MR Thm 144, which is conditional on Shaik; test (ii) at d = 6 is closed (MR Thm 123) |
+| 5 | **open** for ≥ 2 universal vertices (cores K0–K3); **proved for ≤ 1 universal vertex** (BS Thm 13; bs-prescribed Thm 1, Lovász + Fan, Lean) | test (i) at d = 6, i.e. MR Thm 144, now Shaik-free; test (ii) at d = 6 is closed (MR Thm 123) |
 | 7 | **open** | test (i) at d = 8; test (ii) at d = 8 is closed (MR Thm 128, computer, audit A8) |
 | ≥ 9 | **open** | — |
 
@@ -154,7 +154,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 | # | Item | Purpose |
 |---|---|---|
-| Q1 | Shaik [25, Cor 1.2]: there is a **public Lean formalization**, github.com/shaikidris/gallai-two-exception (488 files, 79k lines, Lean v4.35.0-rc3). Its statement file `Challenge.lean` was inspected and is faithful: `ceiling_bound` is exactly Cor 1.2, with decompositions as genuine edge partitions into nonempty simple paths. A grep finds no sorry, axioms or IO. Building it here was **blocked by the session's permission policy** (third-party code). To verify: `lake exe cache get && lake build Solution`, then `#print axioms Gallai.Submission.ceiling_bound`. If clean, Cor 106 and Thm 144 become machine-verified. Fallback: prove the one-exception odd-order case directly. The gadget attempts (edge xx′; path x–y–x′) each lose one unit of budget (connections §L). | makes MR Thm 144 unconditional |
+| Q1 | ~~Shaik [25, Cor 1.2]~~ **Done** (bs-prescribed): the one-exception odd case of Cor 106 is proved where MR uses it (five unmarked even vertices); see the Shaik row. Building Shaik's Lean repository is no longer needed for MR. | makes MR Thm 144 unconditional |
 | Q2 | Close D = ∅ at d = 6: clique core B[U] = K6 with full exterior vertices (six-clique Thm 6 covers ≤ 5 core neighbours; false-twin-return covers some full cases) | the largest residual d = 6 shape |
 | Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2). **Done for e = 4 in general (Thm 21).** Next: the third descent step for e = 6, i.e. Thm 19 with the second deleted vertex avoiding N(y) (connections §N) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
@@ -208,3 +208,8 @@ Candidate uniform mechanisms (`research/connections.md`):
 - 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
+- 2026-11-26 (cloud, `claude/bs-prescribed`): **Shaik removed from MR.**
+  - The prescribed-end version of BS Thm 13 is false: the family G_{t,t'} works at every odd N ≥ 5, and exact n = 7 gives 6 failures with e = 5. The x–y–x′ gadget fails on an order-9 bowtie instance with p = k.
+  - Every Cor 106 use has ≤ 5 unmarked even vertices. **BP_5 with one universal vertex is proved** from Lovász + Fan: three local lemmas for 6 cores (no leaf needed), and 11 certificates for the bowtie (leaf at an odd support).
+  - Lean `FiveEven.lean` and `FiveEvenCerts.lean`: 131 kernel-checked certificates, `five_even_local`, `five_even_bowtie`.
+  - Corrigenda section added. The odd-order Fan game with a prescribed end is far from complete: 58 of 64 e = 5 losses at n = 7 are search failures (E14).

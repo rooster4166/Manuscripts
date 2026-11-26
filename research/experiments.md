@@ -252,3 +252,43 @@ Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathn
 | Fan calculus (E, O) vs truth, all pairs, n = 6 | 300 of 431 pairs certified; adding (S), (L), (C) gives 358 |
 
 **Residual cases** (Cor 27 with u prescribed; Thm 28 with e = 4 and G[Ev] = K_3 + r): at n = 6 there are 9 and 3 instances, and the step succeeds in all of them. n = 8: see the end of this entry.
+
+## E14. Prescribed ends at odd order; five even vertices with one universal vertex (cloud session `claude/bs-prescribed`)
+
+Scripts: `manuscripts/bs-prescribed/scripts/`.
+
+**Prescribed-end lemma** (odd N, Δ(EV) ≤ 3, even y, partition into (N−1)/2 paths with an end at y). Exact with `exact_prescribed.py` (CP-SAT); game with `odd_fan_game.py` (Lovász seeds, plus Lemma 3 seeds at any order, plus Fan transfers; at most 4 held edges).
+
+| N | e | pairs (G, y) | no floor partition ending at y | lost by the game |
+|---|---|---|---|---|
+| 5 | 1 | 7 | 7 (forced by counting) | 7 |
+| 5 | 3 | 30 | 9 (5 SET) | 14 |
+| 5 | 5 | 5 | 0 | 0 |
+| 7 | 1 | 130 | 130 | 130 |
+| 7 | 3 | 1236 | 101 (29 SET) | 230 |
+| 7 | 5 | 845 | **6** | 64 (63 still lost with ≤ 8 held edges) |
+| 7 | 7 | 7 | 0 | 0 |
+
+- The six e = 5 failures at N = 7:
+  - FqHPO = G_{1,1} and FsQc_ = G_{2,0} (the forcing family);
+  - FsQaO and FsPL_ (pendant triangle, or K4 − e, at y plus a pendant triangle elsewhere);
+  - Fs`Do and FqilW (y between a leaf and a K_{1,1,3} or a K5).
+- **Random N = 9** (`sample_prescribed.py 9 150 3 1`, exact by `tools/pathnum2.py`): 596 pairs.
+  - Genuine exceptions: 6 with e = 1 and 3 with e = 3; none with e ≥ 5.
+  - Game search failures: 1 with e = 3, 7 with e = 5, 2 with e = 7.
+- **Conclusion.**
+  - The lemma is false, with exceptions built from forcing gadgets (manuscript Prop. 5).
+  - The odd-order prescribed game is far from complete. This contrasts with even order: E13 found that Δ(EV) ≤ 3 makes every root winnable at n = 8.
+
+**Five even vertices, one universal vertex** (`certgen.py`, `verify_certs.py`, `sevensite_cert.py`):
+- **Seven-site bank (A6) re-derived independently**: all 7 cores × 31 contact sets are certified, with held sets of 2–6 edges and depth ≤ 6.
+- **Local certificates** (model = T only, no leaf): all cores except the bowtie M. The bowtie has none (exhaustive over held sets).
+- **Bowtie with u only** (no v): 25 of 31 contact sets. The exceptions are A ⊇ {a, b} with A ∩ {c, d} ∈ {∅, {c, d}}, and symmetrically.
+- **Labelled tables for Lean**: 38 local rims and 3 × 31 bowtie cases, all verified (46 and 129 leaves).
+
+**End-to-end random hosts** (`random_hosts.py`, circuit solver):
+- all 60 + 40 hosts with a leaf, of orders 9 and 11, over all one-universal cores;
+- all 60 + 40 + 20 bowtie hosts without a leaf, of orders 9, 11 and 13.
+
+Every host satisfies the floor bound. So the leaf is probably not needed for the bowtie either, but the local certificates need it.
+
