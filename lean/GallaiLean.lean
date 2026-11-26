@@ -33,3 +33,5 @@ import GallaiLean.Pyber
 import GallaiLean.SeparatorOdd
 import GallaiLean.SeparatorEvenOdd
 import GallaiLean.Bridge
+import GallaiLean.FiveEven
+import GallaiLean.FiveEvenCerts
