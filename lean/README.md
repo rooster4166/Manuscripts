@@ -659,7 +659,8 @@ shows only `propext`, `Classical.choice`, `Quot.sound`. Lovász enters through t
 | **`full_hub_pendant_uniform`** (`_passes`) | **Thm 6.1(b)** with `β ≥ d/2 − 2` batteries, a quiet pendant and a further neighbour of `x` |
 | **`full_hub_six`**, **`full_hub_six_pendant`** | **Thm 5.2** (`d = 6`), in the paper's wording |
 | **`root_hub_six`** (`_passes`) | **Thm 4.1(i)** (`d = 6`): `r` adjacent to `T`, `d(r) ≥ 8`, odd `y ∈ N(r)` with `d(y) ≥ 3`, `|N(y) ∩ T| ≤ 2` ⇒ some `S ∋ r`, `|S| = 3`, realisable. Controlled first receipt `p → r`, two grouped receipts, receivers ordered after the fact |
+| **`root_hub_six_Q1`**, **`root_hub_six_Q2`** (`_passes`) | **Thm 4.1(ii), (iii)** (`d = 6`): one or two core non-neighbours `q` of `r` (assumed non-isolated, audit F1), a triangle `r a b` of odd vertices with `|N(a) ∩ T| ≤ 2` and `bq ∉ E` (resp. `|N(a) ∩ N_T(r)| ≤ 1` and `bq₂ ∉ E`) |
 
 No lower bound on `d` is assumed in Theorem 6.1 (the paper's `d ≥ 4` is not used). Not
-formalized from the manuscript: Theorems 3.1/3.2 (terminal step), 4.1(ii)/(iii), 4.2, 4.4,
-Corollary 4.5, Proposition 7.1.
+formalized from the manuscript: Theorems 3.1/3.2 (terminal step), 4.2, 4.4, Corollary 4.5,
+Proposition 7.1.
