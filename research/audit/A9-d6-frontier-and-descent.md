@@ -450,3 +450,7 @@ Both PDFs were recompiled with pdflatex, twice each. No undefined references.
 - Optional: name Bridge.lean and BranchBase.lean in the ES §5 Formalisation remark, and use `gallai_of_branchBase_three` for the k ≥ 3 form.
 - Optional: D6 Table 1, "D = ∅" → "Q = ∅" for Thms 4.3 and 4.4.
 - The TwoEven.lean docstrings cite outdated theorem numbers ("Theorem 26", "Theorem 28" for the pair and path steps; now 43 and 45).
+
+## Follow-up (orchestrator)
+
+- The abstract ERROR is fixed. The text now reads: "…except in the two configurations of Corollary 44 (`cor:fd2strong`); for connected graphs Theorem 19 closes both."
