@@ -52,6 +52,8 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
 | U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ** | comp(n ≤ 6) |
+| FD2 | second step of faithful descent: for every root r some Ev − {u, v} (u, v ≠ r) is realisable | endpoint-structure §5, Thm 28 (connections §P) | **CLAIMED**, proved except e = 4 with G[Ev] = K_3 + r; non-realisable pairs are E-twins (Thm 20/Cor 22); the step with a prescribed u (Cor 27) is proved unless G[Ev] is edgeless with private odd neighbourhoods | **lean** (Thm 20, Cor 22, pair step Thm 26, Fan certificates Thm 24, path step); comp (n ≤ 8) |
+| U-Fan | uniform-in-d sufficient condition for (R): a semi-induced matching of size e/2 − 1 in G[Ev] avoiding r (Cor 25); in MR Thm 114(i) a condition on J[N(z)] alone | endpoint-structure Cor 25 | **CLAIMED** | **lean** (`realisable_of_fanSchedule`) |
 
 ## Side chains that also reach Gallai
 
@@ -134,6 +136,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | Q6, two-even problem / second descent step: **done** (connections §P; `lean/GallaiLean/TwoEven.lean`) |
 
 **Local agents:**
 
@@ -152,7 +155,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
 | Q5 | Audit SP §14 (dense exact theorem) | off the Gallai-critical path; lower priority |
-| Q6 | **Two-even-vertex Lovász problem** (connections §O): when does a graph with exactly two even vertices meet the parity bound |odd|/2? | equivalent to the second faithful-descent step; conceptual, Lean-ready |
+| Q6 | **Two-even-vertex Lovász problem** (connections §O, §P): when does a graph with exactly two even vertices meet the parity bound |odd|/2? **Mostly done** (§P): exact dictionary with G^{Ev−{u,v}}; Fan descent; second step except twins; pair step; goal (b) except K_3 + r. Open: the two residual configurations of §P.4, and deeper FD steps with the Fan calculus | equivalent to the second faithful-descent step |
 
 ## Log
 
@@ -164,3 +167,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
 - Corrigenda document written (`manuscripts/corrigenda`).
 - New manuscript draft `manuscripts/endpoint-structure`.
+- 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
