@@ -1,4 +1,4 @@
-"""Mutation test for cert_check.py Part B: weakening any one hypothesis of Lemmas 6-8 must produce
+"""Mutation test for cert_check.py Part B: weakening any one hypothesis of Lemmas 10-12 must produce
 (graph, labelling) pairs on which the lemma's certificate is illegal; otherwise the hypothesis is
 superfluous (or the checker is vacuous). Also checks the A = T supplies 4 and 3."""
 import itertools

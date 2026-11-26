@@ -1,7 +1,8 @@
 """A11 independent checker for bs-prescribed (written for the audit; shares no code with
 manuscripts/bs-prescribed/scripts).
 
-Semantics (the paper's Lemma 2 + Lemma 3 + Definition 4 + the localisation paragraph):
+Semantics (the paper's Lemma 3 (Lovasz) + Lemma 4 (Fan) + Definition 5 + Lemma 6 + the
+localisation paragraph after Lemma 6):
   * a model is a vertex set M, the edges of W inside M, and the parity of every M-vertex in W;
   * hold H (edges inside M); the seed end vector on M is (d_{W-H} mod 2), which must have exactly
     one 0 (Lovasz, exact form); every vertex outside M has one end throughout and is never blank;
@@ -11,16 +12,17 @@ Semantics (the paper's Lemma 2 + Lemma 3 + Definition 4 + the localisation parag
   * at a leaf all of H is restored.
 
 Parts
-  A. the eleven bowtie certificates, transcribed by hand from Table 1 and the A = T paragraph,
+  A. the eleven bowtie certificates, transcribed by hand from Table 2 and the A = T paragraph,
      checked at their representative and transported by explicit automorphisms to all 31 contact
      sets of all 3 labelled bowties (93 cases); every printed (supply > blanks) pair is compared,
      and every leaf must end with b = 1 at u, v and b = (2,2,0,0,0) on T with the printed S.
-  B. Lemmas 6, 7, 8 (match, odd star, universal star) as certificate generators, tested on EVERY
+  B. Lemmas 10, 11, 12 (match, odd star, universal star) as certificate generators, tested on EVERY
      graph on five labelled even vertices (2^10) and every assignment of the lemma's letters that
-     satisfies its hypotheses; then Proposition 9's explicit assignments on all 38 labelled rims.
-  C. an exhaustive AND-OR search of our own: (i) bowtie with M = T (paper: no certificate);
+     satisfies its hypotheses; then Proposition 13's explicit assignments on all 38 labelled rims.
+  C. an exhaustive AND-OR search of our own: (i) bowtie with M = T (paper, end of Sec. 5: no certificate);
      (ii) M = T + u (paper: 25 of 31, exceptions ab, xab, cd, xcd, abcd, xabcd);
-     (iii) M = T + u + v (all 31); (iv) the 38 non-bowtie rims with M = T (all certified).
+     (iii) M = T + u + v (all 31); (iv) the 38 non-bowtie rims with M = T (all certified);
+     (v) all 41 one-universal cores x 31 contact sets with M = T + u + v (A6's bank).
 """
 import itertools
 import sys
@@ -130,7 +132,7 @@ def bowtie_model(K, A):
 
 
 def table():
-    """Table 1 of the paper, transcribed from the .tex by hand: A -> (held, seed, prog, S)."""
+    """Table 2 of the paper, transcribed from the .tex by hand: A -> (held, seed, prog, S)."""
     t = {}
     t['x'] = (['ab', 'cd', 'xu'], 'u', [S('b', 'a', 1, 0), S('d', 'c', 1, 0), S('x', 'u', 1, 0)], {'ac'})
     t['a'] = (['xb', 'cd', 'au'], 'u', [S('b', 'x', 1, 0), S('d', 'c', 1, 0), S('a', 'u', 1, 0)], {'xc'})
@@ -332,7 +334,7 @@ def all_graphs():
 
 
 def part_B():
-    print('Part B: Lemmas 6-8 on every graph on five labelled even vertices')
+    print('Part B: Lemmas 10-12 on every graph on five labelled even vertices')
     for name, gen, hyp in LEMMAS:
         tested = 0
         for K in all_graphs():
@@ -397,7 +399,7 @@ def part_B():
                 break
         assert found, R
         shapes[found] = shapes.get(found, 0) + 1
-    print('  Proposition 9 assignments valid on all %d labelled non-bowtie rims: %s' % (nonbow, shapes))
+    print('  Proposition 13 assignments valid on all %d labelled non-bowtie rims: %s' % (nonbow, shapes))
 
 
 # ---------------------------------------------------------------------------- Part C
@@ -463,7 +465,7 @@ def part_C():
     print('Part C: exhaustive certificate search (own engine)')
     # (i) bowtie, M = T
     r = search(Model(list(T5), BOWTIE, odd=set()))
-    print('  (i)   bowtie, local set T: %s' % ('certificate found %s' % (r,) if r else 'no certificate (agrees with Sec. 4)'))
+    print('  (i)   bowtie, local set T: %s' % ('certificate found %s' % (r,) if r else 'no certificate (agrees with the end of Sec. 5)'))
     # (ii) M = T + u, (iii) M = T + u + v
     subsets = [''.join(c) for k in range(1, 6) for c in itertools.combinations(T5, k)]
     fail_u = []
@@ -474,6 +476,23 @@ def part_C():
     print('  (ii)  bowtie, local set T+u: %d of 31 certified; uncertified: %s' % (31 - len(fail_u), fail_u))
     fail_uv = [A for A in subsets if not search(bowtie_model(BOWTIE, A))]
     print('  (iii) bowtie, local set T+u+v: %d of 31 certified; uncertified: %s' % (31 - len(fail_uv), fail_uv))
+    # (iv) the 38 labelled non-bowtie rims with M = T, and (v) all 41 rims with M = T+u+v
+    RIMP = [frozenset(e) for e in itertools.combinations('abcd', 2)]
+    n_loc = n_bank = 0
+    for mask in range(64):
+        R = {RIMP[i] for i in range(6) if mask >> i & 1}
+        if max(sum(1 for e in R if w in e) for w in 'abcd') > 2:
+            continue
+        K = R | mk_edges(['xa', 'xb', 'xc', 'xd'])
+        bow = len(R) == 2 and len(set().union(*R)) == 4
+        if not bow:
+            assert search(Model(list(T5), K, odd=set())) is not None, R
+            n_loc += 1
+        for A in subsets:
+            assert search(bowtie_model(K, A)) is not None, (R, A)
+            n_bank += 1
+    print('  (iv)  all %d labelled non-bowtie rims certified with local set T' % n_loc)
+    print('  (v)   all 41 labelled one-universal cores x 31 contact sets (%d cases) certified with T+u+v' % n_bank)
 
 
 if __name__ == '__main__':

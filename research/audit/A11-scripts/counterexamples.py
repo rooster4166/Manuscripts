@@ -1,11 +1,12 @@
 """A11: Section 3 of bs-prescribed (the prescribed-end statement is false), with exact.py.
+Proposition 8 (the family G_{t,t'} of the current draft) is checked in family_tt.py.
 
-1. Proposition 10 family G_t, t = 2, 4: no partition into (N-1)/2 paths with an end at y, but a
+1. The family G_t of the first draft (h, y, g and t triangles at h), t = 2, 4: no partition into (N-1)/2 paths with an end at y, but a
    floor partition exists (so the obstruction is the prescription).
 2. The order-5 example of the text.
-3. Proposition 11: L (order 9) has p(L) = 4 exactly; the doubled gadget D (order 17) has no
+3. Proposition 9: L (order 9) has p(L) = 4 exactly; the doubled gadget D (order 17) has no
    partition into 8 paths with an end at y, while p(D) <= 8.
-4. Census (Table 2, exact rows): connected graphs of order 5 and 7 (data/conn5.g6, conn7.g6) whose
+4. Census (Table 1, exact rows): connected graphs of order 5 and 7 (data/conn5.g6, conn7.g6) whose
    even subgraph has maximum degree <= 3, and even y; count (G, y) with no floor partition ending
    at y, by the number e of even vertices, and how many of the failing G are SET graphs.
 """

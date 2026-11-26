@@ -277,8 +277,10 @@ disjoint edges and the isolated vertex $y$, and no partition of $D$ into $8$ pat
 \end{proposition}
 
 \begin{proof}
-For $L$, the paths $a_1b_1xb_2a_2$, $a_1xa_2$, $\ell sxwz$ and $sw$ form a partition into four paths,
-and four is the parity bound for its four odd vertices $s,w,z,\ell$. In $D$ the vertices $x,x'$ have
+For $L$, the paths $a_1b_1xb_2a_2$, $a_1xa_2$, $\ell sxwz$ and $sw$ form a partition into four paths.
+No partition has fewer: the four odd vertices $s,w,z,\ell$ carry an end each, and by
+Lemma~\ref{lem:forcing} each triangle $xa_ib_i$ has an end at one of its two even vertices, which
+then carries two, so every partition has at least eight ends. In $D$ the vertices $x,x'$ have
 odd degree $7$, so the even vertices are $y$ and the eight vertices $a_i,b_i,a_i',b_i'$, and $D$ has
 eight odd vertices. Each of the four triangles $xa_ib_i$, $x'a_i'b_i'$ forces an end at one of its
 two even vertices (Lemma~\ref{lem:forcing}). A partition with an end at $y$ therefore has at least
@@ -308,11 +310,20 @@ sites. No other result of~\cite{MR} cites Corollary~106.
 \end{enumerate}
 The remark after Theorem~114 (``Shaik's ordinary bound also applies if $K$ has at most one vertex of
 degree greater than three\ldots\ at $d_J(z)=6$ a failure requires two universal vertices'') concerns
-the five-vertex graph $K=J[N(z)\setminus\{r\}]$. Both deletion tests at $d_J(z)=6$ are floor bounds
-for $J-z$ with one or two private leaves at $r$. These graphs have odd order, leaves at the odd
-support $r$, and even set $N(z)\setminus\{r\}$. So the remark also follows from
-Corollary~\ref{cor:bp5}. The step ``$r\in T$'' of Theorem~144, which cited~\cite{Shaik} directly, needs
-only~\cite[Theorem~13]{BS} or~\cite[Corollary~22]{ES} (A7, U4).
+the five-vertex graph $K=J[N(z)\setminus\{r\}]$. Both deletion tests at $d_J(z)=6$ follow from floor
+bounds for $J-z$ with one or two private leaves at $r$ (trim the leaves, and split at $r$ with a
+spare row if one vanished, as in the book paragraph of~\cite[\S19]{MR}). These graphs have odd
+order, leaves at the odd support $r$, and even set $N(z)\setminus\{r\}$. So the remark also follows
+from Corollary~\ref{cor:bp5}. The step ``$r\in T$'' of Theorem~144, which cited~\cite{Shaik}
+directly, needs only~\cite[Theorem~13]{BS} or~\cite[Corollary~22]{ES} (A7, U4).
+
+Two earlier routes should be recorded. Audit A6 (F17) and the corrigenda already observed that
+Theorem~144 alone can be freed of~\cite{Shaik} through Lemma~133 of~\cite{MR}, whose proof uses only
+connectivity although it is stated for two-connected $B$ (it relies on a computer table for the
+three cores $M,P,C$), or through the seven-site bank of A6. The remark after Theorem~114 is likewise
+covered inside~\cite{MR} by Theorem~123 (odd-order test) and Lemma~133 (even-order test, with
+$B=J-z$ two-connected). What is new here is a short human-checkable proof of the five-even case and a
+corrected statement of Corollary~106 itself.
 
 \section{Six cores without a leaf}\label{sec:local}
 
@@ -484,8 +495,12 @@ The exceptions are $A\supseteq\{a,b\}$ or $A\supseteq\{c,d\}$ with $A\cap\{c,d\}
 $A\cap\{a,b\}\in\{\emptyset,\text{both}\}$, that is $ab$, $xab$, $cd$, $xcd$, $abcd$, $xabcd$.
 
 (iii) Random hosts with a bowtie core and no leaf, of orders $9$, $11$ and $13$, all satisfy the
-floor bound ($120$ hosts, \texttt{scripts/random\_hosts.py}). We expect Theorem~\ref{thm:main}(b)
-to hold without the hypothesis on $u,v$, but the local certificates need it.
+floor bound ($120$ hosts, \texttt{scripts/random\_hosts.py}). Such hosts usually still contain a
+pair $u,v$ as in Theorem~\ref{thm:main}(b). Audit A11 tested hosts with no such pair: the $11$
+connected graphs of order $7$ whose even subgraph is a bowtie (at order $7$ no such pair can exist),
+and $120$ random connected hosts of orders $9$ and $11$ in which every odd vertex has a neighbour in
+$T$. All satisfy the floor bound. We expect Theorem~\ref{thm:main}(b) to hold without the
+hypothesis on $u,v$, but the local certificates need it.
 
 (iv) Without the reduction to orbits, \texttt{scripts/certgen.py} finds a certificate for each of the
 three labelled bowties and each of the 31 contact sets ($93$ certificates). It also finds a local
@@ -506,7 +521,9 @@ even sites have degree four among the unmarked even sites.
 \begin{proof}
 The proof in~\cite{MR} uses its first paragraph, the leaf floor bound, only for graphs $L$ whose
 even set is $U$: $L=L_A(G)$ for the nonempty set $A$ of even marks, and $L=G$ with two leaves at an
-odd mark. In each case every leaf support is odd. Replace that paragraph as follows.
+odd mark. In each case $L$ has a leaf at an odd support, namely a private leaf at a mark (leaves
+of $G$ itself may sit at unmarked even vertices; this does not matter). Replace that paragraph as
+follows.
 \begin{itemize}
 \item If $|L|$ is even: ceiling and floor agree. Use~\cite[Corollary~14]{BS} when $L[U]$ has maximum
 degree at most three, and~\cite[Theorem~5]{FHZ} when it has exactly one vertex of degree at least
@@ -530,9 +547,17 @@ covered by~\cite[Theorem~13]{BS}. In the remark, both test graphs have odd order
 support $r$, and the five even vertices $N(z)\setminus\{r\}$ (Corollary~\ref{cor:bp5}).
 \end{proof}
 
+In every one of these uses, whenever $L[U]$ has a vertex of degree four the graph $L$ has odd order.
+So the even-order clause with~\cite[Theorem~5]{FHZ}, which audit A7 could check only through a
+secondary restatement, is never needed: the uses rest on Lov\'asz, Fan's Lemmas 3.3--3.4,
+\cite[Theorem~13 and Corollary~14]{BS} and Corollary~\ref{cor:bp5}.
+
 \emph{What remains conditional.} The leaf floor bound with exactly one exceptional vertex, $|L|$ odd
 and $|U|\ge7$ is not proved here, and Proposition~\ref{prop:gadget} shows that the doubling
-gadgets of the notes cannot supply it in general. No result of~\cite{MR} uses this case.
+gadgets of the notes cannot supply it in general. No result of~\cite{MR} uses this case. One direct
+citation of~\cite{Shaik} in~\cite{MR} is not addressed here: the remark in Section~2.1 (p.~8) that,
+by Shaik's Theorem~1.1, a failing single even mark needs two further even vertices with at least four
+even neighbours each. No later result of~\cite{MR} uses that remark.
 
 \section{Formalization and computations}\label{sec:lean}
 
@@ -560,15 +585,17 @@ adjacency and the parities, gives a partition $D$ of $W$ with $2|D|+1=|V|$.
 \item \texttt{local\_ok} and \texttt{bow\_ok}: every certificate checks, for all $2^6$ rims, resp.
 $2^{11}$ rims and contact sets, that satisfy the hypotheses (kernel evaluation,
 \texttt{decide +kernel});
-\item \texttt{five\_even\_local}, which is Theorem~\ref{thm:main}(a). Let $\iota:\mathrm{Fin}\,5\to V$
+\item \texttt{five\_even\_local}, the floor conclusion of Theorem~\ref{thm:main}(a) (the realisable
+pair is not formalized, since \texttt{okS} does not constrain the leaf vectors). Let $\iota:\mathrm{Fin}\,5\to V$
 be injective onto the even vertices. Suppose $\iota0$ is adjacent to the others, no other $\iota i$ is
 adjacent to all the others, and the rim is not a perfect matching. Then $W$ has a partition $D$ with
 $2|D|+1=|V|$;
-\item \texttt{five\_even\_bowtie}, which is Theorem~\ref{thm:main}(b), given the adjacent odd
+\item \texttt{five\_even\_bowtie}, the floor conclusion of Theorem~\ref{thm:main}(b), given the adjacent odd
 vertices $u=\iota5$ and $v=\iota6$ as hypotheses;
 \item \texttt{exists\_uv}, which is Lemma~\ref{lem:uv}, proved by taking a walk of least length from
 $\ell$ to $T$;
-\item \textbf{\texttt{five\_even\_floor}}, Theorem~\ref{thm:main} on the host graph. Let $W$ be
+\item \textbf{\texttt{five\_even\_floor}}, the floor conclusion of Theorem~\ref{thm:main} on the host
+graph, in the case of Corollary~\ref{cor:bp5} with a leaf at an odd support. Let $W$ be
 connected, with even vertices exactly $T$ and $|T|=5$. Let $x\in T$ be adjacent to the rest of $T$,
 and let no other vertex of $T$ be adjacent to all the rest. Let $W$ have a vertex of degree one whose
 neighbour is odd. Then $W$ has a partition $D$ with $2|D|+1=|V|$. The proof builds the labelling,
