@@ -204,6 +204,14 @@ Command: `tools/two_even.py {census,twins,pair,residual,schedule} n`. Exhaustive
 
 At n = 8, 274 of the (O1) graphs are 2-connected; no other 2-connected graph fails. **Conjecture 31** (manuscript): a 2-connected graph with exactly two even vertices is tight unless an odd vertex is universal. The (O1) graphs at n = 8 were not solved: (O1) is a proved obstruction (Lean `degree_le_of_tight`).
 
+Random check of Conjecture 31 (`tools/two_even_random.py`, circuit solver `pathnum2`): 2-connected graphs with exactly two even vertices and no universal odd vertex, all tight:
+
+| n | edge probability | graphs |
+|---|---|---|
+| 10 | 0.3–0.8 | 40 |
+| 10 | 0.8–0.95 | 30 |
+| 12 | 0.3–0.9 | 15 |
+
 **Proof checks (n ≤ 6):**
 
 | Check | Result |
