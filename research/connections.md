@@ -474,5 +474,9 @@ Both need an exchange inside a fixed graph, since every Fan move sees a zero-end
 
 - "u, v degree-2 twins" is **not** an obstruction: in K_{2,4} plus an edge, every twin pair of degree-2 vertices is realisable. K4 − e fails by (O1).
 - Prop 13 (e = 4) proves (R), i.e. r is an end of some n/2-partition. Its statement claims a realisable 2-set, and the proof does not show the profile is simple (Cor 6 allows an odd vertex with 3 ends). The claim needs a check.
-- Census of two-even graphs: n = 4: 3 graphs, 2 not tight, both (O1). n = 6: 47 graphs, 17 not tight (16 (O1), 1 (O2)). n = 8: see `research/experiments.md`.
+- Census of two-even graphs (experiments E13):
+  - n = 4: 3 graphs, 2 not tight, both (O1).
+  - n = 6: 47 graphs, 17 not tight: 16 (O1), 1 (O2).
+  - n = 8: 2668 graphs, 372 not tight: 344 (O1), 21 (O2), 4 (O3), and 3 with a cut vertex where one side is infeasible.
+- **Every non-tight 2-connected graph with n ≤ 8 is (O1).** Conjecture 31: a 2-connected two-even graph is tight unless an odd vertex is universal.
 - At n = 6: every non-realisable pair is an E-twin pair (384 pairs in graphs with e ≥ 3; 12 non-realisable pairs when e ≥ 4); 565 pair-step instances, no violation; 657 Fan-schedule certificates, all realisable; 3 + 9 residual instances of Thm 28 / Cor 27, all succeed.

@@ -1,5 +1,6 @@
 import GallaiLean.Realisable
 import GallaiLean.Fan
+import GallaiLean.LeafDictionary
 
 /-!
 # The second descent step and the two-even-vertex problem
@@ -1070,5 +1071,114 @@ theorem degree_le_of_tight {H : SimpleGraph V} [DecidableRel H.Adj] (h : Tight H
   unfold oddSet at hsz ⊢
   rw [Finset.card_empty, add_zero] at hsz
   omega
+
+/-! ### The leaf move (L) and the leaf case of the two-even problem -/
+
+omit [Fintype V] [DecidableRel G.Adj] in
+/-- A path decomposition has no more ends at a vertex than the vertex has edges. -/
+theorem PathDecomp.ends_le_degree (D : PathDecomp G) (v : V) [Fintype (G.neighborSet v)] :
+    D.ends v ≤ G.degree v := by
+  rw [D.degree_eq_sum v]
+  unfold PathDecomp.ends
+  apply sum_map_le_sum_map
+  intro P _
+  have h := P.incid_add_endsAt v
+  have hne := P.src_ne_tgt
+  unfold GPath.endsAt at h ⊢
+  split_ifs at h ⊢ with h1 h2 h2 <;> simp_all
+
+/-- **Move (L)**, in the language of `leaves`: attach a pendant vertex at an odd vertex `x`.
+A realisation of `S` in `G` gives a realisation of the same set in `G` plus the pendant edge, in
+which `x` (now even) has no end. -/
+theorem realisable_leaves_singleton {S : Finset V} {x : V} (hx : Odd (G.degree x))
+    (h : Realisable G S) :
+    Realisable (leaves G (insert x ∅)) (S.map Function.Embedding.inl) := by
+  obtain ⟨hS, D, hD⟩ := h
+  obtain ⟨D₁, -, he₁⟩ := leaves_empty_decomp (G := G) D
+  have hpos : 0 < D₁.ends (.inl x) := by rw [he₁ x, hD x]; simp [profile, hx]
+  obtain ⟨D₂, -, he₂⟩ := D₁.extend_pendant (leaves_insert_edgeSet (G := G))
+    (leaves_inr_isolated (G := G) (Finset.notMem_empty x)) ⟨rfl, Finset.mem_insert_self _ _⟩ hpos
+  have hxS : x ∉ S := fun h => not_odd_of_mem_evenSet (hS h) hx
+  have hiso : ∀ v, D₁.ends (.inr v) = 0 := by
+    intro v
+    have := D₁.ends_le_degree (.inr v)
+    rw [leaves_degree_inr] at this
+    simpa using this
+  have hdl : ∀ v, (leaves G (insert x ∅)).degree (.inl v) = G.degree v + if v = x then 1 else 0 := by
+    intro v
+    rw [leaves_degree_inl]
+    congr 1
+    simp only [Finset.mem_insert, Finset.notMem_empty, or_false]
+  have hdr : ∀ v, (leaves G (insert x ∅)).degree (.inr v) = if v = x then 1 else 0 := by
+    intro v
+    rw [leaves_degree_inr]
+    simp only [Finset.mem_insert, Finset.notMem_empty, or_false]
+  have hml : ∀ v, (Sum.inl v : V ⊕ V) ∈ S.map Function.Embedding.inl ↔ v ∈ S := by
+    intro v; simp
+  have hmr : ∀ v, (Sum.inr v : V ⊕ V) ∉ S.map Function.Embedding.inl := by
+    intro v; simp
+  refine ⟨?_, D₂, fun w => ?_⟩
+  · intro y hy
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_map.mp hy
+    have hsx : s ≠ x := fun h => hxS (h ▸ hs)
+    have := (Finset.mem_filter.mp (hS hs)).2
+    refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
+    rw [Function.Embedding.inl_apply, hdl s]
+    simp only [hsx, ite_false, add_zero]
+    exact this
+  · have hw := he₂ w
+    unfold profile
+    rcases w with v | v
+    · simp only [hdl v, hml v]
+      by_cases hvx : v = x
+      · subst hvx
+        have hDv : D.ends v = 1 := by have := hD v; simpa [profile, hx] using this
+        have h0 : D₂.ends (.inl v) = 0 := by
+          have := hw; simp only [ite_true, reduceCtorEq, ite_false, add_zero, he₁, hDv] at this
+          omega
+        have : ¬ Odd (G.degree v + 1) := by rw [Nat.odd_add_one]; exact not_not.mpr hx
+        simp only [ite_true, this, hxS, ite_false, h0]
+      · simp only [Sum.inl.injEq, Ne.symm hvx, ite_false, reduceCtorEq, add_zero, he₁] at hw
+        simp only [hw, hvx, ite_false, add_zero]
+        exact hD v
+    · simp only [hdr v, hmr v, ite_false]
+      by_cases hvx : v = x
+      · subst hvx
+        have h1 : D₂.ends (.inr v) = 1 := by
+          have := hw
+          simp only [reduceCtorEq, ite_false, add_zero, ite_true, hiso] at this
+          omega
+        rw [h1]
+        simp only [ite_true]
+        decide
+      · have h0 : D₂.ends (.inr v) = 0 := by
+          have := hw
+          simp only [reduceCtorEq, ite_false, Sum.inr.injEq, Ne.symm hvx, add_zero, hiso] at this
+          exact this
+        convert h0 using 1
+        simp [hvx]
+
+/-- **The leaf case of the two-even problem**: if `G` has at most one even vertex and `x` is odd,
+then `G` plus a pendant vertex at `x` is tight. -/
+theorem tight_leaves_of_lovasz (hL : LovaszStatement.{u}) {x : V}
+    (h1 : (Finset.univ.filter (fun v => Even (G.degree v))).card ≤ 1) (hx : Odd (G.degree x)) :
+    Tight (leaves G (insert x ∅)) := by
+  have hR : Realisable G ∅ := by
+    obtain ⟨D, hD⟩ := pathNumber_spec G
+    have hle := hL V G h1
+    have hcard : 2 * D.size ≤ (Finset.univ.filter (fun v => Odd (G.degree v))).card := by
+      have hc := Finset.card_filter_add_card_filter_not
+        (s := (Finset.univ : Finset V)) (fun v => Odd (G.degree v))
+      have he : Finset.univ.filter (fun v => ¬ Odd (G.degree v)) =
+          Finset.univ.filter (fun v => Even (G.degree v)) := by
+        ext v; simp [Nat.not_odd_iff_even]
+      rw [he, Finset.card_univ] at hc
+      obtain ⟨k, hk⟩ := G.even_card_odd_degree_vertices
+      omega
+    refine ⟨Finset.empty_subset _, D, fun v => ?_⟩
+    rw [PathDecomp.ends_eq_of_tight D hcard v]
+    simp [profile]
+  have := realisable_leaves_singleton hx hR
+  simpa using this
 
 end Gallai
