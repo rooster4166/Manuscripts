@@ -452,4 +452,28 @@ Scripts: `manuscripts/bs-prescribed/scripts/`.
 - all 60 + 40 + 20 bowtie hosts without a leaf, of orders 9, 11 and 13.
 
 Every host satisfies the floor bound. So the leaf is probably not needed for the bowtie either, but the local certificates need it.
+## E16. Rainbow transversals of Hamiltonian decompositions (the flower move; cloud session `claude/emc-four-even`)
+
+Tool: `tools/rainbow_transversal.py MMAX SAMPLES [seed]`.
+
+**Question.** In CP(m), take a system of m − 1 edge-disjoint Hamiltonian cycles. Does every vertex s start (or at least lie on) a path with exactly one edge from each cycle? This is endpoint-structure Question 66; it is what the flower move of Theorem 63 needs.
+- Proved for ≤ 4 cycles (Prop 64; Lean `rainbowTransversal_three`, `rainbowTransversal_four`), hence for CP(4) and CP(5).
+
+**Run** (seed 7). Each m tests 60 random Hamiltonian decompositions and one Walecki-type decomposition, at every vertex, for a transversal *starting* at s (exhaustive search):
+
+| m | failures | random greedy success |
+|---|---|---|
+| 4 | 0 | 100% |
+| 5 | 0 | 94% |
+| 6 | 0 | 91% |
+| 7 | 0 | 89% |
+| 8 | 0 | 87% |
+| 9 | 0 | 86% |
+| 10 | 0 | 85% |
+
+Earlier scratch runs:
+- The same question on K_{2k+1}, for k ≤ 6: no failures.
+- One rotation always repaired a stuck greedy path, on all (k − 1)-paths through s in 6 random decompositions each at m = 5 (40 stuck paths) and m = 6 (478).
+
+**Reading.** The transversal exists in every case tested, but greedy alone fails 6–15% of the time beyond m = 4. So a general proof needs rotations. The question is a rainbow-path problem: length k with colour degree k. Chen and Li conjectured length k − 1 for arbitrary colourings; here each colour class is a Hamiltonian cycle.
 

@@ -39,6 +39,11 @@ This is the single source of truth for the proof architecture. Every node is a s
 **Everything now hinges on proving `BranchBase3 k`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
 **Three even neighbours (FanBarrier.lean): `gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`.** The case of exactly two even neighbours reduces by a rooted transfer (`branchBase_of_three`), so `BranchBase3` asks for descent keeping y only when y has ≥ 3 even neighbours.
 
+**The flower move (Flower.lean; endpoint-structure §7).**
+- `flower_decomp` and `hub_cycles`: at Fan's equality the hub's paths close into cycles, and a transversal path recombines them into one more path with b(s) = 2.
+- `cocktail_passes_of_rt`: CP(m) passes the rooted test for every m ≥ 4, given `RainbowTransversal (m − 1)` (open; E16 finds no failure for m ≤ 10).
+- `cocktail_passes_four`, `cocktail_passes_five`: unconditional.
+
 **Route (H) verdict (endpoint-structure §7, connections §N follow-up 4, E15).**
 - A stronger induction hypothesis cannot close `BranchBase3` through Fan moves.
 - At n ≤ 8, oracle seeds (any realisable profile of G − e) win every even root of every connected graph except K8 − perfect matching.
@@ -253,6 +258,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Oracle-seeded Fan game (`tools/fan_oracle.py`, exact oracle `tools/realis.c`): with general seeds and one held edge it wins all even roots at n ≤ 8 except K8 − PM.
   - **Barrier theorem** (Lean `FanBarrier.lean`): Fan's condition forces b(u) + 2|N^ev(u)| + 2 ≤ 3|D|. For CP(m), m ≥ 4, every certificate ends with a new path of ≥ m − 1 edges; the flower attains this.
   - **EMC holds on all 1,082 connected critical graphs at n = 8**: 1,030 are uniform, including all 476 three-connected ones.
+- 2026-11-26 (cloud session `claude/emc-four-even`, follow-up 5): **the flower move as a theorem** (Lean `Flower.lean`, no sorry, standard axioms).
+  - At Fan's equality the receipts' paths close into cycles (`hub_cycles`), and a transversal recombines them (`flower_decomp`).
+  - CP(m): Lovász, then m − 1 receipts, then Hamiltonian cycles by the edge count, then a transversal. **So the rooted test for CP(m) follows from the rainbow-transversal lemma**, which is proved for ≤ 4 cycles. That makes CP(4) (= missing-move Prop 5.5) and CP(5) unconditional.
+  - The general case is endpoint-structure Question 66; E16 finds no failure for m ≤ 10.
 - 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.

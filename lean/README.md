@@ -455,6 +455,30 @@ Manuscript: endpoint-structure §7.
 
 No hypotheses. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
 
+## `GallaiLean/Flower.lean`: the flower move
+
+Manuscript: endpoint-structure §7 ("The flower move"); missing-move Lemma 5.4 and Prop 5.5.
+
+* `exists_close_cut`: close a path `P` into its cycle and cut at an edge `e` of the cycle. The result
+  is a path whose ends are the ends of `e`.
+* **`flower_decomp`**: suppose the cycles of the pairs `(P, e)` are the edges of `G`, and `L` is a
+  path whose edges are the cut edges `e`. Then `G` has a decomposition into `|ps| + 1` paths, with
+  two ends on `L` and none elsewhere.
+* **`hub_cycles`** (equality forces a flower): let `D` have `|T|` ends at `s`, one on each vertex of
+  `T`, and none elsewhere. Then the paths, read from `s`, end once at each vertex of `T` and carry
+  the edges of `H`.
+* `Transversal`, **`RainbowTransversal k`**: every system of `k` Hamiltonian cycles through `s`, on
+  `2k + 2` vertices, has a path through `s` with one edge of each cycle.
+  * `card_cnbr`: two cycle-neighbours per vertex.
+  * `rainbowTransversal_three` (greedy), `rainbowTransversal_four` (greedy plus one rotation).
+* **`cocktail_passes_of_rt`**, `cocktail_rooted_of_rt`: for `m ≥ 4`, `RainbowTransversal (m − 1)`
+  gives the two-end test, and the rooted test, at every vertex of `CP(m)`. The proof runs Lovász
+  (`lovasz_ends`) on `isolate (cocktail m) s`, then `m − 1` receipts (`Ach.receiveMany`), then
+  `hub_cycles`, Hamiltonicity by an edge count, and finally `flower_decomp`.
+* **`cocktail_passes_four`, `cocktail_passes_five`**: unconditional.
+
+No hypotheses. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
 
 **Main result: Theorem 1 holds as a full equivalence.**

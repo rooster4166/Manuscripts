@@ -8,6 +8,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
@@ -68,6 +69,11 @@ exception: $K_8$ minus a perfect matching.
 Fan transfer and no short new path can be the last move of a certificate, whatever the seed. Its
 endpoint matroid is uniform, so the obstruction lies in the moves, not in the hypothesis.
 \end{itemize}
+The positive counterpart is the \emph{flower move}. When the receipts at a hub stop at Fan's
+equality, the paths close into cycles through the hub. A path that takes one edge from each cycle
+then recombines them into one more path, with two ends at the hub. This proves the rooted test for
+$K_{2m}$ minus a perfect matching for $m\le5$. For all $m$ it follows from a rainbow-path question
+about Hamiltonian decompositions, which we checked for $m\le10$.
 The endpoint matroid conjecture holds for all $1{,}082$ connected critical graphs of order eight.
 \end{abstract}
 \maketitle
@@ -1378,6 +1384,149 @@ the three paths $C_i-e_i$, so the bound $|F|\ge m-1$ is attained. The two result
 missing ingredient. It is not a stronger hypothesis; it is a move that spends a spare path at
 Fan's equality.
 \end{remark}
+
+\subsection*{The flower move}
+
+Corollary~\ref{cor:cp} says how a certificate for $\mathrm{CP}(m)$ must end: with a new path of at
+least $m-1$ edges, added to a partition of the rest into $m-1$ paths. We now show that this ending
+exists. It comes from the state in which Fan's receipts at a hub stop at equality. Throughout, a
+path $P$ from $a$ to $b$ with $ab\notin E(P)$ is \emph{closed} into the cycle $C(P)=P+ab$.
+
+\begin{lemma}[Flowers; {\cite[Lemma~5.4]{MM}}]\label{lem:flower}
+Let $P_1,\dots,P_k$ be paths, and let $L$ be a path whose edges are $e_1,\dots,e_k$ with $e_i\in
+E(C(P_i))$. Then the paths $C(P_i)-e_i$ ($i\le k$) and $L$ have, together, exactly the edges of the
+cycles $C(P_i)$, there are $k+1$ of them, and they have two ends at every vertex of $L$ and none
+elsewhere.
+\end{lemma}
+
+\begin{proof}
+$C(P_i)-e_i$ is a path whose ends are the two ends of $e_i$. So a vertex $v$ is an end once for each
+$e_i$ containing $v$, and once for each end of $L$ at $v$. This gives two at an interior vertex of
+$L$ (two edges of $L$), two at an end of $L$ (one edge and one end), and none elsewhere.
+\end{proof}
+
+\begin{proposition}[Equality forces a flower]\label{prop:equality}
+Let $D$ be a partition of $H$, let $s$ be a vertex and $T$ a set of vertices with $s\notin T$, and
+suppose that $b_D(s)=|T|$, $b_D=1$ on $T$ and $b_D=0$ elsewhere. Then:
+\begin{itemize}
+\item $|D|=|T|$;
+\item every path of $D$ joins $s$ to a vertex of $T$;
+\item every $t\in T$ is the end of exactly one path $P_t$.
+\end{itemize}
+If $st\notin E(H)$ for $t\in T$, the cycles $C(P_t)$ are edge-disjoint, pass through $s$, and cover
+$E(H)\cup\{st:t\in T\}$.
+\end{proposition}
+
+\begin{proof}
+By~\eqref{eq:parity}, $2|D|=\sum b_D=2|T|$. A path has at most one end at $s$, and $b_D(s)=|D|$, so
+every path has exactly one end at $s$. All other ends lie in $T$, one at each vertex.
+\end{proof}
+
+This is the state in which the receipts at a hub end.
+\begin{itemize}
+\item Let $K$ be $G$ with every edge at $s$ removed, and let $D_0$ be a partition of $K$ with one
+end at every neighbour of $s$ and none elsewhere. Then $|D_0|=d(s)/2$. Suppose $d(s)=n-2$, every
+neighbour of $s$ is even, and the one non-neighbour $s^*\ne s$ is even. Then $s^*$ is the only even
+vertex of $K$, and Lov\'asz's theorem gives such a $D_0$.
+\item Re-insert the edges $sy$ by Fan's receipts. After $j$ receipts, $s$ has $j$ ends and $j$ blank
+neighbours, the donors. The $d(s)-j$ unreceived neighbours have one end each.
+\item The next grouped receipt has supply $d(s)-j$ against $j$ blanks. So it succeeds as long as
+$j<d(s)/2$.
+\item At $j=d(s)/2$ the supply equals the blank count, Fan's lemma stops, and
+Proposition~\ref{prop:equality} applies with $T$ the set of unreceived neighbours.
+\end{itemize}
+Either a further receipt succeeds, or the paths close into cycles through $s$.
+
+\begin{theorem}[The flower move]\label{thm:flowermove}
+In the situation of Proposition~\ref{prop:equality}, suppose that some path $L$ through $s$ has
+exactly one edge from each cycle $C(P_t)$, a \emph{transversal}. Then $E(H)\cup\{st:t\in T\}$ has a
+partition into $|D|+1$ paths with two ends at every vertex of $L$ and none elsewhere. In
+particular $b(s)=2$.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:flower}, with Proposition~\ref{prop:equality}.
+\end{proof}
+
+The move spends one spare path, so it stays within the budget $n/2$ exactly when $|D|\le n/2-1$.
+For a Lov\'asz seed of $G$ minus the star at $s$, this holds whenever $d(s)\le n-2$. No edge count
+enters the move itself. The only condition is that a transversal exists, and $L$ has $|T|$ edges.
+For $\mathrm{CP}(m)$ this is $m-1$, the least length that Corollary~\ref{cor:cp} allows.
+
+\begin{theorem}[Cocktail party graphs]\label{thm:cpm}
+Let $m\ge4$. Suppose that every system of $m-1$ edge-disjoint Hamiltonian cycles through a vertex
+$s$, on $2m$ vertices, has a transversal through $s$. Then $\mathrm{CP}(m)$ satisfies the rooted
+test at every vertex.
+\end{theorem}
+
+\begin{proof}
+The proof has five steps.
+\begin{itemize}
+\item \emph{Seed.} In $K=\mathrm{CP}(m)$ minus the star at $s$, the $2m-2$ neighbours of $s$ have
+degree $2m-3$, and the antipode $s^*$ is the only even vertex. Lov\'asz gives $m-1$ paths with one
+end at each neighbour of $s$.
+\item \emph{Receipts.} The $j$-th receipt has supply $2m-2-j>j$ for $j\le m-2$, so $m-1$ receipts
+succeed. The $m$-th meets equality.
+\item \emph{Cycles.} By Proposition~\ref{prop:equality}, the $m-1$ paths close into edge-disjoint
+cycles through $s$ that cover $E(\mathrm{CP}(m))$.
+\item \emph{Hamiltonicity.} The cycles have $2m(m-1)=(m-1)\cdot 2m$ edges in total, and each has at
+most $2m$. So all of them are Hamiltonian.
+\item \emph{Flower.} A transversal through $s$ and Theorem~\ref{thm:flowermove} give $m$ paths with
+two ends at $s$.
+\end{itemize}
+\end{proof}
+
+\begin{proposition}[Transversals for at most four cycles]\label{prop:rt4}
+Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles with $k\le4$. Then every vertex $s$ lies on a
+path with exactly one edge from each $C_i$.
+\end{proposition}
+
+\begin{proof}
+An edge lies on only one of the cycles, and every vertex has exactly two neighbours on each.
+
+\emph{The greedy path.} Choose a $C_1$-neighbour $a_1$ of $s$ and a $C_2$-neighbour $a_2$ of $a_1$.
+Then $a_2\ne s$, since $sa_1\in C_1$. The two $C_3$-neighbours of $a_2$ do not include $a_1$, since
+$a_1a_2\in C_2$, and at most one of them is $s$. So some $C_3$-neighbour $a_3$ of $a_2$ lies outside
+$\{s,a_1\}$. The path $s\,a_1\,a_2\,a_3$ settles $k\le3$.
+
+\emph{The rotation, for $k=4$.} If a $C_4$-neighbour $y$ of $a_3$ lies outside $\{s,a_1\}$, take
+$s\,a_1\,a_2\,a_3\,y$; note $y\ne a_2$, since $a_2a_3\in C_3$. Otherwise the two $C_4$-neighbours of
+$a_3$ are $s$ and $a_1$. Let $x\ne a_2$ be the other $C_2$-neighbour of $a_1$. Then $x\ne s$, since
+$sa_1\in C_1$, and $x\ne a_3$, since $a_1a_3\in C_4$. The path $a_2\,a_3\,s\,a_1\,x$ uses the edges
+$a_2a_3\in C_3$, $a_3s\in C_4$, $sa_1\in C_1$ and $a_1x\in C_2$.
+\end{proof}
+
+\begin{corollary}\label{cor:cp45}
+$\mathrm{CP}(4)=M_8$ and $\mathrm{CP}(5)$ satisfy the rooted test at every vertex.
+\end{corollary}
+
+For $\mathrm{CP}(4)$ this is Proposition~5.5 of~\cite{MM}. For $m\ge6$ Theorem~\ref{thm:cpm} needs
+the following.
+
+\begin{question}[Rainbow transversals]\label{qu:rt}
+Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles on $2k+2$ vertices. Does every vertex $s$
+lie on (or even start) a path with exactly one edge from each $C_i$?
+\end{question}
+
+\begin{itemize}
+\item \emph{Evidence.} We tested the stronger form, starting at $s$, at every vertex for $m\le10$
+(\texttt{tools/rainbow\_transversal.py}). The test covers $60$ random Hamiltonian decompositions of
+$\mathrm{CP}(m)$ and a Walecki-type decomposition of each. The answer was always yes.
+\item \emph{Greedy alone is not enough.} A random greedy choice without backtracking fails $5$ to
+$15\%$ of the time. The greedy count guarantees only about $2k/3$ steps.
+\item \emph{Relation to known problems.} The question asks for a rainbow path of length $k$ in a
+colouring of colour degree $k$. Chen and Li conjectured length $k-1$ for arbitrary colourings. Here
+the colour classes are Hamiltonian cycles.
+\end{itemize}
+
+{\sloppy In Lean (\texttt{lean/GallaiLean/Flower.lean}), Lemma~\ref{lem:flower} is
+\texttt{flower\_decomp}, built from \texttt{exists\_close\_cut}, and Proposition~\ref{prop:equality}
+is \texttt{hub\_cycles}. Theorem~\ref{thm:cpm} is \texttt{cocktail\_passes\_of\_rt} and
+\texttt{cocktail\_rooted\_of\_rt}, with the hypothesis \texttt{RainbowTransversal}.
+Proposition~\ref{prop:rt4} is \texttt{rainbowTransversal\_three} and
+\texttt{rainbowTransversal\_four}, and Corollary~\ref{cor:cp45} is \texttt{cocktail\_passes\_four} and
+\texttt{cocktail\_passes\_five}. There is no \texttt{sorry}, Lov\'asz's theorem is the library's
+proof, and the axioms are the standard ones.\par}
 
 \section{Computational evidence}\label{app:comp}
 
