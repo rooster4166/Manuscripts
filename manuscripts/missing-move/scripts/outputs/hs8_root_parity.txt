@@ -1,0 +1,16 @@
+EXCESS Gs`ff_ root 0 lb 1 k=3
+EXCESS Gsbbf_ root 0 lb 1 k=3
+EXCESS GsOebK root 1 lb 1 k=3
+EXCESS GsOeJc root 1 lb 1 k=3
+EXCESS GsQfVG root 0 lb 1 k=3
+EXCESS GsQfTW root 0 lb 1 k=3
+EXCESS Guv]}{ root 1 lb 0 k=2
+EXCESS Guv]z{ root 1 lb 0 k=2
+EXCESS GuvZ~{ root 1 lb 0 k=2
+EXCESS Gut~~w root 1 lb 0 k=2
+lb=0 k=0: 3100
+lb=0 k=2: 4
+lb=1 k=1: 5375
+lb=1 k=2: 783
+lb=1 k=3: 6
+total 9268
