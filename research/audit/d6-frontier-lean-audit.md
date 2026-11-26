@@ -4,7 +4,8 @@
 
 **Scope.** Lemma 2.3 (relay and carry), Lemma 3.2 (seeds), Theorem 4.1(i) (root hub),
 Theorem 5.2 (full hub) and Theorem 6.1 (hubs at every deletion degree), together with the
-Remark after Theorem 6.1. Theorem 4.1(ii), (iii) were read line by line but are not formalized.
+Remark after Theorem 6.1. Theorem 4.1(ii), (iii) were formalized afterwards, with the hypothesis
+added in F1.
 
 **Method.** Every statement in scope was formalized in Lean 4 + Mathlib (branch
 `claude/lean-d6-frontier`; files `lean/GallaiLean/Relay.lean`, `HubPhases.lean`,
@@ -22,7 +23,8 @@ sections). It records what the formalization found.
 
 **No ERROR.** Every formalized statement holds as stated, or under a hypothesis that is implicit
 in the setting. Two wording gaps were found (F1, F2), both outside the four formalization
-targets, and both fixed in the text. The Lean statements are in places more general than the
+targets, and both fixed in the text. Theorem 4.1(ii), (iii) were then formalized with the F1
+hypothesis, which confirms the fix. The Lean statements are in places more general than the
 paper (F3, F4).
 
 ## 1. Verdict table
@@ -34,7 +36,7 @@ paper (F3, F4).
 | 3 | Lemma 3.2(a), (b), seeds | SOUND | `seed_odd`, `seed_pair` |
 | 4 | Remark 3.4 counting: grouped receipts, donations, paybacks | SOUND | `Ach.receiveMany`, `Ach.giveAll`, `hub_receive`, `hub_give`, `hub_payback` |
 | 5 | Thm 4.1(i) | SOUND | `root_hub_six`, `root_hub_six_passes` |
-| 6 | Thm 4.1(ii), (iii) | **GAP (wording, F1)**: the seed needs the vertices of `Q` to be non-isolated | not formalized |
+| 6 | Thm 4.1(ii), (iii) | **GAP (wording, F1)**: the seed needs the vertices of `Q` to be non-isolated; SOUND with that hypothesis | `root_hub_six_Q1`, `root_hub_six_Q2` (and `_passes`) |
 | 7 | Thm 5.2, two quiet batteries | SOUND | `full_hub_six` |
 | 8 | Thm 5.2, battery and pendant | SOUND | `full_hub_six_pendant` |
 | 9 | Thm 6.1(a) | SOUND; `d ≥ 4` is not needed (F4) | `root_hub_uniform`, `root_hub_uniform_passes` |

@@ -51,7 +51,7 @@ closures of the open test T(8)-i at roots adjacent to all other even vertices.
 We also show by an exhaustive (small) search that no single-stage program inserts a pair of full
 vertices in the six-clique stage framework. This explains why that method stops at five contacts.
 All certificates were replayed on concrete graphs by an independent implementation of Fan's
-construction. The relay lemma, the root hub (2) for $|N(y)\cap T|\le2$, the full hub (3) and both
+construction. The relay lemma, the root hubs (2) of Theorem~\ref{thm:roothub}, the full hub (3) and both
 uniform theorems (4) are also formalized in Lean, with no fixed $d$ (Remark~\ref{rem:lean}).
 \end{abstract}
 
@@ -92,7 +92,7 @@ collection as summarised in the status map and audit A6.
 Result & Statement (informal) & Status\\
 \midrule
 Thm.~\ref{thm:terminal}, \ref{thm:terminalW} & if all held edges are local, the last Fan step ends at a hub profile, never at the standard profile & proved\\
-Thm.~\ref{thm:roothub} & (i) $r$ adjacent to all of $T$ (so $D=\emptyset$, or $r\notin V(D)$), with an odd $y\in N(r)$ and $|N(y)\cap T|\le2$; (ii), (iii) $r$ has one or two core non-neighbours and a triangle $rab$ with a small-contact $a$ & proved; new for $|S(y)|=3$ and for (ii), (iii); (i) in Lean\\
+Thm.~\ref{thm:roothub} & (i) $r$ adjacent to all of $T$ (so $D=\emptyset$, or $r\notin V(D)$), with an odd $y\in N(r)$ and $|N(y)\cap T|\le2$; (ii), (iii) $r$ has one or two core non-neighbours and a triangle $rab$ with a small-contact $a$ & proved; new for $|S(y)|=3$ and for (ii), (iii); Lean\\
 Thm.~\ref{thm:tworesources} & $D=\emptyset$: any odd $y\in N(r)$ plus a triangle $rab$, under mild contact conditions & proved\\
 Thm.~\ref{thm:relay} & $D=\emptyset$: a relay path from a non-$T$-full neighbour of $r$ to a vertex with no core neighbour & proved\\
 Thm.~\ref{thm:fullhub} & a full vertex with two quiet batteries closes every root & proved; Lean\\
@@ -639,7 +639,7 @@ false-twin example. This is consistent with uniformity of the endpoint matroid
 \sloppy
 
 \begin{remark}[Formalization]\label{rem:lean}
-Lemma~\ref{lem:relay}, Lemma~\ref{lem:seeds}, Theorem~\ref{thm:roothub}(i),
+Lemma~\ref{lem:relay}, Lemma~\ref{lem:seeds}, Theorem~\ref{thm:roothub},
 Theorem~\ref{thm:fullhub} and Theorem~\ref{thm:general} are formalized in Lean~4 with Mathlib
 (\texttt{lean/GallaiLean/Relay.lean}, \texttt{HubPhases.lean}, \texttt{D6Frontier.lean}), with no
 \texttt{sorry}; \texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice} and
@@ -661,6 +661,7 @@ step-table rows (receipt, donation, payback, battery) & \texttt{hub\_take}, \tex
  & \texttt{hub\_payback}, \texttt{hub\_pay\_one}, \texttt{hub\_batteries}\\
 the common run of \S\S\ref{sec:fullhub}--\ref{sec:general} & \texttt{hub\_run}\\
 Theorem~\ref{thm:roothub}(i) & \texttt{root\_hub\_six}, \texttt{root\_hub\_six\_passes}\\
+Theorem~\ref{thm:roothub}(ii), (iii) & \texttt{root\_hub\_six\_Q1}, \texttt{root\_hub\_six\_Q2} (and \texttt{\_passes})\\
 Theorem~\ref{thm:fullhub}, two batteries & \texttt{full\_hub\_six}\\
 Theorem~\ref{thm:fullhub}, battery and pendant & \texttt{full\_hub\_six\_pendant}\\
 Theorem~\ref{thm:general}(a) & \texttt{root\_hub\_uniform}, \texttt{root\_hub\_uniform\_passes}\\
@@ -683,8 +684,11 @@ in list order, and ``$a_ib_j\notin E$ for $i<j$'' is a \texttt{List.Pairwise} hy
 carry is formalized under a weaker hypothesis than in Lemma~\ref{lem:relay}(b): a receiver may be
 adjacent to a blank $v_0$, and only adjacency in $H$ matters.
 
-Not formalized: Theorems~\ref{thm:terminal} and~\ref{thm:terminalW} (pure counting), parts (ii)
-and (iii) of Theorem~\ref{thm:roothub}, Theorems~\ref{thm:tworesources} and~\ref{thm:relay}
+Theorem~\ref{thm:roothub}(ii), (iii) are formalized with the hypothesis that the vertices of $Q$
+are not isolated, which the seed needs (see the audit note
+\texttt{research/audit/d6-frontier-lean-audit.md}).
+Not formalized: Theorems~\ref{thm:terminal} and~\ref{thm:terminalW} (pure counting),
+Theorems~\ref{thm:tworesources} and~\ref{thm:relay}
 (each a finite composition of the lemmas above), Corollary~\ref{cor:residual}, and
 Proposition~\ref{prop:stage} (an exhaustive search).
 \end{remark}
