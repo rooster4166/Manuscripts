@@ -557,6 +557,90 @@ Theorem~\ref{thm:reduction}, three-step descent in connected graphs of even orde
 reduces to two cases: $y$ has at least two even neighbours, or $y$ has no even neighbour and every
 edge at $y$ is a bridge.
 
+\subsection*{Bridges, and reduction to the branching case}
+
+For $j\ge1$ let $\mathrm{D}_j$ be the statement: \emph{every connected graph of even order with at
+least $2j$ even vertices has $j$-step descent at $(y,\{w\})$ for all distinct even $y,w$}. Let
+$\mathrm{B}_j$ be the same statement restricted to vertices $y$ with at least two even neighbours.
+$\mathrm{D}_1$ is Lemma~\ref{lem:minus}, and $\mathrm{D}_2$ is Theorem~\ref{thm:two}. For a bridge
+$yt$ of $G$ let $A$ and $B$ be the vertex sets of the components of $G-yt$ containing $y$ and $t$, and
+write $A^+=G[A\cup\{t\}]$ and $B^+=G[B\cup\{y\}]$. Every neighbour of $y$ other than $t$ lies in $A$,
+so $A^+$ is $G[A]$ with the pendant edge $yt$, $y$ has the same degree in $A^+$ as in $G$, and
+$\Ev(A^+)=\Ev\cap A$; symmetrically $\Ev(B^+)=\Ev\cap B$.
+
+\begin{lemma}[Bridge gluing]\label{lem:bridge}
+Let $yt$ be a bridge of $G$.
+\begin{enumerate}
+\item If $S_A\in\cF(A^+)$ and $S_B\in\cF(B^+)$, then $S_A\cup S_B\in\cF(G)$.
+\item Let $y$ be even in $G$, $S_A\in\cF(G[A])$ and $S_B\in\cF(G[B])$, where $t\in S_B$ if $t$ is
+even in $G[B]$. Then $S_A\cup(S_B\setminus\{t\})\cup\{y\}\in\cF(G)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Let $D_A,D_B$ realise $S_A,S_B$. The leaf $t$ of $A^+$ is the end of the path $Q_A=P_A\,yt$ of
+$D_A$ through $yt$, and the leaf $y$ of $B^+$ is the end of the path $Q_B=yt\,P_B$ of $D_B$; here
+$P_A$ ends at $y$ and lies in $G[A]$, $P_B$ starts at $t$ and lies in $G[B]$, and either may be
+trivial. Replace $Q_A,Q_B$ by the path $P_A\,yt\,P_B$. The vertex $y$ is an end of the new path
+exactly when it was an end of $Q_A$, and $t$ exactly when it was an end of $Q_B$; every other vertex
+keeps its ends, and the two leaf ends disappear. So $y$ has $b_{D_A}(y)$ ends, $t$ has $b_{D_B}(t)$
+ends, and the result realises $S_A\cup S_B$.
+(2) Let $D_A,D_B$ realise $S_A,S_B$. As $y$ is odd in $G[A]$ it has one end in $D_A$, and $t$ is an
+end of some path $P$ of $D_B$ (one end if $t$ is odd in $G[B]$, two if $t\in S_B$). Extend $P$ by
+the edge $ty$, which is possible as $y\notin B$. Now $y$ has two ends and $t$ one fewer.
+\end{proof}
+
+\begin{theorem}[Reduction to the branching case]\label{thm:branching}
+For every $k\ge3$, if $\mathrm{B}_3,\dots,\mathrm{B}_k$ hold, then $\mathrm{D}_k$ holds.
+\end{theorem}
+
+\begin{proof}
+Induction on $k$, starting from $\mathrm{D}_2$. Assume $\mathrm{D}_1,\dots,\mathrm{D}_{k}$ and
+$\mathrm{B}_{k+1}$, and prove $(k+1)$-step descent at $(y,\{w\})$ in a connected graph $G$ of even
+order with $e\ge2k+2$, by induction on $|E(G)|$. In each case below the pieces we descend in are
+connected of even order with fewer edges than $G$. A piece in which $r\ge1$ vertices are to be removed
+has at least $2r$ even vertices, so we may apply $\mathrm{D}_r$ (by the outer hypothesis if $r\le k$, by
+the inner induction if $r=k+1$), with the prescribed vertex $w$ if $w$ lies in that piece and an
+arbitrary one otherwise; a piece with $r=0$ uses Lemma~\ref{lem:faithful}. The numbers $r$ are chosen
+below so that they fit the capacities (half the number of even vertices of each piece), add up
+correctly, and are positive on the piece containing $w$; this is possible because the capacities add
+up to at least the required total and the piece containing $w$ has capacity at least one.
+
+\emph{Case 1: $y$ has at least two even neighbours.} This is $\mathrm{B}_{k+1}$.
+
+\emph{Case 2: $y$ has a bridge $yt$ with $d(t)\ge2$.} Both sides have edges, since $d(y),d(t)\ge2$.
+If $|A|$ is odd, then $A^+$ and $B^+$ have even order and $|\Ev(A^+)|+|\Ev(B^+)|=e$. Take
+$(r_A)$-step descent in $A^+$ keeping $y$ and $(r_B)$-step descent in $B^+$ with $r_A+r_B=k+1$, and
+glue by Lemma~\ref{lem:bridge}(1). If $|A|$ is even, then $G[A]$ and $G[B]$ have even order, $y$ is odd
+in $G[A]$, and $\Ev(G[A])=\Ev\cap A\setminus\{y\}$. If $t$ is even in $G$, it is odd in $G[B]$,
+$|\Ev(G[A])|+|\Ev(G[B])|=e-2$, and descents with $r_A+r_B=k$ glue by Lemma~\ref{lem:bridge}(2) to
+remove the $k$ vertices and $t$. If $t$ is odd in $G$, it is even in $G[B]$,
+$|\Ev(G[A])|+|\Ev(G[B])|=e$, and descents with $r_A+r_B=k+1$, keeping $t$ in $G[B]$, glue by
+Lemma~\ref{lem:bridge}(2).
+
+\emph{Case 3: $y$ has exactly one even neighbour $t$, and $yt$ is not a bridge.} Then $K=G-yt$ is
+connected of even order with $e-2\ge2k$ even vertices, and the proof of Theorem~\ref{thm:unique} applies
+with $\mathrm{D}_k$ in $K$ (no component argument is needed).
+
+\emph{Case 4: otherwise.} Then $y$ has no even neighbour and every bridge at $y$ is pendant. Not every
+edge at $y$ is pendant, for otherwise $G$ would be a star with one even vertex. So some edge $yt$ is
+neither pendant nor a bridge, $t$ is odd, and the induction step in the proof of
+Theorem~\ref{thm:reduction} applies.
+\end{proof}
+
+Since $\mathrm{B}_k$ is a special case of $\mathrm{D}_k$, Theorem~\ref{thm:branching} says that
+$\mathrm{D}_k$ for all $k$ is equivalent to $\mathrm{B}_k$ for all $k\ge3$. For a critical graph with
+$e=2k$, $\mathrm{D}_k$ places every even vertex in a realisable set of size $e/2$, which is (R). Hence:
+
+\begin{corollary}\label{cor:branching}
+If $\mathrm{B}_k$ holds for every $k\ge3$, then Gallai's conjecture holds. If $\mathrm{B}_3$ holds,
+then the rooted test (R) holds for every connected graph with six even vertices.
+\end{corollary}
+
+The statement $\mathrm{B}_3$ (three-step descent at an even vertex with at least two even neighbours)
+is the current target of the third descent step. Theorem~\ref{thm:branching} also disposes of the
+all-bridges case left open in Theorem~\ref{thm:reduction}.
+
 \begin{remark}[Formalisation]\sloppy
 Lemmas~\ref{lem:edge}--\ref{lem:lift}, Theorem~\ref{thm:two}, Corollaries~\ref{cor:four}
 and~\ref{cor:rooted4} and Theorem~\ref{thm:emc4} are formalised in Lean~4 with Mathlib, in the file
