@@ -260,6 +260,8 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 
 **Formal reduction of the whole conjecture (Lean, `gallai_of_branching`).** Gallai's conjecture follows from the statements `BStmt j` (j ≥ 3): j-step descent at an even vertex that has two even neighbours. No other hypotheses are needed.
 
+**Endpoint matroid conjecture: complete check at n = 8.** All 1,082 connected critical graphs of order 8 satisfy EMC. 1,030 have uniform matroids, including all 476 three-connected ones. The 52 non-uniform ones have connectivity ≤ 2 (E15). **Route (H) verdict.** A stronger induction hypothesis cannot close BranchBase through Fan moves alone. The Lean barrier theorems (`cocktail_fan_barrier`, `cocktail_insertion_barrier`) show that for CP(m) the last move must be a new path of ≥ m − 1 held edges, a flower-type move at Fan's equality.
+
 **Frontier, conceptual** (connections §R, experiments E13). Lovász's theorem with Fan's transfers is a finite game on end profiles. It proves the rooted test for every graph at n = 6, but not at n = 8. The single critical failure is Gqz~vw (4-connected) at a degree-4 root. **So full Gallai needs either a move beyond Fan's inequality or a stronger induction hypothesis.** This is now the central open problem of the programme (cloud session "missing-move").
 
 ## 7. Process going forward
