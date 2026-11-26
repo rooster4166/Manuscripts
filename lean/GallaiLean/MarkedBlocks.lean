@@ -1361,4 +1361,168 @@ theorem doubleLeafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) {
 
 end leaf
 
+/-! ### Base cases -/
+
+theorem baseStep {U : Finset W} (hE : EdgesIn G U) (h2 : U.card ≤ 2) : MBOn G U := by
+  intro S hSU hS
+  obtain ⟨s, hs⟩ := hS
+  by_cases hedge : G.edgeSet = ∅
+  · have := ((PMP.empty (G := G) S).castE hedge.symm).markedNumber_le_cost
+    have e : ((PMP.empty (G := G) S).castE hedge.symm).cost = 0 := rfl
+    omega
+  · obtain ⟨e, he⟩ := Set.nonempty_iff_ne_empty.mpr hedge
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+    have hab : G.Adj a b := he
+    have hne : a ≠ b := hab.ne
+    have hsub : ({a, b} : Finset W) ⊆ U :=
+      Finset.insert_subset (hE a b hab).1 (Finset.singleton_subset_iff.mpr (hE a b hab).2)
+    have hcard2 : ({a, b} : Finset W).card = 2 := Finset.card_pair hne
+    have hU : ({a, b} : Finset W) = U := Finset.eq_of_subset_of_card_le hsub (by omega)
+    have hG : G.edgeSet = ∅ ∪ {e | e ∈ (GPath.ofAdj hab).edges} := by
+      ext e
+      induction e using Sym2.inductionOn with
+      | hf p q =>
+      simp only [Set.empty_union, GPath.ofAdj_edges, Set.mem_ofPred_eq, List.mem_singleton,
+        mem_edgeSet]
+      constructor
+      · intro hpq
+        have hp := (hE p q hpq).1
+        have hq := (hE p q hpq).2
+        rw [← hU] at hp hq
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hp hq
+        have hpq' : p ≠ q := hpq.ne
+        rcases hp with rfl | rfl <;> rcases hq with rfl | rfl
+        · exact absurd rfl hpq'
+        · rfl
+        · exact Sym2.eq_swap
+        · exact absurd rfl hpq'
+      · intro h'
+        rcases Sym2.eq_iff.mp h' with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+        · exact hab
+        · exact hab.symm
+    have hsab : s = a ∨ s = b := by
+      have := hSU hs
+      rw [← hU] at this
+      simpa using this
+    have hok : SiteOK S [(GPath.ofAdj hab, some s)] := by
+      intro y hy t ht
+      rw [List.mem_singleton] at hy; subst hy
+      simp only [Option.some.injEq] at ht; subst ht
+      refine ⟨hs, ?_⟩
+      rcases hsab with rfl | rfl
+      · exact Or.inl rfl
+      · exact Or.inr rfl
+    let M := (PMP.empty (G := G) S).addPath (GPath.ofAdj hab) (some s) hok (by simp)
+      (fun t _ h => by simp [PMP.empty, mSites] at h)
+    have := (M.castE hG.symm).markedNumber_le_cost
+    have e : (M.castE hG.symm).cost = 0 := by
+      show mCost [(GPath.ofAdj hab, some s)] = 0
+      simp
+    omega
+
+/-! ### Two-connected instances as graphs on a subtype -/
+
+/-- The graph induced on the subtype of `U`. -/
+def onSub (G : SimpleGraph W) (U : Finset W) : SimpleGraph {x // x ∈ U} where
+  Adj a b := G.Adj a.1 b.1
+  symm := ⟨fun _ _ h => h.symm⟩
+  loopless := ⟨fun a h => G.loopless.irrefl a.1 h⟩
+
+/-- Two-connectedness of a graph on a finite type: no cut vertex. -/
+def TwoConnected {V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) : Prop :=
+  TwoConnOn G Finset.univ
+
+theorem onSub_reach {U : Finset W} {a b : W} (p : G.Walk a b) (h : ∀ v ∈ p.support, v ∈ U) :
+    (onSub G U).Reachable ⟨a, h a p.start_mem_support⟩ ⟨b, h b p.end_mem_support⟩ := by
+  induction p with
+  | nil => exact Reachable.refl _
+  | @cons a c b hac q ih =>
+    have hq : ∀ v ∈ q.support, v ∈ U := fun v hv => h v (by simp [hv])
+    exact (show (onSub G U).Adj ⟨a, h a (by simp)⟩ ⟨c, hq c q.start_mem_support⟩ from hac).reachable.trans
+      (ih hq)
+
+theorem card_sub (U : Finset W) : Fintype.card {x // x ∈ U} = U.card := Fintype.card_coe U
+
+theorem onSub_twoConnected {U : Finset W} (hE : EdgesIn G U) (h : TwoConnOn G U) :
+    TwoConnected (onSub G U) := by
+  refine ⟨by rw [Finset.card_univ, card_sub]; exact h.1, ?_, ?_⟩
+  · intro a _ b _
+    obtain ⟨p⟩ := h.2.1 a.1 a.2 b.1 b.2
+    exact onSub_reach p (hE.walk_mem p a.2)
+  · intro x C hsep
+    apply h.2.2 x.1 (C.map (Function.Embedding.subtype _))
+    obtain ⟨-, hCsub, hCne, hDne, hcl⟩ := hsep
+    refine ⟨x.2, ?_, hCne.map, ?_, ?_⟩
+    · intro c hc
+      obtain ⟨c', hc', rfl⟩ := Finset.mem_map.mp hc
+      have := Finset.mem_erase.mp (hCsub hc')
+      exact Finset.mem_erase.mpr ⟨fun h' => this.1 (Subtype.ext h'), c'.2⟩
+    · obtain ⟨d, hd⟩ := hDne
+      rw [Finset.mem_sdiff, Finset.mem_erase] at hd
+      refine ⟨d.1, Finset.mem_sdiff.mpr ⟨Finset.mem_erase.mpr ⟨fun h' => hd.1.1 (Subtype.ext h'),
+        d.2⟩, fun h' => hd.2 ?_⟩⟩
+      obtain ⟨d', hd', hdd⟩ := Finset.mem_map.mp h'
+      rwa [show d' = d from Subtype.ext hdd] at hd'
+    · intro a ha b hab
+      obtain ⟨a', ha', rfl⟩ := Finset.mem_map.mp ha
+      have hbU := (hE _ b hab).2
+      rcases hcl a' ha' ⟨b, hbU⟩ hab with h' | h'
+      · exact Or.inl (Finset.mem_map.mpr ⟨_, h', rfl⟩)
+      · exact Or.inr (congrArg Subtype.val h')
+
+theorem onSub_edges {U : Finset W} (hE : EdgesIn G U) :
+    {e | ∃ e' ∈ (onSub G U).edgeSet, e'.map Subtype.val = e} = G.edgeSet := by
+  ext e
+  simp only [Set.mem_ofPred_eq]
+  constructor
+  · rintro ⟨e', he', rfl⟩
+    induction e' using Sym2.inductionOn with
+    | hf a b => exact he'
+  · intro he
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+    exact ⟨s(⟨a, (hE a b he).1⟩, ⟨b, (hE a b he).2⟩), he, rfl⟩
+
+/-- A marked partition on the subtype gives one of `G`. -/
+theorem markedNumber_le_onSub {U : Finset W} (hE : EdgesIn G U) (S : Finset W) :
+    markedNumber G S ≤ markedNumber (onSub G U) (S.subtype (· ∈ U)) := by
+  obtain ⟨M₀, hM₀⟩ := markedNumber_spec (onSub G U) (S.subtype (· ∈ U))
+  let M₁ := PMP.push (G := G) M₀ Subtype.val Subtype.val_injective (fun _ _ h => h)
+  have hsub : (S.subtype (· ∈ U)).map ⟨Subtype.val, Subtype.val_injective⟩ ⊆ S := by
+    intro s hs
+    obtain ⟨s', hs', rfl⟩ := Finset.mem_map.mp hs
+    exact (Finset.mem_subtype.mp hs')
+  have := ((M₁.castE (onSub_edges hE)).mono hsub).markedNumber_le_cost
+  have e : ((M₁.castE (onSub_edges hE)).mono hsub).cost = markedCost M₀ :=
+    PMP.push_cost M₀ _ _ _
+  omega
+
+theorem card_subtype_of_subset {U S : Finset W} (hSU : S ⊆ U) :
+    (S.subtype (· ∈ U)).card = S.card := by
+  rw [Finset.card_subtype, Finset.filter_true_of_mem (fun x hx => hSU hx)]
+
+/-- The first assertion of Theorem 1: the marked bound on every two-connected graph and every
+nonempty set of sites. -/
+def MarkedTwoConnTest : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V), TwoConnected G →
+    ∀ S : Finset V, S.Nonempty → markedNumber G S ≤ (Fintype.card V - S.card) / 2
+
+/-- The second assertion of Theorem 1: in a two-connected graph of order `2k + 1` with path
+number `k + 1`, every odd-degree vertex has three ends in some `(k + 1)`-path partition. -/
+def ThreeEndsTest : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (J : SimpleGraph V) [DecidableRel J.Adj],
+    TwoConnected J → ∀ k : ℕ, Fintype.card V = 2 * k + 1 → pathNumber J = k + 1 →
+      ∀ x, Odd (J.degree x) → ∃ D : PathDecomp J, D.size = k + 1 ∧ 3 ≤ D.ends x
+
+theorem twoConnStep (hA : MarkedTwoConnTest.{u}) {U : Finset W} (hE : EdgesIn G U)
+    (h : TwoConnOn G U) : MBOn G U := by
+  intro S hSU hS
+  have hS' : (S.subtype (· ∈ U)).Nonempty := by
+    obtain ⟨s, hs⟩ := hS
+    exact ⟨⟨s, hSU hs⟩, Finset.mem_subtype.mpr hs⟩
+  have h1 := hA _ (onSub G U) (onSub_twoConnected hE h) _ hS'
+  rw [card_sub, card_subtype_of_subset hSU] at h1
+  exact (markedNumber_le_onSub hE S).trans h1
+
 end Gallai

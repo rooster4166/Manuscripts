@@ -278,14 +278,14 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
     rw [hD w]
     by_cases hwu : w = u
     · rw [hwu, h0]
-      simp [hru, Ne.symm hru, hup, Ne.symm hup] <;> omega
+      simp [hru, Ne.symm hru, hup, Ne.symm hup]; omega
     · rw [hD'w w hwu]
       by_cases hwr : w = r
       · rw [hwr]
-        simp [hrp', Ne.symm hrp'] <;> omega
+        simp [hrp', Ne.symm hrp']; omega
       · by_cases hwp : w = p
         · rw [hwp]
-          simp [hrp', Ne.symm hrp'] <;> omega
+          simp [hrp', Ne.symm hrp']; omega
         · rw [hdo w hwr hwp]
           simp [hwr, hwp, Ne.symm hwr, Ne.symm hwp]
   · -- Fan's transfer `p → r`: realise `{r, u}`
@@ -307,17 +307,17 @@ theorem four_even_caseA (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       realises_of (pair_subset_evenSet hE huT) (fun w => ?_)⟩
     by_cases hwr : w = r
     · rw [hwr, hDr, hD'w r hru]
-      simp <;> omega
+      simp; omega
     · by_cases hwp : w = p
       · have h1 := hD'w p (Ne.symm hup)
         rw [hwp]
-        simp [hrp', Ne.symm hrp', hup, Ne.symm hup] <;> omega
+        simp [Ne.symm hrp', Ne.symm hup]; omega
       · rw [hDo w hwr hwp]
         by_cases hwu : w = u
         · rw [hwu, h2]
-          simp <;> omega
+          simp; omega
         · rw [hD'w w hwu, hdo w hwr hwp]
-          simp [hwr, hwu, Ne.symm hwr, Ne.symm hwu]
+          simp [hwr, hwu]
 
 /-- Case B: `r` sees all of `T`. -/
 theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Finset W)
@@ -504,7 +504,7 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
     have hD₁t : D₁.ends t = 0 := by
       have := hD₁ t
       rw [hD₂o t htr htp, e3t] at this
-      simp only [htr, Ne.symm htr, ite_true, ite_false, add_zero] at this
+      simp only [Ne.symm htr, ite_true, ite_false, add_zero] at this
       omega
     have hD₁o : ∀ w, w ≠ r → w ≠ t → D₁.ends w = D₂.ends w := by
       intro w hwr hwt
@@ -546,10 +546,10 @@ theorem four_even_caseB (G : SimpleGraph W) [DecidableRel G.Adj] (r : W) (T : Fi
       realises_of (pair_subset_evenSet hE ht'mem) (fun w => ?_)⟩
     by_cases hwr : w = r
     · rw [hwr]
-      simp <;> omega
+      simp; omega
     · by_cases hwt' : w = t'
       · rw [hwt', hDt', hD₁o t' ht'r (Ne.symm htt'), hD₂o t' ht'r ht'p, e3t']
-        simp <;> omega
+        simp; omega
       · rw [hDo w hwt' hwr]
         have hS : w ∉ ({r, t'} : Finset W) := by simp [hwr, hwt']
         simp only [hS, ite_false, add_zero]
@@ -709,12 +709,12 @@ theorem four_even_pair (d : ℕ) : ∀ (G : SimpleGraph W) [DecidableRel G.Adj] 
         realises_of (pair_subset_evenSet hE hwT) (fun x => ?_)⟩
       by_cases hxr : x = r
       · rw [hxr, hDr, e' r]
-        simp [hor.symm, Ne.symm hwr, hor, hwr] <;> omega
+        simp [hor.symm, Ne.symm hwr]; omega
       · by_cases hxo : x = o
         · rw [hxo]
           have := hDo
           rw [hD'o] at this
-          simp [hor, Ne.symm hor, hwo, Ne.symm hwo] <;> omega
+          simp [hor, Ne.symm hwo]; omega
         · rw [hDoth x hxr hxo, e' x, hdo x hxr hxo]
           simp [hxr, hxo]
 
@@ -760,13 +760,15 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     induction e using Sym2.inductionOn with
     | hf a b =>
     rw [mem_edgeSet] at he
-    rcases Sym2.mem_iff.mp hle with rfl | rfl
-    · have : b ∈ G.neighborFinset a := (G.mem_neighborFinset a b).mpr he
-      rw [hN, Finset.mem_singleton] at this
-      rw [this]
-    · have : a ∈ G.neighborFinset b := (G.mem_neighborFinset b a).mpr he.symm
-      rw [hN, Finset.mem_singleton] at this
-      rw [this, Sym2.eq_swap]
+    rcases Sym2.mem_iff.mp hle with h | h
+    · rw [← h] at he
+      have hb : b ∈ G.neighborFinset ℓ := (G.mem_neighborFinset ℓ b).mpr he
+      rw [hN, Finset.mem_singleton] at hb
+      rw [← h, hb]
+    · rw [← h] at he
+      have ha : a ∈ G.neighborFinset ℓ := (G.mem_neighborFinset ℓ a).mpr he.symm
+      rw [hN, Finset.mem_singleton] at ha
+      rw [← h, ha, Sym2.eq_swap]
   have hdℓ : (delEdge G ℓ s).degree ℓ = 0 := by
     have := delEdge_degree_left G hℓs; omega
   have hds := delEdge_degree_right G hℓs
@@ -795,9 +797,10 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
           · exact hℓs)
       hP hend (not_mem_support_of_degree_zero P hdℓ)
     exact ⟨D, hD⟩
+  have hℓs' : ℓ ≠ s := Ne.symm hsℓ
   by_cases hsE : s ∈ evenSet G
   · -- the leaf hangs at an even vertex
-    have hs := mem_evenSet_iff.mp hsE
+    obtain ⟨hs1, hs2⟩ := mem_evenSet_iff.mp hsE
     obtain ⟨u, hu⟩ : ((evenSet G).erase s).Nonempty :=
       Finset.card_pos.mp (by rw [Finset.card_erase_of_mem hsE, h3]; omega)
     have huE := (Finset.mem_erase.mp hu).2
@@ -831,12 +834,12 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
       by_cases hws : w = s
       · rw [hws] at h ⊢
         rw [hD₀w s hus.symm] at h
-        simp only [hsℓ, ite_true, ite_false, add_zero] at h
+        simp only [hℓs', ite_true, ite_false, add_zero] at h
         omega
       · by_cases hwℓ : w = ℓ
         · rw [hwℓ] at h ⊢
           rw [hD₀w ℓ (Ne.symm huℓ)] at h
-          simp only [Ne.symm hsℓ, ite_true, ite_false, add_zero] at h
+          simp only [hsℓ, ite_true, ite_false, add_zero] at h
           omega
         · simp only [Ne.symm hws, Ne.symm hwℓ, ite_false, add_zero] at h
           rw [h]
@@ -849,14 +852,14 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
       by_cases hws : w = s
       · rw [hws] at h ⊢
         rw [hD₀w s hus.symm] at h
-        simp only [hsℓ, ite_true, ite_false, add_zero, Finset.mem_singleton,
-          Ne.symm hus] at h ⊢
+        simp only [hℓs', ite_true, ite_false, add_zero,
+          Finset.mem_singleton, Ne.symm hus] at h ⊢
         omega
       · by_cases hwℓ : w = ℓ
         · rw [hwℓ] at h ⊢
           rw [hD₀w ℓ (Ne.symm huℓ)] at h
-          simp only [Ne.symm hsℓ, ite_true, ite_false, add_zero, Finset.mem_singleton,
-            Ne.symm huℓ] at h ⊢
+          simp only [hsℓ, ite_true, ite_false, add_zero,
+            Finset.mem_singleton, Ne.symm huℓ] at h ⊢
           omega
         · simp only [Ne.symm hws, Ne.symm hwℓ, ite_false, add_zero] at h
           rw [h]
@@ -928,11 +931,13 @@ theorem bp3 (G : SimpleGraph W) [DecidableRel G.Adj] (hconn : G.Connected) {ℓ 
     rw [e₀ x] at h
     by_cases hxs : x = s
     · rw [hxs] at h ⊢
-      simp [hsℓ, Ne.symm hws] at h ⊢
+      simp only [hℓs', Ne.symm hws, Finset.mem_insert,
+        Finset.mem_singleton, true_or, ite_true, ite_false, add_zero] at h ⊢
       omega
     · by_cases hxℓ : x = ℓ
       · rw [hxℓ] at h ⊢
-        simp [Ne.symm hsℓ, Ne.symm hwℓ, hℓ] at h ⊢
+        simp only [hsℓ, hℓs', Ne.symm hwℓ, Finset.mem_insert,
+          Finset.mem_singleton, or_false, ite_true, ite_false, add_zero] at h ⊢
         omega
       · simp only [Finset.mem_insert, Finset.mem_singleton, hxs, false_or, Ne.symm hxs,
           Ne.symm hxℓ, ite_false, add_zero] at h ⊢
