@@ -1,14 +1,15 @@
-"""Random graphs with d even vertices U = {0..d-1} (default d = 6) inducing K_d, with prescribed local
+"""Random graphs with d even vertices U = {0..d-1} (default d = 6) inducing K_d minus core_missing, with prescribed local
 gadgets (required and forbidden edges), all other vertices odd.  Parity is repaired by
 toggling allowed edges between wrong-parity vertices."""
 import itertools, random
 import networkx as nx
 
-def build(n, required, forbidden, rng, p=0.45, tries=2000, d=6):
+def build(n, required, forbidden, rng, p=0.45, tries=2000, d=6, core_missing=()):
     U = list(range(d))
     V = list(range(n))
-    req = set(map(frozenset, required)) | {frozenset(e) for e in itertools.combinations(U, 2)}
-    forb = set(map(frozenset, forbidden))
+    miss = set(map(frozenset, core_missing))
+    req = set(map(frozenset, required)) | {frozenset(e) for e in itertools.combinations(U, 2) if frozenset(e) not in miss}
+    forb = set(map(frozenset, forbidden)) | miss
     allowed = [frozenset(e) for e in itertools.combinations(V, 2)
                if frozenset(e) not in req and frozenset(e) not in forb]
     for _ in range(tries):

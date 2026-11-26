@@ -24,3 +24,5 @@ import GallaiLean.MarkedBlocks
 import GallaiLean.TwoEven
 import GallaiLean.PathSurgery
 import GallaiLean.SmallBounds
+import GallaiLean.SixCliqueModel
+import GallaiLean.SixCliqueBuild

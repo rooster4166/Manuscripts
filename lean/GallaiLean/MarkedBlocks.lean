@@ -1572,7 +1572,7 @@ theorem exists_two_of_sum {α : Type*} (l : List α) (f : α → ℕ) (hf : ∀ 
         _ ~ a' :: a :: b' :: rest := List.Perm.swap _ _ _
         _ ~ a' :: b' :: a :: rest := (List.Perm.swap _ _ _).cons _
 
-theorem GPath.endsAt_le_one {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
+theorem GPath.endsAt_le_one_of_simple {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
     (v : V) : P.endsAt v ≤ 1 := by
   rw [P.endsAt_eq_ite]; split_ifs <;> omega
 
@@ -1692,7 +1692,7 @@ theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : F
         have h0 : M.decomp.ends v' % 2 = 0 := by rw [hpar]; exact Nat.even_iff.mp hodd
         exact ⟨M.decomp, by omega, by omega⟩
     obtain ⟨P₁, P₂, rest, hperm, h1, h2⟩ :=
-      exists_two_of_sum D.paths (fun P => P.endsAt v') (fun P _ => P.endsAt_le_one v') hends
+      exists_two_of_sum D.paths (fun P => P.endsAt v') (fun P _ => P.endsAt_le_one_of_simple v') hends
     obtain ⟨M₀, hM₀⟩ := hdec D
     set Q₁ := (f (P₁, none)).1 with hQ₁
     set Q₂ := (f (P₂, none)).1 with hQ₂
