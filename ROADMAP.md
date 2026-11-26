@@ -44,7 +44,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | **AUDITED** (A3) | **lean** (`gallai_iff_rootedTest`) |
 | N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | **lean** (`gallai_iff_tests`: Gallai ⇔ MarkedTwoConnTest ∧ ThreeEndsTest; MarkedSurgery/MarkedBlocks.lean). The bridge formula is not formalized and is not needed |
 | N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
-| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean (partial)**: Thm 114 setup, Gallai ⇒ both tests, apex 3-connectivity, and the converse modulo Thm 59 and Thm 113 (`ThreeConnected.lean`) |
+| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean**: Thm 113 proved (`separatorStatement`); Thm 114 proved modulo Thm 59 (`gallai_iff_spineTests`, hypothesis `Thm59Statement`); comp (n ≤ 8) |
 | T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
 | T(6)-ii | three-end test, d = 6 | MR Thm 123 | **AUDITED** (A8) | comp (exhaustive \|J\| ≤ 10) |
 | T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | **AUDITED** (A8): **Thm 124 certificate independently replayed**. Conditional on Fan–Hou–Zhou (two seven-site shapes) and Chu–Fan–Zhou Lemma 2.1 (star lemma, unquoted) | comp |
@@ -203,3 +203,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
 - **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- Lean (cloud session, branch `claude/lean-spine-113-114`): MR Thm 113 proved in full (`separatorStatement`, all three component cases); MR Thm 114 proved modulo Thm 59 (`gallai_iff_spineTests`); Gallai ⇒ both deletion tests and 3-connectivity of the parity apex proved with no hypothesis.
