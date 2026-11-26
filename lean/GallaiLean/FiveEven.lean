@@ -341,3 +341,55 @@ theorem floor_of_cert (W : SimpleGraph V) [DecidableRel W.Adj] {n : ℕ} (ι : F
 end FiveEven
 
 end Gallai
+
+namespace Gallai
+
+namespace FiveEven
+
+/-! ### The adjacent odd pair `u, v` (manuscript Lemma 14) -/
+
+/-- In a connected graph, if `ℓ ∉ T` has all its neighbours equal to some `r ∉ T`, then there are
+adjacent vertices `u, v ∉ T` such that `u` has a neighbour in `T` and `v` has none. They are the
+last two vertices before `T` on a shortest walk from `ℓ` to `T`. -/
+theorem exists_uv {V : Type*} (W : SimpleGraph V) (hconn : W.Connected) (T : Set V) {t₀ : V}
+    (ht₀ : t₀ ∈ T) {ℓ r : V} (hℓT : ℓ ∉ T) (hN : ∀ w, W.Adj ℓ w → w = r) (hrT : r ∉ T) :
+    ∃ u v, u ∉ T ∧ v ∉ T ∧ W.Adj u v ∧ (∃ t ∈ T, W.Adj u t) ∧ ∀ t ∈ T, ¬ W.Adj v t := by
+  classical
+  have hex : ∃ n, ∃ t ∈ T, ∃ p : W.Walk ℓ t, p.length = n := by
+    obtain ⟨p⟩ := hconn.preconnected ℓ t₀
+    exact ⟨p.length, t₀, ht₀, p, rfl⟩
+  obtain ⟨t, ht, p, hp⟩ := Nat.find_spec hex
+  have hmin : ∀ n < Nat.find hex, ∀ t' ∈ T, ∀ q : W.Walk ℓ t', q.length ≠ n := by
+    intro n hn t' ht' q hq
+    exact Nat.find_min hex hn ⟨t', ht', q, hq⟩
+  set m := Nat.find hex with hm
+  have hm0 : m ≠ 0 := by
+    intro h0
+    have := SimpleGraph.Walk.eq_of_length_eq_zero (hp.trans h0)
+    exact hℓT (this ▸ ht)
+  have hm1 : m ≠ 1 := by
+    intro h1
+    have hadj := SimpleGraph.Walk.adj_of_length_eq_one (hp.trans h1)
+    exact hrT (hN t hadj ▸ ht)
+  have hm2 : 2 ≤ m := by omega
+  refine ⟨p.getVert (m - 1), p.getVert (m - 2), ?_, ?_, ?_, ⟨t, ht, ?_⟩, ?_⟩
+  · intro hu
+    exact hmin (m - 1) (by omega) _ hu (p.take (m - 1)) (by
+      rw [SimpleGraph.Walk.take_length, hp]; omega)
+  · intro hv
+    exact hmin (m - 2) (by omega) _ hv (p.take (m - 2)) (by
+      rw [SimpleGraph.Walk.take_length, hp]; omega)
+  · have := p.adj_getVert_succ (i := m - 2) (by omega)
+    rw [show m - 2 + 1 = m - 1 by omega] at this
+    exact this.symm
+  · have := p.adj_getVert_succ (i := m - 1) (by omega)
+    have hlast : p.getVert m = t := by rw [← hp]; exact p.getVert_length
+    rw [show m - 1 + 1 = m by omega, hlast] at this
+    exact this
+  · intro t' ht' hadj
+    exact hmin (m - 1) (by omega) t' ht' ((p.take (m - 2)).concat hadj) (by
+      rw [SimpleGraph.Walk.length_concat, SimpleGraph.Walk.take_length, hp]; omega)
+
+end FiveEven
+
+end Gallai

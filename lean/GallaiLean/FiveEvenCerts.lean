@@ -966,6 +966,178 @@ theorem five_even_bowtie (W : SimpleGraph V) [DecidableRel W.Adj] (ι : Fin 7 �
     exact hmatch i h1 h2
   · exact contact_or W ι huT
 
+/-! ### Assembly: the theorem on the host graph -/
+
+/-- Filters over `Fin 7` restricted to the first five values have the same size as the
+corresponding filters over `Fin 5`. -/
+theorem card_filter_lt5 (p : Fin 7 → Prop) [DecidablePred p] :
+    (Finset.univ.filter (fun j : Fin 7 => j.val < 5 ∧ p j)).card =
+      (Finset.univ.filter (fun j : Fin 5 => p (Fin.castLE (by norm_num) j))).card := by
+  have : (Finset.univ.filter (fun j : Fin 7 => j.val < 5 ∧ p j)) =
+      (Finset.univ.filter (fun j : Fin 5 => p (Fin.castLE (by norm_num) j))).map
+        ⟨Fin.castLE (by norm_num), Fin.castLE_injective _⟩ := by
+    ext j
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_map,
+      Function.Embedding.coeFn_mk]
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨⟨j.val, h1⟩, h2, rfl⟩
+    · rintro ⟨j5, h2, rfl⟩
+      exact ⟨by simp [Fin.val_castLE], h2⟩
+  rw [this, Finset.card_map]
+
+/-- **Theorem 1 on the host** (manuscript Theorem 1 with Lemma 14). Let `W` be connected, with
+even vertices exactly `T`, `|T| = 5`; let `x ∈ T` be adjacent to the rest of `T` and no other vertex
+of `T` be adjacent to all the rest; and let `W` have a vertex `ℓ` of degree one whose neighbour `r`
+is odd. Then `W` has a partition into `(|V| − 1)/2` paths. -/
+theorem five_even_floor (W : SimpleGraph V) [DecidableRel W.Adj] (hconn : W.Connected)
+    (T : Finset V) (hT : ∀ v, Even (W.degree v) ↔ v ∈ T) (h5 : T.card = 5) {x : V} (hxT : x ∈ T)
+    (hx : ∀ t ∈ T, t ≠ x → W.Adj x t)
+    (hnu : ∀ t ∈ T, t ≠ x → ∃ s ∈ T, s ≠ x ∧ s ≠ t ∧ ¬ W.Adj t s)
+    {ℓ r : V} (hℓ : W.degree ℓ = 1) (hℓr : W.Adj ℓ r) (hr : Odd (W.degree r)) :
+    ∃ D : PathDecomp W, 2 * D.size + 1 = Fintype.card V := by
+  classical
+  have hodd : ∀ v, v ∉ T → Odd (W.degree v) := fun v hv =>
+    Nat.not_even_iff_odd.mp (fun h => hv ((hT v).mp h))
+  have hnotT : ∀ v, Odd (W.degree v) → v ∉ T := fun v h hv =>
+    Nat.not_even_iff_odd.mpr h ((hT v).mpr hv)
+  -- the pair `u, v`
+  have hℓN : ∀ w, W.Adj ℓ w → w = r := by
+    intro w hw
+    have hcard : (W.neighborFinset ℓ).card = 1 := by rw [card_neighborFinset_eq_degree, hℓ]
+    obtain ⟨z, hz⟩ := Finset.card_eq_one.mp hcard
+    have h1 : w ∈ W.neighborFinset ℓ := (W.mem_neighborFinset ℓ w).mpr hw
+    have h2 : r ∈ W.neighborFinset ℓ := (W.mem_neighborFinset ℓ r).mpr hℓr
+    rw [hz, Finset.mem_singleton] at h1 h2
+    rw [h1, h2]
+  obtain ⟨u, v, huT, hvT, huv, ⟨t₁, ht₁, hut₁⟩, hvN⟩ := exists_uv W hconn (↑T : Set V)
+    (Finset.mem_coe.mpr hxT) (hnotT ℓ (by rw [hℓ]; decide)) hℓN (hnotT r hr)
+  -- the labelling
+  let e₀ : Fin 5 ≃ {y // y ∈ T} := (T.equivFin.trans (finCongr h5)).symm
+  let k := e₀.symm ⟨x, hxT⟩
+  let e : Fin 5 ≃ {y // y ∈ T} := (Equiv.swap 0 k).trans e₀
+  have he0 : (e 0).1 = x := by
+    simp only [e, Equiv.trans_apply, Equiv.swap_apply_left, k, Equiv.apply_symm_apply]
+  let ι : Fin 7 → V := fun i =>
+    if h : i.val < 5 then (e ⟨i.val, h⟩).1 else if i.val = 5 then u else v
+  have hιT : ∀ i : Fin 7, i.val < 5 → ι i ∈ T := by
+    intro i hi; simp only [ι, hi, dite_true]; exact (e _).2
+  have hι5 : ι 5 = u := by simp [ι]
+  have hι6 : ι 6 = v := by simp [ι]
+  have hι0 : ι 0 = x := by simpa [ι] using he0
+  have huv' : u ≠ v := huv.ne
+  have hι : Function.Injective ι := by
+    intro i j hij
+    rcases i with ⟨i, hi⟩
+    rcases j with ⟨j, hj⟩
+    simp only [ι] at hij
+    ext
+    simp only
+    by_cases hi5 : i < 5 <;> by_cases hj5 : j < 5 <;> simp only [hi5, hj5, dite_true, dite_false] at hij
+    · have := e.injective (Subtype.ext hij)
+      simpa using this
+    · split_ifs at hij
+      · exact absurd (hij ▸ (e _).2) huT
+      · exact absurd (hij ▸ (e _).2) hvT
+    · split_ifs at hij
+      · exact absurd (hij ▸ (e _).2) huT
+      · exact absurd (hij ▸ (e _).2) hvT
+    · split_ifs at hij with h1 h2 h2
+      · omega
+      · exact absurd hij huv'
+      · exact absurd hij.symm huv'
+      · omega
+  have hιsurj : ∀ t ∈ T, ∃ i : Fin 7, i.val < 5 ∧ ι i = t := by
+    intro t ht
+    refine ⟨Fin.castLE (by norm_num) (e.symm ⟨t, ht⟩), by simp [Fin.val_castLE], ?_⟩
+    simp [ι, Fin.val_castLE]
+  have hrange : ∀ w, w ∈ T ↔ ∃ i : Fin 7, i.val < 5 ∧ ι i = w := by
+    intro w
+    constructor
+    · exact hιsurj w
+    · rintro ⟨i, hi, rfl⟩; exact hιT i hi
+  have hne0 : ∀ i : Fin 7, i.val < 5 → 0 < i.val → ι i ≠ x := by
+    intro i _ h0 h
+    rw [← hι0] at h
+    have := hι h
+    rw [this] at h0
+    exact absurd h0 (by decide)
+  by_cases hmatch : ∀ i : Fin 7, 0 < i.val → i.val < 5 →
+      (Finset.univ.filter (fun j : Fin 7 => 0 < j.val ∧ j.val < 5 ∧ W.Adj (ι i) (ι j))).card = 1
+  · -- the bowtie
+    refine five_even_bowtie W ι hι (fun i hi => (hT _).mpr (hιT i hi)) (by rw [hι5]; exact hodd u huT)
+      (by rw [hι6]; exact hodd v hvT) ?_ ?_ hmatch (by rw [hι5, hι6]; exact huv) ?_ ?_
+    · intro w hw
+      apply hodd
+      intro hwT
+      obtain ⟨i, -, rfl⟩ := hιsurj w hwT
+      exact hw ⟨i, rfl⟩
+    · intro i h0 h5'
+      rw [hι0]
+      exact hx _ (hιT i h5') (hne0 i h5' h0)
+    · intro i hi hadj
+      rw [hι6] at hadj
+      exact hvN _ (Finset.mem_coe.mpr (hιT i hi)) hadj
+    · obtain ⟨i, hi, rfl⟩ := hιsurj t₁ ht₁
+      exact ⟨i, hi, by rw [hι5]; exact hut₁⟩
+  · -- not a bowtie: the five-vertex model
+    have hval : ∀ j : Fin 5, (Fin.castLE (by norm_num : 5 ≤ 7) j).val = j.val := fun j => rfl
+    have hι5inj : Function.Injective (fun j : Fin 5 => ι (Fin.castLE (by norm_num) j)) :=
+      hι.comp (Fin.castLE_injective _)
+    have h50 : ι (Fin.castLE (by norm_num : 5 ≤ 7) (0 : Fin 5)) = x := hι0
+    refine five_even_local W (fun j : Fin 5 => ι (Fin.castLE (by norm_num) j)) hι5inj
+      (fun j => (hT _).mpr (hιT _ (by simp))) ?_ ?_ ?_ ?_
+    · intro w hw
+      apply hodd
+      intro hwT
+      obtain ⟨i, hi, rfl⟩ := hιsurj w hwT
+      exact hw ⟨⟨i.val, hi⟩, rfl⟩
+    · intro j hj
+      simp only [h50]
+      exact hx _ (hιT _ (by simp)) (fun h => hj (hι5inj (h.trans h50.symm)))
+    · intro j hj
+      have hjx : ι (Fin.castLE (by norm_num : 5 ≤ 7) j) ≠ x :=
+        fun h => hj (hι5inj (h.trans h50.symm))
+      obtain ⟨s, hs, hsx, hsj, hns⟩ := hnu _ (hιT _ (by simp)) hjx
+      obtain ⟨i, hi, rfl⟩ := hιsurj s hs
+      have hii : Fin.castLE (by norm_num : 5 ≤ 7) ⟨i.val, hi⟩ = i := Fin.ext rfl
+      refine ⟨⟨i.val, hi⟩, ?_, ?_, ?_⟩
+      · intro h
+        apply hsx
+        rw [← h50, ← hii, h]
+      · intro h
+        apply hsj
+        rw [← hii, h]
+      · simp only [hii]
+        exact hns
+    · obtain ⟨i, hi0, hi5, hcard⟩ : ∃ i : Fin 7, 0 < i.val ∧ i.val < 5 ∧
+          (Finset.univ.filter (fun j : Fin 7 => 0 < j.val ∧ j.val < 5 ∧
+            W.Adj (ι i) (ι j))).card ≠ 1 := by
+        by_contra hcon
+        apply hmatch
+        intro i h0 h5'
+        by_contra hne
+        exact hcon ⟨i, h0, h5', hne⟩
+      have hii : Fin.castLE (by norm_num : 5 ≤ 7) ⟨i.val, hi5⟩ = i := Fin.ext rfl
+      refine ⟨⟨i.val, hi5⟩, ?_, ?_⟩
+      · intro h
+        have := congrArg Fin.val h
+        simp only [Fin.val_zero] at this
+        omega
+      · intro h
+        apply hcard
+        have e1 : (Finset.univ.filter (fun j : Fin 7 => 0 < j.val ∧ j.val < 5 ∧
+            W.Adj (ι i) (ι j))) =
+            Finset.univ.filter (fun j : Fin 7 => j.val < 5 ∧ (0 < j.val ∧ W.Adj (ι i) (ι j))) := by
+          ext j; simp only [Finset.mem_filter, Finset.mem_univ, true_and]; tauto
+        rw [e1, card_filter_lt5, ← h]
+        apply congrArg Finset.card
+        apply Finset.filter_congr
+        intro j _
+        have hj0 : (0 < (Fin.castLE (by norm_num : 5 ≤ 7) j).val) ↔ j ≠ 0 := by
+          rw [Ne, Fin.ext_iff, hval, Fin.val_zero]; omega
+        rw [hj0, hii]
+
 end FiveEven
 
 end Gallai

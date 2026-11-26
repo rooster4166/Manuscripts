@@ -565,13 +565,20 @@ be injective onto the even vertices. Suppose $\iota0$ is adjacent to the others,
 adjacent to all the others, and the rim is not a perfect matching. Then $W$ has a partition $D$ with
 $2|D|+1=|V|$;
 \item \texttt{five\_even\_bowtie}, which is Theorem~\ref{thm:main}(b), given the adjacent odd
-vertices $u=\iota5$ and $v=\iota6$ as hypotheses.
+vertices $u=\iota5$ and $v=\iota6$ as hypotheses;
+\item \texttt{exists\_uv}, which is Lemma~\ref{lem:uv}, proved by taking a walk of least length from
+$\ell$ to $T$;
+\item \textbf{\texttt{five\_even\_floor}}, Theorem~\ref{thm:main} on the host graph. Let $W$ be
+connected, with even vertices exactly $T$ and $|T|=5$. Let $x\in T$ be adjacent to the rest of $T$,
+and let no other vertex of $T$ be adjacent to all the rest. Let $W$ have a vertex of degree one whose
+neighbour is odd. Then $W$ has a partition $D$ with $2|D|+1=|V|$. The proof builds the labelling,
+obtains $u,v$ from \texttt{exists\_uv}, and splits on whether the rim is a perfect matching.
 \end{itemize}
 
-Both statements quantify over labelled rims, so the classification of rims up to isomorphism is
-not needed. Not formalized: Lemma~\ref{lem:uv} (shortest paths), and the reductions of
-Corollaries~\ref{cor:bp5} and~\ref{cor:106} to Theorem~\ref{thm:main}. The leaf at an even support in
-Corollary~\ref{cor:bp5} is \texttt{rooted\_four}.
+The certificate checks quantify over labelled rims, so the classification of rims up to isomorphism
+is not needed. In Corollary~\ref{cor:bp5}, the case of a leaf at an even support is
+\texttt{rooted\_four}. The case with no universal vertex (Botler--Sambinelli) and the marked
+bookkeeping of Corollary~\ref{cor:106} are not formalized.
 
 \subsection*{Scripts} (\texttt{manuscripts/bs-prescribed/scripts})
 \begin{itemize}

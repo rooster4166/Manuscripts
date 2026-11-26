@@ -26,7 +26,7 @@ Detailed reader notes, with theorem numbers, are in `research/notes/`.
 - **The main risk is verification, not ideas.**
   - None of the code, Lean files or certificate banks the papers cite is in the collection.
   - Several load-bearing steps rest on large enumerations.
-  - One load-bearing citation is an unrefereed 2026 preprint (Shaik), and another is a very recent theorem (Javadi–Miralaei).
+  - One formerly load-bearing citation, an unrefereed 2026 preprint (Shaik), has been removed (`manuscripts/bs-prescribed`). Another is a very recent theorem (Javadi–Miralaei).
   - The index's readiness caveat understates what depends on unreplayed computation (§6).
 
 ---
@@ -203,7 +203,7 @@ The spine is a genuine reduction, but it reduces Gallai to statements that are, 
    - The paper itself claims an "independent replay" that the index says does not exist.
 3. **External dependencies to confirm.**
    - **Javadi–Miralaei** (rainbow Hamilton decomposition, DM 349, 2026) is used more than 40 times, including the equality case of separating-pairs Thm 10.16. OSB cites a "Theorem 3.8" that does not exist in arXiv v1; it is Theorem 8.
-   - **Shaik** (Hexagon preprint, Oct 2026, unrefereed) is load-bearing for MR Thm 144 and Cor 106. Botler–Sambinelli may suffice instead.
+   - **Shaik** (Hexagon preprint, Oct 2026, unrefereed) is **no longer needed**. MR uses Cor 106 only with ≤ 5 unmarked even vertices. That case (BP_5 with one universal vertex) is proved from Lovász + Fan in `manuscripts/bs-prescribed`, with Lean `five_even_floor`.
    - Check the Zhang–Liu–Hong and Chu–Fan–Liu ≤ 5-contact exception lists against the sources.
 4. **Large-n results rest on an in-paper sketch.** The OSB §11.1 random degree-partition lemma is a sketch, and it is applied at √N log N discrepancy.
 5. **Notation and extraction issues.**
@@ -260,7 +260,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 
 1. ~~Javadi–Miralaei (Wu's conjecture)~~: **repaired and audited** (`manuscripts/jm-repair`, audit A10: sound). The new proof of JM Thm 8 holds under r ≤ 2t − 1, which covers both uses in the semi-clique manuscript. It relies on Hilton, Hoffman and Liu–Chen (Liu–Chen not re-checked).
 2. ~~Chu–Fan–Zhou Lemma 2.4~~: **resolved** (`manuscripts/cfz-lemma`). The common-vertex form with sum ≤ 7 is proved.
-3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. The missing lemma is Botler–Sambinelli Thm 13 with one prescribed end; a cloud session is working on it. At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3.
+3. **Shaik [25]** (unrefereed) is **removed** from MR Cor 106 and Thm 144 (`manuscripts/bs-prescribed`; corrigenda). The proposed lemma, Botler–Sambinelli Thm 13 with one prescribed end, is false; the counterexamples include the family G_{t,t'}. What Cor 106 needs is the five-even one-universal floor bound. It is proved from Lovász + Fan alone and formalized in Lean (`five_even_floor`). Still open without Shaik, and unused by MR: Cor 106 with ≥ 7 unmarked even vertices in the one-exception odd case.
 
 **Formal reduction of the whole conjecture (Lean, `gallai_of_branching`).** Gallai's conjecture follows from the statements `BStmt j` (j ≥ 3): j-step descent at an even vertex that has two even neighbours. No other hypotheses are needed.
 
