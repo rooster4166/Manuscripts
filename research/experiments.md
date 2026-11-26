@@ -152,3 +152,15 @@ Motivation: TEL1′ applied to G + z with z ∼ E − u would make E − {u, v} 
 ## E9. EMC on the critical-but-not-forced family
 
 The graph K7 − {ac, bd} plus a vertex w ∼ {a, b} (n = 8, p = 4, E of size 6): all 20 half-sets are realisable, so its endpoint matroid is uniform.
+
+## E10. Three-connected, not-forced critical graphs
+
+The graph is K9 minus {a1a2, b1b2, c1c2}, plus w ∼ {a1, b1, c1}. Its properties:
+
+- n = 10, m = 36 = (n/2 − 1)(n − 1), Δ = 8, and it is 3-connected.
+- 4 paths are infeasible (exact circuit solver), so p = 5 = n/2.
+- **All 20 half-sets of its 6 even vertices are realisable: the endpoint matroid is uniform.** This supports conjecture (a) of connections §M.
+
+The construction generalizes to the j-family of Prop. "critical graphs need not be forced" in endpoint-structure.
+
+**Cones at n = 10** (`tools/emc_cones.py`): every random cone so far has a uniform endpoint matroid.

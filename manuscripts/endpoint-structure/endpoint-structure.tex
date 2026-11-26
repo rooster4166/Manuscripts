@@ -209,16 +209,25 @@ The realisability of the other $18$ half-sets was verified by exact search (Appe
 \end{proof}
 
 \begin{proposition}[Critical graphs need not be forced]\label{prop:notforced}
-For $k\ge3$ let $H$ be $K_{2k+1}$ minus two disjoint edges $ac,bd$, and add a vertex $w$ adjacent to
-$a,b$. The resulting graph $G$ is $2$-connected of order $n=2k+2$, has maximum degree $n-2$, has
-exactly $(n/2-1)(n-1)$ edges and $o=2$ odd vertices, and satisfies $p(G)\ge n/2$.
+Let $1\le j<k$. In $K_{2k+1}$ choose a matching $\{a_ib_i:1\le i\le j\}$, delete it, and add a new vertex
+$w$ adjacent to $a_1,\dots,a_j$. The resulting graph $G$ has order $n=2k+2$, maximum degree $n-2$,
+exactly $(n/2-1)(n-1)$ edges and at most $j+1$ odd vertices, and $p(G)\ge n/2$. It is $2$-connected for
+$j\ge 2$ and $j$-connected for $j\ge3$.
 \end{proposition}
 
 \begin{proof}
-$|E(G)|=\binom{2k+1}{2}-2+2=k(2k+1)$. A partition into $k$ paths would have to use $k$ paths of length
-$2k+1=n-1$, that is, $k$ Hamilton paths. Each contains $w$, but $d(w)=2$, so $w$ lies on at most one
-path; this is impossible for $k\ge2$. The other assertions are immediate.
+$|E(G)|=\binom{2k+1}{2}-j+j=k(2k+1)=(n/2-1)(n-1)$. A path has at most $n-1$ edges, so a partition
+into $k$ paths consists of $k$ Hamilton paths. Each contains $w$ and uses at least one of its $j<k$
+edges, and distinct paths use distinct edges; this is impossible. The degrees are $2k=n-2$ at the
+untouched vertices and at the $a_i$, $2k-1$ at the $b_i$, and $j$ at $w$, so the odd vertices are the
+$b_i$ together with $w$ when $j$ is odd. $K_{2k+1}$ minus a matching is $(2k-1)$-connected, and $w$ has $j$
+neighbours in it, which gives the connectivity claims.
 \end{proof}
+
+For $j=2$, $k=3$ this is the graph $K_7-\{ac,bd\}$ plus $w\sim\{a,b\}$. For $j=3$, $k=4$ it is a
+$3$-connected critical graph on ten vertices that is not forced by any trivial bound. Its six even
+vertices have a uniform endpoint matroid: all $20$ half-sets are realisable, as verified by exact
+search.
 
 So the trivial lower bounds $o/2$, $\lceil\Delta/2\rceil$, $\lceil m/(n-1)\rceil$ do not detect all
 critical graphs, and (R) has content beyond the dense regime.

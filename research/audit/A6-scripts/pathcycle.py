@@ -35,11 +35,10 @@ def trial(rng, kind):
         if sum(1 for x in nbrs if x not in P) < 2: return None
     G = nx.Graph([tuple(e) for e in used])
     target = ncyc + 1
-    res = solve(G, budget=target, workers=1, time_limit=60)
-    if res.status == 'UNKNOWN':
-        res = solve(G, budget=target, workers=2, time_limit=900)
-    ok = res.status in ('OPTIMAL', 'FEASIBLE')
-    if res.status == 'UNKNOWN': ok = 'timeout'
+    from circ import solve_circ
+    st, Pp = solve_circ(G, target, workers=1, time_limit=900)
+    if Pp is not None: assert verify_partition(G, Pp) and len(Pp) <= target
+    ok = True if Pp is not None else (False if st == 'INFEASIBLE' else 'timeout')
     return ok, P, cycles
 if __name__ == '__main__':
     kind = sys.argv[1]; N = int(sys.argv[2]); rng = random.Random(int(sys.argv[3]))
