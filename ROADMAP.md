@@ -55,6 +55,9 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(4)-i via descent | two-end test with 4 even vertices: every even r lies in a realisable half-set | `two_step_descent` with y = r | **PROVED** (Lovász + Fan only, no Botler–Sambinelli) | **lean** |
 | EMC(e=4) | realisable pairs form a rank-2 matroid | every even vertex has ≥ 2 realisable partners (two-step) ⇒ the partner graph has min degree 2 on 4 vertices ⇒ C4, K4−e or K4 | **PROVED** | **lean** (`endpoint_matroid_four`) |
 | BP_3 | floor bound for odd order with a pendant leaf and 3 even vertices | `rooted_four` | **PROVED** by Lovász + Fan (no Botler–Sambinelli) | **lean** |
+| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ** | comp(n ≤ 6) |
+| FD2 | second step of faithful descent: for every root r some Ev − {u, v} (u, v ≠ r) is realisable | endpoint-structure §5, Thm 28 (connections §P) | **CLAIMED**, proved except e = 4 with G[Ev] = K_3 + r; non-realisable pairs are E-twins (Thm 20/Cor 22); the step with a prescribed u (Cor 27) is proved unless G[Ev] is edgeless with private odd neighbourhoods | **lean** (Thm 20, Cor 22, pair step Thm 26, Fan certificates Thm 24, path step); comp (n ≤ 8) |
+| U-Fan | uniform-in-d sufficient condition for (R): a semi-induced matching of size e/2 − 1 in G[Ev] avoiding r (Cor 25); in MR Thm 114(i) a condition on J[N(z)] alone | endpoint-structure Cor 25 | **CLAIMED** | **lean** (`realisable_of_fanSchedule`) |
 
 ## Side chains that also reach Gallai
 
@@ -140,6 +143,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | delivered six-clique Thm 1 (Lean). **Now:** Lean for the d6-frontier certificates (relay/carry, root hub, full hub, all-d versions) |
 | session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 (no push yet; reminded) |
 | session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
+| session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | Q6, two-even problem / second descent step: **done** (connections §P; `lean/GallaiLean/TwoEven.lean`) |
 
 **Local agents:** all finished. They delivered MR Thm 1 (Lean), Pyber (Lean), the hypothesis-free EMCFour corollaries, and the d6-frontier manuscript.
 
@@ -152,7 +159,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2). **Done for e = 4 in general (Thm 21).** Next: the third descent step for e = 6, i.e. Thm 19 with the second deleted vertex avoiding N(y) (connections §N) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
 | Q5 | Audit SP §14 (dense exact theorem) | off the Gallai-critical path; lower priority |
-| Q6 | **Two-even-vertex Lovász problem** (connections §O): when does a graph with exactly two even vertices meet the parity bound |odd|/2? | equivalent to the second faithful-descent step; conceptual, Lean-ready |
+| Q6 | **Two-even-vertex Lovász problem** (connections §O, §P): when does a graph with exactly two even vertices meet the parity bound |odd|/2? **Mostly done** (§P): exact dictionary with G^{Ev−{u,v}}; Fan descent; second step except twins; pair step; goal (b) except K_3 + r. Open: the two residual configurations of §P.4, and deeper FD steps with the Fan calculus | equivalent to the second faithful-descent step |
 
 ## Log
 
@@ -198,3 +205,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
 - **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.

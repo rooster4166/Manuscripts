@@ -951,6 +951,96 @@ theorem realisable_pair (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
     (fun e => by rw [rmEdge_edgeSet, rmEdge_edgeSet, and_assoc]) d2a d2a' d2w d2x hG hu ha ha'
     hua hua' haa' huw haw ha'w hw
 
+/-! ### Certificates along paths -/
+
+/-- The moves along a path `x, y₁, …, y_k`. -/
+def pathMoves : V → List V → List (V × V)
+  | _, [] => []
+  | x, y :: l => (x, y) :: pathMoves y l
+
+/-- `OddPath G u x l`: `x, l` is a walk ending at an even vertex `t ≠ u` with `t ≁ u`, whose
+interior vertices are odd of degree at least `3`, different from `u` and not adjacent to `u`. -/
+def OddPath (G : SimpleGraph V) [DecidableRel G.Adj] (u : V) : V → List V → Prop
+  | _, [] => False
+  | x, [t] => G.Adj x t ∧ t ∈ evenSet G ∧ t ≠ u ∧ ¬ G.Adj t u
+  | x, y :: z :: l => G.Adj x y ∧ Odd (G.degree y) ∧ 1 < G.degree y ∧ y ≠ u ∧ ¬ G.Adj y u ∧
+      OddPath G u y (z :: l)
+
+/-- Deleting an edge `ab` with `a` off the path and `b` off its tail keeps an `OddPath`. -/
+theorem OddPath.delEdge {u a b : V} : ∀ {y : V} {l : List V}, OddPath G u y l → a ∉ y :: l →
+    b ∉ l → OddPath (delEdge G a b) u y l
+  | _, [], h, _, _ => h.elim
+  | y, [t], ⟨hyt, ht, htu, htu'⟩, ha, hb => by
+    have hat : t ≠ a := fun h => ha (by simp [h])
+    have hbt : t ≠ b := fun h => hb (by simp [h])
+    refine ⟨⟨hyt, fun he => ?_⟩, ?_, htu, fun h => htu' h.1⟩
+    · rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+      · exact ha (by simp [h1])
+      · exact hat h2
+    · have := delEdge_degree_of_ne (G := G) hat hbt
+      simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and, this] at ht ⊢
+      exact ht
+  | y, z :: w :: l, ⟨hyz, hzo, hz3, hzu, hzu', hP⟩, ha, hb => by
+    have haz : z ≠ a := fun h => ha (by simp [h])
+    have hbz : z ≠ b := fun h => hb (by simp [h])
+    have hdz := delEdge_degree_of_ne (G := G) haz hbz
+    refine ⟨?_, hdz ▸ hzo, hdz ▸ hz3, hzu, fun h => hzu' h.1,
+      OddPath.delEdge hP (fun h => ha (List.mem_cons_of_mem _ h))
+        (fun h => hb (List.mem_cons_of_mem _ h))⟩
+    refine ⟨hyz, fun he => ?_⟩
+    rcases Sym2.eq_iff.mp he with ⟨h1, -⟩ | ⟨-, h2⟩
+    · exact ha (by simp [h1])
+    · exact haz h2
+
+/-- The moves along an `OddPath` from `x` form a Fan certificate for `{x, u}`: odd transfers along
+the interior, then an even step into the last vertex. -/
+theorem fanCert_of_oddPath {u : V} : ∀ {x : V} {l : List V} (G : SimpleGraph V)
+    [DecidableRel G.Adj], OddPath G u x l → (x :: l).Nodup → x ≠ u →
+    FanCert G {x, u} (pathMoves x l)
+  | _, [], _, _, h, _, _ => h.elim
+  | x, [t], G, _, ⟨hxt, ht, htu, htu'⟩, hnd, hxu => by
+    have hxt' : x ≠ t := G.ne_of_adj hxt
+    have hXe : ({x, u} : Finset V).erase x = {u} :=
+      Finset.erase_insert (by simp [hxu])
+    refine ⟨Finset.mem_insert_self _ _, hxt, ?_, Or.inl ⟨ht, ?_, ?_⟩⟩
+    · intro y hy hyx
+      rw [Finset.mem_insert, Finset.mem_singleton] at hy
+      rcases hy with rfl | rfl
+      · exact absurd rfl hyx
+      · exact htu'
+    · simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+      exact ⟨Ne.symm hxt', htu⟩
+    · show (({x, u} : Finset V).erase x).card ≤ 1
+      rw [hXe, Finset.card_singleton]
+  | x, y :: z :: l, G, _, ⟨hxy, hyo, hy3, hyu, hyu', hP⟩, hnd, hxu => by
+    have hXe : ({x, u} : Finset V).erase x = {u} :=
+      Finset.erase_insert (by simp [hxu])
+    refine ⟨Finset.mem_insert_self _ _, hxy, ?_, Or.inr ⟨hyo, hy3, ?_⟩⟩
+    · intro w hw hwx
+      rw [Finset.mem_insert, Finset.mem_singleton] at hw
+      rcases hw with rfl | rfl
+      · exact absurd rfl hwx
+      · exact hyu'
+    · have hins : insert y (({x, u} : Finset V).erase x) = {y, u} := by rw [hXe]
+      rw [hins]
+      have hnd' := List.nodup_cons.mp hnd
+      exact fanCert_of_oddPath (delEdge G x y) (hP.delEdge hnd'.1
+        (List.nodup_cons.mp hnd'.2).1) hnd'.2 hyu
+
+/-- **Path transfer.** Let `a ≠ u` be even and let `a, l` be an `OddPath` for `u` (odd interior
+vertices of degree `≥ 3` not adjacent to `u`, ending at an even vertex `t ∉ {u}` with `t ≁ u`), with
+distinct vertices. Then `Ev \ {a, u}` is realisable. -/
+theorem realisable_of_oddPath (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
+    (hn : Even (Fintype.card V)) {u a : V} {l : List V} (ha : a ∈ evenSet G)
+    (hu : u ∈ evenSet G) (hau : a ≠ u) (hP : OddPath G u a l) (hnd : (a :: l).Nodup) :
+    Realisable G (((evenSet G).erase a).erase u) := by
+  have h := realisable_of_fanCert hL hn (pathMoves a l) G {a, u} hG
+    (Finset.insert_subset ha (Finset.singleton_subset_iff.mpr hu)) (fanCert_of_oddPath G hP hnd hau)
+  have : evenSet G \ {a, u} = ((evenSet G).erase a).erase u := by
+    ext x; simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, Finset.mem_erase]
+    tauto
+  rwa [this] at h
+
 /-! ### An obstruction -/
 
 omit [Fintype V] [DecidableRel G.Adj] in
