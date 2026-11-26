@@ -69,9 +69,10 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 |---|---|---|
 | Lovász mixed theorem | everything | classical |
 | **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. Repair agent running. |
-| Fan addible-edge lemmas | six-even program; MR | verifying (A7) |
-| Fan–Hou–Zhou | T(4); MR p.129 | statement unclear; verifying (A7). Botler–Sambinelli likely suffices for d = 4. |
-| Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | verifying replaceability (A7) |
+| Fan addible-edge lemmas | six-even program; MR | Lemma 3.4 (single edge) **matches** (A7, via quotations); the grouped Lemma 3.3 has no accessible source. Lean formalization in progress. |
+| Fan–Hou–Zhou | T(4); MR p.129 | **matches** (A7): no triangle pair, and each block has Δ ≤ 3; ceiling conclusion |
+| Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RISK** (A7): used with \|V(P)\| + q ≤ 7, but the verifiable version has ≤ 6. Repair agent running. |
+| Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | A7: Botler–Sambinelli replaces it at the Thm 144 r ∈ T step and in the zero-exception case of Cor 106. **The one-exception case of Cor 106 still needs Shaik**, so Thm 144 remains conditional. |
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
 
@@ -88,3 +89,6 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 - CP refuted at n = 7.
 - Audits A1–A6 launched.
 - Lean project created (`lean/`).
+- Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
+- Corrigenda document written (`manuscripts/corrigenda`).
+- New manuscript draft `manuscripts/endpoint-structure`.
