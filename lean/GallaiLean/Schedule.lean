@@ -208,4 +208,26 @@ theorem Prog.sound₀ {V : Type u} [DecidableEq V] [Fintype V] {n : ℕ} (ι : F
   rw [he, Set.union_empty] at hm
   exact hadj a a' h hm
 
+/-- Real blank neighbours of a model vertex are bounded by the model blank count, when every blank
+vertex lies in the model. -/
+theorem blankNbrs_le_mblank {V : Type u} [DecidableEq V] [Fintype V] {n : ℕ} (ι : Fin n → V)
+    (hι : Function.Injective ι) {E : Set (Sym2 V)} {b : V → ℕ} (adj : Fin n → Fin n → Bool)
+    (c : Fin n → ℕ) (r : Fin n) (hbc : ∀ a, b (ι a) = c a)
+    (hpos : ∀ v, v ∉ Set.range ι → 0 < b v)
+    (hadj : ∀ a, a ≠ r → s(ι r, ι a) ∈ E → adj r a = true) :
+    blankNbrs E b (ι r) ≤ Prog.mblank adj c r := by
+  unfold Prog.mblank
+  rw [← Set.ncard_coe_finset, ← Set.ncard_image_of_injective _ hι]
+  apply blankNbrs_le_of_subset
+  intro w hw hwr hb0
+  by_cases hwι : w ∈ Set.range ι
+  · obtain ⟨a, rfl⟩ := hwι
+    refine ⟨a, ?_, rfl⟩
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq]
+    have har : a ≠ r := fun h => hwr (h ▸ rfl)
+    exact ⟨hadj a har hw, har, (hbc a) ▸ hb0⟩
+  · have := hpos w hwι
+    omega
+
+
 end Gallai
