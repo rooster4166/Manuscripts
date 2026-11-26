@@ -17,7 +17,7 @@
 \newcommand{\Od}{\mathrm{Od}}
 \newcommand{\tr}{\to}
 
-\title{Five even vertices with one universal vertex:\\ Corollary~106 without the unrefereed input}
+\title[Five even vertices with one universal vertex]{Five even vertices with one universal vertex:\\ Corollary~106 without the unrefereed input}
 \author{Justin Williams}
 \date{November 2026 (working draft)}
 
@@ -74,11 +74,12 @@ be Botler--Sambinelli's theorem with one prescribed end: \emph{if $N$ is odd and
 has maximum degree at most three, then for every even $y$ there is a partition into $(N-1)/2$ paths
 with an end at $y$.} Section~\ref{sec:false} shows that this is false in a strong sense:
 \begin{itemize}
-\item it fails at every odd order $N\ge5$, and with five even vertices already at $N=7$
+\item it fails at every odd order $N\ge5$ and for every odd number $e\ge3$ of even vertices, for an
+infinite family in which $y$ has degree two, both neighbours of $y$ are odd, and the even subgraph
+is a matching together with the isolated vertex $y$ (Proposition~\ref{prop:family}). This is
+exactly the configuration of the joining gadget $x-y-x'$;
+\item exhaustively at $N=7$ there are $6$ failures with five even vertices
 (Table~\ref{tab:census});
-\item it fails for an infinite family in which $y$ has degree two, both neighbours of $y$ are odd,
-and the even subgraph is a matching plus the isolated vertex $y$ (Proposition~\ref{prop:family}),
-which is exactly the configuration of the joining gadget $x-y-x'$;
 \item the gadget itself fails on a graph $L$ of order nine that satisfies the floor bound and lies
 in the case needed by the manuscript (Proposition~\ref{prop:gadget}).
 \end{itemize}
@@ -132,8 +133,8 @@ or grouped transfer. This is the certificate format of~\cite{ES} and of the audi
 (A6 \S3.2), which had certified all seven cores by exhaustive computation. Here six cores are
 handled by three general lemmas (Section~\ref{sec:local}), and the bowtie by a table of eleven
 certificates (Section~\ref{sec:bowtie}). The scripts in \texttt{scripts/} regenerate and check every
-certificate, and \texttt{lean/GallaiLean/FiveEven.lean} replays all of them on an arbitrary host
-(Section~\ref{sec:lean}).
+certificate, and \texttt{lean/GallaiLean/FiveEven.lean} with \texttt{FiveEvenCerts.lean} replays
+all of them on an arbitrary host (Section~\ref{sec:lean}).
 
 \section{Tools}\label{sec:tools}
 
@@ -201,49 +202,70 @@ $C-w$ were an end, all edges of $C$ would lie on one path. That path would then 
 \end{proof}
 
 \begin{proposition}\label{prop:family}
-For every even $t\ge2$ let $G_t$ have vertices $h,y,g$ and $s_i,u_i,v_i$ ($1\le i\le t$), and edges
-$hy$, $yg$, $hs_i$, $s_iu_i$, $s_iv_i$, $u_iv_i$. Then $G_t$ is connected of odd order $3t+3$, its
-even subgraph is the matching $\{u_iv_i\}$ together with the isolated vertex $y$, and $y$ has degree
-two with odd neighbours $h$ and $g$. But no partition of $G_t$ into $(N-1)/2=(3t+2)/2$ paths has an
-end at $y$.
+For integers $t,t'\ge0$ with $t+t'\ge1$, let $G_{t,t'}$ consist of a vertex $y$ adjacent to two
+vertices $s,s'$, together with $t$ triangles $su_iv_i$ and $t'$ triangles $s'u_j'v_j'$ (pendant
+triangles; if $t'=0$ then $s'$ is a leaf, and likewise for $t=0$). Then:
+\begin{itemize}
+\item $G_{t,t'}$ is connected of odd order $N=3+2(t+t')$;
+\item its even subgraph is the perfect matching on the triangle vertices together with the
+isolated vertex $y$;
+\item $y$ has degree two, and both its neighbours are odd.
+\end{itemize}
+Nevertheless no partition of $G_{t,t'}$ into $(N-1)/2$ paths has an end at $y$.
 \end{proposition}
 
 \begin{proof}
-The degrees are $d(h)=t+1$ (odd), $d(s_i)=3$, $d(g)=1$ and $d(y)=d(u_i)=d(v_i)=2$. So there are
-$o=t+2$ odd and $2t+1$ even vertices. By Lemma~\ref{lem:forcing} applied to each triangle
-$s_iu_iv_i$, every partition has an end at $u_i$ or $v_i$, which is even and so has at least two
-ends. If $y$ is also an end, the partition has at least $o+2(t+1)=3t+4$ ends, that is at least
-$(3t+4)/2$ paths.
+The vertices $s,s'$ have degrees $1+2t$ and $1+2t'$. All other vertices have degree two. So the
+only odd vertices are $s,s'$. By Lemma~\ref{lem:forcing} every partition has an end at one of $u_i,v_i$
+for each triangle, and that vertex is even, so it has at least two ends. If $y$ is also an end, the
+number of ends is at least $2+2(t+t'+1)=N+1$, which is more than $N-1$.
 \end{proof}
 
-$G_t$ itself satisfies the floor bound (by~\cite[Theorem~13]{BS}), so the obstruction is the
-prescription alone. Smaller counterexamples arise in the same way. At order five, with the
-prescribed vertex $y$ on a triangle whose other two vertices have degree two, $y$ cannot be
-prescribed. At order seven, the four even vertices other than $y$ can form two forcing triangles.
-Table~\ref{tab:census} lists the exhaustive census.
+The family covers every odd order $N\ge5$ and every odd number $e=1+2(t+t')\ge3$ of even vertices.
+It is exactly the configuration of the joining gadget $x-y-x'$, with $s,s'$ in the roles of $x,x'$.
+Each $G_{t,t'}$ satisfies the floor bound by~\cite[Theorem~13]{BS} (it is not a SET graph). So the
+obstruction comes from the prescription alone: prescribing $y$ adds one forced end to a
+configuration that is already tight.
+
+At $N=7$ there are exactly six pairs $(G,y)$ with five even vertices and a subcubic even subgraph
+for which the prescription fails (Table~\ref{tab:census}). They are:
+\begin{itemize}
+\item $G_{1,1}$ and $G_{2,0}$;
+\item $y$ the attachment vertex of a pendant triangle, adjacent to a leaf and to an odd vertex that
+carries a second pendant triangle;
+\item $y$ of degree four in a pendant $K_4-e$, adjacent to an odd vertex with a pendant triangle;
+\item $y$ between a leaf and a vertex of a $K_{1,1,3}$, or between a leaf and a vertex of a $K_5$,
+whose other vertices are the four other even vertices.
+\end{itemize}
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-& $e=1$ & $e=3$ & $e=5$ \\
+& $e=1$ & $e=3$ & $e=5$ & $e=7$\\
 \midrule
-pairs $(G,y)$ with no floor partition ending at $y$, $N=5$ & 7 & 9 (4 SET) & -- \\
-the same, $N=7$ & 130 & \CENSUSSEVENTHREE & \CENSUSSEVENFIVE \\
-pairs lost by the odd-order Fan game, $N=7$ & 130 & 230 & 64 \\
+pairs $(G,y)$, $N=5$ & 7 & 30 & 5 & -- \\
+\quad no floor partition ending at $y$ & 7 & 9 (5 SET) & 0 & -- \\
+\quad lost by the odd-order Fan game & 7 & 14 & 0 & -- \\
+pairs $(G,y)$, $N=7$ & 130 & 1236 & 845 & 7 \\
+\quad no floor partition ending at $y$ & 130 & 101 (29 SET) & 6 & 0 \\
+\quad lost by the odd-order Fan game & 130 & 230 & 64 & 0 \\
 \bottomrule
 \end{tabular}
 \caption{Connected graphs of order $N$ whose even subgraph has maximum degree at most three, and
 even vertices $y$ ($e$ is the number of even vertices). For $e=1$ the prescription is impossible by
-counting. First row: exact (\texttt{scripts/exact\_prescribed.py}, CP-SAT). Last row: Lov\'asz--Fan
-certificates with at most four held edges (\texttt{scripts/odd\_fan\_game.py}). Raising the bound to
-eight held edges recovers only one of the 64 pairs with $e=5$.}\label{tab:census}
+counting. ``No floor partition'': exact (\texttt{scripts/exact\_prescribed.py}, CP-SAT). ``Lost'':
+Lov\'asz--Fan certificates with at most four held edges (\texttt{scripts/odd\_fan\_game.py}); every
+exact failure is lost. Raising the bound to eight held edges recovers only one of the $64$ pairs with
+$e=5$ at $N=7$.}\label{tab:census}
 \end{table}
 
-The last row records a second negative finding. At even order the Fan game wins every root of every
+The game rows record a second negative finding. At even order the Fan game wins every root of every
 graph with subcubic even subgraph through order eight (experiments E13). At odd order with a
-prescribed end, Lov\'asz--Fan certificates are far from complete even in that regime: most pairs
-that the game loses do have the required partition.
+prescribed end, Lov\'asz--Fan certificates are far from complete even in that regime. At $N=7$, $187$
+of the $424$ lost pairs, and $58$ of the $64$ with $e=5$, do have the required partition. A random
+sample at $N=9$ ($596$ pairs) finds no exception with $e\ge5$, and $10$ lost pairs that are not
+exceptions.
 
 \begin{proposition}\label{prop:gadget}
 Let $L$ have vertices $x,a_1,b_1,a_2,b_2,s,w,z,\ell$ and edges $xa_i$, $xb_i$, $a_ib_i$ ($i=1,2$),
@@ -275,13 +297,14 @@ sentence is used once.
 \item \emph{``By Corollary~106 with mark $r$, at least two vertices of $K$ have degree four.''} Here
 $W$ has odd order, a leaf at the odd support $r$, and exactly five even vertices $T$, and the claim
 is $p(W)\le\lfloor|W|/2\rfloor$ when $K=W[T]$ has at most one universal vertex. This is
-Corollary~\ref{cor:bp5}.
+Corollary~\ref{cor:bp5} (in the marked form, Corollary~\ref{cor:106} with $|U|=5$).
 \item \emph{The graph $H=B-rw$ with four even vertices,} and \emph{the matching-cut shores with at
 most four unmarked even vertices.} With at most four unmarked even vertices the unmarked even
 subgraph is subcubic, so only the zero-exception case is used:~\cite[Theorem~13]{BS} (audit A6, F18).
 \item \emph{The second sentence of Corollary~106} (in the two-even-support failure of
-Proposition~105, two unmarked even sites have degree four) is used only in the next paragraph, for
-$H$ with exactly seven even sites and two even supports, so with five unmarked even sites.
+Proposition~105, two unmarked even sites have degree four) is used in the paragraph after the
+corollary, for $H$ with exactly seven even sites and two even supports, so with five unmarked even
+sites. No other result of~\cite{MR} cites Corollary~106.
 \end{enumerate}
 The remark after Theorem~114 (``Shaik's ordinary bound also applies if $K$ has at most one vertex of
 degree greater than three\ldots\ at $d_J(z)=6$ a failure requires two universal vertices'') concerns
@@ -403,8 +426,9 @@ gives a certificate for one representative of each. A move is written $t\tr r$ w
 returned donor. Every certificate ends with $1$ at $u$ and $v$ and with a realisable pair $S$.
 
 \begin{table}[ht]
-\centering\small
-\begin{tabular}{lll}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llp{9.3cm}}
 \toprule
 $A$ & held, even seed vertex & moves \\
 \midrule
@@ -416,13 +440,13 @@ $abc$ & $xa,bu,cu$; $d$ & $x\tr a\,(1{>}0)$, $c\tr u\,(1{>}0)$, $u\tr b\,(2{>}1)
 $xac$ & $xb,au,cu$; $d$ & $u\tr a\,(1{>}0)$, $c\tr u\,(1{>}0)$, $x\tr b\,(1{>}0)$; $S=ab$\\
 $xabc$ & $xa,bu,cu$; $d$ & $u\tr b\,(1{>}0)$, $c\tr u\,(1{>}0)$, $x\tr a\,(1{>}0)$; $S=ab$\\
 $xa$ & $xb,xc,xu,au$; $d$ & $u\tr a\,(1{>}0)$, $\{b,c\}\tr x\,(2{>}1)$, then\\
-& & \quad[$b$]: $x\tr c\,(2{>}1)$, $x\tr u\,(1{>}0)$; $S=ac$\quad
+& & \quad[$b$]: $x\tr c\,(2{>}1)$, $x\tr u\,(1{>}0)$; $S=ac$;
 [$c$]: $x\tr b\,(2{>}0)$, $x\tr u\,(1{>}0)$; $S=ab$\\
 $abcd$ & $xa,bu,cu,du,uv$; $v$ & $x\tr a\,(1{>}0)$, $b\tr u\,(1{>}0)$, $\{c,d\}\tr u\,(2{>}1)$, then\\
-& & \quad[$c$]: $u\tr d\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ad$\quad
+& & \quad[$c$]: $u\tr d\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ad$;
 [$d$]: $u\tr c\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ac$\\
 $xab$ & $cd,xu,au,bu,uv$; $v$ & $d\tr c\,(1{>}0)$, $x\tr u\,(1{>}0)$, $\{a,b\}\tr u\,(2{>}1)$, then\\
-& & \quad[$a$]: $u\tr b\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=bc$\quad
+& & \quad[$a$]: $u\tr b\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=bc$;
 [$b$]: $u\tr a\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ac$\\
 $xabcd$ & $xu,au,bu,cu,du,uv$; $v$ & see the text\\
 \bottomrule
@@ -513,25 +537,41 @@ gadgets of the notes cannot supply it in general. No result of~\cite{MR} uses th
 \section{Formalization and computations}\label{sec:lean}
 
 \subsection*{Lean}
-The file \texttt{lean/GallaiLean/FiveEven.lean} proves the following. It has no \texttt{sorry}, and
-\texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+Two files in \texttt{lean/GallaiLean/} are imported by \texttt{GallaiLean.lean}. They contain no
+\texttt{sorry}, and \texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}. Everything is in the namespace \texttt{Gallai.FiveEven}.
+
+\texttt{FiveEven.lean} (generic):
 \begin{itemize}
-\item \texttt{FiveEven.Prog.okS} and \texttt{FiveEven.soundS}: a version of the insertion-schedule
-checker \texttt{Prog.ok} (Schedule.lean) whose leaves need not share one end vector, with soundness
-by Fan's grouped lemma. The conclusion keeps the sum of ends.
-\item \texttt{five\_even\_local}: if $\iota:\mathrm{Fin}\,5\to V$ is injective, the even vertices of
-$W$ are exactly $\iota(\mathrm{Fin}\,5)$, $\iota0$ is adjacent to $\iota1,\dots,\iota4$, and the rim
-code (six bits) is one of the $38$ labelled rims of maximum degree at most two that are not perfect
-matchings, then $W$ has a partition $D$ with $2|D|+1=|V|$.
-\item \texttt{five\_even\_bowtie}: the same for the three labelled bowtie rims, with
-$\iota:\mathrm{Fin}\,7\to V$ adding odd $u=\iota5$, $v=\iota6$ adjacent to each other, $u$ adjacent to
-a nonempty part of $T$ and $v$ to none.
+\item \texttt{okS} and \texttt{soundS}: a version of the insertion-schedule checker \texttt{Prog.ok}
+of \texttt{Schedule.lean} whose leaves need not share one end vector, with its soundness theorem.
+Each offer is one application of Fan's grouped lemma (\texttt{Ach.grouped}), and the sum of ends is
+preserved (\texttt{sum\_mv}).
+\item \texttt{seed}: the Lov\'asz seed of a certificate, from \texttt{lovasz\_ends} on
+$W-H$ (\texttt{delE}, \texttt{degree\_delE}).
+\item \texttt{floor\_of\_cert}: a checked program on a model of $W$, together with the exact model
+adjacency and the parities, gives a partition $D$ of $W$ with $2|D|+1=|V|$.
 \end{itemize}
-The $131$ certificates are checked by kernel evaluation (\texttt{decide +kernel}). The seeds come
-from \texttt{lovasz\_ends}, and the moves from \texttt{fan\_grouped} through \texttt{Ach.grouped}.
-Not formalized: the classification of rims up to isomorphism (the Lean statements quantify over
-labelled rims instead), Lemma~\ref{lem:uv} (shortest paths), and the reductions in
-Corollaries~\ref{cor:bp5} and~\ref{cor:106}.
+
+\texttt{FiveEvenCerts.lean} (generated by \texttt{scripts/gen\_lean.py} from the certificate tables):
+\begin{itemize}
+\item the labelled models \texttt{madj5} and \texttt{madj7}, and the tables \texttt{localTable}
+($38$ entries) and \texttt{bowTable} ($93$ entries);
+\item \texttt{local\_ok} and \texttt{bow\_ok}: every certificate checks, for all $2^6$ rims, resp.
+$2^{11}$ rims and contact sets, that satisfy the hypotheses (kernel evaluation,
+\texttt{decide +kernel});
+\item \texttt{five\_even\_local}, which is Theorem~\ref{thm:main}(a). Let $\iota:\mathrm{Fin}\,5\to V$
+be injective onto the even vertices. Suppose $\iota0$ is adjacent to the others, no other $\iota i$ is
+adjacent to all the others, and the rim is not a perfect matching. Then $W$ has a partition $D$ with
+$2|D|+1=|V|$;
+\item \texttt{five\_even\_bowtie}, which is Theorem~\ref{thm:main}(b), given the adjacent odd
+vertices $u=\iota5$ and $v=\iota6$ as hypotheses.
+\end{itemize}
+
+Both statements quantify over labelled rims, so the classification of rims up to isomorphism is
+not needed. Not formalized: Lemma~\ref{lem:uv} (shortest paths), and the reductions of
+Corollaries~\ref{cor:bp5} and~\ref{cor:106} to Theorem~\ref{thm:main}. The leaf at an even support in
+Corollary~\ref{cor:bp5} is \texttt{rooted\_four}.
 
 \subsection*{Scripts} (\texttt{manuscripts/bs-prescribed/scripts})
 \begin{itemize}
@@ -542,9 +582,12 @@ $93$ bowtie certificates with $129$ leaves.
 \item \texttt{sevensite\_cert.py} re-derives audit A6's seven-site bank: every one of the seven cores
 and all $31$ contact sets are certified.
 \item \texttt{exact\_prescribed.py} and \texttt{odd\_fan\_game.py} produce Table~\ref{tab:census}.
-\item \texttt{random\_hosts.py} is an end-to-end consistency check with the circuit solver
-\texttt{tools/pathnum2.py} on random hosts: $100$ hosts with a leaf of orders $9$ and $11$, and $120$
-bowtie hosts without a leaf, all satisfy the floor bound.
+\item \texttt{random\_hosts.py} is an end-to-end consistency check on random hosts, using the circuit
+solver of \texttt{tools/pathnum2.py}. All $100$ hosts with a leaf, of orders $9$ and $11$, and all
+$120$ bowtie hosts without a leaf satisfy the floor bound.
+\item \texttt{sample\_prescribed.py} is the random sample of the prescribed-end lemma at $N=9$
+($150$ graphs, $596$ pairs). Its only exceptions are the $6$ pairs with $e=1$ and $3$ pairs with $e=3$.
+The Fan game with at most three held edges loses $10$ further pairs that are not exceptions.
 \end{itemize}
 
 \begin{thebibliography}{99}

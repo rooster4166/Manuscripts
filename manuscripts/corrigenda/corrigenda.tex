@@ -174,6 +174,55 @@ marked-reduction Lemma~21, Prop.~33, Cor.~35, Thm.~177, and even-degrees with $m
 the sum-six form. At $m=7$, even-degrees should cite marked-reduction Theorem~38 instead. Cite the note at
 these places.
 
+\section{External dependency: Shaik's preprint (marked-reduction Corollary~106 and Theorem~144)}\label{sec:shaik}
+
+Marked-reduction cites the unrefereed preprint of Shaik [hexagon:2610.00286v1] in four places:
+\begin{itemize}
+\item twice in the proof of Corollary~106;
+\item in the remark after Theorem~114 (``at $d_J(z)=6$ a failure requires two universal vertices'');
+\item at the step ``$r\in T$'' of Theorem~144.
+\end{itemize}
+Theorem~144 also inherits the preprint through Corollary~106. The note \emph{bs-prescribed}
+(in \texttt{manuscripts/}) removes every one of these uses. Shaik's preprint is not needed anywhere in marked-reduction.
+
+\begin{enumerate}
+\item \textbf{Corollary~106, statement (p.\,120).} Add the hypothesis ``and the unmarked even sites number
+at most five, or induce a graph of maximum degree at most three''. Every application in the manuscript
+satisfies it: Theorem~144 three times (five, four and at most four unmarked even sites), and the
+paragraph after Corollary~106 (seven even sites, two of them marked). The one-exception odd-order case
+with at least seven unmarked even sites is not used, and it remains open without the preprint.
+\item \textbf{Corollary~106, proof, first paragraph.} Replace the doubling argument by the following.
+\begin{itemize}
+\item If $|L|$ is even, ceiling and floor coincide. Use Botler--Sambinelli Cor.~14 (no exceptional
+vertex) or Fan--Hou--Zhou Thm.~5 (one exceptional vertex).
+\item If $|L|$ is odd, use Botler--Sambinelli Thm.~13 (no exceptional vertex; the leaf excludes SET
+graphs) or bs-prescribed Cor.~2 (five even vertices, one of degree four).
+\end{itemize}
+The latter rests only on Lov\'asz's theorem and Fan's Lemmas~3.3--3.4. Six of the seven possible
+even subgraphs are settled by three local lemmas. The bowtie is settled by eleven transfer certificates,
+using a leaf at an odd support. All $131$ labelled certificates are checked in Lean
+(\texttt{FiveEven.lean}, \texttt{FiveEvenCerts.lean}).
+\item \textbf{Corollary~106, proof, case $A=\emptyset$.} Replace ``Shaik's ordinary bound'' by
+``Botler--Sambinelli Cor.~14 or Fan--Hou--Zhou Thm.~5''.
+\item \textbf{Remark after Theorem~114 (p.\,129).} Replace ``Shaik's ordinary bound [25, Cor.~1.2] also
+applies \ldots\ since doubling gives at most two'' by: ``At $d_J(z)=6$ both tests are floor bounds for
+$J-z$ with one or two private leaves at $r$. These graphs have odd order, leaves at the odd support $r$,
+and the five even vertices $N(z)\setminus\{r\}$. So bs-prescribed Cor.~2 applies when $K$ has at most one
+universal vertex.''
+\item \textbf{Theorem~144, step $r\in T$ (p.\,156).} Replace [25, Cor.~1.2] by Botler--Sambinelli Thm.~13.
+Alternatively use endpoint-structure Cor.~22, which needs only Lov\'asz and Fan: $B$ has four even
+sites and $r$ is odd.
+\item \textbf{Theorem~144, ``By Corollary~106 with mark $r$''.} This is now bs-prescribed Cor.~2 (five
+even sites). The alternative of audit A6 (Lemma~133 together with its absent M/P/C table) is no longer
+needed.
+\end{enumerate}
+
+\emph{Why not a prescribed-end version of Botler--Sambinelli?} That route was proposed in the project
+notes (connections~\S L), and it is false. There are counterexamples at every odd order $\ge5$, including
+graphs where the prescribed vertex has degree two between two odd vertices and the even subgraph is a
+matching. The joining gadget also fails on an order-nine instance of the very case needed. See
+bs-prescribed \S3.
+
 \section{External dependency: the rainbow Hamiltonian decomposition theorem}\label{sec:jm}
 
 The odd semi-clique theorem (Theorem~4 of odd-semi-clique-boundary and the September note), its

@@ -386,3 +386,42 @@ Gqz~vw at root 3 wins with |F| = 1 in two ways:
 - Its only possible finish is a ≥ 3-edge spare path into a 3-path partition, i.e. three Hamiltonian paths. That is the flower of missing-move Prop 5.5.
 
 **E14 addendum 2 (independent).** `one_root.py Gr~v~w 0 9` (path insertion, \|F\| ≤ 9): **WIN** at root 0, and hence at every root by vertex-transitivity. F is the full star at 0 together with {13, 14, 24}. The Lovász seed is b = (0,1,0,1,1,1,1,1). Together with Guv]}{ (root 0, \|F\| = 7; checked independently above), this confirms the missing-move session's claim: **the extended game (Lovász + Fan + path insertion) wins every root of every connected graph of order 8 with \|F\| ≤ 9.** The flower lemma (Prop 5.5) gives a shorter proof for K8 − PM, but at n = 8 it is not needed.
+## E14. Prescribed ends at odd order; five even vertices with one universal vertex (cloud session `claude/bs-prescribed`)
+
+Scripts: `manuscripts/bs-prescribed/scripts/`.
+
+**Prescribed-end lemma** (odd N, Δ(EV) ≤ 3, even y, partition into (N−1)/2 paths with an end at y). Exact with `exact_prescribed.py` (CP-SAT); game with `odd_fan_game.py` (Lovász seeds, plus Lemma 3 seeds at any order, plus Fan transfers; at most 4 held edges).
+
+| N | e | pairs (G, y) | no floor partition ending at y | lost by the game |
+|---|---|---|---|---|
+| 5 | 1 | 7 | 7 (forced by counting) | 7 |
+| 5 | 3 | 30 | 9 (5 SET) | 14 |
+| 5 | 5 | 5 | 0 | 0 |
+| 7 | 1 | 130 | 130 | 130 |
+| 7 | 3 | 1236 | 101 (29 SET) | 230 |
+| 7 | 5 | 845 | **6** | 64 (63 still lost with ≤ 8 held edges) |
+| 7 | 7 | 7 | 0 | 0 |
+
+- The six e = 5 failures at N = 7:
+  - FqHPO = G_{1,1} and FsQc_ = G_{2,0} (the forcing family);
+  - FsQaO and FsPL_ (pendant triangle, or K4 − e, at y plus a pendant triangle elsewhere);
+  - Fs`Do and FqilW (y between a leaf and a K_{1,1,3} or a K5).
+- **Random N = 9** (`sample_prescribed.py 9 150 3 1`, exact by `tools/pathnum2.py`): 596 pairs.
+  - Genuine exceptions: 6 with e = 1 and 3 with e = 3; none with e ≥ 5.
+  - Game search failures: 1 with e = 3, 7 with e = 5, 2 with e = 7.
+- **Conclusion.**
+  - The lemma is false, with exceptions built from forcing gadgets (manuscript Prop. 5).
+  - The odd-order prescribed game is far from complete. This contrasts with even order: E13 found that Δ(EV) ≤ 3 makes every root winnable at n = 8.
+
+**Five even vertices, one universal vertex** (`certgen.py`, `verify_certs.py`, `sevensite_cert.py`):
+- **Seven-site bank (A6) re-derived independently**: all 7 cores × 31 contact sets are certified, with held sets of 2–6 edges and depth ≤ 6.
+- **Local certificates** (model = T only, no leaf): all cores except the bowtie M. The bowtie has none (exhaustive over held sets).
+- **Bowtie with u only** (no v): 25 of 31 contact sets. The exceptions are A ⊇ {a, b} with A ∩ {c, d} ∈ {∅, {c, d}}, and symmetrically.
+- **Labelled tables for Lean**: 38 local rims and 3 × 31 bowtie cases, all verified (46 and 129 leaves).
+
+**End-to-end random hosts** (`random_hosts.py`, circuit solver):
+- all 60 + 40 hosts with a leaf, of orders 9 and 11, over all one-universal cores;
+- all 60 + 40 + 20 bowtie hosts without a leaf, of orders 9, 11 and 13.
+
+Every host satisfies the floor bound. So the leaf is probably not needed for the bowtie either, but the local certificates need it.
+
