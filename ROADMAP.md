@@ -51,10 +51,12 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived; Thm 144 can be made Shaik-free (BS Thm 13 + Lemma 133).** Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances) |
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
-| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ**. **Descent steps 1 and 2 PROVED** for all even-order graphs (Lemma 3; `two_step_descent`). **Step 3 reduced in Lean** (`desc_three_of_unique`, `desc_three_reduction`, KStep.lean) to two base cases: y has ≥ 2 even neighbours, or y has no even neighbour and every edge at y is a bridge. Sound move systems in Lean: Fan schedules, the Fan calculus `FanCert` (`realisable_of_fanCert`). FanCert is not complete (6 failures at n = 6); see the Fan game (connections §R) | **lean** (steps 1–2, step-3 reduction) |
+| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ**. **Descent steps 1 and 2 PROVED** for all even-order graphs (Lemma 3; `two_step_descent`). **Step 3 reduced in Lean** (`desc_three_of_unique`, `desc_three_reduction`, KStep.lean) to two base cases: y has ≥ 2 even neighbours, or y has no even neighbour and every edge at y is a bridge. Sound move systems in Lean: Fan schedules, the Fan calculus `FanCert` (`realisable_of_fanCert`). FanCert is not complete (6 failures at n = 6); see the Fan game (connections §R). **With path insertion the game is complete at n = 8** (connections §S); its first gap is the degree-six hub at n = 10 | **lean** (steps 1–2, step-3 reduction) |
 | T(4)-i via descent | two-end test with 4 even vertices: every even r lies in a realisable half-set | `two_step_descent` with y = r | **PROVED** (Lovász + Fan only, no Botler–Sambinelli) | **lean** |
 | EMC(e=4) | realisable pairs form a rank-2 matroid | every even vertex has ≥ 2 realisable partners (two-step) ⇒ the partner graph has min degree 2 on 4 vertices ⇒ C4, K4−e or K4 | **PROVED** | **lean** (`endpoint_matroid_four`) |
 | BP_3 | floor bound for odd order with a pendant leaf and 3 even vertices | `rooted_four` | **PROVED** by Lovász + Fan (no Botler–Sambinelli) | **lean** |
+| HUB4 | degree-four hubs: d(s) = 4, N(s) ⊆ Ev, ≤ 1 even vertex outside N[s] ⇒ (R) at s and at N(s) | `manuscripts/missing-move` Thm 2.2 (hub lemma 2.1: Lovász's spare path, two Fan receipts and one new path through s) | **PROVED** | **lean** (`Ach.hub_four`, `hub_four_ends`, `hub_four_rooted`; unconditional) |
+| FG8 | the Fan game with path insertion (new paths of any length) wins every root of every connected graph of order 8 | missing-move Thm 3.1; E14 | **comp(n = 8)**, \|F\| ≤ 6. Pósa moves at the profile level (rotation, Fan's alternative) repair none of the §R losers. First loser of the extended game: A_{6,2} (n = 10), a degree-six hub one receipt short, where the receipt is forced by an edge count at Fan's equality (missing-move Prop 5.2) | comp |
 
 ## Side chains that also reach Gallai
 
@@ -139,6 +141,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
 | session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
 | session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
+| session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **delivered**: the missing move of the Fan game is path insertion funded by Lovász's spare path (hub lemma, degree-four hubs; Lean `MissingMove.lean`); completeness at n = 8; Pósa moves negative; the degree-six hub gap at n = 10 (manuscript `missing-move`, connections §S, E14) |
 
 **Local agents:**
 
@@ -203,3 +206,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
 - **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
 - **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- 2026-11-26 (cloud session, branch `claude/missing-move`): **the Fan game's missing move found.** It is path insertion (a new path of length ≥ 2 made of held edges), paid for by Lovász's spare path when G − F has an isolated vertex. It is not a move beyond Fan's inequality.
+  - **Hub lemma** (`Ach.hub_four`) and **degree-four hubs** (`hub_four_ends`, `hub_four_rooted`, Lean, unconditional, standard axioms): if d(s) = 4, N(s) ⊆ Ev, and at most one even vertex lies outside N[s], then (R) holds at s and at N(s). This closes GsRvnk.
+  - **With path insertion the game wins every root of every connected graph of order 8** (\|F\| ≤ 6; E14).
+  - Rotation at equality and **Fan's alternative** (new lemma: either the transfer succeeds, or ≥ Σ_T b blank neighbours can each be activated) are sound but repair none of the losers (E14).
+  - First gap of the extended game: A_{6,2} at n = 10, a degree-six hub one receipt short. The receipt sits at Fan's equality and is forced by an edge count (manuscript Prop 5.2). This is the d6 frontier's "short by one".
+  - `tools/fan_game.py` gains the options `np`, `rotR`, `altR` and `hubs`. Manuscript `manuscripts/missing-move`; connections §S (and a correction note in §R).
+
