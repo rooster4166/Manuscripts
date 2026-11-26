@@ -8,3 +8,5 @@ import GallaiLean.Retract
 import GallaiLean.Realisable
 import GallaiLean.LeafDictionary
 import GallaiLean.Marked
+import GallaiLean.FanMoves
+import GallaiLean.Fan

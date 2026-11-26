@@ -54,11 +54,13 @@ def FanPre (D : PathDecomp K) (u : U) : List U → Prop
 def FanChain (D : PathDecomp K) (u : U) (l : List U) : Prop :=
   FanPre D u l ∧ ∃ x, l.getLast? = some x ∧ FanAvoid D u x
 
+omit [DecidableEq U] in
 theorem FanPred.adj {D : PathDecomp K} {u x z : U} (h : FanPred D u x z) : K.Adj z u := by
   obtain ⟨P, -, ⟨-, h⟩ | ⟨-, h⟩⟩ := h
   · exact Walk.adj_of_infix_support P.walk h
   · exact (Walk.adj_of_infix_support P.walk h).symm
 
+omit [DecidableEq U] in
 theorem FanPre.transport {K₁ : SimpleGraph U} {D : PathDecomp K} {D₁ : PathDecomp K₁} {u t : U}
     (h : ∀ x z, x ≠ t → FanPred D u x z → FanPred D₁ u x z) :
     ∀ l : List U, t ∉ l → FanPre D u l → FanPre D₁ u l
@@ -69,6 +71,7 @@ theorem FanPre.transport {K₁ : SimpleGraph U} {D : PathDecomp K} {D₁ : PathD
     exact ⟨h x y (by rintro rfl; exact ht List.mem_cons_self) h1,
       FanPre.transport h (y :: rest) (fun hm => ht (List.mem_cons_of_mem _ hm)) h2⟩
 
+omit [DecidableEq U] in
 theorem FanPre.snoc {D : PathDecomp K} {u : U} :
     ∀ (L : List U) (x z : U), FanPre D u L → L.getLast? = some x → FanPred D u x z →
       FanPre D u (L ++ [z])
@@ -81,6 +84,7 @@ theorem FanPre.snoc {D : PathDecomp K} {u : U} :
     obtain ⟨h1, h2⟩ := h
     exact ⟨h1, FanPre.snoc (b :: rest) x z h2 (by simpa using hl) hp⟩
 
+omit [DecidableEq U] in
 theorem FanPre.prefix {D : PathDecomp K} {u : U} :
     ∀ (L₁ : List U) (z : U) (L₂ : List U), FanPre D u (L₁ ++ z :: L₂) → FanPre D u (L₁ ++ [z])
   | [], _, _, _ => trivial
@@ -91,6 +95,7 @@ theorem FanPre.prefix {D : PathDecomp K} {u : U} :
     obtain ⟨h1, h2⟩ := h
     exact ⟨h1, FanPre.prefix (b :: rest) z L₂ h2⟩
 
+omit [DecidableEq U] in
 theorem FanPre.last {D : PathDecomp K} {u : U} :
     ∀ (L : List U) (x : U), FanPre D u L → L.getLast? = some x →
       L.head? = some x ∨ ∃ w, FanPred D u w x
@@ -104,6 +109,7 @@ theorem FanPre.last {D : PathDecomp K} {u : U} :
       exact Or.inr ⟨a, h1⟩
     · exact Or.inr h'
 
+omit [DecidableEq U] in
 /-- Chains survive a reroute away from their vertices. -/
 theorem fanChain_transport {K₁ : SimpleGraph U} {D : PathDecomp K} {D₁ : PathDecomp K₁}
     {u t : U} {P : GPath K} (huP : u ∈ P.walk.support)
@@ -120,12 +126,16 @@ theorem fanChain_transport {K₁ : SimpleGraph U} {D : PathDecomp K} {D₁ : Pat
       obtain ⟨P', hP'mem, hP'⟩ := hP'
       exact ⟨P', hP'mem, Or.inr (hP' x z hx hocc)⟩
     · obtain ⟨Q', hQ', hs, ht, hsupp⟩ := htrans Q hQ hQP
-      exact ⟨Q', hQ', by rw [hs, ht, hsupp]; exact hocc⟩
+      refine ⟨Q', hQ', ?_⟩
+      rcases hocc with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · exact Or.inl ⟨hs.trans h1, by rw [hsupp]; exact h2⟩
+      · exact Or.inr ⟨ht.trans h1, by rw [hsupp]; exact h2⟩
   intro l hl ⟨hpre, x, hx, Q, hQ, hend, hu⟩
   refine ⟨FanPre.transport hpred l hl hpre, x, hx, ?_⟩
   have hQP : Q ≠ P := by rintro rfl; exact hu huP
   obtain ⟨Q', hQ', hs, ht, hsupp⟩ := htrans Q hQ hQP
-  exact ⟨Q', hQ', by rw [hs, ht]; exact hend, by rw [hsupp]; exact hu⟩
+  exact ⟨Q', hQ', hend.imp (fun h => hs.trans h) (fun h => ht.trans h),
+    by rw [hsupp]; exact hu⟩
 
 /-- **Executing a chain**: along a chain from a non-neighbour `t` of `u`, add the edge `tu`. -/
 theorem fan_exec (u : U) (xs : List U) : ∀ {K : SimpleGraph U} (D : PathDecomp K) (t : U),
@@ -153,7 +163,7 @@ theorem fan_exec (u : U) (xs : List U) : ∀ {K : SimpleGraph U} (D : PathDecomp
     let K₁ : SimpleGraph U := SimpleGraph.fromEdgeSet ((K.edgeSet \ {s(y, u)}) ∪ {s(t, u)})
     have hK₁ : ∀ e, e ∈ K₁.edgeSet ↔ (e ∈ K.edgeSet ∧ e ≠ s(y, u)) ∨ e = s(t, u) := by
       intro e
-      simp only [K₁, edgeSet_fromEdgeSet, Set.mem_diff, Set.mem_union, Set.mem_singleton_iff,
+      simp only [K₁, edgeSet_fromEdgeSet, Set.mem_sdiff, Set.mem_union, Set.mem_singleton_iff,
         Sym2.mem_diagSet]
       constructor
       · rintro ⟨h, -⟩; exact h
@@ -215,6 +225,7 @@ theorem two_le_countP {α : Type*} [DecidableEq α] {l : List α} (hl : l.Nodup)
   · exact ⟨ha, hpa⟩
   · exact ⟨hb, hpb⟩
 
+omit [Fintype U] [DecidableRel K.Adj] in
 theorem sum_ends_eq (D : PathDecomp K) (R : Finset U) :
     ∑ x ∈ R, D.ends x = (D.paths.map (fun P =>
       (if P.src ∈ R then 1 else 0) + (if P.tgt ∈ R then 1 else 0))).sum := by
@@ -223,8 +234,9 @@ theorem sum_ends_eq (D : PathDecomp K) (R : Finset U) :
   induction l with
   | nil => simp
   | cons P l ih =>
-    simp only [List.map_cons, List.sum_cons, Finset.sum_add_distrib, ih, GPath.endsAt,
-      Finset.sum_ite_eq]
+    simp only [List.map_cons, List.sum_cons, Finset.sum_add_distrib, ih]
+    congr 1
+    simp only [GPath.endsAt, Finset.sum_add_distrib, Finset.sum_ite_eq]
 
 /-- **Existence of a chain** (the counting argument behind Fan's grouped lemma). -/
 theorem fan_exists_chain (D : PathDecomp K) (u : U) (T : Finset U) (huT : u ∉ T)
@@ -255,16 +267,17 @@ theorem fan_exists_chain (D : PathDecomp K) (u : U) (T : Finset U) (huT : u ∉ 
         exact ⟨t, ht, [], by simp, trivial, rfl⟩
       | cons a L₁' =>
         simp only [List.cons_append, List.cons.injEq] at hL
-        obtain ⟨rfl, hxs⟩ := hL
-        refine ⟨a, ht, L₁' ++ [z], ?_, ?_, by simp⟩
-        · have hsub : (a :: (L₁' ++ [z])).Sublist (a :: xs) := by
+        obtain ⟨-, hxs⟩ := hL
+        refine ⟨t, ht, L₁' ++ [z], ?_, ?_, ?_⟩
+        · have hsub : (t :: (L₁' ++ [z])).Sublist (t :: xs) := by
             rw [hxs]
-            exact List.Sublist.cons₂ a
+            exact List.Sublist.cons_cons t
               (List.Sublist.append_left (List.singleton_sublist.mpr List.mem_cons_self) L₁')
           exact hnd.sublist hsub
-        · have := FanPre.prefix (a :: L₁') z L₂ (by rw [List.cons_append, ← hxs]; exact hpre)
+        · have := FanPre.prefix (t :: L₁') z L₂ (by rw [List.cons_append, ← hxs]; exact hpre)
           simpa using this
-    · refine ⟨t, ht, xs ++ [z], ?_, ?_, by simp⟩
+        · rw [← List.cons_append, List.getLast?_concat]
+    · refine ⟨t, ht, xs ++ [z], ?_, ?_, by rw [← List.cons_append, List.getLast?_concat]⟩
       · rw [← List.cons_append, List.nodup_append]
         refine ⟨hnd, List.nodup_singleton z, ?_⟩
         intro a ha b hb hab
@@ -326,7 +339,9 @@ theorem fan_exists_chain (D : PathDecomp K) (u : U) (T : Finset U) (huT : u ∉ 
         intro h
         have := List.inj_on_of_nodup_map hnd hd hd' h
         subst this
-        exact K.loopless.irrefl u (hdu ▸ hdu' ▸ d.adj)
+        have hadj : K.Adj d.fst d.snd := d.adj
+        rw [hdu, hdu'] at hadj
+        exact K.loopless.irrefl u hadj
       have := two_le_countP hnd p (hmem d hd) (hmem d' hd') hne hpd hpd'
       simp only [hs, ht, ite_true]
       omega
@@ -358,9 +373,12 @@ theorem fan_exists_chain (D : PathDecomp K) (u : U) (T : Finset U) (huT : u ∉ 
     exact ⟨z, Finset.mem_filter.mpr ⟨hzR, (K.mem_edgeSet.mp heK).symm⟩, he'.symm⟩
   have hR : ∑ x ∈ R, D.ends x ≤ NR.card := by
     rw [sum_ends_eq]
-    refine le_trans ?_ (le_trans (le_of_eq ?_) hcount)
-    · exact sum_map_le_sum_map _ _ _ hper
-    · rw [List.countP_flatMap]; rfl
+    have hc : (D.paths.map (fun P => P.edges.countP p)).sum =
+        (D.paths.flatMap GPath.edges).countP p := by
+      rw [List.countP_flatMap]; rfl
+    calc _ ≤ (D.paths.map (fun P => P.edges.countP p)).sum := sum_map_le_sum_map _ _ _ hper
+      _ = _ := hc
+      _ ≤ NR.card := hcount
   have hdisj : Disjoint T NR := by
     rw [Finset.disjoint_left]
     intro t ht htN
@@ -368,11 +386,14 @@ theorem fan_exists_chain (D : PathDecomp K) (u : U) (T : Finset U) (huT : u ∉ 
   have h1 : ∑ t ∈ T, D.ends t + ∑ w ∈ NR, D.ends w ≤ ∑ x ∈ R, D.ends x := by
     rw [← Finset.sum_union hdisj]
     exact Finset.sum_le_sum_of_subset (Finset.union_subset hTR (Finset.filter_subset _ _))
-  have h2 : NR.card ≤ ∑ w ∈ NR, D.ends w + (NR.filter (fun w => D.ends w = 0)).card := by
+  have hkey : ∀ S : Finset U,
+      S.card ≤ ∑ w ∈ S, D.ends w + (S.filter (fun w => D.ends w = 0)).card := by
+    intro S
     rw [Finset.card_filter, ← Finset.sum_add_distrib, Finset.card_eq_sum_ones]
     apply Finset.sum_le_sum
     intro w _
     split_ifs <;> omega
+  have h2 := hkey NR
   have h3 : (NR.filter (fun w => D.ends w = 0)).card ≤
       (Finset.univ.filter (fun w => K.Adj u w ∧ D.ends w = 0)).card := by
     apply Finset.card_le_card

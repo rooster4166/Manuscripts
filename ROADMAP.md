@@ -126,7 +126,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 | # | Item | Purpose |
 |---|---|---|
-| Q1 | Audit or replace Shaik [25, Cor 1.2] (ceiling when ≤ 2 vertices have E-degree ≥ 4), e.g. via a componentwise Fan–Hou–Zhou Thm 5 | makes MR Thm 144 unconditional |
+| Q1 | Shaik [25, Cor 1.2]: there is a **public Lean formalization**, github.com/shaikidris/gallai-two-exception (488 files, 79k lines, Lean v4.35.0-rc3). Its statement file `Challenge.lean` was inspected and is faithful: `ceiling_bound` is exactly Cor 1.2, with decompositions as genuine edge partitions into nonempty simple paths. A grep finds no sorry, axioms or IO. Building it here was **blocked by the session's permission policy** (third-party code). To verify: `lake exe cache get && lake build Solution`, then `#print axioms Gallai.Submission.ceiling_bound`. If clean, Cor 106 and Thm 144 become machine-verified. Fallback: prove the one-exception odd-order case directly. The gadget attempts (edge xx′; path x–y–x′) each lose one unit of budget (connections §L). | makes MR Thm 144 unconditional |
 | Q2 | Close D = ∅ at d = 6: clique core B[U] = K6 with full exterior vertices (six-clique Thm 6 covers ≤ 5 core neighbours; false-twin-return covers some full cases) | the largest residual d = 6 shape |
 | Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
