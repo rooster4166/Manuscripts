@@ -2,30 +2,77 @@
 
 ## Spine 113/114 (cloud session)
 
-Branch `claude/lean-spine-113-114`. New file `GallaiLean/ThreeConnected.lean` (sorry-free;
-`#print axioms` shows only `propext`, `Classical.choice`, `Quot.sound`).
+Branch `claude/lean-spine-113-114`. Marked-reduction Theorems 113 and 114 (ROADMAP node N4).
+Every file below is sorry-free. `#print axioms` on `separatorStatement`, `gallai_iff_spineTests`,
+`spineTests_of_gallai` and `rootedAt_evenComp_evenPorts` shows only `propext`,
+`Classical.choice` and `Quot.sound`.
 
-**Status (interim):** (a) Gallai ⇒ both tests: **proved**. (b) apex construction and its
-3-connectivity: **proved**. (d) converse: **proved modulo explicit hypotheses** `LovaszStatement`,
-`Thm59Statement`, `SeparatorStatement`. (c) Theorem 113 (`SeparatorStatement`): in progress.
+**Bottom line.**
 
-| Lean name | Statement |
+* **Theorem 113 (separator theorem) is proved outright:** `separatorStatement : SeparatorStatement`.
+  It uses Lovász's theorem as proved in `GallaiLean/Lovasz.lean` (`lovaszStatement`).
+* **Theorem 114 is proved modulo Theorem 59 alone:**
+  `gallai_iff_spineTests (h59 : Thm59Statement) : (Gallai ↔ SpineTests) ∧ (Gallai ↔ SpineTestsNMC)`.
+  * The forward direction, `spineTests_of_gallai`, uses no hypothesis.
+  * The converse needs the single explicit hypothesis `Thm59Statement`.
+* All four priorities are done: (a) Gallai ⇒ both tests, (b) the apex construction is
+  3-connected, (c) the separator theorem, (d) the converse.
+
+**The remaining hypothesis.** `Thm59Statement` is Theorem 59 in the finite-order form recommended
+by audit A2 (finding F1). It says: if both rooted assertions (`RootedAt`) hold for every member of
+`C` (two-connected, no matching cut) with at most `m + 1` vertices, then the marked bound (1) holds
+on every connected graph whose two-connected blocks have order at most `m` (`MarkedBoundUpTo m`).
+
+* `MarkedBlocks.lean` (base branch) proves Theorem 1 (`gallai_iff_tests`): the 2-connected marked
+  bound plus the three-end test.
+* What Theorem 59 still needs on top of that is
+  * the matching-cut reduction (Thms 7, 57), and
+  * the step from the rooted tests to the marked tests.
+
+**Statements and faithfulness.**
+
+* **k-connectivity.** `KConnected k G` means `k + 1 ≤ |V|` and `G.induce Xᶜ` is connected for
+  every `|X| < k`. `J − z` is `delVert J z`, the graph induced on `{v | v ≠ z}`.
+* **`Test1 J z`.** If `z` is the only even vertex, then for each `r ∈ N(z)` some decomposition of
+  `J − z` has `≤ (|J| − 1)/2` paths and `D.ends r ≥ 2`. A path has at most one end at `r`, so this
+  is "at least two paths ending at `r`".
+* **`Test2 J z`.** If `z, r` are the only even vertices and are adjacent, then some decomposition
+  has `≤ |J|/2` paths and `D.ends r ≥ 3`.
+* **`SpineTests` / `SpineTestsNMC`.** Both tests for every 3-connected `J`. The `NMC` version adds
+  the hypothesis that `J − z` has no matching cut (`HasMatchingCut`).
+* **Theorem 113 in the A2 audit's F7 form (`SeparatorStatement`).** This is stronger than the
+  manuscript's statement.
+  * The hypotheses are: `B` two-connected, and the marked bound on graphs whose blocks have order
+    `≤ n − 2`. At a least-order failure, Theorem 59 provides the latter.
+  * Neither minimality nor the absence of a matching cut is assumed.
+  * The conclusion: if `C` is a component of `B − {x, y}` (`IsSepComponent`, with `{x, y}`
+    separating), `r ∉ C`, and every vertex of `C` is odd, then `RootedAt B r`.
+* **Blocks.** `SmallBlocks F m` means every two-connected induced subgraph has at most `m`
+  vertices, i.e. the two-connected blocks have order `≤ m`.
+
+**Files.**
+
+| File | Content |
 |---|---|
-| `KConnected k G` | `k + 1 ≤ \|V\|` and `G.induce Xᶜ` is connected for every `X` with `\|X\| < k` |
-| `delVert J z` | `J − z` (induced on `{v \| v ≠ z}`) |
-| `HasMatchingCut`, `InClassC` | matching cut; the class `C` (2-connected, no matching cut) |
-| `Test1 J z`, `Test2 J z` | assertions 1 and 2 of marked-reduction Thm 114 |
-| `SpineTests`, `SpineTestsNMC` | both tests on every 3-connected `J` (resp. only when `J − z` has no matching cut) |
-| **`spineTests_of_gallai`** | `GallaiConjecture → SpineTests` (forward direction of Thm 114) |
-| `PathDecomp.trim_ends` | trimming the private leaf: same size and `+1` end at `x`, or one path less and `−1` end |
-| `exists_two_ends`, `exists_three_ends` | `F₂` from leaf cost, `F₃` from any decomposition (split at an internal visit) |
-| **`apex_kConnected_three`** | `B` 2-connected, `\|S\| ≥ 3`, every component of `B − {x,y}` meets `S` ⇒ `apex B S` is 3-connected |
-| `RootedAt B x` | the two rooted assertions of Thm 59 at `x` |
-| `SmallBlocks F m`, `MarkedBoundUpTo m` | blocks of order `≤ m` (2-connected induced subgraphs); marked bound (1) on such graphs |
-| `Thm59Statement` | **hypothesis**: Thm 59, finite-order form (audit F1) |
-| `IsSepComponent`, `SeparatorStatement` | Thm 113 in the audit's F7 form (hypothesis until proved) |
-| `rootedAt_of_few_even` | `\|{even} ∪ {r}\| ≤ 2` ⇒ rooted test at `r` (Lovász) |
-| **`gallai_of_spineTestsNMC`** | `LovaszStatement → Thm59Statement → SeparatorStatement → SpineTestsNMC → GallaiConjecture` |
+| `ThreeConnected.lean` | definitions above; **`spineTests_of_gallai`**; `PathDecomp.trim_ends`, `exists_two_ends`, `exists_three_ends`; **`apex_kConnected_three`** (`B` 2-connected, `\|S\| ≥ 3`, every component of `B − {x,y}` meets `S` ⇒ `B + z(S)` 3-connected); statements `Thm59Statement`, `SeparatorStatement`; `rootedAt_of_few_even`; **`gallai_of_spineTestsNMC`** (Lovász + Thm 59 + Thm 113 + tests ⇒ Gallai, by strong induction on the order of a failure in `C`) |
+| `PathSurgery.lean` | paths of the complete graph (`TPath`), edge multisets `edgesM`, `endsL`, `exists_decomp_of_edgesM`, `plusEdge`, `joinT`, `exists_subst_list` (substitute a path for an edge), `exists_graft` (cut at a vertex, attach two paths), `exists_cut_edge` |
+| `SmallBounds.lean` | `lovasz_on` / `lovasz_tight` on a vertex set; a single mark is a private leaf; `R2_on`, `R3_on`, `floor_on`: the smaller rooted bounds of the proof of Thm 113, from `MarkedBoundUpTo` |
+| `SeparatorSetup.lean` | sides `sideA` (= `B[C ∪ {x,y}]` + `xy`) and `sideE` (= `B − C − xy`); `E` connected on `V ∖ C`; port degrees positive on both sides; parity of `A`; **`rootedAt_of_lift`** (the root analysis shared by all cases, including the floor-plus-split when an odd root drops to degree one) |
+| `SeparatorOdd.lean` | `rootedAt_oddComp`: odd `\|C\|`, `W = E + xc` (or `E + xy + yc` when the `x`-ended local path visits `y`) |
+| `SeparatorEvenOdd.lean` | `rootedAt_evenComp_oddPorts`: `W = E + xy`, substitute or cut and attach |
+| `SeparatorEvenEven.lean` | `rootedAt_evenComp_evenPorts`: `W = E`; graft with the two `x`-ended local paths, or the subdivided-edge Lovász decomposition and up to two grafts. Written by a sub-agent of this session and verified here. |
+| `Separator.lean` | `separator_theorem`, **`separatorStatement`**, **`gallai_iff_spineTests`** |
+
+**Deviations from the manuscript proof (the mathematics is unchanged).**
+
+* All graphs live on the vertex type of `B`. Exterior graphs `W` reuse a vertex `c ∈ C` as the
+  private leaf (`W = E + xc`), so no new vertex is created.
+* Every case supplies a "lift" (each decomposition of `W` gives one of `B` with `s` more paths and
+  the same ends at `r`). The root analysis is then done once, in `rootedAt_of_lift`.
+* In the even/even case with `y` on the chosen row, the four sub-cases of the manuscript are
+  realised as at most two successive grafts. The sub-case `X = Y` needs no separate argument.
+* The local decomposition with two ends at `x` and none at `y` comes from Lovász on
+  `A + leaf at x` via the private-leaf formula, with counting replacing the trimming argument.
 
 Lean 4 + Mathlib (v4.36.0) formalization of foundational lemmas for the Gallai path
 decomposition program. Everything listed below is proved with no `sorry`; `#print axioms`
