@@ -143,7 +143,8 @@ The proof of Theorem~\ref{thmB} has three steps.
 \begin{enumerate}[label=(\alph*),leftmargin=*]
 \item We characterise valid two-vertex extensions and reduce them to \emph{attachment
 records}. In a record, each old vertex makes two attachments to path ends, at most one path per
-colour is attached at both ends, and no path is attached at both ends in colour $c$. Every
+colour is attached at both ends, and no path is attached at both ends in colour $c$. In
+addition, each colour receives at most $4$ attachments, and colour $c$ at most $2$. Every
 record can be split between $x$ and $y$ by properly 2-edge-colouring a bipartite graph of
 maximum degree~$2$ (Section~\ref{sec:reduction}).
 \item Records are exactly the integral flows in a network with lower bounds. By Hoffman's
@@ -515,8 +516,9 @@ $g_i$ for each $i\in[n]$. The arcs, each with lower and upper bounds $[l,u]$, ar
 \end{definition}
 
 \begin{lemma}\label{lem:flow-record}
-Integral circulations in $D$ correspond to admissible records $\rho$ with
-$a_i(\rho)\ge\delta_i$ for all~$i$. In particular, such a record exists if and only if $D$
+Every integral circulation in $D$ yields an admissible record $\rho$ with
+$a_i(\rho)\ge\delta_i$ for all~$i$, and every such record arises in this way from some
+integral circulation. (The correspondence need not be one-to-one; only existence is used.) In particular, such a record exists if and only if $D$
 has a circulation.
 \end{lemma}
 
@@ -705,15 +707,16 @@ Write $n_j=n_j^i$.
   \begin{itemize}
   \item If $n_0=k-1$, then $\Delta_i=4$ and $s_i=-4$.
   \item If $n_0\le k-2$, then $s_i\ge\min\{0,k-8\}$.
-  \item If $n_0\le k-2$ and $\Delta_i$ is odd, then $s_i\ge k-6$, except when $n_0=k-2$ and
-  $n_1=0$; in that case $s_i=k-8$.
+  \item If $n_0\le k-2$ and $\Delta_i$ is odd, then either $s_i\ge k-6$, or $\Delta_i=3$,
+  $n_0=k-2$, $n_1=0$ and $s_i=k-8$.
   \end{itemize}
 \end{enumerate}
 \end{lemma}
 
 \begin{proof}
-If $\Delta_i=0$, then $s_i=2f_i(A)\ge0$. Every lower bound claimed for this case is at most
-$0$, or concerns odd $\Delta_i$, so we may assume $\Delta_i>0$. Then
+The first claim of (c) for $n_0=k-1$ is proved directly below. Every other claim is either a
+lower bound that is at most $0$ or a statement about odd $\Delta_i$. If $\Delta_i=0$, then
+$s_i=2f_i(A)\ge0$, so for those claims we may assume $\Delta_i>0$. Then
 $s_i\ge 4n_0-k\Delta_i\ge 4n_0-k(n_0+\varepsilon_i-k)$ by \eqref{eq:Delta}.
 
 (a) Here $\varepsilon_i=4$ and $n_0\le p_i\le k$. So
@@ -738,7 +741,8 @@ Now let $\Delta_i$ be odd, with $n_0\le k-2$. If $\Delta_i=1$, then $n_0\ge k-4$
 $s_i\ge 4(k-4)-k=3k-16\ge k-6$, using $k\ge5$. (Note $S\ne\emptyset$ forces $k\ge6$ by
 \eqref{eq:Sbound}.) If $\Delta_i=3$, then $n_0\ge k-2$, so $n_0=k-2$, and
 $s_i=2\bigl(2(k-2)+n_1\bigr)-3k=k-8+2n_1$. This is $\ge k-6$ unless $n_1=0$, and equals $k-8$
-when $n_1=0$.
+when $n_1=0$. So for odd $\Delta_i$ the only way to have $s_i<k-6$ is $\Delta_i=3$,
+$n_0=k-2$, $n_1=0$, $s_i=k-8$.
 \end{proof}
 
 \begin{proposition}\label{prop:LH}
@@ -748,8 +752,9 @@ Under the hypotheses of Theorem~\ref{thmB}, \textup{(LH)} holds for every $B\sub
 \begin{proof}
 Let $E:=2a-\sum_i\Delta_i$. This is an integer, and $kE=\sum_is_i$. We must show $E\ge0$.
 
-\emph{Case $k\le7$.} By \eqref{eq:Sbound}, $|S|\le1$. By Lemma~\ref{lem:s}, $s_i\ge0$ for
-$i\notin S$ and $s_i\ge-4$ for $i\in S$. Hence $kE\ge-4>-k$, so $E\ge0$.
+\emph{Case $k\le7$.} By \eqref{eq:Sbound}, $|S|\le1$, and $S=\emptyset$ if $k\le5$. By
+Lemma~\ref{lem:s}, $s_i\ge0$ for $i\notin S$ and $s_i\ge-4$ for $i\in S$. If $S=\emptyset$,
+then $kE\ge0$. Otherwise $k\in\{6,7\}$ and $kE\ge-4>-k$. In both cases $E\ge0$.
 
 \emph{Case $k\ge8$.} Let $J=\{i\in S:n_0^i=k-1\}$ and $j=|J|$. By Lemma~\ref{lem:s},
 $s_i\ge0$ for every $i\notin J$, and $s_i=-4$ for $i\in J$. Hence
@@ -782,14 +787,18 @@ gives the required extension $\Q'$.
 \begin{remark}[where the hypotheses are used]\label{rem:sharp}
 The condition $k\ge4$ is used in Lemmas~\ref{lem:u} and~\ref{lem:s}. The bounds $p_i\le k$ and
 $p_i\le k-1$ are used throughout. The bound $2|U|\le k-2$ is used only in
-Proposition~\ref{prop:LH}, through \eqref{eq:Sbound}, and it cannot simply be dropped. Take
+Proposition~\ref{prop:LH}, through \eqref{eq:Sbound}. Some bound on $|U|$ is needed, as
+the following example shows; we have not determined the best possible bound. Take
 $n=3$ and $m=3$, so $k=4$, and let $T=\emptyset$, $U=\{1,2,3\}$, $c=2$. Let $Q_1$ be a path on
 the three vertices, $Q_2$ the remaining edge, and $Q_3=\emptyset$. Then $p=(1,2,3)$, and the
 demands are $\delta_1=2$, $\delta_2=1$, $\delta_3=4$. So (LH) fails at $B=\emptyset$:
 $\sum_i\delta_i=7>6=2m$. In random experiments without the bound on $|U|$
 (Section~\ref{sec:computations}), every failure we saw was of this type, with
-$B=\emptyset$. In \JM\ this bound is exactly the hypothesis $r\le 2t-1$ (proof of
-Theorem~\ref{thmA}).
+$B=\emptyset$. In that example $2|U|=6$ is far above $k-2=2$. An independent exhaustive check
+of all small instances (Section~\ref{sec:computations}) found no failure with $|U|=2$ at
+$(n,m)=(3,3)$, nor with $|U|\le3$ at $(n,m)=(4,4)$. In both cases this is beyond
+$2|U|\le k-2$. So the stated bound is sufficient for our purpose but probably not optimal. In
+\JM\ this bound is exactly the hypothesis $r\le 2t-1$ (proof of Theorem~\ref{thmA}).
 \end{remark}
 
 \section{\JM\ Theorem 7, the transfer lemma, and Wu's conjecture}\label{sec:thm7}
@@ -1040,6 +1049,21 @@ rainbow.
 Section~\ref{sec:thm7}: $93{,}843{,}621$ triples $(n,t,r)$ with $n\le1500$, no failures.
 \end{itemize}
 
+The internal read mentioned in Section~\ref{sec:status} also wrote its own checks
+(\nolinkurl{scripts/independent/}), which use neither the flows nor the records. It enumerated
+all decompositions of $K_m$ into $n$ labelled linear forests, and all $(U,c)$ allowed by
+Theorem~\ref{thmB}, up to permutations of colours of the same type. For each it searched
+directly at graph level for a valid two-vertex extension. This was done for
+$(n,m)\in\{(3,1),(3,2),(3,3),(4,2),(4,3),(4,4),(4,5),(5,3),(5,4)\}$; for example $(4,5)$
+gives $233{,}160$ decompositions and $31{,}590$ instances. There were no failures. We re-ran
+$(3,3),(4,4),(5,3),(5,4)$ (\nolinkurl{data/independent_log.txt}). The same scripts give the
+$|U|$ observations in Remark~\ref{rem:sharp}:
+\begin{itemize}
+\item at $(n,m)=(3,3)$, all $24$ instances with $|U|=2$ are feasible;
+\item at $(n,m)=(4,4)$, all $1338$ instances with $|U|=2$, and all $1338$ with $|U|=3$, are
+feasible, while $60$ of the $450$ with $|U|=4$ are not.
+\end{itemize}
+
 The audit \cite[\S4]{A4} independently verified Wu's conjecture by computer for every
 $n$-edge $H$ up to isomorphism with $n\le7$.
 
@@ -1075,10 +1099,12 @@ consult the published version, which may differ.
 \item \JM\ Theorem~8 read literally, with $G\not\cong tK_2$ and isolated vertices allowed, is
 false (Remark~\ref{rem:hyp}). We prove it only under $r\le 2t-1$. For $r\in\{2t,2t+1\}$ we
 prove nothing; these cases are irrelevant for Wu's conjecture.
-\item The hypothesis $2|U|\le k-2$ of Theorem~\ref{thmB} is necessary for that lemma
-(Remark~\ref{rem:sharp}). We do not know whether the conclusion of Theorem~\ref{thmA} can
-hold more generally.
-\item This note is a single re-derivation and has not been refereed. The main points for a
+\item Some bound on $|U|$ is needed in Theorem~\ref{thmB} (Remark~\ref{rem:sharp}). The bound
+$2|U|\le k-2$ is what the application provides, but it is probably not optimal. We do not know
+whether the conclusion of Theorem~\ref{thmA} holds more generally.
+\item This note is a single re-derivation and has not been formally refereed. An internal
+adversarial read of Sections~\ref{sec:thmA}--\ref{sec:lower} (a separate agent) found no
+mathematical error; its exposition-level comments are incorporated. The main points for a
 referee to check are Lemma~\ref{lem:valid} (the list of possible cycles),
 Proposition~\ref{prop:cuts} (the cut computation), and the final integrality and parity steps in
 Propositions~\ref{prop:UH} and~\ref{prop:LH}.

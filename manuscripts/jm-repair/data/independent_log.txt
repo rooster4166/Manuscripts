@@ -1,0 +1,6 @@
+3 3 4 {1: [12, 0], 2: [24, 0], 3: [12, 12]}
+4 4 5 {1: [450, 0], 2: [1338, 0], 3: [1338, 0], 4: [450, 60]}
+n=3 m=3 k=4: decomps=24 instances(dedup colour-perm)=12 fails=0
+n=4 m=4 k=5: decomps=2664 instances(dedup colour-perm)=450 fails=0
+n=5 m=3 k=8: decomps=120 instances(dedup colour-perm)=89 fails=0
+n=5 m=4 k=7: decomps=11820 instances(dedup colour-perm)=2727 fails=0
