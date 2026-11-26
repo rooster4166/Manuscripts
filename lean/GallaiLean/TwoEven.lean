@@ -450,7 +450,7 @@ theorem realisable_of_fanSchedule (hL : LovaszStatement.{u}) (hn : Even (Fintype
 /-- The even vertices of `G − aw` for `a` even and `w` odd of degree at least `3`. -/
 theorem evenSet_delEdge_odd {a w : V} (haw : G.Adj a w) (ha : a ∈ evenSet G)
     (hw : Odd (G.degree w)) (hw3 : 1 < G.degree w) :
-    evenSet (delEdge G a w) = insert w ((evenSet G).erase a) := by
+    evenSet (rmEdge G a w) = insert w ((evenSet G).erase a) := by
   have hne : a ≠ w := G.ne_of_adj haw
   ext x
   simp only [Finset.mem_insert, Finset.mem_erase]
@@ -463,10 +463,10 @@ theorem evenSet_delEdge_odd {a w : V} (haw : G.Adj a w) (ha : a ∈ evenSet G)
   · by_cases hxw : x = w
     · subst hxw
       simp only [true_or, iff_true]
-      have h1 := delEdge_degree_right haw
+      have h1 := rmEdge_degree_right haw
       exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, by omega, even_delEdge_right haw hw⟩
     · simp only [hxw, false_or, evenSet, Finset.mem_filter, Finset.mem_univ, true_and,
-        delEdge_degree_of_ne hxa hxw]
+        rmEdge_degree_of_ne hxa hxw]
       tauto
 
 /-- A **Fan certificate** for removing the set `X` of even vertices: a list of moves `(x, w)`,
@@ -477,9 +477,9 @@ The list ends when at most one vertex is left. -/
 def FanCert : (G : SimpleGraph V) → [DecidableRel G.Adj] → Finset V → List (V × V) → Prop
   | _, _, X, [] => X.card ≤ 1
   | G, _, X, (x, w) :: M => x ∈ X ∧ G.Adj x w ∧ (∀ y ∈ X, y ≠ x → ¬ G.Adj w y) ∧
-      ((w ∈ evenSet G ∧ w ∉ X ∧ FanCert (delEdge G x w) (X.erase x) M) ∨
+      ((w ∈ evenSet G ∧ w ∉ X ∧ FanCert (rmEdge G x w) (X.erase x) M) ∨
        (Odd (G.degree w) ∧ 1 < G.degree w ∧
-         FanCert (delEdge G x w) (insert w (X.erase x)) M))
+         FanCert (rmEdge G x w) (insert w (X.erase x)) M))
 
 /-- **Soundness of the Fan calculus.** At even order and without isolated vertices, if `X ⊆ Ev`
 has a Fan certificate, then `Ev \ X` is realisable. -/
@@ -500,8 +500,8 @@ theorem realisable_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.car
     rcases hM with ⟨hw, hwX', hM⟩ | ⟨hw, hw3, hM⟩
     · -- even step
       have hEv := evenSet_delEdge hxw hx hw
-      have ih := realisable_of_fanCert hL hn M (delEdge G x w) (X.erase x)
-        (delEdge_degree_pos hxw hx hw hG)
+      have ih := realisable_of_fanCert hL hn M (rmEdge G x w) (X.erase x)
+        (rmEdge_degree_pos hxw hx hw hG)
         (by
           intro y hy
           rw [hEv]
@@ -532,20 +532,20 @@ theorem realisable_of_fanCert (hL : LovaszStatement.{u}) (hn : Even (Fintype.car
       rw [← this]; exact key
     · -- odd transfer
       have hEv := evenSet_delEdge_odd hxw hx hw hw3
-      have hdeg : ∀ v, 0 < (delEdge G x w).degree v := by
+      have hdeg : ∀ v, 0 < (rmEdge G x w).degree v := by
         intro v
         by_cases hvx : v = x
         · subst hvx
-          have h1 := delEdge_degree_left hxw
+          have h1 := rmEdge_degree_left hxw
           have h2 := (Finset.mem_filter.mp hx).2
           rcases h2.2 with ⟨k, hk⟩
           omega
         · by_cases hvw : v = w
           · subst hvw
-            have h1 := delEdge_degree_right hxw
+            have h1 := rmEdge_degree_right hxw
             omega
-          · rw [delEdge_degree_of_ne hvx hvw]; exact hG v
-      have ih := realisable_of_fanCert hL hn M (delEdge G x w) (insert w (X.erase x)) hdeg
+          · rw [rmEdge_degree_of_ne hvx hvw]; exact hG v
+      have ih := realisable_of_fanCert hL hn M (rmEdge G x w) (insert w (X.erase x)) hdeg
         (by
           rw [hEv]
           exact Finset.insert_subset_insert _ (Finset.erase_subset_erase _ hX))
@@ -583,7 +583,7 @@ neighbour of `u` not adjacent to `v`, and `H − uw` (whose even vertices are `w
 `H` is tight. -/
 theorem tight_of_transfer {H : SimpleGraph V} [DecidableRel H.Adj] {u v w : V}
     (hEv : evenSet H = {u, v}) (huw : H.Adj u w) (hw : Odd (H.degree w)) (hwv : ¬ H.Adj w v)
-    (h : Tight (delEdge H u w)) : Tight H := by
+    (h : Tight (rmEdge H u w)) : Tight H := by
   have hu : u ∈ evenSet H := by rw [hEv]; simp
   refine realisable_of_fan_transfer huw hu (Finset.notMem_empty u) hw (Finset.empty_subset _)
     ?_ h

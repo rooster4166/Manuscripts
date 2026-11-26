@@ -22,3 +22,5 @@ import GallaiLean.Critical
 import GallaiLean.MarkedSurgery
 import GallaiLean.MarkedBlocks
 import GallaiLean.TwoEven
+import GallaiLean.PathSurgery
+import GallaiLean.SmallBounds
