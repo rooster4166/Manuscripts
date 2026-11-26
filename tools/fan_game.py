@@ -17,7 +17,13 @@ Soundness: every move is Fan's lemma (`fan_single`, `fan_grouped`; Lean) applied
 partition, so a winning play gives a partition of G into at most n/2 paths with an end at r.
 Hence p(G + leaf at r) <= n/2, which is the rooted test R for (G, r).
 
-Usage: python3 tools/fan_game.py FILE.g6 [kmax]
+Inductive variant ("ind"): the seed may also come from the induction hypothesis on a smaller
+connected spanning K = G - F (F nonempty). For a chosen r' in Ev(K), the adversary picks any
+half-set S' of Ev(K) containing r'; the profile is 1 on odd vertices, 2 on S' and 0 elsewhere.
+We must win against every choice of S'. If every connected even-order graph has a winning
+inductive play, Gallai follows by induction on the number of edges.
+
+Usage: python3 tools/fan_game.py FILE.g6 [kmax] [ind]
 """
 import sys
 from functools import lru_cache
@@ -26,7 +32,7 @@ from itertools import combinations
 import networkx as nx
 
 
-def solve_graph(G, kmax=4, roots=None):
+def solve_graph(G, kmax=4, roots=None, inductive=False):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -109,6 +115,33 @@ def solve_graph(G, kmax=4, roots=None):
                     out.append(tuple(b))
         return out
 
+    def ind_seeds(F):
+        """Seeds from the induction hypothesis (simple-profile rooted test) on K = G - F.
+
+        K must be connected and spanning (no isolated vertex). For each choice of r' (an even
+        vertex of K, or None), the adversary picks a half-set S' of Ev(K) containing r'.
+        Returns a list of (r', [profiles]) pairs: we must win for every profile in the list."""
+        Fs = set(F)
+        Kg = nx.Graph(); Kg.add_nodes_from(range(n))
+        Kg.add_edges_from(e for e in E if e not in Fs)
+        if not nx.is_connected(Kg):
+            return []
+        deg = [Kg.degree(v) for v in range(n)]
+        ev = [v for v in range(n) if deg[v] % 2 == 0]
+        h = len(ev) // 2
+        out = []
+        for rp in [None] + ev:
+            profs = []
+            for Sp in combinations(ev, h):
+                if rp is not None and rp not in Sp:
+                    continue
+                b = [d % 2 for d in deg]
+                for v in Sp:
+                    b[v] = 2
+                profs.append(tuple(b))
+            out.append((rp, profs))
+        return out
+
     roots = range(n) if roots is None else roots
     result = {}
     for r in roots:
@@ -121,6 +154,13 @@ def solve_graph(G, kmax=4, roots=None):
                         break
                 if found:
                     break
+                if inductive and k >= 1:
+                    for rp, profs in ind_seeds(F):
+                        if all(win(frozenset(F), b0, r) for b0 in profs):
+                            found = (F, ("IH", rp))
+                            break
+                if found:
+                    break
             if found:
                 break
         result[r] = found
@@ -130,12 +170,13 @@ def solve_graph(G, kmax=4, roots=None):
 def main():
     path = sys.argv[1]
     kmax = int(sys.argv[2]) if len(sys.argv) > 2 else 4
+    inductive = len(sys.argv) > 3 and sys.argv[3] == "ind"
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
-        res = solve_graph(G, kmax)
+        res = solve_graph(G, kmax, inductive=inductive)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
