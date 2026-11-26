@@ -448,6 +448,110 @@ statements are otherwise identical to the originals.
   hypothesis): three-step descent at an even vertex with exactly one even neighbour; reduction of
   three-step descent to the two residual cases.
 
+## Six-clique theorem (cloud session)
+
+Theorem 1 of *Prescribed path ends at a clique of six even vertices*
+(`gallai/04-research-studies/six-clique-prescribed-ends.pdf`; audit A6 §1.3) is **fully
+formalized**. There is no `sorry`, and `#print axioms Gallai.six_clique_prescribed_ends` shows only
+`propext`, `Classical.choice` and `Quot.sound`. The finite bookkeeping of the paper's Section 4 is
+checked by `decide +kernel`, which is kernel evaluation (no `native_decide`, no extra axiom).
+`SixCliqueModel.lean` takes about 30 s to build, and each of the other new files a few seconds.
+`Basic.lean` and `Fan.lean` are unchanged.
+
+**Statement** (`GallaiLean/SixClique.lean`):
+
+```lean
+theorem six_clique_prescribed_ends (G : SimpleGraph V) [DecidableRel G.Adj] (U : Finset V)
+    (hU : U.card = 6) (hclique : ∀ a ∈ U, ∀ b ∈ U, a ≠ b → G.Adj a b)
+    (heven : ∀ u ∈ U, Even (G.degree u)) (hodd : ∀ x ∉ U, Odd (G.degree x))
+    (hfive : ∀ x ∉ U, (U.filter (G.Adj x)).card = 5)
+    (T : Finset V) (hTU : T ⊆ U) (hT : T.card = 3) :
+    ∃ D : PathDecomp G, 2 * D.size = Uᶜ.card + 6 ∧
+      ∀ v, D.ends v = if v ∈ T then 2 else if v ∈ U then 0 else 1
+```
+
+The paper's hypothesis "`|X|` even" is derived from the handshake lemma rather than assumed.
+The module docstring of `SixClique.lean` writes out the whole proof. It also expands the two
+points the audit asked for: Lemma 2's chain step (F10) and Corollary 5's triple rectangle (F11).
+
+### `GallaiLean/Insertion.lean`: decompositions as (edge set, end vector)
+
+* `Ach E b`: `fromEdgeSet E` has a path decomposition with exactly `b v` ends at every `v`. The
+  number of paths is not tracked, because `PathDecomp.sum_ends` recovers it.
+* `blankNbrs E b u`: the number of neighbours of `u` with no end. `mv b t u` moves one end from
+  `t` to `u`.
+* **`Ach.grouped`**: Fan's grouped transfer in edge-set form (from `fan_grouped`). If
+  `blankNbrs E b u < ∑_{t ∈ T} b t` and no `t ∈ T` is adjacent to `u`, then some `t ∈ T` with
+  `b t ≥ 1` gives `Ach (insert s(t,u) E) (mv b t u)`. `Ach.transfer` is the case of one donor.
+* `lEdges a l`, `lastOf a l`, `mem_lEdges_iff`: vertex lists and their consecutive edges.
+  **`Ach.addPath`** adds a new row from a duplicate-free vertex list whose edges are all new.
+
+### `GallaiLean/Schedule.lean`: the insertion-schedule lemma (reusable)
+
+* `Prog n`: a program of transfers on a finite model `Fin n`. `offer ds r k` offers the donors
+  `ds` to the receiver `r` and continues with `k t` for the returned donor `t`. `tr` is a single
+  transfer and `ofList` a list of them.
+* `Prog.ok T tgt adj ins c`: a Boolean checker. `adj` is an *upper bound* for the present edges
+  among model vertices; unknown edges may be included, which only raises blank counts. At an
+  offer, the receiver's model blank count must be below the total supply. Every branch with a
+  positive donor is checked. At a leaf, the inserted edges must be exactly `T` and the end vector
+  must be `tgt`.
+* **`Prog.sound`** (and `Prog.sound₀`, starting with nothing inserted): let `ι : Fin n → V` be
+  injective, let every vertex outside the image of `ι` have an end, and let every present edge
+  between model vertices be allowed by `adj`. Then a checked program inserts `ι(T)` into any
+  state, with end vector `tgt` on the model and unchanged elsewhere. Each offer is one
+  `Ach.grouped`. Real blank neighbours inject into model blank neighbours
+  (`blankNbrs_le_mblank`).
+* So a finite certificate of grouped transfers (as in the six-clique, incidence and root-shape
+  papers) can be verified on its model with `decide` and applied to graphs of any size.
+
+### `GallaiLean/EvenInsert.lean`: Lemma 3 of the paper
+
+* `Ach.chain`: the transfers `x → c₁ → ⋯ → z` along a list, under local blank-count hypotheses.
+* `Ach.insert_cycle`: inserting a cycle none of whose vertex pairs is present. Offer the two
+  cycle neighbours of `a` to `a`, then carry the extra end back around the other arc. When the
+  other neighbour is returned, use the reversed cycle.
+* `exists_cyc`, `exists_chordless`: an even finite edge set with an edge contains a cycle, and a
+  shortest cycle has no chord (`shorter_of_chord`). `even_cycle_degree`: every vertex meets an
+  even number of edges of a cycle.
+* **`Ach.insert_even`** (Lemma 3): let `S` be independent in `E`, and let every `v ∈ S` have at
+  least one end and at most one blank neighbour. Then any finite even graph on `S` can be inserted
+  with the end vector unchanged. The proof is a strong induction that peels off a shortest cycle.
+
+### `GallaiLean/SixCliqueModel.lean`: the finite core (Section 4)
+
+On `Fin 12`, clique vertices are `0..5` and the representative of type `i` is `6 + i`.
+`mpaths` holds the five seed paths and `seedE` their 24 edges. `seg1`, `seg2` and `seg3` are the
+2 + 8 + 6 single transfers. `E1..E4` and `c1..c4` give the core edges and core end vectors at
+each stage. `finalE` is the final path `(0,5,1,2,4,3)` and `cfin = (2,0,2,2,0,0 | 1⁶)`.
+On `Fin 14`, `pairProg h` is Lemma 4 for a pair `12, 13` of type `h`: its two rectangles, with
+`(j,u,v,w)` read from a table. All 18 finite facts are proved by `decide +kernel`. They cover the
+seed, the segment and rectangle programs (`seg*_ok`, `pair_ok`, 4 leaves per type), the
+completeness and soundness of the core edge set, and the final vector.
+
+### `GallaiLean/SixCliqueBuild.lean`: the construction on labelled data
+
+* `SixData V`: the graph with `ι : Fin 12 → V` (clique, then representatives), the type function,
+  the list of pairs, and the hypotheses of Theorem 1 in labelled form.
+* `St L A`: the state edge set. It consists of the core edges `ι(L)`, every pair's seed spoke,
+  the whole exterior graph `F`, and all spokes of the completed vertices `A`. `B c` is `c` on the
+  core and `1` elsewhere.
+* `seed` (five model paths via `Ach.addMapPaths`, plus one row `x, p, y` per pair), `after_F`
+  (Lemma 3), `pair_step` and `stage` (Lemma 4 for every pair of a stage, via `Prog.sound₀` on
+  `Fin 14`), `segment` (the core transfers, via `Prog.sound₀` on `Fin 12`), `final_edges` (the
+  resulting edge set is exactly `E(G)`), **`SixData.main`**.
+
+### `GallaiLean/SixClique.lean`
+
+`exists_pairing` splits an even finite set into disjoint pairs. The main theorem labels `U` with
+`T` at `0, 2, 3`. It then derives the type function, uses the handshake lemma for `m` even and
+`d(h) = 5 + m − n_h` for `n_h` odd, chooses representatives and pairings, builds `SixData`, and
+reads off the ends and the size.
+
+**Not formalized from this paper:** Corollary 5 (other proper neighbourhoods; its triple
+rectangle is written out in the docstring) and Theorem 6 (its 31,442 certificate records are not
+in the repository; `Prog` is the natural format for replaying them).
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is

@@ -136,7 +136,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 |---|---|---|
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | **delivered** `two_step_descent`, EMC(e=4), `rooted_le_four`, and the write-up (merged). **Now:** general k-step infrastructure (transfer and lift with arbitrary W; the path induction reduces k-step descent to the base case; the one-even-neighbour case) |
-| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
 | session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
 | session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
 
@@ -187,3 +187,13 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **three-step descent at vertices with exactly one even neighbour**, hence test (i) at d = 6 at every r ∈ N(z) with exactly one neighbour in N(z).
 
   Three-step descent is reduced to: y has ≥ 2 even neighbours, or y is an all-bridge vertex with no even neighbour.
+- Lean (cloud session, branch `claude/lean-six-clique`): **six-clique Theorem 1 formalized**
+  (`six_clique_prescribed_ends`, `lean/GallaiLean/SixClique.lean`). It is sorry-free with
+  standard axioms only, and the Section 4 bookkeeping is checked by kernel `decide`.
+  - Reusable tools: the insertion-schedule lemma `Prog.sound` (finite transfer programs checked on
+    a model and replayed on any graph), `Ach.grouped` / `Ach.addPath`, and Lemma 3
+    (`Ach.insert_even`: insert an even graph by chordless cycles).
+  - The audit's requested expansions (A6 F10: Lemma 2's chain step; F11: Cor 5's triple rectangle)
+    are written out in the `SixClique.lean` docstring.
+  - Not formalized: Cor 5 and Thm 6. `Prog` is the format for replaying Thm 6's certificate
+    records once they are in the repository.
