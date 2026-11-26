@@ -214,7 +214,8 @@ theorem sum_ite_isNone {α β : Type*} (l : List (α × Option β)) :
   | nil => simp
   | cons x l ih =>
     obtain ⟨a, o⟩ := x
-    cases o <;> simp [ih] <;> ring
+    have := ih
+    cases o <;> simp at this ⊢ <;> omega
 
 /-- A filterMap whose images have edge lists matching a family, up to a map. -/
 theorem filterMap_flatMap_perm' {α β γ δ : Type*} (g : α → Option β) (E : β → List γ)
@@ -383,12 +384,14 @@ theorem exists_cone_item (x : GPath F × Option V)
     simp [GPath.outEndsAt, GPath.toCone, GPath.push]
   | some s =>
     obtain ⟨hs, hend⟩ := hx s rfl
+    dsimp only at hend
     rcases hend with h | h
     · subst h
       refine ⟨P.coneExtend hs, by simp, ?_⟩
       simp [GPath.outEndsAt, GPath.coneExtend]
     · subst h
-      refine ⟨P.reverse.coneExtend hs, ?_, ?_⟩
+      have hs' : P.reverse.src ∈ S := hs
+      refine ⟨P.reverse.coneExtend hs', ?_, ?_⟩
       · simp only [GPath.coneExtend_edges, GPath.reverse_edges, Option.toList_some,
           List.map_cons, List.map_nil, List.cons_append, List.nil_append]
         exact List.Perm.cons _ ((List.reverse_perm _).map _)
@@ -472,6 +475,7 @@ theorem exists_outEnds_eq [Fintype V] [DecidableEq V] (M : MarkedPartition F S) 
   have := hsites.length_eq
   rw [List.length_append, Finset.length_toList] at this
   unfold markedCost
+  rw [hlabels] at this
   omega
 
 end marked

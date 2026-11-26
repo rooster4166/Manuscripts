@@ -76,6 +76,36 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
 
+
+## Final assembly target (after the audits)
+
+**Floor form of the two tests.** Using MR Thm 114 (audited) and the private-leaf trick:
+
+- **Test (i) at degree d** is the floor bound for W = (J − z) plus one leaf at r. W has odd order and exactly d − 1 even vertices, namely N(z) − r.
+- **Test (ii) at degree d** is the floor bound for (J − z) plus two leaves at r. This graph also has odd order and d − 1 even vertices.
+
+So **Gallai ⇔ BP_t for every odd t** (restricted to the apex class), where:
+
+> **BP_t:** connected, odd order, at least one pendant leaf, exactly t even vertices ⇒ p ≤ ⌊n/2⌋.
+
+| t | Status | Source |
+|---|---|---|
+| 1 | proved | Lovász |
+| 3 | proved | Fan–Hou–Zhou / Botler–Sambinelli (A7 confirms the statements) |
+| 5 | **open** | test (i) at d = 6, i.e. MR Thm 144, which is conditional on Shaik; test (ii) at d = 6 is closed (MR Thm 123) |
+| 7 | **open** | test (i) at d = 8; test (ii) at d = 8 is closed (MR Thm 128, computer, audit A8) |
+| ≥ 9 | **open** | — |
+
+For t = 5, Botler–Sambinelli leaves only E-subgraphs that contain a bowtie or a block with a degree-4 vertex, i.e. dense E-subgraphs on five vertices.
+
+**What a complete proof needs:** an argument for BP_t that is uniform in t, or an induction BP_t ⇒ BP_{t+2}.
+
+Candidate uniform mechanisms (`research/connections.md`):
+
+- the endpoint matroid conjecture (EMC);
+- faithful descent (FD);
+- a theorem on cliques of even vertices.
+
 ## Current strategy
 
 1. **Robustness first.** Audit N1–N4, S2, S3 and S5. Fix every gap in the manuscripts. Formalize the elementary nodes (N1, the parity lemmas, the W(F,S) identity) in Lean.
