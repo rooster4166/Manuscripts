@@ -361,7 +361,7 @@ On the core roots without `orbit`: the opponent can make the root a donor, and t
 - Nine win, at k = 1 or 2, and `rf` changes nothing.
 - **First miss: Inv~|~zbw**, i.e. K10 − {02, 17, 19, 24, 29, 39, 58}: 6-connected, 8 even vertices, critical. It loses at roots 2 and 3 with or without `rf`; (R) holds by CP-SAT.
 - At root 2 (a degree-6 hub with two odd neighbours), holding star(2) + 10 + 64 gives a Lovász seed. At the 4th receipt the count is |E(H)| = 33 < 3·9 + 8 = 35, so neither case of Lemma 5.9 is decided.
-- A star plus 3 held edges is being tested; see `outputs/miss1_k3.log`.
+- With a star plus 3 held edges (F = star(2) + 01, 34, 36, so \|F\| = 9) Inv~|~zbw **wins** at roots 2 and 3, with or without `rf`. The play: a relay 0 → 1 → 2, receipts at 2, a second hub at 3, and a new path through both hubs (4–3–6–2–8). The miss is a held-set-size artefact (`outputs/certificate_miss1.txt`).
 
 
 

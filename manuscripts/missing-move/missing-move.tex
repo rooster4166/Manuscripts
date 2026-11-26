@@ -48,7 +48,8 @@ receipt sits at Fan's equality. The game compensates by routing the new path alo
 edges. The rigid configuration at equality can be refuted by an edge count, or recombined as a
 flower of cycles. We give a profile-level receipt-or-flower move with such a count. With it, and
 the symmetry of the root's orbit, the game wins our hard cases of orders $8$ and $10$ with a
-single held star; a random sample of order $10$ shows where it stops. These include the cocktail party graphs $K_{2m}$ minus a perfect matching for
+single held star. On a random sample of order $10$ every graph is won with a star plus at most
+three held edges. These include the cocktail party graphs $K_{2m}$ minus a perfect matching for
 $m=4,5$, where the move attains the insertion barrier. The hub lemmas, the degree-four theorems,
 the critical instance and Fan's alternative are formalised in Lean~4.
 \end{abstract}
@@ -706,16 +707,19 @@ sampled critical graphs of order $10$ with a vertex of degree $6$, the move chan
 win with a star plus one or two held edges, with or without it. The tenth is
 \texttt{Inv\char126|\char126zbw}, i.e.\ $K_{10}$ minus $\{02,17,19,24,29,39,58\}$. It is
 $6$-connected with eight even vertices, and with a star plus at most two held edges it loses at
-the roots $2$ and $3$, with or without the move (\texttt{scripts/outputs/rf\_sample.log}). (R)
-holds there by CP-SAT.
+the roots $2$ and $3$, with or without the move (\texttt{scripts/outputs/rf\_sample.log}). With a
+star plus three edges it wins at both roots, again with or without the move.
 \end{proposition}
 
 The root $2$ of \texttt{Inv\char126|\char126zbw} is a hub of degree $6$ with two odd neighbours,
 $1$ and $6$. Isolating it leaves five even vertices. Holding the edges $10$ and $64$ as well leaves
 only $9$, so a Lov\'asz seed exists. At the fourth receipt, however, $|E(H)|=33$ while
 $j\lambda+\mu=3\cdot9+8=35$. So Lemma~\ref{lem:rfcount} decides neither case, and the rigid
-configuration is not refuted. This is the first graph we know on which the extended game, with
-hub-shaped held sets, needs more than receipt or flower.
+configuration is not refuted. The game instead holds the star at $2$ and the edges $01$, $34$,
+$36$ ($|F|=9$). Its play is a relay $0\to1\to2$ into the hub, receipts at $2$, a second hub at
+$3$, and a new path through both hubs, $4\,3\,6\,2\,8$ or $4\,3\,6\,2\,7$
+(\texttt{scripts/outputs/certificate\_miss1.txt}). So in this sample the miss is again a matter of
+held-set size: a second hub along the inserted path does what the count cannot.
 
 \begin{question}\label{q:count}
 \begin{enumerate}[label=(\alph*)]
@@ -748,8 +752,8 @@ equality. This makes the ``two-end transfer at equality'' of~\cite{D6} concrete.
 configuration of Lemmas~\ref{lem:alt} and~\ref{lem:through} must be refuted by an edge count
 (Proposition~\ref{prop:A62}) or recombined as a flower (Proposition~\ref{prop:K8M}). The count of
 Lemma~\ref{lem:rfcount} makes both available in the game. It closes the hard cases $A_{6,2}$,
-$B'$ and $\mathrm{CP}(4),\mathrm{CP}(5)$, but not \texttt{Inv\char126|\char126zbw}, where it
-is not sharp enough.
+$B'$ and $\mathrm{CP}(4),\mathrm{CP}(5)$. It is not sharp enough on \texttt{Inv\char126|\char126zbw},
+where a second hub along the inserted path closes the case instead.
 Otherwise the configuration is bypassed by holding more edges and inserting a longer path through
 the hub.
 \end{enumerate}
