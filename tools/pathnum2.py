@@ -100,7 +100,7 @@ if __name__ == "__main__":
     from pathnum import solve, verify_partition
     rng = random.Random(3)
     bad = 0
-    for t in range(60):
+    for t in range(int(__import__("sys").argv[1]) if len(__import__("sys").argv) > 1 else 60):
         n = rng.randint(4, 8)
         m = rng.randint(n - 1, n * (n - 1) // 2)
         G = nx.gnm_random_graph(n, m, seed=rng.randrange(10**6))
