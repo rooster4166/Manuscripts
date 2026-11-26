@@ -22,8 +22,9 @@
 \newcommand{\pos}[1]{\left(#1\right)^{+}}
 \newcommand{\JM}{\textup{[JM]}}
 
-\title[Repairing the extension step of Javadi--Miralaei]{Rainbow Hamiltonian cycle decompositions:\\
-a repair of the extension step in the Javadi--Miralaei proof\\ of Wu's conjecture}
+\title[Repairing the extension step of Javadi--Miralaei]{Rainbow Hamiltonian cycle
+decompositions:\\ repairing the extension step in the\\ Javadi--Miralaei proof of Wu's
+conjecture}
 \date{26 November 2026}
 
 \begin{document}
@@ -44,9 +45,9 @@ $G\not\cong tK_2$, and it holds in their application. The new proof does not use
 Its core is a two-vertex extension lemma, which we reduce to the feasibility of an integral flow
 in a small network. We verify the two cut conditions given by Hoffman's circulation theorem by a
 counting argument that ends in an integrality and parity step. We also state and prove the
-corrected transfer lemma for Theorem~7. Combined with the remaining steps of the authors'
-proof of Theorem~7, these give a complete proof of Wu's conjecture. We re-checked those steps,
-including all their inequalities. The only external inputs are the theorems of Hilton (1984),
+corrected transfer lemma for Theorem~7, and we write out the authors' proof of Theorem~7 in
+full with the corrected transfers, re-checking all its inequalities. Together these give a
+complete proof of Wu's conjecture. The only external inputs are the theorems of Hilton (1984),
 Hoffman (1960) and Liu--Chen (2023). We list precisely what we did not re-prove. Computer
 checks of every reduction and of every per-colour inequality agree with the proofs. These checks
 are a sanity test, not part of any proof.
@@ -81,8 +82,7 @@ The tool for both steps is Hilton's extension theorem \cite{Hilton} (Theorem~\re
 below).
 
 \subsection*{The gaps}
-An adversarial audit of \JM\ (in this repository, \texttt{research/audit/A4-semi-cliques-JM.md},
-\S2) found three problems.
+An adversarial audit of \JM\ \cite[\S2]{A4} found three problems.
 \begin{enumerate}[label=\textup{(JM\arabic*)},leftmargin=*]
 \item \emph{Theorem~7, transfer steps.} The rule that decides which edges of a donor class
 may be moved into a receiver class does not keep the receiver a linear forest in general. The
@@ -135,7 +135,7 @@ p_i(\Q')\le k-2\ \ (i\in T\cup\{c\}),\qquad p_i(\Q')\le k-3\ \ (i\in U\setminus\
 Here $k$ is the number of vertices of $K_{2n+1}$ still to be added. Hilton's condition
 $|Q_i|\ge 2m-2n-1$ reads $p_i(\Q)\le k$, and the stronger condition $|Q_i|\ge 2m-2n$ for unused
 colours reads $p_i(\Q)\le k-1$. Theorem~\ref{thmB} therefore says that the invariant (2) of
-\JM\ survives the addition of one matching edge. The hypothesis $2|U|\le k-2$ comes from
+\JM\ (see (2$_{\mathrm{JM}}$) in Section~\ref{sec:gap}) survives the addition of one matching edge. The hypothesis $2|U|\le k-2$ comes from
 $r\le 2t-1$. It cannot be dropped: without it the lemma fails already for $B=\emptyset$ in the
 cut condition (Remark~\ref{rem:sharp}).
 
@@ -160,8 +160,8 @@ replaced by Lemma~\ref{lem:transfer}; Theorem~\ref{thmA}; the theorems of Hilton
 \cite{Hilton}, Hoffman \cite{Hoffman} and Liu--Chen \cite{LC}.
 \end{thmL}
 
-Section~\ref{sec:thm7} explains precisely which parts of \JM\ Theorem~7 we re-proved, which
-parts we checked but did not rewrite, and how the pieces fit together. Section~\ref{sec:status}
+Section~\ref{sec:thm7} gives the proof of \JM\ Theorem~7 in full, with the corrected
+transfers, and assembles the proof of Theorem~\ref{thmC}. Section~\ref{sec:status}
 lists what is not proved here.
 
 \section{Preliminaries}\label{sec:prelim}
@@ -200,8 +200,8 @@ $\sum_{i=1}^n\sigma_{Q_i}(v)=2n-\deg_{K_m}(v)=2n-(m-1)=k$.
 \end{lemma}
 
 \subsection{Hilton's theorem}
-The following is \cite[Corollary~6]{JM}, a reformulation of Hilton's theorem
-\cite[Theorem~1]{Hilton}. Since $p(Q_i)=r-|Q_i|$, condition~(2) is equivalent to
+The following is \cite[Corollary~6]{JM}, a reformulation of Hilton's extension theorem
+\cite{Hilton} (\JM\ Theorem~5). Since $p(Q_i)=r-|Q_i|$, condition~(2) is equivalent to
 $p(Q_i)\le 2n+1-r$.
 
 \begin{theorem}[Hilton]\label{thm:hilton}
@@ -240,7 +240,7 @@ form. Nothing in it is used later.
 The proof is by induction on $s\in[0,n-t]$. At stage $s$ there is a decomposition $\Q$ of
 $K_{2s+r}$ into linear forests in which $G\cup sK_2$ is rainbow in $Q_1,\dots,Q_{t+s}$, and
 \[
-|Q_i|\ge 4s+2r-2n-1\ \ (i\le t+s),\qquad |Q_i|\ge 4s+2r-2n\ \ (i>t+s). \tag{JM2}
+|Q_i|\ge 4s+2r-2n-1\ \ (i\le t+s),\qquad |Q_i|\ge 4s+2r-2n\ \ (i>t+s). \tag{2$_{\mathrm{JM}}$}
 \]
 Set $k=2n-2s-r+1$; this is our $k$ with $m=2s+r$. The auxiliary bipartite multigraph
 $\widetilde G$ has vertex classes $\{u_j\}$ (the vertices of $K_{2s+r}$) and $\{c_i\}$
@@ -312,7 +312,7 @@ $u_{2s+r+1}\,z_A\,A\,w_A\,u_{2s+r+2}\,w_B\,B\,z_B\,u_{2s+r+1}$.
 This is a gap in the written proof, not a counterexample to \JM\ Theorem~8. All our
 computations agree with the theorem (Section~\ref{sec:computations}). We do not try to repair
 Claim~12. We keep the architecture of \JM, namely adding the outside vertices in pairs, each
-pair joined by a matching edge of a new colour, while maintaining (JM2). We replace the inductive
+pair joined by a matching edge of a new colour, while maintaining (2$_{\mathrm{JM}}$). We replace the inductive
 step by Theorem~\ref{thmB}. Its proof needs no balanced colourings and no pairings.
 
 \begin{remark}[the hypothesis of \JM\ Theorem 8]\label{rem:hyp}
@@ -370,8 +370,7 @@ exactly one of the edges $e_i$, and no edge of $G$, because $G\subseteq P_1\cup\
 \begin{remark}
 The colour order $c=t+s+1$ is the one used in \JM; Theorem~\ref{thmB} allows any $c\in U_s$.
 Every step of the construction is effective. Theorem~\ref{thmB} is proved by a max-flow
-computation and a 2-edge-colouring (Section~\ref{sec:reduction}). Hilton's theorem is
-constructive as well.
+computation and a 2-edge-colouring (Section~\ref{sec:reduction}).
 \end{remark}
 
 \section{Two-vertex extensions and attachment records}\label{sec:reduction}
@@ -553,7 +552,9 @@ capacity $\kappa_i$, is $\min\{\kappa_i,\psi_i(B)\}$.
 \begin{proof}
 A component node $C$ can forward at most $\min\{1,\sigma_C(B)\}$ units directly to $g_i$. It
 can forward one further unit through $h_i$ only if $\sigma_C(B)=2$, and the arc $(h_i,g_i)$
-carries at most $1-[i=c]$ units in total. This bound is attained.
+carries at most $1-[i=c]$ units in total. The bound is attained by sending one unit directly
+from every $C$ with $\sigma_C(B)\ge1$ and, if $i\ne c$ and some $C$ has $\sigma_C(B)=2$, one
+further unit from that $C$ through~$h_i$. The arc $(g_i,t)$ then caps the flow at~$\kappa_i$.
 \end{proof}
 
 \begin{proposition}[cut conditions]\label{prop:cuts}
@@ -852,7 +853,8 @@ We give the proof in full, following \JM\ step by step. The transfer steps are r
 Lemma~\ref{lem:transfer}, and every count is the same as in \JM.
 
 \begin{proof}[Proof, part 1: set-up]
-By \cite{LC} (Theorem~2 of \JM), $n\ge6$ and $H$ is not a linear forest. Each component of
+Isolated vertices play no role, so we assume that $H$ has none. By \cite{LC} (Theorem~2
+of \JM), $n\ge6$ and $H$ is not a linear forest. Each component of
 $H'$ has at least two edges, and at least one component, which is not a path, has at least
 three. A component with $e$ edges has at most $e+1$ vertices. Hence $H'$ has at most $(t-1)/2$
 components, and
@@ -983,12 +985,13 @@ in some Hamiltonian decomposition, contradicting the choice of $H$.
 
 None of the proofs depends on these computations. They test the reductions and the
 inequalities on small cases, so that an error in a reduction or in a case analysis would
-probably show up. The scripts are in \texttt{manuscripts/jm-repair/scripts/} and the logs in
-\texttt{manuscripts/jm-repair/data/}. We used Python with \texttt{networkx} (max-flow) and
+probably show up. The scripts are in \nolinkurl{manuscripts/jm-repair/scripts/} and the logs in
+\nolinkurl{manuscripts/jm-repair/data/}. We used Python with \texttt{networkx} (max-flow) and
 OR-Tools CP-SAT.
 
 \begin{itemize}[leftmargin=*]
-\item \emph{Instances.} \texttt{solvers.one\_vertex\_step} grows decompositions of $K_m$ one
+\item \emph{Instances.} The function \texttt{one\_vertex\_step} in \texttt{solvers.py} grows
+decompositions of $K_m$ one
 vertex at a time. Each step solves a CP-SAT model of a Hilton one-vertex step with a random
 objective. \texttt{test\_adversarial.py} uses a variant whose objective keeps about half the
 colours as tight as possible, so that many colours have $p_i=k$ or $p_i=k-1$. The set $U$ is
@@ -1004,7 +1007,10 @@ $2|U|\le k-2$ allows, and every $c\in U$ is tested.
   \end{itemize}
   Random instances (\texttt{test\_random.py}, seeds 21--23, $n\le10$): $712$ cases.
   Adversarial instances (\texttt{test\_adversarial.py}, seeds 31--33, $n\le10$): $1013$ cases.
-  Every case was feasible, and the three tests agreed in every case.
+  Every case was feasible, and the three tests agreed in every case. For larger instances
+  ($8\le n\le14$, adversarial generation, \texttt{test\_flow\_large.py}, seed 41) we ran the
+  flow test alone, since the brute-force cut check is exponential in $m$. All $277$ cases were
+  feasible.
 
 \item \emph{The bound on $|U|$} (\texttt{test\_noUbound.py}). We took $U$ to be all colours with
 $p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible
@@ -1102,7 +1108,7 @@ complete graphs, \emph{Discrete Math.} \textbf{346}(8) (2023), Art.~113479.
 \bibitem{Schrijver} A.~Schrijver, \emph{Combinatorial Optimization: Polyhedra and Efficiency},
 Vol.~A, Springer, 2003, Chapter~11 (circulations; Hoffman's circulation theorem and its integer
 version).
-\bibitem{A4} Referee audit A4 (this repository), \texttt{research/audit/A4-semi-cliques-JM.md},
+\bibitem{A4} Referee audit A4 (this repository), \nolinkurl{research/audit/A4-semi-cliques-JM.md},
 \S2 (items JM1--JM3), 26 November 2026.
 \end{thebibliography}
 
