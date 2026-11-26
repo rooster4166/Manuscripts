@@ -321,3 +321,61 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
 - The first gaps of the extended game we know of are degree-six hubs at n = 10, one receipt short. There a non-profile count at Fan's equality can close the gap (A_{6,2}) or be tight (B′).
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
+
+## E15. Oracle seeds, the last-edge barrier, and EMC at n = 8 (cloud session `claude/emc-four-even`, route (H))
+
+Tools:
+- `tools/realis.c` with its front end `tools/realis.py`: an exact realisability oracle. It runs a depth-first search for the paths one at a time, with necessary-condition pruning and memoised failures. A whole realisable family at n = 8 takes milliseconds.
+- `tools/fan_oracle.py`: the Fan game of E13 with **oracle seeds**. The seed on G − F (F ≠ ∅) is any realisable simple profile, or with `+gen` any realisable end profile.
+- `tools/emc_sweep.py`: EMC, plus the transfer test at branching vertices.
+
+Cross-check: the oracle agrees with the CP-SAT oracle (`faithful_descent.make_oracle`) on 60 random graphs at n = 6 and on 35+ graphs at n = 8, including Gqz~vw. The run was stopped on a dense graph where the ILP was slow.
+
+**EMC at n = 8 (complete).**
+- All 1,082 connected critical graphs satisfy EMC: the minimal realisable sets all have size e/2, satisfy basis exchange and are loopless.
+- 1,030 of them are uniform, including **every 3-connected one** (476).
+- The 52 non-uniform graphs:
+  - κ = 1: 46;
+  - κ = 2: 6 (GsaFC{, GsaFeW, GsbFEo, GsbFeW, GsbfMo, GsPI^{), all with e = 6.
+- n ≤ 6 reproduces E6: 3 + 34 critical graphs.
+
+**Transfer test at branching vertices** (Lemma 51 of endpoint-structure). For critical G at n = 8:
+
+| m = \|N_E(y)\| | instances | no a with N_E(y) − a ⊆ S_K, \|S_K\| ≤ e/2 − 1 in G − ya |
+|---|---|---|
+| 2 | 964 | 0 |
+| 3 | 656 | 403 |
+| 4 | 215 | 209 |
+| ≥ 5 | 154 | 154 |
+
+- Restricted to e = 6 and m = 3: 22 of 275 instances fail.
+- With m = 2 and a non-bridge even edge, all 13,360 (n = 8) and 92 (n = 6) instances pass with the root b prescribed (Cor 52, `branchBase_of_three`).
+
+**Oracle game** (even roots).
+
+| n | seeds | \|F\| | graphs with a losing root |
+|---|---|---|---|
+| 4 | simple | 1 | 0 |
+| 6 | simple | 1 | 1 (K_{2,2,2}, all roots) |
+| 6 | simple | ≤ 2 | 0 |
+| 6 | general | 1 | 0 |
+| 8 | simple | 1 | 6 (Gqzn^[, Gq~v~w, Gr~v~w, Gr~v~{, Gut~~w, Gu^~v{) |
+| 8 | simple | ≤ 2, ≤ 3 | 3 (Gqzn^[ root 1; Gr~v~w all roots; Gut~~w roots 1, 3, 4) |
+| 8 | general | 1 | **1: Gr~v~w = K8 − perfect matching** |
+| Gr~v~w | simple, orbit-reduced | ≤ 4 | loses |
+| Gr~v~w | general, orbit-reduced | ≤ 3 | loses |
+
+Gqz~vw at root 3 wins with |F| = 1 in two ways:
+- F = {01}: seed {3} in the non-critical G − 01 (3 paths), then a new path 01;
+- F = {31}: seed {5, 7}, then a single transfer, which gives {3, 5, 7}.
+
+**Explanation of the Gr~v~w loss (proved, Lean `cocktail_fan_barrier`, `cocktail_insertion_barrier`).**
+- Take CP(m) = K_{2m} − PM with m ≥ 4, and let D be any partition of CP(m) − ut.
+- If Fan's condition for ut towards u holds, then 3|D| ≥ 4m − 3, so |D| > m.
+- A new path made of the held edges F, added to a partition into ≤ m − 1 paths, needs |F| ≥ m − 1.
+- So no oracle play with one-edge new paths can win, for any F.
+
+**Reading.**
+- The strongest hypothesis on end profiles of G − e, played through Fan's moves on e, certifies (R) at every even root of every connected graph with n ≤ 8, except K8 − PM.
+- K8 − PM is critical with uniform endpoint matroid U_{4,8}, so the failure lies in the moves.
+- Its only possible finish is a ≥ 3-edge spare path into a 3-path partition, i.e. three Hamiltonian paths. That is the flower of missing-move Prop 5.5.
