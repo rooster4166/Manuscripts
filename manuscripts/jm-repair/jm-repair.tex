@@ -1,0 +1,1109 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amssymb,amsmath,enumitem,booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{thmL}{Theorem}
+\renewcommand{\thethmL}{\Alph{thmL}}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\pos}[1]{\left(#1\right)^{+}}
+\newcommand{\JM}{\textup{[JM]}}
+
+\title[Repairing the extension step of Javadi--Miralaei]{Rainbow Hamiltonian cycle decompositions:\\
+a repair of the extension step in the Javadi--Miralaei proof\\ of Wu's conjecture}
+\date{26 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+Wu conjectured that for every subgraph $H$ of $K_{2n+1}$ with $n$ edges, $K_{2n+1}$ has a
+decomposition into $n$ Hamiltonian cycles in which the edges of $H$ lie in distinct cycles.
+Javadi and Miralaei (arXiv:2403.17290; Discrete Math.\ 349 (2026) 114676) proved this by
+combining a reduction (their Theorem~7) with an extension theorem (their Theorem~8). An
+independent audit found a substantive gap in the proof of Theorem~8: the ``pairing'' step of
+Claim~12 does not establish the properties that are later used, and those properties would not
+suffice anyway. The audit also found a smaller, fixable gap in the transfer steps of
+Theorem~7.
+
+We give a new and complete proof of Theorem~8 under the hypothesis $r\le 2t-1$. For graphs
+without isolated vertices this hypothesis is equivalent to the authors' hypothesis
+$G\not\cong tK_2$, and it holds in their application. The new proof does not use Claim~12.
+Its core is a two-vertex extension lemma, which we reduce to the feasibility of an integral flow
+in a small network. We verify the two cut conditions given by Hoffman's circulation theorem by a
+counting argument that ends in an integrality and parity step. We also state and prove the
+corrected transfer lemma for Theorem~7. Combined with the remaining steps of the authors'
+proof of Theorem~7, these give a complete proof of Wu's conjecture. We re-checked those steps,
+including all their inequalities. The only external inputs are the theorems of Hilton (1984),
+Hoffman (1960) and Liu--Chen (2023). We list precisely what we did not re-prove. Computer
+checks of every reduction and of every per-colour inequality agree with the proofs. These checks
+are a sanity test, not part of any proof.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction and summary}\label{sec:intro}
+
+A \emph{Hamiltonian decomposition} of $K_{2n+1}$ is a partition of its edge set into $n$
+Hamiltonian cycles. A subgraph $H$ is \emph{rainbow} in a decomposition $(C_1,\dots,C_n)$ if no
+two edges of $H$ lie in the same $C_i$.
+
+\begin{theorem}[Wu's conjecture {\cite[Conj.~1]{JM}}]\label{thm:wu}
+Let $H\subseteq K_{2n+1}$ have exactly $n$ edges. Then $K_{2n+1}$ has a Hamiltonian
+decomposition in which $H$ is rainbow.
+\end{theorem}
+
+Liu and Chen \cite{LC} proved Theorem~\ref{thm:wu} when $|V(H)|\le n+1$, when $H$ is a linear
+forest, and when $n\le5$. Javadi and Miralaei \cite{JM} (hereafter \JM) proved the general case.
+The structure of their proof is as follows. Let $H$ be a minimal counterexample. Let $H'$ be the
+union of the components of $H$ that are not isomorphic to $K_2$, with $r$ vertices and $t$ edges.
+\begin{itemize}[leftmargin=*]
+\item \JM\ Theorem~7 embeds $H'$ into a decomposition $(P_1,\dots,P_n)$ of $K_r$ into linear
+forests. In this decomposition $H'$ is rainbow in $P_1,\dots,P_t$, and the size conditions
+$|P_i|\ge 2r-2n-1$ ($i\le t$) and $|P_i|\ge 2r-2n$ ($i>t$) hold.
+\item \JM\ Theorem~8 extends any such decomposition to a Hamiltonian decomposition of
+$K_{2n+1}$ in which $H'\cup(n-t)K_2$ is rainbow. That is, the $n-t$ components $K_2$ of $H$ are
+realised by a matching on the vertices outside $K_r$, one edge in each of the remaining colours.
+\end{itemize}
+The tool for both steps is Hilton's extension theorem \cite{Hilton} (Theorem~\ref{thm:hilton}
+below).
+
+\subsection*{The gaps}
+An adversarial audit of \JM\ (in this repository, \texttt{research/audit/A4-semi-cliques-JM.md},
+\S2) found three problems.
+\begin{enumerate}[label=\textup{(JM\arabic*)},leftmargin=*]
+\item \emph{Theorem~7, transfer steps.} The rule that decides which edges of a donor class
+may be moved into a receiver class does not keep the receiver a linear forest in general. The
+audit proposed a fix that uses an orientation and does not change any count. We state and
+prove it as Lemma~\ref{lem:transfer}.
+\item \emph{Theorem~8, Claim~12.} This is substantive. The two new vertices $u',u''$ are joined
+to the old vertices through subgraphs $G_1,G_2$ of an auxiliary bipartite multigraph. These are
+obtained from a balanced colouring, a ``pairing'' colouring (Hilton's Lemma~10) and a final
+balanced 2-colouring. The pairing is not well defined when both duplicates of an endpoint
+edge survive into the multigraph $L'$, and nothing prevents that. Moreover, the conditions
+(i)--(v) that Claim~12 asserts do not imply the conclusion drawn from them, namely that every
+class remains a linear forest. Section~\ref{sec:gap} gives the details and an explicit example.
+\item \emph{Theorem~8, hypothesis.} The proof uses $r\le 2t-1$ (``$k\ge4$ as $r\le 2t-1$''),
+but the hypothesis is stated as $G\not\cong tK_2$. The two agree for graphs without isolated
+vertices; see Remark~\ref{rem:hyp}.
+\end{enumerate}
+
+\subsection*{What this note proves}
+\begin{thmL}[repaired \JM\ Theorem~8]\label{thmA}
+Let $n\ge t\ge1$ and $r\le 2t-1$. Let $\PP=(P_1,\dots,P_n)$ be an edge decomposition of
+$K_r$ in which every $P_i$ induces a linear forest, with
+\[
+|P_i|\ge 2r-2n-1\quad(i\in[t]),\qquad |P_i|\ge 2r-2n\quad(i\in[t+1,n]).
+\]
+Let $G\subseteq K_r$ be a graph with exactly one edge in each of $P_1,\dots,P_t$ and no other
+edges. Then $K_r\subseteq K_{2n+1}$ has a Hamiltonian decomposition $(C_1,\dots,C_n)$ with
+$P_i\subseteq C_i$ for all $i$, together with pairwise vertex-disjoint edges
+$e_{t+1},\dots,e_n$ such that $e_i\in C_i$ and no $e_i$ meets $V(K_r)$. In particular the graph
+$G\cup\{e_{t+1},\dots,e_n\}\cong G\cup(n-t)K_2$ is rainbow.
+\end{thmL}
+
+The proof (Sections~\ref{sec:reduction}--\ref{sec:lower}) replaces Claim~12 by the following
+lemma. The new vertices are added in pairs, and every pair receives the edge between them in a
+colour not used so far. Write $p_i(\Q)=m-|Q_i|$ for the number of components of the spanning
+linear forest $(V(K_m),Q_i)$.
+
+\begin{thmL}[two-vertex extension]\label{thmB}
+Let $m\ge1$, and set $k:=2n+1-m$; assume $k\ge4$. Let $\Q=(Q_1,\dots,Q_n)$ be an edge
+decomposition of $K_m$ into linear forests. Let $[n]=T\sqcup U$ and $c\in U$, and suppose that
+\[
+p_i(\Q)\le k\ (i\in T),\qquad p_i(\Q)\le k-1\ (i\in U),\qquad 2|U|\le k-2 .
+\]
+Then $\Q$ extends to an edge decomposition $\Q'$ of $K_{m+2}=K_m+\{x,y\}$ into linear forests
+with $Q_i\subseteq Q'_i$, $xy\in Q'_c$, and
+\[
+p_i(\Q')\le k-2\ \ (i\in T\cup\{c\}),\qquad p_i(\Q')\le k-3\ \ (i\in U\setminus\{c\}).
+\]
+\end{thmL}
+
+Here $k$ is the number of vertices of $K_{2n+1}$ still to be added. Hilton's condition
+$|Q_i|\ge 2m-2n-1$ reads $p_i(\Q)\le k$, and the stronger condition $|Q_i|\ge 2m-2n$ for unused
+colours reads $p_i(\Q)\le k-1$. Theorem~\ref{thmB} therefore says that the invariant (2) of
+\JM\ survives the addition of one matching edge. The hypothesis $2|U|\le k-2$ comes from
+$r\le 2t-1$. It cannot be dropped: without it the lemma fails already for $B=\emptyset$ in the
+cut condition (Remark~\ref{rem:sharp}).
+
+The proof of Theorem~\ref{thmB} has three steps.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item We characterise valid two-vertex extensions and reduce them to \emph{attachment
+records}. In a record, each old vertex makes two attachments to path ends, at most one path per
+colour is attached at both ends, and no path is attached at both ends in colour $c$. Every
+record can be split between $x$ and $y$ by properly 2-edge-colouring a bipartite graph of
+maximum degree~$2$ (Section~\ref{sec:reduction}).
+\item Records are exactly the integral flows in a network with lower bounds. By Hoffman's
+circulation theorem, a record exists if and only if two cut conditions (UH) and (LH) hold
+(Section~\ref{sec:flow}).
+\item We verify (UH) and (LH) by per-colour counting. In each case the counting leaves a
+deficit smaller than one unit, which an integrality argument, and in one case a parity
+argument, rules out (Sections~\ref{sec:upper} and~\ref{sec:lower}).
+\end{enumerate}
+
+\begin{thmL}[Wu's conjecture]\label{thmC}
+Theorem~\ref{thm:wu} holds. The proof uses: \JM\ Theorem~7, with its transfer steps
+replaced by Lemma~\ref{lem:transfer}; Theorem~\ref{thmA}; the theorems of Hilton
+\cite{Hilton}, Hoffman \cite{Hoffman} and Liu--Chen \cite{LC}.
+\end{thmL}
+
+Section~\ref{sec:thm7} explains precisely which parts of \JM\ Theorem~7 we re-proved, which
+parts we checked but did not rewrite, and how the pieces fit together. Section~\ref{sec:status}
+lists what is not proved here.
+
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Notation}
+$[n]=\{1,\dots,n\}$, $[a,b]=\{a,\dots,b\}$, and $\pos{z}=\max\{z,0\}$. All graphs are finite.
+They are simple, except for the auxiliary bipartite multigraphs in Section~\ref{sec:reduction}.
+A \emph{linear forest} is a forest of maximum degree at most~$2$. If $F$ is a set of edges of
+$K_m$, we regard it as the spanning subgraph $(V(K_m),F)$. Its components are paths, some of
+them trivial (single vertices). We write
+\[
+p(F):=m-|F|
+\]
+for the number of components of a linear forest $F$ on $m$ vertices. An \emph{edge
+decomposition} $\Q=(Q_1,\dots,Q_n)$ of $K_m$ is a sequence of pairwise disjoint edge sets whose
+union is $E(K_m)$. Empty $Q_i$ are allowed. We call $i$ the \emph{colour} of the edges of~$Q_i$,
+and we write $p_i=p_i(\Q)=p(Q_i)$. Throughout, $n$ is fixed, $m\le 2n$, and
+\[
+k=k(m):=2n+1-m
+\]
+is the number of vertices of $K_{2n+1}$ outside the current $K_m$.
+
+\subsection{Ends and slots}
+Let $F$ be a linear forest on $V$. Every component $C$ of $F$ has two \emph{slots}. If $C$ has
+an edge, its slots are its two end vertices. If $C=\{v\}$ is trivial, both slots are at~$v$.
+The number of slots at a vertex $v$ is
+\[
+\sigma_F(v):=2-\deg_F(v)\in\{0,1,2\}.
+\]
+Thus $\sum_{v\in V}\sigma_F(v)=2p(F)$.
+
+\begin{lemma}\label{lem:slots}
+Let $\Q$ be an edge decomposition of $K_m$ into linear forests $Q_1,\dots,Q_n$. Then every
+vertex $v$ has exactly $k=2n+1-m$ slots in total:
+$\sum_{i=1}^n\sigma_{Q_i}(v)=2n-\deg_{K_m}(v)=2n-(m-1)=k$.
+\end{lemma}
+
+\subsection{Hilton's theorem}
+The following is \cite[Corollary~6]{JM}, a reformulation of Hilton's theorem
+\cite[Theorem~1]{Hilton}. Since $p(Q_i)=r-|Q_i|$, condition~(2) is equivalent to
+$p(Q_i)\le 2n+1-r$.
+
+\begin{theorem}[Hilton]\label{thm:hilton}
+Let $1\le r\le 2n$. An edge decomposition $\cC=(C_1,\dots,C_n)$ of $K_r$ extends to a
+Hamiltonian decomposition $(C'_1,\dots,C'_n)$ of $K_{2n+1}$ with $C_i\subseteq C'_i$ for all
+$i$ if and only if, for every $i$, \textup{(1)}~$C_i$ is a linear forest, and
+\textup{(2)}~$|C_i|\ge 2r-2n-1$.
+\end{theorem}
+
+We use only the ``if'' direction. The ``only if'' direction is elementary. A Hamiltonian cycle
+of $K_{2n+1}$ meets $K_r$ in a linear forest, and each of its $p(C_i)$ path components is
+followed by at least one vertex outside $K_r$, so $p(C_i)\le 2n+1-r$.
+
+\subsection{Hoffman's circulation theorem}
+Let $D$ be a directed graph with integer lower and upper bounds $l\le u$ on its arcs, where
+$u$ may take the value $+\infty$. A \emph{circulation} is a function $f$ on the arcs with
+$l\le f\le u$ and with inflow equal to outflow at every node. For $X\subseteq V(D)$ let
+$\delta^{\mathrm{in}}(X)$ and $\delta^{\mathrm{out}}(X)$ be the sets of arcs entering and
+leaving~$X$.
+
+\begin{theorem}[Hoffman \cite{Hoffman}; see {\cite[Ch.~11]{Schrijver}}]\label{thm:hoffman}
+A circulation exists if and only if, for every $X\subseteq V(D)$,
+\[
+\sum_{a\in\delta^{\mathrm{in}}(X)} l(a)\ \le \sum_{a\in\delta^{\mathrm{out}}(X)} u(a).
+\]
+If $l$ and $u$ are integral and a circulation exists, then an integral circulation exists.
+\end{theorem}
+
+\section{The gap in the proof of \JM\ Theorem 8}\label{sec:gap}
+
+We summarise the argument of \cite[pp.~8--9]{JM} in its own notation, and then explain why it
+is incomplete. This section reproduces the audit's finding \cite[\S2.4]{A4} in a self-contained
+form. Nothing in it is used later.
+
+\subsection{The argument}
+The proof is by induction on $s\in[0,n-t]$. At stage $s$ there is a decomposition $\Q$ of
+$K_{2s+r}$ into linear forests in which $G\cup sK_2$ is rainbow in $Q_1,\dots,Q_{t+s}$, and
+\[
+|Q_i|\ge 4s+2r-2n-1\ \ (i\le t+s),\qquad |Q_i|\ge 4s+2r-2n\ \ (i>t+s). \tag{JM2}
+\]
+Set $k=2n-2s-r+1$; this is our $k$ with $m=2s+r$. The auxiliary bipartite multigraph
+$\widetilde G$ has vertex classes $\{u_j\}$ (the vertices of $K_{2s+r}$) and $\{c_i\}$
+(the colours). It has one edge $c_iu_j$ if $u_j$ is an end of a nontrivial path of $Q_i$, two
+parallel edges if $u_j$ is isolated in $Q_i$, and none otherwise. In our language, $\widetilde G$
+has one edge per slot. Claim~12 asserts that there are disjoint subgraphs
+$G_1,G_2\subseteq\widetilde G$ with the following properties:
+(i) $\deg_{G_\ell}(u_j)=1$;
+(ii) $\deg_{G_\ell}(c_i)\le2$ and $\deg_{G_\ell}(c_{s+t+1})\le1$;
+(iii) lower bounds on $\deg_{G_1}(c_i)+\deg_{G_2}(c_i)$;
+(iv) if $c_i$ is adjacent in $G_\ell$ to $u_{j_1}$ and $u_{j_2}$, these are not the two ends of
+a path of $Q_i$;
+(v) the same across $G_1,G_2$ for the colour $s+t+1$, and $G_1\cup G_2$ has no parallel edges.
+The new vertex $u_{2s+r+\ell}$ is then joined to $u_j$ in colour $i$ for each edge
+$c_iu_j\in G_\ell$, and the edge $u_{2s+r+1}u_{2s+r+2}$ is given colour $s+t+1$.
+The text then states: ``because of Conditions (ii), (iv) and (v) of Claim~12, each $Q_i$ induces
+a linear forest''.
+
+The proof of Claim~12 constructs the following objects in turn.
+\begin{itemize}[leftmargin=*]
+\item $\widehat G$: $\widetilde G$ with every edge doubled, plus a vertex $u'$.
+\item A balanced $k$-edge-colouring $L_1,\dots,L_k$ of $\widehat G$.
+\item Modified classes $L'_1$ and $L'_3$, obtained via Lemma~11, and their union $L'$.
+\item A balanced 2-colouring $E_1,E_2$ of $F=\widehat G[L']$ respecting a \emph{pairing}
+(their Lemma~10), with $E_1$ selected by a degree condition at $c_{s+t+2}$.
+\item An arbitrary balanced 2-colouring $E_{11},E_{12}$ of $E_1$, from which
+$G_\ell=\widetilde G[E_{1\ell}]$.
+\end{itemize}
+The pairing has two rules:
+(P1) two parallel edges joining $c_i$ to $u_j$ form an $i$-pair;
+(P2) if $u_j,u_{j'}$ are the two ends of one path of $Q_i$, the edges $c_iu_j$ and $c_iu_{j'}$
+form an $i$-pair.
+The text asserts that $E_1,E_2$ have the following property: if $c_i$ is adjacent in $E_\ell$ to
+$u_{j_1}$ and $u_{j_2}$, then these are not the two ends of a path of $Q_i$.
+
+\subsection{What goes wrong}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item \emph{The pairing is not well defined.} Let $u_j$ be an end of a nontrivial path $A$ of
+$Q_i$, with other end $u_{j'}$. The edge $c_iu_j$ of $\widetilde G$ has two duplicates in
+$\widehat G$. Since the $k$-colouring is balanced on pairs and $k\ge4$, the duplicates lie in
+different classes $L_q$. If both classes are among the four classes used, both duplicates can
+survive into~$L'$, and nothing in the construction prevents this. Then (P1) pairs them with each
+other, while (P2) asks to pair one of them with $c_iu_{j'}$. A pairing consists of disjoint
+pairs, and Lemma~10 also requires that at most one of several parallel edges be paired outside
+the bundle. Suppose (P1) is honoured. Then $E_1$ and $E_2$ each contain a copy of $c_iu_j$, so
+whichever of them contains $c_iu_{j'}$ contains both ends of $A$ at $c_i$. Since $E_1$ is
+afterwards fixed by a degree condition, it cannot be chosen to avoid this. Similarly, an
+isolated vertex of $Q_i$ contributes up to four duplicates to $L'$, and $E_1$ may contain two
+of them. The clause ``$G_1\cup G_2$ has no parallel edges'' in (v) is therefore not established
+either.
+\item \emph{Conditions (i)--(v) do not imply the conclusion.} Condition (iv) is a condition on
+each $G_\ell$ separately. Example~\ref{ex:cycle} below satisfies (iv) and still creates a cycle.
+The property needed is a joint one. By Lemma~\ref{lem:valid} below, the exact condition is that
+at most one path of $Q_i$ is joined to both new vertices (none in colour $s+t+1$), in addition
+to (iv). The stronger property claimed for $E_1$ would give this joint condition, but by~(a)
+that property is not established.
+\item \emph{Together.} Suppose $E_1$ contains, at $c_i$, both ends of two different paths of
+$Q_i$. This is possible by~(a). Every split of $E_1$ into $G_1,G_2$ that satisfies (ii) and
+(iv) then joins each new vertex to one end of each path, which creates a cycle.
+\end{enumerate}
+
+\begin{example}\label{ex:cycle}
+Suppose $Q_i$ contains two nontrivial paths $A$ (ends $z_A,w_A$) and $B$ (ends $z_B,w_B$).
+Let $G_1$ contain $c_iz_A,c_iz_B$ and let $G_2$ contain $c_iw_A,c_iw_B$. Then (ii) and (iv) hold
+at $c_i$, but the new class contains the cycle
+$u_{2s+r+1}\,z_A\,A\,w_A\,u_{2s+r+2}\,w_B\,B\,z_B\,u_{2s+r+1}$.
+\end{example}
+
+This is a gap in the written proof, not a counterexample to \JM\ Theorem~8. All our
+computations agree with the theorem (Section~\ref{sec:computations}). We do not try to repair
+Claim~12. We keep the architecture of \JM, namely adding the outside vertices in pairs, each
+pair joined by a matching edge of a new colour, while maintaining (JM2). We replace the inductive
+step by Theorem~\ref{thmB}. Its proof needs no balanced colourings and no pairings.
+
+\begin{remark}[the hypothesis of \JM\ Theorem 8]\label{rem:hyp}
+\JM\ Theorem~8 assumes only $G\not\cong tK_2$, but its proof uses $r\le 2t-1$
+(\cite[p.~9]{JM}: ``$k\ge4$ as $r\le 2t-1$''). If $G$ has no isolated vertices, then $r\le 2t$
+with equality only for $G\cong tK_2$, so the two hypotheses agree. In the application $G=H'$,
+which has no isolated vertices, and moreover $r\le(3t-1)/2$. If $G$ may have isolated vertices,
+the literal statement fails. For example, let $n=3$, $t=1$, $r=4$, and decompose $K_4$ into three
+perfect matchings $P_1,P_2,P_3$. Let $G$ consist of one edge of $P_1$ together with the two
+remaining vertices, so $G\not\cong K_2$. The size conditions hold ($|P_1|=2\ge1$ and
+$|P_2|=|P_3|=2\ge2$). But the $n-t=2$ matching edges would need four vertices outside $K_4$,
+and $K_7$ has only three. Theorem~\ref{thmA} uses the hypothesis $r\le 2t-1$.
+\end{remark}
+
+\section{Theorem~\ref{thmA} from Theorem~\ref{thmB}}\label{sec:thmA}
+
+\begin{proof}[Proof of Theorem~\ref{thmA}, assuming Theorem~\ref{thmB}]
+Note that $r\le 2t-1\le 2n-1$.
+
+\emph{Case $t=n$.} There is nothing to add. Since $p(P_i)=r-|P_i|\le 2n+1-r$ for every $i$,
+Theorem~\ref{thm:hilton} gives a Hamiltonian decomposition $(C_i)$ with $P_i\subseteq C_i$.
+Each $C_i$ ($i\in[n]$) contains exactly one edge of~$G$.
+
+\emph{Case $t<n$.} For $s=0,1,\dots,n-t$ we construct decompositions $\Q^{(s)}$ of
+$K_{m_s}$ into linear forests, where $m_s=r+2s$. Each $\Q^{(s)}$ extends $\PP$; its vertex set is
+$V(K_r)\cup\{x_0,y_0,\dots,x_{s-1},y_{s-1}\}$ with all these vertices distinct, and
+$x_jy_j\in Q^{(s)}_{t+j+1}$ for $j<s$. Put
+\[
+k_s=2n+1-m_s,\qquad T_s=[t+s],\qquad U_s=[t+s+1,n].
+\]
+We maintain the invariant
+\[
+p_i(\Q^{(s)})\le k_s\ \ (i\in T_s),\qquad p_i(\Q^{(s)})\le k_s-1\ \ (i\in U_s). \tag{I$_s$}
+\]
+For $s=0$ take $\Q^{(0)}=\PP$. Then (I$_0$) is exactly the size hypothesis, because
+$p(P_i)=r-|P_i|$ and $k_0=2n+1-r$. For every $s$,
+\[
+(k_s-2)-2|U_s| \;=\; (2n-1-r-2s)-2(n-t-s) \;=\; 2t-1-r\;\ge\;0 .
+\]
+So while $U_s\neq\emptyset$ we have $2|U_s|\le k_s-2$, and in particular $k_s\ge 4$.
+
+Let $s<n-t$. Apply Theorem~\ref{thmB} to $\Q^{(s)}$ with $T=T_s$, $U=U_s$, $c=t+s+1$, and new
+vertices $x_s,y_s$. This gives $\Q^{(s+1)}$ with $x_sy_s\in Q^{(s+1)}_{t+s+1}$. It satisfies
+$p_i\le k_s-2=k_{s+1}$ for $i\in T_s\cup\{c\}=T_{s+1}$ and $p_i\le k_s-3=k_{s+1}-1$ for
+$i\in U_s\setminus\{c\}=U_{s+1}$. This is (I$_{s+1}$).
+
+At $s=n-t$ we have $m:=m_{n-t}=r+2(n-t)\le 2n-1$ and $p_i(\Q^{(n-t)})\le k_{n-t}$ for every
+$i$, i.e.\ $|Q^{(n-t)}_i|\ge 2m-2n-1$. By Theorem~\ref{thm:hilton}, $\Q^{(n-t)}$ extends to a
+Hamiltonian decomposition $(C_1,\dots,C_n)$ of $K_{2n+1}$. Then $P_i\subseteq C_i$, and the edges
+$e_{t+j+1}:=x_jy_j\in C_{t+j+1}$ ($0\le j<n-t$) are pairwise disjoint and avoid $V(K_r)$.
+Each of $C_1,\dots,C_t$ contains exactly one edge of $G$. Each of $C_{t+1},\dots,C_n$ contains
+exactly one of the edges $e_i$, and no edge of $G$, because $G\subseteq P_1\cup\dots\cup P_t$.
+\end{proof}
+
+\begin{remark}
+The colour order $c=t+s+1$ is the one used in \JM; Theorem~\ref{thmB} allows any $c\in U_s$.
+Every step of the construction is effective. Theorem~\ref{thmB} is proved by a max-flow
+computation and a 2-edge-colouring (Section~\ref{sec:reduction}). Hilton's theorem is
+constructive as well.
+\end{remark}
+
+\section{Two-vertex extensions and attachment records}\label{sec:reduction}
+
+Throughout this section $\Q=(Q_1,\dots,Q_n)$ is an edge decomposition of $K_m$ (vertex set
+$V$) into linear forests, and $c\in[n]$ is fixed. We write $\sigma_i(v)=\sigma_{Q_i}(v)$ and
+$p_i=p(Q_i)$. A \emph{two-vertex extension} is a map $\chi$ from the $2m+1$ edges of
+$K_{m+2}=K_m+\{x,y\}$ not in $K_m$ to $[n]$, with $\chi(xy)=c$. It defines
+$Q'_i=Q_i\cup\chi^{-1}(i)$. The extension is \emph{valid} if every $Q'_i$ is a linear forest.
+
+For a component $C$ of $Q_i$ and $z\in\{x,y\}$, let $d_z(C)$ be the number of end vertices
+$v$ of $C$ with $\chi(zv)=i$. A trivial component $\{v\}$ has one end vertex, so
+$d_z(\{v\})\le1$. Say that $C$ is \emph{joined to both} $x$ and $y$ (in colour $i$) if
+$d_x(C)\ge1$ and $d_y(C)\ge1$.
+
+\begin{lemma}[validity]\label{lem:valid}
+The extension $\chi$ is valid if and only if, for every colour $i$, the following hold.
+\begin{enumerate}[label=\textup{(V\arabic*)},leftmargin=*]
+\item $[\chi(xv)=i]+[\chi(yv)=i]\le\sigma_i(v)$ for every $v\in V$.
+\item $|\{v:\chi(xv)=i\}|\le 2-[i=c]$ and $|\{v:\chi(yv)=i\}|\le 2-[i=c]$.
+\item $d_x(C)\le1$ and $d_y(C)\le1$ for every component $C$ of $Q_i$.
+\item The number of components of $Q_i$ joined to both $x$ and $y$ is at most $1$ if
+$i\ne c$, and is $0$ if $i=c$.
+\end{enumerate}
+Moreover $p(Q'_i)=p_i+2-a_i-[i=c]$, where
+$a_i:=|\{v:\chi(xv)=i\}|+|\{v:\chi(yv)=i\}|$.
+\end{lemma}
+
+\begin{proof}
+For $v\in V$ we have $\deg_{Q'_i}(v)=\deg_{Q_i}(v)+[\chi(xv)=i]+[\chi(yv)=i]$, so (V1) says
+exactly that $\deg_{Q'_i}(v)\le2$. Likewise (V2) says $\deg_{Q'_i}(x),\deg_{Q'_i}(y)\le2$,
+counting the edge $xy$ when $i=c$. Assume (V1) and (V2). Then $Q'_i$ is a linear forest if and
+only if it is acyclic.
+
+Let $Z$ be a cycle of $Q'_i$. Since $Q_i$ is acyclic, $Z$ passes through $x$ or $y$. By (V1),
+every new edge $zv$ of colour $i$ ($z\in\{x,y\}$) ends at a vertex $v$ with
+$\sigma_i(v)\ge1$, that is, at an end vertex of its component $C$ of $Q_i$. Every vertex of
+$C$ other than its end vertices has both of its $Q'_i$-edges inside~$C$. Hence, once $Z$ enters
+$C$ through a new edge at an end vertex $v$, it runs through all of $C$ to the other end vertex
+$w$ and leaves through a new edge at $w$. (If $C=\{v\}$ is trivial, then $w=v$ and $Z$ uses
+both new edges at $v$.) The vertices $x$ and $y$ each occur at most once on $Z$. So $Z$ has one
+of the following forms:
+$x\,C\,x$, which needs $d_x(C)=2$;
+$y\,C\,y$, which needs $d_y(C)=2$;
+$x\,C\,y\,C'\,x$ with $C\ne C'$ both joined to both;
+or, only when $i=c$, $x\,C\,y\,x$ through the edge $xy$, with $C$ joined to both.
+Conversely, each of these configurations yields a cycle. Therefore, given (V1) and (V2),
+acyclicity is equivalent to (V3) and (V4). The formula for $p(Q'_i)$ follows from
+$|Q'_i|=|Q_i|+a_i+[i=c]$.
+\end{proof}
+
+\begin{definition}[records]\label{def:record}
+A \emph{record} (for $\Q$ and $c$) is a function $\rho:V\times[n]\to\{0,1,2\}$ with
+$\rho(v,i)\le\sigma_i(v)$ and $\sum_i\rho(v,i)=2$ for every $v$. For a component $C$ of
+$Q_i$, put $\rho(C)=\rho(u,i)+\rho(w,i)$ if $C$ is a path with end vertices $u\ne w$, and
+$\rho(C)=\rho(v,i)$ if $C=\{v\}$. In both cases $\rho(C)\in\{0,1,2\}$, the number of slots of
+$C$ used by $\rho$. A record is \emph{admissible} if, for every colour $i$:
+\begin{enumerate}[label=\textup{(R\arabic*)},leftmargin=*]
+\item $a_i(\rho):=\sum_{v}\rho(v,i)\le 4$ if $i\ne c$, and $a_c(\rho)\le2$;
+\item at most one component $C$ of $Q_i$ has $\rho(C)=2$ if $i\ne c$, and none if $i=c$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[records and the split]\label{lem:record}
+\textup{(a)} If $\chi$ is valid, then $\rho(v,i):=[\chi(xv)=i]+[\chi(yv)=i]$ is an admissible
+record with $a_i(\rho)=a_i$.
+\textup{(b)} Conversely, for every admissible record $\rho$ there is a valid $\chi$ with
+$[\chi(xv)=i]+[\chi(yv)=i]=\rho(v,i)$ for all $v$ and~$i$.
+\end{lemma}
+
+\begin{proof}
+(a) We have $\rho(v,i)\le\sigma_i(v)$ by (V1). Each of $xv$ and $yv$ has exactly one colour,
+so $\sum_i\rho(v,i)=2$. (R1) follows from (V2). Let $C$ be a component of $Q_i$ with
+$\rho(C)=2$. If $C=\{v\}$, then $\chi(xv)=\chi(yv)=i$, so $C$ is joined to both. If $C$ has end
+vertices $u\ne w$, then $\rho(u,i)=\rho(w,i)=1$. By (V3) the two attachments do not both go to
+$x$, and do not both go to $y$, so again $C$ is joined to both. Hence (R2) follows from (V4).
+
+(b) Let $F$ be the bipartite multigraph with parts $V$ and $[n]$ that has $\rho(v,i)$
+parallel edges between $v$ and $i$. Then $\deg_F(v)=2$ and $\deg_F(i)=a_i(\rho)$. For $i\ne c$,
+if $Q_i$ has a (unique) component $C$ with $\rho(C)=2$, call the two edges of $F$ at $i$ that
+correspond to its two slots the \emph{special pair} at $i$. These are the two parallel edges
+$vi$ if $C=\{v\}$, and the edges $ui,wi$ otherwise.
+
+Replace each colour vertex $i\ne c$ by two vertices $i',i''$ and distribute its at most four
+edges between them, at most two at each, so that a special pair, if present, lies entirely
+at~$i'$. Keep $c$ as a single vertex, which has degree $a_c(\rho)\le2$. The resulting multigraph
+$F^\ast$ is bipartite with maximum degree~$2$. Each component is therefore a path or an even
+cycle; a pair of parallel edges counts as a cycle of length~$2$. Colouring the edges alternately
+along each component gives a proper edge colouring of $F^\ast$ with the two colours $x$
+and~$y$. For each edge of $F^\ast$ between $v$ and a copy of $i$ that has colour $z$, set
+$\chi(zv)=i$; also set $\chi(xy)=c$. Since $\deg_{F^\ast}(v)=2$, the vertex $v$ is incident with
+exactly one edge of each colour, so $\chi(xv)$ and $\chi(yv)$ are each defined exactly once.
+By construction $[\chi(xv)=i]+[\chi(yv)=i]=\rho(v,i)$.
+
+We check (V1)--(V4). (V1) holds because $\rho(v,i)\le\sigma_i(v)$. Each copy of $i$ has degree at
+most $2$ in a proper colouring, so it carries at most one $x$-edge and at most one $y$-edge;
+there are at most two copies, and only one for $c$. This gives (V2). Suppose a component $C$ of
+$Q_i$ had $d_x(C)=2$. Then $C$ is nontrivial, $\rho(C)=2$, and $i\ne c$ by (R2), so the two
+attachments of $C$ form the special pair at $i$. They lie at the same copy $i'$ and therefore
+have different colours, a contradiction. The same argument applies to $y$, which gives (V3).
+A component joined to both $x$ and $y$ has $\rho(C)=2$, so (V4) follows from (R2).
+\end{proof}
+
+For the parameters of Theorem~\ref{thmB} define the \emph{demands}
+\begin{equation}\label{eq:demands}
+\delta_i=\pos{p_i+4-k}\ (i\in T),\qquad \delta_c=\pos{p_c+3-k},\qquad
+\delta_i=\pos{p_i+5-k}\ (i\in S:=U\setminus\{c\}).
+\end{equation}
+By Lemma~\ref{lem:valid}, $p(Q'_i)=p_i+2-a_i-[i=c]$. So the targets of Theorem~\ref{thmB}
+($p(Q'_i)\le k-2$ for $i\in T\cup\{c\}$, and $p(Q'_i)\le k-3$ for $i\in S$) are equivalent to
+$a_i\ge\delta_i$ for all~$i$. Lemmas~\ref{lem:valid} and~\ref{lem:record} therefore give the
+following.
+
+\begin{corollary}\label{cor:record}
+Under the hypotheses of Theorem~\ref{thmB}, the conclusion of Theorem~\ref{thmB} holds if and
+only if there is an admissible record $\rho$ with $a_i(\rho)\ge\delta_i$ for every $i\in[n]$.
+\end{corollary}
+
+The hypotheses give $\delta_i\le4$ for $i\in T\cup S$ (as $p_i\le k$, and $p_i\le k-1$ on $S$)
+and $\delta_c\le2$ (as $p_c\le k-1$). So $\delta_i$ never exceeds the caps in~(R1).
+
+\section{A flow network for records}\label{sec:flow}
+
+Keep the notation of Section~\ref{sec:reduction}. Let $\kappa_i=4$ for $i\ne c$ and
+$\kappa_c=2$. For a component $C$ of $Q_i$ and $v\in V$, let $\sigma_C(v)\in\{0,1,2\}$ be the
+number of slots of $C$ at~$v$. If $\sigma_i(v)\ge1$, then $v$ is an end vertex of exactly one
+component of $Q_i$, namely its own component.
+
+\begin{definition}[the network $D$]
+The nodes of $D$ are: $s$ and $t$; a node $v$ for each $v\in V$; a node $C$ for each component
+$C$ of each $Q_i$ (components of different colours are different nodes); and nodes $h_i$ and
+$g_i$ for each $i\in[n]$. The arcs, each with lower and upper bounds $[l,u]$, are:
+\[
+\begin{array}{lll}
+(t,s):[0,\infty), & (s,v):[2,2]\ \ (v\in V), & (v,C):[0,\sigma_C(v)]\ \ (\sigma_C(v)\ge1),\\[2pt]
+(C,g_i):[0,1],\ \ (C,h_i):[0,1] & (C \text{ a component of } Q_i), & (h_i,g_i):[0,1-[i=c]],\\[2pt]
+(g_i,t):[\delta_i,\kappa_i].
+\end{array}
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:flow-record}
+Integral circulations in $D$ correspond to admissible records $\rho$ with
+$a_i(\rho)\ge\delta_i$ for all~$i$. In particular, such a record exists if and only if $D$
+has a circulation.
+\end{lemma}
+
+\begin{proof}
+Let $f$ be an integral circulation. For $v$ with $\sigma_i(v)\ge1$, let $\rho(v,i)=f(v,C)$,
+where $C$ is the component of $Q_i$ containing~$v$; let $\rho(v,i)=0$ if $\sigma_i(v)=0$. Then
+$\rho(v,i)\le\sigma_i(v)$, and $\sum_i\rho(v,i)=f(s,v)=2$. The flow into a node $C$ is
+$\rho(C)\le2$. It leaves along $(C,g_i)$ and $(C,h_i)$, each of capacity~$1$, so
+$\rho(C)=2$ forces $f(C,h_i)=1$. Hence the number of components $C$ of $Q_i$ with
+$\rho(C)=2$ is at most $f(h_i,g_i)\le 1-[i=c]$, which is (R2). Finally,
+$a_i(\rho)=f(g_i,t)\in[\delta_i,\kappa_i]$, which gives (R1) and the demands.
+
+Conversely, given such a record, set
+$f(s,v)=2$, $f(v,C)=\rho(v,i)$ for the component $C$ of $Q_i$ at $v$,
+$f(C,g_i)=\min\{1,\rho(C)\}$, $f(C,h_i)=[\rho(C)=2]$,
+$f(h_i,g_i)=|\{C:\rho(C)=2\}|$, $f(g_i,t)=a_i(\rho)$ and $f(t,s)=2m$.
+This is a circulation within the bounds. The last sentence of the lemma follows from the
+integrality part of Theorem~\ref{thm:hoffman}.
+\end{proof}
+
+For $B\subseteq V$ and a colour $i$, let $N_i(B)$ be the number of components of $Q_i$ having
+at least one slot at a vertex of~$B$. Define
+\[
+\psi_i(B)\;:=\;N_i(B)+[i\ne c]\cdot\bigl[\text{some component of $Q_i$ has both slots in $B$}\bigr].
+\]
+
+\begin{lemma}\label{lem:psi}
+Fix $B\subseteq V$ and $i\in[n]$. Let $D_i$ be the sub-network formed by the component nodes
+of $Q_i$ and the nodes $h_i,g_i$. Feed it from a source joined to each component node $C$ by
+an arc of capacity $\sigma_C(B):=\sum_{v\in B}\sigma_C(v)$. Then the maximum flow from the
+source into $g_i$ is $\psi_i(B)$. The maximum flow into $t$, through the arc $(g_i,t)$ of
+capacity $\kappa_i$, is $\min\{\kappa_i,\psi_i(B)\}$.
+\end{lemma}
+
+\begin{proof}
+A component node $C$ can forward at most $\min\{1,\sigma_C(B)\}$ units directly to $g_i$. It
+can forward one further unit through $h_i$ only if $\sigma_C(B)=2$, and the arc $(h_i,g_i)$
+carries at most $1-[i=c]$ units in total. This bound is attained.
+\end{proof}
+
+\begin{proposition}[cut conditions]\label{prop:cuts}
+$D$ has a circulation if and only if, for every $B\subseteq V$,
+\begin{align}
+\textup{(UH)}\qquad & 2|B|\;\le\;\sum_{i=1}^n\min\{\kappa_i,\psi_i(B)\}, \label{eq:UH}\\
+\textup{(LH)}\qquad & \sum_{i=1}^n\pos{\delta_i-\psi_i(B)}\;\le\;2|V\setminus B|. \label{eq:LH}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Every arc has $l\le u$, since $\delta_i\le\kappa_i$ (end of Section~\ref{sec:reduction}). We
+apply Theorem~\ref{thm:hoffman}. Let $X\subseteq V(D)$ and put $B=X\cap V$. Positive lower
+bounds occur only on the arcs $(s,v)$ and $(g_i,t)$. An arc entering $X$ contributes its
+lower bound to the left side of Hoffman's inequality, and an arc leaving $X$ contributes its
+upper bound to the right side.
+
+\emph{$s\in X$, $t\notin X$.} No arc with a positive lower bound enters $X$, so the inequality
+holds trivially.
+
+\emph{$t\in X$, $s\notin X$.} The arc $(t,s)$ leaves $X$ and has $u=\infty$, so the
+inequality holds trivially.
+
+\emph{$s,t\notin X$.} The arcs entering $X$ with positive lower bound are the arcs $(s,v)$
+with $v\in B$, contributing $2|B|$. The arcs leaving $X$ are of three kinds: arcs from $B$ into
+some $D_i\setminus X$; arcs inside some $D_i$; and arcs $(g_i,t)$ with $g_i\in X$. For fixed
+$B$, the choice of $X\cap D_i$ that minimises the capacity of the colour-$i$ arcs leaving $X$
+gives a minimum cut between $B$ and $t$ through $D_i$. By Lemma~\ref{lem:psi} and the
+max-flow min-cut theorem, its capacity is $\min\{\kappa_i,\psi_i(B)\}$. Arcs from $V\setminus B$
+into $X$ have lower bound $0$ and do not matter. So the inequalities of this type, for all
+$X$ with $X\cap V=B$, amount to~(UH).
+
+\emph{$s,t\in X$.} The arcs entering $X$ with positive lower bound are the arcs $(g_i,t)$
+with $g_i\notin X$, contributing $\sum_{i\in I}\delta_i$, where $I=\{i:g_i\notin X\}$. The arcs
+leaving $X$ are the arcs $(s,v)$ with $v\notin B$, contributing $2|V\setminus B|$, together
+with colour-$i$ arcs as before. For $i\notin I$, putting all of $D_i$ into $X$ makes the
+colour-$i$ contribution $0$. For $i\in I$, the minimum colour-$i$ contribution is the minimum
+cut between $B$ and $g_i$, which is $\psi_i(B)$ by Lemma~\ref{lem:psi}. So the inequalities of
+this type amount to
+$\sum_{i\in I}\delta_i\le 2|V\setminus B|+\sum_{i\in I}\psi_i(B)$ for all $I$. Taking
+$I=\{i:\delta_i>\psi_i(B)\}$ gives the strongest one, which is~(LH).
+\end{proof}
+
+By Corollary~\ref{cor:record}, Lemma~\ref{lem:flow-record} and
+Proposition~\ref{prop:cuts}, Theorem~\ref{thmB} follows once we show that (UH) and (LH) hold
+for every $B\subseteq V$. We do this in Sections~\ref{sec:upper} and~\ref{sec:lower}.
+
+\subsection*{Counting notation}
+Fix $B\subseteq V$ and let $A=V\setminus B$, $a=|A|$, $b=|B|$. For each colour $i$, let
+$n_0^i,n_1^i,n_2^i$ be the numbers of components of $Q_i$ with exactly $0$, $1$ and $2$ slots
+in $B$. Then $n_0^i+n_1^i+n_2^i=p_i$, and
+\[
+f_i(B):=\sum_{v\in B}\sigma_i(v)=n_1^i+2n_2^i,\qquad f_i(A):=\sum_{v\in A}\sigma_i(v)=2n_0^i+n_1^i,
+\]
+\[
+\psi_i(B)=n_1^i+n_2^i+[i\ne c][n_2^i\ge1]\;\ge\;p_i-n_0^i .
+\]
+By Lemma~\ref{lem:slots},
+\begin{equation}\label{eq:slotsum}
+\sum_{i=1}^n f_i(B)=kb,\qquad \sum_{i=1}^n f_i(A)=ka .
+\end{equation}
+
+\section{The upper condition (UH)}\label{sec:upper}
+
+In this section we assume only $k\ge4$, $p_i\le k$ for all $i$, and $p_c\le k-1$. For a fixed
+$B\subseteq V$ put
+\[
+u_i:=k\min\{\kappa_i,\psi_i(B)\}-2f_i(B).
+\]
+By \eqref{eq:slotsum},
+\[
+\sum_{i}u_i=k\Bigl(\sum_i\min\{\kappa_i,\psi_i(B)\}-2b\Bigr).
+\]
+
+\begin{lemma}\label{lem:u}
+Write $n_j=n_j^i$, $f=f_i(B)$ and $\psi=\psi_i(B)$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=*]
+\item Let $i\ne c$. Then $u_i\ge0$. If $f>0$ and $\psi\le4$, then $u_i\ge k-2$. If $\psi\ge5$,
+then $u_i=4k-2f$.
+\item If $n_1+n_2\le2$, then $u_c\ge0$. Otherwise $u_c=2k-2f_c(B)\ge 4-2k$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) If $\psi\le4$, then
+$u_i=k(n_1+n_2+[n_2\ge1])-2(n_1+2n_2)=(k-2)n_1+(k-4)n_2+k[n_2\ge1]$.
+This is $\ge0$, and it is $\ge k-2$ if $n_1\ge1$. If $n_1=0$ and $n_2\ge1$, it is
+$\ge (k-4)+k\ge k-2$. If $\psi\ge5$, then $\min\{\kappa_i,\psi\}=4$, so $u_i=4k-2f$. This is
+$\ge0$ because $f\le 2p_i\le 2k$.
+(b) Here $\psi_c=n_1+n_2$. If this is at most $2$, then $u_c=(k-2)n_1+(k-4)n_2\ge0$. Otherwise
+$\min\{2,\psi_c\}=2$, so $u_c=2k-2f_c(B)$. Since $f_c(B)\le2p_c\le2k-2$, this is $\ge 4-2k$.
+\end{proof}
+
+\begin{proposition}\label{prop:UH}
+Assume $k\ge4$, $p_i\le k$ for all $i$, and $p_c\le k-1$. Then \textup{(UH)} holds for every
+$B\subseteq V$.
+\end{proposition}
+
+\begin{proof}
+Let $E:=\sum_i\min\{\kappa_i,\psi_i(B)\}-2b$. This is an integer, and $kE=\sum_iu_i$. By
+Lemma~\ref{lem:u}, $kE\ge u_c\ge 4-2k>-2k$, so $E\ge-1$. Suppose that $E=-1$, so that
+$\sum_iu_i=-k$. Then $u_c<0$, since otherwise $\sum_i u_i\ge0$. By Lemma~\ref{lem:u}(b) this
+means $u_c=2k-2f_c(B)$, and therefore
+\[
+\sum_{i\ne c}u_i\;=\;-k-u_c\;=\;2f_c(B)-3k\;\le\;2(2k-2)-3k\;=\;k-4 .
+\]
+All $u_i$ with $i\ne c$ are nonnegative. So by Lemma~\ref{lem:u}(a) no colour $i\ne c$ has both
+$f_i(B)>0$ and $\psi_i(B)\le4$, because such a colour would have $u_i\ge k-2>k-4$.
+
+Let $H=\{i\ne c:\psi_i(B)\ge5\}$. Every colour $i\ne c$ outside $H$ has $f_i(B)=0$, hence
+$\psi_i(B)=0$ and $u_i=0$. Every $i\in H$ has $f_i(B)=2k-u_i/2$. Using \eqref{eq:slotsum},
+\[
+kb=\sum_if_i(B)=f_c(B)+\sum_{i\in H}\Bigl(2k-\frac{u_i}{2}\Bigr)
+=f_c(B)+2k|H|-\frac{2f_c(B)-3k}{2}=2k|H|+\frac{3k}{2}.
+\]
+Thus $b=2|H|+\tfrac32$, which is not an integer, a contradiction. Hence $E\ge0$, which is (UH).
+\end{proof}
+
+The bound $2|U|\le k-2$ is not needed for (UH).
+
+\section{The lower condition (LH)}\label{sec:lower}
+
+Now assume all hypotheses of Theorem~\ref{thmB}. Recall $S=U\setminus\{c\}$. From
+$2|U|\le k-2$ we get
+\begin{equation}\label{eq:Sbound}
+|S|\le\frac{k-4}{2}.
+\end{equation}
+In particular $S=\emptyset$ when $k\le5$. Fix $B\subseteq V$ and put
+\[
+\Delta_i:=\pos{\delta_i-\psi_i(B)},\qquad s_i:=2f_i(A)-k\Delta_i .
+\]
+By \eqref{eq:slotsum}, $\sum_is_i=k\bigl(2a-\sum_i\Delta_i\bigr)$. Write
+$\varepsilon_i=4,3,5$ according as $i\in T$, $i=c$, $i\in S$, so that
+$\delta_i=\pos{p_i+\varepsilon_i-k}$. Since $\psi_i(B)\ge p_i-n_0^i$,
+\begin{equation}\label{eq:Delta}
+\Delta_i>0\ \Longrightarrow\ \Delta_i\le n_0^i+\varepsilon_i-k,
+\qquad\text{and always}\qquad f_i(A)=2n_0^i+n_1^i\ge 2n_0^i .
+\end{equation}
+
+\begin{lemma}\label{lem:s}
+Write $n_j=n_j^i$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=*]
+\item If $i\in T$, then $s_i\ge0$. If moreover $\Delta_i$ is odd, then $s_i\ge k-4$.
+\item $s_c\ge0$. If $\Delta_c$ is odd, then $s_c\ge 3k-8$.
+\item Let $i\in S$. Then $s_i\ge-4$.
+  \begin{itemize}
+  \item If $n_0=k-1$, then $\Delta_i=4$ and $s_i=-4$.
+  \item If $n_0\le k-2$, then $s_i\ge\min\{0,k-8\}$.
+  \item If $n_0\le k-2$ and $\Delta_i$ is odd, then $s_i\ge k-6$, except when $n_0=k-2$ and
+  $n_1=0$; in that case $s_i=k-8$.
+  \end{itemize}
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+If $\Delta_i=0$, then $s_i=2f_i(A)\ge0$. Every lower bound claimed for this case is at most
+$0$, or concerns odd $\Delta_i$, so we may assume $\Delta_i>0$. Then
+$s_i\ge 4n_0-k\Delta_i\ge 4n_0-k(n_0+\varepsilon_i-k)$ by \eqref{eq:Delta}.
+
+(a) Here $\varepsilon_i=4$ and $n_0\le p_i\le k$. So
+$s_i\ge 4n_0-k(n_0+4-k)=(k-n_0)(k-4)\ge0$. If $\Delta_i\in\{1,3\}$, then
+$n_0\ge k-4+\Delta_i$ by \eqref{eq:Delta}, and
+$s_i\ge 4(k-4+\Delta_i)-k\Delta_i=(k-4)(4-\Delta_i)\ge k-4$.
+
+(b) Here $\varepsilon_c=3$ and $n_0\le p_c\le k-1$. So
+$s_c\ge k(k-3)-(k-4)n_0\ge k(k-3)-(k-4)(k-1)=2k-4\ge0$. Since $\delta_c\le2$, odd means
+$\Delta_c=1$. Then $n_0\ge k-2$ and $s_c\ge 4(k-2)-k=3k-8$.
+
+(c) Here $\varepsilon_i=5$ and $n_0\le p_i\le k-1$. So $s_i\ge k(k-5)-(k-4)n_0$.
+
+For $n_0=k-1$ this gives $s_i\ge -4$. In this case $n_0=p_i$, so no component of $Q_i$ has
+a slot in $B$. Hence $\psi_i(B)=0$ and $\Delta_i=\delta_i=4$. Also $f_i(A)=2(k-1)$, so
+$s_i=-4$ exactly.
+
+For $n_0\le k-2$ the bound gives $s_i\ge k(k-5)-(k-4)(k-2)=k-8$. Together with the case
+$\Delta_i=0$ this gives $s_i\ge\min\{0,k-8\}$.
+
+Now let $\Delta_i$ be odd, with $n_0\le k-2$. If $\Delta_i=1$, then $n_0\ge k-4$ and
+$s_i\ge 4(k-4)-k=3k-16\ge k-6$, using $k\ge5$. (Note $S\ne\emptyset$ forces $k\ge6$ by
+\eqref{eq:Sbound}.) If $\Delta_i=3$, then $n_0\ge k-2$, so $n_0=k-2$, and
+$s_i=2\bigl(2(k-2)+n_1\bigr)-3k=k-8+2n_1$. This is $\ge k-6$ unless $n_1=0$, and equals $k-8$
+when $n_1=0$.
+\end{proof}
+
+\begin{proposition}\label{prop:LH}
+Under the hypotheses of Theorem~\ref{thmB}, \textup{(LH)} holds for every $B\subseteq V$.
+\end{proposition}
+
+\begin{proof}
+Let $E:=2a-\sum_i\Delta_i$. This is an integer, and $kE=\sum_is_i$. We must show $E\ge0$.
+
+\emph{Case $k\le7$.} By \eqref{eq:Sbound}, $|S|\le1$. By Lemma~\ref{lem:s}, $s_i\ge0$ for
+$i\notin S$ and $s_i\ge-4$ for $i\in S$. Hence $kE\ge-4>-k$, so $E\ge0$.
+
+\emph{Case $k\ge8$.} Let $J=\{i\in S:n_0^i=k-1\}$ and $j=|J|$. By Lemma~\ref{lem:s},
+$s_i\ge0$ for every $i\notin J$, and $s_i=-4$ for $i\in J$. Hence
+\[
+kE\ \ge\ -4j\ \ge\ -4|S|\ \ge\ -2(k-4)\ >\ -2k ,
+\]
+so $E\ge-1$. Suppose $E=-1$. Then
+\begin{equation}\label{eq:tight}
+\sum_{i\notin J}s_i=4j-k,
+\end{equation}
+and $\sum_i\Delta_i=2a+1$ is odd. Since $\Delta_i=4$ for $i\in J$, some colour $i_0\notin J$
+has $\Delta_{i_0}$ odd. All $s_i$ with $i\notin J$ are nonnegative, so \eqref{eq:tight} gives
+$s_{i_0}\le 4j-k$. By Lemma~\ref{lem:s} there are two possibilities.
+\begin{itemize}[leftmargin=*]
+\item $s_{i_0}\ge k-6$. Then $4j\ge 2k-6$, so $j\ge (k-3)/2>(k-4)/2\ge|S|\ge j$, a
+contradiction.
+\item $i_0\in S\setminus J$ and $s_{i_0}=k-8$. Then $4j\ge 2k-8$, so $j\ge(k-4)/2\ge|S|$. But
+$J\subseteq S\setminus\{i_0\}$, so $j\le|S|-1$, a contradiction.
+\end{itemize}
+Hence $E\ge0$, which is (LH).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thmB}]
+By Propositions~\ref{prop:UH} and~\ref{prop:LH}, the conditions (UH) and (LH) hold for every
+$B\subseteq V$. By Proposition~\ref{prop:cuts} and Lemma~\ref{lem:flow-record} there is an
+admissible record $\rho$ with $a_i(\rho)\ge\delta_i$ for all~$i$. Corollary~\ref{cor:record}
+gives the required extension $\Q'$.
+\end{proof}
+
+\begin{remark}[where the hypotheses are used]\label{rem:sharp}
+The condition $k\ge4$ is used in Lemmas~\ref{lem:u} and~\ref{lem:s}. The bounds $p_i\le k$ and
+$p_i\le k-1$ are used throughout. The bound $2|U|\le k-2$ is used only in
+Proposition~\ref{prop:LH}, through \eqref{eq:Sbound}, and it cannot simply be dropped. Take
+$n=3$ and $m=3$, so $k=4$, and let $T=\emptyset$, $U=\{1,2,3\}$, $c=2$. Let $Q_1$ be a path on
+the three vertices, $Q_2$ the remaining edge, and $Q_3=\emptyset$. Then $p=(1,2,3)$, and the
+demands are $\delta_1=2$, $\delta_2=1$, $\delta_3=4$. So (LH) fails at $B=\emptyset$:
+$\sum_i\delta_i=7>6=2m$. In random experiments without the bound on $|U|$
+(Section~\ref{sec:computations}), every failure we saw was of this type, with
+$B=\emptyset$. In \JM\ this bound is exactly the hypothesis $r\le 2t-1$ (proof of
+Theorem~\ref{thmA}).
+\end{remark}
+
+\section{\JM\ Theorem 7, the transfer lemma, and Wu's conjecture}\label{sec:thm7}
+
+\subsection{The transfer lemma (repair of JM1)}
+The proof of \JM\ Theorem~7 repeatedly moves edges from a ``donor'' linear forest $D$ into a
+``receiver'' linear forest $R$, and the receiver must remain a linear forest. In \JM, the edges
+to be withheld are described by a separation condition (``$a$ and $b$ are in different
+components of $P_j\setminus\{e_1,e_2\}$'', and its analogue in Case~2). As the audit observed
+\cite[\S2.3]{A4}, that condition is not sufficient.
+\begin{itemize}[leftmargin=*]
+\item In Case~1, let $a$ be an internal vertex of $D$ that is already separated from $b$. The
+rule allows $e_1$ to be absent, and then $a$ can receive degree~$3$.
+\item In Case~2, let $R\supseteq\{z_1w_1,z_2w_2\}$ consist of two paths, and
+$D\supseteq\{w_1x,xz_2,w_2y,yz_1\}$. The stated condition holds with nothing withheld, but
+moving these edges creates the cycle $z_1w_1xz_2w_2yz_1$.
+\end{itemize}
+The following lemma, which is the audit's fix, gives the same counts.
+
+\begin{lemma}[transfer lemma]\label{lem:transfer}
+Let $R$ and $D$ be edge-disjoint linear forests on the same vertex set. Then there is a set
+$X\subseteq D$ with $|X|\le 2|R|$ such that $R\cup Y$ is a linear forest for every
+$Y\subseteq D\setminus X$. If $R=\{ab\}$ is a single edge, $X$ can be taken to consist of at
+most one edge of $D$ at $a$ and at most one edge of $D$ at~$b$.
+\end{lemma}
+
+\begin{proof}
+Orient each path of $D$ from one end to the other, so that every vertex has in- and
+out-degree at most $1$ in $D$. Let $I$ be the set of internal vertices of the paths of $R$,
+and $J$ the set of end vertices of its nontrivial paths. Let $X$ consist of all edges of $D$
+incident with $I$, together with the out-edge in $D$ (if any) of each vertex of $J$. A path of
+$R$ with $e\ge1$ edges has $e-1$ internal vertices and $2$ ends. Hence
+$|X|\le 2|I|+|J|=2|R|$, and if $R=\{ab\}$ then $I=\emptyset$, $J=\{a,b\}$.
+
+It suffices to treat $Y=D\setminus X$. Vertices in $I$ have $R$-degree $2$ and $Y$-degree
+$0$. Vertices in $J$ have $R$-degree $1$ and $Y$-degree at most $1$, since only their in-edge
+can remain. All other vertices have $R$-degree $0$. So $R\cup Y$ has maximum degree~$2$.
+
+Suppose $R\cup Y$ contains a cycle $Z$. Since $R$ and $Y$ are acyclic, $Z$ splits into
+maximal segments that alternate between $R$ and $Y$. Each $Y$-segment is a directed subpath of
+an oriented path of $D$. Its endpoints lie on $R$-segments, so they have positive $R$-degree
+and $Y$-degree, which forces them to be in $J$. But the first vertex of a directed $Y$-segment
+has an out-edge in $Y$, while vertices of $J$ have out-degree $0$ in $Y$. This is a
+contradiction.
+\end{proof}
+
+\subsection{\JM\ Theorem 7}
+A \emph{minimal counterexample} is a counterexample $H\subseteq K_{2n+1}$ to
+Theorem~\ref{thm:wu} with $n$ as small as possible. Every graph with fewer than $n$ edges
+satisfies Theorem~\ref{thm:wu}. The proof of Theorem~7 uses minimality only in this form.
+
+\begin{theorem}[\JM\ Theorem 7]\label{thm:jm7}
+Let $H$ be a minimal counterexample with $n$ edges. Let $H'$ be the union of the components of
+$H$ not isomorphic to $K_2$, with $r$ vertices and $t$ edges, and identify $V(H')$ with $V(K_r)$.
+Then $K_r$ has an edge decomposition $(P_1,\dots,P_n)$ into linear forests in which each of
+$P_1,\dots,P_t$ contains exactly one edge of $H'$, and
+\[
+|P_i|\ge 2r-2n-1\ (i\le t),\qquad |P_i|\ge 2r-2n\ (i>t).
+\]
+\end{theorem}
+
+We give the proof in full, following \JM\ step by step. The transfer steps are replaced by
+Lemma~\ref{lem:transfer}, and every count is the same as in \JM.
+
+\begin{proof}[Proof, part 1: set-up]
+By \cite{LC} (Theorem~2 of \JM), $n\ge6$ and $H$ is not a linear forest. Each component of
+$H'$ has at least two edges, and at least one component, which is not a path, has at least
+three. A component with $e$ edges has at most $e+1$ vertices. Hence $H'$ has at most $(t-1)/2$
+components, and
+\begin{equation}\label{eq:r-t}
+r\le t+\tfrac{t-1}{2}=\tfrac{3t-1}{2},\qquad\text{in particular } r\le 2t-1,\ \ t\ge3 .
+\end{equation}
+
+\emph{The case $r\le n$.} Add edges to $H'$ inside $V(H')$ until there are $n$ edges, or until
+$V(H')$ is complete. In the second case continue with pendant edges, each at a new vertex.
+This gives $\widehat H\supseteq H'$ with $v(\widehat H)\le e(\widehat H)=n$. (If $V(H')$ is
+filled first, then $r\le\binom r2$ because $r\ge3$, and pendant edges keep $v\le e$.) By
+\cite{LC}, $K_{2n+1}$ has a Hamiltonian decomposition in which $\widehat H$ is rainbow. Rename
+the colours so that the edges of $H'$ lie in classes $1,\dots,t$, and restrict to $V(H')$. The
+restrictions are linear forests, and the size conditions hold trivially because $2r-2n-1<0$.
+
+\emph{The case $r\ge n+1$.} Put $s=\lceil r/2\rceil$, so $2s=r+\delta$ with $\delta=r\bmod 2$.
+By \eqref{eq:r-t} and $t\ge3$, $s\le\lceil(3t-1)/4\rceil<t\le n$. Choose $H''\subseteq H'$ with $s$ edges. By minimality,
+$K_{2s+1}$ has a Hamiltonian decomposition $(C_1,\dots,C_s)$ in which $H''$ is rainbow. Since
+$v(H'')\le r=2s+1-(1+\delta)$, we can delete $1+\delta$ vertices outside $V(H'')$. This leaves a
+decomposition $(P_1,\dots,P_s)$ of $K_r$ into linear forests with $H''$ rainbow. Each $P_i$ has
+$r-1$ edges if $r$ is even, and at least $r-2$ edges if $r$ is odd. Identify $V(K_r)$ with
+$V(H')$ extending $V(H'')$. Move each of the $t-s$ edges of $H'\setminus H''$ out of its class
+into its own new class $P_{s+1},\dots,P_t$, and let $P_{t+1},\dots,P_n$ be empty. Let $e'_i$ be
+the edge of $H''$ in $P_i$ ($i\le s$). Renumber $P_1,\dots,P_s$, together with their edges
+$e'_i$, so that $|P_1|\ge\dots\ge|P_s|$. All classes are linear forests. Each class with $i\le t$
+contains exactly one edge of $H'$. Every class with $i\le s$ has lost at most $t-s$ edges, and
+\begin{equation}\label{eq:nondonor}
+|P_i|\ \ge\ r-2-(t-s)\ \ge\ 2r-2n-1\qquad(i\le s).
+\end{equation}
+The second inequality is $2n+s-t-1\ge r$. It holds because $t\le n$, $s\ge r/2$, and
+$r\le(3n-1)/2\le 2n-2$.
+
+It remains to raise $|P_i|$ to $2r-2n-1$ for $i\in[s+1,t]$ (these classes have one edge) and
+to $2r-2n$ for $i\in[t+1,n]$ (these are empty). Donor classes $P_j$ with small $j$ supply the
+edges, and each donor keeps its edge $e'_j$ and at least $2r-2n-1$ edges. The two cases
+$r\le(4n-1)/3$ and $r\ge 4n/3$ cover all integers $r\ge n+1$.
+\end{proof}
+
+\begin{proof}[Proof, part 2: Case 1, $n+1\le r\le(4n-1)/3$]
+Here $1\le n-s\le s$, because $2s\ge r\ge n$ and $s\le(r+1)/2<n$.
+
+\emph{Claim: $|P_{n-s}|\ge 4r-4n-1$.} Suppose not. Then $|P_i|\le 4r-4n-2$ for
+$n-s\le i\le s$, which is $2s-n+1\ge r-n+1$ classes. Each of them had at least $r-2$ edges
+before the edges of $H'\setminus H''$ were moved out. So each lost at least
+$r-2-(4r-4n-2)=4n-3r\ge1$ edges, and
+$t-s\ge(r-n+1)(4n-3r)$. Since $2(t-s)\le 2t-r\le 2n-r$, we get
+$f_n(r):=2(r-n+1)(4n-3r)-2n+r\le0$. But $f_n$ is concave in $r$, and
+$f_n(n+1)=3n-11>0$ and $f_n(\tfrac{4n-1}{3})=1>0$, a contradiction. Hence
+$|P_1|\ge\dots\ge|P_{n-s}|\ge 4r-4n-1$.
+
+\emph{Transfers.} For $i\in[s+1,t]$, let $P_i=\{ab\}$ and $j=i-s\in[1,t-s]$. Lemma~\ref{lem:transfer}
+with $R=\{ab\}$ and $D=P_j$ gives $X$ with $|X|\le2$. Move $2r-2n-2$ edges of
+$P_j\setminus(X\cup\{e'_j\})$ into $P_i$. This is possible since $4r-4n-1\ge(2r-2n-2)+3$. Then
+$P_i$ is a linear forest with $2r-2n-1$ edges, and $P_j$ keeps at least $2r-2n+1$ edges.
+For $i\in[t+1,n]$, let $j=i-s\in[t-s+1,n-s]$ and move any $2r-2n$ edges of
+$P_j\setminus\{e'_j\}$ into $P_i$, which is empty. This is possible since
+$4r-4n-2\ge 2r-2n$, and $P_j$ keeps at least $2r-2n-1$ edges. Each donor index in $[1,n-s]$ is
+used once. The non-donors $P_i$ with $n-s<i\le s$ satisfy \eqref{eq:nondonor}.
+\end{proof}
+
+\begin{proof}[Proof, part 3: Case 2, $4n/3\le r\le(3t-1)/2$]
+Here $t\ge(2r+1)/3\ge(8n+3)/9$. Put $\epsilon=[t=n]$. Then $1\le 2n-2s\le s$: the right
+inequality follows from $3s\ge 3r/2\ge 2n$, and the left from $r\le(3n-1)/2$.
+
+\emph{Claim: $|P_{2n-2s}|\ge 3r-3n-\epsilon$.} Suppose not. Then the $3s-2n+1$ classes
+$P_i$ with $2n-2s\le i\le s$ satisfy $|P_i|\le 3r-3n-\epsilon-1$. Each had at least
+$r-1-\delta$ edges before the moves, so each lost at least $3n-2r-\delta+\epsilon\ge0$ edges.
+(The bound $\ge0$ holds since $2r\le 3t-1\le 3n-1$.) Using $2(t-s)=2t-r-\delta$ and
+$2(3s-2n+1)\ge 3r-4n+2$, we get $f_{n,t}(r)\le0$, where
+\[
+f_{n,t}(r):=(3r-4n+2)(3n-2r-\delta+\epsilon)-2t+r+\delta .
+\]
+For fixed $\delta$, $f_{n,t}$ is concave in $r$, so on the real interval
+$[\tfrac{4n}{3},\tfrac{3t-1}{2}]$ it is at least its value at an endpoint. We have
+$f_{n,t}(\tfrac{4n}{3})=2n-2t-\delta+2\epsilon>0$, and
+$2f_{n,t}(\tfrac{3t-1}{2})=(9t-8n+1)(3n-3t+1-\delta+\epsilon)-t+2\delta-1$.
+\begin{itemize}[leftmargin=*]
+\item If $t=n$, this equals $(n+1)(1-\delta)+2\delta>0$.
+\item If $t\le n-1$, then $\epsilon=0$, and $(8n+3)/9\le t\le n-1$ forces $n\ge12$. The
+function $g_n(t):=2f_{n,t}(\tfrac{3t-1}{2})$ is concave in $t$, with
+$g_n(\tfrac{8n+3}{9})=\tfrac{4n}{9}-2\delta-\tfrac43>0$ and
+$g_n(n-1)=n(3-\delta)+10\delta-32>0$.
+\end{itemize}
+This contradiction proves the claim.
+
+\emph{Transfers for $i\in[s+1,t]$.} Let $P_i=\{ab\}$, $j=i-s\in[1,t-s]$ and
+$\ell=i-2s+t\in[t-s+1,2t-2s]$. Lemma~\ref{lem:transfer} with $R=\{ab\}$ and $D=P_j$ gives $X_1$
+with $|X_1|\le2$. Move $r-n-2$ edges of $P_j\setminus(X_1\cup\{e'_j\})$ into $P_i$; this is
+possible since $3r-3n-\epsilon-3\ge r-n-2$. Now $P_i$ is a linear forest with $r-n-1$ edges.
+Lemma~\ref{lem:transfer} with $R=P_i$ and $D=P_\ell$ gives $X_2$ with
+$|X_2|\le 2(r-n-1)$. Move $r-n$ edges of $P_\ell\setminus(X_2\cup\{e'_\ell\})$ into $P_i$;
+there are at least $3r-3n-\epsilon-2(r-n-1)-1\ge r-n$ of them. Now $|P_i|=2r-2n-1$.
+
+\emph{Transfers for $i\in[t+1,n]$.} These occur only if $t<n$, so $\epsilon=0$. Let
+$j=i+t-2s\in[2t-2s+1,n+t-2s]$ and $\ell=i+n-2s\in[n+t-2s+1,2n-2s]$. Move any $r-n-1$ edges of
+$P_j\setminus\{e'_j\}$ into $P_i$. Then Lemma~\ref{lem:transfer} with $R=P_i$ and $D=P_\ell$
+gives $X$ with $|X|\le2(r-n-1)$. Move $r-n+1$ edges of $P_\ell\setminus(X\cup\{e'_\ell\})$; there
+are at least $3r-3n-2(r-n-1)-1=r-n+1$ of them. Now $|P_i|=2r-2n$.
+
+\emph{Bookkeeping.} The four donor ranges are disjoint subsets of $[1,2n-2s]$, and each donor
+is used once. A donor gives away at most $r-n+1-\epsilon$ edges, so it keeps at least
+$3r-3n-\epsilon-(r-n+1-\epsilon)=2r-2n-1$. The non-donors $P_i$ with $2n-2s<i\le s$ satisfy
+\eqref{eq:nondonor}. In both cases all classes are linear forests, each of $P_1,\dots,P_t$ still
+contains exactly one edge of $H'$, and the size conditions hold.
+\end{proof}
+
+The inequalities used in parts 2 and 3 are those of \JM; we re-derived each one by hand. As an
+additional check, for every $6\le n\le1500$, $1\le t\le n$ and integer $r\in[n+1,(3t-1)/2]$
+($93{,}843{,}621$ triples), we verified by computer the inequality each claim actually needs,
+rather than its lower bound via $f_n$, $f_{n,t}$, $g_n$. We also verified every availability
+and retention count above, and the bound \eqref{eq:nondonor}. There were no failures
+(script \texttt{check\_thm7\_counts.py}).
+
+\subsection{Proof of Theorem~\ref{thmC}}
+Suppose Theorem~\ref{thm:wu} fails, and let $H\subseteq K_{2n+1}$ be a minimal
+counterexample. Define $H'$, $r$, $t$ as in Theorem~\ref{thm:jm7}. Then $H\cong H'\sqcup(n-t)K_2$,
+and $r\le 2t-1$ by \eqref{eq:r-t}. Theorem~\ref{thm:jm7} gives a decomposition $\PP$ of
+$K_r$, with $V(K_r)=V(H')$, satisfying the hypotheses of Theorem~\ref{thmA} with $G=H'$.
+Theorem~\ref{thmA} gives a Hamiltonian decomposition of $K_{2n+1}\supseteq K_r$ and
+vertex-disjoint edges $e_{t+1},\dots,e_n$ outside $V(K_r)$ such that
+$H'\cup\{e_{t+1},\dots,e_n\}$ is rainbow. This graph is a copy of $H$ in $K_{2n+1}$. Any two
+copies of $H$ in $K_{2n+1}$ are related by a permutation of $V(K_{2n+1})$, which carries
+Hamiltonian decompositions to Hamiltonian decompositions. So the given copy of $H$ is rainbow
+in some Hamiltonian decomposition, contradicting the choice of $H$.
+\qed
+
+\section{Computational sanity checks}\label{sec:computations}
+
+None of the proofs depends on these computations. They test the reductions and the
+inequalities on small cases, so that an error in a reduction or in a case analysis would
+probably show up. The scripts are in \texttt{manuscripts/jm-repair/scripts/} and the logs in
+\texttt{manuscripts/jm-repair/data/}. We used Python with \texttt{networkx} (max-flow) and
+OR-Tools CP-SAT.
+
+\begin{itemize}[leftmargin=*]
+\item \emph{Instances.} \texttt{solvers.one\_vertex\_step} grows decompositions of $K_m$ one
+vertex at a time. Each step solves a CP-SAT model of a Hilton one-vertex step with a random
+objective. \texttt{test\_adversarial.py} uses a variant whose objective keeps about half the
+colours as tight as possible, so that many colours have $p_i=k$ or $p_i=k-1$. The set $U$ is
+then chosen among colours with $p_i\le k-1$, preferring $p_i=k-1$, with $|U|$ as large as
+$2|U|\le k-2$ allows, and every $c\in U$ is tested.
+
+\item \emph{Three independent tests of Theorem~\ref{thmB}} on each instance:
+  \begin{itemize}
+  \item a direct CP-SAT search for an extension under (V1)--(V4), each solution re-checked at
+  graph level (linear forests and targets);
+  \item feasibility of the network $D$ by max-flow with lower bounds;
+  \item brute force over all $B\subseteq V$ of the cut conditions (UH) and (LH).
+  \end{itemize}
+  Random instances (\texttt{test\_random.py}, seeds 21--23, $n\le10$): $712$ cases.
+  Adversarial instances (\texttt{test\_adversarial.py}, seeds 31--33, $n\le10$): $1013$ cases.
+  Every case was feasible, and the three tests agreed in every case.
+
+\item \emph{The bound on $|U|$} (\texttt{test\_noUbound.py}). We took $U$ to be all colours with
+$p_i\le k-1$, in violation of $2|U|\le k-2$, giving $794$ cases. Of these, $187$ were infeasible
+(the three tests again agreed). In every infeasible case (UH) held and (LH) failed already at
+$B=\emptyset$. This matches Proposition~\ref{prop:UH}, which does not use the bound, and
+Remark~\ref{rem:sharp}.
+
+\item \emph{Lemma~\ref{lem:valid}} (\texttt{check\_valid\_lemma.py}). On $40$ random small
+instances ($m\le4$, $n\le4$) we enumerated all $306{,}446$ two-vertex colourings. Conditions
+(V1)--(V4) agreed with graph-level validity in every case; $12{,}631$ colourings were valid.
+
+\item \emph{Lemmas~\ref{lem:u} and~\ref{lem:s}} (\texttt{check\_colour\_lemmas.py}). We
+checked every claimed inequality for all $4\le k\le60$, all three colour types, and all
+$(p,n_0,n_1,n_2)$ allowed by the hypotheses. There were no violations.
+
+\item \emph{End-to-end construction} (\texttt{pipeline.py}). We generated $160$ random
+instances of Theorem~\ref{thmA}, with $4\le n\le9$ and $r\le 2t-1$ (seeds 11--14). For each we
+carried out the proof as an algorithm. Each of the $436$ two-vertex steps used an integral flow
+in $D$ and the split of Lemma~\ref{lem:record}(b). Hilton one-vertex steps followed (CP-SAT),
+and the cycles were closed at the last vertex. Each output was verified to consist of $n$
+Hamiltonian cycles of $K_{2n+1}$ with $P_i\subseteq C_i$ and $G\cup\{e_{t+1},\dots,e_n\}$
+rainbow.
+
+\item \emph{\JM\ Theorem~7 counts} (\texttt{check\_thm7\_counts.py}). See the end of
+Section~\ref{sec:thm7}: $93{,}843{,}621$ triples $(n,t,r)$ with $n\le1500$, no failures.
+\end{itemize}
+
+The audit \cite[\S4]{A4} independently verified Wu's conjecture by computer for every
+$n$-edge $H$ up to isomorphism with $n\le7$.
+
+\section{What is proved, what is assumed, and what is not proved}\label{sec:status}
+
+\subsection*{Proved in this note}
+\begin{itemize}[leftmargin=*]
+\item Theorem~\ref{thmB}, the two-vertex extension lemma (Sections~\ref{sec:reduction}--\ref{sec:lower}).
+\item Theorem~\ref{thmA}, which is \JM\ Theorem~8 with the hypothesis $r\le 2t-1$
+(Section~\ref{sec:thmA}). The graph $G$ may have isolated vertices.
+\item The transfer lemma, Lemma~\ref{lem:transfer}, which repairs JM1.
+\item \JM\ Theorem~7 (Theorem~\ref{thm:jm7}), written out in full with corrected transfers.
+The argument and all counts are those of \JM.
+\item Theorem~\ref{thmC}, Wu's conjecture, as a consequence of the above.
+\end{itemize}
+
+\subsection*{External results used without proof}
+\begin{itemize}[leftmargin=*]
+\item Hilton's theorem \cite{Hilton}, in the form of \JM\ Corollary~6
+(Theorem~\ref{thm:hilton}); only the sufficiency direction is used. We did not re-prove it.
+\item Hoffman's circulation theorem with its integrality statement, and the max-flow
+min-cut theorem (classical; \cite{Hoffman,Schrijver}).
+\item The theorem of Liu and Chen \cite{LC} (\JM\ Theorem~2). It covers $n\le5$, linear forests,
+and $|V(H)|\le n+1$, and is used in the set-up of Theorem~\ref{thm:jm7}. \textbf{We did not check
+its proof.}
+\end{itemize}
+
+\subsection*{Not proved here, and caveats}
+\begin{itemize}[leftmargin=*]
+\item We do not repair Claim~12 of \JM. Our proof of the inductive step is a different
+argument. Section~\ref{sec:gap} describes the gap in the arXiv text \cite{JM}. We could not
+consult the published version, which may differ.
+\item \JM\ Theorem~8 read literally, with $G\not\cong tK_2$ and isolated vertices allowed, is
+false (Remark~\ref{rem:hyp}). We prove it only under $r\le 2t-1$. For $r\in\{2t,2t+1\}$ we
+prove nothing; these cases are irrelevant for Wu's conjecture.
+\item The hypothesis $2|U|\le k-2$ of Theorem~\ref{thmB} is necessary for that lemma
+(Remark~\ref{rem:sharp}). We do not know whether the conclusion of Theorem~\ref{thmA} can
+hold more generally.
+\item This note is a single re-derivation and has not been refereed. The main points for a
+referee to check are Lemma~\ref{lem:valid} (the list of possible cycles),
+Proposition~\ref{prop:cuts} (the cut computation), and the final integrality and parity steps in
+Propositions~\ref{prop:UH} and~\ref{prop:LH}.
+\item The computations of Section~\ref{sec:computations} are sanity checks on small instances
+($n\le10$) and on the per-colour inequalities. No step of any proof depends on them.
+\end{itemize}
+
+\subsection*{Use elsewhere}
+The audit \cite[\S2.2]{A4} notes that the odd-semi-clique manuscript applies \JM\ Theorem~8,
+citing it as ``Theorem~3.8'', with a representative graph $G$ that may have isolated vertices
+and satisfies $r\le 2t-1$. Theorem~\ref{thmA} covers exactly this situation. A prescribed
+matching on the outside vertices is obtained by relabelling those vertices. We have not
+re-examined any other part of that manuscript's use.
+
+
+
+\begin{thebibliography}{99}
+\bibitem{Hilton} A.~J.~W.~Hilton, Hamiltonian decompositions of complete graphs,
+\emph{J. Combin. Theory Ser.~B} \textbf{36} (1984), 125--134.
+\bibitem{Hoffman} A.~J.~Hoffman, Some recent applications of the theory of linear inequalities
+to extremal combinatorial analysis, in: \emph{Combinatorial Analysis}, Proc.\ Sympos.\ Appl.\
+Math.\ \textbf{10}, Amer.\ Math.\ Soc., 1960, 113--127.
+\bibitem{JM} R.~Javadi, M.~Miralaei, A conjecture on rainbow Hamiltonian cycle decomposition,
+arXiv:2403.17290v1 (26 March 2024); published in \emph{Discrete Math.} \textbf{349}(1) (2026),
+Art.~114676, doi:10.1016/j.disc.2025.114676. (We worked from the arXiv text; we could not
+access the published version.)
+\bibitem{LC} Y.~Liu, Y.~Chen, Rainbow subgraphs in Hamiltonian cycle decompositions of
+complete graphs, \emph{Discrete Math.} \textbf{346}(8) (2023), Art.~113479.
+\bibitem{Schrijver} A.~Schrijver, \emph{Combinatorial Optimization: Polyhedra and Efficiency},
+Vol.~A, Springer, 2003, Chapter~11 (circulations; Hoffman's circulation theorem and its integer
+version).
+\bibitem{A4} Referee audit A4 (this repository), \texttt{research/audit/A4-semi-cliques-JM.md},
+\S2 (items JM1--JM3), 26 November 2026.
+\end{thebibliography}
+
+\end{document}
