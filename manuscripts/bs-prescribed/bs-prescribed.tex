@@ -254,15 +254,18 @@ pairs $(G,y)$, $N=7$ & 130 & 1236 & 845 & 7 \\
 \end{tabular}
 \caption{Connected graphs of order $N$ whose even subgraph has maximum degree at most three, and
 even vertices $y$ ($e$ is the number of even vertices). For $e=1$ the prescription is impossible by
-counting. First row: exact (\texttt{scripts/exact\_prescribed.py}, CP-SAT). Last row: Lov\'asz--Fan
-certificates with at most four held edges (\texttt{scripts/odd\_fan\_game.py}). Raising the bound to
-eight held edges recovers only one of the 64 pairs with $e=5$.}\label{tab:census}
+counting. ``No floor partition'': exact (\texttt{scripts/exact\_prescribed.py}, CP-SAT). ``Lost'':
+Lov\'asz--Fan certificates with at most four held edges (\texttt{scripts/odd\_fan\_game.py}); every
+exact failure is lost. Raising the bound to eight held edges recovers only one of the $64$ pairs with
+$e=5$ at $N=7$.}\label{tab:census}
 \end{table}
 
-The last row records a second negative finding. At even order the Fan game wins every root of every
+The game rows record a second negative finding. At even order the Fan game wins every root of every
 graph with subcubic even subgraph through order eight (experiments E13). At odd order with a
-prescribed end, Lov\'asz--Fan certificates are far from complete even in that regime: most pairs
-that the game loses do have the required partition.
+prescribed end, Lov\'asz--Fan certificates are far from complete even in that regime. At $N=7$, $187$
+of the $424$ lost pairs, and $58$ of the $64$ with $e=5$, do have the required partition. A random
+sample at $N=9$ ($596$ pairs) finds no exception with $e\ge5$, and $10$ lost pairs that are not
+exceptions.
 
 \begin{proposition}\label{prop:gadget}
 Let $L$ have vertices $x,a_1,b_1,a_2,b_2,s,w,z,\ell$ and edges $xa_i$, $xb_i$, $a_ib_i$ ($i=1,2$),
@@ -294,13 +297,14 @@ sentence is used once.
 \item \emph{``By Corollary~106 with mark $r$, at least two vertices of $K$ have degree four.''} Here
 $W$ has odd order, a leaf at the odd support $r$, and exactly five even vertices $T$, and the claim
 is $p(W)\le\lfloor|W|/2\rfloor$ when $K=W[T]$ has at most one universal vertex. This is
-Corollary~\ref{cor:bp5}.
+Corollary~\ref{cor:bp5} (in the marked form, Corollary~\ref{cor:106} with $|U|=5$).
 \item \emph{The graph $H=B-rw$ with four even vertices,} and \emph{the matching-cut shores with at
 most four unmarked even vertices.} With at most four unmarked even vertices the unmarked even
 subgraph is subcubic, so only the zero-exception case is used:~\cite[Theorem~13]{BS} (audit A6, F18).
 \item \emph{The second sentence of Corollary~106} (in the two-even-support failure of
-Proposition~105, two unmarked even sites have degree four) is used only in the next paragraph, for
-$H$ with exactly seven even sites and two even supports, so with five unmarked even sites.
+Proposition~105, two unmarked even sites have degree four) is used in the paragraph after the
+corollary, for $H$ with exactly seven even sites and two even supports, so with five unmarked even
+sites. No other result of~\cite{MR} cites Corollary~106.
 \end{enumerate}
 The remark after Theorem~114 (``Shaik's ordinary bound also applies if $K$ has at most one vertex of
 degree greater than three\ldots\ at $d_J(z)=6$ a failure requires two universal vertices'') concerns
