@@ -251,8 +251,10 @@ three even vertices (which follows from the theorem of Botler and Sambinelli~\ci
 \begin{proof}
 For $e=2$ and $\Ev=\{r,s\}$, Lemma~\ref{lem:minus} with $u=s$ shows that $\{r\}$ is realisable. For $e=4$,
 attach a leaf at $r$. The resulting odd-order graph has exactly the three even vertices $\Ev\setminus\{r\}$,
-and its even subgraph lies in the Botler--Sambinelli family, since every graph on three vertices does.
-So it has a partition into $n/2$ paths. Trimming the leaf exposes $r$ twice, or releases a path that
+and its even subgraph has maximum degree at most two. By~\cite[Theorem~13]{BS} it satisfies the floor
+bound unless its even subgraph is a triangle and every odd vertex has at least two even neighbours.
+The new leaf has no even neighbour, so this exception does not occur, and the graph has a partition
+into $\lfloor (n+1)/2\rfloor=n/2$ paths. Trimming the leaf exposes $r$ twice, or releases a path that
 pays for a split at $r$.
 \end{proof}
 
