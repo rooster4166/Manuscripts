@@ -43,7 +43,7 @@ from itertools import combinations
 import networkx as nx
 
 
-def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
+def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -60,8 +60,8 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
         return (a, c) if a < c else (c, a)
 
     @lru_cache(maxsize=None)
-    def win(rem, b, r, R=0):
-        # rem: frozenset of held edges; b: profile tuple; R: rotations still allowed
+    def win(rem, b, r, R=0, A=0):
+        # rem: frozenset of held edges; b: profile tuple; R, A: rotations / activations left
         s = sum(b)
         if not rem:
             return s <= n and b[r] >= 1
@@ -83,11 +83,11 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
             for u, t in ((a, c), (c, a)):
                 if b[t] > Z(u):
                     nb = list(b); nb[u] += 1; nb[t] -= 1
-                    if win(rest, tuple(nb), r, R):
+                    if win(rest, tuple(nb), r, R, A):
                         return True
             if s + 2 <= n:
                 nb = list(b); nb[a] += 1; nb[c] += 1
-                if win(rest, tuple(nb), r, R):
+                if win(rest, tuple(nb), r, R, A):
                     return True
         # new paths of length >= 2 made of held edges
         if newpath and s + 2 <= n:
@@ -99,7 +99,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
             def dfs(path, used):
                 if len(path) >= 3 and path[0] < path[-1]:
                     nb = list(b); nb[path[0]] += 1; nb[path[-1]] += 1
-                    if win(rem - used, tuple(nb), r, R):
+                    if win(rem - used, tuple(nb), r, R, A):
                         return True
                 for w in radj.get(path[-1], ()):
                     if w in path:
@@ -122,7 +122,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
                     if b[v] > Z(u):
                         continue  # Fan's single transfer already covers this edge
                     nb = list(b); nb[u] += 1; nb[v] -= 1
-                    if not win(rest, tuple(nb), r, R):
+                    if not win(rest, tuple(nb), r, R, A):
                         continue
                     losing = 0
                     Nu = nbr[u] & ~remmask[u]
@@ -130,12 +130,50 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
                         if not (Nu >> w) & 1:
                             continue
                         nb = list(b); nb[v] -= 1; nb[w] += 1
-                        if not win(rest | {key(u, w)}, tuple(nb), r, R - 1):
+                        if not win(rest | {key(u, w)}, tuple(nb), r, R - 1, A):
                             losing += 1
                             if losing >= b[v]:
                                 break
                     if losing < b[v]:
                         return True
+        # Fan's alternative at or below equality (option "altR"): for a set T of held edges ut
+        # with 1 <= sum_T b <= |Z(u)|, either some t in T transfers (the opponent picks t), or
+        # some set W of at least sum_T b blank neighbours of u is reachable; we pick z in W,
+        # the opponent picks a t in T, and the end moves from t to z while the held edge ut is
+        # replaced by uz (z is now held, tu is present). At most R activations per play.
+        if A > 0:
+            for u in range(n):
+                cands = [t for t in range(n) if key(u, t) in rem and b[t] >= 1]
+                if not cands:
+                    continue
+                Hu = nbr[u] & ~remmask[u]
+                blanks = [w for w in range(n) if (Hu >> w) & 1 and b[w] == 0]
+                zu = len(blanks)
+                for k in range(1, len(cands) + 1):
+                    for T in combinations(cands, k):
+                        sT = sum(b[t] for t in T)
+                        if sT > zu:
+                            continue  # Fan applies
+                        ok = True
+                        for t in T:
+                            nb = list(b); nb[u] += 1; nb[t] -= 1
+                            if not win(rem - {key(u, t)}, tuple(nb), r, R, A):
+                                ok = False
+                                break
+                        if not ok:
+                            continue
+                        bad = 0
+                        for zz in blanks:
+                            for t in T:
+                                nb = list(b); nb[t] -= 1; nb[zz] += 1
+                                if not win((rem - {key(u, t)}) | {key(u, zz)}, tuple(nb), r, R,
+                                           A - 1):
+                                    bad += 1
+                                    break
+                            if bad >= sT:
+                                break
+                        if bad < sT:
+                            return True
         # grouped transfers
         for u in range(n):
             cands = [t for t in range(n) if key(u, t) in rem]
@@ -151,7 +189,7 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
                         if b[t] == 0:
                             continue
                         nb = list(b); nb[u] += 1; nb[t] -= 1
-                        if not win(rem - {key(u, t)}, tuple(nb), r, R):
+                        if not win(rem - {key(u, t)}, tuple(nb), r, R, A):
                             ok = False
                             break
                     if ok:
@@ -210,14 +248,14 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
         for k in range(0, kmax + 1):
             for F in combinations(E, k):
                 for b0 in starts(F):
-                    if win(frozenset(F), b0, r, rot):
+                    if win(frozenset(F), b0, r, rot, alt):
                         found = (F, b0)
                         break
                 if found:
                     break
                 if inductive and k >= 1:
                     for rp, profs in ind_seeds(F):
-                        if all(win(frozenset(F), b0, r, rot) for b0 in profs):
+                        if all(win(frozenset(F), b0, r, rot, alt) for b0 in profs):
                             found = (F, ("IH", rp))
                             break
                 if found:
@@ -225,11 +263,12 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0):
             if found:
                 break
         result[r] = found
+        win.cache_clear()
     return result
 
 
 def parse_opts(args):
-    kmax, inductive, newpath, rot = 4, False, False, 0
+    kmax, inductive, newpath, rot, alt = 4, False, False, 0, 0
     for a in args:
         if a == "ind":
             inductive = True
@@ -237,20 +276,22 @@ def parse_opts(args):
             newpath = True
         elif a.startswith("rot"):
             rot = int(a[3:] or 1)
+        elif a.startswith("alt"):
+            alt = int(a[3:] or 1)
         else:
             kmax = int(a)
-    return kmax, inductive, newpath, rot
+    return kmax, inductive, newpath, rot, alt
 
 
 def main():
     path = sys.argv[1]
-    kmax, inductive, newpath, rot = parse_opts(sys.argv[2:])
+    kmax, inductive, newpath, rot, alt = parse_opts(sys.argv[2:])
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
     bad = 0
     for G in graphs:
-        res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot)
+        res = solve_graph(G, kmax, inductive=inductive, newpath=newpath, rot=rot, alt=alt)
         losers = [r for r, v in res.items() if v is None]
         if losers:
             bad += 1
@@ -258,7 +299,7 @@ def main():
             print("LOSE", nx.to_graph6_bytes(G, header=False).strip().decode(), sorted(G.edges()),
                   "Ev", [v for v in G if d[v] % 2 == 0], "roots", losers, flush=True)
     opts = f"kmax={kmax}" + (", ind" if inductive else "") + (", np" if newpath else "") + \
-        (f", rot{rot}" if rot else "")
+        (f", rot{rot}" if rot else "") + (f", alt{alt}" if alt else "")
     print(f"{len(graphs)} graphs, {bad} with a losing root ({opts})", flush=True)
 
 
