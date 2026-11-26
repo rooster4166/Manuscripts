@@ -359,4 +359,85 @@ theorem fd_second_step (hL : LovaszStatement.{u}) (hG : ∀ v, 0 < G.degree v)
   obtain ⟨w, hwE, hwu, hwv, hiff⟩ := hw
   exact hiff (etwin_of_not_realisable hL hG hn hv hu hvu hnot w hwE hwv hwu).symm
 
+/-! ### Fan schedules: iterating the descent -/
+
+/-- A **Fan schedule** for `x₁`: pairs `(x, w)` in the order in which they are processed. Each
+`w` is an even neighbour of its `x`, is adjacent neither to `x₁` nor to the `x` of any later
+pair, and all the vertices involved are distinct. -/
+def FanSchedule (G : SimpleGraph V) [DecidableRel G.Adj] (x₁ : V) : List (V × V) → Prop
+  | [] => True
+  | (x, w) :: P => x ∈ evenSet G ∧ w ∈ evenSet G ∧ G.Adj x w ∧ x ≠ x₁ ∧ w ≠ x₁ ∧
+      ¬ G.Adj w x₁ ∧ (∀ q ∈ P, ¬ G.Adj w q.1 ∧ q.1 ≠ x ∧ q.1 ≠ w ∧ q.2 ≠ x ∧ q.2 ≠ w) ∧
+      FanSchedule G x₁ P
+
+theorem FanSchedule.delEdge {x₁ a b : V} :
+    ∀ {P : List (V × V)}, FanSchedule G x₁ P →
+      (∀ q ∈ P, q.1 ≠ a ∧ q.1 ≠ b ∧ q.2 ≠ a ∧ q.2 ≠ b) → G.Adj a b → a ∈ evenSet G →
+      b ∈ evenSet G → FanSchedule (delEdge G a b) x₁ P
+  | [], _, _, _, _, _ => trivial
+  | (x, w) :: P, ⟨hx, hw, hxw, hxx₁, hwx₁, hnwx₁, hwP, hP⟩, hq, hab, ha, hb => by
+    have h0 := hq (x, w) List.mem_cons_self
+    have hEv := evenSet_delEdge hab ha hb
+    refine ⟨?_, ?_, ?_, hxx₁, hwx₁, fun h => hnwx₁ h.1,
+      fun q hq' => ⟨fun h => (hwP q hq').1 h.1, (hwP q hq').2⟩,
+      FanSchedule.delEdge hP (fun q hq' => hq q (List.mem_cons_of_mem _ hq')) hab ha hb⟩
+    · rw [hEv]; exact Finset.mem_erase.mpr ⟨h0.2.1, Finset.mem_erase.mpr ⟨h0.1, hx⟩⟩
+    · rw [hEv]; exact Finset.mem_erase.mpr ⟨h0.2.2.2, Finset.mem_erase.mpr ⟨h0.2.2.1, hw⟩⟩
+    · exact (delEdge_adj_of_ne h0.1 h0.2.1).mpr hxw
+
+/-- **Iterated Fan descent.** Let `G` have even order and no isolated vertex, let `x₁` be even
+and let `P` be a Fan schedule for `x₁`. Then `Ev` minus `x₁` and the first coordinates of `P` is
+realisable. -/
+theorem realisable_of_fanSchedule (hL : LovaszStatement.{u}) (hn : Even (Fintype.card V))
+    {x₁ : V} : ∀ (P : List (V × V)) (G : SimpleGraph V) [DecidableRel G.Adj],
+    (∀ v, 0 < G.degree v) → x₁ ∈ evenSet G → FanSchedule G x₁ P →
+    Realisable G (evenSet G \ insert x₁ (P.map Prod.fst).toFinset)
+  | [], G, _, hG, hx₁, _ => by
+    have h := realisable_evenSet_erase hL hG hn hx₁
+    have : evenSet G \ insert x₁ (([] : List (V × V)).map Prod.fst).toFinset =
+        (evenSet G).erase x₁ := by
+      ext y; simp [and_comm]
+    rw [this]; exact h
+  | (x, w) :: P, G, _, hG, hx₁, ⟨hx, hw, hxw, hxx₁, hwx₁, hnwx₁, hwP, hP⟩ => by
+    have hEv := evenSet_delEdge hxw hx hw
+    have hx₁' : x₁ ∈ evenSet (delEdge G x w) := by
+      rw [hEv]
+      exact Finset.mem_erase.mpr ⟨Ne.symm hwx₁, Finset.mem_erase.mpr ⟨Ne.symm hxx₁, hx₁⟩⟩
+    have hP' : FanSchedule (delEdge G x w) x₁ P :=
+      hP.delEdge (fun q hq => ⟨(hwP q hq).2.1, (hwP q hq).2.2.1, (hwP q hq).2.2.2.1,
+        (hwP q hq).2.2.2.2⟩) hxw hx hw
+    have ih := realisable_of_fanSchedule hL hn P (delEdge G x w)
+      (delEdge_degree_pos hxw hx hw hG) hx₁' hP'
+    rw [hEv] at ih
+    set X := insert x₁ (P.map Prod.fst).toFinset with hX
+    have hxX : x ∉ X := by
+      rw [hX, Finset.mem_insert, List.mem_toFinset, List.mem_map]
+      rintro (h | ⟨q, hq, rfl⟩)
+      · exact hxx₁ h
+      · exact (hwP q hq).2.1 rfl
+    have hwX : w ∉ X := by
+      rw [hX, Finset.mem_insert, List.mem_toFinset, List.mem_map]
+      rintro (h | ⟨q, hq, rfl⟩)
+      · exact hwx₁ h
+      · exact (hwP q hq).2.2.1 rfl
+    have key := realisable_erase_of_fan (S := evenSet G \ X) hxw
+      (Finset.mem_sdiff.mpr ⟨hx, hxX⟩) (Finset.mem_sdiff.mpr ⟨hw, hwX⟩) Finset.sdiff_subset
+      (by
+        intro y hwy hy
+        refine Finset.mem_sdiff.mpr ⟨hy, ?_⟩
+        rw [hX, Finset.mem_insert, List.mem_toFinset, List.mem_map]
+        rintro (rfl | ⟨q, hq, rfl⟩)
+        · exact hnwx₁ hwy
+        · exact (hwP q hq).1 hwy)
+      (by
+        have : ((evenSet G \ X).erase x).erase w = ((evenSet G).erase x).erase w \ X := by
+          ext y; simp only [Finset.mem_erase, Finset.mem_sdiff]; tauto
+        rw [this]; exact ih)
+    have : evenSet G \ insert x₁ (((x, w) :: P).map Prod.fst).toFinset = (evenSet G \ X).erase x := by
+      ext y
+      simp only [hX, List.map_cons, List.toFinset_cons, Finset.mem_sdiff, Finset.mem_insert,
+        Finset.mem_erase]
+      tauto
+    rw [this]; exact key
+
 end Gallai
