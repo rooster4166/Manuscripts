@@ -152,7 +152,18 @@ Note: the other step in this argument is fine. Trees differing by one exchange s
 
 Scripts are in `/tmp/claude-0/-home-user-Manuscripts/a40c9215-4484-5bc3-a3e1-2bba3a808810/scratchpad/audit/`. They use `/home/user/Manuscripts/tools/pathnum.py` (exact CP-SAT) and `data/conn*.g6`. No project files were modified.
 
-RESULTS_PLACEHOLDER
+| Test | Script | Statement checked | Result |
+|---|---|---|---|
+| T1 | `t1_doubling_lemma11.py` | p(double of H at r) = 2·p(H^r) − 1, all connected H of order ≤ 5, all r | 137 (H,r) pairs, 0 mismatches |
+| T2 | same | Lemma 1.1: a partition within m/2 with an end at u (two ends if deg u even), all connected H of order 4 and 6, all u | 696 pairs, 0 failures |
+| T3 | same | Rooted bound p(H^r) ≤ m/2, orders 4 and 6, all roots (includes the n=4 base of Thm 2.2) | 696 pairs, 0 failures |
+| T4 | `t2_oddfloor.py`, `t2b_oddfloor7.py` | Lemma 10.1 (cut vertex ⇒ p ≤ h); Cor 8.7 (p > h ⇒ 2-connected, no matching cut); and which order-(2h+1) graphs have p > h | Order 5: 21 graphs, p > 2 only for K5 and K5−e (both semi-cliques; 2-connected; no matching cut). Order 7: 853 graphs (385 with a cut vertex). p > 3 for exactly 4 graphs: K7 − M with \|M\| ≤ 2, all semi-cliques. None has a cut vertex or a matching cut. 0 solver time-outs. So Alternative 1 does not occur at orders 5 and 7 |
+| T5 | `t5_peripheral.py`, `t5b_fact8.py` | Random loopless 3-edge-connected multigraphs on 4–7 vertices. (a) §8 peripheral-path fact (first edge e, last edge f, connected residual). (b) Lemma 10.7 (s–u path avoiding a label, connected residual). (c) Protected-vertex form (start of §12.10). All by brute force | (a) 3,330 + 5,906 label pairs; (b) 80,666 + 28,983 triples; (c) 20,274 + 7,075 triples; 0 failures |
+| T6 | `t4b_semiclique.py` | Lemma 10.2 (K_{2h+1}−M, \|M\|<h, plus a degree-2 vertex z ~ a,b, all roots); exactly-h-holes floor (JM equality); semi-clique with two leaves at u (Thm 10.16, t=u) | h=2: 15 + 2 + 3 non-isomorphic instances, all ok. h=3: T6_H3 |
+| T7 | `t6b_leaves.py` | Lemma 11.1 (hence Lemma 10.10): whenever the threshold test passes, a partition within ⌊(v+r)/2⌋ with all temporary leaves on distinct paths. Connected H of order 2–5, random multiplicity vectors with r ≤ 5 | 589 test-passing instances, 0 failures |
+| T8 | `t3_jm.py` | Javadi–Miralaei (Wu's conjecture): for every n-edge H ⊆ K_{2n+1}, a Hamilton decomposition with H rainbow. CP-SAT with circuit constraints, n ≤ 5, all H up to isomorphism | n=1..5: 1, 2, 5, 11, 26 graphs H, all feasible |
+
+Caveat: the machine was heavily loaded (load average ≈ 30 on 4 cores). One first-pass run of T6 reported two "failures" at h=3; both were CP-SAT time-outs. One of them, the instance (M=∅, z ~ 0,1, t=3), was re-solved: OPTIMAL with 4 paths, verified. The rerun `t4b` separates time-outs (UNKNOWN) from genuine infeasibility.
 
 **Interpretation.** Most statements in chain (2) are of the form "a least failure has property X". These are vacuous on small graphs, because the rooted bound holds there. The tests therefore target the unconditional ingredients the chain relies on:
 

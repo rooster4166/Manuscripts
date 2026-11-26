@@ -1,0 +1,517 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amssymb,amsmath,booktabs,longtable,enumitem,array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+\DeclareUnicodeCharacter{2209}{\ensuremath{\notin}}
+\DeclareUnicodeCharacter{2115}{\ensuremath{\mathbb{N}}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\to}}
+\DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
+\DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
+\DeclareUnicodeCharacter{2227}{\ensuremath{\wedge}}
+\DeclareUnicodeCharacter{2228}{\ensuremath{\vee}}
+\DeclareUnicodeCharacter{2229}{\ensuremath{\cap}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\cyc}{\mathcal{C}}
+\newcommand{\Ext}{\operatorname{ext}}
+
+\title[The short-path-and-cycles lemma]{The short-path-and-cycles lemma attributed to\\ Chu--Fan--Zhou: status, a proof of the common-vertex form, and its uses}
+\date{26 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+The manuscripts of the program cite ``Chu, Fan and Zhou, Lemma~2.4'' in the form: a path $P$ with
+$|V(P)|\le 4$ meeting each of $q$ edge-disjoint cycles, with $|V(P)|+q\le 7$, gives at most $q+1$
+paths. We could not obtain a primary statement of that lemma. The only published statement of
+this kind is Chu--Wang's own Lemma~2.2, which has the bound $|V(P)|+q\le 6$. We prove the bound
+$|V(P)|+q\le 7$ under the hypothesis that all the cycles pass through one vertex of $P$
+(Theorem~\ref{thm:main}). Every use with $|V(P)|+q=7$ in the manuscripts satisfies this
+hypothesis. The proof is a short exchange argument. Its only inputs are the published path--cycle
+lemma of Chu--Fan--Liu (at most five contacts) and a six-contact path--cycle lemma, which we verify
+by a check of $1257$ compressed configurations. We do not prove the general form, in which the
+cycles only meet $P$. We found no counterexample to it among $8{,}278{,}764$ configurations on at
+most eight vertices.
+\end{abstract}
+
+\maketitle
+
+\section{Summary}\label{sec:summary}
+
+\begin{enumerate}[leftmargin=*]
+\item \emph{Primary source.} We found no accessible copy of Y.~Chu, G.~Fan, C.~Zhou, ``Gallai's
+conjecture and the path number of odd semi-cliques'', Discrete Math.\ 349(2) (2026) 114725
+(DOI 10.1016/j.disc.2025.114725). The publisher's page returned 403. Unpaywall lists the paper
+as closed. The arXiv API has no version under these authors or under the terms ``semi-clique''
+and ``odd semi-clique''. Semantic Scholar and Crossref give only the metadata. The statement of
+its Lemma~2.4 therefore remains \textbf{unverified}.
+
+\item \emph{Chu--Wang Lemma~2.2 is not a quotation.} In arXiv~2510.12806v1 (source checked),
+Chu and Wang introduce their Lemma~2.2 with ``We obtain the following lemma'' and prove it
+themselves. Its hypothesis is $|V(P)|+|\cyc|\le 6$. They prove the case of six cycles through a
+vertex separately, as their Lemma~2.3. Their reference [CFZ] is the 2022 triangle-free paper
+(Discrete Math.\ 345, 112866). They cite it for the triangle-free bound and for its
+Theorem~3.1, never for a path--cycle lemma. So no verifiable source
+states the $\le 7$ form, and no verifiable source states any form of Lemma~2.4 of the 2026 paper.
+
+\item \emph{Every use with sum $7$ has a common vertex.} In every application in the manuscripts with
+$|V(P)|+q=7$, all the cycles pass through a common vertex of $P$ (Section~\ref{sec:uses}).
+
+\item \emph{What we prove.} Theorem~\ref{thm:main} is the common-vertex form with sum
+$\le 7$. With $|V(P)|=1$ it gives Chu--Wang's Lemma~2.3 (six cycles through a vertex), with a
+different proof.
+
+\item \emph{What remains open.} The general form, in which each cycle only meets $P$, is not
+proved. It holds in every configuration of the exhaustive checks in
+Appendix~\ref{app:comp}. Those checks were run before the scope was narrowed and are not used in
+any proof.
+\end{enumerate}
+
+\section{Conventions}
+
+All graphs are finite and simple. A \emph{path} is a sequence of distinct vertices
+$(v_1,\dots,v_k)$ with $k\ge 1$ and consecutive vertices adjacent. We allow $k=1$ only for the
+path $P$ in the hypotheses. A member of a decomposition has at least one edge. Let $H$ be a graph
+whose edge set is the disjoint union of the edge sets of some paths and cycles. We say that $H$
+\emph{decomposes into $m$ paths} if $E(H)$ is the disjoint union of the edge sets of at most $m$
+paths. For a cycle $C$ and $v\in V(C)$, $N_C(v)$ is the set of the two neighbours of $v$ on $C$.
+For $t\in N_C(v)$, write $C-vt$ for the path obtained from $C$ by deleting the edge $vt$. It runs
+from $v$ to $t$ and contains all of $V(C)$. This operation is called \emph{opening $C$ at $vt$}.
+
+A \emph{configuration} $(P;C_1,\dots,C_q)$ consists of a path $P$ and cycles $C_i$ whose edge sets
+are pairwise disjoint and disjoint from $E(P)$. Its \emph{union} is the graph formed by all these
+edges, together with $V(P)$. In a configuration, two distinct edges at a vertex $v$ have distinct
+other ends. In particular the sets $N_{C_i}(v)$ are pairwise disjoint and contain no
+$P$-neighbour of $v$.
+
+\section{Statements}
+
+\begin{lemma}[path and cycle]\label{lem:pc}
+Let $Q$ be a path and $C$ a cycle with $E(Q)\cap E(C)=\emptyset$ and $V(Q)\cap V(C)\ne\emptyset$.
+Suppose $|V(Q)|\le 6$, and that $|V(Q)\cap V(C)|\le 4$ or $V(C)\not\subseteq V(Q)$. Then
+$Q\cup C$ decomposes into two paths.
+\end{lemma}
+
+\begin{lemma}[Chu--Wang {\cite[Lemma 2.2]{CW}}]\label{lem:cw}
+Let $(P;C_1,\dots,C_q)$ be a configuration in which every $C_i$ meets $V(P)$. If $|V(P)|\le 4$ and
+$|V(P)|+q\le 6$, then the union decomposes into $q+1$ paths.
+\end{lemma}
+
+\begin{theorem}[short path and common cycles]\label{thm:main}
+Let $(P;C_1,\dots,C_q)$ be a configuration and $x\in V(P)$ a vertex lying on every $C_i$. If
+$|V(P)|\le 4$ and $|V(P)|+q\le 7$, then the union decomposes into $q+1$ paths.
+\end{theorem}
+
+\begin{corollary}\label{cor:ends}
+In the setting of Theorem~\ref{thm:main}, let $d=\deg_{H}(x)$ in the union $H$, and suppose
+$d\ge 2q+1$, that is, $x$ has an edge of $P$. Then every decomposition into at most $q+1$
+paths has exactly $q+1$ paths, all of them visit $x$, and exactly $2(q+1)-d$ of them end at $x$,
+counted with multiplicity.
+\end{corollary}
+
+\begin{proof}
+Each path contributes at most $2$ to $\deg_H(x)$, and it contributes $2$ exactly when it
+traverses $x$. Every cycle passes through $x$, so $d=2q+\deg_P(x)\le 2q+2$. Count incidences at
+$x$.
+\end{proof}
+
+\begin{corollary}[Chu--Wang {\cite[Lemma 2.3]{CW}}]\label{cor:six}
+At most six edge-disjoint cycles through a common vertex decompose into one more path than their
+number.
+\end{corollary}
+
+\begin{proof}
+This is Theorem~\ref{thm:main} with $P=(x)$.
+\end{proof}
+
+\begin{remark}[the necessity of $|V(P)|\le 4$]
+The condition $|V(P)|\le 4$ cannot be dropped, even with a common vertex. Take $P=(u_1,\dots,u_5)$
+and the cycle $(u_1,u_3,u_5,u_2,u_4)$. This is the exceptional graph of Chu--Fan--Liu, which has
+$9$ edges, while two paths on $5$ vertices have at most $8$.
+\end{remark}
+
+\subsection*{A Lean formulation}
+With the definitions of \texttt{GallaiLean/Basic.lean} (\texttt{GPath}, \texttt{PathDecomp},
+\texttt{pathNumber}), cycles through $x$ can be taken as closed walks based at $x$. Every cycle
+through $x$ can be rotated to such a walk (\texttt{Walk.rotate}, \texttt{IsCycle.rotate}). The
+needed statement is then:
+\begin{verbatim}
+theorem shortPath_commonCycles {V : Type*} [Fintype V] [DecidableEq V]
+    (H : SimpleGraph V) {a b x : V} (P : H.Walk a b) (hP : P.IsPath)
+    (hx : x ∈ P.support) {q : ℕ} (C : Fin q → H.Walk x x)
+    (hC : ∀ i, (C i).IsCycle)
+    (hnd : (P.edges ++ (List.ofFn fun i => (C i).edges).flatten).Nodup)
+    (hcov : ∀ e, e ∈ H.edgeSet ↔
+              e ∈ P.edges ++ (List.ofFn fun i => (C i).edges).flatten)
+    (h4 : P.support.length ≤ 4) (h7 : P.support.length + q ≤ 7) :
+    pathNumber H ≤ q + 1
+\end{verbatim}
+Following the treatment of \texttt{LovaszStatement}, the path--cycle input
+(Lemma~\ref{lem:pc}) can enter as an explicit hypothesis:
+\begin{verbatim}
+def PathCycleStatement : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) {a b c : W}
+    (Q : H.Walk a b), Q.IsPath → ∀ (C : H.Walk c c), C.IsCycle →
+    (Q.edges ++ C.edges).Nodup →
+    (∀ e, e ∈ H.edgeSet ↔ e ∈ Q.edges ++ C.edges) →
+    (∃ v, v ∈ Q.support ∧ v ∈ C.support) → Q.support.length ≤ 6 →
+    ((Q.support.toFinset ∩ C.support.toFinset).card ≤ 4 ∨
+       ∃ v ∈ C.support, v ∉ Q.support) →
+    pathNumber H ≤ 2
+\end{verbatim}
+Lemma~\ref{lem:cw} and Theorem~\ref{thm:main} then use only surgery on explicit paths. Mathlib's
+characterisation \texttt{Walk.cons\_isCycle\_iff}, which says that \texttt{(cons h p).IsCycle} holds
+iff \texttt{p.IsPath} and \texttt{s(u,v)} is not in \texttt{p.edges}, is exactly the opening
+operation. The library's \texttt{PathDecomp.ofPerm} assembles a decomposition from explicit paths.
+Decompositions of subgraphs transfer by \texttt{Walk.mapLe}. The six-contact case of
+Lemma~\ref{lem:pc} is a finite statement about compressed configurations (Section~\ref{sec:pc}),
+so it can be proved by \texttt{decide} once the compression step is formalized.
+
+\section{Proof of Lemma~\ref{lem:pc}}\label{sec:pc}
+
+Let $c=|V(Q)\cap V(C)|$.
+
+\emph{Case $c\le 5$.} This is the lemma of Chu, Fan and Liu \cite[Lemma 2.1]{CFL}, quoted
+verbatim as Lemma~2.1 of \cite{CW}. A connected union of an edge-disjoint path and cycle with at
+most five common vertices decomposes into two paths, unless it is the exceptional graph. In the
+exceptional graph $C$ is a $5$-cycle whose five vertices are consecutive on the path, and the
+path may continue by a pendant subpath, possibly trivial, at each end of that segment. Our hypothesis excludes this:
+either $c\le 4$, or $C$ has a vertex outside $Q$.
+
+\emph{Case $c=6$.} Then $|V(Q)|=6$, $V(Q)\subseteq V(C)$, and $C$ has a vertex outside $Q$. The
+six vertices of $Q$ cut $C$ into six arcs. Each arc is a single edge (\emph{direct}) or has
+interior vertices, which lie outside $Q$ and have degree $2$ in $Q\cup C$. A direct arc is not an
+edge of $Q$, by simplicity and edge-disjointness. At least one arc has interior vertices. Replace
+every arc that has interior vertices by an arc with exactly one interior vertex, giving $C^\circ$.
+
+A decomposition of $Q\cup C^\circ$ into two paths lifts to one of $Q\cup C$. A path through an
+interior vertex $w$ traverses the whole arc. If a path ends at $w$, the other edge at $w$ lies on
+the other path, which also ends at $w$. In that case give the first path the whole arc except its
+last edge, and the second path that last edge. Both paths then end at the last interior vertex.
+Interior vertices are private, so simplicity is preserved.
+
+The compressed configurations are finite. Up to reflection there are $60$ cyclic orders of the
+six labelled vertices of $Q=(0,\dots,5)$ on $C$. For each order we take every set of subdivided
+arcs that contains all arcs parallel to an edge of $Q$ and is nonempty. This gives
+$1257$ graphs, and each splits into two paths (Appendix~\ref{app:comp},
+\texttt{path\_cycle\_check.py}). This agrees with the six-contact result in Section~6 of the
+marked-reduction manuscript.
+
+The same script checks every case of the lemma with $|V(Q)|\le 6$ independently of
+\cite{CFL}. It enumerates the subset of contacts, their cyclic order, the subdivided arcs and the
+off-cycle vertices of $Q$. The only configurations without a two-path partition have
+$V(C)\subseteq V(Q)$: the pentagram (with or without a pendant vertex) at five contacts, and five
+Hamiltonian $6$-cycles at six contacts. \qed
+
+\section{Proof of Lemma~\ref{lem:cw}}\label{sec:cw}
+
+We follow \cite{CW} and use Lemma~\ref{lem:pc} in place of \cite[Lemma 2.1]{CFL}. We need one
+fact.
+
+\emph{Fact.} For a path $(u_1,\dots,u_5)$, the only $5$-cycle on $\{u_1,\dots,u_5\}$ that is
+edge-disjoint from it is $(u_1,u_3,u_5,u_2,u_4)$. Indeed, in $K_5$ minus the path, $u_2$, $u_3$
+and $u_4$ have degree $2$. Their edges $u_2u_4$, $u_2u_5$, $u_3u_1$, $u_3u_5$, $u_4u_1$ are therefore
+forced, and they already form the cycle.
+
+We use induction on $q$. The cases $q=0$ and $q=1$ hold trivially and by Lemma~\ref{lem:pc} (at
+most four contacts). Let $q\ge 2$ and $P=(v_1,\dots,v_k)$. Let $i$ be least such that $v_i$ lies on
+a cycle, say $C_1$, and let $N_{C_1}(v_i)=\{x_1,x_2\}$.
+
+Suppose first that $x_1\notin V(P)$. Then $P_1=(C_1-v_ix_1)+(v_i,v_{i-1},\dots,v_1)$ is a path,
+because no $v_j$ with $j<i$ lies on $C_1$. Put $P'=(x_1,v_i,\dots,v_k)$. Every other cycle meets
+$P$ only in $\{v_i,\dots,v_k\}$, so it meets $P'$. Also $|V(P')|+q-1=k-i+1+q\le 6$. If
+$|V(P')|\le 4$, induction finishes. Otherwise $|V(P')|=5$, so $i=1$, $k=4$ and $q=2$.
+
+If $x_1,x_2\in V(P)$, then $\{x_1,x_2\}\subseteq\{v_{i+2},\dots,v_k\}$. This forces $i=1$, $k=4$,
+$\{x_1,x_2\}=\{v_3,v_4\}$ and $q=2$.
+
+In both remaining cases write $\cyc=\{C_1,C_2\}$.
+\begin{itemize}[leftmargin=*]
+\item Suppose $|V(P')|=5$ with $P'=(x_1,v_1,v_2,v_3,v_4)$. If Lemma~\ref{lem:pc} does not apply to
+$P'$ and $C_2$, then $C_2$ is a $5$-cycle on $V(P')$. By the Fact,
+$C_2=(x_1,v_2,v_4,v_1,v_3)$, so $v_1v_3,v_1v_4\in E(C_2)$. Hence $x_2\notin V(P)\cup V(C_2)$.
+Replace $x_1$ by $x_2$. Now $C_2$ has the vertex $x_1$ outside the new $P'$, and
+Lemma~\ref{lem:pc} applies.
+\item Suppose $\{x_1,x_2\}=\{v_3,v_4\}$. Let $x$ be the neighbour of $v_3$ on $C_1$ other than
+$v_1$. Then $x\notin V(P)$. Put $P''=(x,v_3,v_2,v_1,v_4)$. The edges $xv_3$ and $v_1v_3$ lie on
+$C_1$, and $C_1-\{xv_3,v_1v_4\}$ consists of the edge $v_1v_3$ and a path from $x$ to $v_4$ that
+avoids $v_1$ and $v_3$. So $P_4=(C_1-xv_3-v_1v_4)+v_3v_4$ is the path
+$(v_1,v_3,v_4,\dots,x)$. If Lemma~\ref{lem:pc} failed for $P''$ and $C_2$, then by the Fact
+$C_2=(x,v_2,v_4,v_3,v_1)$. This cycle contains the edge $v_3v_4$ of $P$, which is impossible.
+\end{itemize}
+In each case we obtain $q+1=3$ paths. \qed
+
+\section{Three operations}
+
+Throughout, $(P;C_1,\dots,C_q)$ is a configuration and $x\in V(P)$ lies on every cycle.
+
+\begin{lemma}[first contact]\label{lem:first}
+Let $|V(P)|=k\le 4$, $P=(p_1,\dots,p_k)$, and suppose some cycle $C$ misses $p_1$. Let $p_j$ be
+the first vertex of $P$ on $C$. Then $C$ has a neighbour $t$ of $p_j$ with
+$t\notin V(P)$. The sequence $(C-p_jt)+(p_j,p_{j-1},\dots,p_1)$ is a path, and so is
+$P'=(t,p_j,\dots,p_k)$. Moreover $P'$ contains $x$ and $|V(P')|\le k$.
+\end{lemma}
+
+\begin{proof}
+Since $x\in V(C)$, we have $j\le$ the position of $x$, so $x\in V(P')$, and $j\ge 2$. The vertices
+$p_1,\dots,p_{j-1}$ are not on $C$, and $p_{j+1}$ is a $P$-neighbour of $p_j$. So
+$N_C(p_j)\cap V(P)\subseteq\{p_{j+2},\dots,p_k\}$, a set of at most $k-j-1\le 1$ vertex.
+\end{proof}
+
+\begin{lemma}[end opening]\label{lem:end}
+Let $|V(P)|=k\le 3$ with $P=(p_1,\dots,p_k)$. Then every cycle $C$ through $p_1$ has a neighbour
+$t\notin V(P)$ of $p_1$. Moreover $C-p_1t$ and $(t,p_1,\dots,p_k)$ are paths.
+\end{lemma}
+
+\begin{proof}
+$N_C(p_1)\cap V(P)\subseteq V(P)\setminus\{p_1,p_2\}$, which has at most one element.
+\end{proof}
+
+\begin{lemma}[exchange]\label{lem:exch}
+Let $v$ lie on cycles $C,D$ of a configuration.
+\begin{enumerate}[label=(\alph*)]
+\item If $u\in N_C(v)\setminus V(D)$ and $w\in N_D(v)\setminus V(C)$, then $(C-vu)+vw$ and
+$(D-vw)+vu$ are two paths whose edge sets partition $E(C)\cup E(D)$.
+\item Let $v$ lie on $C_1,C_2,C_3$ with $u_i\in N_{C_i}(v)\setminus V(C_{i+1})$ (indices mod $3$).
+Then $(C_{i+1}-vu_{i+1})+vu_i$, $i=1,2,3$, are three paths partitioning
+$E(C_1)\cup E(C_2)\cup E(C_3)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+$C-vu$ is a path from $v$ to $u$, and appending the edge $vw$ at $v$ keeps it simple because
+$w\notin V(C)$. Part~(b) is the same argument applied three times.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+
+Let $k=|V(P)|$. If $k+q\le 6$, Lemma~\ref{lem:cw} applies. So let $k+q=7$, and argue by
+descending induction on $k$, from $k=4$ to $k=1$.
+
+\subsection*{Reduction of $k\le 3$ to $k+1$}
+Let $k\le 3$, so $q\ge 4$. Suppose some cycle misses an end of $P$, say $p_1$. Apply
+Lemma~\ref{lem:first}. The remaining $q-1$ cycles pass through $x\in V(P')$, and
+$|V(P')|+q-1\le 6$. Lemma~\ref{lem:cw} gives $q$ paths, and the opened cycle is one more. Note
+that $k=1$ never reaches this case.
+
+Otherwise all cycles contain $p_1$. Pick any cycle $C$ and apply Lemma~\ref{lem:end}. The path
+$P'=(t,p_1,\dots,p_k)$ has $k+1\le 4$ vertices and contains $x$. The other $q-1$ cycles pass
+through $x$, and $(k+1)+(q-1)=7$. By induction they and $P'$ give $q$ paths, and $C-p_1t$ is the
+last one.
+
+\subsection*{The case $k=4$, $q=3$}
+Write $P=(p_1,p_2,p_3,p_4)$, let $H$ be the union, and call the cycles $C_1,C_2,C_3$. Each of
+the edges $p_1p_3$, $p_1p_4$, $p_2p_4$ lies on at most one cycle. For every cycle $C$,
+$$N_C(p_1)\cap V(P)\subseteq\{p_3,p_4\},\qquad N_C(p_4)\cap V(P)\subseteq\{p_1,p_2\}.$$
+
+\emph{Step 1.} Suppose a cycle misses $p_1$ or $p_4$, say $p_1$ (otherwise reverse $P$). By
+Lemma~\ref{lem:first}, the other two cycles and $P'$ satisfy Lemma~\ref{lem:cw}, since
+$|V(P')|\le 4$ and $|V(P')|+2\le 6$. They give $3$ paths, so $4$ in all. \emph{From now on every
+cycle contains $p_1$ and $p_4$.} The vertex $x$ is not used again.
+
+\emph{Step 2 (exchanges at $p_1$).} Write $i\to j$ if $N_{C_i}(p_1)\not\subseteq V(C_j)$. Suppose
+$i\to j$ and $j\to i$. Then Lemma~\ref{lem:exch}(a) gives two paths on $C_i\cup C_j$.
+Lemma~\ref{lem:pc} gives two paths on $P\cup C_k$, because they share $p_1$ and have at most
+$|V(P)|=4$ common vertices. This makes $4$. If $1\to2\to3\to1$ or $1\to3\to2\to1$,
+Lemma~\ref{lem:exch}(b) gives three paths, and $P$ is the fourth.
+
+Otherwise the relation $\to$ is an acyclic digraph on three vertices, so some cycle $S$ has no
+incoming arc. Then $N_C(p_1)\subseteq V(S)$ for every cycle $C$. The six neighbours of $p_1$ on the
+cycles are distinct, so $|V(S)|\ge 7$.
+
+\emph{Step 3 (two-end extension).}
+\begin{lemma}\label{lem:two}
+Let $\{F,X,Y\}=\{C_1,C_2,C_3\}$, and let $t\in N_X(p_1)\setminus V(P)$ and
+$y\in N_Y(p_4)\setminus(V(P)\cup\{t\})$. If $V(F)\not\subseteq\{t,p_1,p_2,p_3,p_4,y\}$, then
+$H$ decomposes into four paths.
+\end{lemma}
+\begin{proof}
+$X-p_1t$ and $Y-p_4y$ are paths, and so is $R=(t,p_1,p_2,p_3,p_4,y)$. The cycle $F$ contains $p_1$,
+$|V(R)|=6$, and $F$ has a vertex outside $R$. Lemma~\ref{lem:pc} gives two paths on $F\cup R$. The
+four edge sets partition $E(H)$.
+\end{proof}
+
+\emph{Step 4.} Let $A,B$ be the two cycles other than $S$. Put
+$$\alpha=N_A(p_1)\setminus V(P),\quad \beta=N_B(p_1)\setminus V(P),\quad
+\alpha'=N_A(p_4)\setminus V(P),\quad \beta'=N_B(p_4)\setminus V(P).$$
+Take $F=S$ in Lemma~\ref{lem:two}. The condition on $F$ holds automatically, since $|V(S)|\ge 7$.
+\begin{itemize}[leftmargin=*]
+\item \emph{Option 1} takes $(X,Y)=(A,B)$. It works unless $\alpha=\emptyset$, or $\beta'=\emptyset$,
+or $\alpha=\beta'$ is a single vertex.
+\item \emph{Option 2} takes $(X,Y)=(B,A)$. It works unless $\beta=\emptyset$, or $\alpha'=\emptyset$, or
+$\beta=\alpha'$ is a single vertex.
+\end{itemize}
+Note that $\alpha=\emptyset$ means $N_A(p_1)=\{p_3,p_4\}$. In that case $B$ and $S$ use neither
+$p_1p_3$ nor $p_1p_4$, so $|\beta|=2$. The same holds at $p_4$ and for $B$.
+
+\emph{Claim.} If both options fail, then up to interchanging $A$ and $B$ one of the following
+holds.
+\begin{itemize}[leftmargin=*]
+\item[(F1)] $N_A(p_1)=\{p_3,p_4\}$ and $N_A(p_4)=\{p_1,p_2\}$.
+\item[(F3)] $p_1p_4\in E(A)$, and for distinct vertices $v,v'\notin V(P)$,
+$$N_A(p_1)=\{v,p_4\},\quad N_A(p_4)=\{p_1,v'\},\quad N_B(p_1)=\{v',p_3\},\quad N_B(p_4)=\{v,p_2\}.$$
+\end{itemize}
+
+\begin{proof}[Proof of the claim]
+Suppose $\alpha=\emptyset$. Then $|\beta|=2$, so Option~2 can fail only through
+$\alpha'=\emptyset$, which gives (F1). The case $\beta'=\emptyset$ is symmetric: $|\alpha'|=2$, so
+$\beta=\emptyset$, which is (F1) with $A$ and $B$ interchanged.
+
+Otherwise $\alpha$ and $\beta'$ are nonempty, so $\alpha=\beta'=\{v\}$. Then $A$ uses exactly one
+of $p_1p_3$, $p_1p_4$, and $B$ uses exactly one of $p_4p_1$, $p_4p_2$. Hence $\beta\ne\emptyset$
+and $\alpha'\ne\emptyset$, so Option~2 fails through $\beta=\alpha'=\{v'\}$. Thus each of $A,B$
+has exactly one $P$-neighbour at $p_1$ and one at $p_4$. These are distinct edges, so
+$\{p_3,p_4\}$ is split between $A$ and $B$ at $p_1$, and $\{p_1,p_2\}$ at $p_4$. The edge
+$p_1p_4$ lies on $A$ or on $B$. Interchanging $(A,v)$ with $(B,v')$ if necessary, it lies on $A$,
+which is (F3). Finally $v\ne v'$, since $p_1v$ and $p_1v'$ are distinct edges.
+\end{proof}
+
+\emph{Resolving (F3).} The edges $p_1p_3$ and $p_1p_4$ lie on $B$ and $A$. So both neighbours of
+$p_1$ on $S$ lie outside $P$. Pick $t\in N_S(p_1)$ and apply Lemma~\ref{lem:two} with $F=A$,
+$X=S$, $Y=B$ and $y=v$. Here $t\ne v$, since they are the ends of distinct edges at $p_1$, and
+$v\notin V(P)$. The vertex $v'\in N_A(p_4)\subseteq V(A)$ lies outside
+$\{t,p_1,\dots,p_4,v\}$: it is not in $V(P)$, it differs from $v$, and it differs from $t$, since
+$p_1v'\in E(B)$ and $p_1t\in E(S)$.
+
+\emph{Resolving (F1).} $A$ contains the path $(p_3,p_1,p_4,p_2)$. The rest of $A$ is a path from $p_2$
+to $p_3$ that is not the edge $p_2p_3$. Its interior $W^\circ\ne\emptyset$ lies outside $V(P)$,
+and $V(A)=V(P)\cup W^\circ$. The cycles $B$ and $S$ use none of $p_1p_3$, $p_1p_4$, $p_2p_4$. Hence
+$$N_B(p_1)=\{b_1,b_2\},\quad N_S(p_1)=\{s_1,s_2\},\quad N_B(p_4)=\{d_1,d_2\},\quad N_S(p_4)=\{e_1,e_2\},$$
+all outside $V(P)$, with the four vertices $b_i,s_i$ distinct and the four vertices $d_i,e_i$
+distinct. We apply Lemma~\ref{lem:two} with $F=A$, using either
+$(X,Y)=(B,S)$ with $t\in\{b_1,b_2\}$, $y\in\{e_1,e_2\}\setminus\{t\}$, or $(X,Y)=(S,B)$ with
+$t\in\{s_1,s_2\}$, $y\in\{d_1,d_2\}\setminus\{t\}$. It suffices that $W^\circ\not\subseteq\{t,y\}$.
+\begin{itemize}[leftmargin=*]
+\item If $|W^\circ|\ge 3$, any choice works.
+\item Let $|W^\circ|=2$. Two admissible pairs $(b_i,e_j)$ that share a coordinate give different sets
+$\{t,y\}$, so one of them differs from $W^\circ$. Otherwise at most two pairs are admissible. This
+happens only when $\{b_1,b_2\}=\{e_1,e_2\}$, and then the only set is $\{b_1,b_2\}$. If that set is
+$W^\circ$, use $(S,B)$ with $t=s_1\notin W^\circ$.
+\item Let $W^\circ=\{w\}$. If $w\notin\{b_1,b_2\}$, then $\{e_1,e_2\}\setminus\{w\}\ne\emptyset$.
+Take $y$ in it and $t\in\{b_1,b_2\}\setminus\{y\}$. If $w\in\{b_1,b_2\}$, use $(S,B)$: $t=s_i$ is
+never $w$, and $\{d_1,d_2\}\setminus\{w\}$ contains a vertex $y\ne t$ for a suitable
+$i\in\{1,2\}$.
+\end{itemize}
+This completes the case $k=4$, $q=3$, and with it the proof of Theorem~\ref{thm:main}. \qed
+
+\begin{remark}
+In the proof, $x$ is used only to make Step~1 and the reduction to $k+1$ valid. There it guarantees
+that the shortened path still meets every remaining cycle. The general form, in which each cycle
+only meets $P$, would follow from the same argument if Step~1 could be replaced. That is the
+configuration in which some cycle misses an end of $P$ and the other cycles meet $P$ only before
+that cycle's first contact. We have no proof of that case.
+\end{remark}
+
+\begin{remark}[relation to the internal results]
+The marked-reduction manuscript contains Lemma~173 (a path $(A,B,C,V,Z)$ with four cycles through
+$V$ gives five paths). Pad $P$ with private pendant edges and add dummy triangles on new vertices through the common
+vertex. Deleting the padding afterwards only shortens or deletes paths. The padding vertices are new,
+and each has all its neighbours in the padding or at its attachment vertex. Hence every path meets
+the padding in a terminal segment. So Lemma~173 also implies Theorem~\ref{thm:main}, and in fact the
+common-vertex statement for every $|V(P)|\le 4$ and $q\le 4$. Its proof, however,
+rests on the computer-checked Theorem~159. Theorem~38 there (at most seven cycles through a
+vertex give $j+1$ paths with two ends at the vertex) does not use Lemma~2.4.
+\end{remark}
+
+\section{Uses in the manuscripts and their status}\label{sec:uses}
+
+Line numbers refer to the text extractions. Here ``(a)'' means covered by Lemma~\ref{lem:cw}
+(sum $\le 6$), ``Thm~\ref{thm:main}'' means sum $7$ with a common vertex, now proved here, and
+``(b)'' means covered by marked-reduction Theorem~38, which is independent of Lemma~2.4. In every
+case the endpoint conclusions drawn in the manuscripts follow from degree counting at the common
+vertex (Corollary~\ref{cor:ends}).
+
+\begin{longtable}{L{3.4cm}L{5.0cm}L{1.4cm}L{4.4cm}}
+\toprule
+Place & Configuration & $(k,q)$ & Status\\
+\midrule
+\endhead
+MR L.~21 ($\approx$2181), case 1 & $P=(a,b,x)$, $q\le 3$ cycles through $x$ & $(3,\le3)$ & (a)\\
+MR L.~21, case 2 & $P=(a,b,x,c)$; $q\le 3$, or $q\le 2$ at $d=8$ & $(4,3)$ & Thm~\ref{thm:main} ($x$ common)\\
+MR L.~21, case 3 & $P=(x,a,b,c)$, $q\le 3$ & $(4,3)$ & Thm~\ref{thm:main}\\
+MR L.~21, rank remark ($\approx$2189), used at $\approx$2805 & case 1 with four cycles & $(3,4)$ & Thm~\ref{thm:main}\\
+MR Prop.~27 ($\approx$2466) & $P=(a,b,x,z)$, $\le1$ cycle & $(4,\le1)$ & (a)\\
+MR Prop.~33 ($\approx$2755) & planted 4-vertex path; 3 closed Hamilton rows of $U+x$ & $(4,3)$ & Thm~\ref{thm:main}: every row contains $V(P)$, so any $p_i$ is common\\
+MR Cor.~35 ($\approx$2789) & reserved spoke $xz$; $q\le5$ closed rows through $x$ & $(2,\le5)$ & (a) for $q\le4$; Thm~\ref{thm:main} for $q=5$\\
+MR Cor.~35 planting ($\approx$2840) & $P$ of order $L+b+1=4$ through $x$; $q\le 3$ rows through $x$ & $(4,3)$ & Thm~\ref{thm:main}\\
+MR mixed pair ($\approx$2929) & $(a,b,x)$, $\le3$ cycles & $(3,\le3)$ & (a)\\
+MR Thm.~69 ($\approx$4690) & spoke or $2$-edge path at $x$, $\le2$ cycles & $\le(3,2)$ & (a)\\
+MR \S17.3 ($\approx$4749), L.~70, Thm.~72 ($\approx$4891, 4899) & stated as ``$\le7$''; used as $(3,\le2)$, $(4,\le1)$, $(2,\le3)$, $(3,\le3)$ & sums $\le6$ & (a). The stated general sentence is exactly Thm~\ref{thm:main} (cycles meet $P$ at $x$)\\
+MR L.~108 ($\approx$6285) & edge $+\le2$ cycles; 3-edge path $+1$ cycle & $(2,2)$, $(4,1)$ & (a)\\
+MR Thm.~177 ($\approx$9752) & $P=(b,a,v,x)$, $m\le3$ cycles through $v,x$ & $(4,3)$ & Thm~\ref{thm:main} ($v$ common)\\
+MR $\approx$3185 (``Lemma 2.5'', $j\le7$) & cycles through a vertex & $(1,\le7)$ & not load-bearing; (b)\\
+even-degrees 137 (``Lemma 2.5'', $m\le7$) & $m$ cycles through $x$ & $(1,\le7)$ & Cor.~\ref{cor:six} for $m\le6$; (b) for $m=7$\\
+even-degrees 156--157 & edge $xy$ and $m-1\le5$ cycles through $x$ & $(2,\le5)$ & (a) for $m\le5$; Thm~\ref{thm:main} (also (b)) for $m=6$\\
+separating-pairs 3934--3936 & route of $\le4$ vertices, $\le2$ cycles & sum $\le6$ & (a)\\
+degree-ten-marked-root 60, 560 & 4-vertex path with $\le2$ cycles; $\le3$-vertex path with $\le2$ cycles & sum $\le6$ & (a)\\
+four-exterior-neighbors 589, 597, 779; five-odd-neighbors 117, 449 & internal MR Lemmas 152/155, $\le2$ cycles & sum $\le6$ & not citations of Lemma 2.4\\
+\bottomrule
+\end{longtable}
+
+\noindent\emph{Recommended edits.} In each sum-$7$ place, replace ``Chu, Fan and Zhou [8, Lemma
+2.4]'' by Theorem~\ref{thm:main} of this note, and state the common-vertex hypothesis, which is
+already true there. The citation of Lemma~2.4 elsewhere may be replaced by Lemma~\ref{lem:cw}
+(Chu--Wang, Lemma~2.2). Where ``Lemma 2.5'' is cited for $m=7$, cite marked-reduction Theorem~38
+instead.
+
+\appendix
+\section{Computations}\label{app:comp}
+
+The scripts are in \texttt{scripts/} next to this file and the outputs in \texttt{data/}. The only
+computation that the proofs depend on is the six-contact part of A.1, which takes under a second.
+Everything else is a sanity check.
+
+\begin{enumerate}[label=A.\arabic*, leftmargin=*]
+\item \texttt{path\_cycle\_check.py} (with the exact oracle \texttt{decomp.py}) verifies
+Lemma~\ref{lem:pc} for $|V(Q)|\le6$ on compressed configurations. Output:
+\texttt{data/path\_cycle\_check.out}. At six contacts with an outside vertex there are $1257$
+configurations and $0$ failures. All failures in the whole range have $V(C)\subseteq V(Q)$: the
+pentagram at five contacts, and five Hamiltonian $6$-cycles at six.
+
+\item \texttt{proof43\_check.py} and \texttt{proof43\_targeted.py} run the case analysis of
+Section~\ref{sec:proof} as an algorithm on random configurations. These include triples of Hamilton
+cycles of $K_9,K_{11},K_{13}$ (from a Walecki decomposition), configurations nested near $P$, and
+instances built to reach (F1) and (F3). Each branch builds its paths explicitly, and the steps
+that invoke Lemma~\ref{lem:pc} or Lemma~\ref{lem:cw} are checked with the exact oracle. No
+assertion failed. Every branch, including (F1) with both orders and (F3), was reached.
+
+\item \texttt{flower.c} is an exhaustive check of the \emph{general} form, in which each cycle only
+meets $V(P)$. It takes all sets of $q$ edge-disjoint cycles of $K_n-E(P)$ with
+$P=(0,\dots,k-1)$ and decides by exact search whether $q+1$ paths suffice. Results
+(\texttt{data/exh\_*}):
+\begin{itemize}
+\item $(4,3)$: $n=7$ ($18{,}222$ sets) and $n=8$ ($8{,}278{,}764$ sets), with $0$ failures.
+\item At $n=7$, $0$ failures for $(3,4)$ ($18{,}699$ sets), $(2,4)$ ($29{,}430$), $(5,2)$
+($4{,}248$), $(5,3)$, $(4,4)$ and $(3,5)$.
+\item The only failures found are for $(6,1)$ and $(6,2)$. They are the pentagram, Hamiltonian
+$6$-cycles on $V(P)$, and pairs of Hamilton cycles of $K_7$, which the edge count rules out.
+\end{itemize}
+This run predates the narrowing of the task to conceptual arguments. It is supporting evidence
+only.
+
+\item \texttt{rflower.c} runs random tests with vertex pools of up to $12$ vertices, cycle lengths
+up to $10$, and both the general and the common-vertex mode. No failure was found.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{CFL} Y.~Chu, G.~Fan, Q.~Liu, On Gallai's conjecture for graphs with maximum degree 6,
+Discrete Math.\ 344 (2021) 112212, Lemma~2.1 (as quoted in \cite{CW}).
+\bibitem{CFZ} Y.~Chu, G.~Fan, C.~Zhou, Gallai's conjecture and the path number of odd
+semi-cliques, Discrete Math.\ 349(2) (2026) 114725. Not consulted: no copy was accessible.
+\bibitem{CW} Y.~Chu, Y.~Wang, Path decompositions of Eulerian graphs, arXiv:2510.12806v1 (2025),
+Lemmas~2.1--2.3.
+\end{thebibliography}
+
+\end{document}

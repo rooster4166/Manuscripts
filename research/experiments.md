@@ -189,3 +189,35 @@ Command: `tools/emc_cones.py 10 12 5`
 9 random cones K1 ∨ H with e ∈ {4, 6} even vertices (3 trials were skipped for having e < 4). **All have uniform, loopless endpoint matroids.**
 
 **Heuristic for conjecture (a).** The only non-realisability mechanism found so far, the theta obstruction (several degree-2 routes between two hubs), needs vertices of degree 2. In a 3-connected graph every vertex has degree ≥ 3, so every even vertex has degree ≥ 4.
+
+## E13. Completeness of Lovász–Fan certificates (the Fan game)
+
+Tools: `tools/fan_calculus.py` and `tools/fan_game.py`.
+
+**Setting.** A *Lovász–Fan certificate* (the "Fan game") consists of three steps:
+1. Hold a set F of edges, so that K = G − F has at most two even vertices.
+2. Start from a Lovász seed on K. Either b = d_K mod 2, or, when e(K) = 2 and K has no isolated vertex, Lemma 3's profile.
+3. Re-insert F one edge at a time by Fan transfers: single, or grouped with an adversarial donor. A new one-edge path is allowed if the budget permits.
+
+The certificate wins for root r if the final profile has Σb ≤ n and b(r) ≥ 1. Every move is `fan_single` or `fan_grouped`, so a winning certificate proves the rooted test at (G, r). This is the certificate format of the d6-frontier manuscript, and it contains:
+- FanCert;
+- Fan schedules;
+- two-step descent (flattened);
+- the star lemma;
+- Pyber's proof;
+- the six-clique insertion schedules.
+
+Soundness check: on P₃ ∪ (K₅ − e), the game loses exactly at the middle vertex of P₃, where the rooted test is false.
+
+**Results.**
+
+| Test | Outcome |
+|---|---|
+| FanCert (even steps and odd transfers only), n = 6 | fails on 6 of 112 graphs, including 3 with e = 4, where two-step descent is a theorem. **FanCert is strictly weaker than the full transfer game.** |
+| Fan game, n = 6, every root, \|F\| ≤ 4 | **wins all 112 graphs at every root** |
+| Fan game, n = 8, every root, \|F\| ≤ 4 | 50 of 11,117 graphs have a losing root |
+| the same 50 graphs, \|F\| ≤ 8 | most win with larger F (for example K_{2,6} needs \|F\| ≥ 5). **Genuine losers remain.** |
+
+The first genuine loser is GsRvnk. It has a clique Q = {0,5,6,7} of even vertices of degree 6. Vertex 1 is adjacent to Q and to a leaf 4. Vertices 2 and 3 are false twins, each adjacent to exactly Q. Roots 2 and 3 lose. The graph is not critical: p = 3, realised by (1,0,6,2,7,5,3), (2,0,5,6,3,7,1,4), (2,5,1,6,7,0,3). **So Lovász seeds with Fan transfers do not suffice for the rooted test.** The obstruction is the full-vertex configuration (connections §J; d6-frontier Thm 3.1, the terminal-step classification).
+
+**Inductive seeds** (`fan_game.py FILE kmax ind`). The seed on K = G − F may also come from the induction hypothesis: the simple-profile rooted test on the smaller connected K, with r' prescribed and the rest of the half-set S' chosen by an adversary. With \|F\| ≤ 3 this still loses on 38 of the 50 graphs. Prescribing one vertex leaves the adversary free to put zeros next to every re-inserted edge. **An induction through Fan transfers needs a stronger hypothesis than (R)**, one that controls where the zeros of S' lie (as in EMC or FD), or a move beyond Fan's inequality.

@@ -42,16 +42,19 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Node | Statement | Source | Status | Verification |
 |---|---|---|---|---|
 | N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | **AUDITED** (A3) | **lean** (`gallai_iff_rootedTest`) |
-| N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | comp (eq. (2): 210 instances) |
+| N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | **lean** (`gallai_iff_tests`: Gallai ⇔ MarkedTwoConnTest ∧ ThreeEndsTest; MarkedSurgery/MarkedBlocks.lean). The bridge formula is not formalized and is not needed |
 | N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
-| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors; external paraphrases (Fan, FHZ, Shaik) being verified (A7) | lean-ext; comp (n ≤ 8) |
-| T(4) | both tests at d = 4 | MR p.129 (Fan–Hou–Zhou) | CLAIMED | — |
-| T(6)-ii | three-end test, d = 6 | MR Thm 123 | CLAIMED | — |
-| T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | CLAIMED | lean-ext? |
+| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean (partial)**: Thm 114 setup, Gallai ⇒ both tests, apex 3-connectivity, and the converse modulo Thm 59 and Thm 113 (`ThreeConnected.lean`) |
+| T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
+| T(6)-ii | three-end test, d = 6 | MR Thm 123 | **AUDITED** (A8) | comp (exhaustive \|J\| ≤ 10) |
+| T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | **AUDITED** (A8): **Thm 124 certificate independently replayed**. Conditional on Fan–Hou–Zhou (two seven-site shapes) and Chu–Fan–Zhou Lemma 2.1 (star lemma, unquoted) | comp |
 | T(6)-i | two-end test, d = 6 (= floor for odd W with a leaf and 5 even vertices, MR Thm 144) | Nov 26 studies | **OPEN**, heavily reduced. **A6: no errors; shape-theorem banks independently re-derived; Thm 144 can be made Shaik-free (BS Thm 13 + Lemma 133).** Unreplayed inputs remain: Thm 135, Thm 137, Lemma 121, the INC trees, 6CL's 31,442 records, D10's tables | comp (n = 8 all instances) |
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
-| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ** | comp(n ≤ 6) |
+| U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ**. **Descent steps 1 and 2 PROVED** for all even-order graphs (Lemma 3; `two_step_descent`). **Step 3 reduced in Lean** (`desc_three_of_unique`, `desc_three_reduction`, KStep.lean) to two base cases: y has ≥ 2 even neighbours, or y has no even neighbour and every edge at y is a bridge. Sound move systems in Lean: Fan schedules, the Fan calculus `FanCert` (`realisable_of_fanCert`). FanCert is not complete (6 failures at n = 6); see the Fan game (connections §R) | **lean** (steps 1–2, step-3 reduction) |
+| T(4)-i via descent | two-end test with 4 even vertices: every even r lies in a realisable half-set | `two_step_descent` with y = r | **PROVED** (Lovász + Fan only, no Botler–Sambinelli) | **lean** |
+| EMC(e=4) | realisable pairs form a rank-2 matroid | every even vertex has ≥ 2 realisable partners (two-step) ⇒ the partner graph has min degree 2 on 4 vertices ⇒ C4, K4−e or K4 | **PROVED** | **lean** (`endpoint_matroid_four`) |
+| BP_3 | floor bound for odd order with a pendant leaf and 3 even vertices | `rooted_four` | **PROVED** by Lovász + Fan (no Botler–Sambinelli) | **lean** |
 
 ## Side chains that also reach Gallai
 
@@ -67,11 +70,11 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 
 | Result | Used by | Status |
 |---|---|---|
-| Lovász mixed theorem | everything | classical |
-| **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. Repair agent running. |
+| Lovász mixed theorem | everything | classical. **The ≤ 1 even vertex form is proved in Lean** (`lovasz_ends`, by an original induction from Fan's lemma; manuscript `manuscripts/lovasz-fan`) |
+| **Javadi–Miralaei (Wu's conjecture)** | OSB Thm 4 / Thm 11; SP Thm 10.16 equality case; block-degree Thm 2 | **published (DM 349, 2026); proof gap in Thm 8 / Claim 12 (A4)**. Liu–Chen covers k ≤ 5, linear forests, and support ≤ k+1. The first repair agent hit an output limit; relaunch pending. Off the spine. |
 | Fan addible-edge lemmas | six-even program; MR | **Both proved in Lean** (`fan_single`, `fan_grouped`; sorry-free). Lemma 3.4 also matches its published quotation (A7). |
 | Fan–Hou–Zhou | T(4); MR p.129 | **matches** (A7): no triangle pair, and each block has Δ ≤ 3; ceiling conclusion |
-| Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RISK** (A7): used with \|V(P)\| + q ≤ 7, but the verifiable version has ≤ 6. Repair agent running. |
+| Chu–Fan–Zhou Lemma 2.4 | MR (≈5 places), even-degrees, SP | **RESOLVED** (`manuscripts/cfz-lemma`): the common-vertex form with \|V(P)\| + q ≤ 7 is proved, and every sum-7 use satisfies its hypothesis. The one finite ingredient is a 1,257-case six-contact lemma, which agrees with MR §6. The general form is unproved but not needed. |
 | Shaik (Hexagon preprint, unrefereed) | MR Thm 144, Cor 106 | A7: Botler–Sambinelli replaces it at the Thm 144 r ∈ T step and in the zero-exception case of Cor 106. **The one-exception case of Cor 106 still needs Shaik**, so Thm 144 remains conditional. |
 
 **The MR equivalence spine (N2–N4) does not depend on JM** (A1, A2).
@@ -100,7 +103,7 @@ So **Gallai ⇔ BP_t for every odd t** (restricted to the apex class), where:
 | t | Status | Source |
 |---|---|---|
 | 1 | proved | Lovász |
-| 3 | proved | Fan–Hou–Zhou / Botler–Sambinelli (A7 confirms the statements) |
+| 3 | proved; **now also in Lean** by Lovász + Fan (`rooted_four`) | Fan–Hou–Zhou / Botler–Sambinelli; `two_step_descent` |
 | 5 | **open** | test (i) at d = 6, i.e. MR Thm 144, which is conditional on Shaik; test (ii) at d = 6 is closed (MR Thm 123) |
 | 7 | **open** | test (i) at d = 8; test (ii) at d = 8 is closed (MR Thm 128, computer, audit A8) |
 | ≥ 9 | **open** | — |
@@ -111,7 +114,7 @@ For t = 5, Botler–Sambinelli leaves only E-subgraphs that contain a bowtie or 
 
 Candidate uniform mechanisms (`research/connections.md`):
 
-- the endpoint matroid conjecture (EMC);
+- the endpoint matroid conjecture (EMC); **proved for e = 4, and its first two descent steps are proved for every e** (connections §N);
 - faithful descent (FD);
 - a theorem on cliques of even vertices.
 
@@ -122,15 +125,39 @@ Candidate uniform mechanisms (`research/connections.md`):
 3. **Close T(6)-i** using the shape reductions as a testbed for the uniform mechanism.
 
 
+
+## Active workstreams (2026-11-26, evening)
+
+**Direction from the project lead:** concept-level theorems, each formalized in Lean. Computation only as small sanity checks.
+
+**Cloud sessions** (separate compute; each pushes to its own branch, which is then merged here):
+
+| Session | Branch | Target |
+|---|---|---|
+| session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
+| session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | **delivered** `two_step_descent`, EMC(e=4), `rooted_le_four`, and the write-up (merged). **Now:** general k-step infrastructure (transfer and lift with arbitrary W; the path induction reduces k-step descent to the base case; the one-even-neighbour case) |
+| session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma. **Done**: `six_clique_prescribed_ends` is sorry-free with standard axioms; `Prog.sound` is the insertion-schedule lemma; `Ach.insert_even` is Lemma 3 |
+| session_01FxXpVe2jUooDSPpWwsw7gq | `claude/two-even-lovasz` | redirected to the **third descent step**, since step 2 is proved; this would close T(6)-i |
+| session_01FxXpViBmJMBd6Z1TwXR2yw | `claude/jm-repair` | conceptual repair of Javadi–Miralaei Thm 8 / Claim 12 |
+
+**Local agents:**
+
+- Lean: Lovász's theorem (discharges LovaszStatement).
+- Lean: the 2-connected reduction for MR Thm 1, and `pathNumber_gt_of_low_degree` (Critical.lean).
+- JM Thm 8 repair (conceptual).
+- Chu–Fan–Zhou Lemma 2.4 resolution (conceptual).
+- d = 6 frontier, Q2 (conceptual).
+
 ## Work queue (next wave)
 
 | # | Item | Purpose |
 |---|---|---|
 | Q1 | Shaik [25, Cor 1.2]: there is a **public Lean formalization**, github.com/shaikidris/gallai-two-exception (488 files, 79k lines, Lean v4.35.0-rc3). Its statement file `Challenge.lean` was inspected and is faithful: `ceiling_bound` is exactly Cor 1.2, with decompositions as genuine edge partitions into nonempty simple paths. A grep finds no sorry, axioms or IO. Building it here was **blocked by the session's permission policy** (third-party code). To verify: `lake exe cache get && lake build Solution`, then `#print axioms Gallai.Submission.ceiling_bound`. If clean, Cor 106 and Thm 144 become machine-verified. Fallback: prove the one-exception odd-order case directly. The gadget attempts (edge xx′; path x–y–x′) each lose one unit of budget (connections §L). | makes MR Thm 144 unconditional |
 | Q2 | Close D = ∅ at d = 6: clique core B[U] = K6 with full exterior vertices (six-clique Thm 6 covers ≤ 5 core neighbours; false-twin-return covers some full cases) | the largest residual d = 6 shape |
-| Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2) | provable special cases of the uniform conjecture |
+| Q3 | EMC for structured classes: cones K1 ∨ H (arm-pairing reformulation) and thread graphs (all even vertices of degree 2). **Done for e = 4 in general (Thm 21).** Next: the third descent step for e = 6, i.e. Thm 19 with the second deleted vertex avoiding N(y) (connections §N) | provable special cases of the uniform conjecture |
 | Q4 | Lean: Prop "critical ≠ forced" lower bound; the d = 4 test from Botler–Sambinelli as an explicit hypothesis | pair the manuscript propositions with formal proofs |
 | Q5 | Audit SP §14 (dense exact theorem) | off the Gallai-critical path; lower priority |
+| Q6 | **Two-even-vertex Lovász problem** (connections §O): when does a graph with exactly two even vertices meet the parity bound |odd|/2? | equivalent to the second faithful-descent step; conceptual, Lean-ready |
 
 ## Log
 
@@ -139,6 +166,40 @@ Candidate uniform mechanisms (`research/connections.md`):
 - CP refuted at n = 7.
 - Audits A1–A6 launched.
 - Lean project created (`lean/`).
+- **Audits A1–A8 complete: no false step in any audited result.** Remaining items are wording fixes, citation fixes and absent finite data (see the corrigenda).
 - Lean: N1 (`gallai_iff_rootedTest`), parity, the private-leaf formula, and the endpoint-structure Lemmas 1–4 are all formalized.
 - Corrigenda document written (`manuscripts/corrigenda`).
 - New manuscript draft `manuscripts/endpoint-structure`.
+- **Lovász's theorem proved in Lean** (an original proof from Fan's lemma; `manuscripts/lovasz-fan`).
+- **Two-step faithful descent proved in Lean** (cloud session). Consequences: the two-end test at d = 4 holds by Lovász + Fan alone, EMC holds for e = 4, and T(6)-i reduces to the third descent step.
+- **CFZ Lemma 2.4 resolved.**
+- 2026-11-26 (cloud session, branch `claude/emc-four-even`): **two-step faithful descent** (Thm 19) and **EMC for e = 4** (Thm 21), both from Lovász + Fan's transfers. Formalized in `lean/GallaiLean/EMCFour.lean` (no sorry). Corollary: BP_3 / T(4) without Fan–Hou–Zhou or Botler–Sambinelli. Next target: a third descent step with the second deleted vertex avoiding N(y) (connections §N).
+- **MR Thm 1 in Lean** (local agent): `gallai_iff_tests`, with standard axioms only. Includes the cut-vertex step (all five cases), the leaf steps, and the pendant step (the only place the three-end test is used). Also `pathNumber_gt_of_low_degree` (Critical.lean).
+- **TwoEven.lean merged** (cloud session two-even): Fan descent, Fan transfer, the second descent step for any pair a, b with a witness w (`realisable_evenSet_erase_pair`), **non-realisable pairs are E-twins** (`etwin_of_not_realisable`), and iterated Fan descent along Fan schedules (`realisable_of_fanSchedule`). The session is now on the third step, split three ways: G[Ev] = K6; some even vertex has ≥ 2 even non-neighbours; the complement of G[Ev] is a matching.
+- **Six-clique Thm 1 in Lean** (`six_clique_prescribed_ends`, sorry-free, kernel `decide` for the finite core). Hypotheses: U is a 6-clique of even vertices, every other vertex is odd with exactly 5 neighbours in U. Conclusion: every 3-set T ⊆ U is realisable.
+- **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
+- **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
+- **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.
+- 2026-11-26 (same session, follow-up): **k-step infrastructure** (`lean/GallaiLean/KStep.lean`, manuscript Lemma 24–Cor 27):
+  - general transfer;
+  - connected reduction of k-step descent to "y has an even neighbour" or "all edges at y are bridges";
+  - the one-even-neighbour case of (k+1)-step descent from k-step descent;
+  - **three-step descent at vertices with exactly one even neighbour**, hence test (i) at d = 6 at every r ∈ N(z) with exactly one neighbour in N(z).
+
+  Three-step descent is reduced to: y has ≥ 2 even neighbours, or y is an all-bridge vertex with no even neighbour.
+- Lean (cloud session, branch `claude/lean-six-clique`): **six-clique Theorem 1 formalized**
+  (`six_clique_prescribed_ends`, `lean/GallaiLean/SixClique.lean`). It is sorry-free with
+  standard axioms only, and the Section 4 bookkeeping is checked by kernel `decide`.
+  - Reusable tools: the insertion-schedule lemma `Prog.sound` (finite transfer programs checked on
+    a model and replayed on any graph), `Ach.grouped` / `Ach.addPath`, and Lemma 3
+    (`Ach.insert_even`: insert an even graph by chordless cycles).
+  - The audit's requested expansions (A6 F10: Lemma 2's chain step; F11: Cor 5's triple rectangle)
+    are written out in the `SixClique.lean` docstring.
+  - Not formalized: Cor 5 and Thm 6. `Prog` is the format for replaying Thm 6's certificate
+    records once they are in the repository.
+- **MR Thm 1 in Lean** (local agent): `gallai_iff_tests`, with standard axioms only. Includes the cut-vertex step (all five cases), the leaf steps, and the pendant step (the only place the three-end test is used). Also `pathNumber_gt_of_low_degree` (Critical.lean).
+- **TwoEven.lean merged** (cloud session two-even): Fan descent, Fan transfer, the second descent step for any pair a, b with a witness w (`realisable_evenSet_erase_pair`), **non-realisable pairs are E-twins** (`etwin_of_not_realisable`), and iterated Fan descent along Fan schedules (`realisable_of_fanSchedule`). The session is now on the third step, split three ways: G[Ev] = K6; some even vertex has ≥ 2 even non-neighbours; the complement of G[Ev] is a matching.
+- **Six-clique Thm 1 in Lean** (`six_clique_prescribed_ends`, sorry-free, kernel `decide` for the finite core). Hypotheses: U is a 6-clique of even vertices, every other vertex is odd with exactly 5 neighbours in U. Conclusion: every 3-set T ⊆ U is realisable.
+- **Pyber's theorem in Lean from Lovász + Fan** (`pyber`, `pyber_claim`, local agent). If every cycle meets an odd vertex, a set of ≤ ⌊e/2⌋ even vertices is realisable. Fan's 2005 theorem is not formalized: it needs a stronger inductive hypothesis and block decompositions.
+- **KStep.lean** (emc-four session): general transfer, `desc_reduction` for every k, `desc_three_of_unique`, `desc_three_reduction`.
+- **Thm 113 separator setup** (spine session): PathSurgery.lean, SmallBounds.lean, sides A and E, graft/cut surgery.

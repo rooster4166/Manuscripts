@@ -39,6 +39,12 @@ hypothesis $p(G)=n/2$. Exhaustive computation through order six (and order eight
 cases) supports the conjecture that in every graph with $p(G)=n/2$ the minimal realisable sets are
 the bases of a loopless matroid. This conjecture would settle all deletion degrees of the
 three-connected rooted test simultaneously.
+We prove that the first two steps of the corresponding descent always succeed: in a connected
+graph of even order with at least four even vertices, for all distinct even $y,w$ some set
+$\Ev\setminus\{w,v\}$ with $v\ne y$ is realisable. The proof uses only Lov\'asz's theorem and Fan's
+addible-edge transfers. For four even vertices this is the whole conjecture: the realisable pairs
+of a connected critical graph are the bases of a loopless rank-two matroid, and every even vertex
+lies in at least two of them. All results of this section are formalised in Lean~4.
 \end{abstract}
 \maketitle
 
@@ -249,7 +255,8 @@ some $u\in S\setminus\{r\}$ with $S\setminus\{u\}\in\cF(G)$.
 \end{conjecture}
 
 Starting from Lemma~\ref{lem:faithful} and descending, Conjecture~\ref{conj:fd} yields (R). By
-Lemma~\ref{lem:minus} its first step always succeeds.
+Lemma~\ref{lem:minus} its first step always succeeds, and by Theorem~\ref{thm:two} of
+Section~\ref{sec:four} so does its second: the conjecture holds for every $S$ with $|S|\ge e-1$.
 
 \begin{proposition}[Small even sets]\label{prop:small}
 Let $H$ be connected and critical. If $e\le 2$, every even vertex lies in a realisable set of size $e/2$.
@@ -269,7 +276,9 @@ pays for a split at $r$.
 
 Thus looplessness in Conjecture~\ref{conj:emc} is known for $e\le4$. The first case with content in the
 matroid part is $e=4$: if $\{1,2\}$ and $\{3,4\}$ are realisable, the conjecture requires $\{1,3\}$ or
-$\{1,4\}$ to be realisable as well.
+$\{1,4\}$ to be realisable as well. Section~\ref{sec:four} proves the conjecture for $e=4$
+(Theorem~\ref{thm:emc4}), and Corollary~\ref{cor:rooted4} reproves the case $e=4$ of
+Proposition~\ref{prop:small} without~\cite{BS}.
 
 \begin{remark}[Relation to the deletion tests]
 In the three-connected reduction of~\cite{MR}, $J$ has a unique even vertex $z$ of degree $d$,
@@ -279,6 +288,545 @@ partition of Lemma~\ref{lem:faithful}, and the test asks for $d/2$ descent steps
 conjectures treat every $d$ at once.
 \end{remark}
 
+\section{Two descent steps, and four even vertices}\label{sec:four}
+
+In this section every graph has no isolated vertices. For a partition $D$ of a graph $K$ and a
+vertex $u$ let $Z_D(u)=\{v\in N_K(u): b_D(v)=0\}$ be the set of \emph{passing neighbours} of $u$.
+If $D$ realises $S$, then a vertex has no ends exactly when it is an even vertex outside $S$, so
+\begin{equation}\label{eq:passing}
+Z_D(u)=N_K(u)\cap(\Ev(K)\setminus S).
+\end{equation}
+The only tool besides Lov\'asz's theorem is Fan's addible-edge lemma~\cite{Fan}, in its single and
+grouped forms (see also~\cite[Lemmas~6 and~7]{BS}).
+
+\begin{lemma}[Fan's transfers]\label{lem:fan}
+Let $D$ be a partition of a graph $K$, let $u$ be a vertex, and let $T$ be a set of vertices with
+$u\notin T$ and no vertex of $T$ adjacent to $u$. If $\sum_{t\in T}b_D(t)>|Z_D(u)|$, then for some
+$t\in T$ the graph $K+ut$ has a partition $D'$ with $|D'|=|D|$, $b_{D'}(u)=b_D(u)+1$,
+$b_{D'}(t)=b_D(t)-1$, and $b_{D'}(v)=b_D(v)$ for every other vertex $v$.
+\end{lemma}
+
+For $T=\{t\}$ we call this a \emph{single transfer of $ut$ towards $u$}; for larger $T$ a
+\emph{grouped transfer}. Both forms are proved in full in the Lean library (\texttt{fan\_single},
+\texttt{fan\_grouped}). Deleting one edge $ab$ flips the parities of $a$ and $b$ and of no other
+vertex, and this is the only bookkeeping in the proofs below.
+
+\begin{lemma}[Transfer across an even edge]\label{lem:edge}
+Let $G$ have even order, and let $s,t,u'$ be distinct even vertices with $st\in E(G)$ and
+$su'\notin E(G)$. Then $\Ev\setminus\{t,u'\}\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+Let $K=G-st$. In $K$ the vertices $s$ and $t$ are odd, of degree at least one, and all other
+degrees are unchanged, so $K$ has even order, no isolated vertex and $\Ev(K)=\Ev\setminus\{s,t\}$.
+Lemma~\ref{lem:minus} applied to $K$ and $u'$ gives a partition $D$ of $K$ realising
+$\Ev\setminus\{s,t,u'\}$. By~\eqref{eq:passing} and $su'\notin E(G)$ we get $Z_D(s)=\emptyset$, while
+$b_D(t)=1$. A single transfer of $st$ towards $s$ gives a partition of $G$ of the same size in which
+$s$ has two ends, $t$ has none, and every other vertex keeps its ends. It realises
+$\Ev\setminus\{t,u'\}$.
+\end{proof}
+
+\begin{lemma}[Star lemma]\label{lem:star}
+Let $y,w,x,z$ be distinct even vertices of $G$ with $y$ adjacent to $w$, $x$ and $z$. Then
+$\Ev\setminus\{w,x\}$ or $\Ev\setminus\{w,z\}$ is in $\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+Let $K=G-\{yw,yx,yz\}$. In $K$ the vertex $y$ has degree $d(y)-3$ and $w,x,z$ have degree one less
+than in $G$, so all four are odd and $\Ev(K)=\Ev\setminus\{y,w,x,z\}$. By Lemma~\ref{lem:faithful},
+$K$ has a partition $D_0$ realising $\Ev(K)$; no vertex is without ends in $D_0$.
+\begin{enumerate}
+\item $Z_{D_0}(y)=\emptyset$ and $b_{D_0}(w)=1$. A single transfer of $yw$ towards $y$ gives a
+partition $D_1$ of $K+yw$ with $b_{D_1}(y)=2$, $b_{D_1}(w)=0$, and all other end counts unchanged.
+\item In $D_1$ the only vertex without ends is $w$, so $|Z_{D_1}(y)|\le1<2=b_{D_1}(x)+b_{D_1}(z)$.
+A grouped transfer with $T=\{x,z\}$ gives, for some $t'\in\{x,z\}$, a partition $D_2$ of
+$K+yw+yt'$ with $b_{D_2}(y)=3$ and $b_{D_2}(t')=0$.
+\item Let $t''$ be the other vertex of $\{x,z\}$. In $D_2$ only $w$ and $t'$ have no ends, so
+$|Z_{D_2}(t'')|\le2<3=b_{D_2}(y)$. A single transfer of $yt''$ towards $t''$ gives a partition $D_3$
+of $G$ with $b_{D_3}(t'')=2$ and $b_{D_3}(y)=2$.
+\end{enumerate}
+In $D_3$ the vertices of $\Ev(K)\cup\{y,t''\}$ have two ends, $w$ and $t'$ have none, and every odd
+vertex of $G$ has one. So $D_3$ realises $\Ev\setminus\{w,t'\}$.
+\end{proof}
+
+\begin{lemma}[Lifting along an odd neighbour]\label{lem:lift}
+Let $y$ be an even vertex of $G$, let $t$ be an odd neighbour of $y$, and let $K=G-yt$. In $K$ the
+vertex $y$ is odd and $t$ is even, and all other degrees are as in $G$. If $S\in\cF(K)$ contains $t$
+and $y$ has no neighbour in $\Ev(K)\setminus S$, then $(S\setminus\{t\})\cup\{y\}\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+Let $D$ realise $S$ in $K$. By~\eqref{eq:passing} and the hypothesis, $Z_D(y)=\emptyset$, while
+$b_D(t)=2$. A single transfer of $yt$ towards $y$ raises the ends at $y$ from one to two and lowers
+those at $t$ from two to one, which is the profile of $(S\setminus\{t\})\cup\{y\}$ in $G$.
+\end{proof}
+
+\begin{theorem}[Two descent steps]\label{thm:two}
+Let $G$ be connected of even order with $e\ge4$ even vertices. For all distinct even vertices $y$
+and $w$ there is an even vertex $v\notin\{y,w\}$ with $\Ev\setminus\{w,v\}\in\cF(G)$.
+\end{theorem}
+
+\begin{proof}
+We prove the statement for every graph $G$ of even order, without isolated vertices and with
+$e\ge4$, in which some path $P$ joins $y$ to another even vertex, by induction on the length of $P$.
+
+\emph{Case 1: $y$ has an even neighbour.} If $y\sim w$ and $y\not\sim v$ for some even
+$v\notin\{y,w\}$, Lemma~\ref{lem:edge} with $(s,t,u')=(y,w,v)$ gives $\Ev\setminus\{w,v\}$. If $y$
+is adjacent to every other even vertex, choose distinct even $x,z\notin\{y,w\}$ (as $e\ge4$) and
+apply Lemma~\ref{lem:star}. If $y\not\sim w$, then $y\sim t$ for some even $t\notin\{y,w\}$, and
+Lemma~\ref{lem:edge} with $(s,t,u')=(y,t,w)$ gives $\Ev\setminus\{t,w\}$; take $v=t$.
+
+\emph{Case 2: $y$ has no even neighbour.} Then the second vertex $t$ of $P$ is odd. Let $K=G-yt$.
+It has even order and no isolated vertex ($y$ had degree at least two, and $t$ keeps the next edge
+of $P$), and $\Ev(K)=(\Ev\setminus\{y\})\cup\{t\}$ has $e$ elements. The path $P-y$ joins $t$ to an
+even vertex of $K$ and is shorter than $P$, so by induction, applied to $K$ with $t$ in place of $y$,
+there is $v\in\Ev(K)\setminus\{t,w\}$ with $S=\Ev(K)\setminus\{w,v\}\in\cF(K)$. Now $t\in S$, and
+$\Ev(K)\setminus S=\{w,v\}$ consists of even vertices of $G$, which are not adjacent to $y$. By
+Lemma~\ref{lem:lift}, $(S\setminus\{t\})\cup\{y\}=\Ev\setminus\{w,v\}$ is in $\cF(G)$.
+\end{proof}
+
+Lemma~\ref{lem:minus} is the first step of faithful descent for every choice of the deleted vertex,
+and Theorem~\ref{thm:two} is the second step for every choice of the kept vertex $y$ and of the
+first deleted vertex $w$. Criticality is not used. Connectivity is needed: for the disjoint union
+of a path on three vertices (whose middle vertex is $y$) and $K_5-e$, the even vertices are $y$ and
+the three vertices of degree four of $K_5-e$, and no realisable pair contains $y$, because
+$p(K_5-e)=3$ forbids realising a single vertex of $K_5-e$.
+
+\begin{corollary}[Four even vertices]\label{cor:four}
+Let $G$ be connected of even order with exactly four even vertices. For distinct even $y,x,z$, the
+pair $\{y,x\}$ or the pair $\{y,z\}$ is realisable. Equivalently, every even vertex lies in at least
+two realisable pairs, and no two non-realisable pairs of even vertices share a vertex.
+\end{corollary}
+
+\begin{proof}
+Let $w$ be the fourth even vertex, and apply Theorem~\ref{thm:two} to $y$ and $w$: the set
+$\Ev\setminus\{w,v\}$ with $v\in\{x,z\}$ is $\{y,z\}$ or $\{y,x\}$.
+\end{proof}
+
+In other words, the \emph{partner graph} on $\Ev$, joining two even vertices when they form a
+realisable pair, has minimum degree at least two. Its complement is therefore a matching, and the
+partner graph is $C_4$, $K_4-e$ or $K_4$.
+
+\begin{theorem}[The endpoint matroid for four even vertices]\label{thm:emc4}
+Let $H$ be connected and critical with exactly four even vertices. Then the minimal realisable sets
+are exactly the realisable pairs, and they are the bases of a loopless matroid of rank two on
+$\Ev(H)$. Its non-trivial parallel classes are the non-realisable pairs, and there are at most two
+of them. In particular Conjecture~\ref{conj:emc} holds when $e=4$.
+\end{theorem}
+
+\begin{proof}
+By Corollary~\ref{cor:R} every realisable set has at least two elements. If $S$ is realisable and
+$|S|\ge3$, pick distinct $y,x,z\in S$; by Corollary~\ref{cor:four} $S$ contains the realisable pair
+$\{y,x\}$ or $\{y,z\}$. Hence the minimal realisable sets are the realisable pairs. They satisfy
+basis exchange: let $B_1=\{a,c\}$ and $B_2$ be realisable pairs with $a\notin B_2$. If $c\in B_2$,
+then $B_2=\{b,c\}$ with $b\notin B_1$ and $B_1-a+b=B_2$. If $c\notin B_2=\{b_1,b_2\}$,
+Corollary~\ref{cor:four} applied to $c,b_1,b_2$ makes $\{c,b_1\}$ or $\{c,b_2\}$ realisable, and
+this is $B_1-a+b_i$. So the realisable pairs are the bases of a matroid of rank two. Every even
+vertex lies in a realisable pair (Corollary~\ref{cor:four}), so there are no loops. Two elements
+are parallel exactly when they form a non-realisable pair, and by Corollary~\ref{cor:four} these
+pairs are disjoint.
+\end{proof}
+
+Conversely, since $\Ev\setminus\{u\}$ is realisable for every $u$ (Lemma~\ref{lem:minus}),
+Conjecture~\ref{conj:emc} for $e=4$ requires every $3$-set to contain a basis. So it is
+equivalent to Corollary~\ref{cor:four} for critical graphs, which is stronger than the statement
+that non-realisability of pairs is transitive. Both non-trivial parallel classes can occur. Let $G$ consist of two triangles $a\,x_1x_2$ and
+$b\,z_1z_2$ joined by the edge $ab$, so $n=6$ and $\Ev=\{x_1,x_2,z_1,z_2\}$. If neither vertex of
+degree two in a triangle is an end, a single path contains all three edges of that triangle, which is
+impossible; so each triangle
+contains an even vertex with two ends, every partition has at least $(1+1+2+2)/2=3$ paths, and $G$
+is critical. The same argument shows that $\{x_1,x_2\}$ and $\{z_1,z_2\}$ are not realisable, while
+for instance $\{x_1,z_1\}$ is realised by the paths $x_1x_2abz_2z_1$, $ax_1$ and $bz_1$.
+
+\begin{corollary}[The rooted test for four even vertices]\label{cor:rooted4}
+Let $G$ be connected of even order $n$ with exactly four even vertices. Then for every vertex $r$,
+the graph $G^r$ obtained by attaching a leaf at $r$ satisfies $p(G^r)\le n/2$. Consequently every
+connected graph $L$ of odd order with a pendant leaf and exactly three even vertices satisfies
+$p(L)\le\lfloor|L|/2\rfloor$.
+\end{corollary}
+
+\begin{proof}
+If $r$ is even, Theorem~\ref{thm:two} gives a realisable pair containing $r$; if $r$ is odd, take
+any realisable pair. A realising partition has $o/2+2=n/2$ paths and an end at $r$, which the leaf
+edge extends. For the second statement let $\ell$ be the leaf of $L$, $s$ its neighbour, and
+$G=L-\ell$, a connected graph of even order. If $s$ is odd in $L$, then $\Ev(G)=\Ev(L)\cup\{s\}$ has
+four elements and $L=G^s$. If $s$ is even in $L$, then $s$ is odd in $G$ and $G$ has exactly two even
+vertices, $\Ev(G)=\{a,b\}$; by Lemma~\ref{lem:minus} the set $\{a\}$ is realisable in $G$, by a
+partition into $o(G)/2+1=|G|/2$ paths with an end at $s$, which the leaf edge extends.
+\end{proof}
+
+Corollary~\ref{cor:rooted4} is the floor bound $\mathrm{BP}_3$ of the project roadmap. It also follows
+from~\cite[Theorem~13]{BS}; the point here is that it needs only Lov\'asz's theorem and Fan's
+transfers.
+
+\begin{remark}[Six even vertices]
+For $e=6$, Theorem~\ref{thm:two} gives, for every even $r$ and every other even $w$, a realisable
+$4$-set containing $r$ and avoiding $w$. The simple-profile form of (R) asks for a realisable
+$3$-set containing $r$, that is, one further descent step; by the remark on the deletion tests this
+is the open case $d=6$ of the three-connected test. Iterating the proof meets a specific obstruction.
+For a third step one may delete an edge $yt$ with $t$ even and apply Theorem~\ref{thm:two} to
+$K=G-yt$, obtaining $\Ev(K)\setminus\{w',v'\}\in\cF(K)$; a single transfer of $yt$ towards $y$ then
+gives $\Ev\setminus\{t,w',v'\}\in\cF(G)$, provided $K$ is connected and neither $w'$ nor $v'$ is
+adjacent to $y$. The vertex $w'$ can be prescribed, but $v'$ cannot. So the third step needs a version
+of Theorem~\ref{thm:two} in which the second deleted vertex avoids a prescribed set of vertices. When
+$y$ has exactly one even neighbour this obstruction disappears (Theorem~\ref{thm:unique} below).
+\end{remark}
+
+\subsection*{$k$-step descent}
+
+For an even vertex $y$, a set $W_0\subseteq\Ev\setminus\{y\}$ and $k\ge1$, we say that $G$ has
+\emph{$k$-step descent at $(y,W_0)$} if some $k$-set $R\subseteq\Ev\setminus\{y\}$ with $W_0\subseteq R$
+has $\Ev\setminus R\in\cF(G)$. Lemma~\ref{lem:minus} is $1$-step descent at $(y,\{w\})$, and
+Theorem~\ref{thm:two} is $2$-step descent at $(y,\{w\})$. For a critical graph with $e=2k$, $k$-step
+descent at $(y,\emptyset)$ is the simple-profile form of (R) at $y$. Prescribing $w$ is a convenience
+of the induction: at the bottom level $w$ may be a coloop of the endpoint matroid.
+
+\begin{lemma}[General transfer across an even edge]\label{lem:transfer}
+Let $s,t$ be adjacent even vertices of $G$ and $K=G-st$. If $S\in\cF(K)$ and $s$ has no neighbour in
+$\Ev(K)\setminus S$, then $S\cup\{s\}\in\cF(G)$.
+\end{lemma}
+
+\begin{proof}
+In $K$ both $s$ and $t$ are odd. Let $D$ realise $S$ in $K$. By~\eqref{eq:passing}, $Z_D(s)=\emptyset$,
+and $b_D(t)=1$. A single transfer of $st$ towards $s$ gives $s$ two ends and $t$ none.
+\end{proof}
+
+Lemma~\ref{lem:edge} is the case $S=\Ev\setminus\{s,t,u'\}$, supplied by Lemma~\ref{lem:minus}.
+
+\begin{theorem}[Connected reduction]\label{thm:reduction}
+Fix $k\ge1$, $m$ and a finite set $W_0$. Suppose that in every connected graph with at least $m$ even
+vertices, $k$-step descent holds at $(y,W_0)$ for every even $y\notin W_0$ (with $W_0\subseteq\Ev$)
+that has an even neighbour or all of whose edges are bridges. Then it holds for every even
+$y\notin W_0$ in every connected graph with at least $m$ even vertices containing $W_0$.
+\end{theorem}
+
+\begin{proof}
+Induction on $|E(G)|$. If $y$ is not covered by the hypothesis, then $y$ has no even neighbour and some
+edge $yt$ is not a bridge, so $t$ is odd and $K=G-yt$ is connected. In $K$ the vertex $y$ is odd and
+$t$ is even, so $\Ev(K)=(\Ev\setminus\{y\})\cup\{t\}$ has as many elements as $\Ev$, and
+$W_0\subseteq\Ev(K)\setminus\{t\}$. By induction there is a $k$-set $R\subseteq\Ev(K)\setminus\{t\}$
+with $W_0\subseteq R$ and $\Ev(K)\setminus R\in\cF(K)$. The vertices of $R$ are even in $G$ and
+different from $y$, so they are not adjacent to $y$, and Lemma~\ref{lem:lift} gives
+$\Ev\setminus R\in\cF(G)$.
+\end{proof}
+
+Neither parity nor criticality is used. Connectivity matters for $k\ge3$. The proof of
+Theorem~\ref{thm:two} is a path induction that never needs connectivity of the graph, but the
+corresponding base statement fails for disconnected graphs when $k=3$. In $(K_5-e)\sqcup(K_5-e)$
+($n=10$, $e=6$) every even vertex has an even neighbour, yet every realisable set has at least four
+elements, since each copy needs two ($p(K_5-e)=3$). When every edge at $y$ is a bridge, deleting one
+of them splits $G$, possibly into parts of odd order, where descent is the floor problem; this case
+is not reduced here.
+
+\begin{theorem}[One even neighbour]\label{thm:unique}
+Let $k\ge2$, let $G$ be connected with at least $2k+2$ even vertices, let the even vertex $y$ have
+exactly one even neighbour $t$, and let $w\ne y$ be even. Suppose that $k$-step descent holds at
+$(y',\{w'\})$ in every graph on $V(G)$ without isolated vertices and with at least $2k$ even vertices, for all
+distinct even $y',w'$ such that $y'$ is joined by a path to another even vertex. Then $G$ has
+$(k+1)$-step descent at $(y,\{w\})$.
+\end{theorem}
+
+\begin{proof}
+Let $K=G-yt$. Then $y$ and $t$ are odd in $K$, $\Ev(K)=\Ev\setminus\{y,t\}$ has at least $2k\ge4$
+elements, and $K$ has no isolated vertex. Since $G$ is connected, every vertex of $K$ is joined in $K$
+to $y$ or to $t$; as $\Ev(K)$ has at least four elements, two distinct even vertices $a,b$ of $K$ lie
+in one component of $K$. Let $y'$ be
+one of them with $y'\ne w$, and let $w'=w$ if $w\ne t$ and $w'$ be the other of $a,b$ if $w=t$. The
+hypothesis gives a $k$-set $W\subseteq\Ev(K)\setminus\{y'\}$ with $w'\in W$ and
+$\Ev(K)\setminus W\in\cF(K)$. As $t$ is the only even neighbour of $y$ and $W\subseteq\Ev\setminus\{y,t\}$,
+the vertex $y$ has no neighbour in $W$, and Lemma~\ref{lem:transfer} gives
+$(\Ev(K)\setminus W)\cup\{y\}=\Ev\setminus(W\cup\{t\})\in\cF(G)$. The set $R=W\cup\{t\}$ has $k+1$
+elements, contains $w$ and avoids $y$.
+\end{proof}
+
+The proof of Theorem~\ref{thm:two} is an induction along a path from $y$ to another even vertex that
+uses neither connectivity nor criticality, so it supplies the hypothesis of Theorem~\ref{thm:unique}
+for $k=2$, in graphs of even order.
+
+\begin{corollary}[Three steps]\label{cor:three}
+Let $G$ be connected of even order with $e\ge6$, and let the even vertex $y$ have exactly one even
+neighbour. Then for every even $w\ne y$ some $3$-set $R\ni w$ of even vertices avoiding $y$ has
+$\Ev\setminus R\in\cF(G)$. If $e=6$, then $y$ lies in a realisable $3$-set and the rooted test (R)
+holds at $y$.
+\end{corollary}
+
+In the language of the deletion tests: if $J$ is $3$-connected with unique even vertex $z$ of degree
+$6$, then test~(i) holds at every $r\in N(z)$ that has exactly one neighbour in $N(z)$ (apply
+Corollary~\ref{cor:three} to $B=J-z$, which is connected, has even order and $\Ev(B)=N(z)$). Combined with
+Theorem~\ref{thm:reduction}, three-step descent in connected graphs of even order with $e\ge6$
+reduces to two cases: $y$ has at least two even neighbours, or $y$ has no even neighbour and every
+edge at $y$ is a bridge.
+
+\begin{remark}[Formalisation]\sloppy
+Lemmas~\ref{lem:edge}--\ref{lem:lift}, Theorem~\ref{thm:two}, Corollaries~\ref{cor:four}
+and~\ref{cor:rooted4} and Theorem~\ref{thm:emc4} are formalised in Lean~4 with Mathlib, in the file
+\texttt{lean/GallaiLean/EMCFour.lean} of the project repository (\texttt{realisable\_of\_edge},
+\texttt{realisable\_of\_star}, \texttt{realisable\_lift}, \texttt{two\_step\_descent},
+\texttt{emc\_four}, \texttt{endpoint\_matroid\_four}, \texttt{rooted\_four}; the second statement of
+Corollary~\ref{cor:rooted4} is \texttt{rooted\_le\_four}, the rooted test for at most four even
+vertices). The matroid of
+Theorem~\ref{thm:emc4} is built as a Mathlib \texttt{Matroid} and proved loopless. There is no
+\texttt{sorry}, and the only axioms are \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}. Lov\'asz's theorem is an explicit hypothesis (\texttt{LovaszStatement}); Fan's
+transfers are proved in the library. The $k$-step material is in \texttt{lean/GallaiLean/KStep.lean}:
+Lemma~\ref{lem:transfer} (\texttt{realisable\_transfer}), Theorem~\ref{thm:reduction}
+(\texttt{desc\_reduction}), Theorem~\ref{thm:unique} (\texttt{desc\_succ\_of\_unique}),
+Corollary~\ref{cor:three} (\texttt{desc\_three\_of\_unique}) and the reduction of three-step descent
+to the two residual cases (\texttt{desc\_three\_reduction}). Primed versions of the last two discharge
+the Lov\'asz hypothesis with the library's proof of Lov\'asz's theorem.
+\end{remark}
+
+\section{Fan descent, Fan certificates, and the second step for arbitrary pairs}\label{sec:second}
+
+Throughout this section $G$ has no isolated vertex. By Lemma~\ref{lem:minus} every set
+$\Ev\setminus\{u\}$ is realisable. We show that the next step, from $\Ev\setminus\{u\}$ to
+$\Ev\setminus\{u,v\}$, fails only between vertices that are twins in the subgraph induced by the
+even vertices, and we give a calculus of moves that iterates the argument. The mechanism answers
+the question of how Fan's lemma, which never changes the number of paths, can drive a descent,
+which lowers it by one at each step: the merge is paid for by deleting an edge between two even
+vertices, which makes both odd; Lov\'asz's theorem is applied to the smaller graph and Fan's lemma
+puts the edge back.
+
+\begin{remark}[Lemmas~\ref{lem:faithful} and~\ref{lem:minus} at every order]\label{rem:anyorder}
+The even-order hypothesis of Lemma~\ref{lem:minus} is not needed. For $u\in\Ev$ the graph
+$G^{\Ev\setminus\{u\}}$ has the single even vertex $u$ and $n+e-1$ vertices; since $n\equiv o+e\equiv
+e\pmod 2$, this number is odd, so Lov\'asz's theorem gives a partition into
+$(n+e-2)/2=|\Od(G^{\Ev\setminus\{u\}})|/2$ paths, and Lemma~\ref{lem:dict} shows that
+$\Ev\setminus\{u\}$ is realisable. In the same way $G^{\Ev}$ has no even vertex, which gives
+Lemma~\ref{lem:faithful}. (The Lean proofs use the apex form and keep the hypothesis $n$ even;
+everything in this section is formalized for even $n$.)
+\end{remark}
+
+\subsection{Tight graphs}
+
+\begin{definition}
+A graph $H$ is \emph{tight} if it has a partition into $|\Od(H)|/2$ paths. By~\eqref{eq:parity} this
+is the same as a partition with exactly one end at every odd vertex and none at the even vertices,
+that is, $\emptyset\in\cF(H)$.
+\end{definition}
+
+By Lemma~\ref{lem:dict}, $S\in\cF(G)$ if and only if $G^S$ is tight. For $S=\Ev\setminus\{u,v\}$ the
+graph $G^S$ has exactly two even vertices, $u$ and $v$. Hence the second descent step is the
+\emph{two-even-vertex Lov\'asz problem}: which graphs with exactly two even vertices meet the
+parity bound $p=|\Od|/2$? For graphs with at most one even vertex Lov\'asz's theorem says that all
+of them do. (The apex graph $G+z+\ell$ of the project notes, with $z$ joined to $\Ev\setminus\{u,v\}$ and a
+leaf $\ell$ at $z$, only gives a sufficient condition; $G^{\Ev\setminus\{u,v\}}$ gives an
+equivalence.)
+
+\subsection{Fan's lemma}
+
+\begin{lemma}[Fan~\cite{Fan}, Lemma~3.4]\label{lem:fan-b}
+Let $ab\in E(G)$ and let $D'$ be a partition of $G-ab$. If fewer than $b_{D'}(b)$ neighbours $x$ of
+$a$ in $G-ab$ have $b_{D'}(x)=0$, then $G$ has a partition $D$ with $|D|=|D'|$,
+$b_D(a)=b_{D'}(a)+1$, $b_D(b)=b_{D'}(b)-1$, and $b_D(x)=b_{D'}(x)$ for every $x\ne a,b$.
+\end{lemma}
+
+The proof is Fan's chain argument: a path ending at $b$ either avoids $a$, and then absorbs the edge
+$ba$, or reaches $a$ through an edge $ya$, which is traded for $ba$ after reversing the segment
+from $b$ to $y$, moving the missing end to $y$. A counting argument shows that a chain of such
+reroutes reaches a vertex with an end on a path avoiding $a$. The lemma, together with the grouped
+version, is formalized without restriction (\texttt{fan\_single}, \texttt{fan\_grouped} in
+\texttt{lean/GallaiLean/Fan.lean}).
+
+\subsection{Fan descent and Fan transfer}
+
+\begin{lemma}[Fan descent]\label{lem:fandescent}
+Let $S\subseteq\Ev$, let $u\ne w$ be vertices of $S$ with $uw\in E(G)$, and suppose that no
+neighbour of $w$ lies in $\Ev\setminus S$. If $S\setminus\{u,w\}$ is realisable in $G-uw$, then
+$S\setminus\{u\}$ is realisable in $G$.
+\end{lemma}
+
+\begin{proof}
+Put $G'=G-uw$. The vertices $u$ and $w$ have odd degree in $G'$ and all other degrees are unchanged,
+so $\Ev(G')=\Ev\setminus\{u,w\}$ and $\Od(G')=\Od\cup\{u,w\}$. Let $D'$ realise
+$S'=S\setminus\{u,w\}$ in $G'$. Then $b_{D'}=1$ on $\Od\cup\{u,w\}$, $b_{D'}=2$ on $S'$, and
+$b_{D'}=0$ exactly on $\Ev\setminus S$. A neighbour $x$ of $w$ in $G'$ is neither $w$ nor $u$, so if
+$b_{D'}(x)=0$ then $x$ is an even vertex of $G$ outside $S$; by hypothesis there is no such
+neighbour. As $b_{D'}(u)=1>0$, Lemma~\ref{lem:fan-b} with $(a,b)=(w,u)$ gives a partition $D$ of $G$
+with $|D|=|D'|$, $b_D(w)=2$, $b_D(u)=0$ and all other end counts as in $D'$. Since $u$ and $w$ are
+even in $G$, $D$ realises $S\setminus\{u\}$.
+\end{proof}
+
+The sizes match as they must: $|D'|=|\Od(G')|/2+|S'|=(o+2)/2+|S|-2=o/2+|S\setminus\{u\}|$.
+
+\begin{lemma}[Fan transfer]\label{lem:fantransfer}
+Let $S\subseteq\Ev$, $u\in\Ev\setminus S$ and $w\in\Od$ with $uw\in E(G)$, and suppose every even
+neighbour $x\ne u$ of $w$ lies in $S$. If $S$ is realisable in $G-uw$, then $S$ is realisable in
+$G$.
+\end{lemma}
+
+\begin{proof}
+In $G'=G-uw$ the vertex $u$ is odd and $w$ is even, so $S\subseteq\Ev(G')$ and $w\notin S$. Let $D'$
+realise $S$ in $G'$; then $b_{D'}(u)=1$ and $b_{D'}(w)=0$. A neighbour $x$ of $w$ in $G'$ with
+$b_{D'}(x)=0$ is an even vertex of $G$ different from $u$ and $w$ and not in $S$; there is none.
+Lemma~\ref{lem:fan-b} with $(a,b)=(w,u)$ gives $D$ on $G$ with $b_D(w)=1$, $b_D(u)=0$ and all other
+counts unchanged, and $D$ realises $S$ in $G$.
+\end{proof}
+
+Fan transfer does not shrink $S$; it moves the role of the excluded even vertex from $u$ to its odd
+neighbour $w$, at the cost of the edge $uw$.
+
+\subsection{The second step}
+
+\begin{theorem}[Second descent step]\label{thm:second}
+Let $u,v,w$ be distinct even vertices with $uw\in E(G)$ and $vw\notin E(G)$. Then
+$\Ev\setminus\{u,v\}$ is realisable.
+\end{theorem}
+
+\begin{proof}
+The graph $G'=G-uw$ has no isolated vertex, since $u$ and $w$ have positive even degree in $G$, and
+$\Ev(G')=\Ev\setminus\{u,w\}$ contains $v$. By Lemma~\ref{lem:minus} (Remark~\ref{rem:anyorder}),
+$\Ev(G')\setminus\{v\}=\Ev\setminus\{u,v,w\}$ is realisable in $G'$. Apply
+Lemma~\ref{lem:fandescent} with $S=\Ev\setminus\{v\}$: $u,w\in S$, and the only vertex of
+$\Ev\setminus S$ is $v$, which is not adjacent to $w$. The conclusion is that
+$S\setminus\{u\}=\Ev\setminus\{u,v\}$ is realisable.
+\end{proof}
+
+\begin{definition}
+Two distinct even vertices $u,v$ are \emph{E-twins} if they have the same neighbours among the
+other even vertices, $N(u)\cap(\Ev\setminus\{u,v\})=N(v)\cap(\Ev\setminus\{u,v\})$; that is, they are
+twins (true or false) in the E-subgraph $G[\Ev]$.
+\end{definition}
+
+\begin{corollary}[Non-realisable pairs are E-twins]\label{cor:twins}
+If $\Ev\setminus\{u,v\}$ is not realisable, then $u$ and $v$ are E-twins.
+\end{corollary}
+
+\begin{proof}
+If some even $w\notin\{u,v\}$ is adjacent to exactly one of $u,v$, apply Theorem~\ref{thm:second}
+with that vertex in the role of $u$.
+\end{proof}
+
+Being twins in a graph (with or without the edge between the two) is an equivalence relation: if
+$u\equiv v$ and $v\equiv w$ are distinct, then a vertex $x\notin\{u,v,w\}$ is adjacent to all three or
+to none, and $v\sim u\Leftrightarrow u\sim w\Leftrightarrow w\sim v$, where the outer
+equivalences come from $v\equiv w$ and $u\equiv v$. A class with at least three vertices is a
+clique or an independent set. So the pairs $\{u,v\}$ with $\Ev\setminus\{u,v\}\notin\cF$ lie inside
+the twin classes of $G[\Ev]$, which are modules of $G[\Ev]$. (Not every twin pair fails; for
+instance in $K_{2,4}$ plus the edge between the two vertices of degree $5$, every pair of the four
+degree-$2$ vertices is realisable.)
+
+\begin{corollary}[Faithful descent, second step]\label{cor:fd2}
+Let $e\ge4$, and let $u\ne r$ be even vertices. Some even $v\notin\{u,r\}$ has
+$\Ev\setminus\{u,v\}\in\cF(G)$, so Conjecture~\ref{conj:fd} can take its second step from
+$\Ev\setminus\{u\}$ keeping $r$, unless $\Ev\setminus\{r\}$ lies in the twin class of $u$. The latter
+happens for some $u$ (and then for all $u\in\Ev\setminus\{r\}$) exactly when $G[\Ev]$ is one of
+\[
+K_e,\qquad \overline{K_e},\qquad K_{e-1}+r\ \text{($r$ isolated in $G[\Ev]$)},\qquad
+K_{1,e-1}\ \text{(a star centred at $r$)}.
+\]
+\end{corollary}
+
+\begin{proof}
+The first statement is Corollary~\ref{cor:twins}. If $\Ev\setminus\{r\}$ lies in one twin class
+$C$, then $|C|\ge e-1\ge3$, so $G[\Ev\setminus\{r\}]$ is complete or edgeless; and $r$ is adjacent to
+all or none of $\Ev\setminus\{r\}$, because any two vertices of $C$ other than $r$ agree on $r$.
+Conversely each of the four graphs makes all of $\Ev\setminus\{r\}$ pairwise twins.
+\end{proof}
+
+So the second step of faithful descent is proved, for every root, except when the E-subgraph is
+complete or edgeless up to the edges at the root.
+
+\subsection{Fan certificates}
+
+Lemmas~\ref{lem:fandescent} and~\ref{lem:fantransfer} compose. For $X\subseteq\Ev$ call a sequence of
+moves a \emph{Fan certificate for $X$} if it is empty and $|X|\le1$, or its first move is a pair
+$(x,w)$ with $x\in X$, $xw\in E(G)$, and $w$ adjacent to no vertex of $X\setminus\{x\}$, such that
+either
+\begin{itemize}
+\item[(E)] $w$ is even and $w\notin X$, and the rest is a Fan certificate for $X\setminus\{x\}$ in
+$G-xw$ (\emph{even step}); or
+\item[(O)] $w$ is odd with $d(w)\ge3$, and the rest is a Fan certificate for
+$(X\setminus\{x\})\cup\{w\}$ in $G-xw$ (\emph{odd transfer}).
+\end{itemize}
+
+\begin{theorem}[Soundness]\label{thm:fancert}
+If $X\subseteq\Ev$ has a Fan certificate, then $\Ev\setminus X$ is realisable.
+\end{theorem}
+
+\begin{proof}
+Induction on the length. For $|X|\le1$ use Lemma~\ref{lem:faithful} or~\ref{lem:minus}. In an even
+step, $\Ev(G-xw)=\Ev\setminus\{x,w\}$, the degrees in $G-xw$ stay positive, and by induction
+$(\Ev\setminus\{x,w\})\setminus(X\setminus\{x\})=S\setminus\{x,w\}$ is realisable in $G-xw$, where
+$S=\Ev\setminus(X\setminus\{x\})$. The neighbours of $w$ in $\Ev\setminus S=X\setminus\{x\}$ are
+excluded, so Lemma~\ref{lem:fandescent} gives $S\setminus\{x\}=\Ev\setminus X$. In an odd transfer,
+$\Ev(G-xw)=(\Ev\setminus\{x\})\cup\{w\}$ (here $d(w)\ge3$ keeps $w$ non-isolated), so by induction
+$\Ev(G-xw)\setminus((X\setminus\{x\})\cup\{w\})=\Ev\setminus X$ is realisable in $G-xw$, and
+Lemma~\ref{lem:fantransfer} with $S=\Ev\setminus X$ lifts it to $G$.
+\end{proof}
+
+Theorem~\ref{thm:second} is the certificate $((u,w))$ for $X=\{u,v\}$. With even steps only, a
+certificate is a list $(x_j,w_j),\dots,(x_2,w_2)$ followed by the single vertex $x_1$, with all
+vertices distinct and even, $x_iw_i\in E(G)$, and $w_i$ adjacent to none of $x_1,\dots,x_{i-1}$
+(edges deleted earlier do not matter, since they join $x_k$ to $w_k$ with $k>i$). In other words
+$\{x_iw_i\}$ is a \emph{semi-induced matching} of $G[\Ev]$ in the ordering
+$x_1,\dots,x_j$.
+
+\begin{corollary}[A uniform sufficient condition for (R)]\label{cor:semiinduced}
+Let $H$ be critical, $r\in\Ev(H)$ and $j=e/2$. Suppose there are distinct even vertices
+$x_1,\dots,x_j\ne r$ and $w_2,\dots,w_j\notin\{x_1,\dots,x_j\}$ with $x_iw_i\in E(H)$ and
+$x_kw_i\notin E(H)$ for all $k<i$. Then $\Ev\setminus\{x_1,\dots,x_j\}$ is a realisable set of size
+$e/2$ containing $r$, so (R) holds for $H$ at $r$. This applies in particular when $H[\Ev]$
+contains an induced matching $\{x_2w_2,\dots,x_jw_j\}$ avoiding $r$ and an even vertex
+$x_1\ne r$ outside it with no neighbour among $w_2,\dots,w_j$.
+\end{corollary}
+
+In the three-connected reduction, $\Ev(B)=N_J(z)$, so the condition concerns only the subgraph
+of $J$ induced by the neighbourhood of the deletion vertex, and it is the same for every
+deletion degree $d$. It fails when $J[N(z)]$ has no edges, which is where odd transfers (and the
+reductions of the next subsection) are needed.
+
+\subsection{Further reductions}
+
+The following moves remove a vertex $x\in X$ by Lov\'asz's theorem directly. Each is stated for a
+general $X\subseteq\Ev$; for $X=\{u,v\}$ it is a sufficient condition for the graph
+$G^{\Ev\setminus\{u,v\}}$, or any graph with exactly two even vertices, to be tight. In each case
+the smaller graph may have odd order, which is harmless by Remark~\ref{rem:anyorder}.
+
+\begin{proposition}\label{prop:moves}
+Let $X\subseteq\Ev$ and $x\in X$.
+\begin{itemize}
+\item[(L)] If $x$ has a neighbour $\ell$ of degree~$1$, and $\Ev\setminus X$ is realisable in
+$G-\ell$, then it is realisable in $G$.
+\item[(S)] If $d(x)=2$ and the neighbours $y,z$ of $x$ are not adjacent, and $\Ev\setminus X$ is
+realisable in $G'=G-x+yz$, then it is realisable in $G$.
+\item[(C)] If every neighbour of $x$ lies in $\Ev\setminus X$, and $\Ev\setminus X\setminus N(x)$ is
+realisable in $G-x$, then $\Ev\setminus X$ is realisable in $G$.
+\end{itemize}
+In particular, if $X=\{x,v\}$ and one of the three local conditions holds at $x$, then
+$\Ev\setminus X$ is realisable (in (C) the smaller set is $\Ev(G-x)\setminus\{v\}$, realisable by
+Lemma~\ref{lem:minus}; in (L) and (S) the smaller graph has $\Ev\setminus\{x\}$ as its even set).
+\end{proposition}
+
+\begin{proof}
+(L) In $G-\ell$ the vertex $x$ is odd and $\Ev(G-\ell)=\Ev\setminus\{x\}\supseteq\Ev\setminus X$; a
+realisation $D'$ has one end at $x$; appending $x\ell$ to that path gives $x$ no end and $\ell$ one,
+with $|D'|$ unchanged and $|\Od(G)|=|\Od(G-\ell)|$. (S) $G'$ is simple, $y$ and $z$ keep their
+degrees, and $\Ev(G')=\Ev\setminus\{x\}$. In a realisation of $\Ev\setminus X$ in $G'$, replace the
+edge $yz$ of its path by $y\,x\,z$; this is a path since $x\notin V(G')$, and $x$ is interior. (C) In
+$G-x$ the neighbours of $x$ become odd, so
+$\Ev(G-x)=\Ev\setminus(\{x\}\cup N(x))$; a realisation $D'$ of $\Ev\setminus X\setminus N(x)$ has one
+end at each $y\in N(x)$. Pair $N(x)$ arbitrarily and add the $d(x)/2$ paths $y\,x\,y'$: each
+$y\in N(x)$ now has two ends, $x$ has none, and
+$|D'|+d(x)/2=(o+d(x))/2+|\Ev\setminus X|-d(x)+d(x)/2=o/2+|\Ev\setminus X|$.
+\end{proof}
+
+For a graph $H$ with exactly two even vertices $u,v$ (taking $G=H$, $X=\{u,v\}$) the moves give the
+following sufficient conditions for tightness, which we state for later reference:
+\begin{itemize}
+\item $u$ has a pendant neighbour (L); or $d(u)=2$ with non-adjacent neighbours (S); or every
+neighbour of $u$ is an odd vertex adjacent to a pendant vertex (delete one such pendant vertex at
+each neighbour of $u$ to get $G_0$; then $H=G_0^{N(u)}$, and this is (C) for $G_0$ and $X=\{u,v\}$
+through Lemma~\ref{lem:dict});
+\item (\emph{transfer}) $u$ has an odd neighbour $w\not\sim v$ such that $H-uw$, whose even vertices
+are $w$ and $v$, is tight (Lemma~\ref{lem:fantransfer} with $S=\emptyset$). Iterating: if a path
+$u=x_0,x_1,\dots,x_k$ has $x_1,\dots,x_k$ odd and outside $N[v]$, and $x_k$ is adjacent to a
+pendant vertex, then $H$ is tight; if $d(u)=2$, $N(u)=\{x,y\}$ and $x,y\notin N[v]$, then $H$ is tight
+even when $xy\in E(H)$ (transfer along $u,x,y$, after which $u$ is a pendant vertex at $y$).
+\end{itemize}
+
+%PART2
+
 \section*{Computational evidence}\label{app:comp}
 
 The accompanying programs (\texttt{tools/} in the project repository) compute exact partitions by
@@ -286,11 +834,17 @@ enumerating simple paths and solving an exact-cover integer program (OR-Tools CP
 partition returned was independently checked. On all connected graphs of order at most six,
 Conjectures~\ref{conj:emc} and~\ref{conj:fd} hold; the realisable family of every critical graph of
 order four or six is the spanning family of a loopless matroid, uniform whenever the graph is
-$2$-connected. [Order eight: in progress.] The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
+$2$-connected. [Order eight: in progress.] For four even vertices, Corollary~\ref{cor:four} was checked
+on all connected graphs of order at most six (critical or not) and on the first 500 of the $5{,}523$
+connected graphs of order eight with four even vertices, with no exception (\texttt{tools/emc\_four.py});
+the run was stopped once the corollary was proved. In every critical graph found with a non-realisable
+pair there are exactly two such pairs, and they are disjoint. The examples of Propositions~\ref{prop:cp}--\ref{prop:uhc}
 were found by the same exhaustive searches.
 
 \begin{thebibliography}{9}
 \bibitem{BS} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph Theory 97 (2021) 161--184.
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
+117--125.
 \bibitem{Cai} M.~Cai, Faithful path partitions (as cited in the short-faithful manuscript).
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
 Academic Press, 1968, 231--236.
