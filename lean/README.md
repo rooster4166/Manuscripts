@@ -327,6 +327,63 @@ only as `LovaszStatement`; Fan's transfers are `fan_single` and `fan_grouped` fr
 `rooted_le_four`
 shows only `propext`, `Classical.choice` and `Quot.sound`.
 
+## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
+
+**Main result: Theorem 1 holds as a full equivalence.**
+`gallai_iff_tests : GallaiConjecture.{u} ↔ MarkedTwoConnTest.{u} ∧ ThreeEndsTest.{u}`.
+`#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
+The two tests are:
+
+* `MarkedTwoConnTest`: for every `TwoConnected G` and nonempty `S`,
+  `markedNumber G S ≤ (card V - |S|) / 2`.
+* `ThreeEndsTest`: if `J` is `TwoConnected`, `card V = 2k + 1`, `pathNumber J = k + 1` and
+  `J.degree x` is odd, then some decomposition `D` has `D.size = k + 1` and `3 ≤ D.ends x`.
+
+`TwoConnected G` is defined as `TwoConnOn G univ`. That means at least three vertices, connected,
+and no cut vertex. A cut vertex is formalized as `CutSep G U x C`: a nonempty part `C` of
+`U - x` and a nonempty rest, with no edge between them.
+
+**`MarkedSurgery.lean`.** A partial marked partition `PMP G E S` is a list of paths of `G` with
+optional sites whose edges are exactly `E`. Operations, all with exact cost bookkeeping:
+
+* `replace`, `replaceSub`, `append`, `forget`, `forgetAll`, `mono`, `castE`;
+* `exists_join`: join two paths at a common end;
+* `exists_split`: split a path at an internal vertex;
+* `exists_extend`: extend a path by a pendant edge;
+* `addPath`, `exists_assign`;
+* `exists_trim`: delete a pendant edge, with three outcomes;
+* `push`: transport along an injective map.
+
+**`MarkedBlocks.lean`.** The induction runs in one vertex type. An instance is a graph whose
+edges lie in a finite set `U`.
+
+* Gluing at a cut vertex: `glue0`, `glue1`, `glueJ`, `glueU`, `glueEnd`, `glueSplit`.
+* **`cutStep`**: the cut-vertex reduction of p. 5, in all five of the manuscript's cases. Its
+  input is `CutSides`: two connected sides of order at least three that meet only at `x`.
+* **`leafStep`**: the four leaf deletions of pp. 4–5. **`doubleLeafStep`**: two leaves at the
+  only mark.
+* **`pendantStep`**: the residual configuration. It is a leaf at the only mark of an even-order
+  graph whose core is two-connected. This is the only use of `ThreeEndsTest`, and only when the
+  root has odd degree. An even-degree root gets its two ends from parity.
+* `residue_sep`: every other configuration reduces to the cases above.
+* `mbOn_of_tests`, **`markedBound_of_tests`**, **`gallai_of_tests`**: sufficiency.
+* `markedTwoConnTest_of_gallai`, **`threeEndsTest_of_gallai`**: necessity. Attach a leaf, use
+  the marked bound with one mark, trim, and use parity.
+
+**About the bridge formula (target 1).** The exact formula `q = α₁ + α₂ + 1[…]` is **not
+formalized**. The reduction does not need it. Take a bridge whose sides both have at least two
+vertices. Either one side is a single edge, which ends in a leaf, or the bridge's end is a cut
+vertex with sides of order at least three. The first case is handled by `leafStep`, the second
+by `cutStep`. The manuscript also uses bridges to show that the pendant core is bridgeless.
+Here `residue_sep` does that job instead.
+
+## `GallaiLean/Critical.lean`
+
+**`pathNumber_gt_of_low_degree`**: if `2 ≤ card V`, `k (card V - 1) ≤ |E(G)|` and some vertex
+has `degree < k`, then `k + 1 ≤ pathNumber G`. The hypothesis `k ≥ 1` is automatic, so it is
+dropped. Helpers: `PathDecomp.sum_length_eq_card` and `GPath.one_le_incid`.
+
 ## Open / not formalized
 
 Nothing from targets 1–3 or from the endpoint-structure lemmas (Definition and Lemmas 1–4) is

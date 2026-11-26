@@ -21,7 +21,7 @@ def one(seed, n, m):
     Nc1 = set(rng.sample(T, k1))
     path = [r] + cs + [a]
     required = list(zip(path, path[1:])) + [(c1, t) for t in Nc1] + [(r, 6 + m + 1), (r, 6 + m + 2)]
-    forbidden = [(c1, t) for t in T if t not in Nc1] + [(v, u) for v in cs[1:] + [a] for u in U] + [(a, r)]
+    forbidden = [(c1, t) for t in T if t not in Nc1] + [(v, u) for v in cs[1:] + [a] for u in U] + [(a, r)] + [(a, c) for c in cs[:-1]]
     G = build(n, required, forbidden, rng)
     if G is None or G.degree(r) < 8 or G.degree(a) < 3: return None
     k = n // 2

@@ -42,7 +42,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | Node | Statement | Source | Status | Verification |
 |---|---|---|---|---|
 | N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | **AUDITED** (A3) | **lean** (`gallai_iff_rootedTest`) |
-| N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | comp (eq. (2): 210 instances) |
+| N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | **lean** (`gallai_iff_tests`: Gallai ⇔ MarkedTwoConnTest ∧ ThreeEndsTest; MarkedSurgery/MarkedBlocks.lean). The bridge formula is not formalized and is not needed |
 | N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
 | N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean (partial)**: Thm 114 setup, Gallai ⇒ both tests, apex 3-connectivity, and the converse modulo Thm 59 and Thm 113 (`ThreeConnected.lean`) |
 | T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
@@ -174,3 +174,5 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Two-step faithful descent proved in Lean** (cloud session). Consequences: the two-end test at d = 4 holds by Lovász + Fan alone, EMC holds for e = 4, and T(6)-i reduces to the third descent step.
 - **CFZ Lemma 2.4 resolved.**
 - 2026-11-26 (cloud session, branch `claude/emc-four-even`): **two-step faithful descent** (Thm 19) and **EMC for e = 4** (Thm 21), both from Lovász + Fan's transfers. Formalized in `lean/GallaiLean/EMCFour.lean` (no sorry). Corollary: BP_3 / T(4) without Fan–Hou–Zhou or Botler–Sambinelli. Next target: a third descent step with the second deleted vertex avoiding N(y) (connections §N).
+- **MR Thm 1 in Lean** (local agent): `gallai_iff_tests`, with standard axioms only. Includes the cut-vertex step (all five cases), the leaf steps, and the pendant step (the only place the three-end test is used). Also `pathNumber_gt_of_low_degree` (Critical.lean).
+- **TwoEven.lean merged** (cloud session two-even): Fan descent, Fan transfer, the second descent step for any pair a, b with a witness w (`realisable_evenSet_erase_pair`), **non-realisable pairs are E-twins** (`etwin_of_not_realisable`), and iterated Fan descent along Fan schedules (`realisable_of_fanSchedule`). The session is now on the third step, split three ways: G[Ev] = K6; some even vertex has ≥ 2 even non-neighbours; the complement of G[Ev] is a matching.
