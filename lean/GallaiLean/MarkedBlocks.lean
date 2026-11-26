@@ -14,6 +14,7 @@ This file: restrictions, separations, leaves and the connectivity of the pieces.
 -/
 
 open SimpleGraph
+open scoped List
 
 set_option linter.unusedSectionVars false
 
@@ -1524,5 +1525,359 @@ theorem twoConnStep (hA : MarkedTwoConnTest.{u}) {U : Finset W} (hE : EdgesIn G 
   have h1 := hA _ (onSub G U) (onSub_twoConnected hE h) _ hS'
   rw [card_sub, card_subtype_of_subset hSU] at h1
   exact (markedNumber_le_onSub hE S).trans h1
+
+/-! ### The pendant configuration -/
+
+theorem exists_two_of_sum {α : Type*} (l : List α) (f : α → ℕ) (hf : ∀ a ∈ l, f a ≤ 1)
+    (h : 2 ≤ (l.map f).sum) : ∃ a b rest, l.Perm (a :: b :: rest) ∧ f a = 1 ∧ f b = 1 := by
+  classical
+  induction l with
+  | nil => simp at h
+  | cons a l ih =>
+    simp only [List.map_cons, List.sum_cons] at h
+    have hfa := hf a List.mem_cons_self
+    by_cases ha : f a = 1
+    · obtain ⟨b, hb, hfb⟩ : ∃ b ∈ l, f b = 1 := by
+        by_contra hc
+        push Not at hc
+        have : (l.map f).sum = 0 := by
+          apply List.sum_eq_zero
+          intro x hx
+          obtain ⟨b, hb, rfl⟩ := List.mem_map.mp hx
+          have := hf b (List.mem_cons_of_mem _ hb)
+          have := hc b hb
+          omega
+        omega
+      exact ⟨a, b, l.erase b, List.Perm.cons _ (List.perm_cons_erase hb), ha, hfb⟩
+    · obtain ⟨a', b', rest, hp, h1, h2⟩ :=
+        ih (fun x hx => hf x (List.mem_cons_of_mem _ hx)) (by omega)
+      refine ⟨a', b', a :: rest, ?_, h1, h2⟩
+      calc (a :: l).Perm (a :: a' :: b' :: rest) := hp.cons a
+        _ ~ a' :: a :: b' :: rest := List.Perm.swap _ _ _
+        _ ~ a' :: b' :: a :: rest := (List.Perm.swap _ _ _).cons _
+
+theorem GPath.endsAt_le_one {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
+    (v : V) : P.endsAt v ≤ 1 := by
+  rw [P.endsAt_eq_ite]; split_ifs <;> omega
+
+theorem GPath.endsAt_eq_one_iff {V : Type*} [DecidableEq V] {G' : SimpleGraph V} (P : GPath G')
+    (v : V) : P.endsAt v = 1 ↔ (P.src = v ∨ P.tgt = v) := by
+  have hne := P.src_ne_tgt
+  unfold GPath.endsAt
+  by_cases hs : P.src = v
+  · have : P.tgt ≠ v := fun ht => hne (hs.trans ht.symm)
+    simp [hs, this]
+  · by_cases ht : P.tgt = v <;> simp [hs, ht]
+
+/-- **The pendant configuration** (marked-reduction manuscript, p. 5): a leaf `w` at the only
+mark `v` of an even-order graph whose deletion leaves a two-connected graph. -/
+theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : Finset W}
+    {w v : W} (hE : EdgesIn G U) (hl : IsLeafAt G w v) (hev : Even U.card)
+    (hJ : TwoConnOn (restrict G (U.erase w)) (U.erase w)) :
+    markedNumber G {v} ≤ (U.card - 1) / 2 := by
+  classical
+  obtain ⟨hwU, hvU⟩ := hl.mem hE
+  set U' := U.erase w with hU'
+  set J := restrict G U' with hJdef
+  have hEJ : EdgesIn J U' := edgesIn_restrict U'
+  have hvU' : v ∈ U' := Finset.mem_erase.mpr ⟨hl.ne.symm, hvU⟩
+  have hcardU : U'.card + 1 = U.card := Finset.card_erase_add_one hwU
+  obtain ⟨m, hm⟩ := hev
+  have h3 := hJ.1
+  have hU'k : U'.card = 2 * (m - 1) + 1 := by omega
+  set k := m - 1 with hk
+  let J' := onSub J U'
+  have hTC : TwoConnected J' := onSub_twoConnected hEJ hJ
+  have hcard' : Fintype.card {x // x ∈ U'} = 2 * k + 1 := by rw [card_sub]; exact hU'k
+  let v' : {x // x ∈ U'} := ⟨v, hvU'⟩
+  have hq := hA _ J' hTC {v'} (Finset.singleton_nonempty _)
+  rw [hcard', Finset.card_singleton] at hq
+  have hp : pathNumber J' ≤ k + 1 := by
+    have := pathNumber_le_markedNumber_add J' {v'}
+    rw [Finset.card_singleton] at this
+    omega
+  have hJE : {e | ∃ e' ∈ J'.edgeSet, e'.map Subtype.val = e} = J.edgeSet := onSub_edges hEJ
+  have hadj : ∀ a b : {x // x ∈ U'}, J'.Adj a b → G.Adj a.1 b.1 := fun a b h => h.1
+  let f := PMP.pushItem (G := G) Subtype.val Subtype.val_injective hadj
+  have hdec : ∀ D : PathDecomp J', ∃ M : PMP G J.edgeSet {v},
+      M.paths = D.paths.map (fun P => f (P, none)) := by
+    intro D
+    refine ⟨((PMP.push (MarkedPartition.ofDecomp (S := (∅ : Finset {x // x ∈ U'})) D)
+      Subtype.val Subtype.val_injective hadj).castE hJE).mono (by simp), ?_⟩
+    show (D.paths.map (fun P => (P, (none : Option {x // x ∈ U'})))).map f = _
+    rw [List.map_map]; rfl
+  have hcost : ∀ l : List (GPath J'), mCost (l.map (fun P => f (P, none))) = l.length := by
+    intro l
+    induction l with
+    | nil => rfl
+    | cons P l ih => rw [List.map_cons, mCost_cons, ih]; simp [f, PMP.pushItem]
+  have hsites : ∀ l : List (GPath J'), mSites (l.map (fun P => f (P, none))) = [] := by
+    intro l
+    induction l with
+    | nil => rfl
+    | cons P l ih => rw [List.map_cons, mSites_cons, ih]; simp [f, PMP.pushItem]
+  have hGE : G.edgeSet = J.edgeSet ∪ {e | e ∈ [s(v, w)]} := hl.edgeSet_eq hE
+  have hGE' : G.edgeSet = J.edgeSet ∪ {e | e ∈ [s(w, v)]} := by rw [hGE, Sym2.eq_swap]
+  have hwJ : s(w, v) ∉ J.edgeSet := fun h => IsLeafAt.not_mem_restrict h (Sym2.mem_mk_left _ _)
+  have hfinal : k = (U.card - 1) / 2 := by omega
+  rw [← hfinal]
+  by_cases hpk : pathNumber J' ≤ k
+  · -- few paths: add the pendant edge assigned to `v`
+    obtain ⟨D, hD⟩ := pathNumber_spec J'
+    obtain ⟨M, hM⟩ := hdec D
+    have hok : SiteOK {v} [(GPath.ofAdj hl.1.symm, some v)] := by
+      intro y hy t ht
+      rw [List.mem_singleton] at hy; subst hy
+      simp only [Option.some.injEq] at ht; subst ht
+      exact ⟨Finset.mem_singleton_self _, Or.inl rfl⟩
+    have hvw : ∀ e ∈ (GPath.ofAdj hl.1.symm).edges, e ∉ J.edgeSet := by
+      intro e he; rw [GPath.ofAdj_edges, List.mem_singleton] at he; subst he
+      rw [Sym2.eq_swap]; exact hwJ
+    have hnew : ∀ t, some v = some t → t ∉ mSites M.paths := by
+      intro t _ h'; rw [hM, hsites] at h'; simp at h'
+    let M₂ := M.addPath (GPath.ofAdj hl.1.symm) (some v) hok hvw hnew
+    have := (M₂.castE hGE.symm).markedNumber_le_cost
+    have e : (M₂.castE hGE.symm).cost = D.size := by
+      show mCost ((GPath.ofAdj hl.1.symm, some v) :: M.paths) = _
+      rw [mCost_cons, hM, hcost]; simp [PathDecomp.size]
+    omega
+  · -- a tight core: an optimum with two ends at `v`
+    have hpeq : pathNumber J' = k + 1 := by omega
+    obtain ⟨D, hsize, hends⟩ : ∃ D : PathDecomp J', D.size = k + 1 ∧ 2 ≤ D.ends v' := by
+      by_cases hodd : Odd (J'.degree v')
+      · obtain ⟨D, h1, h2⟩ := hB _ J' hTC k hcard' hpeq v' hodd
+        exact ⟨D, h1, by omega⟩
+      · obtain ⟨M, hM⟩ := markedNumber_spec J' {v'}
+        have hlen := length_eq_cost_add_sites M
+        have hsl : (M.paths.filterMap Prod.snd).length ≤ 1 := by
+          rw [← List.toFinset_card_of_nodup M.sites_nodup]
+          refine (Finset.card_le_card (fun s hs => M.sites_mem (List.mem_toFinset.mp hs))).trans ?_
+          simp
+        have hge := pathNumber_le M.decomp
+        have hsz : M.decomp.size = M.paths.length := by
+          simp [MarkedPartition.decomp, PathDecomp.size]
+        have hcM : markedCost M ≤ k := by rw [hM]; omega
+        have h1 : (M.paths.filterMap Prod.snd).length = 1 := by omega
+        obtain ⟨t, ht⟩ : ∃ t, t ∈ M.paths.filterMap Prod.snd :=
+          List.exists_mem_of_length_pos (by omega)
+        have htv : t = v' := Finset.mem_singleton.mp (M.sites_mem ht)
+        rw [htv] at ht
+        obtain ⟨y, hy, hyt⟩ := List.mem_filterMap.mp ht
+        have hend := (M.site_ok y hy _ hyt).2
+        have h1e : 1 ≤ M.decomp.ends v' := by
+          unfold PathDecomp.ends
+          have hy1 : y.1.endsAt v' = 1 := (y.1.endsAt_eq_one_iff v').mpr hend
+          have := List.le_sum_of_mem (List.mem_map_of_mem (f := fun P => P.endsAt v')
+            (List.mem_map_of_mem (f := Prod.fst) hy))
+          simp only [MarkedPartition.decomp] at this ⊢
+          omega
+        have hpar := M.decomp.ends_mod_two v'
+        rw [Nat.not_odd_iff_even] at hodd
+        have h0 : M.decomp.ends v' % 2 = 0 := by rw [hpar]; exact Nat.even_iff.mp hodd
+        exact ⟨M.decomp, by omega, by omega⟩
+    obtain ⟨P₁, P₂, rest, hperm, h1, h2⟩ :=
+      exists_two_of_sum D.paths (fun P => P.endsAt v') (fun P _ => P.endsAt_le_one v') hends
+    obtain ⟨M₀, hM₀⟩ := hdec D
+    set Q₁ := (f (P₁, none)).1 with hQ₁
+    set Q₂ := (f (P₂, none)).1 with hQ₂
+    have hf1 : f (P₁, none) = (Q₁, none) := rfl
+    have hf2 : f (P₂, none) = (Q₂, none) := rfl
+    set rest' := rest.map (fun P => f (P, none)) with hrest'
+    have hperm₀ : M₀.paths.Perm ((Q₁, none) :: (Q₂, none) :: rest') := by
+      rw [hM₀, ← hf1, ← hf2]
+      exact hperm.map _
+    have hQ₁v : Q₁.src = v ∨ Q₁.tgt = v := by
+      rcases (P₁.endsAt_eq_one_iff v').mp h1 with h | h
+      · exact Or.inl (congrArg Subtype.val h)
+      · exact Or.inr (congrArg Subtype.val h)
+    have hQ₂v : Q₂.src = v ∨ Q₂.tgt = v := by
+      rcases (P₂.endsAt_eq_one_iff v').mp h2 with h | h
+      · exact Or.inl (congrArg Subtype.val h)
+      · exact Or.inr (congrArg Subtype.val h)
+    have hnew : v ∉ mSites M₀.paths := by rw [hM₀, hsites]; simp
+    obtain ⟨M₁, hM₁⟩ := M₀.exists_assign (hperm₀.trans (List.Perm.swap _ _ _))
+      (Finset.mem_singleton_self v) hQ₂v hnew
+    have hQ₁mem : (Q₁, none) ∈ M₁.paths := by rw [hM₁]; simp
+    have hw : w ∉ Q₁.walk.support := by
+      intro hw
+      have := M₁.support_subset (U := (U' : Set W))
+        (fun e he x hx => (mem_restrict_edgeSet.mp he).2 x hx) hQ₁mem w hw
+      simp [hU'] at this
+    obtain ⟨M₂, Q₁', hM₂, -⟩ := M₁.exists_extend (by rw [hM₁]; exact List.Perm.swap _ _ _)
+      hQ₁v hl.1 hw hwJ none (Or.inl rfl)
+    have := (M₂.castE hGE'.symm).markedNumber_le_cost
+    have e2 : (M₂.castE hGE'.symm).cost = mCost rest' + 1 := by
+      show mCost M₂.paths = _
+      rw [hM₂]; simp
+    have e0 : mCost M₀.paths = mCost rest' + 2 := by
+      rw [mCost_perm hperm₀]; simp
+    have e0' : mCost M₀.paths = k + 1 := by
+      rw [hM₀, hcost]; exact hsize
+    omega
+
+/-! ### The residue: a leaf at the only mark of an even-order graph -/
+
+/-- A cut vertex of `G - w` (for a leaf `w`) gives a good separation of `G` or a second leaf. -/
+theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U)
+    (hl : IsLeafAt G w v) {x : W} {C : Finset W}
+    (hsep : Sep (restrict G (U.erase w)) (U.erase w) x C) :
+    (∃ x C, Sep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card) ∨
+      (∃ b y, b ≠ w ∧ IsLeafAt G b y) := by
+  obtain ⟨hwU, hvU⟩ := hl.mem hE
+  have hJadj : ∀ a b, G.Adj a b → a ≠ w → b ≠ w → (restrict G (U.erase w)).Adj a b :=
+    fun a b hab ha hb => ⟨hab, Finset.mem_erase.mpr ⟨ha, (hE a b hab).1⟩,
+      Finset.mem_erase.mpr ⟨hb, (hE a b hab).2⟩⟩
+  have hxU' := hsep.1
+  have hxw : x ≠ w := (Finset.mem_erase.mp hxU').1
+  have hxU : x ∈ U := (Finset.mem_erase.mp hxU').2
+  have hwC : ∀ C' : Finset W, C' ⊆ (U.erase w).erase x → w ∉ C' :=
+    fun C' h hw => by have := h hw; simp at this
+  have hU2 : 2 ≤ U.card := by
+    have := Finset.card_le_card (Finset.insert_subset hwU (Finset.singleton_subset_iff.mpr hvU))
+    rw [Finset.card_insert_of_notMem (by simpa using hl.ne), Finset.card_singleton] at this
+    exact this
+  by_cases hxv : x = v
+  · subst hxv
+    have hsepG : Sep G U x C := by
+      refine ⟨hxU, fun c hc => ?_, hsep.2.2.1, ?_, ?_⟩
+      · have := Finset.mem_erase.mp (hsep.2.1 hc)
+        exact Finset.mem_erase.mpr ⟨this.1, (Finset.mem_erase.mp this.2).2⟩
+      · exact ⟨w, Finset.mem_sdiff.mpr ⟨Finset.mem_erase.mpr ⟨hl.ne, hwU⟩, hwC C hsep.2.1⟩⟩
+      · intro a ha b hab
+        have haw : a ≠ w := fun h => hwC C hsep.2.1 (h ▸ ha)
+        by_cases hbw : b = w
+        · subst hbw
+          have := hl.2 a hab.symm
+          subst this
+          exact absurd ha (fun h => (Finset.mem_erase.mp (hsep.2.1 h)).1 rfl)
+        · exact hsep.2.2.2.2 a ha b (hJadj a b hab haw hbw)
+    have hD2 : 2 ≤ (U.erase x \ C).card := by
+      have hsub : insert w ((U.erase w).erase x \ C) ⊆ U.erase x \ C := by
+        intro y hy
+        rcases Finset.mem_insert.mp hy with rfl | hy
+        · exact Finset.mem_sdiff.mpr ⟨Finset.mem_erase.mpr ⟨hl.ne, hwU⟩, hwC C hsep.2.1⟩
+        · rw [Finset.mem_sdiff] at hy ⊢
+          exact ⟨Finset.mem_erase.mpr ⟨(Finset.mem_erase.mp hy.1).1,
+            (Finset.mem_erase.mp (Finset.mem_erase.mp hy.1).2).2⟩, hy.2⟩
+      have hwn : w ∉ (U.erase w).erase x \ C := by simp
+      have := Finset.card_le_card hsub
+      rw [Finset.card_insert_of_notMem hwn] at this
+      have := Finset.card_pos.mpr hsep.2.2.2.1
+      omega
+    by_cases hC2 : 2 ≤ C.card
+    · exact Or.inl ⟨x, C, hsepG, hC2, hD2⟩
+    · have h1 : C.card = 1 := by have := Finset.card_pos.mpr hsep.2.2.1; omega
+      obtain ⟨a, rfl, hla⟩ := hsepG.leaf_of_card_one hC h1
+      exact Or.inr ⟨a, x, fun h => hwC _ hsep.2.1 (h ▸ Finset.mem_singleton_self a), hla⟩
+  · -- `v` lies in one of the two parts; put `w` there
+    obtain ⟨C', hsep', hvC'⟩ : ∃ C', Sep (restrict G (U.erase w)) (U.erase w) x C' ∧ v ∈ C' := by
+      have hvU'' : v ∈ (U.erase w).erase x :=
+        Finset.mem_erase.mpr ⟨Ne.symm hxv, Finset.mem_erase.mpr ⟨hl.ne.symm, hvU⟩⟩
+      by_cases hvC : v ∈ C
+      · exact ⟨C, hsep, hvC⟩
+      · exact ⟨_, hsep.symm (edgesIn_restrict _), Finset.mem_sdiff.mpr ⟨hvU'', hvC⟩⟩
+    have hDeq : U.erase x \ insert w C' = (U.erase w).erase x \ C' := by
+      ext y
+      simp only [Finset.mem_sdiff, Finset.mem_erase, Finset.mem_insert, not_or]
+      tauto
+    have hsepG : Sep G U x (insert w C') := by
+      refine ⟨hxU, ?_, Finset.insert_nonempty _ _, ?_, ?_⟩
+      · intro c hc
+        rcases Finset.mem_insert.mp hc with rfl | hc
+        · exact Finset.mem_erase.mpr ⟨Ne.symm hxw, hwU⟩
+        · have := Finset.mem_erase.mp (hsep'.2.1 hc)
+          exact Finset.mem_erase.mpr ⟨this.1, (Finset.mem_erase.mp this.2).2⟩
+      · rw [hDeq]; exact hsep'.2.2.2.1
+      · intro a ha b hab
+        rcases Finset.mem_insert.mp ha with rfl | ha
+        · exact Or.inl (Finset.mem_insert_of_mem (hl.2 b hab ▸ hvC'))
+        · have haw : a ≠ w := fun h => hwC C' hsep'.2.1 (h ▸ ha)
+          by_cases hbw : b = w
+          · exact Or.inl (hbw ▸ Finset.mem_insert_self _ _)
+          · rcases hsep'.2.2.2.2 a ha b (hJadj a b hab haw hbw) with h | h
+            · exact Or.inl (Finset.mem_insert_of_mem h)
+            · exact Or.inr h
+    have hC2 : 2 ≤ (insert w C').card := by
+      rw [Finset.card_insert_of_notMem (hwC C' hsep'.2.1)]
+      have := Finset.card_pos.mpr hsep'.2.2.1
+      omega
+    by_cases hD2 : 2 ≤ (U.erase x \ insert w C').card
+    · exact Or.inl ⟨x, insert w C', hsepG, hC2, hD2⟩
+    · have h1 : (U.erase x \ insert w C').card = 1 := by
+        have := Finset.card_pos.mpr hsepG.2.2.2.1
+        omega
+      obtain ⟨b, hb, hlb⟩ := (hsepG.symm hE).leaf_of_card_one hC h1
+      refine Or.inr ⟨b, x, fun h => ?_, hlb⟩
+      have : b ∈ U.erase x \ insert w C' := hb ▸ Finset.mem_singleton_self b
+      subst h
+      simp at this
+
+/-! ### The induction -/
+
+/-- **Sufficiency in Theorem 1** (support form): the two assertions of Theorem 1 give the marked
+bound on every connected instance. -/
+theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
+    ∀ (n : ℕ) (G : SimpleGraph W) (U : Finset W), U.card = n → EdgesIn G U → ConnOn G U →
+      MBOn G U := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  intro G U hn hE hC
+  have IH : SmallerMB U := fun G' U' hlt hE' hC' => ih U'.card (hn ▸ hlt) G' U' rfl hE' hC'
+  by_cases h2 : U.card ≤ 2
+  · exact baseStep hE h2
+  by_cases hTC : TwoConnOn G U
+  · exact twoConnStep hA hE hTC
+  by_cases hcut : ∃ x C, Sep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card
+  · obtain ⟨x, C, hs, h1, h2'⟩ := hcut
+    exact cutStep (hs.cutSides hE hC h1 h2') IH
+  intro S hSU hS
+  by_cases hleaf : ∃ w v, IsLeafAt G w v ∧ ¬ (S = {v} ∧ Even U.card)
+  · obtain ⟨w, v, hl, hres⟩ := hleaf
+    exact leafStep IH hE hC hl hSU hS hres
+  push Not at hleaf
+  by_cases hdouble : ∃ w w' v, w ≠ w' ∧ IsLeafAt G w v ∧ IsLeafAt G w' v
+  · obtain ⟨w, w', v, hww, hl, hl'⟩ := hdouble
+    obtain ⟨hSv, -⟩ := hleaf w v hl
+    subst hSv
+    rw [Finset.card_singleton]
+    exact doubleLeafStep IH hE hC hl hl' hww
+  push Not at hdouble
+  have h3 : 3 ≤ U.card := by omega
+  obtain ⟨x, C, hs⟩ : ∃ x C, Sep G U x C := by
+    unfold TwoConnOn at hTC
+    push Not at hTC
+    exact hTC h3 hC
+  obtain ⟨w, v, hl⟩ : ∃ w v, IsLeafAt G w v := by
+    by_cases h1 : C.card = 1
+    · obtain ⟨a, -, hla⟩ := hs.leaf_of_card_one hC h1
+      exact ⟨a, x, hla⟩
+    · have hC2 : 2 ≤ C.card := by have := Finset.card_pos.mpr hs.2.2.1; omega
+      have hD1 : (U.erase x \ C).card = 1 := by
+        have := Finset.card_pos.mpr hs.2.2.2.1
+        by_contra hne
+        exact hcut ⟨x, C, hs, hC2, by omega⟩
+      obtain ⟨a, -, hla⟩ := (hs.symm hE).leaf_of_card_one hC hD1
+      exact ⟨a, x, hla⟩
+  obtain ⟨hSv, hev⟩ := hleaf w v hl
+  subst hSv
+  rw [Finset.card_singleton]
+  by_cases hJ : TwoConnOn (restrict G (U.erase w)) (U.erase w)
+  · exact pendantStep hA hB hE hl hev hJ
+  · exfalso
+    have hwU := (hl.mem hE).1
+    have hJ3 : 3 ≤ (U.erase w).card := by
+      rw [Finset.card_erase_of_mem hwU]
+      obtain ⟨m, hm⟩ := hev
+      omega
+    unfold TwoConnOn at hJ
+    push Not at hJ
+    obtain ⟨x', C', hs'⟩ := hJ hJ3 (hl.conn hE hC)
+    rcases residue_sep hE hC hl hs' with ⟨x'', C'', h1, h2, h3⟩ | ⟨b, y, hbw, hlb⟩
+    · exact hcut ⟨x'', C'', h1, h2, h3⟩
+    · obtain ⟨hy, -⟩ := hleaf b y hlb
+      have hyv : y = v := (Finset.singleton_inj.mp hy).symm
+      subst hyv
+      exact hdouble w b y (Ne.symm hbw) hl hlb
 
 end Gallai
