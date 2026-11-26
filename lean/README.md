@@ -671,3 +671,54 @@ special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula
 at a vertex `o`. If induction returns `b(o) = 0`, the second restored edge can fail Fan's
 zero-end test at the cycle neighbour. So Fan's proof needs a stronger inductive invariant than
 "some realisable `S` with `|S| ≤ ⌊e/2⌋`".
+
+## d6-frontier hub closures (cloud session, branch `claude/lean-d6-frontier`)
+
+Manuscript `manuscripts/d6-frontier`: Lemma 2.3, Lemma 3.2, Theorem 4.1(i), Theorem 5.2 and
+**Theorem 6.1 at every deletion degree `d`**. Sorry-free; `#print axioms` on every main result
+shows only `propext`, `Classical.choice`, `Quot.sound`. Lovász enters through the theorem
+`lovaszStatement`, so the results are unconditional. Audit notes:
+`research/audit/d6-frontier-lean-audit.md`.
+
+### `GallaiLean/Relay.lean`: relays, carries and hub transfers (in `Ach` form)
+
+| Lean name | Statement |
+|---|---|
+| **`Ach.forwardRelay`** | Lemma 2.3(a): along `v₀ v₁ ⋯ v_m` with new edges, `v₀ → v₁ → ⋯ → v_m` moves one end from `v₀` to `v_m`, if `b(v₀) > bl(v₁)`, internal vertices have an end, and later receivers have `≤ 1` blank neighbour (for `mv b v₀ v₁`, which is the partition current at that moment) |
+| **`Ach.carry`** | Lemma 2.3(b): `v₁ → v₀, …, v_m → v_{m-1}` moves one end from `v_m` to `v₀`, if `v₁..v_m` have ends and no receiver is adjacent in `E` to a blank vertex other than `v₀` (weaker than the paper) |
+| `mv_mv_back`, `blankNbrs_eq_zero` | bookkeeping |
+| `hubSpokes h Z`, `recvEnds`, `giveEnds` | the spokes from a hub; end vectors after receipts / donations |
+| **`Ach.receiveMany`** | `m` grouped receipts at `h` from a set `S` of non-neighbours with one end each, if `bl(h) + j < |S| − j` for `j < m`; the donor set `Z` is existential |
+| **`Ach.giveAll`** | donations from `h` to every vertex of `R`, in any order, if every receiver has `≤ c` blank neighbours outside `R` and `c + |R| ≤ b(h)` (covers donations and paybacks) |
+
+### `GallaiLean/HubPhases.lean`: held edges, seeds, phases
+
+* `hubHeld h X C` (spokes `h–X` plus edges `C`), `hst h N B D` (hub `N`, blank `B`, doubled `D`,
+  one elsewhere), `batChords L`, **`PassesAt G r`** (a decomposition with `≤ |V|/2` paths and
+  `≥ 2` ends at `r`).
+* `mem_hubE`, `hubE_union_spokes` (inserting spokes un-holds them), `ach_of_deleteEdges`,
+  `pathDecomp_of_ach`.
+* **`seed_pair`**, **`seed_odd`**: Lemma 3.2(b), (a) (from `realisable_evenSet_erase'`,
+  `lovasz_ends`). **`degree_hubDel`**: degrees after deleting the held spokes and battery chords.
+* Phases, each keeping the form `Ach (G.edgeSet \ hubHeld h X C) (hst h N B D)`:
+  `hub_take` (single receipt), `hub_receive` (grouped receipts), `hub_give` (donations),
+  `hub_payback` (paybacks to quiet blank vertices), `hub_pay_one` (one payback with a blank
+  count), `blankNbrs_hub_le`.
+
+### `GallaiLean/D6Frontier.lean`: the theorems
+
+| Lean name | Statement |
+|---|---|
+| `hub_batteries` | carry a list of batteries `(a, b)` in order (`b → h`, `a → b`) |
+| **`hub_run`** | seed → batteries → `m` receipts from `T` → donations to `Q ∪ (T \ Z)` → paybacks to the pendant and parked vertices; ends with all edges, `Z` blank, `Q ∪ (T \ Z)` doubled |
+| `hub_seed_deg`, `card_hubX`, `root_hub_seed` | seed degrees and parities |
+| `passesAt_of_realisable` | realisable `S ∋ r` with `2|S| ≤ #even` ⇒ `r` passes |
+| **`root_hub_uniform`** (`_passes`) | **Thm 6.1(a)**, every `d`: `r` adjacent to `T = U − r`, quiet odd pendant `y` (`d(y) ≥ 3`), `β ≥ d/2 − 3` quiet batteries (`L.Pairwise`: `a_i b_j ∉ E` for `i < j`; `b_i ∉ N(y)`), `d(r) ≥ d + 2 + 2β` ⇒ some `S ∋ r`, `|S| = d/2`, is realisable |
+| **`full_hub_uniform`** (`_passes`) | **Thm 6.1(b)**, every `d`: `x` adjacent to all of `U`, `β ≥ d/2 − 1` quiet batteries ⇒ every `r ∈ U` |
+| **`full_hub_pendant_uniform`** (`_passes`) | **Thm 6.1(b)** with `β ≥ d/2 − 2` batteries, a quiet pendant and a further neighbour of `x` |
+| **`full_hub_six`**, **`full_hub_six_pendant`** | **Thm 5.2** (`d = 6`), in the paper's wording |
+| **`root_hub_six`** (`_passes`) | **Thm 4.1(i)** (`d = 6`): `r` adjacent to `T`, `d(r) ≥ 8`, odd `y ∈ N(r)` with `d(y) ≥ 3`, `|N(y) ∩ T| ≤ 2` ⇒ some `S ∋ r`, `|S| = 3`, realisable. Controlled first receipt `p → r`, two grouped receipts, receivers ordered after the fact |
+
+No lower bound on `d` is assumed in Theorem 6.1 (the paper's `d ≥ 4` is not used). Not
+formalized from the manuscript: Theorems 3.1/3.2 (terminal step), 4.1(ii)/(iii), 4.2, 4.4,
+Corollary 4.5, Proposition 7.1.

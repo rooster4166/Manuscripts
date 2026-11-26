@@ -321,3 +321,5 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
 - The first gaps of the extended game we know of are degree-six hubs at n = 10, one receipt short. There a non-profile count at Fan's equality can close the gap (A_{6,2}) or be tight (B′).
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
+
+**E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).
