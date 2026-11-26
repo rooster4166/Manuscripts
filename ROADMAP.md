@@ -181,6 +181,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **three-step descent at vertices with exactly one even neighbour**, hence test (i) at d = 6 at every r ∈ N(z) with exactly one neighbour in N(z).
 
   Three-step descent is reduced to: y has ≥ 2 even neighbours, or y is an all-bridge vertex with no even neighbour.
+- 2026-11-26 (same session, follow-up 2): **bridge gluing and the reduction to the branching case**, proved and formalized without hypotheses (`lean/GallaiLean/Bridge.lean`; manuscript Lemma 28, Thm 29, Cor 30).
+  - **`gallai_of_branching`: if B_k holds for every k ≥ 3, Gallai's conjecture holds.** B_k is k-step descent at even vertices with ≥ 2 even neighbours.
+  - **`rooted_six_of_bstmt3`: B_3 implies (R) for six even vertices, i.e. T(6)-i.**
+  - The all-bridges case is closed. The only open input is "y has ≥ 2 even neighbours" at each level.
 - **MR Thm 1 in Lean** (local agent): `gallai_iff_tests`, with standard axioms only. Includes the cut-vertex step (all five cases), the leaf steps, and the pendant step (the only place the three-end test is used). Also `pathNumber_gt_of_low_degree` (Critical.lean).
 - **TwoEven.lean merged** (cloud session two-even): Fan descent, Fan transfer, the second descent step for any pair a, b with a witness w (`realisable_evenSet_erase_pair`), **non-realisable pairs are E-twins** (`etwin_of_not_realisable`), and iterated Fan descent along Fan schedules (`realisable_of_fanSchedule`). The session is now on the third step, split three ways: G[Ev] = K6; some even vertex has ≥ 2 even non-neighbours; the complement of G[Ev] is a matching.
 - **Six-clique Thm 1 in Lean** (`six_clique_prescribed_ends`, sorry-free, kernel `decide` for the finite core). Hypotheses: U is a 6-clique of even vertices, every other vertex is odd with exactly 5 neighbours in U. Conclusion: every 3-set T ⊆ U is realisable.

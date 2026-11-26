@@ -396,4 +396,9 @@ Manuscript: Lemma 28 (bridge gluing), Theorem 29 (reduction to the branching cas
   - Case 3: y has exactly one even neighbour and yt is not a bridge. Transfer from D_k in G − yt.
   - Case 4: y has no even neighbour, and some edge yt is neither pendant nor a bridge. Thm 25 step.
 - **Corollary.** B_k for all k ≥ 3 implies Gallai, through (R) at e = 2k. B_3 implies (R) for e = 6, i.e. T(6)-i. **The only open input is therefore "y has ≥ 2 even neighbours" at each level.** The all-bridges case of `desc_three_reduction` is closed by Case 2.
-- Lean: in progress. Pieces are induced subgraphs on subtypes, and realisations are transported back along `Subtype.val`.
+- **Lean: done** (`lean/GallaiLean/Bridge.lean`, about 2,000 lines, no sorry, standard axioms, no Lovász hypothesis).
+  - **`gallai_of_branching : (∀ j ≥ 3, BStmt j) → GallaiConjecture`.**
+  - `rooted_six_of_bstmt3`: B_3 gives the rooted test for six even vertices.
+  - `dstmt_of_branching`, with `dstmtE_succ` as the one-level step.
+  - Pieces are `restr G C` graphs on the same vertex type, with isolated vertices allowed. The level statements apply to them through `H.induce {non-isolated}` (`desc_of_dstmt`).
+  - Gluing (1) is `glue_bridge`: erase the B⁺ bridge path, take the union, replace the A⁺ bridge path by the concatenation. Gluing (2) is `glue_append`: union, then `append_move`.

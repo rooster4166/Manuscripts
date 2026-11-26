@@ -344,6 +344,26 @@ shows only `propext`, `Classical.choice` and `Quot.sound`.
   hypothesis): three-step descent at an even vertex with exactly one even neighbour; reduction of
   three-step descent to the two residual cases.
 
+## `GallaiLean/Bridge.lean`: bridges, and the reduction to the branching case
+
+No hypotheses (Lovász is `lovaszStatement`). `DStmt j` (`D_j`): every connected even-order graph with
+`≥ 2j` even vertices has `j`-step descent at `(y, {w})` for all distinct even `y, w`. `BStmt j`
+(`B_j`): the same for vertices `y` with at least two even neighbours.
+
+* **`gallai_of_branching`**: `(∀ j ≥ 3, BStmt j) → GallaiConjecture`.
+* **`rooted_six_of_bstmt3`**: `BStmt 3` gives the rooted test for six even vertices.
+* **`dstmt_of_branching`** (`B_3..B_K ⇒ D_1..D_K`), `dstmt_one`, `dstmt_two`, **`dstmtE_succ`**
+  (one level, by strong induction on the number of edges).
+* **`glue_bridge`** (concatenate the two paths through a bridge edge shared by two pieces) and
+  **`glue_append`** (union, then extend a path ending at `t` by `ty`).
+* `bridge_odd`, `bridge_even`: the bridge cases with pieces `G[A ∪ {t}]`, `G[Aᶜ ∪ {y}]`, resp.
+  `G[A]`, `G[Aᶜ]`, as `restr G C` graphs on the same vertex type.
+* Infrastructure: `PathDecomp.mapInj`, `realisable_of_induce`, `desc_of_induce`,
+  `PathDecomp.exists_union`, `PathDecomp.exists_erase`, `restr`, `degree_restr_*`,
+  `realisable_evenSet_ni` (Lemma 2 with isolated vertices), `piece_desc`.
+
+`#print axioms gallai_of_branching` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## `GallaiLean/MarkedSurgery.lean`, `GallaiLean/MarkedBlocks.lean`: Theorem 1 of the marked-reduction manuscript
 
 **Main result: Theorem 1 holds as a full equivalence.**

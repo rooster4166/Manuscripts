@@ -657,7 +657,13 @@ Lemma~\ref{lem:transfer} (\texttt{realisable\_transfer}), Theorem~\ref{thm:reduc
 (\texttt{desc\_reduction}), Theorem~\ref{thm:unique} (\texttt{desc\_succ\_of\_unique}),
 Corollary~\ref{cor:three} (\texttt{desc\_three\_of\_unique}) and the reduction of three-step descent
 to the two residual cases (\texttt{desc\_three\_reduction}). Primed versions of the last two discharge
-the Lov\'asz hypothesis with the library's proof of Lov\'asz's theorem.
+the Lov\'asz hypothesis with the library's proof of Lov\'asz's theorem. Lemma~\ref{lem:bridge},
+Theorem~\ref{thm:branching} and Corollary~\ref{cor:branching} are in
+\texttt{lean/GallaiLean/Bridge.lean} (\texttt{glue\_bridge}, \texttt{glue\_append},
+\texttt{dstmt\_of\_branching}, \texttt{rooted\_six\_of\_bstmt3}, \texttt{gallai\_of\_branching}),
+with no hypotheses at all: the statements $\mathrm{D}_j$ and $\mathrm{B}_j$ are quantified over all
+vertex types, and pieces are handled as subgraphs on the same vertex set and transported through the
+induced graph on their non-isolated vertices.
 \end{remark}
 
 \section*{Computational evidence}\label{app:comp}
