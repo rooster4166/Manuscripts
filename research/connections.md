@@ -379,3 +379,29 @@ Manuscript `endpoint-structure`, subsection "k-step descent" (Lemma 24, Thms 25�
 
   Case (i) is where the obstruction of Remark 23 lives: the second deleted vertex must avoid N(y).
 - The n = 8 e=4 exhaustive run was stopped at the coordinator's request after ≥ 500 of 5,523 graphs, with no exception.
+
+## R. Lovász–Fan certificates are a game on profiles, and the game is incomplete (2026-11-26, night)
+
+**Grade: Observed (computation, small); conceptual consequence.**
+
+Fan's single and grouped transfers have hypotheses that depend only on the end profile b and on the current graph. So every argument of the form "Lovász seed, then re-insert edges by Fan transfers" is a play in a finite game on (graph, profile). The following are all such plays:
+- Lovász from Fan (manuscripts/lovasz-fan), with one induction;
+- Lemma 3;
+- the two descent steps;
+- the star lemma;
+- Fan schedules and FanCert;
+- Pyber's theorem (Lean, Pyber.lean);
+- the six-clique insertion schedules;
+- every d6-frontier certificate.
+
+A winning play is a short certificate that can be checked without exhibiting paths (E13).
+
+- At n = 6 the game wins every root of every connected graph. The restricted calculus FanCert does not.
+- At n = 8 it does not. The obstruction is a clique of even vertices with full exterior vertices, two of them false twins (GsRvnk, E13). d6-frontier Thm 3.1 is the local form of the same phenomenon: if every held edge lies in U ∪ {full vertices}, the last Fan step cannot produce the standard profile.
+- Inductive seeds that use only (R) do not repair this. The adversary keeps the freedom to place zeros next to the re-inserted edges.
+
+**Consequence for the programme.** Full Gallai cannot come from Lovász + Fan transfers alone, even with (R) as the induction hypothesis. One of two ingredients is needed:
+- **(M) a move beyond Fan's inequality.** Fan's lemma is iterated Pósa rotation. When the inequality is tight, a rotation still moves the missing edge from uv to uw and moves an end from v to w. A two-end transfer at equality, as the d6-frontier agent suggests, is of this kind.
+- **(H) a stronger induction hypothesis** that controls the zero set of the seed. Candidates are EMC (matroid exchange) and FD with several prescribed vertices.
+
+The n = 8 losers are the natural test bed: the right move or hypothesis must make every one of them winnable. Cloud session "missing-move" (ROADMAP).
