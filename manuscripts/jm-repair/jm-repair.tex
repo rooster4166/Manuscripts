@@ -979,6 +979,58 @@ Hamiltonian decompositions to Hamiltonian decompositions. So the given copy of $
 in some Hamiltonian decomposition, contradicting the choice of $H$.
 \qed
 
+%%COMP%%
+
+\section{What is proved, what is assumed, and what is not proved}\label{sec:status}
+
+\subsection*{Proved in this note}
+\begin{itemize}[leftmargin=*]
+\item Theorem~\ref{thmB}, the two-vertex extension lemma (Sections~\ref{sec:reduction}--\ref{sec:lower}).
+\item Theorem~\ref{thmA}, which is \JM\ Theorem~8 with the hypothesis $r\le 2t-1$
+(Section~\ref{sec:thmA}). The graph $G$ may have isolated vertices.
+\item The transfer lemma, Lemma~\ref{lem:transfer}, which repairs JM1.
+\item \JM\ Theorem~7 (Theorem~\ref{thm:jm7}), written out in full with corrected transfers.
+The argument and all counts are those of \JM.
+\item Theorem~\ref{thmC}, Wu's conjecture, as a consequence of the above.
+\end{itemize}
+
+\subsection*{External results used without proof}
+\begin{itemize}[leftmargin=*]
+\item Hilton's theorem \cite{Hilton}, in the form of \JM\ Corollary~6
+(Theorem~\ref{thm:hilton}); only the sufficiency direction is used. We did not re-prove it.
+\item Hoffman's circulation theorem with its integrality statement, and the max-flow
+min-cut theorem (classical; \cite{Hoffman,Schrijver}).
+\item The theorem of Liu and Chen \cite{LC} (\JM\ Theorem~2). It covers $n\le5$, linear forests,
+and $|V(H)|\le n+1$, and is used in the set-up of Theorem~\ref{thm:jm7}. \textbf{We did not check
+its proof.}
+\end{itemize}
+
+\subsection*{Not proved here, and caveats}
+\begin{itemize}[leftmargin=*]
+\item We do not repair Claim~12 of \JM. Our proof of the inductive step is a different
+argument. Section~\ref{sec:gap} describes the gap in the arXiv text \cite{JM}. We could not
+consult the published version, which may differ.
+\item \JM\ Theorem~8 read literally, with $G\not\cong tK_2$ and isolated vertices allowed, is
+false (Remark~\ref{rem:hyp}). We prove it only under $r\le 2t-1$. For $r\in\{2t,2t+1\}$ we
+prove nothing; these cases are irrelevant for Wu's conjecture.
+\item The hypothesis $2|U|\le k-2$ of Theorem~\ref{thmB} is necessary for that lemma
+(Remark~\ref{rem:sharp}). We do not know whether the conclusion of Theorem~\ref{thmA} can
+hold more generally.
+\item This note is a single re-derivation and has not been refereed. The main points for a
+referee to check are Lemma~\ref{lem:valid} (the list of possible cycles),
+Proposition~\ref{prop:cuts} (the cut computation), and the final integrality and parity steps in
+Propositions~\ref{prop:UH} and~\ref{prop:LH}.
+\item The computations of Section~\ref{sec:computations} are sanity checks on small instances
+($n\le10$) and on the per-colour inequalities. No step of any proof depends on them.
+\end{itemize}
+
+\subsection*{Use elsewhere}
+The audit \cite[\S2.2]{A4} notes that the odd-semi-clique manuscript applies \JM\ Theorem~8,
+citing it as ``Theorem~3.8'', with a representative graph $G$ that may have isolated vertices
+and satisfies $r\le 2t-1$. Theorem~\ref{thmA} covers exactly this situation. A prescribed
+matching on the outside vertices is obtained by relabelling those vertices. We have not
+re-examined any other part of that manuscript's use.
+
 %%BODY%%
 
 \begin{thebibliography}{99}
