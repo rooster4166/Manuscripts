@@ -1,0 +1,12 @@
+EXCESS Inv~|~zbw root 3 lb 1 k=3
+EXCESS Inv~|~zbw root 7 lb 0 k=3
+EXCESS Inv~|~zbw root 9 lb 1 k=4
+lb=0 k=0: 1
+lb=0 k=3: 1
+lb=1 k=1: 35
+lb=1 k=2: 2
+lb=1 k=3: 1
+lb=1 k=4: 1
+lb=2 k=2: 66
+lb=2 k=3: 1
+total 108

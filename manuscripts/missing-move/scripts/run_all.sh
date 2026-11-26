@@ -44,3 +44,21 @@ python3 $D/fan_game.py $O/dense7.g6 6 np flower > $O/dense7_flower6.log
   echo "$g [$o]: $(python3 ../fan_game.py $g.g6 $o | tail -1)"; done; done > rf_families.log)
 (cd $O && python3 ../sample10.py 11 5 > sample10b.g6 && cat sample10.g6 sample10b.g6 > sample10all.g6 && ../rf_sample.sh sample10all.g6 > rf_sample.log)
 python3 $D/miss_k3.py 3 > $O/miss1_k3.log   # Inv~|~zbw, roots 2 and 3, star plus three edges
+# Section 6: the hub-strategy conjecture (Proposition 6.8), order 8 (all connected graphs) and order 10
+python3 $D/hs_test.py $C8 3 R 2 > $O/hs8_R.log
+python3 $D/hs_test.py $C8 3 simple 2 > $O/hs8_simple.log
+python3 $D/hs_test.py $C8 3 R 1 hubroot > $O/hs8_R_root.log
+python3 $D/hs_test.py $C8 3 simple 1 hubroot > $O/hs8_simple_root.log
+python3 $D/hs_parity.py $C8 $O/hs8_R_root.log > $O/hs8_root_parity.txt
+python3 $D/hs_shapes.py $O/hs8_R_root.log > $O/hs8_root_shapes.txt
+python3 $D/relay_cover.py $C8 check > $O/relay_cover8.txt
+(cd $O && python3 ../sample10.py 23 40 > sample10c.g6 && cat sample10all.g6 sample10c.g6 > sample10_50.g6)
+python3 $D/hs_test.py $O/sample10_50.g6 3 R 3 > $O/hs10_R.log
+python3 $D/hs_test.py $O/sample10_50.g6 3 simple 3 > $O/hs10_simple.log
+python3 $D/hs_test.py $O/sample10_50.g6 4 R 3 hubroot > $O/hs10_R_root.log
+python3 $D/hs_test.py $O/sample10_50.g6 4 simple 3 hubroot > $O/hs10_simple_root.log
+python3 $D/hs_parity.py $O/sample10_50.g6 $O/hs10_R_root.log > $O/hs10_root_parity.txt
+python3 $D/hs_parity.py $O/sample10_50.g6 $O/hs10_simple_root.log > $O/hs10_root_parity_simple.txt
+python3 $D/hs_shapes.py $O/hs10_R_root.log > $O/hs10_root_shapes.txt
+python3 $D/relay_cover.py $O/sample10_50.g6 > $O/relay_cover10.txt
+python3 $D/relay_cover.py $O/sample10_50.g6 reasons > $O/relay_cover10_reasons.txt
