@@ -36,14 +36,16 @@ has an isolated vertex. The key instance is a \emph{hub lemma}. Re-inserting the
 isolated vertex costs exactly one path: two edges are received by Fan transfers, and the other
 two become one new path through the hub. It yields the rooted test at every degree-four vertex all
 of whose neighbours are even, provided at most one further vertex is even. With path insertion
-the game wins every root of every connected graph of order~$8$, with at most six held edges.
+the game wins every root of every connected graph of order~$8$, with at most nine held edges, and
+nine are needed for $K_8$ minus a perfect matching.
 Profile-level P\'osa moves do not help. These are rotation at equality, and a strengthening of
 Fan's lemma that we prove (\emph{Fan's alternative}: either the transfer succeeds, or at least
 $\sum_T b$ blank neighbours of the receiver can each be given an end). Neither repairs a single
-losing root. At a hub of degree six the spare path pays for one receipt too few. We show on the
-first example of order~$10$ that the missing receipt sits at Fan's equality and is forced by a
-global edge count that the profile cannot see. The hub lemma and the degree-four theorem are
-formalised in Lean~4.
+losing root. At a hub of degree six a pure star pays for one receipt too few, and the missing
+receipt sits at Fan's equality. The game compensates by routing the new path along further held
+edges. By hand, the rigid configuration at equality can be refuted by an edge count, or
+recombined as a flower of cycles; neither argument is visible in the profile. The hub lemma, the degree-four theorem and Fan's
+alternative are formalised in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -129,8 +131,8 @@ costs one path, and the profile changes are controlled. \emph{Degree-four hubs}
 lies outside $N[s]$, then (R) holds at $s$ and at every neighbour of $s$. Both are formalised in
 Lean.
 \item \emph{Completeness at order $8$} (Theorem~\ref{thm:complete8}, computation): the game with
-path insertion wins every root of every connected graph of order $8$. The certificates found for
-the five losers all have the shape of the hub lemma.
+path insertion wins every root of every connected graph of order $8$, with at most nine held
+edges. The certificates found for the five losers all have the shape of the hub lemma.
 \item \emph{P\'osa moves at the profile level fail} (Section~\ref{sec:posa}). We prove a rotation
 lemma and \emph{Fan's alternative} (Lemma~\ref{lem:alt}). The alternative strictly dominates
 rotation as a game move. Neither repairs any losing root, with up to two uses per play and
@@ -252,15 +254,27 @@ spare path closes the hub exactly when $d-\lceil d/2\rceil\le2$, i.e.\ $d\le5$.
 
 \begin{theorem}[computation]\label{thm:complete8}
 The Fan game with path insertion wins every root of every connected graph of order $8$ (all
-$11{,}117$ graphs). For all but $47$ graphs a held set with $|F|\le4$ suffices. For the remaining
-$47$ graphs it suffices to take $|F|=5$ for $40$ of them and $|F|=6$ for the other $7$.
+$11{,}117$ graphs) with $|F|\le9$. Held sets with $|F|\le4$ suffice for all but $47$ graphs.
+For those $47$ the least sufficient size, maximised over the roots, is as follows:
+\begin{itemize}
+\item $|F|=5$ for $35$ graphs;
+\item $|F|=6$ for $6$ graphs;
+\item $|F|=7$ for $4$ graphs;
+\item $|F|=8$ for \texttt{Guv]\char126\char123}, at one root;
+\item $|F|=9$ for $M_8=K_8$ minus a perfect matching, at every root. Every held set of size at most
+$8$ loses.
+\end{itemize}
 \end{theorem}
 
 The $47$ graphs are mostly the ones that need large held sets in any case, such as $K_{2,6}$. With
 $|F|\le4$ the game with path insertion has $47$ losing graphs and the original game has $50$. The
-three graphs repaired at $|F|\le4$ include \texttt{GsRvnk} and \texttt{Gqrvn[}. Scripts and logs
-are listed in Section~\ref{sec:scripts}. The sweep took a few seconds per graph, and every
-certificate was found by the solver \texttt{scripts/fan\_game.py}.
+three graphs repaired at $|F|\le4$ include \texttt{GsRvnk} and \texttt{Gqrvn[}. The seven dense
+graphs, those whose complements have at most six edges, were run one root per automorphism orbit.
+For $M_8$ the winning held set is the star at the root plus three edges. The play is a relay into
+the hub, receipts, one donation from the hub, and the \emph{new path $1\,4\,2\,0\,7$ of length
+four through the hub}, routed along the extra held edges (\texttt{outputs/certificate\_K8M.txt}).
+Every certificate was found by \texttt{scripts/fan\_game.py}. Scripts and logs are listed in
+Section~\ref{sec:scripts}.
 
 Independently of the game, \texttt{scripts/rootcheck.py} confirms (R) at every root of the five
 losers and of the order-$10$ examples below by a direct CP-SAT search for partitions.
@@ -522,10 +536,14 @@ $b'(v)+[v=a]+[v=y]=b(v)+2[v=s]+[v=y']+[v=x]$.
 Lov\'asz's theorem from the library (\texttt{lovasz\_ends}).
 \item Helpers: \texttt{isolate} ($G$ with every edge at $s$ removed), \texttt{isolate\_degree},
 \texttt{isolate\_edgeSet}, and \texttt{Ach.decomp\_of\_edgeSet}, \texttt{Ach.of\_decomp}.
+\item \texttt{fan\_alternative}: Lemma~\ref{lem:alt}. Its two halves are
+\texttt{fan\_reroute\_exec} and \texttt{fan\_alt\_count}. The first executes a partial chain; it is
+the reroute part of \texttt{fan\_exec} from \texttt{Fan.lean}, without the final append. The second
+is the counting of \texttt{fan\_exists\_chain}, stopped before the contradiction.
 \end{itemize}
-Lemmas~\ref{lem:rot} and~\ref{lem:alt} are single steps and partial chains of Fan's proof, which is
-formalised as \texttt{fan\_exec} and \texttt{fan\_exists\_chain} in \texttt{Fan.lean}. Since they do
-not help, they are not formalised separately.
+Lemma~\ref{lem:rot} is the one-step case of \texttt{fan\_reroute\_exec} together with
+\texttt{PathDecomp.append\_move}. The hand arguments of Section~\ref{sec:six} are not
+formalised.
 
 \subsection*{Scripts} In \texttt{scripts/}:
 \begin{itemize}
