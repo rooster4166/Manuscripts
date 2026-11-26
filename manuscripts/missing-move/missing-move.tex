@@ -147,8 +147,8 @@ an append-or-through argument and a count of edges (Proposition~\ref{prop:A62}).
 perfect matching it always fails, and the rigid configuration is a flower of three Hamiltonian
 cycles, which recombines (Proposition~\ref{prop:K8M}). The game compensates instead by holding
 more edges and routing the inserted path through the hub along them. The resistant case we know
-is the core roots of the order-$10$ analogue of \texttt{GsRvnk}, which lose with a star plus three
-held edges.
+is that order-$10$ analogue, which loses at every root with a star plus at most three held
+edges.
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
@@ -450,15 +450,18 @@ In the game, the alternative of Lemma~\ref{lem:alt} at this state only activates
 produces the same configuration with the labels permuted.
 
 \begin{proposition}[computation]\label{prop:A62game}
-The Fan game with path insertion, with $F$ a full star plus at most two further edges, loses
+The Fan game with path insertion, with $F$ a full star plus at most three further edges, loses
 $A_{6,2}$ at every root, the odd ones included. (The CP-SAT check confirms (R) at every root.)
 \end{proposition}
 
-With a star plus three further edges, $A_{6,2}$ still loses at the core roots $q\in Q$. At order
-$10$ a search over all held sets of size $\ge6$ is out of reach of the solver, so this is a loser
-only for hub-shaped held sets. Proposition~\ref{prop:A62} does not cover the core roots either.
-Three further test graphs of order $10$ were run with the same held sets
-(\texttt{scripts/families.py}).
+For the star plus three edges the solver ran one root per automorphism orbit, at a core vertex
+and at $x$. A play that wins at any root wins at the odd root $x$, so a loss at $x$ means that no
+play wins at all. At order $10$ a search over all held sets of size $\ge6$ is out of reach of the
+solver, so $A_{6,2}$ is a loser only for hub-shaped held sets. It is exactly the case that
+Proposition~\ref{prop:A62} settles by hand with the pure star: a sound count at Fan's equality
+would make the game win at the twins and the odd roots. The core roots are covered neither by the
+game nor by Proposition~\ref{prop:A62}. Three further test graphs of order $10$ were run with the
+same held sets (\texttt{scripts/families.py}).
 \begin{itemize}
 \item $A_{4,4}$ ($Q=K_4$ with four false twins): it wins, and the twins need a star plus two
 further held edges.
@@ -520,8 +523,8 @@ edges.
 
 \begin{question}\label{q:count}
 \begin{enumerate}[label=(\alph*)]
-\item Is the game with path insertion complete at order $10$? The core roots of $A_{6,2}$ are the
-test case.
+\item Is the game with path insertion complete at order $10$? $A_{6,2}$ is the test case, and its
+core roots are not covered by Proposition~\ref{prop:A62} either.
 \item Is there a sound profile-level move, using only $H$ and $b$, that captures
 Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that
 the paths of $D$ avoiding $u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus
