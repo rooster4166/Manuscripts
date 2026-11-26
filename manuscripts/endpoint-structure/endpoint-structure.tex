@@ -1508,16 +1508,118 @@ Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles on $2k+2$ vertices. Does
 lie on (or even start) a path with exactly one edge from each $C_i$?
 \end{question}
 
+\emph{What is known.} Question~\ref{qu:rt} asks for a rainbow path of a given length in an
+edge-colouring. Here every vertex meets each of the $k$ colours exactly twice, the path must have
+length $k$ (so it uses every colour), and it must pass through a prescribed vertex.
 \begin{itemize}
-\item \emph{Evidence.} We tested the stronger form, starting at $s$, at every vertex for $m\le10$
-(\texttt{tools/rainbow\_transversal.py}). The test covers $60$ random Hamiltonian decompositions of
-$\mathrm{CP}(m)$ and a Walecki-type decomposition of each. The answer was always yes.
-\item \emph{Greedy alone is not enough.} A random greedy choice without backtracking fails $5$ to
-$15\%$ of the time. The greedy count guarantees only about $2k/3$ steps.
-\item \emph{Relation to known problems.} The question asks for a rainbow path of length $k$ in a
-colouring of colour degree $k$. Chen and Li conjectured length $k-1$ for arbitrary colourings. Here
-the colour classes are Hamiltonian cycles.
+\item \emph{Arbitrary colour degree.} Let every vertex meet at least $k$ colours. Chen and
+Li~\cite{CL05,CL06} prove a rainbow path of length at least $k-1$ for $3\le k\le7$, and at least
+$\lceil 2k/3\rceil+1$ for $k\ge8$, which confirms a conjecture of Saito. They conjecture $k-1$ in
+general. Length $k$ is not available at this generality.
+\item \emph{Proper colourings of $K_n$.} Andersen~\cite{And89} conjectured a rainbow path of length
+$n-2$. Asymptotic versions are known~\cite{APS17}. Gyárfás and Mhalla~\cite{GM10} prove length at
+least $(2n+1)/3$ for $1$-factorisations. Maamoun and Meyniel~\cite{MaMe84} give $1$-factorisations of
+$K_{2^t}$ without a rainbow Hamilton path.
+\item \emph{Graph systems.} Transversal Hamilton paths and cycles in a system of graphs are known
+under Dirac-type degree conditions (Joos and Kim~\cite{JK20}, and the survey literature since).
+Our graphs have degree $2$, so these results do not apply.
 \end{itemize}
+Our case lies outside all of these. The length equals the colour degree, which exceeds the Chen--Li
+bound, and it is attainable only because each colour class is $2$-regular on at least $2k+1$
+vertices. We found no result that covers it.
+
+\emph{Evidence and partial results.}
+\begin{itemize}
+\item Proposition~\ref{prop:rt4} settles $k\le4$. The proof uses only that every vertex has
+exactly two neighbours of each colour, not that the classes are Hamiltonian. The missing-move
+manuscript~\cite[Lemma~5.6]{MM} gives another proof for $k\le4$.
+\item The stronger form (a transversal \emph{starting} at $s$) held at every vertex in every test
+for $m\le10$ (\texttt{tools/rainbow\_transversal.py}). The tests used $60$ random Hamiltonian
+decompositions of $\mathrm{CP}(m)$ and a Walecki-type one per $m$.
+\item The same holds for random $2$-factorisations of $\mathrm{CP}(m)$, $m\le8$, in which the colour
+classes have short cycles (\texttt{tools/rainbow\_variants.py}). So Hamiltonicity does not seem to
+be the point, and a local argument may exist.
+\item Neither random greedy nor a Warnsdorff-type greedy succeeds without backtracking. The random
+greedy fails $5$--$15\%$ of the time. The Warnsdorff rule fails in about $1\%$ of cases from
+$m=8$. A proof therefore needs rotations, as in Proposition~\ref{prop:rt4}.
+\item A relaxation is far easier in practice. Call a path a \emph{segment transversal} if it is a
+concatenation of one contiguous segment of each cycle, each with at least one edge. Lemma~\ref{lem:flower} extends to segments verbatim:
+$C_i$ minus a segment is a path, and $L$ has two ends at its segment junctions and at its ends. A
+no-backtracking rule found a segment transversal starting at $s$ in every test ($m\le11$).
+\end{itemize}
+
+\subsection*{Receipt or flower: the move in general}
+
+The hub flower applies beyond $\mathrm{CP}(m)$. The rigid alternative of~\cite[Lemma~5.1]{MM} is
+exactly its hypothesis.
+
+\begin{theorem}[Receipt or flower]\label{thm:receiptflower}
+Let $D$ be a partition of $H$, and let $s$ be a vertex with $b_D(s)=d_H(s)$. Let $T$ be a set of
+non-neighbours of $s$ with $b_D=1$ on $T$, and put $G=H+\{st:t\in T\}$. Then one of the following
+holds.
+\begin{enumerate}
+\item Some $t\in T$ ends a path of $D$ that avoids $s$. Appending $ts$ to that path gives a partition
+of $H+st$ into $|D|$ paths, with one more end at $s$ and none at $t$.
+\item Every path ending in $T$ joins $T$ to $s$. These $|T|$ paths close into edge-disjoint cycles
+$C_t$ through $s$. For every transversal $L$ of the cycles $C_t$, the graph $G$ has a partition into
+$|D|+1$ paths, namely the cut cycles, $L$ and the other paths of $D$, with
+\[
+b'(v)=b_D(v)-|T|\,[v=s]-[v\in T]+2\,[v\in V(L)].
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Suppose (1) fails. Then every path ending at some $t\in T$ contains $s$. Since $b_D(s)=d_H(s)$, no
+path passes through $s$, so every path containing $s$ ends there. Thus each path ending in $T$
+joins $T$ to $s$. These paths are distinct, because each has only one end in $T$. Lemma~\ref{lem:flower}
+applied to them, with the remaining paths left unchanged, gives~(2).
+\end{proof}
+
+{\sloppy In Lean the recombination step of~(2) is \texttt{flower\_decomp\_rest}. Case~(2) is useful
+when an edge count makes the paths $C_t-st$ Hamiltonian on a common vertex set, as in
+Corollary~\ref{cor:cp}. Then Proposition~\ref{prop:rt4} supplies a transversal when $|T|\le4$. With a
+Lov\'asz seed of $G$ minus the star at $s$, and receipts from all of $N(s)$, case~(2) leaves no
+other paths exactly when the seed has ends only on $N(s)$. With at most one even vertex in the seed
+graph, this means: \emph{$G$ is Eulerian, of even order $n$, and $d(s)=n-2$.} The move then spends
+the spare path and meets the budget $n/2$ exactly.\par}
+
+\begin{proposition}[The graph $B'$]\label{prop:Bprime}
+Let $B'$ have a clique $U$ on six vertices, a vertex $x_1$ adjacent to $U$ and to a leaf $\ell$, and
+two adjacent vertices $x_3,x_4$ adjacent to all of $U$. This is the residual case Q2 of the $d=6$
+frontier~\cite[\S5]{MM}, with $n=10$. Then (R) holds at every vertex of $B'$, by a Lov\'asz seed
+of $B'-x_1$, three receipts at $x_1$, and Theorem~\ref{thm:receiptflower}.
+\end{proposition}
+
+\begin{proof}
+In $K=B'$ with the star at $x_1$ removed, the vertices $x_1$ and $\ell$ are isolated. All other
+vertices have degree $7$. By Lov\'asz, $K$ has a partition into $4$ paths with one end at each
+vertex of $U\cup\{x_3,x_4\}$. Three receipts at $x_1$ from $U$ have supplies $1>0$, $5>1$, $4>2$.
+They give a partition $D$ of $H$, the graph $K$ plus three spokes, with $b(x_1)=3=d_H(x_1)$, $b=1$
+on the set $T$ of the three unreceived core vertices and on $x_3,x_4$, and $|E(H)|=31$. Apply
+Theorem~\ref{thm:receiptflower}.
+
+\emph{Case (1).} Append $tx_1$. Then append the leaf edge $x_1\ell$ to a path ending at $x_1$, and
+add the new path $t'x_1t''$ on the other two spokes. The result has $5$ paths, and $b=2$ at the
+core vertices $t',t''$.
+
+\emph{Case (2).} The three paths through $x_1$ end in $T$. The fourth path $R$ has the remaining
+ends $x_3,x_4$. All four avoid $\ell$, and $R$ also avoids $x_1$, since $b(x_1)=d_H(x_1)$. So the
+paths have at most $8,8,8$ and $7$ edges. As $31=3\cdot8+7$, all bounds are attained, and the
+cycles $C_t$ are Hamiltonian on $V\setminus\{\ell\}$. Proposition~\ref{prop:rt4} gives a transversal
+$L=x_1a_1a_2a_3$ with $a_1\in U$. Theorem~\ref{thm:receiptflower} gives $4+1=5$ paths, and
+appending $x_1\ell$ at the end $x_1$ of $L$ keeps $5$ paths, with $b(a_1)=2$.
+
+In both cases some core vertex is an end of a partition into $n/2$ paths. Every permutation of $U$
+is an automorphism of $B'$, so this holds at every core vertex. At the odd vertices it holds by
+parity.
+\end{proof}
+
+The same reading applies to $A_{6,2}$ (\cite[Proposition~5.2]{MM}). There the rigid case is
+excluded by the count $30>3\cdot8$, so case (1) occurs. The resulting partition into $5$ paths has
+$b=2$ at the two core vertices $t',t''$ of the new path $t'st''$. By the symmetry of the core, this
+gives (R) at every core vertex of $A_{6,2}$ as well. As far as we can see, these are the core roots
+that~\cite{MM} lists as open.
 
 {\sloppy In Lean (\texttt{lean/GallaiLean/Flower.lean}), Lemma~\ref{lem:flower} is
 \texttt{flower\_decomp}, built from \texttt{exists\_close\_cut}, and Proposition~\ref{prop:equality}
@@ -1525,7 +1627,8 @@ is \texttt{hub\_cycles}. Theorem~\ref{thm:cpm} is \texttt{cocktail\_passes\_of\_
 \texttt{cocktail\_rooted\_of\_rt}, with the hypothesis \texttt{RainbowTransversal}.
 Proposition~\ref{prop:rt4} is \texttt{rainbowTransversal\_three} and
 \texttt{rainbowTransversal\_four}, and Corollary~\ref{cor:cp45} is \texttt{cocktail\_passes\_four} and
-\texttt{cocktail\_passes\_five}. There is no \texttt{sorry}, Lov\'asz's theorem is the library's
+\texttt{cocktail\_passes\_five}; the general recombination of Theorem~\ref{thm:receiptflower}(2) is
+\texttt{flower\_decomp\_rest}. There is no \texttt{sorry}, Lov\'asz's theorem is the library's
 proof, and the axioms are the standard ones.\par}
 
 \section{Computational evidence}\label{app:comp}
@@ -1570,6 +1673,20 @@ Academic Press, 1968, 231--236.
 manuscript, November 2026.
 \bibitem{REC} J.~Williams, Root endpoints and cut inequalities in path decompositions, manuscript,
 November 2026.
+\bibitem{And89} L.~D.~Andersen, Hamilton circuits with many colours in properly edge-coloured
+complete graphs, Math.\ Scand.\ 64 (1989) 5--14.
+\bibitem{APS17} N.~Alon, A.~Pokrovskiy and B.~Sudakov, Random subgraphs of properly edge-coloured
+complete graphs and long rainbow cycles, Israel J.\ Math.\ 222 (2017) 317--331 (arXiv:1608.07028).
+\bibitem{CL05} H.~Chen and X.~Li, Long heterochromatic paths in edge-colored graphs, Electron.\ J.\
+Combin.\ 12 (2005) R33.
+\bibitem{CL06} H.~Chen and X.~Li, Color degree and color neighborhood union conditions for long
+heterochromatic paths in edge-colored graphs, arXiv:math/0512144.
+\bibitem{GM10} A.~Gyárfás and M.~Mhalla, Rainbow and orthogonal paths in factorizations of $K_n$,
+J.\ Combin.\ Des.\ 18 (2010) 167--176.
+\bibitem{JK20} F.~Joos and J.~Kim, On a rainbow version of Dirac's theorem, Bull.\ Lond.\ Math.\ Soc.\
+52 (2020) 498--504 (arXiv:1910.01281).
+\bibitem{MaMe84} M.~Maamoun and H.~Meyniel, On a problem of G.~Hahn about coloured Hamiltonian paths
+in $K_{2^t}$, Discrete Math.\ 51 (1984) 213--214.
 \bibitem{MM} J.~Williams, Lov\'asz's spare path: the missing move in the Fan game, manuscript,
 \texttt{manuscripts/missing-move} of the project repository.
 \bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, manuscript,

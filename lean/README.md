@@ -476,6 +476,8 @@ Manuscript: endpoint-structure §7 ("The flower move"); missing-move Lemma 5.4 a
   (`lovasz_ends`) on `isolate (cocktail m) s`, then `m − 1` receipts (`Ach.receiveMany`), then
   `hub_cycles`, Hamiltonicity by an edge count, and finally `flower_decomp`.
 * **`cocktail_passes_four`, `cocktail_passes_five`**: unconditional.
+* **`flower_decomp_rest`**: the flower with untouched extra paths. It is the recombination step of
+  receipt-or-flower (endpoint-structure Thm 67), used by hand for B′ (Prop 68).
 
 No hypotheses. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
 

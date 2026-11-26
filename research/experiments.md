@@ -477,3 +477,8 @@ Earlier scratch runs:
 
 **Reading.** The transversal exists in every case tested, but greedy alone fails 6–15% of the time beyond m = 4. So a general proof needs rotations. The question is a rainbow-path problem: length k with colour degree k. Chen and Li conjectured length k − 1 for arbitrary colourings; here each colour class is a Hamiltonian cycle.
 
+**Variants** (`tools/rainbow_variants.py twofactor|segment|warnsdorff MMAX SAMPLES`):
+- `twofactor`: random 2-factorisations of CP(m) with short cycles. No vertex without a transversal starting there (m ≤ 8, 40 samples each).
+- `warnsdorff`: deterministic greedy without backtracking. It fails 1/480, 5/540 and 8/600 times at m = 8, 9, 10.
+- `segment`: segment transversals by a no-backtracking rule succeed in every case (m ≤ 11, 25 samples each). The same rule with unit segments fails up to 9/550.
+
