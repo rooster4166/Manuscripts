@@ -407,7 +407,7 @@ If $\Ev\setminus\{u,v\}$ is not realisable, then $u$ and $v$ are E-twins.
 
 \begin{proof}
 If some even $w\notin\{u,v\}$ is adjacent to exactly one of $u,v$, apply Theorem~\ref{thm:second}
-with that vertex in the role of $u$.
+to $w$ and to the pair $u,v$ ordered so that the first vertex is the neighbour of $w$.
 \end{proof}
 
 Being twins in a graph (with or without the edge between the two) is an equivalence relation: if
@@ -438,7 +438,8 @@ Conversely each of the four graphs makes all of $\Ev\setminus\{r\}$ pairwise twi
 \end{proof}
 
 So the second step of faithful descent is proved, for every root, except when the E-subgraph is
-complete or edgeless up to the edges at the root.
+complete or edgeless up to the edges at the root; Theorem~\ref{thm:pair} below removes most of
+these exceptions.
 
 \subsection{Fan certificates}
 
@@ -485,9 +486,9 @@ $x_1\ne r$ outside it with no neighbour among $w_2,\dots,w_j$.
 \end{corollary}
 
 In the three-connected reduction, $\Ev(B)=N_J(z)$, so the condition concerns only the subgraph
-of $J$ induced by the neighbourhood of the deletion vertex, and it is the same for every
-deletion degree $d$. It fails when $J[N(z)]$ has no edges, which is where odd transfers (and the
-reductions of the next subsection) are needed.
+of $J$ induced by the neighbourhood of the deletion vertex, and it has the same form for every
+deletion degree $d$. It fails when $J[N(z)]$ has no edges, which is where odd transfers, the pair
+step and the reductions below are needed.
 
 \subsection{Twin classes: the pair step}
 
@@ -554,8 +555,9 @@ triangle together with the isolated vertex $r$.
 By Corollary~\ref{cor:fd2strong} only the case that $G[\Ev]$ has no edges and every odd vertex has
 at most one neighbour in $\Ev\setminus\{r\}$ needs an argument (an odd vertex with two neighbours
 $a,a'\ne r$ is handled by Theorem~\ref{thm:pair} with any $u\in\Ev\setminus\{r,a,a'\}$). Let $D\ge2$
-be the least distance between two distinct even vertices, attained by $a\ne r$ and $t$, with a
-shortest path $a=p_0,p_1,\dots,p_D=t$. Its interior vertices are odd. Choose
+be the least distance between two distinct even vertices (finite, as $G$ is connected), attained by
+a pair $a,t$ with $a\ne r$, and let $a=p_0,p_1,\dots,p_D=t$ be a shortest path. Its interior vertices
+are odd, since an even one would be closer to $a$. Choose
 $u\in\Ev\setminus\{r,a,t\}$, which exists since $e\ge4$. No $p_i$ ($0<i<D$) is adjacent to $u$:
 otherwise $d(a,u)\le i+1$ and $d(u,t)\le D-i+1$, so minimality forces $D=2$, and then $p_1$ would
 have the two neighbours $a,u$ in $\Ev\setminus\{r\}$. Now the sequence of moves
@@ -566,8 +568,8 @@ Theorem~\ref{thm:fancert}.
 \end{proof}
 
 For $e=4$ a set $\Ev\setminus\{u,v\}$ with $u,v\ne r$ is a realisable set of size $e/2$ containing $r$,
-so Theorem~\ref{thm:b} proves the case $e=4$ of Proposition~\ref{prop:small}, for all graphs and
-without Botler--Sambinelli, except when $G[\Ev]=K_3+r$. (The proof given for
+so Theorem~\ref{thm:b} proves the case $e=4$ of Proposition~\ref{prop:small}, for all connected
+graphs and without Botler--Sambinelli, except when $G[\Ev]=K_3+r$. (The proof given for
 Proposition~\ref{prop:small} yields a partition into $n/2$ paths with an end at $r$, which is (R),
 but it does not show that this partition has a simple profile; Corollary~\ref{cor:R} allows an odd
 vertex with three ends.) The exceptional configuration is not reached by these moves. In
@@ -687,7 +689,13 @@ with a pendant neighbour. What resists is a vertex $u$ whose neighbourhood meets
 pairwise twins and $r$ sees none of them. For two triangle vertices $a,a'$ and the third one $u$,
 an even common neighbour of $a,a'$ other than $u$ does not exist, and for an odd one the second Fan
 step fails, since $aa'\in E$ and $u$, $t$ are both zero-end neighbours of $t'$. Certificates with
-odd transfers may still exist.
+odd transfers still give $\Ev\setminus\{a,u\}$ for triangle vertices $a\ne u$ when $a$ has a
+pendant neighbour (move (L)), or an odd neighbour $w$ of degree at least $3$ adjacent to neither
+other triangle vertex (the moves $(a,w)$, then the even step $(u,b)$ to the third triangle vertex
+$b$), or when $a$ is joined to $r$ by a path whose interior vertices are odd and not adjacent to
+$u$. So the configuration is residual only if every odd neighbour of a triangle vertex sees at
+least two triangle vertices and every path from a triangle vertex $a$ to $r$ meets the neighbourhoods of
+both other triangle vertices in its interior (as in $K_6$ minus the three edges at $r$).
 \end{itemize}
 In both, the obstacle is the same: Fan's lemmas need fewer zero-end neighbours than available ends,
 and the configuration places a removed vertex next to every candidate. An argument for them would
