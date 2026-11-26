@@ -1,0 +1,567 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+\newcommand{\tr}{\to}
+
+\title{Five even vertices with one universal vertex:\\ Corollary~106 without the unrefereed input}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Corollary~106 of the marked-reduction manuscript~\cite{MR} asserts a floor bound for connected
+graphs in which at most one vertex of the subgraph induced by the even-degree vertices has degree at
+least four. Its one-exception case at odd order rested on an unrefereed preprint~\cite{Shaik}. The
+natural replacement suggested in the project notes, a version of Botler and Sambinelli's
+theorem~\cite[Theorem~13]{BS} with one prescribed end, is false: we give counterexamples from
+order five on, an infinite family with a prescribed vertex of degree two between two odd vertices,
+and an order-nine graph on which the doubling gadget of the notes fails although the floor holds.
+
+We then show that the corollary is only ever used with at most five unmarked even vertices, and we
+prove that case directly. \emph{Let $W$ have odd order $N$ and exactly five even vertices, which
+induce a graph with exactly one vertex adjacent to the other four. Then $p(W)\le(N-1)/2$, provided
+either the even subgraph is not a bowtie, or $W$ is connected and has a vertex of degree one.} In
+fact the even vertices then admit a realisable pair. The proof uses only Lov\'asz's theorem and
+Fan's addible-edge lemmas. Six of the seven possible even subgraphs are settled by three short
+lemmas that need no leaf. The bowtie is settled by eleven explicit transfer certificates of at most
+six moves each. Consequently Corollary~106 holds without~\cite{Shaik} in every application in the
+manuscript, and so does Theorem~144, the reduction of the degree-six deletion test to five even
+vertices. All certificates are verified by an independent script and replayed in Lean~4 on an
+arbitrary host graph.
+\end{abstract}
+\maketitle
+
+\section{Introduction}
+
+All graphs are finite and simple. A \emph{partition} of a graph is a partition of its edge set into
+paths of positive length, and $p(G)$ is the least size of one. For a partition $D$ and a vertex $v$
+let $b_D(v)$ be the number of ends of paths of $D$ at $v$. Then $b_D(v)\equiv d(v)\pmod 2$ and
+$\sum_v b_D(v)=2|D|$. We write $\Ev=\Ev(G)$ for the set of vertices of positive even degree,
+$\Od$ for the odd vertices, and $G[\Ev]$ for the \emph{even subgraph}. A set $S\subseteq\Ev$ is
+\emph{realisable} if some partition has one end at every odd vertex, two at every vertex of $S$ and
+none at $\Ev\setminus S$; such a partition has $|\Od|/2+|S|$ paths~\cite{ES}.
+
+\subsection*{The gap}
+Corollary~106 of~\cite{MR} reads: \emph{let $G$ be connected and $S$ a nonempty set of marks; if at
+most one vertex of the subgraph induced by the unmarked even vertices has degree at least four in
+that subgraph, then the marked bound $q(G,S)\le\lfloor(|V(G)|-|S|)/2\rfloor$ holds.} Its proof
+reduces everything to a \emph{leaf floor bound}: if $L$ is connected, has a leaf at an odd support,
+and $L[\Ev(L)]$ has at most one vertex of degree at least four, then $p(L)\le\lfloor|L|/2\rfloor$.
+With no exceptional vertex this is Botler--Sambinelli~\cite[Theorem~13]{BS} (the leaf excludes their
+exceptional SET graphs). With one exceptional vertex and $|L|$ even it is Fan--Hou--Zhou's
+Theorem~5~\cite{FHZ}, since ceiling and floor agree. The remaining case, one exceptional vertex and
+$|L|$ odd, was taken from Shaik's preprint~\cite{Shaik} by doubling $L$ along a bridge, which creates
+two exceptional vertices (audit~A7, \S4). This is the last unrefereed input of Theorem~144 of~\cite{MR}.
+
+\subsection*{The prescribed-end route fails}
+The project notes (connections~\S L) observe that every gadget that turns the doubled host into a
+graph covered by~\cite{BS} loses exactly one unit of budget, and that the missing ingredient would
+be Botler--Sambinelli's theorem with one prescribed end: \emph{if $N$ is odd and the even subgraph
+has maximum degree at most three, then for every even $y$ there is a partition into $(N-1)/2$ paths
+with an end at $y$.} Section~\ref{sec:false} shows that this is false in a strong sense:
+\begin{itemize}
+\item it fails at every odd order $N\ge5$, and with five even vertices already at $N=7$
+(Table~\ref{tab:census});
+\item it fails for an infinite family in which $y$ has degree two, both neighbours of $y$ are odd,
+and the even subgraph is a matching plus the isolated vertex $y$ (Proposition~\ref{prop:family}),
+which is exactly the configuration of the joining gadget $x-y-x'$;
+\item the gadget itself fails on a graph $L$ of order nine that satisfies the floor bound and lies
+in the case needed by the manuscript (Proposition~\ref{prop:gadget}).
+\end{itemize}
+The obstruction in every example is the same elementary forcing lemma (Lemma~\ref{lem:forcing}):
+a cycle whose vertices other than one have degree two must contain an end. Prescribing $y$ adds
+one forced end to a configuration that may already be tight.
+
+\subsection*{What Corollary~106 needs, and the main result}
+Every use of Corollary~106 in~\cite{MR} has at most five unmarked even vertices
+(Section~\ref{sec:needs}). For five unmarked even vertices a single exceptional vertex has degree
+four, so it is \emph{universal} in the five-vertex even subgraph. This is the case we prove.
+
+\begin{theorem}\label{thm:main}
+Let $W$ be a graph of odd order $N$ without isolated vertices, with exactly five even vertices
+$T=\Ev(W)$, such that $K=W[T]$ has exactly one vertex adjacent to all other vertices of $T$.
+\begin{enumerate}
+\item[(a)] If $K$ is not a bowtie (two triangles sharing one vertex), some $2$-subset of $T$ is
+realisable. In particular $p(W)\le(N-1)/2$.
+\item[(b)] If $K$ is a bowtie, the same holds provided $W$ has adjacent odd vertices $u,v$ such that
+$u$ has a neighbour in $T$ and $v$ has none. Such $u,v$ exist when $W$ is connected and has a vertex
+of degree one whose neighbour is odd.
+\end{enumerate}
+\end{theorem}
+
+\begin{corollary}\label{cor:bp5}
+Let $L$ be a connected graph of odd order with a vertex of degree one and exactly five even
+vertices, whose even subgraph has at most one vertex of degree four. Then
+$p(L)\le\lfloor|L|/2\rfloor$.
+\end{corollary}
+
+\begin{proof}
+With no vertex of degree four the even subgraph is subcubic, and~\cite[Theorem~13]{BS} applies: a
+SET graph has exactly three even vertices. With one such vertex and the leaf at an odd support,
+Theorem~\ref{thm:main} applies. If the leaf $\ell$ is at an even support $r$, then $L-\ell$ is
+connected of even order with exactly four even vertices, and~\cite[Corollary~22]{ES} (Lov\'asz and
+Fan only; Lean \texttt{rooted\_four}) gives a partition of $L-\ell$ into $|L-\ell|/2$ paths with an
+end at the now odd vertex $r$, which absorbs the leaf edge.
+\end{proof}
+
+Corollary~\ref{cor:bp5} is exactly the leaf floor bound in the one-exception odd-order case with
+five even vertices. Section~\ref{sec:cor106} states the corrected Corollary~106 and checks its three
+uses in Theorem~144, the consequence for Proposition~105, and the remark after Theorem~114. The
+one-exception odd-order case with seven or more unmarked even vertices remains open without the
+preprint, but nothing in~\cite{MR} uses it.
+
+\subsection*{Method}
+The proof is a set of \emph{Lov\'asz--Fan certificates}: hold a few edges among the even vertices
+(and at most two exterior vertices), so that exactly one vertex of the remaining graph has even
+degree; take the exact Lov\'asz partition; and restore the held edges one at a time by Fan's single
+or grouped transfer. This is the certificate format of~\cite{ES} and of the audit's seven-site search
+(A6 \S3.2), which had certified all seven cores by exhaustive computation. Here six cores are
+handled by three general lemmas (Section~\ref{sec:local}), and the bowtie by a table of eleven
+certificates (Section~\ref{sec:bowtie}). The scripts in \texttt{scripts/} regenerate and check every
+certificate, and \texttt{lean/GallaiLean/FiveEven.lean} replays all of them on an arbitrary host
+(Section~\ref{sec:lean}).
+
+\section{Tools}\label{sec:tools}
+
+\begin{lemma}[Lov\'asz~\cite{L68}, exact form]\label{lem:lovasz}
+If at most one vertex of $K$ has positive even degree, then $K$ has a partition with exactly one end
+at every odd vertex and none elsewhere.
+\end{lemma}
+
+Apply Lov\'asz's theorem to each component. A component without even vertices has all its vertices
+odd, so its $|C|/2$ paths have one end at each vertex. The component containing the even vertex has
+odd order, and its $(|C|-1)/2$ paths put their $|C|-1$ ends on its $|C|-1$ odd vertices. This form
+is \texttt{lovasz\_ends} in Lean, proved from Fan's lemma~\cite{LF}.
+
+For a partition $D$ of a graph $K$ and a vertex $r$, a \emph{blank neighbour} of $r$ is a neighbour
+$w$ of $r$ in $K$ with $b_D(w)=0$.
+
+\begin{lemma}[Fan~\cite{Fan}, Lemmas 3.3 and 3.4]\label{lem:fan}
+Let $D$ be a partition of $K$, let $r$ be a vertex and let $T'$ be a set of non-neighbours of $r$
+with $r\notin T'$. If $\sum_{t\in T'}b_D(t)$ exceeds the number of blank neighbours of $r$, then for
+some $t\in T'$ with $b_D(t)\ge1$ the graph $K+tr$ has a partition $D'$ with $|D'|=|D|$,
+$b_{D'}(r)=b_D(r)+1$, $b_{D'}(t)=b_D(t)-1$, and $b_{D'}=b_D$ elsewhere.
+\end{lemma}
+
+Both forms are proved in Lean (\texttt{fan\_single}, \texttt{fan\_grouped}). We write
+$t\tr r$ for the single transfer ($T'=\{t\}$) and $\{t,t'\}\tr r$ for the grouped transfer, after
+which the argument continues with whichever donor the lemma returns. Every move adds one edge and
+keeps the number of paths. A move is legal when the \emph{supply} $\sum_{t\in T'}b_D(t)$ is larger
+than the number of \emph{blanks}, the blank neighbours of $r$.
+
+\begin{definition}
+A \emph{certificate} for a graph $W$ consists of a set $H\subseteq E(W)$ of \emph{held} edges such that
+exactly one vertex of $W-H$ has even degree, and a sequence (a tree, for grouped moves) of legal moves
+that restores all of $H$, starting from the partition of Lemma~\ref{lem:lovasz} for $W-H$.
+\end{definition}
+
+\begin{lemma}\label{lem:count}
+If $W$ has odd order $N$, no isolated vertex, and a certificate, then $p(W)\le(N-1)/2$. If moreover
+the final end vector is $1$ on $\Od(W)$, $2$ on two vertices of $T=\Ev(W)$ and $0$ on the others, the
+final partition realises that pair.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:lovasz} the seed has $N-1$ ends: all vertices except the even one have one end.
+Moves preserve the number of paths, hence the sum of ends.
+\end{proof}
+
+In all our certificates the held edges join vertices of a fixed \emph{local set} $M$ (the five even
+vertices, sometimes with two odd vertices $u,v$). Every vertex outside $M$ keeps its degree, so it is
+odd in $W-H$, has one end in the seed, and is never a donor or a receiver. Hence \emph{a vertex
+outside $M$ is never blank}. The legality of each move then depends only on the adjacency inside $M$
+and on the end counts on $M$. A certificate written on $M$ is therefore valid for every host $W$ with
+the same adjacency inside $M$ and the same parities. Holding the edges may disconnect $W-H$; this is
+allowed, since Lemma~\ref{lem:lovasz} holds componentwise.
+
+\section{The prescribed-end lemma is false}\label{sec:false}
+
+\begin{lemma}[Forcing]\label{lem:forcing}
+Let $C$ be a cycle of $G$ through a vertex $w$, and suppose every vertex of $C$ other than $w$ has
+degree two in $G$. Then every partition of $G$ has an end at some vertex of $C-w$.
+\end{lemma}
+
+\begin{proof}
+At a vertex of degree two that is not an end, both edges lie on the same path. If no vertex of
+$C-w$ were an end, all edges of $C$ would lie on one path. That path would then contain a cycle.
+\end{proof}
+
+\begin{proposition}\label{prop:family}
+For every even $t\ge2$ let $G_t$ have vertices $h,y,g$ and $s_i,u_i,v_i$ ($1\le i\le t$), and edges
+$hy$, $yg$, $hs_i$, $s_iu_i$, $s_iv_i$, $u_iv_i$. Then $G_t$ is connected of odd order $3t+3$, its
+even subgraph is the matching $\{u_iv_i\}$ together with the isolated vertex $y$, and $y$ has degree
+two with odd neighbours $h$ and $g$. But no partition of $G_t$ into $(N-1)/2=(3t+2)/2$ paths has an
+end at $y$.
+\end{proposition}
+
+\begin{proof}
+The degrees are $d(h)=t+1$ (odd), $d(s_i)=3$, $d(g)=1$ and $d(y)=d(u_i)=d(v_i)=2$. So there are
+$o=t+2$ odd and $2t+1$ even vertices. By Lemma~\ref{lem:forcing} applied to each triangle
+$s_iu_iv_i$, every partition has an end at $u_i$ or $v_i$, which is even and so has at least two
+ends. If $y$ is also an end, the partition has at least $o+2(t+1)=3t+4$ ends, that is at least
+$(3t+4)/2$ paths.
+\end{proof}
+
+$G_t$ itself satisfies the floor bound (by~\cite[Theorem~13]{BS}), so the obstruction is the
+prescription alone. Smaller counterexamples arise in the same way. At order five, with the
+prescribed vertex $y$ on a triangle whose other two vertices have degree two, $y$ cannot be
+prescribed. At order seven, the four even vertices other than $y$ can form two forcing triangles.
+Table~\ref{tab:census} lists the exhaustive census.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+& $e=1$ & $e=3$ & $e=5$ \\
+\midrule
+pairs $(G,y)$ with no floor partition ending at $y$, $N=5$ & 7 & 9 (4 SET) & -- \\
+the same, $N=7$ & 130 & \CENSUSSEVENTHREE & \CENSUSSEVENFIVE \\
+pairs lost by the odd-order Fan game, $N=7$ & 130 & 230 & 64 \\
+\bottomrule
+\end{tabular}
+\caption{Connected graphs of order $N$ whose even subgraph has maximum degree at most three, and
+even vertices $y$ ($e$ is the number of even vertices). For $e=1$ the prescription is impossible by
+counting. First row: exact (\texttt{scripts/exact\_prescribed.py}, CP-SAT). Last row: Lov\'asz--Fan
+certificates with at most four held edges (\texttt{scripts/odd\_fan\_game.py}). Raising the bound to
+eight held edges recovers only one of the 64 pairs with $e=5$.}\label{tab:census}
+\end{table}
+
+The last row records a second negative finding. At even order the Fan game wins every root of every
+graph with subcubic even subgraph through order eight (experiments E13). At odd order with a
+prescribed end, Lov\'asz--Fan certificates are far from complete even in that regime: most pairs
+that the game loses do have the required partition.
+
+\begin{proposition}\label{prop:gadget}
+Let $L$ have vertices $x,a_1,b_1,a_2,b_2,s,w,z,\ell$ and edges $xa_i$, $xb_i$, $a_ib_i$ ($i=1,2$),
+$xs$, $xw$, $s\ell$, $sw$, $wz$. Then $L$ is connected of order nine, has a leaf $\ell$ at the odd
+support $s$, its even vertices are $x,a_1,b_1,a_2,b_2$ and induce a bowtie, and $p(L)=4$. Let $D$
+be the joining gadget of connections \S L: two disjoint copies of $L-\ell$, the bridge $ss'$, and a
+new vertex $y$ adjacent to $x$ and $x'$. Then $D$ has order $17$, its even subgraph consists of four
+disjoint edges and the isolated vertex $y$, and no partition of $D$ into $8$ paths has an end at $y$.
+\end{proposition}
+
+\begin{proof}
+For $L$, the paths $a_1b_1xb_2a_2$, $a_1xa_2$, $\ell sxwz$ and $sw$ form a partition into four paths,
+and four is the parity bound for its four odd vertices $s,w,z,\ell$. In $D$ the vertices $x,x'$ have
+odd degree $7$, so the even vertices are $y$ and the eight vertices $a_i,b_i,a_i',b_i'$, and $D$ has
+eight odd vertices. Each of the four triangles $xa_ib_i$, $x'a_i'b_i'$ forces an end at one of its
+two even vertices (Lemma~\ref{lem:forcing}). A partition with an end at $y$ therefore has at least
+$8+2\cdot5=18$ ends, that is at least nine paths.
+\end{proof}
+
+So the gadget cannot complete the argument even in the case Corollary~106 needs. The same forcing
+shows that the gadget fails whenever the exceptional vertex carries enough pendant triangles, while
+$L$ itself is unaffected.
+
+\section{Where Corollary 106 is used}\label{sec:needs}
+
+The corollary is cited three times, all in the proof of Theorem~144 of~\cite{MR}, and its second
+sentence is used once.
+\begin{enumerate}
+\item \emph{``By Corollary~106 with mark $r$, at least two vertices of $K$ have degree four.''} Here
+$W$ has odd order, a leaf at the odd support $r$, and exactly five even vertices $T$, and the claim
+is $p(W)\le\lfloor|W|/2\rfloor$ when $K=W[T]$ has at most one universal vertex. This is
+Corollary~\ref{cor:bp5}.
+\item \emph{The graph $H=B-rw$ with four even vertices,} and \emph{the matching-cut shores with at
+most four unmarked even vertices.} With at most four unmarked even vertices the unmarked even
+subgraph is subcubic, so only the zero-exception case is used:~\cite[Theorem~13]{BS} (audit A6, F18).
+\item \emph{The second sentence of Corollary~106} (in the two-even-support failure of
+Proposition~105, two unmarked even sites have degree four) is used only in the next paragraph, for
+$H$ with exactly seven even sites and two even supports, so with five unmarked even sites.
+\end{enumerate}
+The remark after Theorem~114 (``Shaik's ordinary bound also applies if $K$ has at most one vertex of
+degree greater than three\ldots\ at $d_J(z)=6$ a failure requires two universal vertices'') concerns
+the five-vertex graph $K=J[N(z)\setminus\{r\}]$. Both deletion tests at $d_J(z)=6$ are floor bounds
+for $J-z$ with one or two private leaves at $r$. These graphs have odd order, leaves at the odd
+support $r$, and even set $N(z)\setminus\{r\}$. So the remark also follows from
+Corollary~\ref{cor:bp5}. The step ``$r\in T$'' of Theorem~144, which cited~\cite{Shaik} directly, needs
+only~\cite[Theorem~13]{BS} or~\cite[Corollary~22]{ES} (A7, U4).
+
+\section{Six cores without a leaf}\label{sec:local}
+
+Throughout this section and the next, $W$ is as in Theorem~\ref{thm:main}. Write $x$ for the
+universal vertex of $K$ and $R=T\setminus\{x\}$ for the \emph{rim}. Since $x$ is the only vertex of
+degree four in $K$, every rim vertex has at most two neighbours in $R$. Up to isomorphism $K[R]$ is
+one of
+\[
+4K_1,\quad K_2+2K_1,\quad P_3+K_1,\quad K_3+K_1,\quad 2K_2,\quad P_4,\quad C_4 .
+\]
+For $K[R]=2K_2$ the graph $K$ is the bowtie. The lemmas below hold for every graph of odd order with
+exactly five even vertices, whether or not one of them is universal. Each one is a certificate as in
+Section~\ref{sec:tools}, with local set $T$.
+
+\begin{lemma}[Two disjoint even edges]\label{lem:match}
+Let $T=\{p,q,p',q',z\}$ with $pq,p'q'\in E$, and suppose $p\not\sim z$, $p'\not\sim z$ and
+$p'\not\sim q$. Then $\{p,p'\}$ is realisable.
+\end{lemma}
+
+\begin{proof}
+Hold $H=\{pq,p'q'\}$. In $W-H$ the vertices $p,q,p',q'$ are odd and $z$ is the only even vertex.
+In the seed only $z$ is blank. Move $q\tr p$: the only possible blank neighbour of $p$ is $z$, and
+$p\not\sim z$, so the supply $1$ exceeds $0$ blanks. Now $q$ is blank. Move $q'\tr p'$: the possible
+blank neighbours $z,q$ are not adjacent to $p'$. The final end vector is $2$ at $p,p'$, $0$ at
+$q,q',z$ and $1$ elsewhere.
+\end{proof}
+
+\begin{lemma}[Odd star]\label{lem:oddstar}
+Let $a\in T$ have exactly three neighbours $w,p,q$ in $T$, and let $z$ be the fifth even vertex.
+Suppose $p$ is not adjacent to all of $w,q,z$, and $q$ is not adjacent to all of $w,p,z$. Then $\{a,p\}$
+or $\{a,q\}$ is realisable.
+\end{lemma}
+
+\begin{proof}
+Hold $H=\{aw,ap,aq\}$. In $W-H$ the vertex $a$ has degree $d(a)-3$, so it is odd, as are $w,p,q$.
+The only even vertex is $z$, and $a\not\sim z$.
+\begin{enumerate}
+\item $w\tr a$ with supply $1$ and $0$ blanks. Now $b(a)=2$ and $w$ is blank.
+\item $\{p,q\}\tr a$ with supply $2$ and at most $1$ blank (namely $w$). Say $t$ is returned, and
+let $t'$ be the other one. Now $b(a)=3$ and $t$ is blank.
+\item $a\tr t'$ with supply $3$. The blank neighbours of $t'$ lie in $\{w,t,z\}$, and $t'$ misses
+one of them, so there are at most $2$.
+\end{enumerate}
+Finally $b(a)=b(t')=2$, the vertices $w,t,z$ have no end, and every odd vertex has one.
+\end{proof}
+
+\begin{lemma}[Universal star]\label{lem:unistar}
+Let $x\in T$ be adjacent to $a,b,c\in T$, and let $d$ be the fifth even vertex. Suppose $c$ has no
+neighbour in $T$ other than $x$, $a$ is not adjacent to both $b$ and $d$, and $b$ is not adjacent to
+both $a$ and $d$. Then $\{a,c\}$ or $\{b,c\}$ is realisable.
+\end{lemma}
+
+\begin{proof}
+Hold $H=\{xa,xb,xc\}$. Then $x,a,b,c$ are odd in $W-H$ and $d$ is the only even vertex.
+\begin{enumerate}
+\item $\{a,b\}\tr x$ with supply $2$ and at most $1$ blank ($d$). Say $t$ is returned, and let $t'$
+be the other one. Now $b(x)=2$ and $t$ is blank.
+\item $x\tr t'$ with supply $2$. The edge $xt'$ is still held, so the blank neighbours of $t'$ lie in
+$\{t,d\}$, and $t'$ misses one of them.
+\item $x\tr c$ with supply $1$. The only $T$-neighbour of $c$ is $x$, and $xc$ is held, so $c$ has
+no blank neighbour.
+\end{enumerate}
+Finally $b(t')=b(c)=2$ and $b(x)=b(t)=b(d)=0$.
+\end{proof}
+
+\begin{proposition}\label{prop:six}
+If $K[R]\neq2K_2$, some $2$-subset of $T$ is realisable.
+\end{proposition}
+
+\begin{proof}
+Label the rim $a,b,c,d$.
+\begin{itemize}
+\item $4K_1$: Lemma~\ref{lem:unistar} with the universal vertex $x$, where $a,b,c,d$ are pairwise
+nonadjacent.
+\item $K_2+2K_1$ with rim edge $ab$: Lemma~\ref{lem:match} with $(p,q,p',q',z)=(a,b,c,x,d)$.
+\item $P_3+K_1$ with rim path $abc$, and $P_4$ with rim path $abcd$: Lemma~\ref{lem:match} with
+$(p,q,p',q',z)=(b,c,a,x,d)$. Here $b\not\sim d$, $a\not\sim d$ and $a\not\sim c$.
+\item $K_3+K_1$ with rim triangle $abc$: Lemma~\ref{lem:oddstar} at $a$, with $(w,p,q,z)=(x,b,c,d)$;
+neither $b$ nor $c$ is adjacent to $d$.
+\item $C_4$ with rim cycle $abcd$: Lemma~\ref{lem:oddstar} at $a$, with $(w,p,q,z)=(x,b,d,c)$;
+$b\not\sim d$.\qedhere
+\end{itemize}
+\end{proof}
+
+This proves Theorem~\ref{thm:main}(a). No hypothesis on $W$ outside $T$ is used, not even
+connectivity. For the bowtie, an exhaustive search over all held sets inside $T$ finds no
+certificate of this kind (\texttt{scripts/certgen.py}).
+
+\section{The bowtie}\label{sec:bowtie}
+
+Let $K$ be the bowtie with centre $x$ and triangles $xab$, $xcd$. Let $u,v$ be adjacent odd vertices
+with $A=N(u)\cap T\neq\emptyset$ and $N(v)\cap T=\emptyset$. The local set is $M=T\cup\{u,v\}$, and
+its edges are those of $K$, the edges from $u$ to $A$, and $uv$. As explained in
+Section~\ref{sec:tools}, a certificate on $M$ is valid for every such host.
+
+\begin{lemma}\label{lem:uv}
+If $W$ is connected, $T\neq\emptyset$, and $W$ has a vertex $\ell$ of degree one whose neighbour is
+odd, then such $u,v$ exist.
+\end{lemma}
+
+\begin{proof}
+Let $\ell=p_0,p_1,\dots,p_m$ be a shortest path from $\ell$ to $T$. Then $p_0\notin T$, and $p_1$ is
+odd, so $p_1\notin T$; hence $m\ge2$. Put $u=p_{m-1}$ and $v=p_{m-2}$. By minimality neither is in
+$T$, so both are odd, and $v$ has no neighbour in $T$. Moreover $u\sim p_m\in T$.
+\end{proof}
+
+The symmetry group of the bowtie fixing $x$ has order eight, generated by $(a\,b)$, $(c\,d)$ and
+$(a\,c)(b\,d)$. It splits the $31$ nonempty contact sets into eleven orbits. Table~\ref{tab:bowtie}
+gives a certificate for one representative of each. A move is written $t\tr r$ with
+(supply$\,>\,$blanks). After a grouped move, each branch is listed separately and is labelled by the
+returned donor. Every certificate ends with $1$ at $u$ and $v$ and with a realisable pair $S$.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{lll}
+\toprule
+$A$ & held, even seed vertex & moves \\
+\midrule
+$x$ & $ab,cd,xu$; $u$ & $b\tr a\,(1{>}0)$, $d\tr c\,(1{>}0)$, $x\tr u\,(1{>}0)$; $S=ac$\\
+$a$ & $xb,cd,au$; $u$ & $b\tr x\,(1{>}0)$, $d\tr c\,(1{>}0)$, $a\tr u\,(1{>}0)$; $S=xc$\\
+$ac$ & $xb,cd,au$; $u$ & $b\tr x\,(1{>}0)$, $a\tr u\,(1{>}0)$, $d\tr c\,(1{>}0)$; $S=xc$\\
+$ab$ & $xa,cd,bu,uv$; $v$ & $d\tr c\,(1{>}0)$, $x\tr a\,(1{>}0)$, $b\tr u\,(1{>}0)$, $u\tr v\,(2{>}0)$; $S=ac$\\
+$abc$ & $xa,bu,cu$; $d$ & $x\tr a\,(1{>}0)$, $c\tr u\,(1{>}0)$, $u\tr b\,(2{>}1)$; $S=ab$\\
+$xac$ & $xb,au,cu$; $d$ & $u\tr a\,(1{>}0)$, $c\tr u\,(1{>}0)$, $x\tr b\,(1{>}0)$; $S=ab$\\
+$xabc$ & $xa,bu,cu$; $d$ & $u\tr b\,(1{>}0)$, $c\tr u\,(1{>}0)$, $x\tr a\,(1{>}0)$; $S=ab$\\
+$xa$ & $xb,xc,xu,au$; $d$ & $u\tr a\,(1{>}0)$, $\{b,c\}\tr x\,(2{>}1)$, then\\
+& & \quad[$b$]: $x\tr c\,(2{>}1)$, $x\tr u\,(1{>}0)$; $S=ac$\quad
+[$c$]: $x\tr b\,(2{>}0)$, $x\tr u\,(1{>}0)$; $S=ab$\\
+$abcd$ & $xa,bu,cu,du,uv$; $v$ & $x\tr a\,(1{>}0)$, $b\tr u\,(1{>}0)$, $\{c,d\}\tr u\,(2{>}1)$, then\\
+& & \quad[$c$]: $u\tr d\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ad$\quad
+[$d$]: $u\tr c\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ac$\\
+$xab$ & $cd,xu,au,bu,uv$; $v$ & $d\tr c\,(1{>}0)$, $x\tr u\,(1{>}0)$, $\{a,b\}\tr u\,(2{>}1)$, then\\
+& & \quad[$a$]: $u\tr b\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=bc$\quad
+[$b$]: $u\tr a\,(3{>}2)$, $u\tr v\,(2{>}0)$; $S=ac$\\
+$xabcd$ & $xu,au,bu,cu,du,uv$; $v$ & see the text\\
+\bottomrule
+\end{tabular}
+\caption{Certificates for the bowtie, one per orbit of contact sets $A=N(u)\cap T$. The seed has no
+end at the listed even vertex and one end at every other vertex.}\label{tab:bowtie}
+\end{table}
+
+\emph{The case $A=T$.} Hold all six edges at $u$ inside $M$. Then $u$ remains odd, every vertex of
+$T$ becomes odd, and $v$ is the only even vertex of $W-H$ (it is isolated if $\ell=v$ is a leaf). The
+moves are:
+\begin{itemize}
+\item $x\tr u$ $(1{>}0)$;
+\item $\{a,b\}\tr u$ $(2{>}1)$, returning $t_1$;
+\item the remaining three of $a,b,c,d$ offered to $u$ $(3{>}2)$, returning $t_2$;
+\item $u\tr s_1$ and $u\tr s_2$ for the two remaining rim vertices;
+\item $u\tr v$ $(2{>}0)$.
+\end{itemize}
+For $u\tr s_1$ the supply is $4$ and the blanks are among $x,t_1,t_2$. For $u\tr s_2$ the supply is
+$3$, and the blanks are $x$ and at most one of $t_1,t_2$, because $s_2$ has only one rim neighbour.
+Finally $b(s_1)=b(s_2)=2$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(b)]
+By Lemma~\ref{lem:uv} we may take $u,v$ as above. The contact set $A$ is nonempty and lies in one
+of the eleven orbits, so Table~\ref{tab:bowtie} gives a certificate. Lemma~\ref{lem:count} gives a
+realisable pair and $p(W)\le(N-1)/2$.
+\end{proof}
+
+\begin{remark}\label{rem:bowtie}
+(i) Nothing is assumed about $u$ and $v$ beyond the stated adjacencies: they may have any further
+neighbours outside $T$, and $v$ need not be a leaf.
+
+(ii) With $u$ alone (a six-vertex local set), certificates exist for $25$ of the $31$ contact sets.
+The exceptions are $A\supseteq\{a,b\}$ or $A\supseteq\{c,d\}$ with $A\cap\{c,d\}$ resp.
+$A\cap\{a,b\}\in\{\emptyset,\text{both}\}$, that is $ab$, $xab$, $cd$, $xcd$, $abcd$, $xabcd$.
+
+(iii) Random hosts with a bowtie core and no leaf, of orders $9$, $11$ and $13$, all satisfy the
+floor bound ($120$ hosts, \texttt{scripts/random\_hosts.py}). We expect Theorem~\ref{thm:main}(b)
+to hold without the hypothesis on $u,v$, but the local certificates need it.
+
+(iv) Without the reduction to orbits, \texttt{scripts/certgen.py} finds a certificate for each of the
+three labelled bowties and each of the 31 contact sets ($93$ certificates). It also finds a local
+certificate for each of the $38$ labelled rims of maximum degree at most two that are not perfect
+matchings. These are the certificates replayed in Lean.
+\end{remark}
+
+\section{The corrected Corollary 106}\label{sec:cor106}
+
+\begin{corollary}[Corollary~106 of~\cite{MR}, corrected]\label{cor:106}
+Let $G$ be connected, $S$ a nonempty set of vertices, and $U$ the set of unmarked even vertices.
+Suppose $G[U]$ has at most one vertex of degree at least four, and that $|U|\le5$ or $G[U]$ has
+maximum degree at most three. Then $q(G,S)\le\lfloor(|V(G)|-|S|)/2\rfloor$. In particular, in the
+two-even-support failure of Proposition~105 with exactly seven even sites, at least two unmarked
+even sites have degree four among the unmarked even sites.
+\end{corollary}
+
+\begin{proof}
+The proof in~\cite{MR} uses its first paragraph, the leaf floor bound, only for graphs $L$ whose
+even set is $U$: $L=L_A(G)$ for the nonempty set $A$ of even marks, and $L=G$ with two leaves at an
+odd mark. In each case every leaf support is odd. Replace that paragraph as follows.
+\begin{itemize}
+\item If $|L|$ is even: ceiling and floor agree. Use~\cite[Corollary~14]{BS} when $L[U]$ has maximum
+degree at most three, and~\cite[Theorem~5]{FHZ} when it has exactly one vertex of degree at least
+four.
+\item If $|L|$ is odd: use~\cite[Theorem~13]{BS} when $L[U]$ is subcubic (the leaf excludes SET
+graphs). Otherwise $|U|=5$ by hypothesis, and Corollary~\ref{cor:bp5} applies.
+\end{itemize}
+Replace the citation of~\cite{Shaik} in the case $A=\emptyset$ by~\cite[Corollary~14]{BS}
+or~\cite[Theorem~5]{FHZ}, which give the ordinary ceiling for $G$. The rest of the proof is unchanged.
+\end{proof}
+
+\begin{corollary}
+Theorem~144 of~\cite{MR} holds without~\cite{Shaik}. So does the remark after Theorem~114 that, at
+$d_J(z)=6$, a failure of either deletion test requires two universal vertices in the five-vertex
+graph $K$.
+\end{corollary}
+
+\begin{proof}
+By Section~\ref{sec:needs}, every use satisfies the hypothesis of Corollary~\ref{cor:106}, or is
+covered by~\cite[Theorem~13]{BS}. In the remark, both test graphs have odd order, leaves at the odd
+support $r$, and the five even vertices $N(z)\setminus\{r\}$ (Corollary~\ref{cor:bp5}).
+\end{proof}
+
+\emph{What remains conditional.} The leaf floor bound with exactly one exceptional vertex, $|L|$ odd
+and $|U|\ge7$ is not proved here, and Proposition~\ref{prop:gadget} shows that the doubling
+gadgets of the notes cannot supply it in general. No result of~\cite{MR} uses this case.
+
+\section{Formalization and computations}\label{sec:lean}
+
+\subsection*{Lean}
+The file \texttt{lean/GallaiLean/FiveEven.lean} proves the following. It has no \texttt{sorry}, and
+\texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+\begin{itemize}
+\item \texttt{FiveEven.Prog.okS} and \texttt{FiveEven.soundS}: a version of the insertion-schedule
+checker \texttt{Prog.ok} (Schedule.lean) whose leaves need not share one end vector, with soundness
+by Fan's grouped lemma. The conclusion keeps the sum of ends.
+\item \texttt{five\_even\_local}: if $\iota:\mathrm{Fin}\,5\to V$ is injective, the even vertices of
+$W$ are exactly $\iota(\mathrm{Fin}\,5)$, $\iota0$ is adjacent to $\iota1,\dots,\iota4$, and the rim
+code (six bits) is one of the $38$ labelled rims of maximum degree at most two that are not perfect
+matchings, then $W$ has a partition $D$ with $2|D|+1=|V|$.
+\item \texttt{five\_even\_bowtie}: the same for the three labelled bowtie rims, with
+$\iota:\mathrm{Fin}\,7\to V$ adding odd $u=\iota5$, $v=\iota6$ adjacent to each other, $u$ adjacent to
+a nonempty part of $T$ and $v$ to none.
+\end{itemize}
+The $131$ certificates are checked by kernel evaluation (\texttt{decide +kernel}). The seeds come
+from \texttt{lovasz\_ends}, and the moves from \texttt{fan\_grouped} through \texttt{Ach.grouped}.
+Not formalized: the classification of rims up to isomorphism (the Lean statements quantify over
+labelled rims instead), Lemma~\ref{lem:uv} (shortest paths), and the reductions in
+Corollaries~\ref{cor:bp5} and~\ref{cor:106}.
+
+\subsection*{Scripts} (\texttt{manuscripts/bs-prescribed/scripts})
+\begin{itemize}
+\item \texttt{certgen.py} generates the certificates, and \texttt{verify\_certs.py} checks them
+independently, in the semantics of the Lean checker: $38$ local certificates with $46$ leaves, and
+$93$ bowtie certificates with $129$ leaves.
+\item \texttt{bowtie\_table.py} prints Table~\ref{tab:bowtie} with all supply and blank counts.
+\item \texttt{sevensite\_cert.py} re-derives audit A6's seven-site bank: every one of the seven cores
+and all $31$ contact sets are certified.
+\item \texttt{exact\_prescribed.py} and \texttt{odd\_fan\_game.py} produce Table~\ref{tab:census}.
+\item \texttt{random\_hosts.py} is an end-to-end consistency check with the circuit solver
+\texttt{tools/pathnum2.py} on random hosts: $100$ hosts with a leaf of orders $9$ and $11$, and $120$
+bowtie hosts without a leaf, all satisfy the floor bound.
+\end{itemize}
+
+\begin{thebibliography}{99}
+\bibitem{BS} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J. Graph
+Theory 97 (2021) 161--184 (arXiv:1911.04546).
+\bibitem{ES} J.~Williams, Endpoint sets of path decompositions at the Gallai budget, working draft,
+\texttt{manuscripts/endpoint-structure}.
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, J. Combin. Theory Ser. B 93 (2005)
+117--125.
+\bibitem{FHZ} G.~Fan, J.~Hou and C.~Zhou, Gallai's conjecture on path decompositions, J. Oper. Res.
+Soc. China 11 (2023) 439--449.
+\bibitem{LF} J.~Williams, Lov\'asz's path theorem from Fan's lemma, \texttt{manuscripts/lovasz-fan}.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Tihany, 1966), Academic
+Press, 1968, 231--236.
+\bibitem{MR} The marked-reduction manuscript, \texttt{gallai/01-original-manuscripts/marked-reduction.pdf}.
+\bibitem{Shaik} I.~A.~Shaik, Gallai's conjecture with two exceptional even vertices, Hexagon preprint,
+version~1, 16 October 2026 (unrefereed).
+\end{thebibliography}
+
+\end{document}
