@@ -35,7 +35,9 @@ least two made of held edges, paid for by the spare path that Lov\'asz's theorem
 has an isolated vertex. The key instance is a \emph{hub lemma}. Re-inserting the four edges at an
 isolated vertex costs exactly one path: two edges are received by Fan transfers, and the other
 two become one new path through the hub. It yields the rooted test at every degree-four vertex all
-of whose neighbours are even, provided at most one further vertex is even. With path insertion
+of whose neighbours are even, provided at most one further vertex is even. A variant with one odd
+neighbour closes the critical graph of order~$8$ on which the original game loses. With path
+insertion
 the game wins every root of every connected graph of order~$8$, with at most nine held edges, and
 nine are needed for $K_8$ minus a perfect matching.
 Profile-level P\'osa moves do not help. These are rotation at equality, and a strengthening of
@@ -44,8 +46,10 @@ $\sum_T b$ blank neighbours of the receiver can each be given an end). Neither r
 losing root. At a hub of degree six a pure star pays for one receipt too few, and the missing
 receipt sits at Fan's equality. The game compensates by routing the new path along further held
 edges. By hand, the rigid configuration at equality can be refuted by an edge count, or
-recombined as a flower of cycles; neither argument is visible in the profile. The hub lemma, the degree-four theorem and Fan's
-alternative are formalised in Lean~4.
+recombined as a flower of cycles. For the flower we give a profile-level move. With it the game
+wins the cocktail party graphs $K_{2m}$ minus a perfect matching for $m=4,5$ with a single held
+star, attaining the insertion barrier for these graphs. The hub lemmas, the degree-four theorems,
+the critical instance and Fan's alternative are formalised in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -113,12 +117,24 @@ $|F|\le4$. The experiment log lists five that still lose with $|F|\le 8$~\cite[E
 \begin{center}
 \texttt{GsRvnk}, \texttt{GsZvnk}, \texttt{Gqrvn[}, \texttt{Gqzvn[}, \texttt{Gqzl|\char123}.
 \end{center}
-A sixth is $K_8$ minus a perfect matching. It loses with $|F|\le8$ even with the move introduced
-below (Theorem~\ref{thm:complete8}), and therefore also in the original game.
 The smallest, \texttt{GsRvnk}, consists of a clique $Q=\{q_1,\dots,q_4\}$ whose vertices have
 degree $6$, a vertex $x$ adjacent to $Q$ and to a leaf $\ell$, and two false twins $s,s'$
 adjacent exactly to $Q$. It loses at the roots $s,s'$. The same experiment showed that inductive
 seeds, i.e.\ the rooted test on $G-F$ with an adversarial half-set, do not repair it.
+
+These five graphs are \emph{not critical}: $p=3<n/2$. For them (R) is trivial, because a minimum
+partition can be split at an interior visit to $r$. The game does not see this. In the game it is
+the win condition $\sum b\le n-2$, which we add from now on (the \emph{split rule}). It settles
+every non-critical graph and never applies to a critical one. The critical losers of the original
+game include the following.
+\begin{itemize}
+\item \texttt{Gqz\char126vw}, i.e.\ $K_8$ minus $\{03,12,23,34,56,67\}$. It is $4$-connected,
+$p=4=n/2$, and the original game loses it at the root $3$ with $|F|\le8$ (a rerun of E13).
+\item $K_8$ minus a perfect matching. It loses with $|F|\le8$ even with the move introduced
+below (Theorem~\ref{thm:complete8}), and therefore also in the original game.
+\end{itemize}
+Among the $47$ graphs that still lose with the new move and $|F|\le4$, $19$ are critical
+(\texttt{scripts/outputs/crit47.log}).
 
 \subsection*{Results} Write \emph{path insertion} for the move
 \begin{itemize}
@@ -130,8 +146,9 @@ It is sound for the same reason as the new-edge move. The following are proved h
 \item \emph{The hub lemma} (Lemma~\ref{lem:hub}): re-inserting four edges at an isolated vertex
 costs one path, and the profile changes are controlled. \emph{Degree-four hubs}
 (Theorem~\ref{thm:hub4}): if $d(s)=4$, every neighbour of $s$ is even, and at most one even vertex
-lies outside $N[s]$, then (R) holds at $s$ and at every neighbour of $s$. Both are formalised in
-Lean.
+lies outside $N[s]$, then (R) holds at $s$ and at every neighbour of $s$. A variant with one odd
+neighbour (Theorem~\ref{thm:hub4odd}) closes the critical loser \texttt{Gqz\char126vw}. All are
+formalised in Lean.
 \item \emph{Completeness at order $8$} (Theorem~\ref{thm:complete8}, computation): the game with
 path insertion wins every root of every connected graph of order $8$, with at most nine held
 edges. The certificates found for the five losers all have the shape of the hub lemma.
@@ -258,6 +275,43 @@ this number is at most $2$, i.e.\ $d\le5$. So the pure-star scheme closes hubs o
 $5$, and at degree $6$ it is one receipt short (Section~\ref{sec:six}).
 \end{remark}
 
+\subsection*{A hub with an odd neighbour; the critical loser}
+The variant used for \texttt{Gqzl|\char123} also closes the critical loser of the original game.
+
+\begin{theorem}[Degree-four hubs with one odd neighbour]\label{thm:hub4odd}
+Let $G$ have even order $n$, and let $s$ be a vertex of degree $4$ whose neighbours $a,c,d$ are
+even and whose fourth neighbour $x$ is odd. Let $z\notin N[s]$ be an even neighbour of $x$, and
+suppose at most one even vertex of $G$ lies outside $N[s]\cup\{z\}$. Then $G$ has a partition
+into at most $n/2$ paths with $b(s)=2$ and $b(z)=2$. So (R) holds at $s$ and at $z$.
+\end{theorem}
+\begin{proof}
+Let $K=G-\{sa,sc,sd,sx,xz\}$. In $K$ the vertices $a,c,d$ have odd degree $d_G-1$. The vertex
+$x$ has odd degree $d_G(x)-2$, $z$ has odd degree $d_G(z)-1$, and $s$ is isolated. The vertices
+of positive even degree in $K$ are the even vertices of $G$ outside $N[s]\cup\{z\}$, so there is
+at most one. As in Theorem~\ref{thm:hub4}, (A) gives a partition $D$ of $K$ with $b=1$ at
+$a,c,d,x,z$ and $2|D|\le n-2$. Steps 1 and 2 of Lemma~\ref{lem:hub} receive $sa$ and one of
+$sc,sd$ at $s$. The remaining held edges $sy'$, $sx$, $xz$ form the path $y'\,s\,x\,z$, which is
+added as a new path. Then $x$ is interior and keeps its end, $z$ gets a second end, $b(s)=2$, and
+$|D'|=|D|+1\le n/2$.
+\end{proof}
+
+\begin{corollary}\label{cor:gqz}
+(R) holds for \texttt{Gqz\char126vw} at the root $3$.
+\end{corollary}
+\begin{proof}
+Take $s=3$, $N(3)=\{1,5,6,7\}$, $x=6$ (the odd neighbour) and $z=0$: then $06\in E$, $03\notin
+E$, and $0$ is even. The even vertices are $0,1,3,4,5,7$, and the only one outside
+$N[3]\cup\{0\}$ is $4$. As a play, $F=\{31,35,36,37,06\}$ and the Lov\'asz seed has $b=0$ at
+$3,4$. The single transfer $1\to3$ comes first, then the grouped transfer from $\{5,7\}$ to $3$,
+then the new path $0\,6\,3\,7$ or $0\,6\,3\,5$. The final profile is simple: it realises
+$\{0,3,7\}$ or $\{0,3,5\}$ (\texttt{scripts/outputs/certificate\_Gqz.txt}).
+\end{proof}
+In Lean these are \texttt{Ach.hub\_four\_tail}, \texttt{hub\_four\_odd\_ends} and
+\texttt{hub\_four\_odd\_rooted}. The instance is \texttt{gqz\_rooted\_three}, whose hypotheses
+are checked by \texttt{decide} on $\mathrm{Fin}\,8$. The vertex $3$ has three even neighbours and
+the graph is $4$-connected, so this is an instance of the branching base case
+\texttt{BranchBase3} (with $k=3$) of the project's Lean reduction, by a simple profile.
+
 \section{Completeness at order eight}\label{sec:eight}
 
 \begin{theorem}[computation]\label{thm:complete8}
@@ -284,8 +338,11 @@ four through the hub}, routed along the extra held edges (\texttt{outputs/certif
 Every certificate was found by \texttt{scripts/fan\_game.py}. Scripts and logs are listed in
 Section~\ref{sec:scripts}.
 
-Independently of the game, \texttt{scripts/rootcheck.py} confirms (R) at every root of the five
-losers and of the order-$10$ examples below by a direct CP-SAT search for partitions.
+Theorem~\ref{thm:complete8} was computed without the split rule. With it, the $28$ non-critical
+graphs among the $47$ become trivial. The other $19$ are critical, and for them the theorem says
+that path insertion alone suffices. Independently of the game, \texttt{scripts/rootcheck.py}
+confirms (R) at every root of the five losers and of the order-$10$ examples below by a direct
+CP-SAT search for partitions, and \texttt{scripts/crit.py} decides criticality.
 
 \section{P\'osa moves at the profile level}\label{sec:posa}
 
@@ -521,14 +578,83 @@ game, which cannot see the flower, needs nine held edges.) This is a two-end mov
 invisible in the profile: it needs the three cycles, whose existence follows from a count of
 edges.
 
+\subsection*{A profile-level flower move}
+In Proposition~\ref{prop:K8M} everything needed for the flower can be read off $(H,b)$. It needs
+only a transversal lemma for Hamiltonian cycles.
+
+\begin{lemma}[Transversals]\label{lem:transversal}
+Let $C_1,\dots,C_j$, $j\le4$, be edge-disjoint Hamiltonian cycles on a common vertex set, and let
+$u$ be a vertex. Then there are distinct vertices $u=a_0,a_1,\dots,a_j$ such that the edges
+$a_{i-1}a_i$ lie in distinct cycles.
+\end{lemma}
+\begin{proof}
+Let $N$ be the number of vertices. Since $u$ has degree $2j$ in the union, $N\ge2j+1$. Choose
+$a_1,a_2,\dots$ in turn, each time along a cycle not used before. From $a_{i-1}$ the
+$j-i+1$ unused cycles offer $2(j-i+1)$ neighbours, and these are distinct because the edges at
+$a_{i-1}$ are distinct. None of them is $a_{i-2}$, since the edge $a_{i-2}a_{i-1}$ lies in a used
+cycle. So at most $i-2$ of them, namely $a_0,\dots,a_{i-3}$, are forbidden. For $j\le3$ we have
+$2(j-i+1)>i-2$ at every step. For $j=4$ the same holds at steps $1$ to $3$. At step $3$ there
+are four candidates, of which only $a_0$ may be forbidden, so there are at least three valid
+choices of a cycle and a vertex. At step $4$ only the last cycle $C$ is left. The choice fails
+exactly when the two neighbours of $a_3$ on $C$ are $a_0$ and $a_1$, i.e.\ when $a_3$ is a common
+neighbour of $a_0$ and $a_1$ on $C$. On a cycle of length $N\ge5$ two vertices have at most one
+common neighbour. A step-$3$ choice along the cycle $C_A$ leaves $C_B$ last, and a choice along
+$C_B$ leaves $C_A$ last. So at most one valid choice of each kind fails, and at least one of the
+at least three valid choices succeeds.
+\end{proof}
+
+\begin{lemma}[Flower move]\label{lem:flowermove}
+Let $D$ be a partition of $H$, let $u$ be a vertex, and let $T$ be a set of $j\le4$
+non-neighbours of $u$. Suppose that $b_D(u)=d_H(u)=j$, that $b_D=1$ on $T$, that
+$\sum_vb_D(v)=2j$, and that $|E(H)|+j=j\,|V'|$, where $V'$ is the set of vertices of positive
+degree in $H+uT$. Then for some path $L=u\,a_1\cdots a_j$ of $H+uT$, the graph $H+uT$ has a
+partition into $j+1$ paths with $b=2$ on $V(L)$ and $b=0$ elsewhere.
+\end{lemma}
+\begin{proof}
+$D$ has $j$ paths. Each has at most one end at $u$, and $u$ has $j$ ends, so each path has one end
+at $u$. Its other end lies in $T$, the only other vertices with ends, and since $b=1$ on $T$ the
+$j$ paths end at distinct $t\in T$. Adding $ut$ to the path ending at $t$ gives $j$
+edge-disjoint cycles through $u$ that cover $H+uT$. Each has at most $|V'|$ edges, and together
+they have $j|V'|$, so each is Hamiltonian on $V'$. Lemmas~\ref{lem:transversal}
+and~\ref{lem:flower} finish the proof.
+\end{proof}
+
+As a game move (option \texttt{flower} of \texttt{fan\_game.py}), the hypotheses are checked on
+$(H,b)$. The opponent picks $L$ among all paths of length $j$ from $u$ in $H+uT$, and every
+outcome must win. The move inserts $j$ held edges at once. This is what the barrier theorems of
+the emc-four session (\texttt{FanBarrier.lean}) require for the cocktail party graphs
+$\mathrm{CP}(m)=K_{2m}$ minus a perfect matching. \texttt{cocktail\_fan\_barrier} shows that for
+$m\ge4$ no certificate whose last step re-inserts one edge, by a Fan transfer or as a one-edge path,
+works. \texttt{cocktail\_insertion\_barrier} shows that if the last step adds one new path made of
+held edges to a partition of $\mathrm{CP}(m)-F$ into at most $m-1$ paths, then $|F|\ge m-1$. The
+flower's final partition is $\{C_i-e_i\}\cup\{L\}$, so it is of this form with $F=E(L)$ and
+$|F|=m-1$. It attains the bound.
+
+\begin{proposition}[computation]\label{prop:flowergame}
+With the flower move, the game with path insertion wins $\mathrm{CP}(4)$ and $\mathrm{CP}(5)$ at
+every root with $F$ a single star, i.e.\ $|F|=2m-2$. Without it, $\mathrm{CP}(4)$ needs nine held
+edges and $\mathrm{CP}(5)$ loses with the star. Elsewhere in the test bed the move adds nothing.
+$A_{6,2}$ and $B'$ still lose with a star plus at most one edge. Five of the seven dense order-$8$
+graphs still lose with $|F|\le6$. Five randomly sampled critical graphs of order $10$ with a vertex
+of degree $6$ win at the same held-set size with or without it, with a star plus at most two
+edges.
+\end{proposition}
+For $\mathrm{CP}(m)$ the argument is uniform up to the transversal. Lov\'asz on $\mathrm{CP}(m)-s$
+gives $m-1$ paths with $b=1$ on $N(s)$. Then $m-1$ receipts follow (supplies $1>0$, $2m-3>1$,
+$\dots$), and the flower with $j=m-1$ Hamiltonian cycles finishes. Lemma~\ref{lem:transversal}
+covers $m\le5$, and a transversal lemma for every $j$ would give (R) for every $\mathrm{CP}(m)$,
+each vertex of which is an instance of \texttt{BranchBase3} with $k=m$.
+
 \begin{question}\label{q:count}
 \begin{enumerate}[label=(\alph*)]
 \item Is the game with path insertion complete at order $10$? $A_{6,2}$ is the test case, and its
 core roots are not covered by Proposition~\ref{prop:A62} either.
-\item Is there a sound profile-level move, using only $H$ and $b$, that captures
-Propositions~\ref{prop:A62} and~\ref{prop:K8M}? For instance, a bound on the number of edges that
-the paths of $D$ avoiding $u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus
-counting into a move.
+\item Lemma~\ref{lem:flowermove} is a profile-level form of Proposition~\ref{prop:K8M}. Is there
+one for Proposition~\ref{prop:A62}? For instance, a bound on the number of edges that the paths of
+$D$ avoiding $u$ can carry, given their ends, would turn Lemma~\ref{lem:through} plus counting into
+a move. It would make the game win $A_{6,2}$ at the twins and at the odd roots.
+\item Does Lemma~\ref{lem:transversal} hold for every $j$ (with $N\ge2j+1$)? That would give a
+flower move for every $j$ and the rooted test for every $\mathrm{CP}(m)$.
 \end{enumerate}
 \end{question}
 
@@ -568,14 +694,18 @@ $b'(v)+[v=a]+[v=y]=b(v)+2[v=s]+[v=y']+[v=x]$.
 Lov\'asz's theorem from the library (\texttt{lovasz\_ends}).
 \item Helpers: \texttt{isolate} ($G$ with every edge at $s$ removed), \texttt{isolate\_degree},
 \texttt{isolate\_edgeSet}, and \texttt{Ach.decomp\_of\_edgeSet}, \texttt{Ach.of\_decomp}.
+\item \texttt{Ach.hub\_four\_tail}, \texttt{hub\_four\_odd\_ends}, \texttt{hub\_four\_odd\_rooted}:
+Theorem~\ref{thm:hub4odd}. \texttt{gqz\_rooted\_three}: Corollary~\ref{cor:gqz}, with the
+hypotheses checked by \texttt{decide}.
 \item \texttt{fan\_alternative}: Lemma~\ref{lem:alt}. Its two halves are
 \texttt{fan\_reroute\_exec} and \texttt{fan\_alt\_count}. The first executes a partial chain; it is
 the reroute part of \texttt{fan\_exec} from \texttt{Fan.lean}, without the final append. The second
 is the counting of \texttt{fan\_exists\_chain}, stopped before the contradiction.
 \end{itemize}
 Lemma~\ref{lem:rot} is the one-step case of \texttt{fan\_reroute\_exec} together with
-\texttt{PathDecomp.append\_move}. The hand arguments of Section~\ref{sec:six} are not
-formalised.
+\texttt{PathDecomp.append\_move}. The arguments of Section~\ref{sec:six} (Proposition~\ref{prop:A62},
+the flower and transversal lemmas) are not formalised here. A uniform flower theorem for
+$\mathrm{CP}(m)$ is being formalised by the emc-four session.
 
 \subsection*{Scripts} In \texttt{scripts/}:
 \begin{itemize}

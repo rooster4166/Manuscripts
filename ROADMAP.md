@@ -283,3 +283,9 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Corrigenda section added. The odd-order Fan game with a prescribed end is far from complete: 58 of 64 e = 5 losses at n = 7 are search failures (E14).
 - **The critical Gqz~vw is closed in Lean** (`gqz_rooted_three`, standard axioms; definition checked faithful). It follows from the odd-neighbour hub lemma `hub_four_odd_rooted`: the rooted test at a degree-4 hub with one odd neighbour (missing-move session). `fan_game.py` also gains a profile-level flower move (option `flower`).
 - Five-even floor end to end in Lean (`five_even_floor`, bs-prescribed).
+- 2026-11-26 (missing-move, follow-up):
+  - The five E13 losers are non-critical (split rule). 19 of the 47 `np`-losers at \|F\| ≤ 4 are critical, and all win with path insertion.
+  - **Odd-neighbour hub** (`hub_four_odd_ends`, `hub_four_odd_rooted`) closes the critical Gqz~vw at root 3; `gqz_rooted_three` is checked by `decide`.
+  - **Profile-level flower move** (manuscript Lemma 5.7, transversals for j ≤ 4): the game wins CP(4) and CP(5) with one star, attaining `cocktail_insertion_barrier`. It does not help on A_{6,2} or B′ (n = 10).
+  - Base branch merged into `claude/missing-move`.
+

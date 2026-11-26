@@ -29,3 +29,13 @@ python3 $D/certificate.py 'Gr~v~w' 0 9 'F=((0,1),(0,2),(0,4),(0,5),(0,6),(0,7),(
 # order 10 with a star plus three held edges, one root per orbit (run from outputs/, where the .g6 files are)
 (cd $O && python3 ../fam_hub34.py A62 3 > famhub_A62_3.log && python3 ../fam_hub34.py B2 3 > famhub_B2_3.log)
 python3 $D/certificate.py 'I~~~wF{~G' 0 10 'F=((0,1),(0,2),(0,6),(1,2),(1,6),(2,6),(3,6),(4,6),(5,6),(6,7))' > $O/certificate_B2.txt
+# criticality (p < n/2 ?) of the 47 losers and of the test graphs
+(cd $O && python3 ../crit.py np4_losers.g6 > crit47.log)
+# Corollary 2.6: the critical loser Gqz~vw at root 3
+python3 $D/certificate.py 'Gqz~vw' 3 5 > $O/certificate_Gqz.txt
+# Proposition 5.8: the flower move on CP(4), CP(5), the order-10 families, the dense graphs, a sample
+(for f in cp4 cp5; do for o in "0 hubs" "0 flower hubs" "0 np hubs" "0 np flower hubs"; do
+  echo "$f [$o]: $(python3 $D/fan_game.py $O/$f.g6 $o | tail -1)"; done; done) > $O/cp_flower.log
+(cd $O && for g in A62 B2; do for k in 0 1; do echo "$g k=$k: $(python3 ../fan_game.py $g.g6 $k np flower hubs | tail -1)"; done; done > fam_flower.log)
+python3 $D/fan_game.py $O/dense7.g6 6 np flower > $O/dense7_flower6.log
+(cd $O && python3 ../sample10.py 7 5 > sample10.g6)   # five critical order-10 graphs with a degree-6 vertex
