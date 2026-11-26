@@ -224,3 +224,16 @@ A uniform target suggested by this view: **the floor bound for odd-order graphs 
 **What is known.** The false-twin-return note handles the case where r lies in a large false-twin class of H.
 
 **What a general argument needs.** A second apex, i.e. using x itself as a parity absorber, or a transfer that moves two ends at once.
+
+## K. Marked descent (faithful descent in the marked setting)
+
+The marked bound is now formalized: `gallai_iff_markedBound`, where Gallai ⇔ q(F,S) ≤ ⌊(n − |S|)/2⌋ for all connected F and nonempty S.
+
+**How the bound behaves when a site is removed.** Removing a site v from S changes the two sides as follows:
+
+- q(F, S − v) ≤ q(F, S) + 1, since the path assigned to v becomes unassigned;
+- the budget ⌊(n − |S| + 1)/2⌋ exceeds ⌊(n − |S|)/2⌋ by exactly [n − |S| odd].
+
+So the bound transfers for free when n − |S| is odd. When n − |S| is even, the transfer needs an optimal marked partition for S that does not use v.
+
+**Marked descent.** For S = V(F) the bound is easy: q(F, V) = 0 for decompositions into few enough paths. Gallai follows from a descent S = V(F) → … → {r} in which every even step keeps q unchanged. This is the cone (W(F,S)) form of faithful descent (section C). Under the formalized identities the two are the same problem, which gives a Lean-ready statement of the descent step.
