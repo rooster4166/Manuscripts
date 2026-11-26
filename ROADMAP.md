@@ -52,7 +52,7 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 | T(8)-i | two-end test, d = 8 | MR Thm 130 (only root degree 2) | **OPEN** | — |
 | T(≥10) | both tests | partial (hubs) | **OPEN** | — |
 | U | a uniform-in-d mechanism closing T(d) for every d | this project: FD / EMC (`research/connections.md` B, C) | **CONJ** | comp(n ≤ 6) |
-| FD2 | second step of faithful descent: for every root r some Ev − {u, v} (u, v ≠ r) is realisable | endpoint-structure §5, Thm 28 (connections §P) | **CLAIMED**, proved except e = 4 with G[Ev] = K_3 + r; non-realisable pairs are E-twins (Thm 20/Cor 22); the step with a prescribed u (Cor 27) is proved unless G[Ev] is edgeless with private odd neighbourhoods | **lean** (Thm 20, Cor 22, pair step Thm 26, Fan certificates Thm 24, path step); comp (n ≤ 8) |
+| FD2 | second step of faithful descent: for every root r some Ev − {u, v} (u, v ≠ r) is realisable | endpoint-structure §5, Thm 28 (connections §P); in full: `two_step_descent` (EMCFour.lean, base branch) | **proved in full by `two_step_descent`** (lean, rebuilt and axiom-checked by this session). This session's Thm 28 proves it except for e = 4 with G[Ev] = K_3 + r; non-realisable pairs are E-twins (Thm 20/Cor 22); the step with a prescribed u (Cor 27) is proved unless G[Ev] is edgeless with private odd neighbourhoods | **lean** (Thm 20, Cor 22, pair step Thm 26, Fan certificates Thm 24, path step); comp (n ≤ 8) |
 | U-Fan | uniform-in-d sufficient condition for (R): a semi-induced matching of size e/2 − 1 in G[Ev] avoiding r (Cor 25); in MR Thm 114(i) a condition on J[N(z)] alone | endpoint-structure Cor 25 | **CLAIMED** | **lean** (`realisable_of_fanSchedule`) |
 
 ## Side chains that also reach Gallai
