@@ -1,0 +1,2 @@
+D' valid for G-37: 1
+chain: 3 6 0  image {06728, 7084, 58162, 68371} valid 1 Q_0=06728
