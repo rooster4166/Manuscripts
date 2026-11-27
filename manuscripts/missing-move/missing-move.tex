@@ -98,7 +98,7 @@ guarantees on $K$:
 \begin{itemize}
 \item $b=d_K\bmod 2$ if $K$ has at most one vertex of positive even degree; or
 \item $b=1$ on $\Od(K)$, $b=2$ at $v$ and $b=0$ at $u$, if $K$ has no isolated vertex and
-$\Ev(K)=\{u,v\}$ (endpoint-structure Lemma~3~\cite{ES}).
+$\Ev(K)=\{u,v\}$ (endpoint-structure Lemma~4~\cite{ES}: $\Ev(K)\setminus\{u\}$ is realisable).
 \end{itemize}
 \item Re-insert the held edges. Let $H$ be the current graph. The moves are the following.
 \begin{itemize}
@@ -126,8 +126,10 @@ seeds, i.e.\ the rooted test on $G-F$ with an adversarial half-set, do not repai
 
 These five graphs are \emph{not critical}: $p=3<n/2$. For them (R) is trivial, because a minimum
 partition can be split at an interior visit to $r$. The game does not see this. In the game it is
-the win condition $\sum b\le n-2$, which we add from now on (the \emph{split rule}). It settles
-every non-critical graph and never applies to a critical one. The critical losers of the original
+the win condition $\sum b\le n-2$, which we add from now on (the \emph{split rule}). It never
+applies to a critical one. It makes (R) trivial for every non-critical graph, but the game must
+still reach $\sum b\le n-2$: with the split rule the five graphs above still lose at their losing
+roots with $|F|\le8$ (audit A12). The critical losers of the original
 game include the following.
 \begin{itemize}
 \item \texttt{Gqz\char126vw}, i.e.\ $K_8$ minus $\{03,12,23,34,56,67\}$. It is $4$-connected,
@@ -155,8 +157,8 @@ formalised in Lean.
 path insertion wins every root of every connected graph of order $8$, with at most nine held
 edges. The certificates found for the five losers all have the shape of the hub lemma.
 \item \emph{P\'osa moves at the profile level fail} (Section~\ref{sec:posa}). We prove a rotation
-lemma and \emph{Fan's alternative} (Lemma~\ref{lem:alt}). The alternative strictly dominates
-rotation as a game move. Neither repairs any losing root, with up to two uses per play and
+lemma and \emph{Fan's alternative} (Lemma~\ref{lem:alt}). The alternative dominates rotation
+as a game move (Section~\ref{sec:posa}). Neither repairs any losing root, with up to two uses per play and
 $|F|\le4$, or one use and $|F|\le6$. We explain why: the losers' obstruction is budget
 allocation, not exchange.
 \item \emph{Degree six} (Section~\ref{sec:six}): at a hub of degree six the spare path pays for
@@ -332,19 +334,26 @@ $8$ loses.
 
 The $47$ graphs are mostly the ones that need large held sets in any case, such as $K_{2,6}$. With
 $|F|\le4$ the game with path insertion has $47$ losing graphs and the original game has $50$. The
-three graphs repaired at $|F|\le4$ include \texttt{GsRvnk} and \texttt{Gqrvn[}. The seven dense
-graphs, those whose complements have at most six edges, were run one root per automorphism orbit.
+three graphs repaired at $|F|\le4$ are \texttt{GsRvnk}, \texttt{Gqrvn[} and \texttt{GswNvs}. The
+seven dense graphs \texttt{Gr\char126v\char126w}, \texttt{Gut\char126\char126w},
+\texttt{Gu\char94v\char126w}, \texttt{Guv]\char125\char123}, \texttt{Guv]z\char123},
+\texttt{Guv]\char126\char123} and \texttt{Gut\char126vs} (\texttt{outputs/dense7.g6}) were run one
+root per automorphism orbit. Their complements have at most six edges. So do the complements of
+three of the other $40$, \texttt{Gqz\char126vw}, \texttt{Gqzn\char126w} and
+\texttt{Gqz\char94\char126w}, which were run at every root.
 For $M_8$ the winning held set is the star at the root plus three edges. The play is a relay into
 the hub, receipts, one donation from the hub, and the \emph{new path $1\,4\,2\,0\,7$ of length
 four through the hub}, routed along the extra held edges (\texttt{outputs/certificate\_K8M.txt}).
 Every certificate was found by \texttt{scripts/fan\_game.py}. Scripts and logs are listed in
 Section~\ref{sec:scripts}.
 
-Theorem~\ref{thm:complete8} was computed without the split rule. With it, the $28$ non-critical
-graphs among the $47$ become trivial. The other $19$ are critical, and for them the theorem says
-that path insertion alone suffices. Independently of the game, \texttt{scripts/rootcheck.py}
-confirms (R) at every root of the five losers and of the order-$10$ examples below by a direct
-CP-SAT search for partitions, and \texttt{scripts/crit.py} decides criticality.
+Theorem~\ref{thm:complete8} was computed without the split rule. With it, (R) is trivial for the
+$28$ non-critical graphs among the $47$. The game itself does not change: with the split rule it
+still loses all $47$ with $|F|\le4$, and the least sizes above are the same (audit A12). The other
+$19$ are critical, and for them the theorem says that path insertion alone suffices. Independently
+of the game, \texttt{scripts/rootcheck.py} confirms (R) at every root of the five losers and of
+$A_{6,2}$, $B$ and $B'$ below by a direct CP-SAT search for partitions, and \texttt{scripts/crit.py}
+decides criticality.
 
 \section{P\'osa moves at the profile level}\label{sec:posa}
 
@@ -439,6 +448,9 @@ two per play with $|F|\le4$, or one per play with $|F|\le6$) to the original gam
 \emph{none} of the losing roots: $s,s'$ in \texttt{GsRvnk}, and the single losing root of each of
 the other four.
 \end{proposition}
+The moves are not idle. With $|F|\le4$ the original game loses \texttt{GsRvnk} at every root, and
+with either move added it wins there at the six roots other than $s,s'$ (audit A12). These roots
+are won by the original game with $|F|=6$.
 
 \subsection*{Why} Every P\'osa-type move keeps the number of paths. The losers need the spare
 path to be spent on a path of length two through the hub. In the original game this can only be
@@ -539,7 +551,7 @@ root, by~\eqref{eq:parity}. So $B'$ wins at every root (\texttt{outputs/famhub\_
 certificate for a core root holds the star at $x_1$ and a core triangle. Its play is a relay
 through the hub, then receipts, then the new path $0\,2\,1\,6\,5$ through the hub
 (\texttt{outputs/certificate\_B2.txt}). The count of Proposition~\ref{prop:A62} would not have
-refute the rigid case here: at the fourth receipt the fourth path joins the two other full
+refuted the rigid case here: at the fourth receipt the fourth path joins the two other full
 vertices, and $31$ edges meet a capacity of $3\cdot8+7=31$. The emc-four session closes $B'$ by
 hand at every root from exactly this equality~\cite[Prop.~68]{ES}. Since every bound is attained,
 the cycles through the hub are Hamiltonian, and its receipt-or-flower theorem~\cite[Thm.~67]{ES}
@@ -613,7 +625,7 @@ at least three valid choices succeeds.
 \end{proof}
 
 \begin{lemma}[Flower move]\label{lem:flowermove}
-Let $D$ be a partition of $H$, let $u$ be a vertex, and let $T$ be a set of $j\le4$
+Let $D$ be a partition of $H$, let $u$ be a vertex, and let $T\not\ni u$ be a set of $j\le4$
 non-neighbours of $u$. Suppose that $b_D(u)=d_H(u)=j$, that $b_D=1$ on $T$, that
 $\sum_vb_D(v)=2j$, and that $|E(H)|+j=j\,|V'|$, where $V'$ is the set of vertices of positive
 degree in $H+uT$. Then for some path $L=u\,a_1\cdots a_j$ of $H+uT$, the graph $H+uT$ has a
@@ -662,8 +674,8 @@ unchanged. The following edge count, which uses only $H$ and $b$, decides betwee
 enough for the game.
 
 \begin{lemma}[Receipt or flower, with a count]\label{lem:rfcount}
-Let $D$ be a partition of $H$, let $u$ be a vertex with $b_D(u)=d_H(u)=j$, and let $T$ be a set of
-$j$ non-neighbours of $u$ with $b_D=1$ on $T$. Let $V^+$ be the set of vertices of positive degree
+Let $D$ be a partition of $H$, let $u$ be a vertex with $b_D(u)=d_H(u)=j$, and let $T\not\ni u$ be a set
+of $j$ non-neighbours of $u$ with $b_D=1$ on $T$. Let $V^+$ be the set of vertices of positive degree
 in $H$, and let $\Lambda$ be the set of vertices of degree $1$ in $H$ outside $T\cup\{u\}$. Put
 $\lambda=|V^+|-|\Lambda|-1$ and $m'=|D|-j$. Let $\mu=0$ if $m'=0$. If $m'=1$ and the two remaining
 ends are a leaf of $H$ and its neighbour, let $\mu=1$. Otherwise let $\mu=m'(|V^+|-2)$.
@@ -717,8 +729,10 @@ only $9$, so a Lov\'asz seed exists. At the fourth receipt, however, $|E(H)|=33$
 $j\lambda+\mu=3\cdot9+8=35$. So Lemma~\ref{lem:rfcount} decides neither case, and the rigid
 configuration is not refuted. The game instead holds the star at $2$ and the edges $01$, $34$,
 $36$ ($|F|=9$). Its play is a relay $0\to1\to2$ into the hub, receipts at $2$, a second hub at
-$3$, and a new path through both hubs, $4\,3\,6\,2\,8$ or $4\,3\,6\,2\,7$
-(\texttt{scripts/outputs/certificate\_miss1.txt}). So in this sample the miss is again a matter of
+$3$, and a new path through both hubs, $4\,3\,6\,2\,8$ or $4\,3\,6\,2\,7$. When the second
+hub's donor is $4$, the new path is $2\,6\,3$ or $3\,6\,2\,7$ and single transfers finish
+(\texttt{scripts/outputs/certificate\_miss1.txt}). Every leaf of this certificate has ends at both
+$2$ and $3$, so it also wins at the root $3$. So in this sample the miss is again a matter of
 held-set size: a second hub along the inserted path does what the count cannot.
 
 \begin{question}\label{q:count}
@@ -746,8 +760,8 @@ order. These hold only in special classes: Lov\'asz's (at most one even vertex),
 $\mathrm{BP}_t$ of the roadmap (a pendant leaf and $t$ even vertices). Lemma~\ref{lem:hub} turns any
 such floor partition of $G-s$, with an end at each neighbour of $s$, into (R) at a degree-four
 vertex $s$.
-\item P\'osa moves at the profile level (rotation at equality, Fan's alternative) add nothing at
-order $8$. The difficulty is the degree-six hub, where a pure star is one receipt short at Fan's
+\item P\'osa moves at the profile level (rotation at equality, Fan's alternative) repair no
+losing root at order $8$. The difficulty is the degree-six hub, where a pure star is one receipt short at Fan's
 equality. This makes the ``two-end transfer at equality'' of~\cite{D6} concrete. The rigid
 configuration of Lemmas~\ref{lem:alt} and~\ref{lem:through} must be refuted by an edge count
 (Proposition~\ref{prop:A62}) or recombined as a flower (Proposition~\ref{prop:K8M}). The count of
@@ -759,6 +773,7 @@ the hub.
 \end{enumerate}
 
 \section{Formalisation and scripts}\label{sec:scripts}
+\sloppy
 
 \subsection*{Lean} File \texttt{lean/GallaiLean/MissingMove.lean} of the project repository (Lean~4,
 Mathlib v4.36.0). It has no \texttt{sorry}, and \texttt{\#print axioms} reports only
@@ -781,22 +796,39 @@ the reroute part of \texttt{fan\_exec} from \texttt{Fan.lean}, without the final
 is the counting of \texttt{fan\_exists\_chain}, stopped before the contradiction.
 \end{itemize}
 Lemma~\ref{lem:rot} is the one-step case of \texttt{fan\_reroute\_exec} together with
-\texttt{PathDecomp.append\_move}. The arguments of Section~\ref{sec:six} (Proposition~\ref{prop:A62},
-the flower and transversal lemmas) are not formalised here. A uniform flower theorem for
-$\mathrm{CP}(m)$ is being formalised by the emc-four session.
+\texttt{PathDecomp.append\_move}. Proposition~\ref{prop:A62}, Lemmas~\ref{lem:flowermove}
+and~\ref{lem:rfcount} are not formalised. The emc-four session's file
+\texttt{lean/GallaiLean/Flower.lean} formalises Lemma~\ref{lem:flower} (\texttt{flower\_decomp}),
+Proposition~\ref{prop:K8M} (\texttt{cocktail\_passes\_four}) and the uniform reduction of
+$\mathrm{CP}(m)$ to a transversal lemma (\texttt{cocktail\_passes\_of\_rt}). Its transversal
+lemmas \texttt{rainbowTransversal\_three} and \texttt{rainbowTransversal\_four} are the cases
+$j=3$ on $8$ vertices and $j=4$ on $10$ vertices, in the weaker form of a path \emph{through} $u$.
+Lemma~\ref{lem:transversal} in the form used here, a path \emph{starting} at $u$, is not
+formalised.
 
 \subsection*{Scripts} In \texttt{scripts/}:
 \begin{itemize}
 \item \texttt{fan\_game.py}: the game solver, a copy of \texttt{tools/fan\_game.py}. Its options
 are \texttt{np} (path insertion), \texttt{rotR} (at most $R$ rotations), \texttt{altR} (at most $R$
-uses of Fan's alternative), \texttt{ind} (inductive seeds) and \texttt{hubs} (held sets of the
-form ``full star plus $k$ edges'').
+uses of Fan's alternative), \texttt{ind} (inductive seeds), \texttt{hubs} (held sets of the
+form ``full star plus $k$ edges''), \texttt{flower} (Lemma~\ref{lem:flowermove}), \texttt{rf}
+(Lemma~\ref{lem:rfcount}) and \texttt{orbit} (the orbit rule). The split rule is always on; it
+does not change the results of Section~\ref{sec:eight}.
+\item \texttt{orbit\_run.py}, \texttt{single\_root.py}, \texttt{fam\_hub34.py},
+\texttt{miss\_k3.py}: runs at one root per automorphism orbit, at a single root and held-set size,
+for the order-$10$ families with a star plus three edges, and for \texttt{Inv\char126|\char126zbw}.
+\item \texttt{crit.py}, \texttt{sample10.py}, \texttt{rf\_sample.sh}: criticality, the random
+order-$10$ sample, and the sample run of Proposition~\ref{prop:rfgame}.
 \item \texttt{certificate.py}: prints a winning strategy tree, with path insertion, for one graph and
 root.
 \item \texttt{stepper.sh}: for each graph, raises $|F|$ from $5$ to $8$ until every root wins.
 \item \texttt{families.py}: the order-$10$ test graphs $A_{4,4}$, $A_{6,2}$, $B$, $B'$.
 \item \texttt{rootcheck.py}, with \texttt{pathnum2.py}: an independent CP-SAT check of (R).
 \item \texttt{run\_all.sh}: reproduces every table. The outputs are in \texttt{scripts/outputs/}.
+The graph lists (\texttt{.g6}) and certificates (\texttt{certificate*.txt}) are committed. The
+\texttt{.log} files that \texttt{run\_all.sh} writes, such as \texttt{crit47.log},
+\texttt{famhub\_B2\_3.log} and \texttt{rf\_sample.log}, are excluded by the repository's
+\texttt{.gitignore} and must be regenerated.
 \end{itemize}
 
 \begin{thebibliography}{9}

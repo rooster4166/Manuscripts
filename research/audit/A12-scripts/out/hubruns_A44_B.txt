@@ -1,0 +1,7 @@
+I~{Nfbo{? n 10 |E| 27 Ev [0, 1, 2, 3, 6, 7, 8, 9] |Aut| 576
+star + 0: 4 held sets up to Aut, 1 seeded; roots won: [0, 1, 2, 3, 4, 5]  (0 s, 2951 states)
+star + 1: 13 held sets up to Aut, 2 seeded; roots won: [0, 1, 2, 3, 4, 5]  (0 s, 12284 states)
+star + 2: 48 held sets up to Aut, 3 seeded; roots won: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  (1 s, 32254 states)
+I~~~~~_F? n 10 |E| 34 Ev [0, 1, 2, 3, 4, 5] |Aut| 144
+star + 0: 3 held sets up to Aut, 1 seeded; roots won: []  (0 s, 539 states)
+star + 1: 19 held sets up to Aut, 3 seeded; roots won: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  (0 s, 7848 states)

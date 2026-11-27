@@ -23,7 +23,12 @@ from itertools import combinations
 
 
 class Game:
-    def __init__(self, n, edges, newpath=True, split=False, flower=False):
+    def __init__(self, n, edges, newpath=True, split=False, flower=False, rf=False, autos=None):
+        """rf: the receipt-or-flower move of missing-move Lemma 5.9 (written from the statement of
+        the lemma, not from fan_game.py). autos: a list of automorphisms (tuples); if given, the
+        orbit rule is used (an end anywhere in the orbit of r wins)."""
+        self.rf = rf
+        self.autos = autos
         self.n = n
         self.E = sorted(tuple(sorted(e)) for e in edges)
         self.m = len(self.E)
@@ -60,7 +65,89 @@ class Game:
         for v in range(self.n):
             if b[v] >= 1:
                 mk |= 1 << v
+        if self.autos:
+            out = 0
+            for p in self.autos:
+                for v in range(self.n):
+                    if (mk >> v) & 1:
+                        out |= 1 << p[v]
+            # r wins iff some vertex of orbit(r) has an end, i.e. r lies in the closure
+            mk = out
         return mk
+
+    def rf_moves(self, held, b):
+        """Missing-move Lemma 5.9. u with b(u) = d_H(u) = j >= 1; T a set of j held neighbours
+        with b = 1. lam = |V+| - |Lambda| - 1, m' = |D| - j, mu as in the lemma.
+        (a) |E(H)| > j lam + mu: the opponent picks t in T; ut is appended.
+        (b) |E(H)| = j lam + mu, j <= 4: the opponent picks t in T (only if m' >= 1; with m' = 0
+            every path ends at u, so no t-path avoids u), or a path L = u a1 .. aj of H + uT
+            inside V+ - Lambda; profile b - j e_u - 1_T + 2 on V(L)."""
+        n = self.n
+        hadj = [set() for _ in range(n)]
+        nE = 0
+        for i, (a, c) in enumerate(self.E):
+            if not (held >> i) & 1:
+                hadj[a].add(c); hadj[c].add(a); nE += 1
+        deg = [len(x) for x in hadj]
+        Vp = [v for v in range(n) if deg[v] > 0]
+        s = sum(b)
+        for u in range(n):
+            j = b[u]
+            if j < 1 or deg[u] != j:
+                continue
+            elig = []
+            for t in range(n):
+                i = self.eid.get(tuple(sorted((u, t))))
+                if t != u and i is not None and (held >> i) & 1 and b[t] == 1:
+                    elig.append(t)
+            if len(elig) < j:
+                continue
+            for T in combinations(elig, j):
+                Ts = set(T)
+                Lam = [v for v in Vp if deg[v] == 1 and v != u and v not in Ts]
+                lam = len(Vp) - len(Lam) - 1
+                mp = s // 2 - j
+                rest_ends = [v for v in range(n) if v != u and v not in Ts for _ in range(b[v])]
+                assert len(rest_ends) == 2 * mp
+                if mp == 0:
+                    mu = 0
+                elif mp == 1 and ((deg[rest_ends[0]] == 1 and rest_ends[1] in hadj[rest_ends[0]]) or
+                                  (deg[rest_ends[1]] == 1 and rest_ends[0] in hadj[rest_ends[1]])):
+                    mu = 1
+                else:
+                    mu = mp * (len(Vp) - 2)
+                bound = j * lam + mu
+                appends = []
+                for t in T:
+                    i = self.eid[tuple(sorted((u, t)))]
+                    nb = list(b); nb[u] += 1; nb[t] -= 1
+                    appends.append((held & ~(1 << i), tuple(nb)))
+                if nE > bound:
+                    yield appends
+                elif nE == bound and j <= 4:
+                    br = list(appends) if mp >= 1 else []
+                    Vs = set(Vp) - set(Lam)
+                    adjp = [set(x) for x in hadj]
+                    hmask = held
+                    for t in T:
+                        adjp[u].add(t); adjp[t].add(u)
+                        hmask &= ~(1 << self.eid[tuple(sorted((u, t)))])
+                    def paths(p):
+                        if len(p) == j + 1:
+                            yield p
+                            return
+                        for w in adjp[p[-1]]:
+                            if w in Vs and w not in p:
+                                yield from paths(p + [w])
+                    for L in paths([u]):
+                        nb = list(b); nb[u] -= j
+                        for t in T:
+                            nb[t] -= 1
+                        for v in L:
+                            nb[v] += 2
+                        br.append((hmask, tuple(nb)))
+                    if br:
+                        yield br
 
     def children(self, held, b):
         """Yield lists of child states; the player picks a list, the opponent a child in it."""
@@ -116,6 +203,8 @@ class Game:
                             nb = list(b); nb[u] += 1; nb[t] -= 1
                             br.append((held & ~(1 << i), tuple(nb)))
                     yield br
+        if self.rf:
+            yield from self.rf_moves(held, b)
 
     def value(self, held, b):
         key = (held, b)

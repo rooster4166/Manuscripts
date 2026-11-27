@@ -1218,7 +1218,9 @@ level $k+1$, so $\mathrm{B}^3_{k+1}$ suffices there.
 
 {\sloppy In Lean (\texttt{lean/GallaiLean/FanBarrier.lean}) these results are \texttt{desc\_succ\_of\_transfer\_two},
 \texttt{branchBase\_of\_three} and \texttt{gallai\_of\_branchBase3}: Gallai's conjecture follows from
-the single named hypothesis \texttt{BranchBase3} for all $k\ge3$.\par}
+the single named hypothesis \texttt{BranchBase3} for all $k\ge3$. Lemma~\ref{lem:ptransfer} is
+formalised only in the case used by Corollary~\ref{cor:twonbrs} ($P=\{y\}$, two even neighbours);
+its converse is not formalised.\par}
 
 \begin{example}\label{ex:gqz}\sloppy
 Let $G_q=K_8-\{03,12,23,34,56,67\}$ (graph6 code Gqz\textasciitilde vw). Then $\Ev=\{0,1,3,4,5,7\}$, $N(3)=\{1,5,6,7\}$ and
@@ -1358,7 +1360,11 @@ $3|D|\ge 1+2(2m-3)+2=4m-3>3m$. Part~(2) of the theorem with $|D|\le m-1$ gives
 2m(2m-2)\le 2\bigl((m-1)(2m-1)+|F|\bigr),\quad\text{that is,}\quad |F|\ge m-1.
 \]
 A grouped transfer re-inserts one of its held edges and leaves the others held. So the last transfer
-of a play is a single transfer into $H=\mathrm{CP}(m)-ut$, and a transfer preserves $|D|$.
+of a play is a single transfer into $H=\mathrm{CP}(m)-ut$, and a transfer preserves $|D|$. By~(1)
+the last move is therefore a new path. It consists of all the held edges $F$ that remain, and it is
+added to a partition $D$ of $\mathrm{CP}(m)-F$ with $|D|\le m-1$, so $|F|\ge m-1$ by~(2). In fact
+$|D|=m-1$: with $|D|\le m-2$, part~(2) of the theorem would give
+$|F|\ge 2m(m-1)-(m-2)(2m-1)=3m-2$, more than the $2m-1$ edges of a path in $\mathrm{CP}(m)$.
 \end{proof}
 
 {\sloppy Corollary~\ref{cor:cp} is formalised as \texttt{cocktail\_fan\_barrier} and
@@ -1377,8 +1383,8 @@ reach $\mathrm{CP}(m)$ for $m\ge4$. Yet $\mathrm{CP}(4)=M_8$ is critical and its
 uniform. The obstruction lies in the moves, not in the hypothesis.
 
 A proof must spend a spare path: a new path of at least $m-1$ edges, added to a partition of
-$\mathrm{CP}(m)-F$ into $m-1$ paths. For $m=4$, the remaining $21$ edges then form three Hamiltonian
-paths. This is exactly the flower configuration by which the companion manuscript~\cite{MM}
+$\mathrm{CP}(m)-F$ into $m-1$ paths. For $m=4$ and a new path of exactly $m-1=3$ edges, the remaining $21$
+edges form three Hamiltonian paths. This is exactly the flower configuration by which the companion manuscript~\cite{MM}
 (Proposition~5.5) proves (R) on $M_8$. Its last move adds the transversal path $L$ of three edges to
 the three paths $C_i-e_i$, so the bound $|F|\ge m-1$ is attained. The two results together locate the
 missing ingredient. It is not a stronger hypothesis; it is a move that spends a spare path at
@@ -1465,8 +1471,8 @@ The proof has five steps.
 \item \emph{Seed.} In $K=\mathrm{CP}(m)$ minus the star at $s$, the $2m-2$ neighbours of $s$ have
 degree $2m-3$, and the antipode $s^*$ is the only even vertex. Lov\'asz gives $m-1$ paths with one
 end at each neighbour of $s$.
-\item \emph{Receipts.} The $j$-th receipt has supply $2m-2-j>j$ for $j\le m-2$, so $m-1$ receipts
-succeed. The $m$-th meets equality.
+\item \emph{Receipts.} After $j$ receipts the next one has supply $2m-2-j$ against $j$ blank
+neighbours. This exceeds $j$ for $j\le m-2$, so $m-1$ receipts succeed. The $m$-th meets equality.
 \item \emph{Cycles.} By Proposition~\ref{prop:equality}, the $m-1$ paths close into edge-disjoint
 cycles through $s$ that cover $E(\mathrm{CP}(m))$.
 \item \emph{Hamiltonicity.} The cycles have $2m(m-1)=(m-1)\cdot 2m$ edges in total, and each has at
@@ -1477,8 +1483,8 @@ two ends at $s$.
 \end{proof}
 
 \begin{proposition}[Transversals for at most four cycles]\label{prop:rt4}
-Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles with $k\le4$. Then every vertex $s$ lies on a
-path with exactly one edge from each $C_i$.
+Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles on a common vertex set, with $k\le4$. Then
+every vertex $s$ lies on a path with exactly one edge from each $C_i$.
 \end{proposition}
 
 \begin{proof}
@@ -1555,7 +1561,7 @@ exactly its hypothesis.
 
 \begin{theorem}[Receipt or flower]\label{thm:receiptflower}
 Let $D$ be a partition of $H$, and let $s$ be a vertex with $b_D(s)=d_H(s)$. Let $T$ be a set of
-non-neighbours of $s$ with $b_D=1$ on $T$, and put $G=H+\{st:t\in T\}$. Then one of the following
+non-neighbours of $s$, with $s\notin T$ and $b_D=1$ on $T$, and put $G=H+\{st:t\in T\}$. Then one of the following
 holds.
 \begin{enumerate}
 \item Some $t\in T$ ends a path of $D$ that avoids $s$. Appending $ts$ to that path gives a partition
@@ -1578,7 +1584,7 @@ applied to them, with the remaining paths left unchanged, gives~(2).
 
 {\sloppy In Lean the recombination step of~(2) is \texttt{flower\_decomp\_rest}. Case~(2) is useful
 when an edge count makes the paths $C_t-st$ Hamiltonian on a common vertex set, as in
-Corollary~\ref{cor:cp}. Then Proposition~\ref{prop:rt4} supplies a transversal when $|T|\le4$. With a
+Theorem~\ref{thm:cpm}. Then Proposition~\ref{prop:rt4} supplies a transversal when $|T|\le4$. With a
 Lov\'asz seed of $G$ minus the star at $s$, and receipts from all of $N(s)$, case~(2) leaves no
 other paths exactly when the seed has ends only on $N(s)$. With at most one even vertex in the seed
 graph, this means: \emph{$G$ is Eulerian, of even order $n$, and $d(s)=n-2$.} The move then spends
@@ -1618,15 +1624,16 @@ parity.
 The same reading applies to $A_{6,2}$ (\cite[Proposition~5.2]{MM}). There the rigid case is
 excluded by the count $30>3\cdot8$, so case (1) occurs. The resulting partition into $5$ paths has
 $b=2$ at the two core vertices $t',t''$ of the new path $t'st''$. By the symmetry of the core, this
-gives (R) at every core vertex of $A_{6,2}$ as well. As far as we can see, these are the core roots
-that~\cite{MM} lists as open.
+gives (R) at every core vertex of $A_{6,2}$ as well. These are the core roots that an earlier draft
+of~\cite{MM} listed as open; its Proposition~5.2 now includes them.
 
 {\sloppy In Lean (\texttt{lean/GallaiLean/Flower.lean}), Lemma~\ref{lem:flower} is
 \texttt{flower\_decomp}, built from \texttt{exists\_close\_cut}, and Proposition~\ref{prop:equality}
 is \texttt{hub\_cycles}. Theorem~\ref{thm:cpm} is \texttt{cocktail\_passes\_of\_rt} and
 \texttt{cocktail\_rooted\_of\_rt}, with the hypothesis \texttt{RainbowTransversal}.
 Proposition~\ref{prop:rt4} is \texttt{rainbowTransversal\_three} and
-\texttt{rainbowTransversal\_four}, and Corollary~\ref{cor:cp45} is \texttt{cocktail\_passes\_four} and
+\texttt{rainbowTransversal\_four} in the cases needed there, $k=3$ on $8$ vertices and $k=4$ on
+$10$ vertices, and Corollary~\ref{cor:cp45} is \texttt{cocktail\_passes\_four} and
 \texttt{cocktail\_passes\_five}; the general recombination of Theorem~\ref{thm:receiptflower}(2) is
 \texttt{flower\_decomp\_rest}. There is no \texttt{sorry}, Lov\'asz's theorem is the library's
 proof, and the axioms are the standard ones.\par}

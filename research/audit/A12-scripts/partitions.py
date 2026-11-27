@@ -45,6 +45,8 @@ def has_partition_le(G, k):
 
 def critical(G):
     n = G.number_of_nodes()
+    if G.number_of_edges() > (n // 2 - 1) * (n - 1):
+        return True  # n/2 - 1 paths cover at most (n/2 - 1)(n - 1) edges
     return has_partition_le(G, n // 2 - 1) is None
 
 
@@ -95,7 +97,11 @@ if __name__ == "__main__":
             if not g:
                 continue
             G = nx.from_graph6_bytes(g.encode())
-            P = has_partition_le(G, G.number_of_nodes() // 2 - 1)
+            n = G.number_of_nodes()
+            if G.number_of_edges() > (n // 2 - 1) * (n - 1):
+                print(g, f"critical (edge count {G.number_of_edges()} > {(n // 2 - 1) * (n - 1)})", flush=True)
+                continue
+            P = has_partition_le(G, n // 2 - 1)
             print(g, "critical" if P is None else f"noncritical {P}", flush=True)
     elif sys.argv[1] == "ex53":
         ex53()

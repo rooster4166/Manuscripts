@@ -1,0 +1,49 @@
+LOSE GsaCB{ aut 1440 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE GsbEJ{ aut 72 least {0: 4, 1: 4, 2: None, 3: None, 4: None, 5: 4, 6: 4, 7: 4} max None losing roots [2, 3, 4] 0.0 s
+LOSE Gs`vvs aut 36 least {0: 4, 1: None, 2: None, 3: None, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1, 2, 3] 0.0 s
+LOSE Gsbvnk aut 36 least {0: 4, 1: None, 2: None, 3: None, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1, 2, 3] 0.1 s
+LOSE Gsbvj{ aut 24 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gsbvn{ aut 24 least {0: 2, 1: 2, 2: 2, 3: 2, 4: None, 5: 2, 6: 2, 7: 2} max None losing roots [4] 0.0 s
+LOSE Gs`zro aut 1152 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.3 s
+LOSE Gs`~vs aut 144 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gs`~~w aut 192 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.2 s
+5559 graphs, 9 with a losing root (k <= 4; opts [])
+LOSE GsQfnk aut 12 least {0: 4, 1: None, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1] 0.0 s
+LOSE GsRvl{ aut 12 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE GsRvn{ aut 12 least {0: 2, 1: 2, 2: 2, 3: 2, 4: None, 5: 2, 6: 2, 7: 2} max None losing roots [4] 0.0 s
+LOSE GsQ~vs aut 4 least {0: None, 1: None, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [0, 1] 0.1 s
+LOSE GsQ~~w aut 8 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gsqf^[ aut 16 least {0: 4, 1: None, 2: None, 3: 4, 4: None, 5: None, 6: 4, 7: 4} max None losing roots [1, 2, 4, 5] 0.0 s
+LOSE GsqfZ{ aut 16 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gsqf^{ aut 16 least {0: 2, 1: 2, 2: 2, 3: None, 4: 2, 5: 2, 6: 2, 7: 2} max None losing roots [3] 0.0 s
+LOSE Gsovvs aut 24 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gsov^[ aut 4 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gsov~w aut 8 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gsqv^[ aut 4 least {0: 2, 1: 2, 2: 2, 3: None, 4: 2, 5: 2, 6: 2, 7: 2} max None losing roots [3] 0.1 s
+LOSE GsZvnk aut 48 least {0: 3, 1: 3, 2: 3, 3: 3, 4: None, 5: 3, 6: 3, 7: 3} max None losing roots [4] 0.0 s
+LOSE GsZu|{ aut 4 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gsz\z{ aut 12 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE GqHzz{ aut 12 least {0: None, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2} max None losing roots [0] 0.0 s
+LOSE Gqqf^[ aut 12 least {0: 4, 1: 4, 2: 4, 3: 4, 4: None, 5: 4, 6: 4, 7: 4} max None losing roots [4] 0.0 s
+LOSE Gqrvnk aut 12 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE Gqrn^[ aut 24 least {0: 4, 1: None, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1] 0.1 s
+LOSE GqjVt{ aut 12 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.0 s
+LOSE GqjV^[ aut 24 least {0: 3, 1: 3, 2: 3, 3: None, 4: 3, 5: 3, 6: 3, 7: 3} max None losing roots [3] 0.1 s
+LOSE Gqzvn[ aut 4 least {0: 4, 1: 4, 2: 4, 3: 4, 4: None, 5: 4, 6: 4, 7: 4} max None losing roots [4] 0.1 s
+LOSE Gqzvm{ aut 8 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gqzn^[ aut 120 least {0: 4, 1: None, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1] 0.1 s
+LOSE Gqzn]{ aut 48 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gqzm}{ aut 72 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gqzl|{ aut 12 least {0: 4, 1: None, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [1] 0.1 s
+LOSE Gqzn~w aut 12 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gqz^~w aut 16 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gqz~vw aut 4 least {0: 4, 1: 4, 2: 4, 3: None, 4: 4, 5: 4, 6: 4, 7: 4} max None losing roots [3] 0.1 s
+LOSE GujTR{ aut 144 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Guv]}{ aut 720 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.9 s
+LOSE Guv]z{ aut 240 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.2 s
+LOSE Guv]~{ aut 240 least {0: 3, 1: 3, 2: None, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3} max None losing roots [2] 0.2 s
+LOSE Gut~vs aut 72 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gut~~w aut 48 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gu^v~w aut 16 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.1 s
+LOSE Gr~v~w aut 384 least {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None} max None losing roots [0, 1, 2, 3, 4, 5, 6, 7] 0.5 s
+5558 graphs, 38 with a losing root (k <= 4; opts [])
