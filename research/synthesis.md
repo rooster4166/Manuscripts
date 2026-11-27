@@ -147,3 +147,22 @@ The refined conjecture is **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, a pro
 - **CS for cones** (Thm 15, proved): M is cut-feasible iff its marked and unmarked even vertices pair up by edge-disjoint paths of G − apex. CS then follows from the T-join lemma.
 - **PS (pairing selection)**, stronger than CS: some pairing of Ev has *all* of its transversals cut-feasible. **The guarded route lemma (Thm 17, proved)** gives PS from edge-disjoint routes pairing Ev with "guards" at busy vertices. **Certificates exist for every connected graph of order ≤ 8** (9,848 via Hamiltonian paths, 996 via other linkages, 49 via guarded routes). So **CS holds at n ≤ 8 by a proof that never uses realisability.**
 - **Open: Conjecture GR.** Every connected graph has a guarded route system. GR ⇒ PS ⇒ CS.
+
+## 10. EMM is false; the corrected target (2026-11-27)
+
+**Refutation** (missing-move Thm 7.5; independently confirmed with `tools/cut_test.py`): KsOeBW??G`?A (n = 12) with M = {3, 4, 8, 9, 10} is cut-feasible but not realisable. Twelve such graphs of order 12 are known.
+
+- **Mechanism.** A vertex with b = d is saturated, so no path passes through it. Saturated vertices cut the graph into pieces, and a piece can sit *below its own budget*, where 2-linkage obstructions are invisible to cuts (the EMM⁺ failures at p ≤ 3, n = 7, 8). Padding with leaves also refutes EMM⁺ above the budget.
+- **For simple profiles (b ≤ 2), a saturated vertex has degree ≤ 2.** This counterexample mechanism therefore needs vertices of degree ≤ 2.
+
+**Corrected target, EMM₃.** EMM restricted to connected graphs of minimum degree ≥ 3, where simple profiles have no saturated vertices.
+
+- It is what the Gallai application needs. In SP's main alternative (Thm 10.16(2)), a least failure of (R) has δ ≥ 5 (≥ 6 after Thm 12.28). The other alternative, a smaller odd-order floor witness, needs the same statement one below budget, so the decomposition at saturated vertices must still be addressed for it.
+- All known counterexamples have δ ≤ 2. The exhaustive n ≤ 8 data contain no δ ≥ 3 failure, because they contain no failure at all.
+
+**Consequence for the programme.** An inductive proof of EMM₃ passes through graphs with low-degree vertices, so the induction needs a corrected general statement. Its form:
+1. decompose at saturated vertices;
+2. give each piece its own budget;
+3. add conditions for pieces below their budget.
+
+The last item is a *linkage* condition, beyond cuts; compare the two-paths theorem of Seymour, Shiloach and Thomassen. That makes EMM₃ a genuinely harder target than it looked. CS remains valid and useful: it is a statement about cut-feasibility only.
