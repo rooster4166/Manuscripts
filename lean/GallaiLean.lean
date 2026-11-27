@@ -47,3 +47,4 @@ import GallaiLean.FiveEvenCerts
 import GallaiLean.EmmTemplate
 import GallaiLean.PairingLemma
 import GallaiLean.CutSelection
+import GallaiLean.Thm59Transfer

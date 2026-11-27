@@ -793,10 +793,9 @@ theorem exists_pmp_restrict {U' : Finset W} (hMB : MBOn (restrict G U') U') {S' 
   obtain ⟨M, hM⟩ := exists_pmp_le (G := G) (restrict G U') (restrict_le U') S'
   exact ⟨M, hM ▸ hMB S' hS'U hS'⟩
 
-/-- The induction hypothesis: the marked bound on every smaller instance. -/
-def SmallerMB (U : Finset W) : Prop :=
-  ∀ (G' : SimpleGraph W) (U' : Finset W), U'.card < U.card → EdgesIn G' U' → ConnOn G' U' →
-    MBOn G' U'
+/-- The induction hypothesis: the marked bound on every smaller connected restriction of `G`. -/
+def SmallerMB (G : SimpleGraph W) (U : Finset W) : Prop :=
+  ∀ U' : Finset W, U'.card < U.card → ConnOn (restrict G U') U' → MBOn (restrict G U') U'
 
 /-! ### The cut-vertex reduction -/
 
@@ -810,10 +809,10 @@ theorem CutSides.lt₁ (h : CutSides G U x U₁ U₂) : U₁.card < U.card := by
 theorem CutSides.lt_plus (h : CutSides G U x U₁ U₂) : U₁.card + 1 < U.card := by
   have := h.card; have := h.big₂; omega
 
-theorem CutSides.side_pmp (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S' : Finset W}
+theorem CutSides.side_pmp (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S' : Finset W}
     (hS' : S' ⊆ U₁) (hne : S'.Nonempty) :
     ∃ M : PMP G (restrict G U₁).edgeSet S', M.cost ≤ (U₁.card - S'.card) / 2 :=
-  exists_pmp_restrict (IH _ _ h.lt₁ (edgesIn_restrict U₁) h.conn₁) hS' hne
+  exists_pmp_restrict (IH _ h.lt₁ h.conn₁) hS' hne
 
 /-- The final step: a partial marked partition of both sides bounds `q(G, S)`. -/
 theorem CutSides.finish (h : CutSides G U x U₁ U₂) {S : Finset W}
@@ -821,7 +820,7 @@ theorem CutSides.finish (h : CutSides G U x U₁ U₂) {S : Finset W}
     markedNumber G S ≤ M.cost :=
   (M.castE h.edges.symm).markedNumber_le_cost
 
-theorem cut_xS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset W} (hSU : S ⊆ U)
+theorem cut_xS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S : Finset W} (hSU : S ⊆ U)
     (hxS : x ∈ S) (h1 : Odd (U₁.card - (S ∩ U₁).card)) (h2 : Odd (U₂.card - (S ∩ U₂).card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
   obtain ⟨M₁, hM₁⟩ := h.side_pmp IH (S' := S ∩ U₁) Finset.inter_subset_right
@@ -841,14 +840,13 @@ theorem cut_xS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset
   rw [Nat.odd_iff] at h1 h2
   omega
 
-theorem cut_xS_even (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset W} (hSU : S ⊆ U)
+theorem cut_xS_even (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S : Finset W} (hSU : S ⊆ U)
     (hxS : x ∈ S) (h1 : Even (U₁.card - (S ∩ U₁).card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
   obtain ⟨y, hy, hyx, hxy⟩ := h.exists_adj₂
   have hyU₁ : y ∉ U₁ := fun h' => hyx (h.inter y h' hy)
   have hcardP : (insert y U₁).card = U₁.card + 1 := Finset.card_insert_of_notMem hyU₁
-  have hMBp := IH (restrict G (insert y U₁)) (insert y U₁) (by rw [hcardP]; exact h.lt_plus)
-    (edgesIn_restrict _) (h.plus_conn hxy)
+  have hMBp := IH (insert y U₁) (by rw [hcardP]; exact h.lt_plus) (h.plus_conn hxy)
   obtain ⟨Mp, hMp⟩ := exists_pmp_restrict hMBp (S' := S ∩ U₁)
     (Finset.inter_subset_right.trans (Finset.subset_insert _ _))
     ⟨x, Finset.mem_inter.mpr ⟨hxS, h.hx₁⟩⟩
@@ -887,7 +885,7 @@ theorem cut_xS_even (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finse
     have := h.finish M
     omega
 
-theorem cut_xnS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset W} (hSU : S ⊆ U)
+theorem cut_xnS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S : Finset W} (hSU : S ⊆ U)
     (hxS : x ∉ S)
     (hodd : Odd (U₁.card - 1 - (S ∩ U₁).card) ∨ Odd (U₂.card - 1 - (S ∩ U₂).card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
@@ -918,7 +916,7 @@ theorem cut_xnS_odd (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finse
   rw [Finset.card_insert_of_notMem hx2] at hs₂
   rcases hodd with hodd | hodd <;> rw [Nat.odd_iff] at hodd <;> omega
 
-theorem cut_xnS_marked (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset W}
+theorem cut_xnS_marked (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S : Finset W}
     (hSU : S ⊆ U) (hxS : x ∉ S) (h1 : (S ∩ U₁).Nonempty) (h2 : (S ∩ U₂).Nonempty)
     (he1 : Even (U₁.card - 1 - (S ∩ U₁).card)) (he2 : Even (U₂.card - 1 - (S ∩ U₂).card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
@@ -946,7 +944,7 @@ theorem cut_xnS_marked (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Fi
   obtain ⟨b, hb⟩ := he2
   omega
 
-theorem cut_xnS_tight (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Finset W}
+theorem cut_xnS_tight (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) {S : Finset W}
     (hSU : S ⊆ U) (hxS : x ∉ S) (hS : S.Nonempty) (h1 : S ∩ U₁ = ∅) (he1 : Even (U₁.card - 1))
     (he2 : Even (U₂.card - 1 - (S ∩ U₂).card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
@@ -968,8 +966,7 @@ theorem cut_xnS_tight (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Fin
   obtain ⟨y, hy, hyx, hxy⟩ := h.exists_adj₂
   have hyU₁ : y ∉ U₁ := fun h' => hyx (h.inter y h' hy)
   have hcardP : (insert y U₁).card = U₁.card + 1 := Finset.card_insert_of_notMem hyU₁
-  have hMBp := IH (restrict G (insert y U₁)) (insert y U₁) (by rw [hcardP]; exact h.lt_plus)
-    (edgesIn_restrict _) (h.plus_conn hxy)
+  have hMBp := IH (insert y U₁) (by rw [hcardP]; exact h.lt_plus) (h.plus_conn hxy)
   obtain ⟨Mp, hMp⟩ := exists_pmp_restrict hMBp (S' := {x})
     (Finset.singleton_subset_iff.mpr (Finset.mem_insert_of_mem h.hx₁)) (Finset.singleton_nonempty x)
   rw [hcardP, Finset.card_singleton] at hMp
@@ -1079,7 +1076,7 @@ theorem cut_xnS_tight (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) {S : Fin
 
 /-- **Cut-vertex reduction** (marked-reduction manuscript, p. 5): if `U` splits at a cut vertex
 into two sides of order at least three, the marked bound on smaller instances gives it on `U`. -/
-theorem cutStep (h : CutSides G U x U₁ U₂) (IH : SmallerMB U) : MBOn G U := by
+theorem cutStep (h : CutSides G U x U₁ U₂) (IH : SmallerMB G U) : MBOn G U := by
   intro S hSU hS
   by_cases hxS : x ∈ S
   · rcases Nat.even_or_odd (U₁.card - (S ∩ U₁).card) with h1 | h1
@@ -1180,13 +1177,12 @@ theorem leaf_avoid {T : Finset W} (M : PMP G (restrict G (U.erase w)).edgeSet T)
 
 /-- **Leaf reductions** (marked-reduction manuscript, pp. 4–5): a leaf can be deleted unless the
 only site is its neighbour and the order is even. -/
-theorem leafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) (hl : IsLeafAt G w v)
+theorem leafStep (IH : SmallerMB G U) (hE : EdgesIn G U) (hC : ConnOn G U) (hl : IsLeafAt G w v)
     {S : Finset W} (hSU : S ⊆ U) (hS : S.Nonempty) (hres : ¬ (S = {v} ∧ Even U.card)) :
     markedNumber G S ≤ (U.card - S.card) / 2 := by
   obtain ⟨hwU, hvU⟩ := hl.mem hE
   have hcard : (U.erase w).card + 1 = U.card := Finset.card_erase_add_one hwU
-  have hMB := IH (restrict G (U.erase w)) (U.erase w) (by omega) (edgesIn_restrict _)
-    (hl.conn hE hC)
+  have hMB := IH (U.erase w) (by omega) (hl.conn hE hC)
   have hvU' : v ∈ U.erase w := Finset.mem_erase.mpr ⟨hl.ne.symm, hvU⟩
   have hedge := hl.edgeSet_eq hE
   have hedge' : G.edgeSet = (restrict G (U.erase w)).edgeSet ∪ {e | e ∈ [s(w, v)]} := by
@@ -1314,7 +1310,7 @@ theorem leafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) (hl : I
       omega
 
 /-- **Two leaves at the only mark**: delete both and add their edges as one unassigned path. -/
-theorem doubleLeafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) {w w' : W}
+theorem doubleLeafStep (IH : SmallerMB G U) (hE : EdgesIn G U) (hC : ConnOn G U) {w w' : W}
     (hl : IsLeafAt G w v) (hl' : IsLeafAt G w' v) (hww : w ≠ w') :
     markedNumber G {v} ≤ (U.card - 1) / 2 := by
   obtain ⟨hwU, hvU⟩ := hl.mem hE
@@ -1332,7 +1328,7 @@ theorem doubleLeafStep (IH : SmallerMB U) (hE : EdgesIn G U) (hC : ConnOn G U) {
     have := Finset.card_le_card (Finset.insert_subset hwU (Finset.singleton_subset_iff.mpr hw'U))
     rw [Finset.card_insert_of_notMem (by simpa using hww), Finset.card_singleton] at this
     omega
-  have hMB := IH (restrict G (U'.erase w')) (U'.erase w') (by omega) (edgesIn_restrict _) hC''
+  have hMB := IH (U'.erase w') (by omega) hC''
   have hvU'' : v ∈ U'.erase w' := Finset.mem_erase.mpr ⟨hl'.ne.symm, hvU'⟩
   obtain ⟨M, hM⟩ := exists_pmp_restrict hMB (Finset.singleton_subset_iff.mpr hvU'')
     (Finset.singleton_nonempty v)
@@ -1532,13 +1528,32 @@ def ThreeEndsTest : Prop :=
     TwoConnected J → ∀ k : ℕ, Fintype.card V = 2 * k + 1 → pathNumber J = k + 1 →
       ∀ x, Odd (J.degree x) → ∃ D : PathDecomp J, D.size = k + 1 ∧ 3 ≤ D.ends x
 
-theorem twoConnStep (hA : MarkedTwoConnTest.{u}) {U : Finset W} (hE : EdgesIn G U)
-    (h : TwoConnOn G U) : MBOn G U := by
+/-- The first assertion of Theorem 1 on two-connected graphs of order at most `m`. -/
+def MarkedTwoConnTestUpTo (m : ℕ) : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V), TwoConnected G →
+    Fintype.card V ≤ m → ∀ S : Finset V, S.Nonempty →
+      markedNumber G S ≤ (Fintype.card V - S.card) / 2
+
+/-- The second assertion of Theorem 1 on two-connected graphs of order at most `m`. -/
+def ThreeEndsTestUpTo (m : ℕ) : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (J : SimpleGraph V) [DecidableRel J.Adj],
+    TwoConnected J → Fintype.card V ≤ m → ∀ k : ℕ, Fintype.card V = 2 * k + 1 →
+      pathNumber J = k + 1 → ∀ x, Odd (J.degree x) → ∃ D : PathDecomp J, D.size = k + 1 ∧ 3 ≤ D.ends x
+
+theorem MarkedTwoConnTest.upTo (hA : MarkedTwoConnTest.{u}) (m : ℕ) :
+    MarkedTwoConnTestUpTo.{u} m :=
+  fun V _ _ G hG _ S hS => hA V G hG S hS
+
+theorem ThreeEndsTest.upTo (hB : ThreeEndsTest.{u}) (m : ℕ) : ThreeEndsTestUpTo.{u} m :=
+  fun V _ _ J _ hJ _ k hk hp x hx => hB V J hJ k hk hp x hx
+
+theorem twoConnStep {m : ℕ} (hA : MarkedTwoConnTestUpTo.{u} m) {U : Finset W} (hm : U.card ≤ m)
+    (hE : EdgesIn G U) (h : TwoConnOn G U) : MBOn G U := by
   intro S hSU hS
   have hS' : (S.subtype (· ∈ U)).Nonempty := by
     obtain ⟨s, hs⟩ := hS
     exact ⟨⟨s, hSU hs⟩, Finset.mem_subtype.mpr hs⟩
-  have h1 := hA _ (onSub G U) (onSub_twoConnected hE h) _ hS'
+  have h1 := hA _ (onSub G U) (onSub_twoConnected hE h) (by rw [card_sub]; exact hm) _ hS'
   rw [card_sub, card_subtype_of_subset hSU] at h1
   exact (markedNumber_le_onSub hE S).trans h1
 
@@ -1587,8 +1602,9 @@ theorem GPath.endsAt_eq_one_iff {V : Type*} [DecidableEq V] {G' : SimpleGraph V}
 
 /-- **The pendant configuration** (marked-reduction manuscript, p. 5): a leaf `w` at the only
 mark `v` of an even-order graph whose deletion leaves a two-connected graph. -/
-theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : Finset W}
-    {w v : W} (hE : EdgesIn G U) (hl : IsLeafAt G w v) (hev : Even U.card)
+theorem pendantStep {N : ℕ} (hA : MarkedTwoConnTestUpTo.{u} N) (hB : ThreeEndsTestUpTo.{u} N)
+    {U : Finset W} {w v : W} (hN : (U.erase w).card ≤ N) (hE : EdgesIn G U) (hl : IsLeafAt G w v)
+    (hev : Even U.card)
     (hJ : TwoConnOn (restrict G (U.erase w)) (U.erase w)) :
     markedNumber G {v} ≤ (U.card - 1) / 2 := by
   classical
@@ -1606,7 +1622,8 @@ theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : F
   have hTC : TwoConnected J' := onSub_twoConnected hEJ hJ
   have hcard' : Fintype.card {x // x ∈ U'} = 2 * k + 1 := by rw [card_sub]; exact hU'k
   let v' : {x // x ∈ U'} := ⟨v, hvU'⟩
-  have hq := hA _ J' hTC {v'} (Finset.singleton_nonempty _)
+  have hJm : Fintype.card {x // x ∈ U'} ≤ N := by rw [card_sub]; exact hN
+  have hq := hA _ J' hTC hJm {v'} (Finset.singleton_nonempty _)
   rw [hcard', Finset.card_singleton] at hq
   have hp : pathNumber J' ≤ k + 1 := by
     have := pathNumber_le_markedNumber_add J' {v'}
@@ -1661,7 +1678,7 @@ theorem pendantStep (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) {U : F
     have hpeq : pathNumber J' = k + 1 := by omega
     obtain ⟨D, hsize, hends⟩ : ∃ D : PathDecomp J', D.size = k + 1 ∧ 2 ≤ D.ends v' := by
       by_cases hodd : Odd (J'.degree v')
-      · obtain ⟨D, h1, h2⟩ := hB _ J' hTC k hcard' hpeq v' hodd
+      · obtain ⟨D, h1, h2⟩ := hB _ J' hTC hJm k hcard' hpeq v' hodd
         exact ⟨D, h1, by omega⟩
       · obtain ⟨M, hM⟩ := markedNumber_spec J' {v'}
         have hlen := length_eq_cost_add_sites M
@@ -1830,20 +1847,38 @@ theorem residue_sep {U : Finset W} {w v : W} (hE : EdgesIn G U) (hC : ConnOn G U
 
 /-! ### The induction -/
 
-/-- **Sufficiency in Theorem 1** (support form): the two assertions of Theorem 1 give the marked
-bound on every connected instance. -/
-theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
+/-- Every two-connected restriction of `G` has order at most `m`. -/
+def SmallOn (G : SimpleGraph W) (m : ℕ) : Prop :=
+  ∀ U' : Finset W, TwoConnOn (restrict G U') U' → U'.card ≤ m
+
+theorem TwoConnOn.mono {G₁ G₂ : SimpleGraph W} {U : Finset W}
+    (hle : ∀ a b, G₁.Adj a b → G₂.Adj a b) (h : TwoConnOn G₁ U) : TwoConnOn G₂ U :=
+  ⟨h.1, fun a ha b hb => (h.2.1 a ha b hb).mono (fun x y hxy => hle x y hxy),
+    fun x C hc => h.2.2 x C ⟨hc.1, hc.2.1, hc.2.2.1, hc.2.2.2.1,
+      fun a ha b hab => hc.2.2.2.2 a ha b (hle a b hab)⟩⟩
+
+theorem SmallOn.restrict {m : ℕ} (hs : SmallOn G m) (U' : Finset W) :
+    SmallOn (restrict G U') m :=
+  fun U'' h => hs U'' (h.mono (fun a b (hab : (Gallai.restrict (Gallai.restrict G U') U'').Adj a b) =>
+    (⟨hab.1.1, hab.2.1, hab.2.2⟩ : (Gallai.restrict G U'').Adj a b)))
+
+/-- **Block transfer, finite-order form** (marked-reduction §2, "Transfer through a block tree"):
+the two assertions of Theorem 1 on two-connected graphs of order at most `m` give the marked bound
+on every connected instance whose two-connected restrictions have order at most `m`. -/
+theorem mbOn_of_testsUpTo {m : ℕ} (hA : MarkedTwoConnTestUpTo.{u} m)
+    (hB : ThreeEndsTestUpTo.{u} m) :
     ∀ (n : ℕ) (G : SimpleGraph W) (U : Finset W), U.card = n → EdgesIn G U → ConnOn G U →
-      MBOn G U := by
+      SmallOn G m → MBOn G U := by
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
-  intro G U hn hE hC
-  have IH : SmallerMB U := fun G' U' hlt hE' hC' => ih U'.card (hn ▸ hlt) G' U' rfl hE' hC'
+  intro G U hn hE hC hsm
+  have IH : SmallerMB G U := fun U' hlt hC' =>
+    ih U'.card (hn ▸ hlt) (restrict G U') U' rfl (edgesIn_restrict U') hC' (hsm.restrict U')
   by_cases h2 : U.card ≤ 2
   · exact baseStep hE h2
   by_cases hTC : TwoConnOn G U
-  · exact twoConnStep hA hE hTC
+  · exact twoConnStep hA (hsm U (by rw [hE.restrict_eq]; exact hTC)) hE hTC
   by_cases hcut : ∃ x C, CutSep G U x C ∧ 2 ≤ C.card ∧ 2 ≤ (U.erase x \ C).card
   · obtain ⟨x, C, hs, h1, h2'⟩ := hcut
     exact cutStep (hs.cutSides hE hC h1 h2') IH
@@ -1879,7 +1914,7 @@ theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
   subst hSv
   rw [Finset.card_singleton]
   by_cases hJ : TwoConnOn (restrict G (U.erase w)) (U.erase w)
-  · exact pendantStep hA hB hE hl hev hJ
+  · exact pendantStep hA hB (hsm _ hJ) hE hl hev hJ
   · exfalso
     have hwU := (hl.mem hE).1
     have hJ3 : 3 ≤ (U.erase w).card := by
@@ -1895,6 +1930,14 @@ theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
       have hyv : y = v := (Finset.singleton_inj.mp hy).symm
       subst hyv
       exact hdouble w b y (Ne.symm hbw) hl hlb
+
+/-- **Sufficiency in Theorem 1** (support form): the two assertions of Theorem 1 give the marked
+bound on every connected instance. -/
+theorem mbOn_of_tests (hA : MarkedTwoConnTest.{u}) (hB : ThreeEndsTest.{u}) :
+    ∀ (n : ℕ) (G : SimpleGraph W) (U : Finset W), U.card = n → EdgesIn G U → ConnOn G U →
+      MBOn G U :=
+  fun n G U hn hE hC => mbOn_of_testsUpTo (hA.upTo (Fintype.card W)) (hB.upTo (Fintype.card W))
+    n G U hn hE hC (fun U' _ => Finset.card_le_univ U')
 
 /-! ### Theorem 1, sufficiency -/
 

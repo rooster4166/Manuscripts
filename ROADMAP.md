@@ -26,14 +26,18 @@ This is the single source of truth for the proof architecture. Every node is a s
 
 ## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
 
-EMM sufficiency work is **stopped**. Sessions:
-- emc-four: the endpoint-prescription paper, covering necessity, Thm 21, the counterexamples and the NP-hardness;
-- emm3-gadgets: hardness at δ ≥ 3;
-- two-even: pairing-guided descent;
-- lean-d6-frontier: Lean for MR Thms 38/175 and Cor 39 (flowers);
-- dense-near-dirac (session_01FxXpVhsyyw9pbAoqda1H6h, new): Target D;
-- spine: Thm 59;
-- missing-move: finished, handoff in connections §T. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+EMM sufficiency work is **stopped**.
+
+**Sessions, re-assigned 2026-11-27 02:25.** Sessions that finished their task do not take large follow-ups from a peer session, so new tasks go to fresh sessions.
+- **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy, branch `claude/lean-thm59`, new): prove `Thm59Statement` in Lean. This makes `gallai_iff_spineTests` unconditional. The old spine session finished Thms 113/114 and did not start Thm 59.
+- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9, branch `claude/route-descent`, new): the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
+- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
+- **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
+- **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
+- **Queued, not assigned:** Lean for MR Thms 38/175 and Cor 39 (flowers). This is a banking task, not on the critical path.
+- **Finished:** two-even, spine (113/114), missing-move, bs-prescribed, jm-repair, six-clique, lean-d6-frontier.
+
+The main line is **existential descent** (FD / `BranchBase3`), now in its route-deletion form (synthesis §17).
 
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
@@ -381,3 +385,4 @@ Candidate uniform mechanisms (`research/connections.md`):
 - Process incident: a checkpoint commit (328eb52) captured audit A13's in-progress merge, with conflict markers in endpoint-min-max.tex. A13 was notified to resolve it. A rule was added to research/WORKFLOW.md.
 - **Audit A13: cut selection (endpoint-min-max Thm 21) SOUND**, as is the hardness section. **New conjecture TRC**: every transversal of a Thm-21 pairing is realisable. TRC implies Gallai and holds on all known EMM counterexamples (synthesis §15). Next step: try to refute it.
 - **Cut selection in Lean: `cs_all`** (CutSelection.lean and PairingLemma.lean, 1,237 lines; standard axioms; definitions checked). For every connected even-order G there is a pairing of Ev all of whose transversals satisfy the cut inequality: `CutOK` is exactly b(W) + d(v) + b(v) ≤ |δ(W)| + 2p. The proof goes through the auxiliary graph B and is machine-checked independently of audit A13.
+- **endpoint-min-max synced** (emc-four). Merged emm3-gadgets §6, which already fixes A13's ERROR (Remark 28 and open problem 1: EMM₃ is false, see §6). Added: the auxiliary-graph proof as the main proof of Thm 21, with the linked-transitions proof kept second; §4.4 with Conjecture TRC (constructible pairings; TRC ⇒ Gallai; Thm 21 is its necessary half); TRC as the main open problem; and Lean `cs_all` in Formalisation. 26 pp.
