@@ -1,0 +1,23 @@
+Lemma 3.1: f = 0.6x+0.6y-0.4-xy+0.03min(x,y) on [0,0.65]^2
+  grid max -0.010000 at (0.0, 0.65)
+  exact boundary max -0.010000 = -1/100 at (13/20,0)
+  (critical point of g on y<=x: (0.63,0.60), a saddle; Hessian [[0,-1],[-1,0]])
+
+eps_ex=0.01: theta=0.005, c=5e-06; all Theorem 1.1 inequalities hold from m0 ~ 31,230 (q=158)
+   binding below m0 (at 0.9*m0): ['S0 p_v <= 0.51q']
+   Cor 1.2 (rho=0) inequalities hold from m ~ 400,017
+   Cor 1.2 (rho=1) inequalities hold from m ~ 400,017
+eps_ex=0.001: theta=0.0005, c=5e-07; all Theorem 1.1 inequalities hold from m0 ~ 312,278 (q=158)
+   binding below m0 (at 0.9*m0): ['S0 p_v <= 0.51q']
+   Cor 1.2 (rho=0) inequalities hold from m ~ 4,000,147
+   Cor 1.2 (rho=1) inequalities hold from m ~ 4,000,147
+eps_ex=0.0001: theta=5e-05, c=5e-08; all Theorem 1.1 inequalities hold from m0 ~ 3,120,012 (q=158)
+   binding below m0 (at 0.9*m0): ['S0 p_v <= 0.51q']
+   Cor 1.2 (rho=0) inequalities hold from m ~ 40,001,250
+   Cor 1.2 (rho=1) inequalities hold from m ~ 40,001,250
+eps_ex=1e-06: theta=5e-07, c=5e-10; all Theorem 1.1 inequalities hold from m0 ~ 313,993,964 (q=158)
+   binding below m0 (at 0.9*m0): ['S0 p_v <= 0.51q']
+   Cor 1.2 (rho=0) inequalities hold from m ~ 4,000,023,343
+   Cor 1.2 (rho=1) inequalities hold from m ~ 4,000,023,343
+
+eps=1e-2, m=1e6: all inequalities hold
