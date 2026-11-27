@@ -455,3 +455,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `separation_sparse_set`: holds as well.
   - Audit A18 of the multi-sep manuscript found every result sound; only wording and count fixes were needed, and they are applied.
   - EE is the one-transition case of STL (synthesis §19). The remaining EE cases are uz in a triangle with deg u ≥ 5, and that one deg-3 configuration.
+- **STL in Lean (2026-11-27, stl 367de83; standard axioms, verified).** In StarTerminal.lean:
+  - `test1_of_stl`: STL at every neighbour of z (with all neighbours of degree ≥ 3) implies spine Test1 J z;
+  - `stl_of_deg_two`: STL when d(z) = 2 and the two neighbours are non-adjacent.
+  - Manuscript draft `manuscripts/stl/stl.tex` and experiment log E22.
+  - So "STL on every 3-connected J with one even vertex" now formally yields Test1; a Test2 analogue (STL2) is defined.
