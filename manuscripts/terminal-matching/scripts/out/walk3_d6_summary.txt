@@ -1,0 +1,13 @@
+out/walk3_d6_9.txt: SUMMARY inst=2957 base_ok=2269 nopath=120 tried=11537 parity_bad=0
+out/walk3_d6_r11.txt: SUMMARY inst=1375 base_ok=1367 nopath=2 tried=2173 parity_bad=0
+out/walk3_d6_r13.txt: SUMMARY inst=1673 base_ok=1669 nopath=1 tried=2368 parity_bad=0
+out/walk3_d6_9_all.txt: SUMMARY inst=2957 base_ok=2269 nopath=120 tried=25391 parity_bad=0
+  cover: J 1819 covered r per J (histogram 0..6): {0: 908, 3: 16, 4: 132, 5: 254, 6: 509}
+out/walk3_d6_r11_all.txt: SUMMARY inst=1375 base_ok=1367 nopath=2 tried=17011 parity_bad=0
+  cover: J 200 covered r per J (histogram 0..6): {5: 1, 6: 199}
+out/walk3_d6_r13_all.txt: SUMMARY inst=1673 base_ok=1669 nopath=1 tried=25767 parity_bad=0
+  cover: J 200 covered r per J (histogram 0..6): {6: 200}
+out/walk3_d6_r15_all.txt: SUMMARY inst=2614 base_ok=2613 nopath=0 tried=49788 parity_bad=0
+  cover: J 300 covered r per J (histogram 0..6): {6: 300}
+out/walk3_d6_r17_all.txt: SUMMARY inst=2881 base_ok=2880 nopath=0 tried=66770 parity_bad=0
+  cover: J 300 covered r per J (histogram 0..6): {6: 300}

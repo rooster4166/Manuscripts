@@ -1,0 +1,5 @@
+NOBASE KBqBKOg?OgeI 2 7 3 4 8 11 anypath=1
+NOBASE Kq?[@CGE?AGF 2 6 5 11 8 10 anypath=1
+NOBASE K@_L?OG@Y`XO 1 2 3 11 5 7 anypath=1
+NOBASE K@_L?OG@Y`XO 1 3 2 11 5 7 anypath=0
+SUMMARY inst=1673 base_ok=1669 nopath=1 tried=2368 parity_bad=0

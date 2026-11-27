@@ -1,0 +1,9 @@
+NOBASE I@W[ASS_G 0 4 1 6 2 9 anypath=1
+NOBASE IOGA[cwPG 0 3 1 5 6 8 anypath=1
+NOBASE IaZDSGCKW 0 9 1 8 3 5 anypath=1
+NOBASE IOAiSbQc? 1 4 2 8 7 9 anypath=0
+NOBASE IQKaMF?K? 1 2 4 9 5 8 anypath=1
+NOBASE IAu?kdaJG 2 3 4 8 6 9 anypath=1
+NOBASE IapAtG`?g 2 9 3 5 6 7 anypath=0
+NOBASE IAjc?fBGO 0 7 3 8 4 9 anypath=1
+SUMMARY inst=1375 base_ok=1367 nopath=2 tried=2173 parity_bad=0

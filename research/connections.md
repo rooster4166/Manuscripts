@@ -1335,7 +1335,12 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
   - d(z) = 4 is the base of the composition method. **The first open rung is d(z) = 6**: PTM_3 for G = (J − z) + F, F a perfect matching of the six neighbours, gives STL-P with three transitions, hence Test1 at d = 6. That is T(6)-i (ROADMAP; `rooted_six_of_bstmt3`; D6Frontier.lean).
 
 ### Z.4 Open (in order of promise)
-0. **Degree six (the first open rung, T(6)-i).** PTM_3 for the perfect matchings of N(z) at d(z) = 6, J 3-connected. Needed: data on these matchings, then a walk theorem with two pending edges. Some matchings fail (prism with rungs); STL-P needs only one good pairing. Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 instances with no admissible walk.
+0. **Degree six (the first open rung, T(6)-i).** PTM_3 for the perfect matchings of N(z) at d(z) = 6, J 3-connected.
+   - **Data (E24(J)):** every pairing satisfies PTM_3(r), parallel pairs included. This is exhaustive at orders 7 and 9 (27,390 instances, 164,340 end tests) and holds on random samples at orders 11–17; 0 failures. The prism-with-rungs failure has J − z disconnected.
+   - **Chained walk theorem (manuscript Thm 8.2, paper proof):** leaf x1y1, walk y3 → x2 and y2 → x1. It reduces PTM(G, F; x_i terminal) to one base decomposition of M (one even vertex x3) separating {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2}, {ℓ1,y3}, {y2,y3}.
+   - **Reach:** the base exists for 77% of simple instances at order 9 and 99.4–99.97% at random orders 11–17. Every r is covered for 199/200, 200/200, 300/300 and 300/300 random J. It is cross-checked against the oracle (9,457 base configurations, 0 contradictions with PEE).
+   - **Missing:** a proof of the base hypothesis (a sparse form: six special vertices sparse, the four sets {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2,y3} packed).
+   - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
    - With shortest walks the base hypothesis holds for some orientation in 93.6% of the instances at n = 8, but not in all of them (832 NOBASE).

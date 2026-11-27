@@ -1109,6 +1109,37 @@ Audit A22b re-derived these with an independent script (`research/audit/A22b-scr
 - order 51: 68.1% local, 3.7% global;
 - order 101: 83.6% local, 3.5% global.
 
+**(J) Degree six: PTM_3 for the pairings of N(z), and the chained walk theorem** (`gen_d6.py`, `d6_pairings.py`, `walk3.c`, `d6_cover.py`; outputs `out/d6_*`, `out/walk3_d6_*`).
+
+Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every perfect matching F of N(z) is tested, including pairs adjacent in G' (multigraph G = G' + F), with `ptm p 3`.
+
+| J | graphs | instances (with a parallel pair) | PTM_3 fail | PTM(e@x) tests / fail |
+|---|---|---|---|---|
+| order 7, all (`geng -c -d3`) | 7 | 105 (95) | 0 | 630 / 0 |
+| order 9, all | 1,819 | 27,285 (24,328) | 0 | 163,710 / 0 |
+| order 11, random (degrees 6 and 3/5, seed 611) | 200 | 3,000 (1,625) | 0 | 18,000 / 0 |
+| order 13, random (seed 613) | 200 | 3,000 (1,327) | 0 | 18,000 / 0 |
+| order 15, random (seed 615, first 300; budget 2·10⁶) | 300 | 4,500 (1,886) | 0 (0 UND) | 27,000 / 0 |
+| order 17, random (seed 617, first 300; budget 2·10⁶) | 300 | pending | pending | pending |
+
+- **Every pairing works at d(z) = 6 when J is 3-connected**, parallel pairs included, with any one prescribed end.
+- The prism-with-rungs failure of PTM_3 has J − z disconnected, so it does not occur here.
+- Prescribing all three short ends (PEE) fails in 1,156 of 218,280 tests at order 9 (`ptm p 3 0 1`).
+
+**Chained walk theorem** (manuscript §8): leaf the first edge, walk P2 from y3 to x2 and P1 from y2 to x1. `walk3 0 [1]` tests the base hypothesis (a Lovász decomposition of M separating {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2}, {ℓ1,y3}, {y2,y3}). It uses simple pairings only, all 48 orders/orientations, and shortest admissible chains.
+
+| J | simple instances | base | no admissible chain | J with all 6 r covered |
+|---|---|---|---|---|
+| 9 (all) | 2,957 | 2,269 | 120 | 509 / 1,819 (593 have no simple pairing; 315 have no base) |
+| 11 | 1,375 | 1,367 | 2 | 199 / 200 (one has 5) |
+| 13 | 1,673 | 1,669 | 1 | 200 / 200 |
+| 15 | 2,614 | 2,613 | 0 | 300 / 300 |
+| 17 | 2,881 | 2,880 | 0 | 300 / 300 |
+
+"Covered" means r is a long end (y_i) of some configuration with a base. The theorem then reduces STL(J,z,r), hence Test1 at z, to the base hypothesis.
+
+**Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.
+
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
 
 Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l1star/scripts/` (README there). Conclusions: connections §AA.
