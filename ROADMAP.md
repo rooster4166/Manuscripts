@@ -455,3 +455,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `separation_sparse_set`: holds as well.
   - Audit A18 of the multi-sep manuscript found every result sound; only wording and count fixes were needed, and they are applied.
   - EE is the one-transition case of STL (synthesis §19). The remaining EE cases are uz in a triangle with deg u ≥ 5, and that one deg-3 configuration.
+- **STL in Lean (2026-11-27, stl 367de83; standard axioms, verified).** In StarTerminal.lean:
+  - `test1_of_stl`: STL at every neighbour of z (with all neighbours of degree ≥ 3) implies spine Test1 J z;
+  - `stl_of_deg_two`: STL when d(z) = 2 and the two neighbours are non-adjacent.
+  - Manuscript draft `manuscripts/stl/stl.tex` and experiment log E22.
+  - `test2_of_stl2` is the Test2 analogue. **`gallai_of_stl`: STL + STL2 on 3-connected J (with J − z free of matching cuts) ⇒ GallaiConjecture**, via `gallai_iff_spineTests'`; standard axioms.
+  - Gallai is thus formally reduced to two single-vertex constraints on Lovász-type decompositions of 3-connected graphs with ≤ 2 even vertices.
+  - Evidence: STL holds on all 25,210 3-connected (J, r) pairs with n ≤ 9 and on random samples to n = 15. STL2 holds on all 948 3-connected instances with n ≤ 8.
