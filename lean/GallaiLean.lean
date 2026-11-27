@@ -63,6 +63,7 @@ import GallaiLean.MultiSep
 import GallaiLean.MultiSepEE
 import GallaiLean.PrescribedEnd
 import GallaiLean.PrescribedEndOutside
+import GallaiLean.L1Star
 import GallaiLean.NearDirac
 import GallaiLean.StarTerminal
 import GallaiLean.TerminalMatching
