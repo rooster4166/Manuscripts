@@ -1,0 +1,23 @@
+python3 manuscripts/endpoint-min-max/scripts/trc_probe.py realis_wide 7 12 256
+pairing [(1, 2), (3, 8), (4, 5), (6, 7), (10, 13), (11, 15), (12, 17), (14, 16)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 143s
+pairing [(1, 3), (2, 5), (4, 8), (6, 7), (10, 12), (11, 17), (13, 16), (14, 15)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 145s
+pairing [(1, 3), (2, 8), (4, 7), (5, 6), (10, 12), (11, 15), (13, 17), (14, 16)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 141s
+pairing [(1, 8), (2, 3), (4, 7), (5, 6), (10, 11), (12, 16), (13, 15), (14, 17)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 4s
+pairing [(1, 3), (2, 8), (4, 6), (5, 7), (10, 12), (11, 13), (14, 16), (15, 17)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 141s
+pairing [(1, 3), (2, 8), (4, 6), (5, 7), (10, 14), (11, 17), (12, 16), (13, 15)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 140s
+pairing [(1, 2), (3, 7), (4, 8), (5, 6), (10, 11), (12, 15), (13, 17), (14, 16)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 145s
+pairing [(1, 2), (3, 6), (4, 7), (5, 8), (10, 11), (12, 16), (13, 17), (14, 15)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 146s
+pairing [(1, 8), (2, 3), (4, 7), (5, 6), (10, 14), (11, 17), (12, 16), (13, 15)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 5s
+pairing [(1, 3), (2, 8), (4, 7), (5, 6), (10, 13), (11, 17), (12, 15), (14, 16)] crossing the gadget cut: 0 | min marks in D over transversals: 4
+   tested 256 results {'1': 256} 147s
+
+[exited with code 0]

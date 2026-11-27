@@ -265,5 +265,5 @@ TRC is trivially true at n ≤ 8, where every cut-feasible half-set is realisabl
 - **Smallest gadget.** No two-leaf forcing gadget has order ≤ 9 (exhaustive, 1.46 × 10⁸ profiles at order 9). D₂ (order 10) is smallest. The first 4-regular graphs with a forced transition have order 11.
 - **TRC.**
   - None of the failing half-sets is a transversal of a Thm 21 pairing. They starve the gadget, and edge-disjoint routes allow only |δ(D_r)| = 2r crossing pairs.
-  - On G₁₈ itself, the Thm 21 pairings tested have no pair crossing δ(D₂). So every transversal puts 4 marks into D₂, and all transversals tested are realisable (`tools/realis_wide.c`).
+  - On G₁₈ itself, the Thm 21 pairings tested have no pair crossing δ(D₂). So every transversal puts 4 marks into D₂, and all 2,560 transversals of 10 distinct pairings are realisable (`tools/realis_wide.c`, `trc_probe.py`).
   - A gadget attack on TRC needs a *balanced* forcing gadget, with about half its even vertices marked. None exists at order ≤ 9.
