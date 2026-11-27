@@ -476,3 +476,41 @@ This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruc
 - Residual-style graphs, |B| = 14: every root of every shape certified (90/90).
 
 **What remains for the whole dense T(6)-i residual:** the existence of a base D0 satisfying (E1)–(E6). That is a constrained-Lovász statement with one even vertex, the project's home territory. The reduction is being formalised (T6Dense.lean).
+
+## 23. State of the programme (2026-11-27, 16:35)
+
+**Machine-checked reductions of Gallai.** All are in Lean with standard axioms.
+1. **Spine:** Gallai ⇔ Test1 ∧ Test2 on 3-connected J with J − z free of matching cuts (`gallai_iff_spineTests'`).
+2. **STL:** Test1 ⇐ STL, Test2 ⇐ STL2, so Gallai ⇐ STL + STL2 (`gallai_of_stl`).
+3. **RR:** Gallai ⇐ RR, a constrained Lovász decomposition of the free graph of a routed pairing (`gallai_of_routeRR`).
+
+**Proved rungs.** These cover Test1 by degree d(z) of the even vertex.
+- d(z) = 2 is trivial in 3-connected graphs. STL is proved at d(z) = 2 (`stl_deg_two`).
+- d(z) = 4: Test1 is known (`emc_four` / two-step descent). There is also a new composition proof (`test1_of_localgirth`) and the d = 4 packaging `test1_deg_four`.
+- d(z) = 6 (T(6)-i):
+  - the sparse / far-apart case is known (six-even-incidence Thm 1(2)), with a new composition proof (`test1_of_chains3`, conditional on chains);
+  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. It holds on every root tested.
+
+**Proved strengthenings of Lovász (single-vertex constraints).**
+- separation (pair and set forms);
+- L1 (leaf trick);
+- prescribed end edge in all-odd graphs (`lovasz_endEdge`);
+- EE when |N(u) ∩ N(z)| ≤ 1, and EE at d(z) = 2;
+- PEE at neighbours of z;
+- the refined Fan lemma with protected blanks;
+- the walk theorems (PTM₂ at local girth 5, PTM₃ far-apart).
+
+**Open core conjectures.** No counterexample to any of these.
+- **ST** (some target): implies L1Blocked, hence L1*, EE and L∞ (with TR, needed only when N(g) ⊆ N(c)).
+- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual, hence all of T(6)-i.
+- **MSEP / L_N:** implies Gallai for graphs whose even subgraph has a perfect matching.
+- **PTM_m** and the **chain conjecture:** composition at higher d(z).
+
+All four are statements about Lovász decompositions with at most one even vertex, constrained at several prescribed end-paths.
+
+**Negative results banked.**
+- EMM, EMM₃, multi-leaf packed separation, PEE away from z, PEE_m with prescribed ends, ST′ and RR\* are all false.
+- Flower moves cannot output Lovász decompositions.
+- Realisability of a prescribed half-set is NP-hard.
+
+**Next.** Look for the master statement behind the open core: a **constrained Lovász theorem** with several end-path constraints under a locality and compatibility condition. It should be true on the data, contain ST, the t6 base conjecture and MSEP, and be provable by Lovász's induction carrying every constraint. In parallel, t6-dense attacks its base conjecture directly.
