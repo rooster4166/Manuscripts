@@ -1,0 +1,1 @@
+graphs=5935582 allodd=16552 pairs=748872 na=657487 weak=730674 weak_not_na=73187 neither=18198 construct_ok=730674 exact_good=0 exact_bad=0 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
