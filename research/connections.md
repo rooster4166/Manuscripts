@@ -137,7 +137,10 @@ Manuscript: `manuscripts/near-dirac`.
 
 Open:
 
-- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores.
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is now **proved in §8** for the "keep X in J" route.
+  - Mirror-symmetry balancing lemma (Lemma 8.1), with a robust form (Lemma 8.2).
+  - Prop 8.3: the window can be met if the healthy shores differ by more than |X|, or if |X| ≤ √D/6.
+  - Open: nearly equal shores with |X| ≳ √n, and the whole scheduling half (SP 14.31/14.33 with weak sites).
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
 Two observations from this session (heuristic, not proved in the manuscript):

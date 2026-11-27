@@ -507,7 +507,7 @@ SP's one-apex scheme places the sites of one shore $A$ in cyclic intervals of co
 \item the slot sizes must already account for the pairs.
 \end{itemize}
 
-Two heuristic observations, which are not proved here:
+Two observations. Section~\ref{sec:balance} turns the second into a proved statement in two regimes.
 \begin{itemize}[nosep]
 \item In a one-apex scheme, Lemma~\ref{lem:identity} with $b'(V)=D$ and $0\le b'\le1$ gives the window
 \[
@@ -524,6 +524,110 @@ NH achieves this for at most two vertices by splitting each into two copies of d
 \end{problem}
 
 By SP Corollary~14.26, a failure has $\max\{\Delta,\odd\}=n-o(n)$. So Problem~\ref{prob:high} cannot be avoided when the failure has a near-universal vertex. It also arises when $\odd(G)=n-o(n)$ and some vertex has degree above $(1+c)m$. When $\odd(G)=n-o(n)$ and $\Delta\le(1+c)\lfloor n/2\rfloor$, only Problem~\ref{prob:twosided} remains, and only in the unbalanced case.
+
+\section{The balancing step of the one-apex route}\label{sec:balance}
+
+This section proves the counting half of the route to Problem~\ref{prob:twosided} sketched in \S\ref{sec:sp}. The scheduling half is not addressed here.
+
+\paragraph{The route.} Keep every exceptional vertex in the Hamilton graph $J$, which now has a single apex. One shore, the \emph{interval shore} $I$, plays the role of SP's shore~$A$ in Theorems~14.31 and 14.33: its sites occupy cyclic intervals of slots, and labelled pairs are scheduled on it. The other shore, the \emph{bin shore} $K$, plays the role of SP's shore~$L$. A set $W$ of healthy vertices of $K$ is removed, as in SP Theorem~14.33. An exceptional vertex $x$ is placed on one of the two shores:
+\begin{itemize}[nosep]
+\item on $I$, its internal edges may be kept or consumed by labelled pairs on $I$, and it keeps all of them in the version used below;
+\item on $K$, it keeps all its $K$-internal edges, because consuming them would need labelled pairs on the bin shore.
+\end{itemize}
+With one apex we have $b'\in\{0,1\}$ and $b'(V(R))=D$. Lemma~\ref{lem:identity}, applied to the residual $R$ with $t:=|I\cap V(R)|-|K\cap V(R)|\in\{-1,0,1\}$, then says exactly that
+\begin{equation}\label{eq:window}
+e_R(I)-e_R(K)\in\bigl[\tfrac{D(t-1)}2,\tfrac{D(t+1)}2\bigr],
+\end{equation}
+since $b'(K)-b'(I)$ can be any integer of the parity of $D$ in $[-D,D]$. CKLOT Theorem~1.3.5 needs the parts of $J$ to have sizes $\lfloor|J|/2\rfloor$ and $\lceil|J|/2\rceil$. This forces $|W|=|K_H|-|I_H|+|X_K|-|X_I|+t$, where $K_H,I_H$ are the healthy vertices of the two shores and $X_K,X_I$ the exceptional vertices placed on them. In particular we need $|W|\ge0$.
+
+\paragraph{The abstract problem.} Let $D\ge1$ and $\Delta\in\mathbb Z$, the intended value of $|B_H|-|A_H|$. Let $X$ be a finite set, and give each $x\in X$ integers $\alpha_x,\beta_x\ge0$, its numbers of neighbours in $A$ and $B$. Assume
+\begin{equation}\tag{B1}\label{eq:B1}
+\alpha_x\le D,\qquad\beta_x\le D,\qquad d_x:=\alpha_x+\beta_x\ge D .
+\end{equation}
+A \emph{naming} $\nu\in\{A,B\}$ is the choice of the bin shore. For $\nu=B$ put $(\iota_x,\kappa_x)=(\alpha_x,\beta_x)$ and $\Delta_\nu=\Delta$. For $\nu=A$ put $(\iota_x,\kappa_x)=(\beta_x,\alpha_x)$ and $\Delta_\nu=-\Delta$.
+
+A \emph{configuration} is a triple $(\nu,M,t)$ with $M\subseteq X$, the vertices placed on the interval shore, and $t\in\{-1,0,1\}$. Its \emph{imbalance} and \emph{slack} are
+\[
+S=\sum_{x\in M}\iota_x-\sum_{x\notin M}\kappa_x,\qquad \Gamma=\Delta_\nu+|X\setminus M|-|M| .
+\]
+It is \emph{valid} if $\Gamma+t\ge0$ and $S\in[D(t-1)/2,D(t+1)/2]$. These are, to first order, the conditions $|W|=\Gamma+t\ge0$ and \eqref{eq:window}. The imbalance $S$ ignores two things, which are treated as errors below: edges between exceptional vertices, and the edges from $X_K$ to $W$, which leave $R$ when $W$ is removed.
+
+\begin{lemma}[Balancing, exact form]\label{lem:bal-exact}
+Under \eqref{eq:B1} a valid configuration exists.
+\end{lemma}
+
+\begin{proof}
+List $X=\{x_1,\dots,x_s\}$ and let $M_r=\{x_1,\dots,x_r\}$ for $0\le r\le s$. Let $S_r$ and $\Gamma_r$ be the imbalance and slack of $(B,M_r,\cdot)$. Then:
+\begin{itemize}[nosep]
+\item $S_r-S_{r-1}=\alpha_{x_r}+\beta_{x_r}=d_{x_r}\in[D,2D]$ by \eqref{eq:B1};
+\item $S_0=-\sum_x\beta_x\le0\le\sum_x\alpha_x=S_s$;
+\item $\Gamma_r=\Delta+s-2r$.
+\end{itemize}
+Let $r$ be least with $S_r\ge-D$. Either $r=0$ and $S_0\in[-D,0]$, or $S_r<S_{r-1}+2D<D$. So $S_r\in[-D,D)$.
+
+The \emph{mirror} configuration uses naming $A$ and the set $X\setminus M_r$. Its imbalance is $\sum_{x\notin M_r}\beta_x-\sum_{x\in M_r}\alpha_x=-S_r$, and its slack is $-\Delta+r-(s-r)=-\Gamma_r$.
+\begin{itemize}[nosep]
+\item If $S_r\in[-D,0]$ and $\Gamma_r\ge1$, then $(B,M_r,-1)$ is valid.
+\item If $S_r\in[-D,0]$ and $\Gamma_r\le0$, the mirror has imbalance in $[0,D]$ and slack $\ge0$, so $(A,X\setminus M_r,1)$ is valid.
+\item If $S_r\in(0,D)$ and $\Gamma_r\ge-1$, then $(B,M_r,1)$ is valid.
+\item If $S_r\in(0,D)$ and $\Gamma_r\le-2$, the mirror has imbalance in $(-D,0)$ and slack $\ge2$, so $(A,X\setminus M_r,-1)$ is valid.\qedhere
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Balancing, robust form]\label{lem:bal-robust}
+Assume \eqref{eq:B1} and also $d_x\le5D/4$ for all $x$, and let $0\le\mu\le D/8$. Then some configuration $(\nu,M,t)$ has $\Gamma+t\ge0$ and $[S-\mu,S+\mu]\subseteq[D(t-1)/2,D(t+1)/2]$.
+\end{lemma}
+
+\begin{proof}
+With the notation of the previous proof, let $r$ be least with $S_r\ge-3D/4$. Since the steps are at most $5D/4$, we get $S_r\in[-3D/4,D/2)$. The mirror has imbalance $S'=-S_r$ and slack $\Gamma'=-\Gamma_r$. Write $U=[S_r-\mu,S_r+\mu]$ and $U'=[S'-\mu,S'+\mu]$.
+\begin{itemize}[nosep]
+\item \emph{$S_r\le0$ and $\Gamma_r\ge1$.} If $S_r\le-\mu$, then $U\subseteq[-D,0]$, so $t=-1$ works. Otherwise $U\subseteq(-2\mu,\mu]\subseteq[-D/2,D/2]$, so $t=0$ works.
+\item \emph{$S_r\le0$ and $\Gamma_r\le0$.} Then $\Gamma'\ge0$ and $S'\in[0,3D/4]$. If $S'\ge\mu$, then $U'\subseteq[0,D]$ and the mirror with $t=1$ works. Otherwise $U'\subseteq[-D/2,D/2]$ and $t=0$ works.
+\item \emph{$S_r>0$ and $\Gamma_r\ge0$.} If $S_r\ge\mu$, then $U\subseteq[0,D]$ and $t=1$ works. Otherwise $t=0$ works.
+\item \emph{$S_r>0$ and $\Gamma_r=-1$.} If $S_r\ge\mu$, use $t=1$. Otherwise the mirror has $\Gamma'=1$ and $U'\subseteq(-2\mu,\mu)$, so $t=0$ works for it.
+\item \emph{$S_r>0$ and $\Gamma_r\le-2$.} The mirror has $\Gamma'\ge2$ and $S'\in(-D/2,0)$. Use $t=-1$ if $S'\le-\mu$, and $t=0$ otherwise.\qedhere
+\end{itemize}
+\end{proof}
+
+\begin{proposition}[The counting window in the one-apex route]\label{prop:bal-app}
+Consider the route described at the start of this section. Every exceptional vertex is kept in $J$; those on the interval shore keep all their internal edges; those on the bin shore keep all their bin-internal edges. Let $s=|X|$ and let $\Delta$ be the difference of the healthy shore sizes, with $|\Delta|+5s+1<D$. Take the degrees $\alpha_x,\beta_x$ into the healthy vertices, and suppose every $x\in X$ satisfies \eqref{eq:B1} and $D+|\Delta|+2s+2\le d_x\le5D/4$. Suppose further that either
+\begin{enumerate}[label=\textup{(\roman*)},nosep]
+\item $|\Delta|\ge s+1$; or
+\item $s\le\sqrt D/6$.
+\end{enumerate}
+Then there are a naming, a placement of $X$, an integer $t\in\{-1,0,1\}$ and a set $W$ of healthy bin-shore vertices with $|W|=\Gamma+t$, such that \eqref{eq:window} holds for the internal edges kept at $X$. Moreover every vertex of $X$ on the interval shore still has enough cross edges, $d_x-|N(x)\cap W|\ge D$, to reach $R$-degree $D-b'(x)$ with $b'(x)=0$.
+\end{proposition}
+
+\begin{proof}
+The cross-edge condition holds because $|W|\le|\Gamma|+1\le|\Delta|+s+1$.
+
+(i) Name the shores so that the healthy bin shore is the larger, $\Delta_\nu=|\Delta|\ge s+1$. Then $\Gamma_r=|\Delta|+s-2r\ge1$ for every $r$, so the mirror is never needed. Let $F(r)$ be the \emph{exact} value of $e_R(I)-e_R(K)$ coming from $X$ in the configuration $(\nu,M_r)$, with $W=W_r$ a set of $\Gamma_r-1\ge0$ healthy bin-shore vertices, the size for $t=-1$. Take the sets $W_r$ nested, $W_r\subseteq W_{r-1}$. The value $F(r)$ accounts for both the edges between exceptional vertices and the edges from $X_K$ to $W_r$.
+\begin{itemize}[nosep]
+\item $F(0)\le0$, because every kept edge is then on the bin shore.
+\item $F(s)\ge0$, because then $X_K=\emptyset$.
+\item Moving $x_r$ to the interval shore, and returning two vertices of $W$ to the bin shore, changes $F$ by $d_{x_r}$ minus at most $|W|+4s$. Here $|N(x_r)\cap W|\le|W|$; the edges from $x_r$ to other exceptional vertices account for at most $2s$; and the two returned vertices have at most $2s$ edges to $X_K$. The change is also at most $d_{x_r}$. Since $|W|\le|\Delta|+s+1$ and $|\Delta|+5s+1<D\le d_{x_r}$, we get $0<F(r)-F(r-1)\le5D/4$.
+\end{itemize}
+So the least $r$ with $F(r)\ge-D$ has $F(r)\in[-D,D/4)$.
+\begin{itemize}[nosep]
+\item If $F(r)\le0$, use $t=-1$, so $|W|=\Gamma_r-1$ and \eqref{eq:window} holds.
+\item If $F(r)>0$, use $t=1$ and remove two further healthy bin-shore vertices. This raises $F$ by at most $2s$, so $F\in(0,D/4+2s]\subseteq[0,D]$.
+\end{itemize}
+In both cases $\Gamma_r+t\ge0$ holds and \eqref{eq:window} holds.
+
+(ii) Apply Lemma~\ref{lem:bal-robust} with $\mu=D/8$. The true imbalance of a configuration differs from $S$ by at most $e(G[X])+e(X_K,W)\le s^2/2+s(|\Gamma|+1)$. The first term comes from edges between exceptional vertices on one side, which are counted once in $e_R$ but twice or not at all in $S$. The second comes from the edges from $X_K$ to the removed set. When $|\Delta|\le s$ we have $|\Gamma|\le2s$, so the error is at most $s^2/2+s(2s+1)\le3s^2+3\le D/8$. When $|\Delta|\ge s+1$, part~(i) applies instead.
+\end{proof}
+
+\begin{remark}[What this does and does not settle]\label{rem:bal-scope}
+Proposition~\ref{prop:bal-app} shows that the counting obstruction of Remark~\ref{rem:forces} does not block the one-apex route. It does so whenever:
+\begin{itemize}[nosep]
+\item every exceptional vertex has at most $D$ neighbours in each shore, which holds once vertices with $\min(d_A,d_B)\le d-D$ have had their few internal edges cleared in a preliminary phase, as in SP Theorem~14.37;
+\item exceptional degrees lie in $[D+\Omega(|\Delta|+|X|),5D/4]$, which in a failure sequence is arranged by choosing $q$ sufficiently large compared with $|\Delta|+|X|$;
+\item either the healthy shores differ by more than $|X|$, or $|X|\le\sqrt D/6$.
+\end{itemize}
+The remaining counting case has nearly equal healthy shores and $|X|\ge c\sqrt n$. There the errors from edges to $W$ can reach order $|X|^2$, which may exceed $D$, and neither Lemma~\ref{lem:bal-robust} nor the monotone argument of part~(i) applies.
+
+The scheduling half of Problem~\ref{prob:twosided} is untouched. In the version used in Proposition~\ref{prop:bal-app}, every exceptional vertex keeps all its internal edges in its own shore and consumes only cross edges: $d_x-D$ of them, about $q$. So it enters SP's interval and bin construction as a \emph{weak site}, with $p_x\approx q/2$ visits, whose neighbours on the other shore may be a small linear fraction of that shore. What is missing is SP's construction (Theorems~14.31 and 14.33) re-derived with $o(q)$ weak sites per slot placed before the gap matching, together with the corresponding lost-neighbour bounds, and with the one-apex end pattern adjusted to the value of $b'(K)-b'(I)$ fixed by \eqref{eq:window}.
+\end{remark}
 
 \section{Lean formalisation}\label{sec:lean}
 
