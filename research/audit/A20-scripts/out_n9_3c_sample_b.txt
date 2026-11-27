@@ -1,0 +1,13 @@
+  graph 1 Hs`DMyy c3 True ST True pairs so far 4 STL fails 0 undecided 0
+  graph 2 HsXTpy~ c3 True ST True pairs so far 8 STL fails 0 undecided 0
+  graph 3 Hs`BI~y c3 True ST True pairs so far 14 STL fails 0 undecided 0
+  graph 4 Hs`vfz~ c3 True ST True pairs so far 22 STL fails 0 undecided 8
+  graph 5 HsPlrZ| c3 True ST True pairs so far 26 STL fails 0 undecided 8
+  graph 6 HsOvNZ} c3 True ST True pairs so far 32 STL fails 0 undecided 8
+  graph 7 HsRfTjz c3 True ST True pairs so far 36 STL fails 0 undecided 8
+  graph 8 HsPH]z} c3 True ST True pairs so far 40 STL fails 0 undecided 8
+  graph 9 Hs`efV] c3 True ST True pairs so far 46 STL fails 0 undecided 8
+  graph 10 HsOt`^j c3 True ST True pairs so far 52 STL fails 0 undecided 8
+  graph 11 HsPjvW} c3 True ST True pairs so far 56 STL fails 0 undecided 8
+  graph 12 HsPJ]}~ c3 True ST True pairs so far 62 STL fails 0 undecided 8
+  graph 13 Hs`_I}} c3 True ST True pairs so far 68 STL fails 0 undecided 8
