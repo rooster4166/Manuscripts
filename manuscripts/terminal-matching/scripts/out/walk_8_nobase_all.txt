@@ -828,3 +828,6 @@ NOBASE G~~v~[ 3 7 4 5 anypath=1
 NOBASE G~~~n[ 3 7 4 6 anypath=1
 NOBASE G~~~v[ 3 7 5 6 anypath=1
 NOBASE G~~v~w 4 5 6 7 anypath=1
+NOBASE G~~~ns 4 6 5 7 anypath=1
+NOBASE G~~~vk 4 7 5 6 anypath=1
+SUMMARY inst=832 base_ok=0 nopath=68 tried=8756
