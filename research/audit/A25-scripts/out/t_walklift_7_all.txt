@@ -1,0 +1,2 @@
+trails 2830 (revisiting a vertex 1081, returning to g 691); structural failures 0; G* not good 0
+lifts executed 32590, failures 0

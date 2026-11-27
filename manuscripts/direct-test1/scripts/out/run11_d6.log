@@ -1,0 +1,31 @@
+0 11 {'roots': 6, 'roots_ok': 6, 'first_ok': 6, 'lift_ok': 6, 'lift_fail': 0, 'nomatch': 0}
+1 11 {'roots': 12, 'roots_ok': 12, 'first_ok': 12, 'lift_ok': 12, 'lift_fail': 0, 'nomatch': 0}
+2 11 {'roots': 18, 'roots_ok': 18, 'first_ok': 18, 'lift_ok': 18, 'lift_fail': 0, 'nomatch': 0}
+3 11 {'roots': 24, 'roots_ok': 24, 'first_ok': 22, 'lift_ok': 24, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+4 11 {'roots': 30, 'roots_ok': 30, 'first_ok': 28, 'lift_ok': 30, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+5 11 {'roots': 36, 'roots_ok': 36, 'first_ok': 34, 'lift_ok': 36, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+6 11 {'roots': 42, 'roots_ok': 42, 'first_ok': 40, 'lift_ok': 42, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+7 11 {'roots': 48, 'roots_ok': 48, 'first_ok': 46, 'lift_ok': 48, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+8 11 {'roots': 54, 'roots_ok': 54, 'first_ok': 52, 'lift_ok': 54, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+9 11 {'roots': 60, 'roots_ok': 60, 'first_ok': 58, 'lift_ok': 60, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+10 11 {'roots': 66, 'roots_ok': 66, 'first_ok': 64, 'lift_ok': 66, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+11 11 {'roots': 72, 'roots_ok': 72, 'first_ok': 70, 'lift_ok': 72, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+12 11 {'roots': 78, 'roots_ok': 78, 'first_ok': 76, 'lift_ok': 78, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+13 11 {'roots': 84, 'roots_ok': 84, 'first_ok': 82, 'lift_ok': 84, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+14 11 {'roots': 90, 'roots_ok': 90, 'first_ok': 88, 'lift_ok': 90, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+15 11 {'roots': 96, 'roots_ok': 96, 'first_ok': 94, 'lift_ok': 96, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+16 11 {'roots': 102, 'roots_ok': 102, 'first_ok': 100, 'lift_ok': 102, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+17 11 {'roots': 108, 'roots_ok': 108, 'first_ok': 106, 'lift_ok': 108, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+18 11 {'roots': 114, 'roots_ok': 114, 'first_ok': 112, 'lift_ok': 114, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+19 11 {'roots': 120, 'roots_ok': 120, 'first_ok': 118, 'lift_ok': 120, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+20 11 {'roots': 126, 'roots_ok': 126, 'first_ok': 124, 'lift_ok': 126, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+21 11 {'roots': 132, 'roots_ok': 132, 'first_ok': 130, 'lift_ok': 132, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+22 11 {'roots': 138, 'roots_ok': 138, 'first_ok': 136, 'lift_ok': 138, 'lift_fail': 0, 'nomatch': 0, 'undecided': 6}
+23 11 {'roots': 144, 'roots_ok': 144, 'first_ok': 141, 'lift_ok': 144, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+24 11 {'roots': 150, 'roots_ok': 150, 'first_ok': 147, 'lift_ok': 150, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+25 11 {'roots': 156, 'roots_ok': 156, 'first_ok': 153, 'lift_ok': 156, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+26 11 {'roots': 162, 'roots_ok': 162, 'first_ok': 159, 'lift_ok': 162, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+27 11 {'roots': 168, 'roots_ok': 168, 'first_ok': 165, 'lift_ok': 168, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+28 11 {'roots': 174, 'roots_ok': 174, 'first_ok': 171, 'lift_ok': 174, 'lift_fail': 0, 'nomatch': 0, 'undecided': 7}
+29 11 {'roots': 180, 'roots_ok': 180, 'first_ok': 175, 'lift_ok': 180, 'lift_fail': 0, 'nomatch': 0, 'undecided': 9}
+FINAL {'roots': 180, 'roots_ok': 180, 'first_ok': 175, 'lift_ok': 180, 'lift_fail': 0, 'nomatch': 0, 'undecided': 9}

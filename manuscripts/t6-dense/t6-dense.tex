@@ -1,0 +1,915 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\STL}{\mathrm{STL}}
+\newcommand{\ind}[1]{[\,#1\,]}
+\newcommand{\sh}{{\sharp}}
+
+\title[The dense residual of T(6)-i]{The dense residual of the two-end test at degree six:\\
+the append chain}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+The two-end deletion test at a vertex of degree six (T(6)-i) is the first open rung of the
+spine of Gallai's path-decomposition conjecture. Its open part is the \emph{dense} regime: if
+$z$ is the unique even vertex of a $3$-connected graph $J$ and $U=N(z)$, a failure has
+$D=K_6-(J-z)[U]\in\{\emptyset,K_2,P_3,K_3,C_4\}$. The composition method of the
+terminal-matching paper reduces the test to a Lov\'asz decomposition of a base graph with one even
+vertex that separates six pairs. In the dense regime that base hypothesis cannot be met for
+$D\ne C_4$, because separated pairs must be non-adjacent, and for $D=C_4$ it needs a protected
+Fan step.
+
+In the dense regime the two walks of the chained walk theorem can be taken to be \emph{single
+edges} of $J-z$. Every step of the construction is then an explicit append, except possibly one
+protected Fan step. So the six separations can be replaced by \emph{end-path} conditions, which
+ask only that the path \emph{ending} at a given vertex avoid another; this is the finer tracking
+proposed in the terminal-matching paper, carried out here. These conditions do not require
+non-adjacency. We prove (Theorem~\ref{thm:append}) that one Lov\'asz decomposition of the base
+graph $M=J-\{zx_1,zx_2,zx_3,zy_2,zy_3,x_1y_2,x_2y_3\}$ with six end-path conditions gives the
+pairing-prescribed star-terminal condition STL-P with three transitions, hence
+$\STL(J,z,y_i)$ for $i=1,2,3$. One condition can be traded for a static predecessor condition
+at a protected step (Theorem~\ref{thm:protected}). The first deletion test at $z$ follows from
+such bases for labellings covering all six roots. No chain hypothesis is needed, and the
+statement is uniform over all five dense shapes. Both theorems are formalised in Lean~4 without
+\texttt{sorry} and with the standard axioms only.
+
+The append form is reversible (Proposition~\ref{prop:converse}). A base with the append
+conditions exists if and only if $J$ has a star-terminal Lov\'asz decomposition with
+transitions $x_i\,z\,y_i$ in which, in addition, $x_1y_2$ is terminal at $y_2$ and $x_2y_3$ is
+terminal at $y_3$. So the base conjecture~\ref{conj:base} is a \emph{strengthening} of STL-P
+by two prescribed terminal edges, relaxed at $y_2$ by the protected step. It is a uniform
+re-encoding of the dense residual, not a reduction to a weaker statement.
+
+In the computed instances a base exists for every root except $46$ roots in eight graphs, where
+the search hit its budget. This holds for all five shapes, including random $3$-connected graphs
+carrying a subset of the residual conditions of a smallest failure: minimum degree six,
+odd-neighbour counts, contact sizes, closed twins for $C_4$ and a full exterior vertex for
+$\emptyset$. Within the same budget, the six-separation base of the chained walk theorem was
+never found in these graphs. \emph{The existence of the base is not proved}, and the dense
+residual of T(6)-i, $C_4$ included, is not closed.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{Lov\'asz decomposition} of a graph with at most one
+vertex of positive even degree is a decomposition into paths in which every vertex of odd degree
+is an end of exactly one path and every vertex of even degree is an end of none.
+
+\subsection*{The test}
+Let $z$ be the only vertex of even degree of a $3$-connected graph $J$, with $d(z)=6$, and let
+$B=J-z$ and $U=N(z)$. The first deletion test $\mathrm{Test1}(J,z)$ asks that, for every
+$r\in U$, $B$ have a decomposition into at most $(|J|-1)/2$ paths with at least two ends at
+$r$. By the spine~\cite{SP} (Lean \texttt{gallai\_iff\_spineTests'}), Gallai's conjecture is
+equivalent to this test together with a second one. At $d(z)\le4$ the test is known, and at
+$d(z)=6$ it is the open case T(6)-i~\cite{RS,INC,MR}.
+
+A decomposition of $J$ is \emph{star-terminal} at $z$ if every path through $z$ has the form
+$x\,z\,y\cdots$ with $x$ an end of the path. The neighbour $y$ is then on a \emph{long side},
+unless the path is $x\,z\,y$. $\STL(J,z,r)$ asks for a star-terminal Lov\'asz decomposition of
+$J$ in which $r$ is on a long side, or which has a path of length two through $z$. By
+\texttt{test1\_of\_stl}~\cite{STL}, $\STL(J,z,r)$ for every $r\in U$ (with every neighbour of
+degree at least three) gives $\mathrm{Test1}(J,z)$.
+
+\subsection*{The residual}
+Write $C=B[U]$ (the \emph{core}) and $D=K_6-C$. By the root-shape theorem~\cite{RS}, a failure
+of the test at a root $r$ \emph{with a neighbour in $C$} has $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$,
+with $r$ restricted further ($r$ the middle vertex of $P_3$, a vertex of $K_3$, a vertex of the
+$C_4$ whose two cycle-neighbours are adjacent twins throughout $B$). A root isolated in $C$ has
+$D\supseteq K_{1,5}$, outside the five shapes. Such roots are excluded by \cite[Thm~144]{MR}:
+failing roots may be taken with $d(r)\ge8$ and at least three neighbours among the other even
+vertices. (Audit A6, F16--F18, removes the unrefereed input of its proof.) Many further conditions hold in a smallest failure (STATUS~\S3.5(a);
+reader notes on the six-even program): $\delta(B)\ge6$, $\delta(B[O])\ge4$ for the set $O$ of
+odd vertices, every even site has at least three odd neighbours, $|N(x)\cap U|\in\{0,3,4,5,6\}$
+for $x\in O$, and $D=\emptyset$ only with an exterior vertex adjacent to all of $U$. Among the
+shapes, $D\in\{K_2,P_3,K_3\}$ has no shape-specific result, $C_4$ is open for twins of degree at
+least eight, and $\emptyset$ for full exterior vertices.
+
+\subsection*{The composition method and its obstruction}
+For a pairing $F=\{x_1y_1,x_2y_2,x_3y_3\}$ of $U$ the terminal-matching paper~\cite{TM}
+reduces $\STL$ at $y_1,y_2,y_3$ to a Lov\'asz decomposition of $(J-z)+F$ in which every
+$x_iy_i$ is terminal at $x_i$, on three different paths. Its chained walk theorem
+(\cite[Thm~8.2]{TM}, Lean \texttt{ptm3\_of\_base}) does three things.
+\begin{itemize}
+\item It replaces $x_1y_1$ by a leaf $\ell_1$ at $y_1$.
+\item It walks the even vertex twice, along a path $P_2$ from $y_3$ to $x_2$ and a path $P_1$
+from $y_2$ to $x_1$, restoring the paths edge by edge with Fan's lemma.
+\item It asks for a Lov\'asz decomposition of the base graph separating six pairs:
+$\{x_1,\ell_1\}$, $\{x_2,y_2\}$, $\{x_3,y_3\}$, $\{\ell_1,y_2\}$, $\{\ell_1,y_3\}$,
+$\{y_2,y_3\}$.
+\end{itemize}
+In the dense regime this fails twice over (synthesis~\S22; connections~\S Z.4):
+\begin{itemize}
+\item every edge lies on a path, so separated pairs must be non-adjacent in the base graph, and
+this forces the path $x_2y_2y_3x_3$ into $D$, which only $C_4$ contains;
+\item for $C_4$ the vertex $y_2$ is adjacent to $x_3$, so the first step of the second walk is a
+Fan step at equality, with the endless $x_3$ as a blank neighbour of the target. It needs the
+protected form \texttt{walk\_step\_protected} of Fan's lemma~\cite{TF}.
+\end{itemize}
+
+\subsection*{What this paper does}
+\emph{Chains are free in the dense regime.} If $x_1y_2$ and $x_2y_3$ are edges of $J$, we may take
+$P_2=y_3x_2$ and $P_1=y_2x_1$. Such a labelling exists for every root, for every graph $D$ of
+maximum degree at most two, so for all five shapes (Lemma~\ref{lem:labelling}). With walks of
+length one, every step of the construction is explicit:
+\begin{itemize}
+\item a leaf at $y_3$;
+\item an \emph{append} $x_2\to y_3$;
+\item a leaf at $y_2$;
+\item the step $x_1\to y_2$, which is an append or one protected Fan step;
+\item three appends at the leaves.
+\end{itemize}
+What must avoid $x_i$ is only the path \emph{ending} at $y_i$. This finer tracking is the one
+proposed in \cite[\S9(1)]{TM}. With walks of length one, that path can be named at each step. So
+the base hypothesis becomes a list of end-path conditions (Definition~\ref{def:base}).
+\begin{itemize}
+\item \textbf{Theorem~\ref{thm:append}} (append chain). A base with the end-path conditions
+(E1)--(E5) and (E7) gives a star-terminal Lov\'asz decomposition of $J$ with transitions
+$x_i\,z\,y_i$, so $\STL(J,z,y_i)$ for $i=1,2,3$.
+\lean{stl\_of\_appendBase}
+\item \textbf{Proposition~\ref{prop:converse}} (reversibility). Conversely, such a base exists if
+and only if $J$ has a star-terminal Lov\'asz decomposition with transitions $x_i\,z\,y_i$ in
+which $x_1y_2$ is terminal at $y_2$ and $x_2y_3$ is terminal at $y_3$.
+\item \textbf{Theorem~\ref{thm:protected}} (one protected step). The same with (E7) replaced by
+(E6). This is the static predecessor condition of \texttt{walk\_step\_protected} at the step
+$x_1\to y_2$, transported back to the base decomposition through the three appends
+(Lemma~\ref{lem:transport}).
+\lean{star\_of\_protectedBase}
+\item \textbf{Corollary~\ref{cor:test1}}. $\mathrm{Test1}(J,z)$ holds as soon as every
+$r\in U$ admits a labelling with $r\in\{y_1,y_2,y_3\}$ and a base.
+\lean{test1\_of\_appendBases}
+\item \textbf{Data} (E28). For all five shapes, in the computed instances, every root has a
+labelling with a base, except $46$ roots in eight graphs where every search hit the node budget
+(Section~\ref{sec:comp}). The instances include $3$-connected graphs carrying a subset of the
+residual conditions above. In those graphs the six-separation base of \cite[Thm~8.2]{TM} was
+never found within the search budget.
+\end{itemize}
+The remaining hypothesis is Conjecture~\ref{conj:base}, the existence of a base. By
+Proposition~\ref{prop:converse} it is, up to the protected escape (E6), the pairing-prescribed
+star-terminal condition STL-P of \cite{STL} (synthesis~\S20) for some labelled pairing, together
+with two further prescribed terminal edges: on the alternating path $y_1x_1y_2x_2y_3x_3$ of
+$(J-z)+F$, every edge is terminal at its forward end, and the three edges of $F$ lie on
+different paths (Remark~\ref{rem:ptm}). So it is a \emph{strengthening} of
+STL-P, which in turn is a strengthening of the condition $\STL$ that gives the test. It is
+\emph{not proved}. In particular the $C_4$ shape of T(6)-i is not closed by this paper.
+
+\subsection*{Novelty}
+Section~\ref{sec:novelty} compares the result with the known T(6)-i reductions. In short, none
+of the known closures (six-even-incidence, the four-exterior and five-odd papers, the
+six-clique theorem, the twin results, the degree-ten note) gives the dense shapes in general.
+Several known reductions already have one even vertex: $\STL$ via \texttt{test1\_of\_stl},
+STL-P and its terminal-matching form PTM$_3$, and \cite[Thm~8.2]{TM}. The previous composition
+result \cite[Cor.~8.4]{TM} covers only the far-apart case, which was already known
+\cite[Rem.~8.5]{TM}. The end-path tracking that removes the obstruction of \cite[\S9(1)]{TM}
+was proposed there. What is new here:
+\begin{itemize}
+\item the chain design with walks of length one on the cross edges $x_1y_2$, $x_2y_3$, which
+exists for every root in all five dense shapes (Lemma~\ref{lem:labelling});
+\item the exact end-path conditions for it, and the transport of the static predecessor
+condition through the appends (Theorem~\ref{thm:protected});
+\item the converse (Proposition~\ref{prop:converse}), which identifies the base conjecture as
+STL-P with two further prescribed terminal edges;
+\item the Lean formalisation of the construction.
+\end{itemize}
+No new case of T(6)-i is closed, and the base conjecture is not shown to be easier than STL-P.
+
+\section{The base and the main theorems}\label{sec:main}
+
+Throughout, $J$ is a graph, $z$ a vertex with $N(z)=\{x_1,y_1,x_2,y_2,x_3,y_3\}$ (seven distinct
+vertices), and $z$ is the only vertex of even degree of $J$. In a decomposition in which every
+vertex has at most one end, $P_v$ denotes the path ending at $v$. For a path $S$ through an edge
+$py$, the \emph{end of $S$ on $p$'s side} is the end $e$ of $S$ such that, reading $S$ from $e$,
+the vertex $p$ comes immediately before $y$. In Fan's terminology~\cite{Fan05,TF}, $p$ is then
+the predecessor of $y$ read from $e$, and we write $\mathrm{pred}_y(e)=p$.
+
+\begin{definition}[base graph, append base]\label{def:base}
+Suppose $x_1y_2,x_2y_3\in E(J)$. The \emph{base graph} is
+\[
+M=J-\{zx_1,zx_2,zx_3,zy_2,zy_3,x_1y_2,x_2y_3\}.
+\]
+In $M$ the vertex $z$ is a leaf at $y_1$, $x_3$ has even degree, and every other vertex has odd
+degree. (The degrees of $x_1,x_2,y_2,y_3$ drop by two, that of $x_3$ by one.) A Lov\'asz
+decomposition $\cD_0$ of $M$ has one end at every vertex except $x_3$, and none at $x_3$. It is an
+\emph{append base} if
+\begin{enumerate}[label=\textup{(E\arabic*)}]
+\item the path through $z$ (that is, $P_z$) avoids $x_1$, and its other end is neither $y_2$
+nor $y_3$;
+\item $P_{y_2}$ avoids $x_2$;
+\item $P_{y_3}$ avoids $x_3$;
+\item $P_{y_2}\ne P_{y_3}$, that is, no path has ends $y_2$ and $y_3$;
+\item $P_{x_2}$ avoids $y_3$;
+\end{enumerate}
+and one of the following holds:
+\begin{enumerate}[label=\textup{(E\arabic*)}]\setcounter{enumi}{5}
+\item for $p\in\{x_2,x_3\}$, no $w\in N_J(y_2)\setminus\{z,x_2\}$ has $\mathrm{pred}_{y_2}(w)=p$
+in $\cD_0$, and if $y_2y_3\in E(J)$, then also $\mathrm{pred}_{y_2}(x_2)\ne p$ (the static
+predecessor condition);
+\item $P_{x_1}$ avoids $y_2$.
+\end{enumerate}
+\end{definition}
+
+In Lean, \texttt{LovaszBase} is Definition~\ref{def:base} verbatim: a decomposition
+$\cD_0$ of $M$ (\texttt{baseM}) with ends equal to degrees modulo two, and (E1)--(E7) on $V$. The
+degree parities of $M$ are \texttt{baseM\_parity}. \texttt{AppendBase} is the same in the split
+form of Section~\ref{sec:proof}: $M$ together with two isolated vertices $\ell_2,\ell_3$, with
+the explicit end profile. \texttt{appendBase\_of\_lovaszBase} pushes the first into the second.
+
+\begin{theorem}[the append chain]\label{thm:append}
+If $M$ has a Lov\'asz decomposition satisfying \textup{(E1)}--\textup{(E5)} and
+\textup{(E7)}, then $J$ has a star-terminal Lov\'asz decomposition in which the three paths
+through $z$ are $x_i\,z\,y_i\cdots$ with $x_i$ an end ($i=1,2,3$). In particular
+$\STL(J,z,y_i)$ holds for $i=1,2,3$.\lean{stl\_of\_lovaszBase}
+\end{theorem}
+
+\begin{theorem}[one protected step]\label{thm:protected}
+The conclusion of Theorem~\ref{thm:append} also holds if \textup{(E7)} is replaced by
+\textup{(E6)}.
+\end{theorem}
+
+The Lean statements (\texttt{star\_of\_appendBase}, \texttt{star\_of\_protectedBase} and their
+corollaries) cover both theorems with (E6) or (E7). They record what $\STL$ needs: a Lov\'asz
+decomposition of $J$ that is star-terminal at $z$, in which each $y_i$ is on a long side or $z$
+lies on a path of length two. The transitions $x_i\,z\,y_i$ are built in the proof
+(\texttt{split\_finish}) but are not part of the Lean conclusion.
+
+\begin{corollary}\label{cor:test1}
+Let $z$ be the only even vertex of $J$, $d(z)=6$, and let every neighbour of $z$ have degree at
+least three.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $r\in N(z)$ and some labelling $(x_1,y_1,x_2,y_2,x_3,y_3)$ of $N(z)$ with
+$r\in\{y_1,y_2,y_3\}$ has an append base, then $B=J-z$ has a decomposition into at most
+$(|J|-1)/2$ paths with at least two ends at $r$.
+\item If this holds for every $r\in N(z)$, then $\mathrm{Test1}(J,z)$ holds.
+\lean{test1\_of\_lovaszBases}
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+By Theorems~\ref{thm:append} and~\ref{thm:protected}, $\STL(J,z,r)$ holds. Part (b) is then
+\texttt{test1\_of\_stl}~\cite{STL}. Its proof uses $\STL(J,z,r)$ only at the root $r$ under
+test, which gives (a). Part (a) is not stated separately in Lean.
+\end{proof}
+
+\begin{lemma}[labellings exist]\label{lem:labelling}
+Let $D=K_6-B[U]$ have maximum degree at most two, which holds for all five residual shapes. Then
+for every $r\in U$ there is a labelling with $y_2=r$ and $x_1y_2,x_2y_3\in E(B)$. The same holds
+with $y_3=r$, and with $y_1=r$.
+\end{lemma}
+
+\begin{proof}
+For $y_2=r$: $r$ has at most two $D$-neighbours among the other five vertices, so we can choose
+$x_1$ with $rx_1\notin D$. A graph on the remaining four vertices with maximum degree at most two
+is not $K_4$, so it has a non-edge $x_2y_3$. For $y_3=r$, choose $x_2$ with $rx_2\notin D$ and
+then a non-edge $x_1y_2$ among the remaining four vertices. For $y_1=r$, we need two disjoint edges $x_1y_2,x_2y_3$ of
+$B$ among the other five vertices. On five vertices $D$ has at most five edges, so $B$ has at least
+five there. A graph with no two disjoint edges is a star or a triangle, with at most four edges on
+five vertices, so two disjoint edges exist.
+\end{proof}
+
+So in the dense residual the chain hypothesis of \cite[Def.~8.1]{TM} and Conjecture~8.6 there
+are not used. (The length-one chain violates \cite[Def.~8.1(ii)]{TM} whenever $y_2x_3\in E(B)$,
+and Conjecture~8.6 there concerns far-apart neighbours only.) For the $C_4$ shape and a root $r$ on the cycle, the labelling that runs
+$x_2\,y_2\,y_3\,x_3$ along the cycle, with $\{x_1,y_1\}$ the two universal vertices, has
+$x_1y_2$ (a universal vertex) and $x_2y_3$ (a diagonal) in $B$. This is the configuration of
+\cite[\S9(1)]{TM}. There $y_2x_3$ is the other diagonal, so the step $x_1\to y_2$ has the blank
+$x_3$, and it is either protected, by (E6), or an append, by (E7).
+
+\begin{proposition}[the append form is reversible]\label{prop:converse}
+Let $z$ be the only even vertex of $J$, $N(z)=\{x_1,y_1,x_2,y_2,x_3,y_3\}$, and
+$x_1y_2,x_2y_3\in E(J)$. The following are equivalent.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $M$ has a Lov\'asz decomposition satisfying \textup{(E1)}--\textup{(E5)} and
+\textup{(E7)}.
+\item $J$ has a Lov\'asz decomposition $\cD$ such that every path through $z$ has the form
+$S_i=x_i\,z\,y_i\cdots$ with $x_i$ an end ($i=1,2,3$), the path ending at $y_2$ ends with the edge
+$x_1y_2$, and the path ending at $y_3$ ends with the edge $x_2y_3$.
+\end{enumerate}
+\end{proposition}
+
+The proof is in Section~\ref{sec:proof}; it is not formalised. The auditor of A26 found the
+statement and confirmed it by exact search on all $14{,}144$ labellings with chain edges of the
+$28$ dense graphs of order $9$. Both sides hold for $14{,}128$ labellings and fail for $16$, with no
+disagreement.
+
+\begin{remark}[the terminal-matching form]\label{rem:ptm}
+Let $F=\{x_1y_1,x_2y_2,x_3y_3\}$ and $G=(J-z)+F$ (a multigraph if some $x_iy_i\in E(B)$). Replacing
+$x_i\,z\,y_i$ by the edge $x_iy_i$ turns (b) into the following statement. $G$ has a Lov\'asz
+decomposition in which the three edges of $F$ lie on different paths and every edge of the
+alternating path $y_1\,x_1\,y_2\,x_2\,y_3\,x_3$ is terminal at its forward end: $y_1x_1$ at $x_1$,
+$x_1y_2$ at $y_2$, $y_2x_2$ at $x_2$, $x_2y_3$ at $y_3$ and $y_3x_3$ at $x_3$. Without the two cross
+edges this is PTM$_3$ for $F$ with prescribed ends, that is, STL-P for the oriented pairing
+\cite{STL,TM} (synthesis~\S20). So Theorem~\ref{thm:append} derives STL-P from a
+\emph{stronger} statement, and Conjecture~\ref{conj:base} restricted to (E7) is that stronger
+statement. The (E6) branch relaxes the requirement at $y_2$; it is rarely needed in the data
+(Section~\ref{sec:comp}).
+\end{remark}
+
+\section{Proofs}\label{sec:proof}
+
+\subsection*{The split graph}
+Split $z$ into three vertices of degree two:
+\begin{itemize}
+\item $z$ itself, adjacent to $x_1,y_1$;
+\item $\ell_2$, adjacent to $x_2,y_2$;
+\item $\ell_3$, adjacent to $x_3,y_3$.
+\end{itemize}
+Call the result $J^\sh$ (Lean \texttt{splitG}, on $V\oplus\mathrm{Fin}\,2$). Identifying
+$z,\ell_2,\ell_3$ maps $E(J^\sh)$ bijectively onto $E(J)$ (\texttt{collapse\_hE},
+\texttt{collapse\_hEinj}, \texttt{collapse\_hcov}). Let
+\[
+L=(\ell_3y_3,\ x_2y_3,\ \ell_2y_2,\ x_1y_2,\ zx_1,\ \ell_2x_2,\ \ell_3x_3).
+\]
+Then $J^\sh-L$ is $M$ plus the isolated vertices $\ell_2,\ell_3$. The construction restores the
+seven edges of $L$ in order; the graphs in between are $J^\sh$ minus a final segment of $L$
+(\texttt{delList}, \texttt{spl}).
+
+\subsection*{Appends}
+Let $\cD$ decompose a graph $K$, let $tu\notin E(K)$, and let $P\in\cD$ have an end at $t$ and
+avoid $u$. Appending $tu$ at $t$ gives a decomposition $\cD'$ of $K+tu$. The new path $P'$ starts
+at $u$ and, read from $u$, is $u$ followed by $P$ read from $t$. Every other path of $\cD'$ has
+the ends and the vertex sequence of a path of $\cD$, and the ends move from $t$ to $u$
+(\texttt{append\_full}). We say $P'$ \emph{extends} $P$ at $t$ by $u$. An extended path has the
+edges of $P$ and the edge $tu$ (\texttt{ExtP.edges\_mem}).
+
+\begin{lemma}[predecessors through an append]\label{lem:transport}
+In this situation let $w\ne u$ and $p\ne u$. If $\mathrm{pred}_w(x)=p$ in $\cD'$, then
+$\mathrm{pred}_w(x)=p$ in $\cD$, or $x=u$ and $\mathrm{pred}_w(t)=p$ in $\cD$. Moreover
+$\mathrm{pred}_w(w)$ is never defined.\lean{fanPred\_append, fanPred\_self}
+\end{lemma}
+
+\begin{proof}
+A path of $\cD'$ other than $P'$ has the ends and the vertex sequence of a path of $\cD$. On
+$P'$, read from $u$, the pair $(p,w)$ occurs inside $P$ read from $t$, since $p,w\ne u$. Read
+from its other end, which is an end of $P$, the pair occurs inside $P$ read from that end. A path
+read from $w$ starts at $w$, so nothing precedes $w$.
+\end{proof}
+
+\subsection*{Proof of Theorem~\ref{thm:append}}
+Let $\cD_0$ satisfy (E1)--(E5) and (E7), viewed as a decomposition of $J^\sh-L$. The leaves
+$\ell_2,\ell_3$ are isolated there, so no path contains them.
+
+\emph{Step 1 (leaf at $y_3$).} Append $\ell_3$ to $P_{y_3}$. This is possible because $\ell_3$
+is isolated. Now $y_3$ is endless and $\ell_3$ has an end.
+
+\emph{Step 2 (the first walk, $x_2\to y_3$).} The path ending at $x_2$ is a path of $\cD_0$ with
+an end at $x_2$. It cannot be the extension of $P_{y_3}$, since $P_{y_3}$ contains $y_3$ and
+(E5) would be violated. So it avoids $y_3$ by (E5), and we append $y_3$ to it. Now $x_2$ is
+endless and $y_3$ has an end again.
+
+\emph{Step 3 (leaf at $y_2$).} $\ell_2$ is isolated, so we can append $\ell_2$ to the path ending
+at $y_2$. That path is $P_{y_2}$ of $\cD_0$. It is not the extension of $P_{x_2}$, since then
+$P_{x_2}$ would end at $y_2$ and contain $x_2$, against (E2). It is not the extension of
+$P_{y_3}$, by (E4).
+
+Call the result $\cD_3$. Every path of $\cD_3$ is a path of $\cD_0$ (same ends and vertex
+sequence) or a path $Q$ of $\cD_0$ extended once:
+\begin{itemize}
+\item at $y_3$ by $\ell_3$, with $Q=P_{y_3}$;
+\item at $x_2$ by $y_3$, with $Q=P_{x_2}$;
+\item at $y_2$ by $\ell_2$, with $Q=P_{y_2}$.
+\end{itemize}
+This is \texttt{split\_abc}. Its end counts are those of $\cD_0$, except that
+$x_2,y_2$ have no end and $\ell_2,\ell_3$ have one.
+
+\emph{Leaf conditions in $\cD_3$} (\texttt{leafOK\_three}):
+\begin{itemize}
+\item the path through $z$ avoids $x_1$, $\ell_2$, $\ell_3$;
+\item the path through $\ell_2$ avoids $x_2$ and $\ell_3$;
+\item the path through $\ell_3$ avoids $x_3$.
+\end{itemize}
+They follow from the classification together with (E1)--(E3). For example, an extension of
+$P_{y_3}$ through $z$ would make $P_z$ end at $y_3$, against (E1). The path through $\ell_3$ is
+$P_{y_3}$ plus $\ell_3$, which avoids $x_3$ by (E3).
+
+\emph{Step 4 (the second walk, $x_1\to y_2$).} The path $R$ of $\cD_3$ ending at $x_1$ avoids
+$y_2$:
+\begin{itemize}
+\item if $R$ comes from a path $Q$ of $\cD_0$, unchanged or extended at $y_3$ or at $x_2$, then
+$Q$ ends at $x_1$, and (E7) gives $y_2\notin Q$; the added vertices are not $y_2$;
+\item it cannot be an extension of $P_{y_2}$, since then $P_{y_2}$ would end at $x_1$ and
+contain $y_2$, against (E7).
+\end{itemize}
+Append $y_2$ to $R$. Every new path lies in an old path together with $y_2$, so the leaf
+conditions survive (\texttt{LeafOK.of\_cover}); none of $z,x_1,x_2,x_3$ is $y_2$. Now
+$x_1,x_2,x_3$ have no ends, the three leaves $z,\ell_2,\ell_3$ have one each, and every other
+vertex has one.
+
+\emph{Steps 5--7.}
+\begin{itemize}
+\item Append $x_1$ to the path ending at $z$. It avoids $x_1$ by the leaf conditions.
+\item Append $x_2$ to the path ending at $\ell_2$. It is not the path just extended, since that
+path contains $z$ and $\ell_2$ is not on it; so it is an old path, which avoids $x_2$.
+\item Append $x_3$ to the path ending at $\ell_3$, likewise.
+\end{itemize}
+In the resulting decomposition $\cD_7$ of $J^\sh$, each of $z,\ell_2,\ell_3$ has degree two and
+no end. Each of them lies on exactly one path $S_1,S_2,S_3$, which starts $x_i\,\ell_i\,y_i$ with
+$\ell_1=z$, and each $S_i$ contains only one of the three. This uses that a leaf of degree one
+lies on the path that ends at it.
+
+\emph{Step 8 (identify).} Mapping $\ell_2,\ell_3$ to $z$ is injective on each path, and maps
+edges bijectively, so it pushes $\cD_7$ to a decomposition $\cD$ of $J$
+(\texttt{PathDecomp.pushOn}). The vertex $z$ has no end and every other vertex has one, so $\cD$
+is a Lov\'asz decomposition of $J$. A path through $z$ is the image of some $S_i$, which starts
+$x_i\,z\,y_i$, so $\cD$ is star-terminal. If $S_i$ ends at $y_i$, then before step $5$ the leaf
+path was the single edge $\ell_iy_i$, because $y_i$ is the only neighbour of $\ell_i$ there. So
+the image is $x_i\,z\,y_i$, a path of length two through $z$. Otherwise $y_i$ is on a long side.
+This is \texttt{split\_finish}; \texttt{stl\_of\_appendBase} adds the degree parities.
+\qed
+
+\subsection*{Proof of Theorem~\ref{thm:protected}}
+Steps 1--3 and 5--8 are as before. Step 4 is now Fan's transfer at the target $y_2$, restoring
+$y_2x_1$, in the protected form \texttt{walk\_step\_protected} with protected set $\{x_2,x_3\}$.
+Its hypotheses are the following.
+\begin{itemize}
+\item Every neighbour of $y_2$ other than $x_1$ and outside $\{x_2,x_3\}$ has an end in
+$\cD_3$. Indeed every vertex except $x_2,x_3,y_2$ has one, and $\ell_2$ has one.
+\item $x_1$ has an end.
+\item \emph{The static predecessor condition:} no vertex of $\{x_1\}\cup N(y_2)$ has
+$\mathrm{pred}_{y_2}\in\{x_2,x_3\}$ in $\cD_3$.
+\end{itemize}
+Apply Lemma~\ref{lem:transport} three times, using $y_2\notin\{\ell_3,y_3,\ell_2\}$ and
+$p\notin\{\ell_2,y_3,\ell_3\}$. Then $\mathrm{pred}_{y_2}(x)=p$ in $\cD_3$ implies one of:
+\begin{itemize}
+\item $\mathrm{pred}_{y_2}(x)=p$ in $\cD_0$;
+\item $x=\ell_3$ and $\mathrm{pred}_{y_2}(y_3)=p$ in $\cD_0$;
+\item $x=y_3$ and $\mathrm{pred}_{y_2}(x_2)=p$ in $\cD_0$.
+\end{itemize}
+The step at $y_2$ itself contributes nothing, by $\mathrm{pred}_{y_2}(y_2)$ undefined. Now
+$\ell_3$ is not adjacent to $y_2$. The vertex $x=x_2$ has no end in $\cD_3$, so it cannot be read
+from. The vertex $x=\ell_2$ is isolated in $\cD_0$. Every other neighbour $x$ of $y_2$ in
+$J^\sh-\{x_1y_2,zx_1,\ell_2x_2,\ell_3x_3\}$ is a vertex $w\in N_J(y_2)\setminus\{z,x_2\}$,
+because $zy_2$ is not an edge of $J^\sh$. So (E6) is exactly what excludes the remaining cases.
+The step gives a decomposition with the end counts of step 4 in which every path lies in an old
+path together with $y_2$, and the proof finishes as before.\qed
+
+\begin{remark}[a redundant clause]\label{rem:e6}
+The clause $w=y_3$ of (E6) is not needed (A26, \S1.2). For $x=y_3$, the outcome
+``$\mathrm{pred}_{y_2}(y_3)=p$ in $\cD_0$'' can only come, through step~2 (an append at $x_2$
+with $u=y_3$), from $\mathrm{pred}_{y_2}(y_3)=p$ in $\cD_1$. That would read a path of $\cD_1$
+from the end $y_3$, but $y_3$ has no end in $\cD_1$. So Theorem~\ref{thm:protected} holds with
+(E6) restricted to $w\ne y_3$. The Lean statement keeps the clause.
+\end{remark}
+
+\subsection*{Proof of Proposition~\ref{prop:converse}}
+\emph{(a)$\Rightarrow$(b).} Run the construction of Theorem~\ref{thm:append}. Step~2 gives $y_3$
+an end with terminal edge $x_2y_3$, and step~4 gives $y_2$ an end with terminal edge $x_1y_2$.
+Every later append is made at another end ($x_1$ in step~4, then $z,\ell_2,\ell_3$), so both
+terminal edges survive into $\cD_7$ and, by step~8, into $\cD$.
+
+\emph{(b)$\Rightarrow$(a).} A path through $z$ uses two edges at $z$, so the three paths $S_i$
+are distinct and contain every edge at $z$. Putting $\ell_i$ in place of $z$ on $S_i$ (with
+$\ell_1=z$) lifts $\cD$ to a decomposition of $J^\sh$ with the same ends. Let $T$ and $T'$ be
+the paths ending at $y_2$ and $y_3$. Every vertex other than $z$ has exactly one end.
+\begin{enumerate}[label=(\roman*)]
+\item $T\notin\{S_1,S_2\}$ and $T'\notin\{S_2,S_3\}$. Indeed $S_1$ starts at $x_1$, so it does
+not end with $x_1y_2$, and $S_2$ starts at $x_2$, so it does not end with $x_2y_3$. If $T=S_2$, then
+$y_2$, the third vertex of $S_2$, is an end, so $S_2=x_2zy_2$ ends with $zy_2$. The case $T'=S_3$
+is the same.
+\item $S_2$ and $S_3$ have length at least three. If $S_2=x_2zy_2$, then $y_2$ is an end of
+$S_2\ne T$. The same holds for $S_3$.
+\item $T$ and $T'$ have length at least two, because $x_1$ and $x_2$ already end on $S_1$ and $S_2$.
+\end{enumerate}
+Delete, in this order, $x_1\ell_1,x_2\ell_2,x_3\ell_3$, then $x_1y_2$, $x_2y_3$, $\ell_2y_2$ and
+$\ell_3y_3$. Each is a terminal edge of its path at that moment: the first three start the lifted
+$S_i$, the next two end $T$ and $T'$, and the last two start what remains of $S_2$ and $S_3$. Each
+of these paths has length at least two at that moment, so every deletion leaves a decomposition:
+\begin{itemize}
+\item for $S_i$, by (ii) and $|S_1|\ge2$;
+\item for $T$, by (iii), and if $T=S_3$ because $\ell_3,y_3,x_1,y_2$ are distinct;
+\item for $T'$, by (iii); if $T'=S_1$ because $z,y_1,x_2,y_3$ are distinct, and if $T'=T$
+because $y_3,x_2,x_1$ are distinct;
+\item for $S_2$ by (ii), since $S_2\notin\{T,T'\}$; for $S_3$ by (ii), and if $T=S_3$ because
+what remains, $\ell_3y_3\cdots x_1$, has length at least two.
+\end{itemize}
+The result $\cD_0$ decomposes $J^\sh-L$, that is, $M$ with $\ell_2,\ell_3$ isolated. Each deletion
+moves one end. In total $x_3$ loses its end, $z$ gains one, and every other vertex keeps one, so
+$\cD_0$ is a Lov\'asz decomposition of $M$. The conditions hold as follows.
+\begin{itemize}
+\item[(E1)] $P_z$ is $S_1-x_1$, cut back from $y_3$ to $x_2$ if $T'=S_1$. It avoids $x_1$. Its far
+end is $x_2$ if $T'=S_1$, and otherwise the far end of $S_1$, which is neither $y_2$ (as
+$T\ne S_1$) nor $y_3$ (as $T'\ne S_1$).
+\item[(E2)--(E4)] $P_{y_2}$ is $S_2$ without its first two vertices, and $P_{y_3}$ is $S_3$
+without its first two vertices, shortened at the far end if $T=S_3$. They are different paths,
+and they avoid $x_2$ and $x_3$ respectively, because $x_i$ occurs on $S_i$ only as its first
+vertex.
+\item[(E5)] $P_{x_2}$ is what remains of $T'$, which lost $y_3$, its only occurrence.
+\item[(E7)] $P_{x_1}$ is what remains of $T$, which lost $y_2$, its only occurrence.\qed
+\end{itemize}
+
+Under (E6) the step $x_1\to y_2$ is a Fan transfer, and the terminal edge at $y_2$ need not be
+$x_1y_2$. So Proposition~\ref{prop:converse} concerns the (E7) branch only.
+
+\begin{remark}[why the obstruction disappears]
+In the chained walk theorem a separation $\{x_2,y_2\}$ was needed for \emph{every} path through
+$y_2$, because after a Fan walk one only knows that each new path lies in some old path plus the
+targets. When the walks are appends, the path that will be extended at $y_2$ is known: it is
+$P_{y_2}$. So only $P_{y_2}$ must avoid $x_2$. The edge $x_2y_2$, if present, may lie on any
+other path. This is the end-path tracking asked for in \cite[\S9(1)]{TM}, in the form where it is
+exact.
+\end{remark}
+
+\section{End-path tracking for general walks}\label{sec:endpath}
+
+For walks of length greater than one, Fan's transfers reroute paths, and the path ending at a
+vertex can change. It changes in a controlled way, which we record for later use; it is not
+needed for the theorems above.
+
+\begin{lemma}[Fan with end paths]\label{lem:fanend}
+Let $\cD$ decompose $K-tu$, and let $\cD'$ arise from Fan's transfer along a chain
+$t=x_0,x_1,\dots,x_k$ (\texttt{fan\_exec}). Let $v\ne u$ and $v\notin\{x_1,\dots,x_k\}$; this
+holds in particular if $v\notin N_{K-tu}(u)$. Then every path of $\cD'$ with an end at $v$ has
+its vertex set inside $V(Q)\cup\{u\}$ for a path $Q$ of $\cD$ with an end at $v$.
+\end{lemma}
+
+\begin{proof}
+A reroute along $x_i$ replaces the path $x_i\cdots x_{i+1}\,u\cdots e$ by
+$x_{i+1}\cdots x_i\,u\cdots e$. It keeps the vertex set and the end $e$, and moves the end $x_i$
+to $x_{i+1}$; all other paths are unchanged. The final append adds $u$ to a path at its end
+$x_k$ and keeps its other end. So an end at $v\notin\{x_1,\dots,x_k,u\}$ stays on a path with the
+same vertex set, plus possibly $u$. The chain vertices $x_1,\dots,x_k$ are predecessors of $u$,
+hence neighbours of $u$.
+\end{proof}
+
+Applied along a walk $w_0\cdots w_k$, the end paths at every vertex outside
+$T\cup N(T)$, where $T=\{w_0,\dots,w_{k-1}\}$ is the set of targets, are tracked up to $T$.
+Inserting this into the proof of \cite[Thm~8.2]{TM} gives the following variant. It is not
+formalised. We write $T_2=\{q_0,\dots,q_{s-1}\}$ for the targets of $P_2=q_0\cdots q_s$ and use
+the notation of that proof ($Q_1$ the path through $\ell_1$, $Q_3$ the path ending at $y_3$, $Q_2$
+the path ending at $y_2$ after the first walk).
+
+\begin{proposition}[Thm~8.2 with end paths]\label{prop:ep}
+Let $P_1,P_2$ be an admissible chain \cite[Def.~8.1]{TM} with $y_2\notin N(\{q_0,\dots,q_{s-1}\})$.
+Suppose the base graph has a Lov\'asz decomposition in which:
+\begin{itemize}
+\item the path through $\ell_1$ avoids $x_1$ and does not end at $y_2$ or $y_3$;
+\item $P_{y_2}$ avoids $x_2$;
+\item $P_{y_3}$ avoids $x_3$;
+\item $P_{y_2}\ne P_{y_3}$.
+\end{itemize}
+Then the conclusion of \cite[Thm~8.2]{TM} holds.
+\end{proposition}
+
+\begin{proof}
+The proof of \cite[Thm~8.2]{TM} uses the six separations at the following places. Each use is
+replaced as shown; the rest of that proof is unchanged.
+\begin{center}\footnotesize
+\begin{tabular}{@{}lp{0.36\textwidth}p{0.38\textwidth}@{}}
+\toprule
+separation & use in \cite[Thm~8.2]{TM} & replacement\\
+\midrule
+$\{x_1,\ell_1\}$ & Step 4: the $\ell_1$-path avoids $x_1$ & $Q_1$ avoids $x_1$ (kept)\\
+$\{x_3,y_3\}$ & Step 1: $Q_3$ avoids $x_3$ & $P_{y_3}$ avoids $x_3$\\
+$\{\ell_1,y_3\}$ & Step 1: $Q_3\ne Q_1$ & $Q_1$ does not end at $y_3$\\
+$\{y_2,y_3\}$ & Step 1: $Q_3$ avoids $y_2$; used in Step 3 to exclude $Q_3\ell_3$ as the origin of
+$Q_2$ & the origin of $Q_2$ has an end at $y_2$ (Lemma~\ref{lem:fanend}), and
+$P_{y_2}\ne P_{y_3}$\\
+$\{x_2,y_2\}$ & Step 3: the origin of $Q_2$ avoids $x_2$ & $P_{y_2}$ avoids $x_2$\\
+$\{\ell_1,y_2\}$ & Steps 3--4: $Q_2$ and the $\ell_2$-path avoid $\ell_1$ & $Q_1$ does not end at
+$y_2$, so $Q_1\ne P_{y_2}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The one new argument is in Step 3. Since $y_2\notin V(P_2)$, $y_2$ is not a target, and since
+$y_2\notin N(T_2)$, it is not a chain vertex of any Fan step of the first walk. So
+Lemma~\ref{lem:fanend}, applied at each step with $v=y_2$, gives $V(Q_2)\subseteq V(Q)\cup T_2$
+for the path $Q$ ending at $y_2$ before the walk. Step 1 extended only $Q_3=P_{y_3}\ne P_{y_2}$,
+so $Q=P_{y_2}$ is a path of the base decomposition. It avoids $x_2$ and $\ell_3$, and it avoids
+$\ell_1$ because $Q_1$, the only path through the leaf $\ell_1$, does not end at $y_2$. As
+$x_2=q_s\notin T_2$ and leaves are not targets, $Q_2$ avoids $x_2$, $\ell_1$ and $\ell_3$, which is
+what Steps 3--5 of \cite[Thm~8.2]{TM} use.
+\end{proof}
+
+This removes the separation $\{x_2,y_2\}$, and so the obstruction $x_2y_2\in D$, but not
+$y_2\notin V(P_2)$. Indeed, $y_2\in V(P_2)$ makes $y_2$ a target, and its new end path is then
+created by the Fan step at $y_2$. In particular, if $P_2$ ends with the edge $y_2x_2$ and that
+step is an append, the new path ending at $y_2$ is $P_{x_2}$ extended by $y_2$, which contains
+$x_2$. So a walk ending with $y_2x_2$ cannot be repaired by tracking alone. Since $q_0=y_3$
+is always a target, the condition $y_2\notin N(T_2)$ forces $y_2y_3\in D$, and
+\cite[Def.~8.1(ii)]{TM} forces $y_2x_3\in D$. So Proposition~\ref{prop:ep} reaches only shapes in
+which $D$ contains the path $x_3\,y_2\,y_3$. In the dense regime
+the walks of length one of Section~\ref{sec:main} are therefore the right specialisation: there
+every end path is explicit, and no non-adjacency at all is needed beyond the two chain edges.
+
+\section{The base conjecture}\label{sec:conj}
+
+\begin{conjecture}[base]\label{conj:base}
+Let $J$ be $3$-connected, $z$ its only even vertex, $d(z)=6$, and
+$D=K_6-(J-z)[N(z)]\in\{\emptyset,K_2,P_3,K_3,C_4\}$. Then for every $r\in N(z)$ some labelling with
+$r\in\{y_1,y_2,y_3\}$ and $x_1y_2,x_2y_3\in E(J)$ has an append base.
+\end{conjecture}
+
+\emph{Conjecture~\ref{conj:base} and T(6)-i.} Suppose Conjecture~\ref{conj:base} holds, and
+let $r$ be a root with a neighbour in the core. If the test failed at $r$, the root-shape
+theorem~\cite{RS} would put $D$ among the five shapes, and then Corollary~\ref{cor:test1}(a)
+shows that $r$ passes. So every root with a core neighbour passes. By \cite[Thm~144]{MR} it
+suffices to test roots with at least three neighbours in the core, so T(6)-i follows. A root isolated
+in $C$ has $D\supseteq K_{1,5}$ and is not covered by Conjecture~\ref{conj:base} as stated. One
+could instead extend the conjecture to $D=K_{1,5}\cup D'$ with $D'\in\{\emptyset,K_2,P_3\}$ and
+labellings with $y_1=r$. Labellings with chain edges exist there by the argument of the
+$y_1$-case of Lemma~\ref{lem:labelling}, since $D'$ has at most two edges.
+Corollary~\ref{cor:test1}(a) is per root, so only the roots not already closed by the known
+reductions need a base.
+
+\emph{What kind of statement it is.} By Proposition~\ref{prop:converse} and
+Remark~\ref{rem:ptm}, the (E7) form of Conjecture~\ref{conj:base} asks, for each root, for a
+labelled pairing $F$ with STL-P and, in addition, two prescribed terminal edges. So it implies
+STL-P for those pairings, and it is implied by nothing weaker that we know. It is a statement in
+Lov\'asz's setting (one even vertex), like $\STL$ itself, in the family of the separation and
+avoidance statements of \cite{MS,L1S}. In the base form each condition (E1)--(E5), (E7) says that
+the path ending at a prescribed vertex avoids one or two prescribed vertices. These are exactly
+the conditions that undoing the appends produces in the proof of
+Proposition~\ref{prop:converse}. The difficulty is that there are six of them, at six vertices of
+a nearly complete $K_6$, simultaneously. The known single-vertex tools
+(\texttt{lovasz\_avoid\_set}, \texttt{separation\_sparse}) need the special vertices to be packed
+or sparse, which is the opposite of the dense regime.
+
+\subsection*{The base conjecture is not a conjunction of $L_1^*$ instances}
+Each of (E1)--(E5), (E7) has the form ``the path ending at $c$ avoids $A$'', or can be
+strengthened to it. (E1) avoids $x_1$, and $P_{y_2},P_{y_3}$ avoid $z$; for (E4), $P_{y_2}$
+avoids $y_3$. The avoidance conjecture $L_1^*$ of \cite{L1S} (open; reduced to TR and ST in the
+l1-induction work) treats one such condition in a graph with one even vertex $g$, but only for
+$A\cap(N[c]\cup N(g))=\emptyset$. That hypothesis cannot be weakened to $A\cap N(g)\ne\emptyset$:
+the example \texttt{DTw} of \cite{L1S} is a counterexample. Here $g=x_3$, and in a dense shape
+$x_3$ is adjacent in $B$ to at least three of the other five vertices of $U$.
+\texttt{admissible.py} checks all labellings with $x_1y_2,x_2y_3\in E(B)$. In every labelling of
+every shape, some conditions avoid a neighbour of $g$. The fewest such conditions are:
+\begin{itemize}
+\item $C_4$: (E1) and (E7);
+\item $K_3$: (E1) and (E2);
+\item $P_3$: (E2), (E4) and (E7);
+\item $K_2$: (E1), (E2), (E4) and (E7);
+\item $\emptyset$: all of (E1)--(E7) except the avoidance of $z$.
+\end{itemize}
+These conditions are not implied by the others. That is expected from
+Proposition~\ref{prop:converse}: each of them is produced when the appends are undone, so dropping
+one changes the statement. In residual $C_4$ graphs (\texttt{partial.py}),
+$1{,}920$ Lov\'asz decompositions of $M$ were found satisfying only the $L_1^*$-admissible
+conditions. Of these, (E1) holds in $186$, (E7) in $1{,}042$, and both in only $120$. So
+Conjecture~\ref{conj:base} does not reduce to $L_1^*$, or to TR and ST, constraint by
+constraint. Even for $C_4$ it contains an avoidance in the range where $L_1^*$ fails in
+general: the $z$-path must avoid $x_1\in N(x_3)$. It is a \emph{joint} statement in the
+tight-Fan regime of \cite{TF}. Replacing (E7) by (E6), a predecessor condition, moves one
+constraint into the forced-chain form.
+
+\section{Computations}\label{sec:comp}
+\emph{This section is computational; no proof above depends on it.} Scripts are in
+\texttt{scripts/}; the experiment log is E28 in \texttt{research/experiments.md}.
+
+\subsection*{Method}
+\texttt{lsearch.c} is the depth-first search of the star-terminal oracle~\cite{STL,TM}: paths are
+grown from a vertex with an end, with failures memoised by the remaining edges and end profile.
+It searches for path decompositions with prescribed end counts under constraints that depend only
+on the path being closed: end-path avoidance, forbidden end pairs, the end on a given side of a
+given edge, and separation. So the memoisation stays exact. A node budget can stop a search
+(``undecided'').
+
+\texttt{dense.py} loops over all roots $r$ and all labellings with $r\in\{y_i\}$ and
+$x_1y_2,x_2y_3\in E(B)$, in random order. It searches for a base and then executes the whole
+construction on the base found.
+\begin{itemize}
+\item Mode \texttt{lean} is the exact hypothesis \texttt{AppendBase}. It tries (E7) first and
+otherwise (E6), and with (E6) it also checks that the static condition holds in $\cD_3$.
+\item Mode \texttt{endZ} is (E1)--(E5) with a strengthened (E6): every leaf is identified with
+$z$, so the end on $p$'s side must also avoid $z$ and $y_3$. Its bases satisfy (E6).
+\item Mode \texttt{endA} is (E1)--(E5) with (E6) minus the clause $w=y_3$. That clause is
+redundant (A26, \S1.2: the transported predecessor read from $y_3$ never arises, because $y_3$ has
+no end in $\cD_1$; Remark~\ref{rem:e6}). The Lean theorem uses the full (E6), so for
+\texttt{endA} bases of \texttt{dense.py} the guarantee is on paper only; they are also executed. (In \texttt{c4.py}, mode \texttt{endA}
+uses the $C_4$ labelling, where $x_2y_2,y_2y_3\notin E(B)$, and is exactly (E1)--(E6).)
+\item Mode \texttt{end} is (E1)--(E4) followed by Fan walks; it is the hypothesis of no theorem
+here.
+\item Mode \texttt{six-separation} (\texttt{c4.py sep}) is the base of \cite[Thm~8.2]{TM} with the
+chains $P_2=y_3x_2$, $P_1=y_2x_1$. For $C_4$ these violate \cite[Def.~8.1(ii)]{TM}, so the
+protected step is executed, not guaranteed.
+\end{itemize}
+The construction is run by \texttt{walksim.py} with forced Fan chains (on decompositions with at
+most one end per vertex, Fan's chain is forced: \texttt{fanPred\_unique}). The final
+decomposition of $J$ is then checked edge by edge: every path simple, every edge of $J$ covered
+exactly once, end counts, and the star condition.
+
+\subsection*{Graphs}
+\begin{itemize}
+\item \texttt{gen\_core.py} \cite{TM}: random $3$-connected $J$ with $B[U]=K_6-D$, exterior
+degrees $3$ or $5$, one or three exterior neighbours per vertex of $U$; a sparse exterior.
+\item \texttt{gen\_resid.py}: random $3$-connected $J$ with $B[U]=K_6-D$ and some of the
+residual conditions of a smallest failure imposed:
+  \begin{itemize}
+  \item $\delta(B)\ge6$ and $\delta(B[O])\ge4$;
+  \item every vertex of $U$ has at least three odd neighbours, a universal one at least five;
+  \item $|N(x)\cap U|\in\{0,3,4,5,6\}$ for $x\in O$;
+  \item for $C_4$, the two pairs of opposite cycle vertices are closed twins in $B$ (so every
+  cycle vertex qualifies as a failing root), or one pair is (TW$=1$);
+  \item for $\emptyset$, an exterior vertex adjacent to all of $U$.
+  \end{itemize}
+  With $|O|=8$ these graphs have $|B|=14$ and $64$--$82$ edges. Not imposed: twins of degree at
+  least eight for $C_4$, $d(r)\ge8$ with three core neighbours \cite[Thm~144]{MR}, and the
+  bad-vertex table of the reader notes.
+\end{itemize}
+
+\subsection*{Results}
+Every root of every graph is tested, not only the roots allowed by the shape theorem. A root
+counts as certified if some labelling has a base and the executed construction verifies.
+
+\emph{Exhaustive, order $9$.} Among the $1{,}819$ $3$-connected graphs $J$ of order $9$ in which
+$z$ is the only even vertex and $d(z)=6$ (the list of \cite[\S8]{TM}), $28$ have a dense core.
+They split as $2$ $\emptyset$, $6$ $K_2$, $8$ $P_3$, $5$ $K_3$ and $7$ $C_4$. With exact search
+(no node budget) in mode \texttt{lean}:
+\begin{itemize}
+\item every one of the $168$ roots is certified at the first labelling tried, through (E7);
+\item of all $42{,}432$ pairs (root, labelling with $x_1y_2,x_2y_3\in E(B)$), $42{,}384$ have a
+base with (E7) and $24$ more with (E6);
+\item $24$, all of shape $C_4$, have none;
+\item every root has a base for at least $96.7\%$ of its labellings;
+\item no executed construction failed.
+\end{itemize}
+
+\emph{Exhaustive, order $9$: the cost of the strengthening.} For each of the $14{,}144$
+labellings with chain edges we also decided STL-P for the oriented pairing (a star-terminal
+Lov\'asz decomposition of $J$ with transitions $x_i\,z\,y_i$, $x_i$ an end; exact search,
+\texttt{stlp.py}; side (b) of Proposition~\ref{prop:converse} is \texttt{equiv.py}).
+STL-P holds for all $14{,}144$. An (E7)-base exists for $14{,}128$, in agreement with
+Proposition~\ref{prop:converse}: the auditor's search of side (b) finds the same $14{,}128$. An
+(E6)-base exists for $8$ of the remaining $16$. The other $8$ labellings, all of shape $C_4$,
+have no base of either kind although STL-P holds for them. So the strengthening is strict on
+single labellings, but at order $9$ it costs no root.
+
+\emph{Random, residual-style and sparse} (node budget $2\cdot10^6$ to $5\cdot10^6$ per search,
+two to four seeds). ``Failures'' counts bases satisfying the mode's conditions whose executed
+construction did not verify.
+\begin{center}\footnotesize
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+graphs & mode & $J$ & roots & certified & failures\\
+\midrule
+\texttt{gen\_core} $C_4$, $|B|=14$ & six-separation & 10 & 40 & 40 & 216 of 1{,}050\\
+\texttt{gen\_core} $C_4$, $|B|=14$ & end & 10 & 40 & 40 & 288 of 1{,}280\\
+\texttt{gen\_core} $C_4$, $|B|=14$ & endA & 10 & 40 & 40 & 0 of 1{,}280\\
+\texttt{gen\_core} $\emptyset,K_3,C_4$, $|B|=14$ & endA & 18 & 108 & 108 & 0\\
+residual, 3 per shape, $|O|=8$ & endA and endZ & 15 & 90 & 90 & 0\\
+residual $C_4$ (twins), $|O|=8$ & endZ & 20 & 120 & 120 & 0\\
+residual $K_3$, $|O|=8$ & endZ & 20 & 120 & 120 & 0\\
+residual $P_3$, $|O|=8$ & endZ & 20 & 120 & 114 & 0\\
+residual $K_2$, $|O|=8$ & endZ & 4 & 24 & 24 & 0\\
+residual $K_2$, $C_4$, $P_3$ (from the 3 per shape) & lean & 8 & 48 & 48 & 0\\
+residual $C_4$ (twins), $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $K_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $P_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $\emptyset$, $|O|=8$ & lean${}^*$ & 8 & 48 & 42 & 0\\
+residual $K_2$, $|O|=8$ & lean${}^*$ & 8 & 48 & 30 & 0\\
+residual $C_4$ (twins), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
+residual $K_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 42 & 0\\
+residual $P_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 44 & 0\\
+residual $\emptyset$, $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
+residual $C_4$ (one twin pair), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+(${}^*$: at most $60$ labellings per root.) The six-separation and \texttt{end} bases are not
+hypotheses of a theorem here. Their failures are protected steps that hit a blank, which is the
+obstruction of \cite[\S9(1)]{TM}. No base satisfying (E1)--(E5) with (E6) or (E7), in any mode,
+failed to verify. In mode \texttt{lean} almost every certificate uses (E7), so that all seven
+steps are appends. (E6) was needed for $12$ of the $536$ certified roots in mode \texttt{lean}.
+
+\emph{Uncertified roots.} They lie in eight graphs, $46$ roots in all: $6$ in the
+\texttt{endZ} $P_3$ row; $4$, $6$ and $6$ in the \texttt{lean} rows $P_3$, $K_3$ and $K_2$ with
+$|O|=10$; $6$ in the $\emptyset$ row and $18$ (three graphs) in the $K_2$ row with $|O|=8$. In
+each of these graphs every search of every tried labelling hit the node budget. For the five
+graphs found last this was rechecked with a count of proved absences, and it is zero. In each
+such graph all or most roots are uncertified, which points at the search rather than at the
+graph. On the first of the hard $K_2$ graphs, the weaker statement STL-P for the labelled pairing
+is also undecided at the same budget for $20$ of $20$ labellings. So these roots are undecided,
+not counterexamples.
+
+For comparison, the six-separation base of \cite[Thm~8.2]{TM}, with the same chains, was tried on
+five residual $C_4$ graphs ($|O|=8$; all $160$ labellings with a root on the cycle; two seeds;
+budget $5\cdot10^6$). Every search hit the budget. So no base was found, but its absence is not
+proved. On the sparse \texttt{gen\_core} graphs the six-separation base exists for $304$ of the
+$320$ configurations, and the protected step then succeeds for $834$ of the $1{,}050$ bases found
+(forced chain).
+
+\section{Relation to the known reductions of T(6)-i}\label{sec:novelty}
+
+The known closures and reductions of T(6)-i (STATUS~\S3.5(a); reader notes; audits A6, A9) are
+the following.
+\begin{itemize}
+\item The root-shape theorem: $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$, with the root restrictions.
+\item Six-even-incidence Thm~1: odd vertices with one or two even neighbours.
+\item The four-exterior paper: single-witness closures by degree.
+\item The five-odd paper.
+\item The six-clique theorem: $D=\emptyset$ without full exterior vertex.
+\item The twin results for $C_4$: adjacent-twin insertion at degree six, partial at degree eight.
+\item The degree-ten note.
+\item MR Thm~144 and Lemma~133.
+\end{itemize}
+They close configurations by conditions on the exterior: contact sizes, degrees, twins. Beside
+them there are reformulations, several with one even vertex:
+\begin{itemize}
+\item $\STL$ and \texttt{test1\_of\_stl} \cite{STL} (synthesis~\S19): Test1 from star-terminal
+Lov\'asz decompositions of $J$;
+\item STL-P, prescribing the pairing at $z$, and its equivalence with the terminal-matching
+property PTM$_3$ of $(J-z)+F$ (synthesis~\S20; \cite{TM});
+\item the chained walk theorem \cite[Thm~8.2]{TM}, which reduces PTM$_3$ to a base with one even
+vertex and six separations;
+\item $B_3\Leftrightarrow$ T(6)-i (endpoint-structure Cor.~30, \texttt{rooted\_six\_of\_bstmt3});
+\item the hub transfers and certificates of the d6-frontier paper (audit A9).
+\end{itemize}
+The dense shapes remain open in general:
+\begin{itemize}
+\item $K_2$, $P_3$, $K_3$ have no shape-specific result;
+\item $C_4$ is open for twins of degree at least eight;
+\item $\emptyset$ is open with full exterior vertices.
+\end{itemize}
+The present paper does \emph{not} close any of these. It reformulates all five shapes,
+uniformly and without exterior hypotheses, as Conjecture~\ref{conj:base}.
+
+\emph{Position in the chain of reformulations.} We have
+\[
+\text{Conj.~\ref{conj:base}}\ \Longrightarrow\ \text{STL-P (labelled pairings)}\ \Longrightarrow\
+\STL\ \Longrightarrow\ \mathrm{Test1}.
+\]
+By Proposition~\ref{prop:converse}, the (E7) form of Conjecture~\ref{conj:base} is equivalent to
+STL-P with two further prescribed terminal edges. The first implication is strict on single
+labellings: at order $9$ some labellings satisfy STL-P but have no base
+(Section~\ref{sec:comp}). Nothing here shows that Conjecture~\ref{conj:base} is easier than
+STL-P. What the reformulation gains is a base statement on the fixed graph $M$ that names, at each
+step of the construction, the path that must avoid a vertex, with no chain hypothesis.
+
+\emph{Comparison with the composition method.} The composition method of \cite{TM} produced a
+new proof only of a known case: far-apart neighbours, covered by six-even-incidence Thm~1(2)
+\cite[Rem.~8.5]{TM}. Its base hypothesis is unsatisfiable for $D\ne C_4$, and with
+\cite[Def.~8.1(ii)]{TM} the theorem as stated applies to no dense shape; both observations are
+from \cite[\S9(1)]{TM} and connections~\S Z.4. End-path tracking, proposed there, is carried out
+here for walks of length one. In the computed dense instances the base exists for almost every
+root, for all five shapes (Section~\ref{sec:comp}).
+
+\section{The formalisation}\label{sec:lean}
+\sloppy
+The file \texttt{T6Dense.lean} in \texttt{lean/GallaiLean} contains no \texttt{sorry}. The
+file \texttt{T6DenseAxioms.lean} in this directory prints only \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound} for the main theorems, and the full library
+builds.
+\begin{itemize}
+\item \texttt{delList}, \texttt{delList\_cons}, \texttt{delList\_single}: a graph minus a list of
+edges.
+\item \texttt{append\_full}: the append move with the new path's vertex sequence;
+\texttt{SameP}, \texttt{ExtP} and their lemmas: bookkeeping of paths through appends;
+\texttt{fanPred\_append}, \texttt{fanPred\_self}: Lemma~\ref{lem:transport}.
+\item \texttt{splitG}, \texttt{spl}, \texttt{splBase}: the split graph and the graphs of the
+construction; \texttt{collapse} with \texttt{collapse\_hE}, \texttt{collapse\_hEinj},
+\texttt{collapse\_hcov}: the identification.
+\item \texttt{split\_abc} (steps 1--3), \texttt{LeafOK}, \texttt{leafOK\_three},
+\texttt{LeafOK.of\_cover}, \texttt{split\_finish} (steps 5--8), \texttt{split\_stage4}.
+\item \texttt{star\_of\_appendBase} (Theorem~\ref{thm:append}), \texttt{star\_of\_protectedBase}
+(Theorem~\ref{thm:protected}, from \texttt{walk\_step\_protected} of \texttt{TightFan.lean}),
+\texttt{AppendBase}, \texttt{stl\_of\_appendBase}, \texttt{test1\_of\_appendBases}
+(Corollary~\ref{cor:test1}, from \texttt{test1\_of\_stl}).
+\item \texttt{baseM}, \texttt{baseM\_parity}, \texttt{LovaszBase},
+\texttt{appendBase\_of\_lovaszBase}, \texttt{stl\_of\_lovaszBase},
+\texttt{test1\_of\_lovaszBases}: the same with the hypothesis stated on $M$ itself, as in
+Definition~\ref{def:base}.
+\end{itemize}
+The Lean conclusions of \texttt{star\_of\_appendBase} and \texttt{star\_of\_protectedBase} are
+the $\STL$ data (star-terminal at $z$, and a long side at $y_i$ or a path of length two), not the
+transitions $x_i\,z\,y_i$. Lemmas~\ref{lem:labelling} and~\ref{lem:fanend},
+Propositions~\ref{prop:converse} and~\ref{prop:ep}, Corollary~\ref{cor:test1}(a) as a separate
+statement, and the step from Conjecture~\ref{conj:base} to T(6)-i through \cite{RS} and
+\cite[Thm~144]{MR} are not formalised.
+
+\begin{thebibliography}{9}
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
+(2005) 117--125.
+\bibitem{INC} Six-even-incidence (Nov.~2026 study of the collection), Theorem~1; summarised in
+\texttt{research/notes/reader-six-even-program.md}, audited in A6.
+\bibitem{L1S} J.~Williams, The avoidance conjecture $L_1^*$, \texttt{manuscripts/l1star}, 2026.
+\bibitem{MR} J.~Williams, Marked reduction, Nov.~2026 (Thms~114, 123, 133, 144).
+\bibitem{MS} J.~Williams, Separating many pairs in Lov\'asz decompositions,
+\texttt{manuscripts/multi-sep}, 2026.
+\bibitem{RS} Six-even-root-shapes (Nov.~2026 study of the collection); summarised in the reader
+notes.
+\bibitem{SP} J.~Williams, The spine: Gallai's conjecture and two deletion tests on $3$-connected
+graphs, \texttt{manuscripts/spine}, 2026.
+\bibitem{STL} J.~Williams, Star-terminal Lov\'asz decompositions and the deletion tests,
+\texttt{manuscripts/stl}, 2026.
+\bibitem{TF} J.~Williams, Fan's lemma at equality, \texttt{manuscripts/tight-fan}, 2026.
+\bibitem{TM} J.~Williams, Two terminal edges at once: the terminal-matching property of Lov\'asz
+decompositions, \texttt{manuscripts/terminal-matching}, 2026.
+\end{thebibliography}
+\end{document}

@@ -69,3 +69,12 @@ import GallaiLean.StarTerminal
 import GallaiLean.TerminalMatching
 import GallaiLean.TerminalMatching3
 import GallaiLean.TightFan
+import GallaiLean.L1Induction
+import GallaiLean.T6Dense
+import GallaiLean.DirectTest1
+import GallaiLean.TriangleBase
+import GallaiLean.ForestLift
+import GallaiLean.ConstrainedLovasz
+import GallaiLean.EulerianCone
+import GallaiLean.CycleInsert
+import GallaiLean.DLOne

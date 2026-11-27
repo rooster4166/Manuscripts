@@ -1279,3 +1279,465 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) Flowers.** No computation is needed. Every flower or receipt-or-flower output has two ends on the transversal (`flower_decomp_not_le_one`), so a flower cannot be the last move of a Lovász-type argument. Lovász decompositions never meet the hypothesis of `hub_cycles` with |T| ≥ 2 (`hub_cycles_card_le_one`).
 
 **Audit A24** (`research/audit/A24-tight-fan.md`): every committed number reproduced. Fan-image uniqueness was checked in 108,870 cases at order 7, and `exp1d.py` now asserts it. F1 (47 vs 68) and F2 (L1* converse) are corrected above.
+
+## E27. Lovász's induction for L1*: transfer calculus, TR and ST, candidate classes (cloud session `claude/l1-induction`)
+
+*Manuscript: `manuscripts/l1-induction/l1-induction.tex`. Scripts and outputs: `manuscripts/l1-induction/scripts/` (C++, `g++ -O2`; `regen.sh` regenerates every short run). Lean: `lean/GallaiLean/L1Induction.lean`. Audit: `research/audit/A25-l1-induction.md` (all corrections applied below).*
+
+**Tooling.**
+- `lind.h`: the exact avoidance oracle, a port of `l1s.c` (E25). Audit A25 cross-checked it with an independent transition-system oracle.
+- `orc2.h`: several constrained paths, with an optional disjointness constraint.
+- `dec.h`: enumerates all good Lovász decompositions and simulates the forced Fan chain exactly. Every decomposition and Fan image is checked.
+- Cross-check `xcheck2.cpp` (`out/xcheck2_4_7.txt`): `orc2` against enumeration, 31,704 queries at n = 4–7, 0 mismatches.
+- `moves.h` / `rec2.cpp`: the certificate class Rec. Intermediate instances are NOT required admissible.
+  - Moves (a)–(i) of manuscript Thm 3.1. (b) and (c) are applied also when c ∈ N(g). (h) is used only when c ∉ N(g), along ≤ 8 shortest routes in G − A; flag `R` allows every route.
+  - Flag `T` adds TR targets (move (t)).
+
+**(A) Certificates without intermediate admissibility** (`rec2.cpp`). A = Amax unless stated.
+- Moves (a)–(d) only: 26 of 78 not certified already at n = 6 (`out/rec_ad_only_6_8.txt`). K_{3,3} needs the split (g) at c.
+- All moves (`MB`):
+  - n ≤ 8: every admissible instance certified, for every admissible A: 9 / 23 / 405 / 2,150 / 27,837 at n = 4–8 (`out/rec_subsets_4_8.txt`).
+  - n = 7, |A| ≤ 2: all 1,868 certified (`out/rec_small7.txt`). E25's `cert.py`, which demanded admissible intermediates, failed 35 of them (A25 reproduces the 35).
+  - n = 9: 209 not certified (163 blocked); with every route, 208 (162) (`out/rec_adm9_MBR.txt`). With (b), (c) restricted to c ∉ N(g): 301 (A25).
+  - n = 10: 54.
+- **Stuck admissible instances** (`out/stuck0_9.txt`): good, but every instance-level move gives a bad child. There are 6 at n = 9 and none at n ≤ 8.
+  - They come from 5 non-isomorphic graphs. All share one mechanism: d(g) = 4, d(c) = 5, N(c) independent, N(g) ⊆ N(c), every target u with N(u) = {g, c, a_u}, a_u ∈ A.
+  - `H?ABvrw` is `G?Bvvo` (l1star §8) with a leaf at its degree-2 even vertex.
+  - All 6 are closed by the D-level tight transfer (`out/tt_stuck0_9.txt`): 76–92% of the good D' have their chain avoiding c, and all of these transfer.
+- With TR targets (`MBT`):
+  - n = 9: 56 not certified (35 blocked); with every route, 55 (34) (`out/rec_adm9_MBTR.txt`).
+  - Every admissible A: 57 of 574,566 (36 blocked; 55 / 34 with every route, A25). With (b), (c) restricted to c ∉ N(g): 203.
+  - n = 10: 33 of 328,510.
+  - Stuck states below the 56 (`out/explore9_MBT.txt`): 1,296, none admissible. 1,184 admit no move (N(g) ⊆ A).
+- **Gap** (`gap.cpp`, `out/gap_6_8*.txt`): the longest run of inadmissible intermediates in the best certificate.
+  - n = 7: 760 / 11 / 5 / 4 instances need gap 0 / 1 / 2 / 3; with TR, 764 / 11 / 5 / 0.
+  - n = 8: 1,589 / 68 / 112 / 20 / 0 / 3, with or without TR. Gap 5 is K8 − K3 with c in the triangle.
+  - This is a statement about certificates. It does not show that "within k moves of some admissible instance" fails to close (A25, F12).
+
+**(B) The transfer side: TR.** Tight target x ∈ N(g) ∩ N(c), c ∉ N(g), A ∩ (N[c] ∪ {x}) = ∅. If (G − gx, c, A) is good, is (G, c, A) good?
+- `tr2.cpp`, every such A: n = 7, 3,764 tests (2,156 admissible, 1,608 with A meeting N(g)); **n = 9, 1,735,156 tests (637,572 admissible, 1,097,584 with A meeting N(g)), 0 violations** (`out/tr2_7.txt`, `out/tr2_9.txt`; split by A25).
+- **Only the admissible part (TR_adm) is used by the reduction, and it is implied by L1Blocked.** Given ST, L1Blocked ⟺ TR_adm (Lean).
+- Sharpness (`trall.cpp`, `out/trall_5_7.txt`, n = 7, A arbitrary):
+  - non-tight targets: 6,672 tests, 0 violations;
+  - tight targets: 8,066 tests, 14 violations, all with A ∩ N(c) ≠ ∅. Example `FCZ~o`.
+- Re-choice (`rechoice.cpp`, `out/rechoice_5_7.txt`, `out/rechoice9.txt`): every good tight pair has a good D' whose chain avoids c. That is 8 / 457 / 82,079 pairs at n = 5 / 7 / 9.
+- Coverage (`exch.cpp`, `out/exch7.txt`; n = 7, A = Amax, all tight pairs with c ∉ N(g)): of 34,778 good D', 24,738 have the chain avoiding c and 375 more satisfy the exchange lemma. Of the remaining 9,665, 824 have a good plain Fan image. So a proof must re-choose D' or repair the image by some other argument.
+
+**(C) The hypothesis side: ST, ST', ST_out** (`stprime.cpp`; blocked instances, every admissible A).
+- n = 7: 406 instances. ST holds in all, ST' in 386, ST_out in all 266 with a non-tight target (`out/stprime7.txt`).
+- **n = 9: 135,188 instances. ST holds in all, ST' in 133,926. ST_out holds in all 100,990 with a non-tight target, and ST in all 34,198 with N(g) ⊆ N(c)** (`out/stprime9_v2.txt`).
+- **ST' is false**: `FEhv?` (n = 7), g = 4, c = 6, A = {3,5} or {3,4,5}. With {3,4,5} it is the l1star Cor 5.6(5) minimal shape. With {3,5}, g ∉ A, and the split (e) settles it anyway.
+- All 1,262 ST' failures at n = 9 have N(g) ⊆ N(c).
+  - 1,238 have d(g) = 2 with N(g) independent; 619 of these have g ∈ A (the minimal shape).
+  - 24 have d(g) = 4, d(c) = 5.
+  - In 1,208 of the 1,262, every target u has N(u) ∖ {g, c} ⊆ A.
+- L1E (`l1e.cpp`, `out/l1e_5_9.txt`): with A = Amax and c ∉ N(g), it holds in all 8 / 338 / 46,638 instances at n = 5 / 7 / 9.
+- Move (s) (`smove.cpp`): Q_c = cu, i.e. G − cu − gu with Q_g, Q_u disjoint. It closes the 6 stuck instances. It is a three-even statement, so it gives no proof.
+
+**(D) Targets and the c-admissible class.** n = 9, blocked, A = Amax (`out/targets9_summary.txt`, `out/badtargets9.txt`):
+- 41,074 (instance, target) pairs; 496 have (G − gu, c, A) bad: 476 with d(c) = 1, and 20 with d(g) = 2, d(c) = 3.
+- No simple rule always picks a good target. The best rule is right in 15,241 of 15,277.
+- Every-target form over all instances (`out/alltarget9.txt`): there is no bad target when d(g) ≥ 4 and d(c) ≥ 5, or when d(g) ≥ 6 and d(c) ≥ 3. With d(g) = 4, d(c) = 3: 16 bad of 50,516. (The earlier sentence "0 for d(c) ≥ 5 or d(g) ≥ 6" was false; there are 41 bad for d(g) ≥ 6, d(c) = 1 and 28 for d(g) = 2, d(c) ≥ 5.)
+- The 476 bad d(c) = 1 children are not two-even instances (A25): 442 have u = y, 29 do not force Q_c = cy, and 5 force it at distance 2.
+- Dead ends of Case I in the c-admissible class (`minobs.cpp`, `out/minobs_5_7.txt`): the smallest is the child `DEk` − 04 (g = 4, c = 1, A = {0,2}) of the admissible (`DEk`, 1, {0,2}), at n = 5.
+- TR-licensed walks to an admissible instance (`walkadm.cpp`, `out/walkadm_7_9.txt`): 12 of 83 at n = 7, 2,325 of 15,277 at n = 9. The first version's 24 and 4,283 counted unlicensed trails (A25, F3).
+
+**(E) Walk to a degree-two vertex** (manuscript Prop 3.3, proved on paper; `walk2.cpp`, `out/walk2_7_9.txt`). n = 9, A = Amax, blocked, 15,277 instances:
+- mode 0: the walk applies to 3,969;
+- mode 3: l1star Prop 5.3 as stated applies to 149, all with d(c) = 1; 45 of these have no walk (A25);
+- mode 1, tight steps as far as TR licenses: walk 6,552, Fan trail 2,325, either 7,506 (49%);
+- mode 2, the first version's unrestricted trails (12,980 / 4,283 / 13,259): not all licensed by TR.
+
+**(F) Order 11 and random graphs.** `randtest.cpp`: budget 2·10⁶, A = Amax. So its TR tests are TR_adm, i.e. L1* itself.
+- Exhaustive slices k/100 of order 11, k = 0–3 (`out/slice11_*of100.txt`): 554,998 graphs, 1,037,788 blocked instances.
+  - ST: no failure (31 undecided).
+  - ST_out (slices 1–3): 776,230 with a non-tight target, no failure (51 undecided).
+  - L1E: no failure.
+  - TR_adm: 6,046,289 tests, 0 violations (5,308 undecided).
+- Random, n = 11 and 13, 3,000 graphs (`out/rand_11_13_v3.txt`): 9,071 blocked; ST 9,069 (2 undecided); ST_out 8,401 / 8,410 (9 undecided); L1E 9,068 (3 undecided); TR_adm 32,267 tests, 0 violations.
+- Random, n = 15, 600 graphs (`out/rand_15_v3.txt`): 2,816 blocked; ST 2,805 (11 undecided); ST_out 2,668 / 2,683 (15 undecided); TR_adm 10,460 tests, 0 violations.
+- The first run (`out/rand_11_13.txt`) reported 2 spurious L1E failures: a budget-hit target was not marked undecided. Both hold (`out/l1e_check13.txt`).
+**(F) Random graphs** (`randg.py` + `randtest.cpp`, budget 2·10⁶, A = Amax).
+- n = 11 and 13, 3,000 graphs, 9,071 blocked instances (`out/rand_11_13_v2.txt`):
+  - ST: 9,069 hold, 2 undecided;
+  - L1E: 9,068 hold, 3 undecided;
+  - TR: 32,267 tight tests, 0 violations, 150 undecided.
+  - The first run, `out/rand_11_13.txt`, reported 2 L1E "failures". They were tester artefacts: a target whose ST query hit the budget was skipped for L1E without being marked undecided. The tester is fixed; both were rechecked with no budget (`out/l1e_check13.txt`) and hold.
+- n = 15, 600 graphs, 2,816 blocked instances (`out/rand_15.txt`): ST 2,805 hold, 11 undecided; L1E 2,803 hold, 13 undecided; TR 10,460 tight tests, 0 violations, 146 undecided.
+
+## E28. The dense T(6)-i residual: the append chain and end-path bases (cloud session `claude/t6-dense`)
+
+*Manuscript: `manuscripts/t6-dense/t6-dense.tex`. Scripts: `manuscripts/t6-dense/scripts/` (`gcc -O2 -o lsearch lsearch.c`; Python 3 + networkx). Raw outputs in `scripts/out/` (git-ignored, regenerable by `run_big.sh`, `run_lean.sh` and `run_lean2.sh`). Lean: `lean/GallaiLean/T6Dense.lean`.*
+
+**Tooling.**
+- `lsearch.c`: the depth-first decomposition search of `tools/stl.c` / `walk3p.c`, with memoised failures. Its constraints depend only on the path being closed, so the memo stays exact:
+  - `sep` (no path contains both);
+  - `ef` (the path with an end at v avoids S);
+  - `ep` (no path has ends exactly a, b);
+  - `es` (the path through the edge pq has its end on p's side outside S).
+  - Constrained vertices are expanded first. A node budget gives "undecided".
+- `walksim.py`: leaves, Fan transfers with the **forced chain** (it fails exactly when a blank is reached), the static predecessor check, and the J-form un-lift (every leaf → z, append x_i). It **verifies every final decomposition of J edge by edge**: paths simple, every edge once, end counts, star condition.
+- `c4.py`: the C4 shape. Labelling x2 y2 y3 x3 along the cycle, {x1,y1} universal; chains P2 = y3x2, P1 = y2x1.
+- `dense.py`: all shapes, all labellings with r ∈ {y1,y2,y3} and x1y2, x2y3 ∈ B.
+  - Mode **`lean`** is exactly the Lean hypothesis `AppendBase`: `endT` first, else `leanE6`, checking that the static condition then holds in D3.
+  - `endT` = (E1)–(E5) + (E7): all seven steps are appends (Thm 2.2).
+  - `leanE6` = (E1)–(E5) + (E6) exactly as in Lean (Thm 2.3).
+  - `endA` = (E1)–(E5) + (E6) without its clause w = y3. The clause is redundant (A26 §1.2), but Thm 2.3 is proved with it, so `dense.py endA` bases are checked by execution only. (`c4.py endA` uses the C4 labelling, where x2y2, y2y3 ∉ B, and is exactly (E1)–(E6).)
+  - `endZ` = `endA` with z and y3 added to the mask (every leaf = z): stronger than (E6), so `endZ` bases satisfy Thm 2.3.
+  - `end` = (E1)–(E4) with Fan walks: the hypothesis of no theorem.
+- `gen_resid.py`: random 3-connected J with B[U] = K6 − D and *some* of the residual conditions of a smallest failure (not imposed: C4 twins of degree ≥ 8, MR Thm 144's d(r) ≥ 8 with ≥ 3 core neighbours, the bad-vertex table):
+  - δ(B) ≥ 6, δ(B[O]) ≥ 4;
+  - ≥ 3 odd neighbours per site, ≥ 5 for a universal site;
+  - |S(x)| ∈ {0,3,4,5,6};
+  - C4: closed twins (both opposite pairs; TW = 1: one pair);
+  - ∅: a full exterior vertex.
+  - With |O| = 8: |B| = 14, 64–82 edges.
+
+**(A) C4, the chained walk with one protected step** (`c4.py`, 10 `gen_core` graphs, |B| = 14, 4 seeds, budget 2·10⁶; 40 roots, 320 configurations).
+- Mode `sep` (the six separations of TM Thm 8.2, protected step executed with the forced chain; these chains violate TM Def 8.1(ii) for C4, so the step is not guaranteed):
+  - base found in 304/320 configurations (230 searches undecided);
+  - the protected step succeeds for 834 of 1,050 distinct bases;
+  - every root certified (40/40); the static condition held for 726 bases.
+- Mode `end` (E1–E4): 320/320 configurations have a base; 992 of 1,280 bases execute; 40/40 roots.
+- Mode `endA` (E1–E6): 320/320 configurations; **all 1,280 bases execute** (as the theorem predicts; 0 W2 failures); 40/40 roots.
+- Residual C4 graphs (`gen_resid.py`, |O| = 8, 5 graphs):
+  - `endA`: 160/160 configurations, 290/290 bases execute; |O| = 10: 160/160, 282/282.
+  - `sep`: **0/160 configurations have a base found**: every one of the 320 searches hit the 5·10⁶ budget.
+
+**(B) All shapes, the append chain** (`dense.py`; a root is certified if some labelling has a base and the executed construction verifies).
+
+| graphs | mode | J | roots | certified | failures of executed bases |
+|---|---|---|---|---|---|
+| `gen_core` ∅, K3, C4, \|B\| = 14 | endA | 18 | 108 | 108 | 0 |
+| residual, 3 per shape, \|O\| = 8 | endA | 15 | 90 | 90 | 0 |
+| same | endZ | 15 | 90 | 90 | 0 |
+| same, a subset: 3 K2, 3 C4, 2 P3 | endT | 8 | 48 | 48 | 0 |
+| residual C4, \|O\| = 8 (TW = 2) | endZ | 20 | 120 | 120 | 0 |
+| residual K3, \|O\| = 8 | endZ | 20 | 120 | 120 | 0 |
+| residual P3, \|O\| = 8 | endZ | 20 | 120 | 114 | 0 |
+| same subset (3 K2, 3 C4, 2 P3) | lean | 8 | 48 | 48 (K2: 16 E7, 2 E6) | 0 |
+| residual K2, \|O\| = 8 (partial run, 4 graphs) | endZ | 4 | 24 | 24 | 0 |
+| residual C4, \|O\| = 8 (TW = 2) | lean | 8 | 48 | 48 (all via E7) | 0 |
+| residual K3, \|O\| = 8 | lean | 8 | 48 | 48 (46 E7, 2 E6) | 0 |
+| residual P3, \|O\| = 8 | lean | 8 | 48 | 48 (all E7) | 0 |
+| residual ∅ (full exterior vertex), \|O\| = 8 | lean, ≤ 60 labellings | 8 | 48 | 42 | 0 |
+| residual C4 (TW = 2), \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (all E7) | 0 |
+| residual P3, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 44 (41 E7, 3 E6) | 0 |
+| residual K3, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 42 (all E7) | 0 |
+| residual K2, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 42 (40 E7, 2 E6) | 0 |
+| residual ∅, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (45 E7, 3 E6) | 0 |
+| residual C4 (TW = 1), \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (all E7) | 0 |
+| residual K2, \|O\| = 8 | lean, ≤ 60 labellings | 8 | 48 | 30 (all E7) | 0 |
+
+- Uncertified roots: every search of every tried labelling hit the node budget (or the 60-labelling cap was reached); no search returned NONE for them. Each such graph has all or most of its roots uncertified, which points at the search, not at the graph:
+  - endZ P3, \|O\| = 8: `MV~~Nv{f~|q|~\lj_`, 6 roots;
+  - lean P3, \|O\| = 10: `OV~~N}}~nyqz|Ef[~RFzF`, roots 1–4;
+  - lean ∅, \|O\| = 8: `M~~zwFn~}~hi~z~z?`, all 6 roots;
+  - lean K3, \|O\| = 10: `OF~~~U|^ay^v^hvayjnzw`, all 6 roots;
+  - lean K2, \|O\| = 10: `O^~zn~{|nt}]vxXR}{FsL`, all 6 roots;
+  - lean K2, \|O\| = 8: `M^~~Zxv^N~RJZujl_`, `M^~|x|vvhrnMnLy~_`, `M^~yn|{~mv^zJ\F]?`, all 6 roots each (the first also uncapped: all 240 labellings undecided).
+  - Total: 46 roots in 8 graphs.
+  - **Recheck with a count of proved absences** (`dense.py` now prints `none=` when a search returns NONE). For the five graphs found last (`out/hard3`–`hard5`), every one of the 4 searches per labelling was undecided (und = 4 · labs_tried), and none = 0.
+  - **The search, not the base.** On `M^~~Zxv^N~RJZujl_`, STL-P for the labelled pairing (weaker than the base) is undecided for 20/20 labellings at the same budget 2·10⁶ (scratch check with `equiv.jsharp_query`). Dense residual graphs of this size are at the limit of `lsearch`.
+  - A rerun of `OV~~N}}…` and `M~~zwF…` with budget 10⁷ and 3 seeds timed out after 3,000 s inside the first graph: inconclusive.
+- "failures" counts bases whose executed construction did not verify. In the six-separation and `end` modes the protected step fails for 216/1,050 and 288/1,280 bases (A); those modes are not theorem hypotheses. No base satisfying (E1)–(E5) with (E6) or (E7), in any mode, failed to verify.
+
+**(B′) Exhaustive, order 9** (`relabel.py` on `terminal-matching/scripts/out/d6_9.g6`; exact search, no budget).
+- The 1,819 3-connected J of order 9 with z the only even vertex and d(z) = 6 include 28 with a dense core: 2 ∅, 6 K2, 8 P3, 5 K3, 7 C4.
+- `dense.py lean 1 0`: all 168 roots certified at the first labelling, through (E7).
+- `labstats.py 0`, over all 42,432 (root, labelling) pairs with the chain edges:
+  - 42,384 have an (E7) base and 24 more an (E6) base;
+  - 24 (all C4) have none;
+  - every root has a base for ≥ 96.7% of its labellings;
+  - 0 failures of executed constructions.
+- The random sparse graphs of orders 11–17 of E24(J) have no dense core.
+- **STL-P versus the base, per labelling** (`stlp.py`, exact search; side (b) of Prop 2.6 is `equiv.py`, written by the auditor). For all 14,144 labellings with chain edges:
+  - STL-P for the oriented pairing (transitions x_i z y_i, x_i an end) holds for **all 14,144**;
+  - an (E7)-base exists for 14,128, and side (b) of Prop 2.6 (STL-P plus x1y2 terminal at y2 and x2y3 at y3) holds for exactly the same 14,128 (A26, 0 disagreements);
+  - an (E6)-base exists for 8 of the other 16;
+  - 8 labellings, all C4, have no base although STL-P holds.
+  - So Conj 5.1 is strictly stronger than STL-P on single labellings, but at order 9 it costs no root.
+
+**(B″) The base conjecture versus L1\*** (`admissible.py`, `partial.py`).
+- A condition "P_c avoids A" is L1\*-admissible if A misses N_M[c] ∪ N_M(x3).
+- Fewest inadmissible base conditions over all labellings:
+  - C4: E1, E7;
+  - K3: E1, E2;
+  - P3: E2, E4′, E7;
+  - K2: E1, E2, E4′, E7;
+  - ∅: every one of E1–E7 except the avoidance of z.
+  - E4′ is the avoidance strengthening of E4.
+- Residual C4 graphs (|O| = 8, canonical labellings, 3 seeds): 1,920 Lovász decompositions of M were found satisfying only the admissible conditions (E1′, E2, E3, E4, E5). Of these, E1 holds in 186, E7 in 1,042, and both in 120.
+- So the inadmissible conditions are binding, and the base conjecture is a joint statement in the regime A ∩ N(g) ≠ ∅, where single-constraint L1\* is false in general (`DTw`).
+
+**(C) Undecided searches.** Dense residual graphs make many searches hit the budget. On average a root needs 3–25 labellings, depending on shape; ∅ and P3 are the hardest. No search returned NONE (a proved absence of a base) for a labelling that was later needed.
+
+**Verdict** (revised after audit A26).
+- The (E7) form of the base is **equivalent** to STL-P with two further prescribed terminal edges (Prop 2.6). So Conj 5.1 is a uniform *strengthening* of STL-P, not a reduction to a weaker statement. It is strictly stronger on single labellings ((B′): 8 labellings with STL-P and no base).
+- In the computed instances, for all five dense shapes, every root has a labelling with an append base, except 46 roots in 8 graphs that are budget-undecided. No search proved a base absent for a needed labelling, so the data show no counterexample to Conj 5.1.
+- By the Lean theorems this gives STL at y1, y2, y3, and Test1 on every fully certified instance.
+- The six-separation base of TM Thm 8.2 is the wrong hypothesis in the dense regime. It is impossible for D ≠ C4 (TM §9(1)), and in residual-style C4 graphs it was never found within the budget.
+
+**(D) Audit A26** (`research/audit/A26-t6-dense.md`, fresh subagent).
+- Mathematics correct: Thms 2.2, 2.3, Cor 2.4, Lemmas 2.5, 3.1, 4.1 SOUND. Prop 4.2 true, with an incomplete proof sketch, since rewritten.
+- Lean faithful: build green, no `sorry`, standard axioms; `LovaszBase` is Def 2.1 verbatim, and the Lean (E6) is the paper's. The Lean conclusions record the STL data, not the transitions; the paper's Lean tags now say so.
+- One ERROR, fixed: roots isolated in the core have D ⊇ K_{1,5}; Conj 5.1 ⇒ T(6)-i needs MR Thm 144 to exclude them.
+- Novelty corrected: the (E7) equivalence (above); end-path tracking was proposed in TM §9(1); STL / `test1_of_stl`, STL-P ⇔ PTM₃ and TM Thm 8.2 were already one-even-vertex reductions.
+- Data overstatements fixed: "every root"; mode definitions; the failure counts of non-theorem modes; the K2 cells.
+
+## E29. The triangle base conjecture and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`)
+
+*Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§§6–7). Scripts: `manuscripts/direct-test1/scripts/` (`tb.py`, `tb_compat.py`, `disj_general.py`, `dl_rand.py`, `dl_recheck.py`; oracle `gcc -O3 -o route_ext tools/route_ext.c`; Python 3 + networkx). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
+
+**Tooling.**
+- `tb.py` handles every J, every root r ∈ N(z) with d(r) ≥ 3, and every data choice (w, M0).
+  - The base question for each data choice is 2^(m−1) exact per-end avoidance queries (route_ext `A`), one per orientation of the disjunctions.
+  - Every base found is checked independently (an edge partition of M, ends = deg mod 2, the disjunctions), lifted by Steps 1–2 of Thm 2.1, and the lift is verified (an edge partition of J − z into simple paths, ≤ k paths, ≥ 2 ends at r).
+  - At a root with no base, Test1 is decided exactly over all profiles with b ≤ 3.
+  - Budgeted queries retry undecided orientations with further seeds.
+- `tb_compat.py`: per data choice, which orientations are satisfiable and which pairs are satisfiable alone (the multi-pair compatibility question).
+- `disj_general.py`, `dl_rand.py`: the disjunctive condition in arbitrary graphs with one even vertex g (Conjecture DL).
+
+**(A) Exhaustive, order ≤ 9.** Every connected J with exactly one even vertex and d(z) ≥ 4 (`stl/scripts/one_even_{5,7,9}.g6`), every root with d(r) ≥ 3, every data choice, exact.
+
+| n | κ(J) | graphs | roots with data | base | failures | Test1 at failures |
+|---|---|---|---|---|---|---|
+| 5 | 1 / 3 | 2 / 1 | 3 / 4 | 3 / 4 | 0 | – |
+| 7 | 1 | 41 | 115 | 108 | 7 | fails at all 7 |
+| 7 | 2 / ≥3 | 6 / 28 | 24 / 114 | 24 / 114 | 0 | – |
+| 9 | 1 | 3,317 | 11,659 | 11,607 | 52 | fails at 28, holds at 24 |
+| 9 | 2 | 583 | 2,402 | 2,402 | 0 | – |
+| 9 | ≥ 3 | 5,231 | 22,772 | 22,772 | 0 | – |
+
+- **Every root with data of every 2-connected J of order ≤ 9 has a triangle base.**
+- At order 9, 36,779 of the 36,781 roots with a base have one at the first data choice tried. 123,787 bases were lifted, and every lift verified.
+- **Every failure is explained by universal twins.** Each of the 243 data choices at the 52 failing roots (n = 9) has a pair (a_i, b_i) that is a pair of universal twins (N(a)=N(b)=C−{a,b}) of a component C of M. Such a C misses z.
+- Roots without data: 5,375 at n = 9, where J[N(z) − r] has no near-perfect matching.
+
+**(B) Orientations and multi-pair compatibility** (`tb_compat.py`, 3-connected, n = 9: 5,231 graphs, 25,210 roots, 88,526 data choices).
+- 88,522 data choices have a base.
+  - The other 4 (d(z) = 8, two graphs) each contain a universal-twin pair in a component of M not containing z.
+- **0 compatibility failures**: whenever each pair's disjunction is satisfiable alone, all of them are jointly.
+- Hence **every data choice with M connected has a base**, which is the strong form predicted by DL (Prop 7.4).
+- Orientations:
+  - m = 2: both orientations hold in all 20,052 data choices.
+  - m = 3: all four in 45,576 of 45,644.
+  - m = 4: all eight in 22,700 of 22,830.
+- Order 7, 3-connected: 378/378 data choices have a base.
+
+**(C) The disjunctive condition in arbitrary graphs (Conjecture DL).** Setting: G has one vertex g of positive even degree, and the pairs are disjoint pairs of non-adjacent odd vertices.
+- One pair, exhaustive (`disj_general.py … 1`):
+  - n = 5: 21 pairs, 3 failures.
+  - n = 7: 947 pairs, 14 failures.
+  - n = 9: 166,217 pairs in 11,936 graphs, 170 failures.
+  - **Every failure is a pair of universal twins** (a, b adjacent to every other vertex, hence to g).
+  - **The failures are exactly the universal-twin pairs**: 3, 14 and 170 of them at n = 5, 7, 9. Every universal-twin pair fails, and nothing else does.
+- Two pairs, exhaustive:
+  - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
+  - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
+- Two pairs, order 9 sample (every 20th graph of `one_even_9.g6`): 597 graphs, 31,701 instances, **0 compatibility failures**. The 45 failures each contain a failing single pair.
+- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds.
+
+  | n | p | k | instances | decided OK | budget-undecided | failures | one orientation fails (k = 1) |
+  |---|---|---|---|---|---|---|---|
+  | 11 | 0.4 | 1 / 2 / 3 | 268 / 148 / 46 | 266 / 148 / 46 | 2 / 0 / 0 | 0 | 17 |
+  | 11 | 0.6 | 1 / 2 / 3 | 296 / 243 / 111 | 286 / 230 / 98 | 10 / 13 / 13 | 0 | 99 |
+  | 11 | 0.8 | 1 / 2 / 3 | 292 / 231 / 137 | 292 / 229 / 134 | 0 / 2 / 3 | 0 | 168 |
+  | 13 | 0.4 | 1 / 2 / 3 | 283 / 196 / 76 | 283 / 190 / 75 | 0 / 6 / 1 | 0 | 58 |
+  | 13 | 0.6 | 1 / 2 / 3 | 296 / 269 / 169 | 288 / 259 / 152 | 8 / 10 / 17 | 0 | 99 |
+  | 13 | 0.8 | 1 / 2 / 3 | 299 / 282 / 240 | 296 / 276 / 229 | 3 / 6 / 11 | 0 | 156 |
+  | 15 | 0.5 | 1 / 2 / 3 | 99 / 94 / 57 | 99 / 87 / 55 | 0 / 7 / 2 | 0 | 23 |
+  | 15 | 0.7 | 1 / 2 / 3 | 100 / 99 / 89 | 97 / 94 / 82 | 3 / 5 / 7 | 0 | 35 |
+
+  - Totals: 4,420 instances, **0 failures**, 129 budget-undecided.
+  - Exact rechecks (`dl_recheck.py`, no budget, 300 s per query) of the first 24 undecided instances: 23 have a base, 1 timed out, none is absent.
+- **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
+- **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
+
+**(C′) Reach of the proved cases** (`TriangleBase.lean`): 3-connected J of order 7 and 9, roots with data.
+- m = 2 (11,463 roots):
+  - far-apart (Prop 7.1(b), unconditional): 2,491;
+  - a ≁ w or b ≁ w (Prop 7.2, conditional on L1\*): 9,575, which includes all the far-apart roots;
+  - left over: 1,888 roots where every data choice has a, b ∈ N(w).
+- m = 3: packed pairs (Prop 7.1(a)) at 12 of 10,158 roots.
+- m = 4: at 0 of 1,265 roots.
+
+**(D) Residual families of T(6)-i** (`t6-dense/scripts/gen_resid.py`, budget 2·10⁶, seeds 7, 11, 13).
+
+| family | graphs | roots | certified | undecided | proved absent |
+|---|---|---|---|---|---|
+| \|O\| = 8, 6 per shape (∅, K2, P3, K3, C4 TW=2) | 30 | 180 | 178 | 2 (one ∅ graph) | 0 |
+| \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
+
+- The 2 undecided roots, `M~~zRz{~m~~lX|j~_` at r = 1 and 4 (J-numbering), stayed undecided at budget 2·10⁷ with five seeds. clt's local search then found witnesses (`manuscripts/clt/data/triangle_base_witnesses.txt`), which `tb.py`'s `check_base` + `lift` + `verify_test1` confirm. So the family is **180/180**.
+
+**(D′) Random 3-connected J** (`tb.py rand`, the dtl.py generator, budget 2·10⁶, three seeds).
+- n = 11, d(z) = 4: 25 graphs, 100 roots, 100 bases.
+- n = 11, d(z) = 6: 25 graphs, 150 roots, 150 bases.
+- Every lift was verified.
+- n = 11, d(z) = 8: stopped after a few graphs. The only roots it left undecided, 7 roots of `Jev}~nZ\u~_` (κ = 3), all have a base by exact search with no budget, at the first data choice, with the lift verified. The budgeted search's random vertex order was unlucky there.
+- n = 13, d(z) = 8 (the coordinator's run, `scripts/out/d8/`): all 71 roots of 9 graphs have a base. 28 were budget-undecided; they were settled by clt's local search (`tb_ls.py`), each witness checked and its lift executed (`verify13.log`, 28/28).
+
+**(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
+- **The triangle base certifies all 48 of their roots.**
+  - 42 roots are certified at budget 2·10⁶ with seed 7. This covers every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs.
+  - The other 6 are certified at budget 2·10⁷ with seeds 7, 11, 13, 17, 19: the ∅ graph at r = 1, 3; K2 |O|=10 at r = 5; `M^~~Zxv^N~RJZujl_` at r = 1, 3, 5. Each took 23–270 s.
+- Every lift was verified edge by edge.
+- So on the instances where the dense-residual base was out of reach, the triangle base is decided by the same oracle. It is weaker in form, and much easier to find.
+- On order-9 dense cores the two bases coexist at every root and data choice, as far as checked: the auditor's `e7dense.py` compared 18 of the 28 cores (108 of 168 roots) before it was stopped (A28).
+
+**(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
+- n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
+- n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
+- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28), at 2·10⁸ (coordinator) and at 2·10⁷ with seeds 7–29, and the exact run did not finish in 2 hours. clt's local-search witness (w = 2, pairs (3,4), (5,6)) is confirmed here by `tb.py`'s checks: the base is verified and the lift is a valid Test1 decomposition. So the K2-residual run is **36/36**.
+
+**(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
+- **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.
+  - Test1 was decided exactly at each root.
+  - Forest base search: for each w, up to 30 forest T-joins of J − {z, r} (the T-join inside a spanning tree) and up to 8 rootings.
+  - Conditions (i) and (ii) together are exactly route_ext's query C with r_v = {v, p(v)}.
+- **Results.**
+  - Test1 holds at all 2,438 roots.
+  - A forest base was found, and its lift verified, at 2,435.
+  - At the remaining 3 roots, the exhaustive check (every w, every forest T-join via T-join + cycle space, every rooting, exact) finds **no forest base**. An independent brute force over all Lovász decompositions of M agrees (735 and 2,100 decompositions).
+  - Condition (i) alone is satisfiable at every rooting, so the obstruction is the sibling condition (ii).
+- **The counterexamples.**
+  - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
+  - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
+- **Classification of the three roots** (coordinator's question): both graphs are cones or near-cones of K_{2,t} type at the root.
+  - `HsaCB~~`: a cone (d(z) = 8 = n − 1) over the Eulerian B = K_{2,6}, at either hub.
+  - `HsaAD~}`: a near-cone (d(z) = 6; z misses 2 of the 8 vertices of B). B has hubs r (degree 6) and a second hub of odd degree 7. The even subgraph of B is a star with four leaves at r, plus an isolated vertex.
+  - In all three, many degree-2 vertices of B hang between r and a second hub, and they become siblings at r.
+- **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
+
+**(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
+- n = 13, d(z) = 8, r = 1: base found (184 s);
+- n = 15, r = 1, 2: see below.
+
+## E30. Constrained Lovász decompositions: the compatibility boundary (cloud session `claude/clt`)
+
+*Manuscript: `manuscripts/clt/clt.tex`. Scripts: `manuscripts/clt/scripts/` (`enum.c`, `trans.c`, `clt_lib.py`, `rand_clt.py`, `t_l1ee.py`, `lsls.py`, `t6probe.py`, `t6all.py`; regeneration commands in `manuscripts/clt/README.md`). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/ConstrainedLovasz.lean`. Audit: `research/audit/A27-clt.md`.*
+
+**Method (exact).** `enum.c` enumerates *all* Lovász decompositions of each connected graph with at most one even vertex (geng `-c`, orders 4–9) and keeps the inclusion-minimal violation sets over the atoms av(c,a) (P_c ∌ a) and ne(u,v) (P_u ≠ P_v). Universe `-v 1`: av(c,a) with a ∉ N[c] ∪ N(g) (local); `-v 0`: all av atoms. A system is unsatisfiable iff it meets every violation set; `trans.c SHAPE K` finds a smallest such hitting set whose atoms have the prescribed shape (iterative deepening, branching on the unhit member with fewest admissible atoms). B-local systems have at most n − 1 atoms, so K = 8 (n = 9) and K = 10 (n ≤ 8) are exhaustive for them.
+
+**(A) Graphs with an unsatisfiable *local* system of the given shape** (number of graphs; n = 9: all 11,936 graphs, the densest 1,217 finished after the first write-up).
+
+| shape (local atoms) | n=4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|
+| graphs | 2 | 7 | 13 | 130 | 224 | 11,936 |
+| star (one tail; L1* local form) | 0 | 0 | 0 | 0 | 0 | – |
+| **bip1** (CLT-B1: bipartite, in-degree ≤ 1, cross-local) | 0 | 0 | 0 | 0 | 0 | **0** |
+| **bipx** (CLT-B: no cross-locality), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | **0** |
+| bipx, d(g) = 2 | – | 0 | – | 2 | – | 44 |
+| bipx + 2-cycles at distance ≥ 3 (`bipx2`), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | 0 |
+| match (fixed orientation; L_N with g) | 0 | 0 | 0 | 2 | 0 | – |
+| bip (in-degree unrestricted, cross-local) | 0 | 3 | 1 | 46 | 16 | – |
+| in1 (in-degree ≤ 1, chains allowed) | 1 | 2 | 10 | 34 | – | – |
+| lin (in1 + acyclic, out-degree ≤ 1) | 0 | 2 | 3 | 14 | – | – |
+| any (K = 6; at n = 8, 222 with K = 10, audit A27) | 1 | 4 | 12 | 105 | 221 | – |
+
+- All 46 bipx failures (n = 7, 9) have d(g) = 2 (44 with g in a triangle) and a head adjacent to another tail. With cross-locality (bip1) there are none.
+- (Adding ne atoms between arbitrary non-avoided vertices fails in every graph, trivially: the set of all ne atoms among the odd vertices is unsatisfiable because every path has two ends; audit A27 F10.)
+- Minimal orders (audit A27 F1): the in-degree and chain relaxations already fail at n = 5 with d(g) = 2 (`DEk`, `DTw`, `D]w`; `DEk` with av(1,2), av(3,2) is cross-local, bipartite, in-degree two); among graphs with d(g) ≠ 2 the first failures are at n = 6 (`EEiW`, `ECqg`, `EErw`).
+- With tails and heads of degree ≥ 3 and d(g) ≥ 4: lin fails once at n = 8 (`G?oppg`, a bridge with two leaves), func (2-cycles, longer cycles) at n = 6, 8, in1 at n = 6, 8 (52 graphs).
+- Separation atoms in graphs whose even vertices are pairwise at distance ≥ 3 (`-E -v 5`, n ≤ 8): Lovász decompositions exist in all 552 such graphs, but a single pair at distance ≥ 3 is already unseparable in 45 of them (1 at n = 6, 44 at n = 8); every one of the 45 has exactly two even vertices, at least one of degree 2.
+
+**(B) Small counterexamples** (manuscript §4; most with hand proofs; minimal among graphs with d(g) ≠ 2): K_{2m} (locality at c), the path c g a (locality at g), `EEiW` (n = 6, all odd: in-degree two, av(1,{0,5}), av(2,0)), the net `ECqg` (n = 6: a chain 2→0→1→5 with 3→4), K_{1,3} (directed and transitive triangles; simultaneous confinement), `EErw` (two 2-cycles at distance two), `FCRV?` (n = 7, d(g) = 2: cross adjacency).
+
+**(C) Non-local atoms, compatibility** (`trans match 10 h1` on `-v 0`: atoms that are unsatisfiable alone are excluded, so any hit is a joint failure of individually satisfiable atoms). n ≤ 6: none. n = 7: 18 graphs (sizes 2–3), e.g. `FCdcw`, d(g) = 4, av(2,0), av(5,3), av(1,4) with all heads in N(g). (n = 8 did not finish in 25 min.)
+
+**(D) Random, maximal systems** (`rand_clt.py`; random connected graphs, parity repaired; every admissible vertex assigned to a random tail; up to 4 tails; exact DFS, budget 2·10⁶, then local search on undecided instances):
+
+| form | orders | instances | failures | undecided |
+|---|---|---|---|---|
+| bip1 (500 with ≥ 2 nonempty avoid sets, 487 empty) | 11–16 | 1,800 | 0 | 4 |
+| bip1 + tails' end paths distinct (same systems) | 11–16 | 1,800 | 0 | 5 |
+| bip1m (bip1 redrawn until ≥ 2 avoid sets are nonempty) | 11–14 | 1,200 | 0 | 0 (3 by local search); orders 15–16 stopped for time |
+| bipx (CLT-B, d(g) ≠ 2; 1,203 with ≥ 2 nonempty, 30 empty) | 11–16 | 1,800 | 0 | 0 (55 by local search) |
+| lnmatch (L_N with g, local) | 11–16 | 1,800 | 0 | 72 |
+| n = 10 controls (star, bip1, bip1ne, lnmatch) | 10 | 800 | 0 | 5 |
+
+**(E) L1* together with EE** (`t_l1ee.py`, A = V − (N[c] ∪ N(g))): for every x ∈ N(g) − c, Q_c ∩ A = ∅ and xg terminal at x. n = 5: 4/60 fail; n = 7: 39/2,210 fail; n = 9 (all 11,936 graphs): 897/341,950 fail. Every failure has N(x) ∩ (A − g) ≠ ∅ and c ∉ N(g) (at n = 9: 733 with x ∈ N(c), 164 with x ∉ N(c); d(g) = 2, 4, 6 in 550, 306, 41). For *some* x: 0 failures at n ≤ 9 (this is L1E of l1-induction, which implies ST).
+
+**(F) The t6 base for every labelling** (`t6all.py`; residual graphs `gen_resid.py 6 8 2 7 SHAPE`, |O| = 8, TW = 2; exact DFS budget 2·10⁴, then local search `lsls.py`):
+
+| shape | graphs | labellings | (E7) base found | proved absent | unknown |
+|---|---|---|---|---|---|
+| C4 | 6 | 2,208 | 2,208 | 0 | 0 |
+| K3 | 6 | 2,592 | 2,592 | 0 | 0 |
+| P3 | 6 | 3,168 | 3,168 | 0 | 0 |
+| K2 | 6 | 3,744 | 3,744 | 0 | 0 |
+| ∅ | 6 | 4,320 | 4,320 | 0 | 0 |
+
+- Every witness is checked independently (`clt_lib.check`: edge partition, Lovász ends, every condition).
+- With budget 3·10⁵ and five vertex orders the exact DFS decides 9,188 of the 16,032 (all positively); on whole graphs it stalls, e.g. `M^~~zMn]n|zqjV~Z_` (K2): 0/624 decided even at 10⁷ nodes, while the unconstrained decomposition is instant and the local search finds every base in well under a second. Dropping any single condition does not help the DFS.
+- Also every labelling of 15 residual graphs with |O| = 10 (`gen_resid.py 3 10 2 11 SHAPE`, 8,016 labellings) and of 6 sparse C4 graphs (`gen_core.py C4 6 10 5`, |B| = 16, 2,208 labellings): 26,256 labellings in all, 0 without an (E7) base. (Exceptions exist in small graphs: at order 9, 16 of 14,144 labellings have no (E7) base, E28.)
+- So in the dense residual the t6 base holds for *every* admissible labelling, not only for one per root.
+
+**(G) The triangle base (direct-test1 Conj 3.1) for every root, data choice and orientation** (`tb_all.py`, same 30 residual graphs, d(z) = 6: w ∈ N(z) − r, M0 a perfect matching of J[N(z) − {r, w}] by J-edges, each of the 4 orientations of the two disjunctions taken as a *fixed* pair of avoidances; exact DFS budget 2·10⁴, then local search):
+
+| shape | instances | base found | proved absent | unknown |
+|---|---|---|---|---|
+| C4 | 1,104 | 1,104 | 0 | 0 |
+| K3 | 1,296 | 1,296 | 0 | 0 |
+| P3 | 1,584 | 1,584 | 0 | 0 |
+| K2 | 1,872 | 1,872 | 0 | 0 |
+| ∅ | 2,160 | 2,160 | 0 | 0 |
+
+- So on residual graphs even the fixed-orientation, every-data form holds; the free orientation of DL is needed only in smaller graphs (E29(C)).
+- **The three budget-undecided instances of the triangle-base session** (E29(F) n = 15 K2 root r = 1, and the ∅ graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3) have bases at the first data choice and orientation tried (`tb_ls.py`; witnesses in `manuscripts/clt/data/triangle_base_witnesses.txt`, checked).
+## E30. Rooted Gallai for Eulerian graphs: the two-end test on cones (cloud session `claude/eulerian-cone`)
+
+Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/eulerian-cone/{scripts,data}`; `scripts/run_all.sh` regenerates everything.
+
+**Question.** On a cone J = B + z, Test1 at the apex is RE: a 2-connected Eulerian B of even order n has, at every root r, a decomposition into at most n/2 paths with an end at r (Lean `test1_fullCone_iff`). RE* is the parity-free form p_r(B) ≤ ⌈n/2⌉ for connected Eulerian B.
+
+**Solver and validation.**
+- `re.c`: DFS over paths (the first path starts at r; then paths from an odd vertex of the rest, else through its lowest edge), memoised failures, per-component lower bounds.
+- Brute force `bf.py` (all exact covers): agrees on all 473 connected graphs of order 3–7 with ≤ 10 edges, 3,622 values (p_r at every root, and p), 0 mismatches.
+- Every positive answer is witness-verified (`verify_witness.py`). Every lower bound is either the counting bound CB (a proof, manuscript Prop. 4.1) or was re-decided by CP-SAT (`tools/pathnum2.py`). CP-SAT agrees on all 219 roots with p_r > CB.
+
+**(A) Exhaustive, 2-connected Eulerian, even order ≤ 10: RE holds at every root.**
+
+| n | graphs | roots | RE | tight (p_r = n/2) | p_r = CB | p_r > CB |
+| 4 | 1 | 4 | 4 | 4 | 4 | 0 |
+| 6 | 7 | 42 | 42 | 23 | 42 | 0 |
+| 8 | 162 | 1,296 | 1,296 | 242 | 1,289 | 7 |
+| 10 | 30,054 | 300,540 | 300,540 | 14,156 | 300,328 | 212 |
+
+- **Every tight root has CB = n/2.** At n = 10: 14,131 have d(r) = n − 2, 20 meet the edge bound ⌈m/9⌉, and 5 need the full counting bound. At n = 8, two (K8 minus a double star, `GTm~vs`) need the full bound.
+- 8 order-10 minima were budget-undecided (RE witnessed). 7 have CB = 5 = n/2. `ITzvn^nzw` at r = 4 has p_r = CB = 4 (unbudgeted re.c and CP-SAT).
+- RE* holds for all connected Eulerian graphs of order 3–9 (17,844 roots) and for the 972 non-2-connected ones of order 10 (9,720 roots).
+
+**(B) Families of order 12–16** (RE decided at every root, witnesses verified):
+- all 258,774 2-connected Eulerian graphs of order 12 with ≥ 45 edges (complement ≤ 21 edges, all degrees odd): 3,105,288 roots. The m = 45 slice (134,770 graphs) was added after audit A30 found the first version (m ≥ 46) did not cover every graph with edge bound 5. UC was run with witnesses (`re -u`, `verify_uc.py`): 3,105,256 roots directly; 32 budget-undecided roots got 5-path decompositions from CP-SAT (CB = 5), witnesses verified;
+- all 2-connected 4/6/8/10-regular graphs of order 12: 1,542 / 7,849 / 94 / 1 graphs, 113,832 roots;
+- all 88,126 4-regular graphs of order 14 (1,233,764 roots) and all 540 10-regular graphs of order 14 (7,560 roots);
+- all 58 complete multipartite graphs with even parts, n ≤ 16 (760 roots);
+- 2,100 random 2-connected Eulerian graphs each of orders 12, 14, 16 (88,200 roots).
+
+**(C) Conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected Eulerian B.**
+- It holds at every root of order 3–10, both parities.
+- It holds on the whole dense order-12 family (m ≥ 45). 32 critical roots (CB = 5) were undecided at budget 2·10⁶, and CP-SAT found 5 paths at each (`out/uc12_unk_cpsat.txt`, verified).
+- **False without 2-connectivity:** 1 root at order 8 (`GCXnbW`, a triangle at a cut vertex, rooted there) and 5 at order 10. All 6 were confirmed by CP-SAT (`out/ucfail_cpsat.txt`).
+
+**(D) Reduction constructions executed** (`reductions_check.py`). Every connected Eulerian graph of order 4–9, every root, every applicable vertex:
+- 15,776 suppressions, 13,827 ear insertions, 2,537 ears at a cut, 3,559 twin insertions, 2,024 root suppressions and 1,763 root-ear insertions;
+- every output was verified, with 0 failures.
+
+In 56 of the 1,225 even-order ear instances the +1 of the insertion exceeds n/2. These are the hard case (manuscript Remark 5.8).
+
+**(E) Matching cuts.** 2-connected Eulerian graphs of orders 4/6/8/10 without a matching cut number 0/5/130/27,933 (of 1/7/162/30,054). Only these cones are needed by `SpineTestsNMC`.
+
+**(F) The project's own dense-regime theorems** (marked-reduction Cor 168 / Thm 170, unrefereed; `dense_check.py` with `tools/route_ext.c`):
+- Every instance in the connected Eulerian graphs of even order ≤ 10 is realisable: 1,579 for Cor 168 and 14,096 for Thm 170.
+- Thm 170's hypothesis (≥ k − 1 vertices of degree 2k − 2) holds in only 319 of the 31,219 graphs. It covers 1,323 of the 14,156 tight roots at order 10.
+
+**(G) Audit A30** (`research/audit/A30-eulerian-cone.md`) reproduced:
+- Tables 1–2, the tight split, and the matching-cut counts;
+- the brute-force validation;
+- the reduction counters;
+- the dense and 4-regular runs, with witnesses.
+
+It found one false sentence (the m ≥ 46 coverage claim; fixed by extending to m ≥ 45) and provenance gaps, now fixed in `run_all.sh`. Shipped tables now include per-graph tables `out/uc_dense12.pg.gz` and `out/re_reg14_4.pg.gz`, and `out/budget8_decide.txt`.
+

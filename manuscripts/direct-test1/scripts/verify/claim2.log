@@ -1,0 +1,2 @@
+CLAIM2 (d(z)=4): parity ok 96, parity fail 0; instances 96 (with a J_T component of >= 3 vertices: 50); lifts attempted 117033, lift failures 0; instances with a valid (Q0, rooting) 89/96
+CLAIM2 (d(z)=6): parity ok 96, parity fail 0; instances 96 (with a J_T component of >= 3 vertices: 34); lifts attempted 136801, lift failures 0; instances with a valid (Q0, rooting) 91/96

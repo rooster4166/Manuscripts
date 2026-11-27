@@ -458,3 +458,289 @@ ptm is testing these on random J with B[U] = K6 − D. tight-fan's protected-bla
   - (a) Thm 8.2 without y2 ∉ V(P2), via end-path tracking at y2;
   - (b) the chained walk with one protected step at the start of P1.
   - (b) covers C4; (a) + (b) might reach K2/P3/K3.
+
+**t6-dense, report 1 (15:24).** In the dense residual the chains are free. Label so that x1y2 and x2y3 are B-edges. Then both walks are single B-edges, P2 = y3x2 and P1 = y2x1, so chain conjecture 8.6 is not needed.
+
+**The base D0.** The whole construction can be read off one base, D0, a Lovász decomposition of M = (B − x1y2 − x2y3) + ℓ1y1, in which x3 is the only even vertex. Only end-path conditions are needed:
+- (E1) the ℓ1-path avoids x1 and does not end at y2 or y3;
+- (E2) P_{y2} ∌ x2;
+- (E3) P_{y3} ∌ x3;
+- (E4) P_{y2} ≠ P_{y3};
+- (E5) P_{x2} ∌ y3;
+- (E6) the static predecessor condition on D0.
+
+This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruction disappears. **The construction covers every dense shape (∅/K2/P3/K3/C4)**, because it uses only x1y2, x2y3 ∈ B.
+
+**Data.** Every certificate was executed and checked edge by edge.
+- C4 sparse, |B| = 14: 1280/1280.
+- Residual-style graphs, |B| = 14: every root of every shape certified (90/90).
+
+**What remains for the whole dense T(6)-i residual:** the existence of a base D0 satisfying (E1)–(E6). That is a constrained-Lovász statement with one even vertex, the project's home territory. The reduction is being formalised (T6Dense.lean).
+
+## 23. State of the programme (2026-11-27, 16:35)
+
+**Machine-checked reductions of Gallai.** All are in Lean with standard axioms.
+1. **Spine:** Gallai ⇔ Test1 ∧ Test2 on 3-connected J with J − z free of matching cuts (`gallai_iff_spineTests'`).
+2. **STL:** Test1 ⇐ STL, Test2 ⇐ STL2, so Gallai ⇐ STL + STL2 (`gallai_of_stl`).
+3. **RR:** Gallai ⇐ RR, a constrained Lovász decomposition of the free graph of a routed pairing (`gallai_of_routeRR`).
+
+**Proved rungs.** These cover Test1 by degree d(z) of the even vertex.
+- d(z) = 2 is trivial in 3-connected graphs. STL is proved at d(z) = 2 (`stl_deg_two`).
+- d(z) = 4: Test1 is known (`emc_four` / two-step descent). There is also a new composition proof (`test1_of_localgirth`) and the d = 4 packaging `test1_deg_four`.
+- d(z) = 6 (T(6)-i):
+  - the sparse / far-apart case is known (six-even-incidence Thm 1(2)), with a new composition proof (`test1_of_chains3`, conditional on chains);
+  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. *Correction (A26):* by Prop 2.6 its main branch is EQUIVALENT to STL-P plus two prescribed terminal edges, so it is a strengthening of STL, not a weaker target. In lean mode 536 residual roots are certified and 46 are budget-undecided; none was shown to lack a base.
+
+**Proved strengthenings of Lovász (single-vertex constraints).**
+- separation (pair and set forms);
+- L1 (leaf trick);
+- prescribed end edge in all-odd graphs (`lovasz_endEdge`);
+- EE when |N(u) ∩ N(z)| ≤ 1, and EE at d(z) = 2;
+- PEE at neighbours of z;
+- the refined Fan lemma with protected blanks;
+- the walk theorems (PTM₂ at local girth 5, PTM₃ far-apart).
+
+**Open core conjectures.** No counterexample to any of these.
+- **ST** (some target): implies L1Blocked, hence L1*, EE and L∞ (with TR, needed only when N(g) ⊆ N(c)).
+- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual. Together with MR Thm 144, which excludes roots isolated in the core (there D ⊇ K_{1,5}, outside the five shapes; audit A26 F1), it implies all of T(6)-i. **Superseded as a target by the triangle base conjecture of §24**, which is a weaker sufficient condition.
+- **MSEP / L_N:** implies Gallai for graphs whose even subgraph has a perfect matching.
+- **PTM_m** and the **chain conjecture:** composition at higher d(z).
+
+All four are statements about Lovász decompositions with at most one even vertex, constrained at several prescribed end-paths.
+
+**Negative results banked.**
+- EMM, EMM₃, multi-leaf packed separation, PEE away from z, PEE_m with prescribed ends, ST′ and RR\* are all false.
+- Flower moves cannot output Lovász decompositions.
+- Realisability of a prescribed half-set is NP-hard.
+
+**Next.** Look for the master statement behind the open core: a **constrained Lovász theorem** with several end-path constraints under a locality and compatibility condition. It should be true on the data, contain ST, the t6 base conjecture and MSEP, and be provable by Lovász's induction carrying every constraint. In parallel, t6-dense attacks its base conjecture directly.
+
+## 24. Direct lift to Test1 through triangles at z (external proposal, verified; 2026-11-27 17:30)
+
+**Proposal.** The project lead forwarded it from another agent "with a grain of salt". Its data:
+- J with one even vertex z, d(z) = 2m, and δ(J) ≥ 3;
+- r ∈ N(z), w ∈ N(z) − r, and a perfect matching M0 = {a_i b_i} of J[N(z) − {r, w}] (edges of J);
+- M = J − zw − {z a_i, z b_i, a_i b_i}, with 3m − 2 edges deleted.
+
+In M, z is a leaf at r and w is the only even vertex.
+
+**Theorem (direct lift).** If some Lovász decomposition D0 of M satisfies, for every i, (a_i ∉ V(Q0(b_i))) ∨ (b_i ∉ V(Q0(a_i))), then Test1 holds at (J, z, r).
+- **Proof.** Delete z: drop or trim the zr-path, splitting at r if needed; vertex sets only shrink. Then append each a_i b_i at an end chosen by the disjunction. The appends are legal because M0 is a matching and each path has two ends.
+- **Comparison.** No STL, no star-terminal condition, and m − 1 disjunctive conditions in place of the 5–6 conditions of t6-dense Conj 5.1. Audit A26 showed Conj 5.1's main branch is STL-P plus two prescribed terminal edges, which is *stronger* than STL.
+
+**My checks.**
+1. **Hand proof.** I checked the two steps above by hand, including Q0(z) = zr and the shared-path case. The guard example (C4 + two pendants: every 2-path decomposition violates the disjunction) is also correct.
+2. **Computation** (`manuscripts/direct-test1/scripts`). Random dense 3-connected J. The base is found with route_ext.c (per-end avoidance queries), and the lift is executed and verified independently.
+
+   | order | d(z) | roots | base found | lift verified |
+   |---|---|---|---|---|
+   | 11 | 6 | 180 | 180 | 180 |
+   | 13 | 8 | (partial) 24 | 24 | 24 |
+
+**Manuscript:** `manuscripts/direct-test1/direct-test1.tex` (3 pp.), with Conjecture "triangle base".
+
+**Next.**
+- Lean formalisation of the lift.
+- An independent audit (A28).
+- Attack the triangle base conjecture, which is now the cleanest target for T(6)-i and for Test1 at every even d(z) with a near-perfect matching in N(z) − r.
+
+**Audit A28 and the triangle-base session (2026-11-27, 18:30; connections §AF, E29).**
+- **Lean.** Banked, sorry-free with standard axioms:
+  - the lift for every m (`DirectTest1.lean`);
+  - the packed, far-apart and L1\* cases of the base (`TriangleBase.lean`);
+  - the (E7)-branch comparison `triangleBase_of_E5_E7`.
+- **Precise comparison** (replacing "weaker / sharper" above). At m = 3 and r = y1, M is t6-dense's base graph, and (E5), (E7) are disjuncts of the triangle condition. So the triangle base is implied by the (E7) branch of Conj 5.1 at that root. No other implication is known.
+- **Framing** (A28 F3). For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w}. It is a PTM-type strengthening of Test1, not a weaker kind of statement.
+- **Data** (exhaustive to order 9). The triangle base holds at every root with data of every 2-connected J. All failures are universal-twin pairs in components of M. There are no multi-pair compatibility failures.
+- **New single-vertex target: Conjecture DL** (disjunctive avoidance, `DisjL1`). DL ⇒ triangle base whenever M is connected.
+- **Isolated roots** (refining the next paragraph). Data at r depend only on J[N(z) − r]: they exist iff ν(J[N(z) − r]) ≥ 2 (d(z) = 6). So they exist at every root of the five dense shapes, and at an isolated root whenever the other five core vertices carry two disjoint edges (e.g. D = K_{1,5}). For "triangle base ⇒ T(6)-i", isolated roots therefore need MR Thm 144 only when ν(J[N(z) − r]) ≤ 1.
+
+- **Forest base (§25) refuted as stated** (triangle-base, E29 (G); direct-test1 Example 4.7).
+  - Counterexample: the cone over K_{2,6} at a degree-7 root, plus one more 3-connected graph of order 9. There no w, forest T-join or rooting works, yet Test1 holds.
+  - Evidence: an exhaustive check and an independent brute force.
+  - At order 9 the forest base still exists at 2,435 of the 2,438 roots without triangle data.
+  - Lean: `test1At_of_forestBase` (ForestLift.lean) is banked; it is the lift, not the conjecture.
+
+**Correction to §§22–23 (audit A26, F1).**
+- Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
+- t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.
+
+## 25. Verification of three forwarded claims; the forest lift (2026-11-27 18:20)
+
+The project lead forwarded three claims from another agent and asked that each be verified, by hand and computationally or against the Lean definitions, before anything is built on them. Script: `manuscripts/direct-test1/scripts/verify/verify3.py`. Its enumerator is exhaustive up to a cap; `bf_check.py` checks it against brute force on 60 graphs with 0 mismatches. Logs are in the same directory.
+
+1. **Forest edge-stepping: TRUE.**
+   - Setting: append each parent edge p(v)v of a rooted forest Φ at the v-end of the unique path ending at v.
+   - Statement: the result is a decomposition into the same number of paths iff (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+   - Hand proof: each path receives at most one edge per end, and the appends commute.
+   - Computation: 101,282/101,282 iff agreements on 40 graphs of order 6 and 8.
+   - Manuscript: direct-test1, Lemma 4.1.
+2. **Forest lift to Test1: TRUE, as a sufficient condition.**
+   - Setting: T = N(z) − {r, w}, Φ a forest T-join of H = J − {z, r}, M = J − zw − zT − Φ, with w's component rooted at w.
+   - The parities are as claimed: z is a leaf at r, r is unchanged (r ∉ H), w is even (possibly 0), and every other vertex is odd.
+   - Step 1 is unchanged. Step 2 is Lemma 4.1 on D1. Conditions (i) and (ii) transfer from Q0 to D1 because every D1 path is a subpath of a unique Q0 path.
+   - Computation: 192/192 parity checks hold, 253,834 lifts all valid (T1), and 84 instances have a tree component with ≥ 3 vertices.
+   - Manuscript: direct-test1, Thm 4.2.
+   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 4.5) is formally weaker than the triangle base.
+   - Lean has only the matching case (`test1At_of_triangleBase`).
+3. **"A25 (L1*) gives the single-pair OR unconditionally": FALSE as argued.**
+   - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
+   - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
+   - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.9.
+
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 3.1 these are single-vertex avoidances plus a sibling condition.
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (18:45).**
+- **The forest lift is reversible.** For fixed (r, w, Φ, rooting), the forest base holds iff J − z has a (T1) decomposition at r in which every Φ-edge p(v)v is the end edge of its path at p(v). The proof is end counting; the lower bounds sum to exactly 2k (sent to triangle-base for the tex).
+  - So Conj 4.5 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
+  - It is still weaker than the terminal-matching form.
+- **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
+  - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (19:40): forest base refuted as stated; independent check; r-through variant also fails.**
+- triangle-base found the counterexample (direct-test1 Ex 4.7): J = cone over K_{2,6}, 3-connected, d(z) = 8, at the roots r and r′.
+- I checked it with my own code. `scripts/verify/fb_k26.py` enumerates every w, every forest T-join of J − {z, r} and every rooting, and finds no base at r or r′; there are bases at the y_i. A separate exhaustive search confirms that Test1 holds at r and r′.
+- **Variant tested.** Let Φ be a forest T-join of J − z through r, with r a root. The lift stays valid:
+  - r ∉ T, so d_Φ(r) is even and r is still odd in M;
+  - appends at the children of r add c(r) = d_Φ(r) ≥ 2 ends at r;
+  - if Q0(z) = zr and d_M(r) = 1, D1 simply has k − 1 paths.
+- It also fails on the cone at r and r′ (`scripts/verify/fbr.py`, exhaustive).
+- So the terminal-structure lifts (triangle, forest, forest through r) do not cover Test1 on their own. The cone over K_{2,6}, where B = J − z is all-even and every T1 decomposition has ends at only 4 vertices, needs a different mechanism.
+- At order 9, three roots without triangle data are left uncovered (triangle-base `fb_nodata.py`: 2,435/2,438).
+
+## 26. Cones: Test1 contains rooted Gallai for Eulerian graphs (coordinator, 2026-11-27 19:50)
+
+**Observation.** Let B be any graph of even order 2k, and let J = B + z be the cone, with z joined to every vertex of B. Then:
+- z is the only even vertex of J if and only if B is Eulerian (every degree even); d_J(z) = 2k;
+- J is 3-connected if and only if B is 2-connected;
+- N(z) = V(B), so Test1(J, z, r) says exactly: *B has a decomposition into at most k = |B|/2 paths with at least two ends at r.*
+
+So **Test1 on cones is the rooted Gallai statement for 2-connected Eulerian graphs of even order.** It implies Gallai's conjecture for that class.
+
+Gallai for Eulerian graphs is open in general. Known cases:
+- Δ ≤ 4 (Favaron–Kouider 1988);
+- Δ ≤ 5 (Bonamy–Perrett);
+- some planar classes (Botler–Jiménez–Sambinelli).
+
+Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgraph has triangle-free blocks of max degree ≤ 3, i.e. the opposite extreme. (These citations are from memory and must be checked against the literature before any manuscript uses them.)
+
+**Consequences for the programme.**
+1. No local lift can settle Test1 by itself. The triangle, forest and forest-through-r lifts all have the form "remove a T-join forest of B, take a Lovász decomposition, re-append terminal edges". On a cone this is the classical heuristic for Eulerian Gallai, and it fails on the cone over K_{2,6} (§25 addendum).
+2. Cones and near-cones (d(z) close to n − 1) are where the difficulty sits. The lifts settle 2,435 of the 2,438 no-data roots at order 9, and the triangle base holds at every root that has data.
+3. The direction worth pursuing is an **inductive** argument on B, for Eulerian B with a root, rather than a single base. Possible tools:
+   - reduction at vertices of degree 2 of B, which are the degree-3 vertices of J adjacent to z, as for the y_i in K_{2,6};
+   - the Eulerian Gallai literature.
+
+   A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
+
+**Addendum (20:10): the n = 15 K2 budget root is settled.**
+- clt found a triangle base at the last budget-undecided K2-residual root (n = 15, m = 77, r = 1) by local search: w = 2, M0 = {34, 56} (`manuscripts/clt/data/triangle_base_witnesses.txt`).
+- The coordinator re-checked it independently (`direct-test1/scripts/verify/verify_clt_witness.py`):
+  - D0 is a Lovász decomposition of M;
+  - both disjunctions hold;
+  - the executed lift is a valid (T1) decomposition at r = 1.
+- So every K2-residual root tested so far has a triangle base.
+- clt's two further witnesses are for the ∅ residual graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3. The coordinator also re-checked these (`verify_clt_witness_resid.py`): both are Lovász, satisfy the disjunctions and lift to (T1).
+- clt's E30(G) further reports that on the 30 residual graphs a base exists for *every* root, data choice and orientation: 8,016 instances, all found, none proved absent and none undecided.
+- **No budget-undecided triangle-base instance remains among the d(z) = 6 runs.** The d(z) = 8, n = 13 run is also settled: every one of its 28 budget-undecided roots has a triangle base, found with clt's local search and independently verified with the lift executed (`direct-test1/scripts/out/d8/`). That makes 71 of 71 roots at d(z) = 8.
+
+**§26 addendum (eulerian-cone milestone 1, 7081f70; coordinator checked the build and the axioms).**
+
+*Lean (`EulerianCone.lean`):*
+- `test1_fullCone_iff`: Test1 on the full cone ⇔ RE(B) at every root.
+- `kConnected_three_fullCone_iff`: the cone is 3-connected ⇔ B is 2-connected.
+- `fullConeTests_iff`.
+- `rootedDecomp_of_spineTestsNMC`: the spine needs exactly RE for 2-connected Eulerian B of even order *with no matching cut*.
+- `rootedDecomp_of_gallai`: Gallai ⇒ RE for every connected Eulerian B of even order.
+- `rootedDecomp_iff_addLeaf`: RE(B, r) ⇔ p(B + a leaf at r) ≤ |B|/2.
+
+So, in Lean, Gallai ⇒ RE ⇒ Gallai(2-connected Eulerian, even order), and RE is a necessary part of the spine.
+
+*Literature (`research/notes/eulerian-gallai-literature.md`, key quotes spot-checked on arXiv).* This replaces my from-memory list in §26:
+- No paper proves a rooted Eulerian statement as strong as RE.
+- Through the leaf lemma, published floor theorems give RE for planar B (Blanché–Bonamy–Bonichon), treewidth ≤ 3, 2-degenerate, K5-minor-free (not refereed) and Δ(B − r) ≤ 3 (Botler–Sambinelli).
+- Through the double, Bonamy–Perrett gives RE whenever Δ(B) ≤ 4.
+- K_{2,6} is planar, so the cone over K_{2,6} is covered by the literature.
+
+*Data (validated C solver; every positive answer is witness-checked):*
+- RE holds at all 300,540 roots of the 30,054 2-connected Eulerian graphs of even order ≤ 10.
+- It also holds on large order-12 to order-16 families.
+
+*Open (stated):*
+- New conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1), where CB is the end-counting bound.
+- The minimal-counterexample structure is: degree-2 vertices are triangle ears with no twins, and the open case is ears at even order.
+## 27. Cones, worked out: rooted Gallai for Eulerian graphs (eulerian-cone session, 2026-11-27)
+
+Manuscript `manuscripts/eulerian-cone`, Lean `EulerianCone.lean` + `CycleInsert.lean`, data E30, literature `research/notes/eulerian-gallai-literature.md`. **Audit A30: §§2–5 sound, Lean faithful; one false coverage sentence and provenance gaps, all fixed.**
+
+**What the spine needs of cones.** All of the following is in Lean with standard axioms.
+- At the apex: Test1 ⇔ RE(B) (`test1_fullCone_iff`), and the cone is 3-connected ⇔ B is 2-connected.
+- Every other test at a cone over an even-order B is vacuous (`fullConeTests_iff`).
+- With the matching-cut restriction (`rootedDecomp_of_spineTestsNMC`), the spine needs RE exactly for 2-connected Eulerian B of even order without a matching cut. At order 10 that is 27,933 of 30,054 graphs.
+- Gallai ⇒ RE (`rootedDecomp_of_gallai`), so RE sits between Gallai and Gallai-for-Eulerian.
+
+**What is already known.**
+- Via the leaf (RE ⇔ p(B + leaf) ≤ n/2), the floor theorems give RE for planar, treewidth ≤ 3, 2-degenerate and K5-minor-free B.
+- Via the double (Lean `rootedDecomp_of_dbl`; the double has even order, so a ceiling bound suffices), Bonamy–Perrett gives RE for Δ(B) ≤ 4.
+- The cone over K_{2,6} is planar, so it is already covered.
+- No rooted Eulerian theorem of RE's strength was found.
+- Chu–Wang 2025, "Path decompositions of Eulerian graphs", proves only 3n/5.
+
+**What the data say.**
+- RE holds exhaustively to even order 10, and on all dense order-12 graphs (m ≥ 45, 258,774 graphs).
+- **Every tight root is tight by end-counting.** The bound is CB(B, r) = least p with 2p − d_r ≥ 2 and Σ_v min(d_v, 2p − d_v) ≥ 2p. p_r = CB at 99.9% of roots.
+- Almost all tight roots have d(r) = n − 2.
+- **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) on 2-connected B. One path is to spare unless counting forbids it.
+
+**Reductions.** In a smallest counterexample to RE* (p_r ≤ ⌈n/2⌉, connected Eulerian):
+- every degree-2 vertex v ≠ r is an ear avb with B − v − ab connected;
+- no two such vertices are twins;
+- there are none at odd order.
+
+Suppression, cycle insertion and ear gluing are proved, and the constructions were executed and verified on all graphs of order ≤ 9 and on samples at order 10.
+
+**Where the difficulty sits.** Two places, both of the project's familiar kind:
+1. **The even-order ear.** Inserting the triangle into an optimal decomposition of B − v − ab is free only under an avoidance or disjointness condition at a or b (manuscript Rem. 5.8). This is L1*/DL-type.
+2. **Roots of degree n − 2**, where RE is tight. Then B − r has exactly one even vertex, and RE becomes a constrained Lovász decomposition of B − r: one piece attached at each neighbour of r, grouped into n/2 − 2 vertex-disjoint pairs and 2 singletons (Rem. 7.2). This is terminal-matching type.
+
+**The project's own collection.**
+- Marked-reduction Thm 170 (unrefereed; checked exactly to order 10) gives RE whenever ≥ n/2 − 1 vertices have degree n − 2. That covers only about 9% of the tight roots at order 10.
+- MR Thm 177/180 and SP Cor 13.12 constrain a least counterexample to *Gallai* with an Eulerian host. They are not proofs of RE in a range.
+- The "fat theta" (many degree-2 vertices between two hubs, the shape that defeats every terminal lift) is reducible in the RE* induction: degree-2 twins (Thm 5.7(b)), whichever hub is the root.
+
+So the cone case does not escape the open core. It lands on the same constrained-Lovász targets, and the n − 2 formulation is a clean new instance of them.
+
+## 28. State of the programme (coordinator, 2026-11-27 20:20)
+
+This supersedes §23 as the orientation summary. Everything listed as proved is in Lean, with standard axioms only, and has been audited (A25–A30).
+
+**Machine-checked reductions of Gallai.**
+1. **Spine:** Gallai ⇔ Test1 ∧ Test2 on 3-connected J with J − z free of matching cuts (`gallai_iff_spineTests'`).
+2. Gallai ⇐ STL + STL2 (`gallai_of_stl`), and Gallai ⇐ RR (`gallai_of_routeRR`).
+3. **Test1 ⇐ lifts** (`test1At_of_triangleBase`, `test1At_of_forestBase`). The lifts are reversible (direct-test1 Props 2.2 and 4.3), so each base condition is Test1 plus a terminal matching, or Test1 plus a terminal forest.
+4. **Test1 ⇐ DL** at every root whose data have M connected (`test1At_of_disjL1`).
+5. **Cones:** Test1 at a cone apex ⇔ RE(B) (`test1_fullCone_iff`). The spine needs RE exactly for 2-connected Eulerian B of even order with no matching cut (`rootedDecomp_of_spineTestsNMC`), and Gallai ⇒ RE.
+
+**What the data say (exhaustive unless stated otherwise).**
+- The triangle base holds at every root with data. This covers order ≤ 9, all 2-connected J, apart from universal-twin failures that occur only when κ = 1. It also covers the residual families, the E28 hard graphs, d(z) = 8 at order 13 (71/71), and random graphs to order 15.
+- DL(1) fails exactly at universal-twin pairs, at orders ≤ 9.
+- CLT-B and CLT-B1 have 0 failures over all systems at order ≤ 9.
+- RE has 0 failures at even order ≤ 10, and on the dense order-12 family (3.1M roots).
+- The forest base is FALSE (cone over K_{2,6}). That case is covered by RE for planar B (literature).
+
+**THE OPEN CORE.** Every line now ends here. Each item is a Lovász decomposition of a graph with ≤ 1 even vertex g, with end-path constraints.
+1. **L1Blocked.** This is the k = 1 residual of CLT-B1. It implies L1*, EE and L∞ (Lean `l1starGen_of_blocked`, `ee_of_l1Blocked`, `l1StarGen_of_cltB1`).
+2. **DL(1) when a, b ∈ N(g) share a common neighbour.** This is the free-orientation case outside L1*. It is under attack in session `dl-one`.
+3. **The multi-constraint versions:** DL(k), CLT-B1 with k = 2 (contains L_N for two pairs), and PTM₃ dense.
+4. **The cone residuals:** the even-order ear, which is (1)/(2) type, and roots of degree n − 2, which are terminal-matching type on B − r with one even vertex.
+
+**Shared obstruction.** In every case it is the same one: the even vertex g adjacent to the constrained vertices (tight Fan, §21), plus universal-twin or K_{2m}-type exceptions where the statements genuinely fail.
+
+**Process.**
+- Each core item gets a fresh session with a precise brief.
+- Merges go through the build gate (`mbp.sh`).
+- Each milestone gets an independent audit.
+- Every forwarded or peer claim is checked by the coordinator before anything is built on it (§25).

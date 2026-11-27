@@ -1,0 +1,14 @@
+LjjGiiVgE^XTKF c=11 g=3 A={3,5,9} N(g)={1,2,6,7,8,12} N(c)={0,1,4,6,8,10,12}
+  u=1 inNc=1 ST-child-good=1 L1E=1
+  u=2 inNc=0 ST-child-good=1 L1E=1
+  u=6 inNc=1 ST-child-good=1 L1E=1
+  u=7 inNc=0 ST-child-good=1 L1E=1
+  u=8 inNc=1 ST-child-good=1 L1E=1
+  u=12 inNc=1 ST-child-good=1 L1E=1
+LWsmyNvVT@QIrL c=2 g=7 A={3,4,7,12} N(g)={1,5,6,8,9,11} N(c)={0,1,5,8,10}
+  u=1 inNc=1 ST-child-good=1 L1E=1
+  u=5 inNc=1 ST-child-good=1 L1E=1
+  u=6 inNc=0 ST-child-good=1 L1E=1
+  u=8 inNc=1 ST-child-good=1 L1E=1
+  u=9 inNc=0 ST-child-good=1 L1E=1
+  u=11 inNc=0 ST-child-good=1 L1E=1

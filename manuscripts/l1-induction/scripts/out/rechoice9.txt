@@ -1,0 +1,1 @@
+SUMMARY tight pairs with (G-gu,c,A) good=82079  some D' with chain avoiding c=82079  some D' with good transfer=82079  capped=0

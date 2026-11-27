@@ -1,0 +1,6 @@
+H?ABfbw c=8 g=7 N(g)={0,1,2,3} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}
+H?ABvrw c=7 g=6 N(g)={1,2,3,4} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}
+H?ABvrw c=8 g=6 N(g)={1,2,3,4} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}
+H?B@nbw c=8 g=7 N(g)={0,1,2,3} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}
+H?BDvp{ c=7 g=6 N(g)={0,2,3,4} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}
+H?Bcrrw c=8 g=7 N(g)={1,2,3,4} N(c)={0,1,2,3,4} Q_c=cx possible for x in {0,1,2,3,4}

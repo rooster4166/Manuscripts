@@ -1,0 +1,26 @@
+ATFAIL H?AEMHw g=8 c=6 u=1 A={7,8}
+ATFAIL H?AEMHw g=8 c=7 u=1 A={6,8}
+ATFAIL H?BE@rF g=7 c=0 u=8 A={1,7}
+ATFAIL H?BE@rF g=7 c=1 u=8 A={0,7}
+ATFAIL H?BE@rF g=7 c=5 u=8 A={6,7}
+ATFAIL H?BE@rF g=7 c=6 u=8 A={5,7}
+ATFAIL H?`DRjk g=7 c=6 u=2 A={7,8}
+ATFAIL H?`crjw g=7 c=6 u=3 A={7,8}
+ATFAIL H?`bKzk g=7 c=6 u=5 A={7,8}
+ATFAIL H?ouPzw g=7 c=6 u=4 A={7,8}
+ATFAIL HCQRRQs g=8 c=6 u=2 A={7,8}
+ATFAIL HCQRRQs g=8 c=7 u=2 A={6,8}
+ATFAIL HCdbCre g=0 c=1 u=8 A={0,2}
+ATFAIL HCdbCre g=0 c=2 u=8 A={0,1}
+ATFAIL HCdbCre g=0 c=5 u=8 A={0,6}
+ATFAIL HCdbCre g=0 c=6 u=8 A={0,5}
+  d(g)=2 d(c)=1: instances 1942 (some bad target 382), targets 3884 bad 382
+  d(g)=2 d(c)=3: instances 8751 (some bad target 81), targets 17502 bad 81
+  d(g)=2 d(c)>=5: instances 6137 (some bad target 28), targets 12274 bad 28
+  d(g)=4 d(c)=1: instances 2839 (some bad target 290), targets 11356 bad 290
+  d(g)=4 d(c)=3: instances 12629 (some bad target 16), targets 50516 bad 16
+  d(g)=4 d(c)>=5: instances 8596 (some bad target 0), targets 34384 bad 0
+  d(g)>=6 d(c)=1: instances 752 (some bad target 41), targets 4512 bad 41
+  d(g)>=6 d(c)=3: instances 2910 (some bad target 0), targets 17460 bad 0
+  d(g)>=6 d(c)>=5: instances 2082 (some bad target 0), targets 12492 bad 0
+SUMMARY undecided=0

@@ -1,0 +1,2 @@
+SUMMARY instances=1868 blocked=268 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+SUMMARY instances=2150 blocked=406 notRec=0 notRec_blocked=0 stuck=0 flags=MBT

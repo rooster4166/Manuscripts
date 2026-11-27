@@ -60,7 +60,12 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **l1-induction** (session_01FxXpVeiWdUBGUhHfUiGJdk, branch `claude/l1-induction`, new): closes L1Blocked through a strengthened induction (the "some target" form, which held in all 267,664 admissible order-9 instances). Closing it would complete L1*, EE and L∞.
+- **l1-induction**: **finished** (b55f039). L1Blocked is NOT proved.
+  - **Lean:** L1Blocked ⇐ TR + ST; `l1Blocked_iff_tightTransferAdm`; `l1Blocked_of_out_tight` (TR is needed only when N(g) ⊆ N(c)).
+  - **Core remaining:** ST.
+  - **Data:** 0 failures everywhere (TR 1.7M, ST 135k, 4/100 slices of n = 11).
+  - **Audit A25:** core proofs and Lean sound; 4 errors applied.
+- (original entry) **l1-induction** (session_01FxXpVeiWdUBGUhHfUiGJdk, branch `claude/l1-induction`): closes L1Blocked through a strengthened induction (the "some target" form, which held in all 267,664 admissible order-9 instances). Closing it would complete L1*, EE and L∞.
 - **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`): the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21). Connections §AB, E26, `manuscripts/tight-fan`, Lean `TightFan.lean`.
   - **Finished** (de71567).
   - **Lean, verified:** refined Fan with protected blanks, `fanPred_unique`, `l1_tight_transfer`, `lInfty_of_l1Blocked`, the flower negatives, and `walk_step_protected` (a protected walk-back step; unaudited), which is the tool for the T(6)-i dense residual.
@@ -89,7 +94,59 @@ EMM sufficiency work is **stopped**.
   - **Paper (`manuscripts/l1star`):** five more reductions narrow down a smallest counterexample.
   - **Audit A23:** applied.
   - **Open:** the blocked case. It is the same tight Fan configuration as route-descent's L∞ residual (§V.4c). In the original statement L1* (|A| ≤ 2) is still open, so EE is still open.
-- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`): **finished** (092a795).
+  - **Lean:** DirectTest1, TriangleBase (packed, farApart, L1*, DL ⇒ Test1, E5_E7), ForestLift.
+  - **Audit A28:** applied.
+  - **Data:** the triangle base holds at every root with data, with no undecided root left.
+  - **Forest base:** refuted (cone over K_{2,6}). The open target is DL.
+- **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): **finished** (56c6523). Manuscript `manuscripts/eulerian-cone` (11 pp.); audit A30 applied.
+  - **Lean:** `EulerianCone.lean` (the cone correspondence, SpineTestsNMC ⇒ RE, Gallai ⇒ RE) and `CycleInsert.lean` (cycle and ear insertion).
+  - **Data:** RE holds on all 301,882 roots at even order ≤ 10 and on all 3.1M roots of the dense order-12 family (m ≥ 45).
+  - **Literature:** RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free, Δ(B − r) ≤ 3 and Δ ≤ 4.
+  - **Reductions:** in a smallest counterexample, degree-2 vertices are non-twin ears (this covers the fat theta), and n ≥ 11.
+  - **Open:** (a) the even-order ear, which is L1*/DL type; (b) roots of degree n − 2, which are 99.8% of tight roots and give a terminal-matching constrained Lovász problem on B − r. Also conjecture UC.
+- **eulerian-cone milestone 1 (7081f70, merged; build green; axioms checked):**
+  - Lean, `EulerianCone.lean`:
+    - `test1_fullCone_iff` and `fullConeTests_iff` (Test1 on cones ⇔ RE);
+    - `rootedDecomp_of_spineTestsNMC` (the spine needs RE exactly on 2-connected even Eulerian B with no matching cut);
+    - `rootedDecomp_of_gallai`.
+  - Data: RE holds on all 300,540 roots of order ≤ 10.
+  - Literature, verified: RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free and Δ ≤ 4.
+  - Open: RE in general, the ear case at even order, and conjecture UC.
+- **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`, new): prove DL(1), single-pair disjunctive avoidance. The open core is a, b ∈ N(g) with a common neighbour, the tight-Fan obstruction.
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
+- **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): Test1 on cones is rooted Gallai RE for Eulerian graphs (synthesis §§26–27, E30, `manuscripts/eulerian-cone`, Lean `EulerianCone.lean`).
+  - **Lean** (standard axioms; full build): `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `hasMatchingCut_delVert_fullCone_iff`, the vacuous tests, and **`rootedDecomp_of_spineTestsNMC`**. The spine needs RE exactly for 2-connected Eulerian B of even order **without a matching cut**. Also `rootedDecomp_of_gallai` (Gallai ⇒ RE), `rootedDecomp_iff_addLeaf` and `rootedDecomp_of_dbl`.
+  - **Literature:** RE holds for planar, treewidth ≤ 3, 2-degenerate and K5-minor-free B (floor theorems via the leaf), and for Δ ≤ 4 (Bonamy–Perrett via the double). There is no rooted Eulerian theorem of RE's strength. Survey: `research/notes/eulerian-gallai-literature.md`.
+  - **Data:** RE is exhaustive for even order ≤ 10 (300,540 roots), plus the order-12–16 families of E30. Every tight root is counting-tight (bound CB).
+  - **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected B. It is exhaustive to order 10 and holds on the dense order-12 family; it is false without 2-connectivity.
+  - **Reductions** (proved, constructions verified; the cycle-insertion lemma is in Lean as `PathDecomp.cycle_insert`, `ear_insert`): in a smallest counterexample to RE*, every degree-2 vertex other than r is a connected ear, no two are twins, and odd order has none. The open case is the even-order ear, an avoidance condition.
+  - **Audit A30:** pending.
+- **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`): **finished** (732e075). Manuscript `manuscripts/clt` (9 pp.); audit A27 applied.
+  - **Master conjectures CLT-B / CLT-B1** (Lean `CLTB`, `CLTB1`). CLT-B1 ⇒ L1*, L∞ and EE; CLT-B ⇒ L_N.
+  - **Data:** 0 failures over all systems in all 12,312 graphs of order ≤ 9, and 0 in 6,600 random maximal systems at n = 11–16.
+  - **Boundary:** every relaxation fails, with small examples.
+  - **Lean:** Fan's lemma with end paths (`fan_single_track`); the transfers `csys_caseI`, `csys_case_adj`, `csys_case_leaf`; the packed and sparse cases.
+  - **Where the induction stops:** for k = 1 it is exactly L1Blocked. For k ≥ 2 the new residuals are adjacent tails and tails with a common neighbour in N(g).
+  - **Outside CLT:** ST, and DL, the free-orientation non-local condition. Both still hold on all residual data.
+  - **Open:** CLT-B1 at k = 2; a free-orientation CLT containing DL.
+  - **Audit A30: done.** §§2–5 sound, Lean faithful. Fixed: one false coverage sentence (dense family extended to m ≥ 45), Remark 5.8 gap at a = r, literature caveats moved into the statements, and provenance.
+- **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
+- **t6-dense**: **finished** (ec9fcc4).
+  - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
+  - **Audit A26:** sound; fixes F1–F10 applied. Conj 5.1's (E7) branch is equivalent to STL-P plus two terminal edges, a strengthening of STL.
+  - **Data:** 536 roots certified, 46 budget-undecided (the K2 |O| = 8 cell is hardest).
+  - **Superseded as a target** by the triangle base conjecture (§24).
+- (original entry) **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
+- **ptm**: **finished**.
+  - **Lean:** the walk theorems (PTM₂: sparse and local girth 5), the STL lift, the chained walk (PTM₃: far-apart), and `test1_of_chains3`. These re-derive the known d = 4 and far-apart d = 6 cases; the new content is STL-P with prescribed transitions.
+  - **Audits:** A22, A22b and A22c are all sound.
+  - **Open:**
+    - the base problem beyond sparseness (local K4/W4);
+    - chain conjecture 8.6 (1,184 graphs, 0 counterexamples);
+    - the dense T(6)-i residual. C4 needs one protected step; K2/P3/K3/∅ need Thm 8.2 without y2 ∉ V(P2) (end-path tracking).
+  - The order-10 PTM₂ run is still finishing (18/24 chunks, 0 failures).
+- (original entry) **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
 - **ee**: **finished** (463aa4c).
   - **EE has no counterexample:** exhaustive over all 11,959,367 one-even graphs at n = 11 (59.7M pairs).
   - **Lean:** `ee_atMostOneCommon`, `ee_deg_two`, `pee_adjEven`, the reductions `ee_of_triangle` / `ee_of_outside`, and `ee_of_L1Star`.
@@ -562,3 +619,54 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
   - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
   - Audit A22c: the mathematics is sound (paper and Lean). Its fixes are applied on claude/ptm (0353495).
+- **L1Blocked split into two statements (l1-induction, L1Induction.lean; standard axioms, verified).** `l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`, giving `ee_of_ST_TR`, `lInfty_of_ST_TR` and `l1star_of_ST_TR`.
+  - **TR (transfer side):** a tight target x ∈ N(g) ∩ N(c) with A ∩ (N[c] ∪ {x}) = ∅. If (G − gx, c, A) is good, then so is (G, c, A). Tests: 1,735,156 exhaustive at n ≤ 9, 0 violations. The condition is sharp: there are violations if A may meet N(c).
+  - **ST (hypothesis side):** every blocked instance has x ∈ N(g) with (G − gx, c, A) good. Tests: all 135,188 blocked instances at n ≤ 9, 0 failures.
+  - The instance-level variant ST′ is FALSE (n = 7). No closed induction class has been found for ST yet.
+  - So **L1*, EE and L∞ now reduce to two concrete, heavily tested conjectures, TR and ST.**
+- **The whole dense T(6)-i residual reduces to one base conjecture, in Lean (t6-dense, T6Dense.lean; standard axioms, verified).**
+  - `star_of_appendBase` / `star_of_protectedBase` / `test1_of_appendBases`: suppose the base M = J − {zx1, zx2, zx3, zy2, zy3, x1y2, x2y3} (z a leaf at y1, x3 the only even vertex) has a Lovász decomposition with the end-path conditions (E1)–(E5) and (E7) or (E6). Then J has a star-terminal decomposition, and Test1 J z holds.
+  - The only shape hypothesis is x1y2, x2y3 ∈ E(J). It is available for every root in all five dense shapes (∅/K2/P3/K3/C4).
+  - The chain conjecture is not needed.
+  - **This is a reduction, not a closure. The remaining statement is the base conjecture (t6-dense manuscript, Conj 5.1).**
+  - Data in the exact Lean form: C4, K3 and P3 48/48 roots certified; K2 and ∅ are running.
+  - Audit A26 is in progress.
+- **Direct lift to Test1 (external proposal via the project lead; verified 2026-11-27).**
+  - Statement: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − ⋃ triangles z a_i b_i (for a matching of N(z) − {r, w}) with one disjunctive end-path condition per triangle.
+  - Hand-checked proof. Computation: 180/180 roots at n = 11, d = 6; d = 8 partial, 24/24 so far; all lifts verified.
+  - Manuscript `manuscripts/direct-test1/` (synthesis §24). Comparison with t6-dense Conj 5.1, made precise by audit A28: at m = 3, r = y1 the base graphs coincide, and (E5), (E7) are disjuncts of the triangle condition. So every (E7)-branch base is a triangle base (Lean `triangleBase_of_E5_E7`); nothing is known for the (E6) branch or for r ∈ {y2, y3}. For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w} (A28, direct-test1 Prop 2.2), a PTM-type strengthening of Test1.
+  - Lean and audit pending.
+- **Direct lift to Test1 in Lean (triangle-base bd616c7, DirectTest1.lean; standard axioms, verified; definitions checked).**
+  - `test1At_of_triangleBase`: if z is the only even vertex, d(r) ≥ 3, and TriangleBase holds (triangle data w, L with L a J-edge matching partitioning N(z) − {r, w}, plus a Lovász decomposition of triM with every disjunction), then Test1 holds at r.
+  - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
+  - **So Test1 J z reduces in Lean to the triangle base conjecture for every 3-connected J in which every root has data** (about 80% of the 3-connected d(z) = 6 instances at order 9, A28). This is not "the two-end half of Gallai": the spine needs Test1 and Test2 for all 3-connected J (audit A28, F4).
+  - Audit A28 is next.
+- **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
+  - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.
+  - **E28 hard graphs, head to head:** the triangle base certifies **all 48/48 roots** where Conj 5.1 / STL-P left 46 undecided: 42 at 2·10⁶, and the last 6 at 2·10⁷ with five seeds. **Better target confirmed.**
+  - **No undecided triangle-base root remains** in the residual families (324/324), the K2-residual run (36/36) or at d(z) = 8, n = 13 (71/71). The last hard roots were found by clt's local search and independently verified (triangle-base `tb.py` checks; coordinator's `verify_clt_witness*`).
+  - **DL, single pair:** up to order 9 the disjunction fails exactly at the universal-twin pairs (3 / 14 / 170).
+  - **Clean conjecture DL:** in a graph with ≤ 1 even vertex, any disjoint non-adjacent odd pairs, none of which are universal twins of their component, admit one Lovász decomposition satisfying all the disjunctions. Every failure to order 9 is a universal-twin pair.
+  - **Lean:**
+    - `triangleBase_of_packed` (any m);
+    - `triangleBase_of_farApart` (m = 2);
+    - `triangleBase_of_L1Star` / `_of_L1Blocked` (m = 2, needing a ≁ w or b ≁ w);
+    - **`test1At_of_disjL1`: DL ⇒ Test1 at every root with data whenever M is connected.**
+- **Forest lift (forwarded claims 1–2, verified 2026-11-27 18:20; direct-test1 §3, synthesis §25).**
+  - Lemma 4.1 (forest stepping, an iff) and Thm 4.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+  - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
+  - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
+  - Conj 4.5 (forest base) is weaker than the triangle base, but **false as stated**: the cone over K_{2,6} and one near-cone of order 9 (direct-test1 Example 4.7; triangle-base E29 (G), coordinator `fb_k26.py`). Test1 holds there, and on cones Test1 is rooted Eulerian Gallai (synthesis §26).
+  - **Lean: DONE.** `ForestLift.lean` provides `test1At_of_forestBase` and `test1_of_forestBases` (triangle-base 6da125b), with standard axioms only, checked by the coordinator.
+    - The data use (child, parent) pairs in parent-first order with distinct children. That ordering forces Φ to be a rooted forest, and w is never a child.
+    - Conditions (i) and (ii) are stated exactly as in Thm 4.2.
+    - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, that has a forest base.
+    - Forest data always exist when J − {z, r} is connected, since T-joins exist. That fact is paper-only; it is not in Lean.
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.9).
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).
+- **Cones: Test1 = rooted Gallai for Eulerian graphs (eulerian-cone, E30, synthesis §27).**
+  - Lean `EulerianCone.lean` (standard axioms, full build 18,406 jobs). **`rootedDecomp_of_spineTestsNMC`**: the cone instances of the spine are RE for 2-connected Eulerian B of even order without a matching cut. `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `fullConeTests_iff` (for even |B| every other test at a cone is vacuous), `rootedDecomp_of_gallai`, `rootedDecomp_of_dbl`.
+  - RE from the literature: planar (BBB), treewidth ≤ 3 (BSCL), 2-degenerate (Anto–Basavaraju), K5-minor-free (ZLH 2026, arXiv) via the leaf; Δ ≤ 4 via the double and Bonamy–Perrett.
+  - RE exhaustive to even order 10, and dense order 12 (258,774 graphs with ≥ 45 edges, RE and UC at every root). Tight ⇔ counting-tight on these data. Conjecture UC. Internal results compared: marked-reduction Thm 170 (dense regime) was checked exactly to order 10 but covers about 9% of tight roots; MR Thm 177/180 and SP 13.12 are least-counterexample constraints for Gallai, not RE in a range.
+  - Smallest-counterexample structure at degree 2 (manuscript Thm 5.7). The next targets are the even-order ear (free insertion is an avoidance condition) and roots of degree n − 2 (a constrained Lovász problem on B − r, which has one even vertex).
+

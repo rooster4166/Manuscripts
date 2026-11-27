@@ -1495,3 +1495,253 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - A chained walk splits at each protected step: `walk_back` on the segment before it, `walk_step_protected` at the step, `walk_back` after it.
   - The condition to check at the step is the predecessor condition. With at most one end per vertex, it says that the path through x_i y_i does not end, on x_i's side, in {b} ∪ N(y_i).
   - The sharper condition (the forced chain does not reach x_i, Corollary 2.3(2) of the manuscript) is not formalised. In PTM's no-walk data, it closes 68/68 where the static form closes 47/68.
+
+## AC. Lovász's induction for L1*: the two sides, and why no candidate class closes (cloud session `claude/l1-induction`, 2026-11-27)
+
+*Experiments: E27. Manuscript: `manuscripts/l1-induction/l1-induction.tex`. Lean: `lean/GallaiLean/L1Induction.lean`. Audit: `research/audit/A25-l1-induction.md` (corrections applied).*
+
+### AC.1 Verdict
+- **`L1Blocked` is not proved.** No candidate inductive class closes. It is reduced, formally, to two conjectures, each with exhaustive support to order 9:
+  - **TR** (transfer side): tight target x ∈ N(g) ∩ N(c), c ∉ N(g), A ∩ (N[c] ∪ {x}) = ∅ (A may meet N(g), contain g): if (G − gx, c, A) is good, so is (G, c, A).
+    - 1,735,156 exhaustive tests to n = 9, 1,097,584 of them with A meeting N(g); 0 violations.
+    - Sharp: it fails at n = 7 when A may meet N(c) (`FCZ~o`).
+  - **ST** (hypothesis side): every blocked instance has x ∈ N(g) with (G − gx, c, A) good.
+    - All 135,188 blocked instances to n = 9, for every admissible A.
+    - With A = Amax: 1,037,788 blocked instances on 4 of the 100 geng slices of order 11, plus random orders 11–15; 0 failures, some undecided.
+- **`l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`** (Lean), hence L1StarGen, L1Star, EE and L∞.
+- **Which half carries the weight** (Lean).
+  - The reduction uses TR only on admissible instances (TR_adm). TR_adm is implied by L1Blocked, so given ST, **L1Blocked ⟺ TR_adm** (`l1Blocked_iff_tightTransferAdm`). ST is the substantive half.
+  - Refined: **ST_out** (some *non-tight* target is good, whenever one exists) settles every blocked instance with a non-tight target, with no transfer conjecture (`l1Blocked_of_out_tight`). The data: all 100,990 such instances to n = 9, every admissible A, and all decided order-11 and random cases.
+  - TR is needed only when N(g) ⊆ N(c).
+- **The instance-level ST′ is false.** ST′ uses the l1star move (c) at tight targets; with no transfer conjecture it would give `L1Blocked` (`l1Blocked_of_someTargetLocal`).
+  - Smallest counterexample `FEhv?`, n = 7. With A = {3,4,5} it is the l1star Cor 5.6(5) minimal shape; with A = {3,5}, the split (e) settles it.
+  - All 1,262 ST′ failures at n = 9 have N(g) ⊆ N(c). Of these, 1,238 have d(g) = 2, and 619 of those have g ∈ A.
+- **The precise remaining obstruction is the hypothesis side**: certify a good but inadmissible (G − gx, c, A).
+  - It splits into ST_out, and ST combined with TR_adm when N(g) ⊆ N(c).
+  - L1* also contains the two-even conjecture (l1star Prop 3.3). The bad Case I children in the data are not instances of it (A25).
+
+### AC.2 Proved
+- **Transfers are unconditional** (manuscript Thm 3.1 with a per-move proof; Lean for (b), (c) with c ∉ N(g): `avoid_of_target_child`, `avoid_of_target_adj_child`).
+  - Every reduction of l1star (Thm 4.2, Lemma 5.1, Props 5.2–5.5) transfers goodness from the smaller instance to the larger with no admissibility, given only c ∉ A (A25, F1).
+  - Several l1star hypotheses turn out to be needed only for admissibility: c ∉ N(g) in (b), (f), (g), (h); chordless routes in (h); y₁ ∉ N(g) in (g).
+  - The certificate class Rec (intermediate instances may be inadmissible) certifies every admissible instance to n = 8, for every A. That includes all 1,868 with |A| ≤ 2 at n = 7, where `cert.py` (admissible intermediates) failed 35.
+- **New reduction (paper): walk to a degree-two vertex** (Prop 3.3).
+  - A trail from g through V ∖ (A ∪ N[c]) whose end has remaining degree 2, with non-adjacent neighbours, reduces the instance to an admissible all-odd one. The end may have A-neighbours.
+  - At n = 9 (Amax, blocked) it applies to 3,969 of 15,277 instances. l1star's Fan route (Prop 5.3) applies to 149, all with d(c) = 1; 45 of those have no walk. The two complement each other.
+  - With tight steps, as far as TR licenses: 7,506 (49%).
+  - New item for l1star Cor 5.6.
+- **Exchange lemma (paper, Lemma 4.2).** If the forced chain first meets c at step i, Q′_c avoids x, and the path of x_{i−1} meets Q′_c only in c, then some Lovász decomposition of G has Q_c = cx.
+  - At n = 7 it covers 375 of the 10,040 chain-through-c decompositions. Of the remaining 9,665, only 824 have a good plain Fan image.
+  - So TR needs re-choice of D′, or a repair of the Fan image by some other argument. Re-choice holds in all 82,079 tight pairs at n = 9.
+
+### AC.3 The three candidates, and where each stops
+- **(i) Joint "L1* ∧ some target" / certificate classes.**
+  - Instance-level moves are insufficient: 6 admissible instances at n = 9 are stuck for every move. They come from 5 graphs with one mechanism: d(g) = 4, N(g) ⊆ N(c), each target of degree 3 with its third neighbour in A. One of them is `G?Bvvo` + leaf.
+  - All 6 are closed by the D-level tight transfer.
+  - The best certificate of K8 − K3 (n = 8) has an excursion of 5 inadmissible steps, with or without TR. This is a certificate statement. It does not show that "within k moves of some admissible instance" fails to close.
+- **(ii) Non-local admissibility.** "c-admissible" (A ∩ N[c] = ∅) is preserved by Case I for every target; it is TR's hypothesis; under TR, goodness propagates upward along it. But:
+  - it contains bad instances: 496 bad (blocked, target) pairs at n = 9;
+  - its good part has dead ends from n = 5 (the child `DEk` − 04);
+  - with all moves + TR, 57 of 574,566 instances at n = 9 remain uncertified. Their stuck states mostly admit no move at all.
+- **(iii) Controlling D′.** L1E (a trivial chain) holds in every instance to n = 9 and in every decided larger case. Re-choice holds. But L1E is a statement about admissible instances; it cannot be the induction hypothesis for the inadmissible child.
+
+### AC.4 For other sessions
+- **Ptm (§Z, T(6)-i).**
+  - A walk step's correctness never needs the intermediate instance to satisfy the induction's admissibility; only the call to the hypothesis does.
+  - Certificate classes with inadmissible intermediates (Rec) are far stronger than admissible-only ones: 0 vs 35 failures at n = 7.
+  - Check what a transfer conjecture licenses step by step. Here a tight step whose source is itself adjacent to c is not covered (A25, F3).
+- **The tight case.** "The forced chain avoids p" (tight-fan) is achievable by re-choosing D′ in all the L1* data (82,079/82,079). The proved local lemmas do not achieve it.
+- **Ptm (§Z, T(6)-i).** The unconditional-transfer observation applies to any Lovász-type induction. A walk step's correctness never needs the intermediate instance to satisfy the induction's admissibility; only the call to the hypothesis does. Certificate classes with inadmissible intermediates (Rec) are far stronger than admissible-only ones: 0 vs 35 failures at n = 7 here.
+- **The tight case.** "The forced chain avoids p" (tight-fan) is always achievable by re-choosing D′ in the L1* data (82,079/82,079), but not by repairing a given D′. A lemma of the form "some decomposition of K − tw has its chain avoiding p" is the shared missing tool. In ptm's language it is the forced-chain hypothesis of the tight walk theorem.
+
+## AD. The dense T(6)-i residual: the append chain (cloud session `claude/t6-dense`, 2026-11-27)
+
+*Experiments: E28. Manuscript: `manuscripts/t6-dense/t6-dense.tex`. Lean: `lean/GallaiLean/T6Dense.lean`. Audit: `research/audit/A26-t6-dense.md`. Origin: synthesis §22, §Z.4, §AB.5.*
+
+### AD.1 Verdict (after audit A26)
+- **The dense residual of T(6)-i is re-encoded, not closed.** All five shapes D ∈ {∅, K2, P3, K3, C4}, C4 included, are equivalent, uniformly, to one statement on a graph with one even vertex: the base conjecture (manuscript Conj 5.1). It has no counterexample in the data.
+- **What kind of statement Conj 5.1 is (A26 main finding; manuscript Prop 2.6).** The (E7) form is reversible. An (E7)-base exists iff J has a star-terminal Lovász decomposition with transitions x_i z y_i (x_i an end) in which, in addition, **x1y2 is terminal at y2 and x2y3 is terminal at y3**.
+  - In terminal-matching form: in G = (J − z) + F, every edge of the alternating path y1 x1 y2 x2 y3 x3 is terminal at its forward end, and the F-edges are on different paths.
+  - So Conj 5.1 ⇒ STL-P (labelled pairings) ⇒ STL ⇒ Test1. It is a *strengthening* of STL-P, relaxed at y2 by (E6).
+  - It is strictly stronger on single labellings: at order 9, 8 labellings satisfy STL-P but have no base (E28 B′). It still costs no root there.
+  - Nothing shows it is easier than STL-P. What it gains is a base statement on a fixed graph M that names, at every step, the path that must avoid a vertex, with no chain hypothesis.
+- **Chains are free.** If x1y2 and x2y3 are edges of B = J − z, take P2 = y3x2 and P1 = y2x1, both single edges. Such a labelling exists for every root whenever D has maximum degree ≤ 2 (Lemma 2.5), so in every residual shape.
+  - So `AdmChain` and TM Conj 8.6 are not used in the dense regime. (The length-one chain violates TM Def 8.1(ii) whenever y2x3 ∈ B.)
+  - For C4 the canonical labelling is x2 y2 y3 x3 along the cycle, with x1, y1 universal.
+- **End-path tracking**, proposed in TM §9(1), is exact for single-edge walks. Every step is an explicit append, except possibly one protected Fan step. So the six separations of TM Thm 8.2 become **end-path conditions** on one Lovász decomposition of
+  M = J − {zx1, zx2, zx3, zy2, zy3, x1y2, x2y3},
+  in which z is a leaf at y1 and x3 is the only even vertex:
+  - (E1) the path through z avoids x1 and does not end at y2, y3;
+  - (E2) P_{y2} ∌ x2;
+  - (E3) P_{y3} ∌ x3;
+  - (E4) P_{y2} ≠ P_{y3};
+  - (E5) P_{x2} ∌ y3;
+  - and either (E7) P_{x1} ∌ y2 (all seven steps are appends), or (E6) the static predecessor condition of `walk_step_protected` at y2, read on the base.
+  - (E6)'s clause w = y3 is redundant (A26 §1.2), which would weaken Conj 5.1 slightly. Not yet done in Lean.
+- **Conj 5.1 ⇒ T(6)-i** needs MR Thm 144 as well as the root-shape theorem. A root isolated in the core has D ⊇ K_{1,5}, outside the five shapes. (A26 F1; this corrects the earlier "every failure has a dense shape".)
+
+### AD.2 Proved (Lean, sorry-free, standard axioms; full build green)
+- **`star_of_appendBase`** (Thm 2.2) and **`star_of_protectedBase`** (Thm 2.3). An append base gives a Lovász decomposition of J that is star-terminal at z, with a long side or a path of length two at each y_i. Hence **`stl_of_appendBase`**: STL(J, z, y_i) for i = 1, 2, 3.
+  - The transitions x_i z y_i are built in `split_finish` but are not in the Lean conclusion.
+- **`test1_of_appendBases`**, **`test1_of_lovaszBases`** (Cor 2.4(b)): Test1 J z if every r ∈ N(z) has a labelling with r ∈ {y_i} and an append base. `LovaszBase` is Def 2.1 verbatim, on M itself.
+- Mechanism: the **split graph** (`splitG`, on V ⊕ Fin 2), where z is split into three degree-2 vertices z ~ x1, y1; ℓ2 ~ x2, y2; ℓ3 ~ x3, y3.
+  - Seven appends, or six appends and `walk_step_protected`, along the list L = (ℓ3y3, x2y3, ℓ2y2, x1y2, zx1, ℓ2x2, ℓ3x3).
+  - Then `PathDecomp.pushOn` collapses the split vertices onto z.
+- Reusable pieces:
+  - `append_full`: the append with an explicit vertex sequence;
+  - `SameP` / `ExtP` bookkeeping;
+  - **`fanPred_append`**: predecessors through an append; this is how the static condition is read back on D₀;
+  - `fanPred_self`, `delList`, `collapse_*`.
+- **Paper only.**
+  - Prop 2.6, the converse: undo the appends, so the end conditions hold automatically.
+  - Lemma 4.1, Fan with end paths: an end at v ∉ N(u) ∪ {u} stays on a path with the same vertex set plus u.
+  - Prop 4.2, TM Thm 8.2 with end-path conditions, at the cost of y2 ∉ N(targets of P2). Its proof replaces each of the six separation uses (A26 §1.3 table). It reaches only shapes where D contains a path x3 y2 y3.
+
+### AD.3 Data (E28)
+- **Exhaustive at order 9** (28 dense J, exact search): all 168 roots certified. STL-P holds for all 14,144 labellings; 14,128 have an (E7)-base, 8 an (E6)-base only, and 8 (C4) none.
+- **Random** (sparse `gen_core`; residual-style `gen_resid.py`, which imposes a subset of the residual conditions): every root certified except 46 roots in 8 graphs where every search hit the budget.
+  - In each of those graphs all or most roots are uncertified, which points at the search.
+  - Every executed construction from a base satisfying the theorem hypotheses verifies edge by edge in J.
+- (E7) almost always suffices; (E6) was needed for 12 of 536 certified residual roots.
+- The six-separation base of TM Thm 8.2 was never found in residual C4 graphs within the budget (all 320 searches undecided). It exists for 95% of configurations on sparse ones.
+
+### AD.4 What remains, and for whom
+- **The base conjecture** (Conj 5.1): six end-path conditions at six vertices of a nearly complete K6, in a graph with one even vertex. Equivalently (E7 form), STL-P plus two prescribed terminal edges.
+  - The single-vertex tools (`lovasz_avoid_set`, `separation_sparse`) need packed or sparse special vertices, the opposite of the dense regime.
+- **Not a conjunction of L1\* instances** (coordinator's question; E28(B″)).
+  - The even vertex of M is x3 ∈ U, adjacent to ≥ 3 other vertices of U. In every labelling of every shape some base condition avoids a neighbour of x3. That is the regime where L1\* is false in general (`DTw`).
+  - Fewest such conditions: C4 {E1, E7}; K3 {E1, E2}; P3 {E2, E4′, E7}; K2 {E1, E2, E4′, E7}; ∅ all of them.
+  - These conditions are binding. Of 1,920 C4 bases satisfying only the admissible conditions, E1 holds in 186 and E7 in 1,042.
+  - They are exactly the reversibility conditions of Prop 2.6, which is why dropping any one of them changes the statement.
+  - So no constraint-by-constraint reduction to L1\* / TR + ST exists. The base conjecture is a joint statement in the tight-Fan regime.
+- **For l1-induction (§AC).** (E7) is the T(6)-i face of L1E (a good D whose relevant chain is trivial): the protected step becomes an append exactly when the path ending at x1 avoids y2. An induction for L1-type end-path constraints with several constrained vertices would attack Conj 5.1 directly.
+- **For the coordinator (corrections to synthesis §22/§23).**
+  - "Reduces to ONE base conjecture" stands, but that conjecture is STL-P with two extra terminal edges (Prop 2.6). It is a strengthening of the known sufficient condition, not a weaker target.
+  - "It holds on every root tested" is not quite right: 46 residual roots in 8 graphs are budget-undecided (every search hit the budget; none proved a base absent).
+  - Conj 5.1 ⇒ T(6)-i uses MR Thm 144 (isolated roots) together with RS.
+  - The C4 shape is **not** closed; neither are K2, P3, K3, ∅.
+
+## AE. Constrained Lovász decompositions: the master statement and its boundary (cloud session `claude/clt`, 2026-11-27)
+
+*Experiments: E30. Manuscript: `manuscripts/clt/clt.tex`. Lean: `lean/GallaiLean/ConstrainedLovasz.lean`. Audit: `research/audit/A27-clt.md`. Origin: synthesis §23 "Next".*
+
+### AE.1 Verdict
+- **There is a clean master statement for the *local* part, and none of the four open targets except L1\* lies inside it.** The constraint language: atoms av(c,a) (P_c ∌ a), ne(u,v) (P_u ≠ P_v), te(v,w) (vw terminal at v); the *constraint digraph* has an arc c → a per avoidance atom. Leaf graphs turn te into av and av into separation, at the price of one even vertex per constraint, which is why the statements live in G, with end paths.
+- **Conjecture CLT-B** (Lean `CLTB`): G with ≤ 1 even vertex g, d(g) ≠ 2; tails c_1..c_k odd and distinct; avoid sets A_i
+  - (B1) pairwise disjoint (every vertex avoided by at most one end path: **in-degree ≤ 1**),
+  - (B2) containing no tail (**bipartite**: no head is constrained),
+  - (B3) A_i ∩ (N[c_i] ∪ N(g)) = ∅ (**locality**, per tail; g ∈ A_i allowed).
+  Then some Lovász decomposition has P_{c_i} ∩ A_i = ∅ for all i.
+  **CLT-B1** (`CLTB1`): the same at every d(g), with cross-locality A_i ∩ N(c_j) = ∅ for all i, j.
+- **Evidence.** Exact over all systems in every connected graph with ≤ 1 even vertex of order ≤ 8, and in all 11,936 of order 9: 0 failures of CLT-B1, 0 of CLT-B (all 46 failures of the d(g)-free form have d(g) = 2 and a head next to another tail). Random maximal systems, orders 11–16: 6,600 instances, 0 failures (audit A27 F9: many random cross-local systems are empty or single-tail, so 1,200 more, orders 11–14, were redrawn until ≥ 2 avoid sets are nonempty; with CLT-B, 1,203 of 1,800 have ≥ 2 nonempty). Allowing 2-cycles at distance ≥ 3 (the avoidance shadow of MSEP) also gives 0 failures to order 9 (d(g) ≠ 2).
+- **Contents.** k = 1 is the local form of L1\* (`l1StarGen_of_cltB1`), hence L∞ and EE; a matching in an all-odd graph is L_N (`lN_of_cltB`), hence Gallai for graphs whose even subgraph has a perfect matching.
+- **Every relaxation fails** (manuscript §4; small examples, most with hand proofs, minimal among graphs with d(g) ≠ 2; with d(g) = 2 the in-degree and chain relaxations already fail at n = 5, e.g. `DEk`): heads in N[c] (K_{2m}: all end paths Hamiltonian); heads in N(g) (path c g a); in-degree two (`EEiW`, n = 6, all odd); chains, a head that is a tail (the net, n = 6, acyclic and of in-degree one); cycles (K_{1,3}); 2-cycles at distance two (`EErw`); cross adjacency at d(g) = 2 (`FCRV?`, n = 7); unrestricted ne atoms (every graph, trivially: all ne atoms among the ends of one path); non-local atoms are not even pairwise-to-joint compatible (18 graphs at n = 7, e.g. `FCdcw`, heads in N(g), d(g) = 4).
+
+### AE.2 Where the targets sit (manuscript Table 1)
+- **L1\* local form**: inside (k = 1).
+- **L_N**: inside (CLT-B). **MSEP**: its avoidance shadow (2-cycles at distance ≥ 3) is inside in the data; MSEP itself is a vertex-set statement.
+- **ST**: the child (G − gx, c, A) is non-local at the new even vertex x. "L1\* + EE at *every* x ∈ N(g)" fails (39/2,210 at n = 7, 897/341,950 at n = 9, always N(x) ∩ A ≠ ∅); "for *some* x" (= L1E, which implies ST) never fails to n = 9 (all graphs). So ST is an *existential* statement outside the local region, as l1-induction found.
+- **t6 base (E7)**: a chain z → x1 → y2 → x2 → y3 → x3 = g with ne on {z, y2, y3}, non-local in the dense shapes (agrees with A26/§AD.4). **But in the dense residual it holds for every labelling**: 30 residual graphs (all five shapes, |O| = 8), all 16,032 labellings with x1y2, x2y3 ∈ B have an (E7) base, witnesses checked; likewise 8,016 labellings at |O| = 10 and 2,208 on sparse C4 graphs (E30(F)). Small graphs do have exceptions (16 of 14,144 at order 9, E28). The exact DFS stalls on these (UND at 10⁷ nodes on graphs where the unconstrained decomposition is instant); the local search `lsls.py` finds the bases at once.
+- **Triangle base / DL / forest base** (§24–25): free-orientation matchings, non-local (pairs inside N(g)); forest base: in-forest (in-degree = number of children) plus ne on siblings. Our non-local compatibility failures (AE.1, last item) have *fixed* orientations; DL's free orientation removes them in the triangle-base data. This is consistent with DL being the right non-local generalisation of the matching case of CLT-B.
+- **Triangle base on residual graphs: universal.** Every root, every data choice and every *fixed* orientation of the disjunctions has a base on the 30 residual graphs (8,016 instances, E30(G)); the three instances the triangle-base session left budget-undecided at 2·10⁸ have bases found by `lsls.py` at the first choice tried (witnesses in `manuscripts/clt/data/`).
+- **The forest base failure (E29(G)) is the in-degree obstruction.** A parent avoided by the end paths of two children has in-degree two in the constraint digraph, the first relaxation of CLT-B that fails (`EEiW`); the triangle-base session finds that its 3 forest-base counterexamples are caused exactly by the sibling condition (ii). Matchings (in-degree one) survive; in-forests with branching do not.
+
+### AE.3 Proved (Lean, sorry-free, standard axioms; full build green)
+- **`fan_single_track`: Fan's lemma with end paths** (t6-dense Lemma 4.1, until now paper only), in the stronger one-path form: every new path comes from *one* old path, its vertex set lies in that path plus the target u, and each of its ends outside {u, v} ∪ N(u) is an end of that path. Pieces: `Tracks`, `append_move_track`, `reroute_core_track`, `reroute_move_track`, `fan_exec_track`, `FanPre.adj_of_mem`.
+- **`csys_fan_transfer`**: a Fan transfer carries any constraint system (avoidance and distinctness atoms) when no constrained vertex is u, v or in N(u), and u is not avoided.
+- **`csys_caseI`: Lovász's Case I for constraint systems** across a free target, with no admissibility of the child. For one constraint this is `avoid_of_target_child` (l1-induction), now without the leaf graph, which is what makes several constraints possible.
+- **`csys_case_adj`**: move (M2), a tail at the even vertex, for several tails (append `gc` to the path ending at g; uses the strengthened `append_move_track`).
+- **`csys_case_leaf`** (with `CSys.liftLeaf`, `GPath.ends_of_support_map`): move (M4), the leaf step at a tail in an all-odd graph, for several tails (leaf merge carries the lifted system).
+- `CSys`, `CSys.Sat`, `CSys.Good`, `CLTB`, `CLTB1`, `LN`, `BLocal`, `CrossLocal`; `l1StarGen_of_cltB1`, `lInfty_of_cltB1`, `ee_of_cltB1`, `lN_of_cltB`.
+- Unconditional cases: **`csys_good_of_packed`** (all tails and heads in a packed set: every avoidance and distinctness system among them), **`csys_good_of_sparse`** (every vertex has ≤ 1 neighbour among tails and heads: every avoidance system with heads outside N[c], no disjointness needed).
+
+### AE.4 Lovász's induction for CLT-B: where it stops when g exists (manuscript §6, paper)
+- Moves that carry a B-local system, with their instance conditions: (M0) leaf tail (all odd: P_c = cy, child G − cy); (M1) free target (Lean); (M2) tail at g (Lean); (M3) tight target; (M4) all odd, a tail of degree ≥ 3 (leaf graph; transfer in Lean); (M5) all odd, Case II at a free vertex. Transfers never need the child to be an instance. For CLT-B each move also needs the new even vertex not to have degree 2.
+- **Residual** (Prop 6.1, CLT-B1, measure Σdeg + [no even vertex], when g exists): every non-tail u ∈ N(g) has a neighbour in A − g, or two tail neighbours, or one tail neighbour adjacent to another tail; and every tail in N(g) is adjacent to another tail.
+  - k = 1: exactly the blocked configuration of l1star (§AA), which splits into ST and TR (§AC).
+  - k ≥ 2 (g present) adds three obstructions: **adjacent tails**, **two tails with a common neighbour in N(g)** (Theorem 5.2 cannot carry the second tail through a tight target), and, for CLT-B only, **heads of one tail next to another tail**. None occurs when tails are pairwise at distance ≥ 3, where the residual is the blocked configuration for the union of the avoid sets. The all-odd residual for k ≥ 2 is not analysed.
+
+### AE.5 For other sessions
+- **t6-dense / triangle-base / direct-test1**: use `lsls.py` (k-path re-decomposition local search) on budget-undecided instances: it is positive-only (never claims absence) but resolved every undecided t6 base and every undecided random CLT-B instance here. `fan_single_track` is the Lemma 4.1 needed for t6-dense Prop 4.2 in Lean.
+- **Coordinator**: the master statement for the local part is CLT-B; the open core (ST, t6/triangle/forest bases, DL) is the *non-local* part, where only existential (free target, free orientation, free labelling) statements are true. The precise multi-constraint obstruction for a proof is AE.4.
+
+### AE.6 Open
+1. CLT-B1 for two tails (k = 2), even with |A_i| = 1 (this contains L_N with two pairs; still open).
+2. Formalise (M0), (M3), (M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
+3. A non-local CLT with free orientation containing DL and the forest base: in the data the free choice removes every compatibility failure.
+
+## AF. The triangle base and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`, 2026-11-27)
+
+*Experiments: E29. Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§2 lift and converse, §3 conjecture, §6 evidence, §7 toward the conjecture; §4 is the coordinator's forest lift). Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
+
+### AF.1 Banked (Lean, sorry-free, standard axioms; full build 18,402 jobs)
+- **`test1At_of_triangleBase`** is the direct lift for every m (manuscript Thm 2.1).
+  - Hypotheses: z is the only even vertex, d(r) ≥ 3, triangle data (`TriangleData`: w, and pairs that are J-edges partitioning N(z) − r − w), and a Lovász decomposition of `triM` = J − zw − {za_i, zb_i, a_ib_i} with a_i ∉ Q(b_i) ∨ b_i ∉ Q(a_i) for every i.
+  - Conclusion: `Test1At`.
+  - Proof: append first (`append_pairs`, which carries the disjunctions through `avoid_of_append`). Then identify J − zw − {za_i, zb_i} with `addLeaf (J − z) r` and finish with `trim_ends` + `exists_two_ends`.
+  - Packaging: `test1_of_triangleBases`, `TriangleBaseConj`, `test1_of_triangleBaseConj`.
+- **Cases of the base** (`TriangleBase.lean`):
+  - `triangleBase_of_packed`: any m, by `separation_set`.
+  - `triangleBase_of_farApart`: one pair, by `separation`.
+  - `triangleBase_of_L1Star` / `_of_L1Blocked`: one pair with a ≁ w or b ≁ w.
+  - `triangleBase_of_E5_E7` (from audit A28): every (E7)-branch base of t6-dense Conj 5.1 is a triangle base at y1, because the base graphs coincide.
+- **DL ⇒ Test1.** `DisjL1` (Conjecture DL), `TriangleData.not_univTwins` and **`test1At_of_disjL1`**: DL gives Test1 at every root whose data have M connected.
+- **The forest lift** (coordinator's §4) is in Lean too: **`test1At_of_forestBase`** (`ForestLift.lean`).
+  - Φ is given as (child, parent) pairs in parent-first order, and the T-join parity is a hypothesis.
+  - `append_forest` carries three invariants: (i), the sibling condition (ii), and ends at the children.
+  - `test1At_of_leafDecomp` is the generic deletion step. Acyclicity is not needed.
+
+### AF.2 What the audit changed (A28)
+- **The conjecture.** The note's Conj 3.1 asserted that data exist at every root. That is false: K_{3,4} + x1x2 has none. It is now restricted to roots with data, as in Lean. Data exist at r iff J[N(z) − r] has a matching of size m − 1; the adjacency of r inside N(z) is irrelevant.
+- **The lift is an equivalence** (Prop 2.2). For fixed data, the triangle base holds iff Test1 holds with every M0 edge terminal. So the conjecture is a PTM-type strengthening of Test1, not a statement of a weaker kind. This is the same lesson as A26 for t6-dense, one level lower.
+- **The comparison with t6-dense is an implication on one branch.** At m = 3, M is t6-dense's base graph, and (E5), (E7) are disjuncts of (2.1). The triangle base drops (E1)–(E4) and weakens (E5), (E7) to disjunctions.
+
+### AF.3 What the data say (E29)
+- **Exhaustive, order ≤ 9, exact.**
+  - The triangle base holds at every root with data of every **2-connected** J: 25,316 roots in 5,849 graphs.
+  - All 59 failures have a cut vertex, and Test1 itself fails at 35 of them.
+  - First data choice: 36,779 of the 36,781 roots with a base at n = 9 have one at the first data choice tried.
+- **Every failure, single-pair or not, is a pair of universal twins** (N(a) = N(b) = C − {a, b}) in a component C of M missing z. This holds for all 243 failing data choices at n = 9, and for the 4 failing data choices among the 88,526 of the 3-connected order-9 graphs.
+- **Multi-pair compatibility: none needed in the data.** There are 0 instances where each pair is satisfiable alone but not jointly. This covers 3-connected TB at n = 9, arbitrary one-even graphs at n = 7, all-odd graphs at n = 8, and random graphs at n = 11–15 with k ≤ 3 pairs (4,420 instances, 0 failures).
+- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. **All 324 roots are certified**, and so are the coordinator's K2-residual run (36/36) and its d(z) = 8 budget root. The last three hard roots were found by clt's local search and independently verified here.
+- **Head-to-head with t6-dense.** On the 8 E28 graphs where Conj 5.1 / STL-P was undecided at 46 roots, the triangle base certifies **all 48 roots**. 42 are certified at budget 2·10⁶, the last 6 at 2·10⁷ with five seeds. Every lift was verified. So the triangle base is weaker in form and much easier for the search.
+
+### AF.4 Conjecture DL, and where it sits
+- **DL** (manuscript Conj 7.3). Let G have ≤ 1 even vertex, and let (a_i, b_i) be disjoint pairs of non-adjacent odd vertices, none of them universal twins of its component. Then some Lovász decomposition has a_i ∉ Q(b_i) or b_i ∉ Q(a_i) for every i.
+- **The exception is necessary** (Prop 7.5). In K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition is Hamiltonian. It never applies to M when M is connected, because a_i ≁ z.
+- **It is the only obstruction for one pair, up to order 9.** Over all connected one-even-vertex graphs of order 5, 7 and 9 (166,217 pairs at n = 9), the disjunction fails exactly at the universal-twin pairs: 3, 14 and 170 of them, all of which fail.
+- **Versus L1\*.** With a fixed orientation, one pair is L1\* with |A| = 1, which is admissible iff a ≁ g. For a, b ∈ N(g), the fixed orientation is false in general (`DTw`). In random instances one orientation alone fails in 6% (p = 0.4) to 58% (p = 0.8) of cases, but the disjunction held in every decided instance. In the dense T(6)-i regime every pair lies in N(w): this is the new territory.
+- **Skeptic's note.** DL ⇒ Test1 wherever data exist with M connected, which includes the dense T(6)-i residual. So DL is at least as hard as that frontier. It concentrates the difficulty into one free-orientation single-vertex statement; it does not remove it.
+- **Not proved.** DL(1) when a, b ∈ N(g) and a, b have a common neighbour. The natural attack is the L1\* induction (`l1_strong`) with the disjunction as invariant: a minimal counterexample would have to be blocked for both orientations at once.
+- **Forest lift (coordinator, §4 / synthesis §25).** Its condition (i) p(v) ∉ Q0(v) is a fixed-orientation avoidance on each tree, up to the choice of root. For one-edge trees that choice is exactly DL's disjunction. A forest version of DL would need the root choice as its only freedom. The data above do not test it.
+
+### AF.4′ The forest base is false as stated (E29 (G))
+- At 3 of the 2,438 roots without triangle data in 3-connected graphs of order 9, no forest base exists. Test1 holds at all three. Two independent exact checks agree.
+- The cleanest instance is the cone over K_{2,6} at a degree-7 root (manuscript Example 4.7). There H = J − {z, r} is a star, so the T-join is unique and its leaves are siblings. The 7 branches at r force two siblings onto one path, which violates (ii).
+- Elsewhere the forest lift is very effective: 2,435 of the 2,438 roots have a forest base, and all 12 at order 7 do.
+- A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
+
+### AF.4″ DL versus clt's CLT-B1 (coordinator's question)
+*CLT-B1, as clt stated it to this session (Lean `CLTB1`, `ConstrainedLovasz.lean`):*
+- *G has ≤ 1 even vertex g and distinct odd tails c_i;*
+- *the avoid-sets A_i are pairwise disjoint and contain no tail;*
+- *A_i ∩ (N[c_i] ∪ N(g)) = ∅, and cross-locality A_i ∩ N(c_j) = ∅ for all i, j.*
+
+*Conclusion: some Lovász decomposition has Q(c_i) ∩ A_i = ∅ for every i.*
+- **Resolving the disjunctions.** Choosing an orientation turns a DL instance into constraints "Q(v_i) avoids {u_i}". The avoid-sets are pairwise disjoint, because M0 is a matching.
+- **When DL is a special case of CLT-B1.** Exactly when some orientation satisfies cross-locality: every u_i ≁ g (= w) and u_i ∉ N[v_j] for all j. That is the sparse, L1\*-admissible regime of Props 7.1–7.2.
+- **The dense T(6)-i regime.** Every pair lies in N(w), so **every orientation violates cross-locality**, and DL there is outside CLT-B1.
+  - This is DL's content: the free choice of end replaces cross-locality. In random graphs one fixed orientation fails in 6–58% of instances, but the disjunction held in every decided instance.
+  - So CLT-B1 alone does not give the triangle base in the dense regime. DL does not follow from it there unless CLT-B1 is extended by a per-constraint disjunction.
+- **The failures are of different kinds.**
+  - DL's only failures are universal twins: N(a) = N(b) = C − {a, b}, so a, b ∈ N(g) and d(a) = |C| − 2, and *both* orientations fail.
+  - clt's boundary examples (in-degree 2, chains/cycles, or dropped cross-locality with d(g) = 2 in a triangle) are fixed-orientation failures. Universal twins with d(g) = 2 force |C| ≤ 4, so on the face of it the two lists do not overlap.
+  - **clt's reply** (18:53):
+    - With an orientation fixed, DL is a matching constraint system (in-degree 1), but a non-local one when the heads lie in N(g). That is exactly where clt's data show fixed-orientation joint failures (18 graphs at n = 7, e.g. `FCdcw`), and the free orientation removes them.
+    - Universal twins violate locality at the tail, so they never arise inside CLT-B.
+    - **The forest-base counterexample (Example 4.7) is clt's in-degree-2 obstruction**: a parent avoided by the end paths of two children (the minimal all-odd example is `EEiW`, n = 6).
+    - clt also reports that on its 30 residual graphs a triangle base exists for *every* root, data choice and orientation (8,016 instances, E30(G)).
+
+### AF.5 For the clt session (§AE)
+- DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.
+- The hardest instances found are the residual ∅ graphs and E28's K2 |O| = 8 graphs. Graph6 strings are in E29 and in `t6-dense` E28.

@@ -1,0 +1,24 @@
+VIOL d CF c=3 A={3}  child c=4 A={3} (cInA=1 adm=0)
+VIOL d CF c=3 A={3}  child c=4 A={3} (cInA=1 adm=0)
+VIOL d CF c=3 A={3}  child c=4 A={3} (cInA=1 adm=0)
+VIOL h DCw c=1 A={1}  child c=0 A={1,4} (cInA=1 adm=0)
+VIOL h DCw c=1 A={1,2}  child c=0 A={1,2,4} (cInA=1 adm=0)
+VIOL h DCw c=2 A={2}  child c=0 A={2,4} (cInA=1 adm=0)
+VIOL h(c in N(g)) DT{ c=0 A={0}  child c=4 A={0,2} (cInA=1 adm=0)
+VIOL h(c in N(g)) DT{ c=0 A={0}  child c=4 A={0,2,3} (cInA=1 adm=0)
+VIOL h(c in N(g)) DT{ c=0 A={0}  child c=4 A={0,3} (cInA=1 adm=0)
+move  applications  tests(child good)  tests-with-c-notin-A  violations  violations-with-c-notin-A  measure-not-decreasing
+a                             28616       6885       6885        0        0        0
+b                             27360       6692       6692        0        0        0
+b'(c in N(g), moves.h)        43688      10556      10556        0        0        0
+c                             15632       6946       6946        0        0        0
+c'(c in N(g), moves.h)        20048       7264       7264        0        0        0
+d                              6840       4604       2302     2302        0        0
+e                             30032       7632       7632        0        0        0
+f                              6720       1340       1340        0        0        0
+f'(c in N(g))                  3392        808        808        0        0        0
+g                             82784      15640      15640        0        0        0
+g(c in N(g))                  88128      15280      15280        0        0        0
+h                             54376      20414      10207    10207        0        0
+h(c in N(g))                  73032      27712      13856    13856        0        0
+i                             17439       4467       4467        0        0        0

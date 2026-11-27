@@ -1,0 +1,8 @@
+SUMMARY mode=0 maxlen=40 blocked=83  walk-to-degree-two=26  Fan-trail=0  either=26  (degree-two only=26)
+SUMMARY mode=0 maxlen=40 blocked=15277  walk-to-degree-two=3969  Fan-trail=0  either=3969  (degree-two only=3969)
+SUMMARY mode=1 maxlen=40 blocked=83  walk-to-degree-two=37  Fan-trail=12  either=41  (degree-two only=29)
+SUMMARY mode=1 maxlen=40 blocked=15277  walk-to-degree-two=6552  Fan-trail=2325  either=7506  (degree-two only=5181)
+SUMMARY mode=2 maxlen=40 blocked=83  walk-to-degree-two=67  Fan-trail=24  either=71  (degree-two only=47)
+SUMMARY mode=2 maxlen=40 blocked=15277  walk-to-degree-two=12980  Fan-trail=4283  either=13259  (degree-two only=8976)
+SUMMARY mode=3 maxlen=40 blocked=83  walk-to-degree-two=35  Fan-trail=4  either=35  (degree-two only=31)
+SUMMARY mode=3 maxlen=40 blocked=15277  walk-to-degree-two=4195  Fan-trail=149  either=4209  (degree-two only=4060)

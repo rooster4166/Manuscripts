@@ -1,0 +1,2 @@
+SUMMARY blocked=83 with TR-walk to admissible=12 (maxlen 40)
+SUMMARY blocked=15277 with TR-walk to admissible=2325 (maxlen 40)

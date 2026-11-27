@@ -1,0 +1,6 @@
+../data/euler_conn_4.g6 {'SUPPRESS': 12, 'ROOT2-SUPPRESS': 4, 'TWIN-skip': 4}
+../data/euler_conn_5.g6 {'SUPPRESS': 32, 'ROOT2-SUPPRESS': 9, 'TWIN-skip': 4, 'EAR': 12, 'EAR-odd-ok': 12, 'ROOT2-EAR': 3, 'TWIN': 9, 'EAR-CUT': 16, 'ROOT2-EAR-CUT-skip': 4}
+../data/euler_conn_6.g6 {'SUPPRESS': 112, 'ROOT2-SUPPRESS': 25, 'TWIN-skip': 8, 'EAR': 47, 'EAR-odd-ok': 12, 'ROOT2-EAR': 10, 'TWIN': 37, 'EAR-CUT': 26, 'ROOT2-EAR-CUT-skip': 6, 'EAR-even-ok': 28, 'EAR-even-over': 7}
+../data/euler_conn_7.g6 {'SUPPRESS': 382, 'ROOT2-SUPPRESS': 70, 'TWIN-skip': 18, 'EAR': 269, 'EAR-odd-ok': 234, 'ROOT2-EAR': 47, 'TWIN': 152, 'EAR-CUT': 140, 'ROOT2-EAR-CUT-skip': 25, 'EAR-even-ok': 28, 'EAR-even-over': 7}
+../data/euler_conn_8.g6 {'SUPPRESS': 2048, 'ROOT2-SUPPRESS': 308, 'TWIN-skip': 60, 'EAR': 1459, 'EAR-odd-ok': 234, 'ROOT2-EAR': 217, 'TWIN': 626, 'EAR-CUT': 441, 'ROOT2-EAR-CUT-skip': 68, 'EAR-even-ok': 1169, 'EAR-even-over': 56}
+../data/euler_conn_9.g6 {'SUPPRESS': 15776, 'ROOT2-SUPPRESS': 2024, 'TWIN-skip': 207, 'EAR': 13827, 'EAR-odd-ok': 12602, 'ROOT2-EAR': 1763, 'TWIN': 3559, 'EAR-CUT': 2537, 'ROOT2-EAR-CUT-skip': 330, 'EAR-even-ok': 1169, 'EAR-even-over': 56}

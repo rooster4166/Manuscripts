@@ -1,0 +1,5 @@
+graphs (one even vertex) = 7
+TR: tests 28, violations 0; A admissible for G (conclusion = L1*) 24, A meets N(g) 4 (of which g in A 2)
+TRALL: non-tight tests 20 viol 0; tight tests 32 viol 0 (meeting N(c): 0)
+ST/ST': blocked admissible instances 0, ST holds 0, ST' holds 0
+ST' failures: 0; with N(g) in N(c) 0; d(g)=2 0 (of which g in A and N(g) non-adjacent 0); d(g)=4,d(c)=5 0

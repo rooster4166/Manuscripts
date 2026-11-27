@@ -1,0 +1,3 @@
+SUMMARY adm instances=78 blocked=0 notRec=26 notRec_blocked=0 states=704 sep=0
+SUMMARY adm instances=780 blocked=83 notRec=238 notRec_blocked=72 states=19927 sep=0
+SUMMARY adm instances=1792 blocked=0 notRec=860 notRec_blocked=0 states=246267 sep=0

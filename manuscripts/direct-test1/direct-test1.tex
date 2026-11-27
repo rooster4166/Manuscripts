@@ -1,0 +1,743 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% data cells (E29)
+\newcommand{\RESIDA}{$180$}
+\newcommand{\RESIDK}{$36$}
+\newcommand{\HEADTOHEAD}{all}
+\newcommand{\DLNINE}{$170$}
+\newcommand{\DLTWONINE}{A $1$-in-$20$ sample of order $9$ with one even vertex ($597$ graphs, $31{,}701$ instances) also has no compatibility failure. Each of its $45$ failures contains a failing single pair.}
+\newcommand{\DLRANDOM}{There were $4{,}420$ instances at orders $11$, $13$, $15$, edge densities $0.4$ to $0.8$, and $k=1,2,3$ pairs, and none failed. $129$ were budget-undecided; of the $24$ rechecked exactly, $23$ have a base and $1$ timed out. One orientation alone fails in $6\%$ (order $11$, density $0.4$) to $58\%$ (order $11$, density $0.8$) of the single-pair instances, so the free choice of end is used.}
+\newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. At $d(z)=8$ the run was stopped after a few graphs; the only roots it left undecided, $7$ roots of one graph, all have a base by exact search at the first data choice. At order $13$ with $d(z)=8$, the coordinator's run (\texttt{scripts/out/d8/}) certifies all $71$ roots of $9$ graphs. $28$ of them were budget-undecided and were settled by clt's local search, each witness checked independently and its lift executed.}
+
+\title{A direct lift to the two-end test through triangles at the even vertex}
+\author{Gallai project}
+\date{27 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+The two-end test (T1) of the spine reduction concerns a graph $J$ of odd order $2k+1$ whose only even
+vertex is $z$, and a neighbour $r$ of $z$. It asks for a decomposition of $J-z$ into at most $k$ paths
+with at least two ends at $r$.
+
+We show that (T1) follows from one Lov\'asz decomposition of an auxiliary graph $M$ with one even
+vertex, subject to one \emph{disjunctive} end-path condition per triangle $za_ib_i$. Here $M$ is
+obtained from $J$ by deleting an edge $zw$ and the triangles $za_ib_i$ of a near-perfect matching of
+$N(z)-r$. For fixed data the condition is equivalent to (T1) with a prescribed terminal matching, so
+the resulting base conjecture is a strengthening of (T1) of terminal-matching type. It is uniform in
+$d(z)$ and does not pass through star-terminal decompositions. For $d(z)=6$ it keeps, on the same
+graph $M$, only two of the conditions of the dense-residual base conjecture, each weakened to a
+disjunction.
+
+The lift is machine-checked for every $d(z)$. Up to order~$9$ the base exists at every root with
+data of every $2$-connected graph. It also exists at every decided root of the dense residual
+families of T(6)-i, including all $48$ roots of the eight graphs on which the dense-residual base was
+undecided. Every failure of the triangle base or of its disjunctive conditions found, single-pair or
+multi-pair, is explained by one obstruction: universal twins. This leads to a single-vertex conjecture, DL, that implies the
+base conjecture whenever $M$ is connected.
+
+Replacing the matching by a forest $T$-join of $J-\{z,r\}$ gives a lift (Theorem~\ref{thm:forest})
+that applies at every root of every $3$-connected $J$. Its conditions are one forbidden vertex per
+forest edge and one sibling condition. It is machine-checked and reversible. The corresponding
+forest base exists at $2{,}435$ of the $2{,}438$ roots without triangle data at order $9$, but it fails
+at three roots, among them the cone over $K_{2,6}$, where (T1) holds.
+
+The reduction and its forest form were proposed by an external collaborator. The proofs and data
+here are an independent check.
+\end{abstract}
+
+\maketitle
+
+\section{Setting}
+
+All graphs are finite and simple. A \emph{Lov\'asz decomposition} of a graph $H$ with at most one
+vertex of positive even degree is a partition of $E(H)$ into paths of positive length such that every
+vertex $v$ is an end of exactly $d_H(v) \bmod 2$ of them. Lov\'asz~\cite{L68} proved that one always
+exists. If $v$ has odd degree, $Q(v)$ denotes the unique path ending at $v$.
+
+Throughout, $J$ has order $2k+1$ and exactly one vertex $z$ of even degree, with $d_J(z)=2m$.
+The test (T1) at $(J,z,r)$, for $r\in N_J(z)$, asks for a decomposition of $B:=J-z$ into at most $k$
+paths with at least two ends at $r$ (Lean: \texttt{Test1At}; \texttt{Test1} asks it at every
+$r\in N_J(z)$). The only further hypothesis used below is $d_J(r)\ge3$. It holds when $\delta(J)\ge3$,
+in particular when $J$ is $3$-connected.
+
+\begin{definition}[triangle data]\label{def:data}
+Fix $r\in N_J(z)$, a vertex $w\in N_J(z)-r$, and a perfect matching
+$M_0=\{a_1b_1,\dots,a_{m-1}b_{m-1}\}$ of $N_J(z)-\{r,w\}$ consisting of edges of $J$. Put
+\[
+M \;=\; J-\bigl(\{zw\}\cup\{za_i,\ zb_i,\ a_ib_i : 1\le i\le m-1\}\bigr),
+\]
+deleting $3m-2$ edges. (Lean: \texttt{TriangleData}, \texttt{triM}; the matching is a list of pairs.)
+\end{definition}
+
+\begin{lemma}[Lean: \texttt{triM\_adj\_z}, \texttt{triM\_parity}, \texttt{triM\_size}]\label{lem:M}
+In $M$, the vertex $z$ is a leaf adjacent to $r$; the vertex $w$ is the unique vertex of even degree,
+and $d_M(w)\ge 2$ if $d_J(w)\ge3$; every other vertex has odd degree. Hence every Lov\'asz
+decomposition of $M$ has exactly $k$ paths.
+\end{lemma}
+
+\begin{proof}
+Among the $2m$ edges at $z$ only $zr$ survives. The vertex $w$ loses one edge, so it has even degree
+$d_J(w)-1$. Each $a_i$ and $b_i$ loses two edges ($za_i,a_ib_i$, resp.\ $zb_i,a_ib_i$), because the
+pairs are disjoint, so its degree stays odd. All other degrees are unchanged, and $z$ has degree $1$.
+So the $2k$ vertices other than $w$ are odd. Each is an end of exactly one path, so there are $k$
+paths.
+\end{proof}
+
+\section{The lift}
+
+\begin{theorem}[direct lift; Lean: \texttt{test1At\_of\_triangleBase}]\label{thm:lift}
+Let $d_J(r)\ge3$. With the data of Definition~\ref{def:data}, suppose $M$ has a Lov\'asz
+decomposition $D_0$ such that, for every $i$,
+\begin{equation}\label{eq:disj}
+a_i\notin V(Q_0(b_i)) \quad\text{or}\quad b_i\notin V(Q_0(a_i)).
+\end{equation}
+Then $(J,z,r)$ passes (T1). Here $m=1$ is allowed, and then~\eqref{eq:disj} is empty.
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1: delete $z$.} Let $B_0=B-M_0=M-z$. In $B_0$ the vertex $w$ has even degree, every $a_i$,
+$b_i$ has odd degree, and $r$ has even degree $d_J(r)-1\ge 2$. The path $Q_0(z)$ begins $z,r$.
+\begin{itemize}[leftmargin=*]
+\item If $Q_0(z)$ has length at least $2$, replace it by $Q_0(z)-z$, which starts at $r$. The vertex
+$r$ is interior to $Q_0(z)$, so its unique end in $D_0$ lies on another path $Q_0(r)$. Now $r$ is an end
+of two paths.
+\item If $Q_0(z)=zr$, delete it. Then $r$ is an end of no path, and since $r$ has positive even degree
+in $B_0$, some path passes through $r$ internally. Split that path at $r$ into two paths of positive
+length, both ending at $r$.
+\end{itemize}
+In both cases we obtain a decomposition $D_1$ of $B_0$ into $k$ paths of positive length. In $D_1$, $r$
+is an end of exactly two paths. Every odd vertex $v$ of $B_0$ other than $r$ is an end of exactly one
+path $P_1(v)$, and $V(P_1(v))\subseteq V(Q_0(v))$, because each step only deletes $z$ or splits a path.
+
+\emph{Step 2: restore the matching.} By~\eqref{eq:disj} and the inclusion just proved, for each $i$ we
+may choose $(v_i,u_i)\in\{(b_i,a_i),(a_i,b_i)\}$ with $u_i\notin V(P_1(v_i))$. Process $i=1,\dots,m-1$ in
+turn, appending the edge $v_iu_i$ at the end $v_i$ of the current path $P(v_i)$. The pairs are disjoint,
+which is used three times.
+\begin{itemize}[leftmargin=*]
+\item The end at $v_i$ has not been moved by an earlier append: those act at the $v_j$ and create ends
+at the $u_j$, and $\{v_i,u_i\}\cap\{v_j,u_j\}=\emptyset$.
+\item An end created by an append is some $u_j$, and $u_j$ is never a $v_l$. So $P(v_i)$ is $P_1(v_i)$,
+possibly extended once at its \emph{other} end by some $u_j$.
+\item That $u_j$ differs from $u_i$. So $u_i\notin V(P(v_i))$, and the append is legal.
+\end{itemize}
+The number of paths stays $k$, and every edge of $B=B_0+M_0$ is used once. No $a_i$, $b_i$ equals $r$,
+so $r$ still ends two paths. This is (T1) at $(J,z,r)$.
+\end{proof}
+
+The Lean proof performs the two steps in the opposite order, which is equivalent. It first appends the
+matching in $M$, carrying the disjunctions as an invariant (\texttt{append\_pairs}). It then trims the
+leaf $z$ from $J-zw-\{za_i,zb_i\}$, which is $J-z$ with a private leaf at $r$. Only $d_J(r)\ge3$ is
+used, besides $z$ being the only even vertex; neither $3$-connectivity nor $\delta(J)\ge 3$ elsewhere is
+needed.
+
+\begin{proposition}[the converse; audit A28]\label{prop:converse}
+For fixed data $(r,w,M_0)$, the following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+\item $M$ has a Lov\'asz decomposition satisfying~\eqref{eq:disj} for every $i$;
+\item $B=J-z$ has a decomposition into at most $k$ paths, with at least two ends at $r$, in which
+every edge of $M_0$ is terminal (the first or last edge of its path).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a)$\Rightarrow$(b) is Theorem~\ref{thm:lift}. The edge $a_ib_i$ becomes the terminal edge at $u_i$, and
+no later append acts at $u_i$.
+
+(b)$\Rightarrow$(a). The even vertices of $B$ are exactly $N(z)$. Count ends: the $2k-2m$ odd vertices
+have at least one each, $r$ has at least two, and the vertex at which $a_ib_i$ is terminal has an end,
+hence at least two. That is at least $2k$ ends, and there are at most $2k$. So every count is exact:
+$k$ paths, one end at each odd vertex, two at $r$ and at each such $u_i$, none at $w$ or at the other
+vertex $v_i$. In particular no path is the single edge $a_ib_i$. Delete each $a_ib_i$ from the end of
+its path, and append $z$ to one of the two paths ending at $r$. The result is a decomposition of $M$
+with one end at every vertex except $w$, so it is Lov\'asz. The shortened path ending at $v_i$ no longer
+contains its former end $u_i$, so~\eqref{eq:disj} holds.
+\end{proof}
+
+So the base condition is (T1) with a prescribed \emph{terminal matching} of $N(z)-\{r,w\}$. It is a
+strengthening of (T1) of the same type as the terminal-matching property PTM, not a statement of a
+weaker kind. An exhaustive independent check of the equivalence (A28) found no disagreement on any of
+the $444$ data choices at order $7$ or the $1{,}148$ data choices on random graphs of order $9$.
+
+\begin{remark}[comparison with the dense-residual base]\label{rem:compare}
+Let $m=3$. Label $N(z)=\{x_1,y_1,x_2,y_2,x_3,y_3\}$ with $x_1y_2,x_2y_3\in E(J)$, as in the
+dense-residual manuscript (\texttt{manuscripts/t6-dense}). Take $r=y_1$, $w=x_3$ and
+$M_0=\{x_1y_2,x_2y_3\}$. Then $M$ is \emph{the same graph} as the base graph of t6-dense Definition~2.1,
+and its conditions (E7) ($P_{x_1}\not\ni y_2$) and (E5) ($P_{x_2}\not\ni y_3$) are one disjunct each
+of~\eqref{eq:disj}.
+\begin{itemize}[leftmargin=*]
+\item So every base of the (E7) branch of t6-dense Conjecture~5.1 (conditions (E1)--(E5) and (E7);
+Lean \texttt{LovaszBase}, \texttt{test1\_of\_lovaszBases}) is a triangle base at $y_1$. Lean:
+\texttt{triangleBase\_of\_E5\_E7}, from audit A28.
+\item The triangle base drops (E1)--(E4) and weakens (E5), (E7) to disjunctions. No implication is
+known for the (E6) branch, or for labellings with $r\in\{y_2,y_3\}$.
+\item Audit A26 showed that the (E7) branch is equivalent to STL-P plus two prescribed terminal edges.
+\item Theorem~\ref{thm:lift} at $m=3$ consists of the two chain-edge appends of t6-dense Theorem~2.2
+(its Steps 2 and 4), followed by deleting $z$. The other steps there rebuild the star at $z$, which
+(T1) does not need. The base graph and the append mechanism are t6-dense's.
+\item New here: the statement for every $m$, the disjunctive form, the direct (T1) target, and the
+Lean for every $m$.
+\end{itemize}
+\end{remark}
+
+\begin{remark}[availability of the data]\label{rem:avail}
+Data exist at $r$ if and only if $J[N(z)-r]$ has a matching of size $m-1$ by edges of $J$. For
+$d(z)=6$ this means $\nu(J[N(z)-r])\ge2$; we checked this on all $1{,}024$ graphs on $N(z)-r$. The
+adjacencies of $r$ inside $N(z)$ play no role.
+\begin{itemize}[leftmargin=*]
+\item In the dense regime of T(6)-i, $J[N(z)]=K_6-D$ with $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$. Every root
+there has between $5$ and $15$ data choices.
+\item A root isolated in the core ($D\supseteq K_{1,5}$) also has data whenever the other five
+core vertices carry two disjoint edges, for example when $D=K_{1,5}$. Such roots need no separate
+treatment. For ``Conjecture~\ref{conj:base} implies T(6)-i'', MR Theorem~144 is needed only at
+isolated roots with $\nu(J[N(z)-r])\le1$ (audit A26, F1). Roots without data are covered by the
+forest lift of \S\ref{sec:forest}.
+\item When $J[N(z)-r]$ has no such matching, one can peel the triangles of a maximal matching. This is
+a heuristic only: no statement here covers the peeled instance.
+\end{itemize}
+\end{remark}
+
+\section{The triangle base conjecture}
+
+\begin{conjecture}[triangle base; Lean \texttt{TriangleBaseConj}]\label{conj:base}
+Let $J$ be $3$-connected, with $z$ its only even vertex. Every root $r\in N(z)$ that admits data as in
+Definition~\ref{def:data} admits some data $(w,M_0)$ and a Lov\'asz decomposition of $M$
+satisfying~\eqref{eq:disj} for all $i$.
+\end{conjecture}
+
+Data need not exist. For example, $J=K_{3,4}+x_1x_2$ is $3$-connected, its even vertex has an
+independent neighbourhood, and no root admits data. At order~$9$, $354$ of the $1{,}819$
+$3$-connected instances with $d(z)=6$ have a root without data (A28).
+
+On cones, Conjecture~\ref{conj:base} is a case of rooted Gallai for Eulerian graphs
+(Remark~\ref{rem:cones}); its difficulty should be judged accordingly.
+
+By Theorem~\ref{thm:lift}, Conjecture~\ref{conj:base} implies $\texttt{Test1}\ J\ z$ for every
+$3$-connected $J$ in which every root admits data (Lean \texttt{test1\_of\_triangleBaseConj}). This
+reaches about $80\%$ of the $3$-connected instances with $d(z)=6$ at order~$9$. By
+Proposition~\ref{prop:converse}, the conjecture is (T1) with a terminal matching.
+
+\section{The forest lift}\label{sec:forest}
+
+The matching $M_0$ in Definition~\ref{def:data} can be replaced by any forest that is a $T$-join
+for $T=N_J(z)-\{r,w\}$. Recall that for $T\subseteq V(H)$ a \emph{$T$-join} of $H$ is a set of edges
+$\Phi\subseteq E(H)$ whose odd-degree vertices are exactly the vertices of $T$. It exists if and only if
+every component of $H$ contains an even number of vertices of $T$. Deleting the edges of a cycle from
+a $T$-join gives a $T$-join, so a $T$-join with the fewest edges is a forest.
+
+\begin{lemma}[forest stepping]\label{lem:step}
+Let $D$ be a decomposition of a graph $B$ into paths of positive length. Let $\Phi$ be a forest on
+vertices of $B$, edge-disjoint from $B$, with a root chosen in each component; write $p(v)$ for the
+parent of a non-root vertex $v$. Suppose every non-root vertex $v$ of $\Phi$ is an end of exactly one
+path $P(v)\in D$. For every non-root $v$, append the edge $p(v)v$ to $P(v)$ at its end $v$. The
+result is a decomposition of $B\cup\Phi$ into $|D|$ paths if and only if
+\begin{enumerate}[label=(\roman*)]
+\item $p(v)\notin V(P(v))$ for every non-root vertex $v$, and
+\item $P(x)\ne P(y)$ for all distinct $x,y$ with $p(x)=p(y)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The map $v\mapsto p(v)v$ is a bijection from the non-root vertices of $\Phi$ onto $E(\Phi)$, so every
+edge of $B\cup\Phi$ is used exactly once and no path is created. A path $P\in D$ with ends $x\ne y$
+receives at most one edge at each end: one at $x$ when $x$ is a non-root vertex of $\Phi$, and
+similarly at $y$. The appends at different ends do not interact, so the result does not depend on
+their order. If $P$ receives only the edge at $x$, the result $p(x)\,x\cdots y$ is a path iff
+$p(x)\notin V(P)$. If $P$ receives both, the result $p(x)\,x\cdots y\,p(y)$ is a path iff
+$p(x),p(y)\notin V(P)$ and $p(x)\ne p(y)$. Two distinct non-root vertices $x\ne y$ with $p(x)=p(y)$
+and $P(x)=P(y)$ are exactly the two ends of one path receiving the same new vertex. So all results are
+paths iff (i) and (ii) hold.
+\end{proof}
+
+\begin{theorem}[forest lift]\label{thm:forest}
+Let $r\in N_J(z)$ and suppose $H:=J-\{z,r\}$ is connected; this holds if $J$ is $3$-connected. Let
+$w\in N_J(z)-r$, put $T=N_J(z)-\{r,w\}$, and let $\Phi$ be a $T$-join of $H$ that is a forest. Put
+\[
+M \;=\; J-\bigl(\{zw\}\cup\{zv:v\in T\}\cup E(\Phi)\bigr).
+\]
+Root each component of $\Phi$, rooting the component containing $w$ (if any) at $w$. If $M$ has a
+Lov\'asz decomposition $D_0$ with
+\begin{enumerate}[label=(\roman*)]
+\item $p(v)\notin V(Q_0(v))$ for every non-root vertex $v$ of $\Phi$, and
+\item $Q_0(x)\ne Q_0(y)$ for all distinct $x,y$ with $p(x)=p(y)$,
+\end{enumerate}
+then $(J,z,r)$ passes (T1).
+\end{theorem}
+
+\begin{proof}
+Since $|T|=2m-2$ is even and $H$ is connected, $T$-joins exist and a smallest one is a forest.
+\emph{Parities in $M$.}
+\begin{itemize}[leftmargin=*]
+\item Only the edge $zr$ survives at $z$, so $d_M(z)=1$.
+\item $r\notin V(H)$, so $d_M(r)=d_J(r)$, which is odd and at least $3$.
+\item $w\notin T$, so $d_\Phi(w)$ is even and $d_M(w)=d_J(w)-1-d_\Phi(w)$ is even. It may be $0$.
+\item A vertex $v\in T$ has $d_M(v)=d_J(v)-1-d_\Phi(v)$ with $d_\Phi(v)$ odd, so $d_M(v)$ is odd.
+\item Any other vertex loses an even number $d_\Phi(v)$ of edges, so its degree stays odd.
+\end{itemize}
+So the $2k$ vertices other than $w$ are odd in $M$, $w$ is the only even vertex, and every Lov\'asz
+decomposition of $M$ has $k$ paths.
+
+\emph{Step 1} is Step~1 of Theorem~\ref{thm:lift}, word for word. It needs only that $Q_0(z)$ begins
+$z,r$ and that $d_{M-z}(r)=d_J(r)-1\ge 2$. It yields a decomposition $D_1$ of $B_0:=M-z$ into $k$
+paths in which $r$ is an end of exactly two paths. Each odd vertex $v\ne r$ of $B_0$ is an end of
+exactly one path $P_1(v)$. Every path of $D_1$ is a subpath of a unique path of $D_0$, and
+$P_1(v)\subseteq Q_0(v)$. Hence (i) gives $p(v)\notin V(P_1(v))$. If $P_1(x)=P_1(y)$, then $Q_0(x)$
+and $Q_0(y)$ share an edge and are equal, so (ii) gives $P_1(x)\ne P_1(y)$ for siblings.
+
+\emph{Step 2.} Every non-root vertex $v$ of $\Phi$ differs from $r$ (as $r\notin V(H)$) and from $w$
+(a root when present), so it is odd in $B_0$ and is an end of exactly one path of $D_1$. Lemma~\ref{lem:step}
+applies to $B=B_0$, $D=D_1$ and the forest $\Phi$. It gives a decomposition of $B_0\cup\Phi=J-z$ into
+$k$ paths. The appends happen at ends $v\ne r$ and add vertices $p(v)\ne r$, so $r$ is still an end of
+two paths. This is (T1).
+\end{proof}
+
+\begin{proposition}[the forest converse; coordinator, proof checked here]\label{prop:forestconv}
+For fixed $(r,w,\Phi)$ and rooting, $M$ has a Lov\'asz decomposition with (i) and (ii) if and only if
+$J-z$ has a decomposition into at most $k$ paths, with at least two ends at $r$, in which every edge
+$p(v)v$ of $\Phi$ is the end edge, at $p(v)$, of its path.
+\end{proposition}
+
+\begin{proof}
+($\Rightarrow$) is Theorem~\ref{thm:forest}: the edge $p(v)v$ is appended at $v$ and becomes the end
+edge at $p(v)$, and no later append acts at $p(v)$ on that path.
+
+($\Leftarrow$) Let $c(u)$ be the number of children of $u$ in $\Phi$. A vertex $u$ has at least $c(u)$ ends,
+of the parity of $d_B(u)$, and $r$ has at least two. Recall that $d_B(u)$ is even exactly for
+$u\in N(z)$, and that $d_\Phi(u)=c(u)+[u\text{ is not a root}]$ is odd exactly for $u\in T$. The
+resulting lower bounds are:
+\begin{itemize}[leftmargin=*]
+\item $c(u)$ at a non-root vertex of $\Phi$, and at $w$;
+\item $c(u)+1$ at the other roots;
+\item $2$ at $r$;
+\item $d_B(u)\bmod 2$ elsewhere.
+\end{itemize}
+Since $\sum_u c(u)=|E(\Phi)|$ and $\Phi$ has one root per component, these bounds sum to exactly $2k$.
+So every bound is attained. In particular no path is a single edge of $\Phi$: its end at the child
+would exceed the bound there. A path cannot have $\Phi$-end-edges at both ends with length $2$,
+because the middle vertex would have two parents.
+
+Remove every edge $p(v)v$ from the end $p(v)$ of its path. The ends move from $p(v)$ to $v$, which
+leaves one end at every vertex of $V(\Phi)-\{w\}$, none at $w$, and two at $r$. Then append $z$ to one
+of the two paths ending at $r$. The result is a Lov\'asz decomposition of $M$. The shortened path
+ending at $v$ no longer contains $p(v)$, which gives (i). Two siblings on one path would have made
+$p(v)$ both ends of a path, which gives (ii).
+\end{proof}
+
+So Conjecture~\ref{conj:forest} is (T1) with a \emph{terminal forest $T$-join}. It is again of PTM type,
+and weaker than the terminal-matching form.
+
+\begin{remark}
+\begin{itemize}[leftmargin=*]
+\item \emph{Special case.} Theorem~\ref{thm:lift} is the case where $\Phi=M_0$ is a perfect matching
+of $J[T]$. Each component is one edge $a_ib_i$, and choosing which end is the root is choosing a side
+of the disjunction~\eqref{eq:disj}; condition (ii) is vacuous.
+\item \emph{Availability.} When $J$ is $3$-connected, Theorem~\ref{thm:forest} applies at every root
+$r$ and every $w$, with no hypothesis on $J[N(z)]$. In particular it covers the regime where
+$N(z)-r$ is independent, which the triangle data miss.
+\item \emph{Lean.} The matching case is \texttt{test1At\_of\_triangleBase}. The forest lift is
+\texttt{test1At\_of\_forestBase} (\texttt{ForestLift.lean}, standard axioms). There $\Phi$ is a list of
+(child, parent) pairs in parent-first order, meaning no parent is a later child, with distinct
+children and edges, $w$ never a child, and the $T$-join parity. The appends are made in that order,
+so each child still has exactly its original end when it is processed. Acyclicity is not used.
+\end{itemize}
+\end{remark}
+
+\begin{conjecture}[forest base]\label{conj:forest}
+If $J$ is $3$-connected, then for every $r\in N_J(z)$ there are $w$, a forest $T$-join $\Phi$, a
+rooting as in Theorem~\ref{thm:forest}, and a Lov\'asz decomposition of $M$ satisfying (i) and (ii).
+\end{conjecture}
+
+At a root that admits triangle data, Conjecture~\ref{conj:base} is the special case of
+Conjecture~\ref{conj:forest} in which $\Phi$ is required to be a matching inside $N(z)$, so
+Conjecture~\ref{conj:forest} is formally weaker there. Conjecture~\ref{conj:forest} would give (T1) for
+every $3$-connected $J$, which is one of the two tests of the spine reduction; but see
+Example~\ref{ex:forestfail}.
+
+\begin{example}[a root without triangle data; coordinator, checked by hand]\label{ex:k34}
+Let $J=K_{3,4}+x_1x_2$, with parts $\{z,x_1,x_2\}$ and $\{y_1,\dots,y_4\}$. Then $z$ is the only even
+vertex, $N(z)=\{y_1,\dots,y_4\}$ is independent, and no root admits triangle data. Take $r=y_1$,
+$w=y_2$ and $\Phi=\{x_1y_3,x_1y_4\}$, rooted at $y_3$, so that $p(x_1)=y_3$ and $p(y_4)=x_1$.
+\begin{itemize}[leftmargin=*]
+\item The graph $M$ has the $8$ edges $zy_1$, $x_1y_1$, $x_1y_2$, $x_1x_2$, $x_2y_1,\dots,x_2y_4$.
+\item $D_0=\{x_1y_2x_2,\ y_1x_1x_2y_3,\ y_4x_2y_1z\}$ is a Lov\'asz decomposition of $M$. It satisfies~(i),
+since $Q_0(x_1)\not\ni y_3$ and $Q_0(y_4)\not\ni x_1$, and (ii) is vacuous.
+\item The lift is $\{y_3x_1y_2x_2,\ y_1x_1x_2y_3,\ x_1y_4x_2y_1\}$. These are $3=k$ paths covering the
+$9$ edges of $J-z$, with two ends at $y_1$.
+\end{itemize}
+The same holds at every root (\texttt{scripts/verify/fb\_k34.py}).
+\end{example}
+
+\begin{example}[the forest base can fail]\label{ex:forestfail}
+Conjecture~\ref{conj:forest} is false as stated. Let $J$ be the cone over $K_{2,6}$: the vertices
+$r,r'$ are joined to $y_1,\dots,y_6$, and $z$ is joined to all eight. Then $z$ (of degree $8$) is the
+only even vertex, $J$ is $3$-connected, $k=4$, and no root admits triangle data at $r$ or $r'$.
+
+Here $H=J-\{z,r\}$ is the star with centre $r'$ and leaves $y_1,\dots,y_6$. A tree has a unique
+$T$-join, so for each $w$ there is one $\Phi$. In $M$ the vertex $r$ has odd degree $7$. The edges at $r$
+lie in the \emph{branches} at $r$: three paths through $r$ use two branches each, and one path ends at
+$r$.
+\begin{itemize}[leftmargin=*]
+\item $w=r'$. Then $\Phi$ is the whole star, rooted at $r'$, and the six leaves are siblings. The
+branches at $r$ are the six leaves and $z$. So two of the three paths through $r$ pair two siblings,
+against (ii).
+\item $w=y_i$ and the root is $r'$. Then $\Phi$ is the star on $r'$ and the five other leaves, and
+those leaves are siblings. The branches are these five leaves, $z$, and $r\,y_i\,r'$. By (i) no leaf
+lies on a path with $r'$, so a leaf can pair only with $z$ or end at $r$. At most two of the five
+leaves are placed this way, so two siblings share a path, against (ii).
+\item $w=y_i$ and the root is a leaf $y_{j_0}$. Then $p(r')=y_{j_0}$, and the other four leaves are
+siblings with parent $r'$.
+\begin{itemize}
+\item By (i) at the leaves, no leaf pairs with the branch $r\,y_i\,r'$.
+\item By (i) at $r'$, that branch does not pair with $y_{j_0}$.
+\item So the four siblings can only pair with $z$ or with $y_{j_0}$, or end at $r$, and the branch
+$r\,y_i\,r'$ takes $z$ or the end at $r$.
+\end{itemize}
+At most two siblings are separated, so two siblings share a path, against (ii).
+\end{itemize}
+By exact search (\texttt{fb\_exhaustive.py}) and an independent brute force over all Lov\'asz
+decompositions (\texttt{fb\_bruteforce.py}), no $w$, forest $T$-join and rooting work at $r$ or $r'$.
+The same holds at one root of a second $3$-connected graph of order $9$ (graph6 \texttt{HsaAD\textasciitilde\}}),
+where $d(z)=6$ and $N(z)$ is independent. Yet (T1) holds at all three roots.
+
+Over all $2{,}438$ roots without triangle data of $3$-connected graphs of order $9$
+(\texttt{fb\_nodata.py}), the forest base exists, and its lift verifies, at the other $2{,}435$.
+\end{example}
+
+\begin{remark}[cones; coordinator, synthesis \S26]\label{rem:cones}
+Let $B$ have even order $2k$, and let $J=B+z$ be the cone over $B$. Then $z$ is the only even
+vertex of $J$ iff $B$ is Eulerian, and $J$ is $3$-connected iff $B$ is $2$-connected. Since
+$N(z)=V(B)$, the test (T1) at $(J,z,r)$ says exactly that $B$ has a decomposition into at most
+$|B|/2$ paths with at least two ends at $r$. So (T1) on cones is the rooted form of Gallai's
+conjecture for $2$-connected Eulerian graphs of even order, which is open in general.
+\begin{itemize}[leftmargin=*]
+\item Every lift here removes a $T$-join of $B$, takes a Lov\'asz decomposition and re-appends
+terminal edges. A base statement at \emph{every} root would therefore settle that case of Gallai's
+conjecture. Example~\ref{ex:forestfail} shows that the forest form already fails on a cone.
+\item On a cone, triangle data exist at $r$ iff $B-r$ has a near-perfect matching. So
+Conjecture~\ref{conj:base} restricted to cones is rooted Eulerian Gallai at those roots. It should not
+be expected to be easier than that case.
+\item The three roots of order $9$ without a forest base have one shape. At the root $r$, $B$ looks
+like $K_{2,t}$ with $r$ a hub, and many degree-$2$ vertices of $B$ (degree $3$ in $J$, adjacent to
+$z$) hang between $r$ and a second hub.
+\begin{itemize}
+\item The cone over $K_{2,6}$: $d(z)=8=n-1$, $B$ Eulerian, at both hubs.
+\item \texttt{HsaAD\textasciitilde\}}: a near-cone with $d(z)=6$, where $z$ misses $2$ of the $8$ vertices
+of $B$. The second hub has odd degree $7$, and the even subgraph of $B$ is a star with four leaves at
+$r$, plus an isolated vertex.
+\end{itemize}
+\end{itemize}
+\end{remark}
+
+\begin{remark}[a single pair is not settled by one-sided avoidance]\label{rem:onepair}
+Take $m=2$, so that $M=J-\{zw,za_1,zb_1,a_1b_1\}$. Assume $J$ is $2$-connected on at least $5$ vertices.
+Then no component of $M$ has exactly $a_1,b_1$ as its odd vertices. Such a component would lie
+in $\{a_1,b_1,w\}$ and be the path $a_1\,w\,b_1$, so in $J$ it would meet the rest only through $z$.
+
+The one-sided avoidance statement L1$^*$ (Lean \texttt{L1Star}) does not, however, settle the
+disjunction for this pair. It concerns the end path at a vertex $c$ avoiding a set $A$, and it requires
+the vertices of $A$ to be non-adjacent to $c$ and to the even vertex (Lean \texttt{Admissible}).
+Whenever $a_1w,b_1w\in E(J)$, neither direction of~\eqref{eq:disj} is admissible, because $w$ is the
+even vertex of $M$. This happens in $57$ of $246$ sampled instances, all with at least four odd
+vertices in the component. Moreover L1$^*$ itself is only known conditionally (Proposition~\ref{prop:l1star}).
+
+The disjunction held in every sampled instance. In the configuration that blocks one side for
+every decomposition, it can also be obtained directly. That configuration is a tail
+$N_M(w)=\{a_1,b_1\}$ and $N_M(b_1)=\{w\}$, where every $Q_0(b_1)$ begins $b_1\,w\,a_1$.
+\begin{itemize}[leftmargin=*]
+\item By the previous paragraph $d_M(a_1)\ge 3$, so $a_1$ is the unique even vertex of
+$M':=M-\{w,b_1\}$, with $d_{M'}(a_1)\ge 2$.
+\item A Lov\'asz decomposition of $M'$ has a path through $a_1$. Split it at $a_1$ and prepend $b_1\,w$
+to one of the two pieces.
+\end{itemize}
+This gives a Lov\'asz decomposition of $M$ in which $Q(a_1)$, the other piece, avoids $b_1$.
+\end{remark}
+
+\section{A local guard}
+
+The disjunction~\eqref{eq:disj} fails at a pair $\{a,b\}$ exactly when $Q_0(a)=Q_0(b)$, or when each of
+$Q_0(a),Q_0(b)$ contains the other vertex. The next example shows that a repair cannot work with these
+two paths alone.
+
+\begin{example}\label{ex:guard}
+Let $H$ be the $4$-cycle $a\,x\,b\,y$ with pendant edges $bt_1$ and $at_2$, so that $ab\notin E(H)$. The
+odd vertices are $a,b,t_1,t_2$ and $x,y$ have degree $2$, so a decomposition with one end at each odd
+vertex has two paths. If $t_1$ and $b$ were the ends of one path, that path would be the edge $t_1b$,
+and the other path would contain the $4$-cycle, which is impossible; similarly for $t_2$ and $a$. So
+the ends are paired either as $\{t_1,t_2\},\{a,b\}$ or as $\{t_1,a\},\{t_2,b\}$.
+\begin{itemize}[leftmargin=*]
+\item In the first case the paths are $t_1\,b\,x\,a\,t_2$ and $b\,y\,a$ (or with $x,y$ exchanged), and
+$Q(a)=Q(b)=b\,y\,a$.
+\item In the second case they are $t_1\,b\,x\,a$ and $t_2\,a\,y\,b$ (or with $x,y$ exchanged), and each
+of $Q(a),Q(b)$ contains the other vertex.
+\end{itemize}
+Thus every such decomposition violates~\eqref{eq:disj}. A local uncrossing inside $M$ must therefore
+involve a third path, ending at an odd vertex. Note that $H$ has two even vertices, $x$ and $y$.
+\end{example}
+
+\section{Evidence}\label{sec:evidence}
+
+All searches use the exact oracle \texttt{tools/route\_ext.c}. Its query~A asks for a Lov\'asz
+decomposition in which the path ending at each listed vertex avoids a listed set. The $2^{m-1}$
+orientations of~\eqref{eq:disj} are $2^{m-1}$ such queries. A node budget gives ``undecided''.
+The scripts are in \texttt{scripts/}; experiment E29 in \texttt{research/experiments.md} has the full
+tables.
+\begin{itemize}[leftmargin=*]
+\item \texttt{dtl.py} executes Steps~1--2 on every base found and checks the result: an edge
+partition of $J-z$ into simple paths, at most $k$ paths, at least two ends at $r$.
+\item \texttt{tb.py} also checks the base $D_0$ itself (a Lov\'asz decomposition of $M$
+satisfying~\eqref{eq:disj}). At a root without a base it decides (T1) exactly, over all end profiles
+with at most three ends per vertex.
+\end{itemize}
+
+\subsection{Random dense graphs (the original check)}
+\texttt{dtl.py ORACLE 1 30 11} (log \texttt{scripts/out/run11\_d6.log}) generates random $J$ with
+$d(z)=6$ and $J[N(z)]$ dense (each pair an edge with probability $0.9$ before parity repair),
+$\delta\ge3$ and connectivity $\ge 3$.
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+order, $d(z)$ & graphs & roots & base found & lift verified & first data choice found\\
+\midrule
+$11$, $6$ & $30$ & $180$ & $180$ & $180$ & $175$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Of $756$ queries, $177$ hit the budget and none was refuted. For $9$ data choices, no orientation was
+decided within the budget; in each case another data choice at the same root succeeded. So the $5$
+roots whose first data choice ``did not work'' are budget-undecided, not refuted. No lift failed.
+
+\subsection{Exhaustive, order at most $9$}
+We tested every connected $J$ of order $5$, $7$, $9$ with exactly one even vertex and $d(z)\ge4$ (the
+lists \texttt{one\_even\_\{5,7,9\}.g6} of the STL session). The test covers every root with
+$d(r)\ge3$ and every data choice, exactly, with no budget (\texttt{tb.py}).
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+$\kappa(J)$ & graphs & roots with data & base & failures\\
+\midrule
+$1$ & $3{,}360$ & $11{,}777$ & $11{,}718$ & $59$\\
+$2$ & $589$ & $2{,}426$ & $2{,}426$ & $0$\\
+$\ge3$ & $5{,}260$ & $22{,}890$ & $22{,}890$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Every root with data of every $2$-connected $J$ of order at most $9$ has a triangle
+base.}
+\item All $59$ failures are in graphs with a cut vertex: $7$ at order $7$ and $52$ at order $9$. (T1)
+itself fails at $35$ of them.
+\item At each failing root, every data choice contains a pair $(a_i,b_i)$ of \emph{universal twins} of
+a component $C$ of $M$, that is, $N_M(a_i)=N_M(b_i)=V(C)-\{a_i,b_i\}$. This is checked for all $243$
+data choices at the $52$ failing roots of order $9$; see \S\ref{sec:toward}.
+\item An independent exhaustive run of the auditor (A28) over the $1{,}819$ $3$-connected instances of
+order $9$ with $d(z)=6$ found and verified a base at all $10{,}118$ roots with data.
+\end{itemize}
+
+\subsection{Residual families of T(6)-i}
+We used \texttt{manuscripts/t6-dense/scripts/gen\_resid.py}, which produces random $3$-connected $J$
+with $J[N(z)]=K_6-D$ and the residual conditions of a smallest T(6)-i failure that it imposes. The
+searches used a budget of $2\cdot10^6$ and three seeds, then $2\cdot10^7$ and five seeds for the
+roots still undecided.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+family & graphs & roots & certified & proved absent\\
+\midrule
+$|O|=8$, six per shape ($\emptyset$, $K_2$, $P_3$, $K_3$, $C_4$) & $30$ & $180$ & \RESIDA & $0$\\
+$|O|=10$, four per shape; $C_4$ with one twin pair, $|O|=8$ & $24$ & $144$ & $144$ & $0$\\
+the K2-residual run of \texttt{dtl\_resid.py}, $|B|=14$ & $6$ & $36$ & \RESIDK & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Three roots were left undecided by the oracle: two roots of one $\emptyset$-shape graph with $|O|=8$,
+and the root $r=1$ of the K2-residual run. Each was undecided at budget $2\cdot10^7$ with five to
+seven seeds, and the last one also at $2\cdot10^8$. The clt session's local search
+(\texttt{manuscripts/clt}, \texttt{data/triangle\_base\_witnesses.txt}) found a base at all three.
+We verified each witness independently with \texttt{tb.py}'s checks: the base is a Lov\'asz
+decomposition of $M$ satisfying~\eqref{eq:disj}, and the lift is a (T1) decomposition. So no root
+of these families is undecided.
+
+\subsection{Head-to-head with the dense-residual base}
+Experiment E28 lists $8$ residual graphs in which every search for a t6-dense base hit the budget, at
+$46$ roots. On the same graphs the triangle base certifies \HEADTOHEAD{} $48$ roots, including
+every root of the $P_3$ ($|O|=8$, $|O|=10$) and $K_3$ ($|O|=10$) graphs and of the $\emptyset$ graph.
+Every certified root was lifted and verified. On the $18$ of the $28$ order-$9$ dense cores that the
+auditor compared ($108$ of $168$ roots), the two bases coexist at every root and data choice (A28).
+
+\subsection{Larger random graphs}
+\RANDOMTB
+
+\subsection{The forest lift}
+This subsection is the coordinator's check of \S\ref{sec:forest}. The script \texttt{scripts/verify/verify3.py} checks Lemma~\ref{lem:step},
+Theorem~\ref{thm:forest} and Remark~\ref{rem:onepair} independently of the oracle. Its enumerator of
+Lov\'asz decompositions is exhaustive up to a cap, and \texttt{bf\_check.py} validates it against brute
+force on $60$ small graphs with no mismatch.
+\begin{itemize}[leftmargin=*]
+\item \emph{Lemma~\ref{lem:step}.} On $40$ random graphs of order $6$ and $8$, take $\Phi$ a minimum
+$T$-join for $T$ the set of even vertices and $B=G-E(\Phi)$. For every decomposition and rooting, the
+predicate (i)$\wedge$(ii) agreed with the outcome of the appends in all $101{,}282$ cases.
+\item \emph{Theorem~\ref{thm:forest}.} On $3$-connected $J$ of order $9$ and $11$ with $d(z)\in\{4,6\}$,
+the parity claims held in $192/192$ instances. Of these, $84$ have a component of $\Phi$ with at least
+three vertices. All $253{,}834$ lifts satisfying (i)$\wedge$(ii) produced a valid (T1) decomposition.
+A base satisfying (i)$\wedge$(ii) was found for $180/192$ instances, for the first two choices of $w$
+and one minimum $T$-join, within a cap of $1500$ decompositions.
+\item \emph{Remark~\ref{rem:onepair}.} On $2$-connected $J$ of order $7$ and $9$ with $d(z)=4$, there were
+$246$ instances. No component had odd set $\{a_1,b_1\}$, and the disjunction held in all of them.
+\end{itemize}
+
+\section{Toward the conjecture}\label{sec:toward}
+
+Write $g=w$ for the even vertex of $M$. Each pair $\{a_i,b_i\}$ is non-adjacent in $M$, and both
+vertices are odd. So~\eqref{eq:disj} is an end-path avoidance condition at one vertex of each pair,
+with the vertex chosen freely. This is the setting of the project's single-vertex theorems. The
+results of this section are in \texttt{lean/GallaiLean/TriangleBase.lean}.
+
+\subsection{Cases reached by the single-vertex tools}
+
+\begin{proposition}[Lean: \texttt{triangleBase\_of\_packed}, \texttt{triangleBase\_of\_farApart}]
+\label{prop:packed}
+Suppose the data satisfy one of the following.
+\begin{enumerate}[label=(\alph*)]
+\item The $2m-2$ vertices $a_i,b_i$ are pairwise at distance at least $3$ in $M$.
+\item $m=2$, and $a_1,b_1$ have no common neighbour in $M$, that is,
+$N_J(a_1)\cap N_J(b_1)=\{z\}$.
+\end{enumerate}
+Then a triangle base exists.
+\end{proposition}
+
+\begin{proof}
+$M$ has at most one vertex of positive even degree (Lemma~\ref{lem:M}). In case~(a), the separation
+theorem in its set form gives a Lov\'asz decomposition in which every path meets $\{a_i,b_i\}_i$ at
+most once. In case~(b), the pair form gives one in which no path contains both $a_1$ and $b_1$. In both
+cases $a_i\notin V(Q_0(b_i))$ for every $i$.
+\end{proof}
+
+\begin{proposition}[Lean: \texttt{triangleBase\_of\_L1Star}, \texttt{triangleBase\_of\_L1Blocked}]
+\label{prop:l1star}
+Let $m=2$, and suppose $a_1\not\sim w$ or $b_1\not\sim w$. If the avoidance conjecture $L_1^*$ holds,
+a triangle base exists. In particular one exists if $L_1^*$ holds on blocked instances.
+\end{proposition}
+
+\begin{proof}
+Say $a_1\not\sim w$. In $M$ the set $A=\{a_1\}$ is admissible for $c=b_1$, because
+$a_1\notin N_M[b_1]\cup N_M(g)$. Then $L_1^*$ gives a Lov\'asz decomposition whose path ending at $b_1$
+avoids $a_1$. By \texttt{l1starGen\_of\_blocked}, $L_1^*$ follows from its blocked case.
+\end{proof}
+
+\emph{Reach.} Consider the $3$-connected graphs of order $7$ and $9$ and their roots with data.
+\begin{itemize}[leftmargin=*]
+\item For $m=2$ there are $11{,}463$ such roots. Proposition~\ref{prop:packed}(b) applies
+unconditionally to $2{,}491$ of them ($22\%$), and Proposition~\ref{prop:l1star} to $9{,}575$
+($84\%$), conditionally on $L_1^*$. The remaining $16\%$ have $a_1,b_1\in N(w)$ for every data choice.
+\item For $m=3$, Proposition~\ref{prop:packed}(a) applies to $12$ of $10{,}158$ roots.
+\end{itemize}
+Case~(a) is the far-apart regime, which is known for T(6)-i by other means. In the dense regime
+$a_i,b_i\in N_M(w)$ for every $i$. There both orientations of every condition are inadmissible for
+$L_1^*$, which is the regime of the example \texttt{DTw}, where the fixed-orientation statement is false
+in general.
+
+\subsection{The disjunctive avoidance conjecture}
+
+Two vertices $a,b$ are \emph{universal twins} of their component $C$ if $N(a)=N(b)=V(C)-\{a,b\}$.
+
+\begin{conjecture}[DL; Lean \texttt{DisjL1}]\label{conj:dl}
+Let $G$ have at most one vertex of positive even degree. Let $(a_1,b_1),\dots,(a_k,b_k)$ be pairs of
+odd vertices, all $2k$ vertices distinct, with $a_ib_i\notin E(G)$ and no pair consisting of universal
+twins of its component. Then some Lov\'asz decomposition of $G$ satisfies, for every $i$,
+$a_i\notin V(Q(b_i))$ or $b_i\notin V(Q(a_i))$.
+\end{conjecture}
+
+\begin{proposition}[Lean: \texttt{triangleBase\_of\_disjL1\_reach}, \texttt{test1At\_of\_disjL1}]
+\label{prop:dl}
+Conjecture~\ref{conj:dl} implies a triangle base for every choice of data in which each pair is
+connected to $z$ in $M$, in particular whenever $M$ is connected. With Theorem~\ref{thm:lift}, it
+gives (T1) at every root that admits such data.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:M}, the only even vertex of $M$ is $w$, and the pairs consist of odd, non-adjacent
+vertices. If $a_i$ is connected to $z$, then $z$ lies in the component of $a_i$, and $z\notin N_M(a_i)$.
+So $a_i,b_i$ are not universal twins. Apply Conjecture~\ref{conj:dl} to $M$ with the pairs of $M_0$.
+\end{proof}
+
+\begin{proposition}[the exception is needed]\label{prop:twins}
+Let $k\ge1$. Let $G$ be $K_{2k+1}$ with a perfect matching $\{a_ib_i\}$ of a $K_{2k}\subset K_{2k+1}$
+removed. Then the remaining vertex $g$ is the only even vertex. Every Lov\'asz decomposition of $G$
+consists of $k$ Hamiltonian paths, so each $(a_i,b_i)$ violates the disjunction.
+\end{proposition}
+
+\begin{proof}
+The vertex $g$ has degree $2k$, and every other vertex has degree $2k-1$. A Lov\'asz decomposition
+has $k$ paths and $\binom{2k+1}2-k=2k^2$ edges, and a path has at most $2k$ edges. So every path is
+Hamiltonian, and $Q(b_i)\ni a_i$.
+\end{proof}
+
+Example~\ref{ex:guard} has two even vertices, so it is outside Conjecture~\ref{conj:dl}. For $k=1$
+with a fixed orientation, the conjecture is $L_1^*$ with $|A|=1$. It is therefore implied by $L_1^*$
+when $a\not\sim g$ or $b\not\sim g$, and it goes beyond $L_1^*$ when $a,b\in N(g)$. In the other
+direction, Conjecture~\ref{conj:dl} with Proposition~\ref{prop:dl} implies (T1) wherever data exist
+with $M$ connected, including the dense T(6)-i residual. So it is at least as hard as that frontier:
+it concentrates the difficulty into one single-vertex statement rather than removing it.
+
+\subsection{Multi-pair compatibility}
+
+The lift needs all $m-1$ disjunctions in one decomposition. The question is which compatibility
+between the pairs is needed beyond the single-pair conditions. In the data, none is.
+\begin{itemize}[leftmargin=*]
+\item \emph{Single pair, all graphs} (\texttt{disj\_general.py}, exact). We tested every connected graph
+of order $5$, $7$, $9$ with exactly one even vertex, and every pair of non-adjacent odd vertices.
+\begin{itemize}
+\item The disjunction fails at $3$, $14$ and \DLNINE{} of the $21$, $947$ and $166{,}217$ pairs.
+\item These are \emph{exactly} the pairs of universal twins: every failure is a universal-twin pair,
+and every universal-twin pair fails. So for one pair, up to order $9$, the exception in
+Conjecture~\ref{conj:dl} is not only necessary (Proposition~\ref{prop:twins}) but the only
+obstruction.
+\end{itemize}
+\item \emph{Two pairs, all graphs} (exact). There are $0$ compatibility failures, that is, instances in
+which each pair is satisfiable alone but the two are not jointly satisfiable.
+\begin{itemize}
+\item This covers order $7$ with one even vertex ($1{,}404$ instances) and all all-odd graphs of
+order $8$ ($10{,}850$ instances). In all-odd graphs a single pair always succeeds, by $L_1$.
+\item \DLTWONINE
+\end{itemize}
+\item \emph{Triangle data, $3$-connected $J$ of order $9$} (\texttt{tb\_compat.py}, exact).
+\begin{itemize}
+\item Over all $88{,}526$ data choices there are $0$ compatibility failures.
+\item Each of the $4$ data choices without a base contains a pair of universal twins of a component of
+$M$ that misses $z$.
+\item For $m=2$, both orientations hold in all $20{,}052$ data choices.
+\item So in these graphs \emph{every} data choice with $M$ connected has a base, as
+Proposition~\ref{prop:dl} predicts from Conjecture~\ref{conj:dl}.
+\end{itemize}
+\item \emph{Random graphs} (\texttt{dl\_rand.py}, pairs inside $N(g)$, universal twins skipped).
+\DLRANDOM
+\end{itemize}
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.,
+Tihany, 1966), Academic Press, New York, 1968, pp.~231--236.
+\end{thebibliography}
+
+\end{document}

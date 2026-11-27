@@ -1,0 +1,21 @@
+STPFAIL F?q_w g=0 c=6 A={1,2} |A|=2 ST=1 N(g)={4,5} N(c)={3,4,5}
+STPFAIL F?q_w g=0 c=6 A={0,1,2} |A|=3 ST=1 N(g)={4,5} N(c)={3,4,5}
+STPFAIL F?re_ g=4 c=5 A={6} |A|=1 ST=1 N(g)={0,1} N(c)={0,1,2}
+STPFAIL F?re_ g=4 c=5 A={3,6} |A|=2 ST=1 N(g)={0,1} N(c)={0,1,2}
+STPFAIL F?re_ g=4 c=5 A={4,6} |A|=2 ST=1 N(g)={0,1} N(c)={0,1,2}
+STPFAIL F?re_ g=4 c=5 A={3,4,6} |A|=3 ST=1 N(g)={0,1} N(c)={0,1,2}
+STPFAIL F?re_ g=4 c=6 A={5} |A|=1 ST=1 N(g)={0,1} N(c)={0,1,3}
+STPFAIL F?re_ g=4 c=6 A={2,5} |A|=2 ST=1 N(g)={0,1} N(c)={0,1,3}
+STPFAIL F?re_ g=4 c=6 A={4,5} |A|=2 ST=1 N(g)={0,1} N(c)={0,1,3}
+STPFAIL F?re_ g=4 c=6 A={2,4,5} |A|=3 ST=1 N(g)={0,1} N(c)={0,1,3}
+STPFAIL FCZf? g=4 c=5 A={6} |A|=1 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=5 A={3,6} |A|=2 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=5 A={4,6} |A|=2 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=5 A={3,4,6} |A|=3 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=6 A={5} |A|=1 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=6 A={3,5} |A|=2 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=6 A={4,5} |A|=2 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FCZf? g=4 c=6 A={3,4,5} |A|=3 ST=1 N(g)={1,2} N(c)={0,1,2}
+STPFAIL FEhv? g=4 c=6 A={3,5} |A|=2 ST=1 N(g)={0,2} N(c)={0,1,2}
+STPFAIL FEhv? g=4 c=6 A={3,4,5} |A|=3 ST=1 N(g)={0,2} N(c)={0,1,2}
+SUMMARY blocked instances (all admissible A)=406  ST'=386  ST=406 | N(g) not in N(c): 266, with a good non-tight target: 266 | N(g) in N(c): 140, ST: 140

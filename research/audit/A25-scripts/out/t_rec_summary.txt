@@ -1,0 +1,37 @@
+# t_rec.cpp (own Rec implementation) at order 9, nauty-geng -cq 9; flags: C = (b),(c) also for c in N(g) (as moves.h); S = (h) restricted as moves.h; T = move (t); X = every admissible A
+110 s [C] SUMMARY flags=C instances=95488 notRec=208 notRec_blocked=162
+25 s [CT] SUMMARY flags=CT instances=95488 notRec=55 notRec_blocked=34
+77 s [CS] SUMMARY flags=CS instances=95488 notRec=209 notRec_blocked=163
+17 s [CST] SUMMARY flags=CST instances=95488 notRec=56 notRec_blocked=35
+118 s [] SUMMARY flags= instances=95488 notRec=301 notRec_blocked=162
+129 s [T] SUMMARY flags=T instances=95488 notRec=203 notRec_blocked=103
+49 s [CTX] SUMMARY flags=CTX instances=574566 notRec=55 notRec_blocked=34
+DONE
+# order 6-8 and K33
+order 6 [D]: SUMMARY flags=D instances=78 notRec=26 notRec_blocked=0
+order 6 []: SUMMARY flags= instances=78 notRec=0 notRec_blocked=0
+order 6 [C]: SUMMARY flags=C instances=78 notRec=0 notRec_blocked=0
+order 6 [CT]: SUMMARY flags=CT instances=78 notRec=0 notRec_blocked=0
+order 6 [X]: SUMMARY flags=X instances=405 notRec=0 notRec_blocked=0
+order 6 [CX]: SUMMARY flags=CX instances=405 notRec=0 notRec_blocked=0
+order 6 [CTX]: SUMMARY flags=CTX instances=405 notRec=0 notRec_blocked=0
+order 7 [D]: SUMMARY flags=D instances=780 notRec=302 notRec_blocked=72
+order 7 []: SUMMARY flags= instances=780 notRec=0 notRec_blocked=0
+order 7 [C]: SUMMARY flags=C instances=780 notRec=0 notRec_blocked=0
+order 7 [CT]: SUMMARY flags=CT instances=780 notRec=0 notRec_blocked=0
+order 7 [X]: SUMMARY flags=X instances=2150 notRec=0 notRec_blocked=0
+order 7 [CX]: SUMMARY flags=CX instances=2150 notRec=0 notRec_blocked=0
+order 7 [CTX]: SUMMARY flags=CTX instances=2150 notRec=0 notRec_blocked=0
+order 8 [D]: SUMMARY flags=D instances=1792 notRec=860 notRec_blocked=0
+order 8 []: SUMMARY flags= instances=1792 notRec=0 notRec_blocked=0
+order 8 [C]: SUMMARY flags=C instances=1792 notRec=0 notRec_blocked=0
+order 8 [CT]: SUMMARY flags=CT instances=1792 notRec=0 notRec_blocked=0
+order 8 [X]: SUMMARY flags=X instances=27837 notRec=0 notRec_blocked=0
+order 8 [CX]: SUMMARY flags=CX instances=27837 notRec=0 notRec_blocked=0
+order 8 [CTX]: SUMMARY flags=CTX instances=27837 notRec=0 notRec_blocked=0
+K33 [C]: SUMMARY flags=C instances=6 notRec=0 notRec_blocked=0
+K33 [CD]: SUMMARY flags=CD instances=6 notRec=6 notRec_blocked=0
+K33 [CE]: SUMMARY flags=CE instances=6 notRec=0 notRec_blocked=0
+K33 [CSE]: SUMMARY flags=CSE instances=6 notRec=0 notRec_blocked=0
+K33 [SE]: SUMMARY flags=SE instances=6 notRec=0 notRec_blocked=0
+K33 [E]: SUMMARY flags=E instances=6 notRec=0 notRec_blocked=0

@@ -1,0 +1,7 @@
+SUMMARY (all routes) inst=780 least-gap histogram: 0:760 1:11 2:5 3:4 4:0 5:0 6:0 7:0
+SUMMARY (all routes) inst=780 least-gap histogram: 0:764 1:11 2:5 3:0 4:0 5:0 6:0 7:0
+GAP5 GF~~~{ c=0
+GAP5 GF~~~{ c=1
+GAP5 GF~~~{ c=2
+SUMMARY (all routes) inst=1792 least-gap histogram: 0:1589 1:68 2:112 3:20 4:0 5:3 6:0 7:0
+SUMMARY (all routes) inst=1792 least-gap histogram: 0:1589 1:68 2:112 3:20 4:0 5:3 6:0 7:0

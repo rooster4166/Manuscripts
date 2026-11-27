@@ -1,0 +1,16 @@
+SUMMARY TR: u notin N(c): tests 20 violations 0;  u in N(c): tests 32 violations 0
+TRVIOL F?~vW c=6 g=3 u=4 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,3}
+TRVIOL F?~vW c=6 g=3 u=5 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,3}
+TRVIOL FCR~o c=0 g=2 u=5 inNc=1 adm=0 AmeetsNc=1 A={1,2,3,4}
+TRVIOL FCR~o c=0 g=2 u=6 inNc=1 adm=0 AmeetsNc=1 A={1,2,3,4}
+TRVIOL FCR~o c=1 g=2 u=5 inNc=1 adm=0 AmeetsNc=1 A={0,2,3,4}
+TRVIOL FCR~o c=1 g=2 u=6 inNc=1 adm=0 AmeetsNc=1 A={0,2,3,4}
+TRVIOL FCR~o c=3 g=2 u=5 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,4}
+TRVIOL FCR~o c=3 g=2 u=6 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,4}
+TRVIOL FCR~o c=4 g=2 u=5 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,3}
+TRVIOL FCR~o c=4 g=2 u=6 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,3}
+TRVIOL FCZ~o c=0 g=4 u=5 inNc=1 adm=0 AmeetsNc=1 A={1,2,3,4}
+TRVIOL FCZ~o c=0 g=4 u=6 inNc=1 adm=0 AmeetsNc=1 A={1,2,3,4}
+TRVIOL FCZ~o c=3 g=4 u=5 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,4}
+TRVIOL FCZ~o c=3 g=4 u=6 inNc=1 adm=0 AmeetsNc=1 A={0,1,2,4}
+SUMMARY TR: u notin N(c): tests 6672 violations 0;  u in N(c): tests 8066 violations 14
