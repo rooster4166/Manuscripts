@@ -241,7 +241,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
   - Gallai ⇔ the rooted private-leaf test (`gallai_iff_rootedTest`);
   - Gallai ⇔ the marked bound;
   - **MR Thm 1** (`gallai_iff_tests`: Gallai ⇔ marked 2-connected test ∧ three-end test);
-  - **MR Thm 113 in full** (`separatorStatement`), **MR Thm 59** (`thm59`), and hence **MR Thm 114 unconditionally** (`gallai_iff_spineTests'`). The whole spine, from Gallai to the two rooted tests on 3-connected graphs with ≤ 2 even vertices and no matching cut after deleting z, is machine-checked with standard axioms.
+  - **MR Thm 113 in full** (`separatorStatement`), **MR Thm 59** (`thm59`), and hence **MR Thm 114 unconditionally** (`gallai_iff_spineTests'`). The whole spine, from Gallai to the two deletion tests (decompositions of J − z with prescribed ends at a neighbour r of z, for 3-connected J with ≤ 2 even vertices and J − z without a matching cut), is machine-checked with standard axioms.
 - **Classical theorems, proved from first principles:**
   - Fan's addible-edge lemmas (single and grouped);
   - **Lovász's theorem**, by an original induction from Fan's lemma;

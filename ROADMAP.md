@@ -387,9 +387,9 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Cut selection in Lean: `cs_all`** (CutSelection.lean and PairingLemma.lean, 1,237 lines; standard axioms; definitions checked). For every connected even-order G there is a pairing of Ev all of whose transversals satisfy the cut inequality: `CutOK` is exactly b(W) + d(v) + b(v) ≤ |δ(W)| + 2p. The proof goes through the auxiliary graph B and is machine-checked independently of audit A13.
 - **endpoint-min-max synced** (emc-four). Merged emm3-gadgets §6, which already fixes A13's ERROR (Remark 28 and open problem 1: EMM₃ is false, see §6). Added: the auxiliary-graph proof as the main proof of Thm 21, with the linked-transitions proof kept second; §4.4 with Conjecture TRC (constructible pairings; TRC ⇒ Gallai; Thm 21 is its necessary half); TRC as the main open problem; and Lean `cs_all` in Formalisation. 26 pp.
 - **The spine is fully machine-checked (2026-11-27, 03:10).** `Gallai.gallai_iff_spineTests' : (GallaiConjecture ↔ SpineTests) ∧ (GallaiConjecture ↔ SpineTestsNMC)`, with no hypothesis and standard axioms; I verified it with `#print axioms` after the merge and a full build of 18,364 jobs.
-  - **What it says.** Gallai's conjecture is equivalent to two rooted tests on **3-connected** graphs J at a vertex z with J − z free of matching cuts:
-    - (Test1) if z is the only even vertex, every neighbour r of z is the end of ≥ 2 paths in some decomposition into ≤ (n−1)/2 paths;
-    - (Test2) if z and its neighbour r are the only even vertices, r is the end of ≥ 3 paths in some decomposition into ≤ n/2 paths.
+  - **What it says.** Gallai's conjecture is equivalent to two deletion tests on **3-connected** graphs J, at a vertex z with J − z free of matching cuts. Here n = |V(J)| and the decompositions are of **J − z**:
+    - (Test1) if z is the only even vertex of J, then for every neighbour r of z, J − z has a decomposition into ≤ (n−1)/2 paths with ≥ 2 ends at r;
+    - (Test2) if z and its neighbour r are the only even vertices of J, then J − z has a decomposition into ≤ n/2 paths with ≥ 3 ends at r.
   - **Proof route.** Lovász's theorem, then MR Thm 113 (separators), then MR Thm 59 (blocks without matching cuts; cones; Lemma 6 by PMP surgery; private leaves; one Hall-defect lemma for §2.1), then MR Thm 114.
   - **Files.** Thm59Transfer, Thm59Hall, Thm59ClassC, Thm59Lemma6, Thm59Leaves, Thm59MatchingCut, Thm59; 1,933 lines.
   - **Audit.** A14 found no gap in MR and lists the formal deviations.
