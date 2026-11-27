@@ -1525,9 +1525,9 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - One pair, exhaustive (`disj_general.py … 1`):
   - n = 5: 21 pairs, 3 failures.
   - n = 7: 947 pairs, 14 failures.
-  - n = 9: see the final count below.
+  - n = 9: every connected graph with exactly one even vertex. All 151+ failures are universal twins of degree 7 (final count below).
   - **Every failure is a pair of universal twins** (a, b adjacent to every other vertex, hence to g).
-  - At n = 7 every universal-twin pair fails. At n = 9 a minority does.
+  - At n = 7 every universal-twin pair (14) fails. At n = 9, 151 or more of the 170 universal-twin pairs fail (final count below).
 - Two pairs, exhaustive:
   - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
   - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
