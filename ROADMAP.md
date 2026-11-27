@@ -26,14 +26,18 @@ This is the single source of truth for the proof architecture. Every node is a s
 
 ## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
 
-EMM sufficiency work is **stopped**. Sessions:
-- emc-four: the endpoint-prescription paper, covering necessity, Thm 21, the counterexamples and the NP-hardness;
-- emm3-gadgets: hardness at δ ≥ 3;
-- two-even: pairing-guided descent;
-- lean-d6-frontier: Lean for MR Thms 38/175 and Cor 39 (flowers);
-- dense-near-dirac (session_01FxXpVhsyyw9pbAoqda1H6h, new): Target D;
-- spine: Thm 59;
-- missing-move: finished, handoff in connections §T. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+EMM sufficiency work is **stopped**.
+
+**Sessions, re-assigned 2026-11-27 02:25.** Sessions that finished their task do not take large follow-ups from a peer session, so new tasks go to fresh sessions.
+- **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy, branch `claude/lean-thm59`, new): prove `Thm59Statement` in Lean. This makes `gallai_iff_spineTests` unconditional. The old spine session finished Thms 113/114 and did not start Thm 59.
+- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9, branch `claude/route-descent`, new): the main line, synthesis §16. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
+- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
+- **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
+- **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
+- **Queued, not assigned:** Lean for MR Thms 38/175 and Cor 39 (flowers). This is a banking task, not on the critical path.
+- **Finished:** two-even, spine (113/114), missing-move, bs-prescribed, jm-repair, six-clique, lean-d6-frontier.
+
+The main line is **existential descent** (FD / `BranchBase3`), now in its route-deletion form (synthesis §16).
 
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
