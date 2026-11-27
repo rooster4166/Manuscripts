@@ -166,3 +166,52 @@ The refined conjecture is **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, a pro
 3. add conditions for pieces below their budget.
 
 The last item is a *linkage* condition, beyond cuts; compare the two-paths theorem of Seymour, Shiloach and Thomassen. That makes EMM₃ a genuinely harder target than it looked. CS remains valid and useful: it is a statement about cut-feasibility only.
+
+## 11. Cut selection is a theorem, pending audit (endpoint-min-max Thm 21)
+
+**Thm 21.** Every connected graph of even order has a *good pairing*: a pairing of Ev all of whose transversal half-sets satisfy every cut inequality (1). Hence CS, and even PS, holds unconditionally.
+
+**Construction.**
+1. Take a forest T-join J of Ev and the free graph F = G − J.
+2. At each vertex v, pair the odd vertices of F^v (F with v's edges deleted and v joined to its non-neighbours) by edge-disjoint paths, using the T-join lemma.
+3. Use these pairings as the transitions of J at v.
+4. Follow the transitions. Since J is a forest, the result is a set of paths pairing Ev. Lemma "linked transitions" charges every end to a distinct cut edge.
+
+Audit A13 is running.
+
+**Status of the reduction.** "EMM ⇒ Gallai" (Cor 22) is vacuous, since EMM is false. The live question is the exact corrected statement:
+- Gallai ⇐ EMM₃ + CS needs SP's odd alternative handled separately.
+- Better: Gallai ⇐ **EMM_ns** (EMM for half-sets with no marked vertex of degree 2), provided the cut-selection construction can avoid marking degree-2 vertices. Under simple profiles, marked degree-2 vertices are exactly the saturated separators.
+
+The emc-four session is settling this. The emm3-gadgets session is testing whether EMM₃ or EMM_ns fails via forcing gadgets.
+
+## 12. The all-half-sets trap: EMM is false at n = 28, and no polynomial characterisation exists (project lead, 2026-11-27; verified)
+
+**Counterexample.**
+1. Let P be the Petersen graph and G* = L(P) (15 vertices, 4-regular, 4-edge-connected). Delete a vertex w* with neighbours u₁…u₄; this leaves H_R on 14 vertices with 26 edges.
+2. On L = {l₁…l₁₄}, take the path l₁ l₅ l₆ … l₁₄ l₂ and the edge l₃l₄. Add the cross edges l_i u_i for i ≤ 4. The result G_bad has n = 28 and m = 42, is 2-connected, and every vertex is even.
+3. Take S = L.
+
+**Why S fails.** It is cut-feasible: every slack equals 24, and an exhaustive check over the only risky W (those with |W ∩ L| ≥ 13) finds no violation. But it is not realisable. b|_R = 0 and |δ(R)| = 4 force two edge-disjoint Hamiltonian paths of H_R, and so a Hamiltonian decomposition of L(P). L(P) has 160 Hamiltonian cycles, and none has a Hamiltonian complement (`manuscripts/endpoint-min-max/scripts/petersen_counterexample.py`, which runs in 3 s).
+
+**Hardness.** Replace P by any essentially 4-edge-connected cubic graph H. By Kotzig, L(H) is Hamiltonian-decomposable iff H is Hamiltonian. So realisability of the half-set L is NP-hard, while cut-feasibility holds and is checkable in polynomial time (the max-flow form of endpoint-min-max Lemma 1). **No polynomially checkable condition characterises all realisable half-sets unless P = NP.**
+
+The construction uses saturated degree-2 vertices, the same mechanism as at n = 12. A forcing-gadget version would very likely carry the hardness to δ ≥ 3, so EMM₃ is not a viable target either.
+
+**Why Gallai is unharmed.** S = L starves R: 14 even vertices, no ends, 4 boundary edges. The rooted test asks only for *some* realisable half-set containing r. Placing marks inside R removes the Hamiltonicity requirement at once. **Characterisation is the wrong problem; existence is the right one.**
+
+## 13. Pivot (2026-11-27)
+
+**Stop.** All proof and Lean work on EMM sufficiency, in every variant.
+
+**Keep.**
+- **Bank as theorems.** One manuscript on endpoint prescriptions: the cut inequalities are necessary (ED §12.4), always simultaneously satisfiable (Thm 21, after audit A13), sufficient at n ≤ 8, false at n = 12 and n = 28, and NP-hard to characterise (Kotzig reduction, credited to the project lead). Also hardness for δ ≥ 3, if the gadgets exist.
+- **Spine.** MR Thm 59.
+
+**Main line: existential descent** (back to FD / `BranchBase3`, the formal target). Descend from Ev (realisable by Lemma 2) to a half-set containing r, choosing which marks to drop. Existence statements escape the hardness. The new tools are:
+- the good pairings of Thm 21, as a guide: drop one vertex per pair and never starve a region;
+- the hub, flower and path-insertion moves, at the equality cases.
+
+The first test is **pairing-guided descent**: for the Thm 21 pairing, can one always descend from Ev to some transversal, choosing within pairs, keeping every intermediate set realisable? Check this exactly at n ≤ 8.
+
+**Bank in parallel.** Target D, exact Gallai below Dirac: return the o(n) exceptional set of SP Cor 14.39 using near-half-mixed-vertices and absorption. It is a major unconditional theorem, but parameterised.

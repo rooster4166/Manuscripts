@@ -1,4 +1,4 @@
-"""Check of Lemma 7.7(d) of the missing-move manuscript on small orders.
+"""Check of Lemma 7.8(d) of the missing-move manuscript on small orders.
 For every cut-feasible profile of every connected graph in the files, every vertex w of degree 2
 with b(w) = 2, and every neighbour x of w with b(x) <= d(x) - 2, the profile b + e_x - e_w of
 G - wx must again be cut-feasible.

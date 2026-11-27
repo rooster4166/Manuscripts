@@ -24,6 +24,17 @@ This is the single source of truth for the proof architecture. Every node is a s
 | `comp(n≤N)` | exhaustive computation in `tools/` |
 | `—` | none |
 
+## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
+
+EMM sufficiency work is **stopped**. Sessions:
+- emc-four: the endpoint-prescription paper, covering necessity, Thm 21, the counterexamples and the NP-hardness;
+- emm3-gadgets: hardness at δ ≥ 3;
+- two-even: pairing-guided descent;
+- lean-d6-frontier: Lean for MR Thms 38/175 and Cor 39 (flowers);
+- dense-near-dirac (session_01FxXpVhsyyw9pbAoqda1H6h, new): Target D;
+- spine: Thm 59;
+- missing-move: finished, handoff in connections §T. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
 **Main line: the endpoint min-max programme (EMM).** Conjecture: a half-set of even vertices is realisable in n/2 paths iff it satisfies the cut inequality of even-degrees §12.4 for every vertex v and every W ⊆ V − v. It is **exact on every connected graph of order ≤ 8 and on n = 10 samples** (2,368 non-realisable half-sets, all cut-excluded). Gallai ⇐ EMM + **CS (cut selection)**, where CS is a pure cut/flow statement that the T-join lemma already settles for cones. Tracks:
@@ -202,6 +213,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhzpjnfPb4S9qT66Vk | `claude/bs-prescribed` | **remove Shaik**: Botler–Sambinelli Thm 13 with a prescribed end, then the corrected MR Cor 106 one-exception case (connections §L) |
 | session_01FxXpViByhUwk1GmmqirzRR | `claude/lean-d6-frontier` | Lean for d6-frontier: relay/carry, root hub, full hub, and the all-d versions (Thm 6.1) |
 | session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
+| session_01FxXpViBXRQG6c4V7bSYHsM | `claude/emm3-gadgets` | **forcing gadgets**: δ ≥ 3 blocks that simulate degree-2 behaviour (pass-through or double end). They either refute EMM₃ by gluing a below-budget core, or show by a structural lemma that no such gadget exists |
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |

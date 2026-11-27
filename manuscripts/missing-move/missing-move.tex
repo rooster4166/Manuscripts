@@ -1167,6 +1167,29 @@ are the test cases.
 \end{itemize}
 \end{remark}
 
+\begin{remark}[EMM$_3$]\label{rem:emm3}
+For simple profiles a vertex with $b=d$ has degree at most $2$. So the construction of
+Theorem~\ref{thm:emmfalse} is impossible in graphs of minimum degree at least $3$. The restriction
+EMM$_3$ of EMM to such graphs is what a least Gallai failure needs. A bridge, or any edge cut
+$\delta(K)$, decouples just as well. Each path meets $K\cup\delta(K)$ in segments ending at the cut
+edges, so a partition of $G$ restricts to one of $K$ plus a pendant leaf for each cut edge, with
+one end at each leaf. A counterexample to EMM$_3$ along these lines needs a \emph{core}. This is a
+graph with pendant leaves, all other vertices of degree at least $3$, and a simple profile that is
+cut-feasible but not realisable. We found none.
+\begin{itemize}
+\item Among all graphs up to order $8$ there are $1{,}146$ with this degree pattern and
+$11{,}832$ cut-feasible simple profiles, all realisable (\texttt{tools/emm3\_core\_search.py}).
+\item $2{,}000$ random cores at each of the orders $9$ and $10$ give none either.
+\item EMM$_3$ itself has no failure on $3{,}000$ random graphs of order $10$ with minimum degree
+$3$ and $15$ to $30$ edges ($48{,}784$ half-sets), nor on $300$ of order $12$ ($8{,}396$ half-sets)
+(\texttt{tools/emm3\_random.py}).
+\end{itemize}
+In these random samples every half-set was cut-feasible, so they test realisability but not the
+sharpness of~(1). Hamiltonicity obstructions of toughness type are cut-detected. If every vertex
+has slack $2p-d-b=0$, then (C) applied to the complements of the components of $G-S$ already
+bounds their number by $|S|+1$.
+\end{remark}
+
 For disconnected graphs the class asks that every component $C$ with an edge have
 $\sum_Cb\ge|V(C)|$. Cut-feasibility passes to components. Indeed, if $v\in C$ and $W\subseteq C-v$,
 apply (C) to $W\cup(V-C)$. This adds $b(V-C)=2p-2p_C$ to the left side and nothing to the cut, so

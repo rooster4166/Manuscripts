@@ -1,0 +1,2 @@
+data/conn6.g6 graphs(e>=2): 99 half-sets: 518 cut-infeasible: 18 | random pairings: 99 bad: 7 | Lemma 13 pairings checked: 299
+data/conn8.g6 graphs(e>=2): 10893 half-sets: 101714 cut-infeasible: 2100 | random pairings: 10893 bad: 400 | Lemma 13 pairings checked: 0

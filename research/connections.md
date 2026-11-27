@@ -700,7 +700,7 @@ Contribution from the missing-move session, 2026-11-27. Details: E17, missing-mo
 - **Class.** The induction needs general profiles. The general-profile cut criterion is **false**: n = 7, p = 2 (FqJBo, a 2-linkage obstruction), and 17 failures at n = 8 with p ≤ 3. Proposed class: **EMM⁺**, p ≥ ⌈n/2⌉ per component.
   - EMM⁺ holds for all profiles at n ≤ 7, for all profiles with p = 4 at n = 8, and on the n = 8 sample at every p.
   - EMM is the special case of half-sets.
-- **Minimal counterexample (proved).** It is connected, and has no reducible leaf or degree-2 vertex (Lemma 7.7).
+- **Minimal counterexample (proved).** It is connected, and has no reducible leaf or degree-2 vertex (Lemma 7.8).
   - The leaf case is in Lean, `EmmTemplate.lean`.
   - Names used there: `cutCount`, `CutOK` (conditions (L), (C) for general profiles), `cutOK_leaf`, `ach_of_leaf`, `leaf_step`. C1 may want to reuse or rename `CutOK`.
 - **Template test.** Moves are new path, Fan transfer, concatenation and path insertion.
@@ -750,6 +750,11 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 **Related work (added after the coordinator's pointer).** The manuscript now has a related-work section (§6). It covers Lovász 1968, Pyber, Fan, Bonamy–Perrett, Botler–Sambinelli, Lovász–Cherkassky, Mader/Frank splitting, Gale/Hoffman, T-joins and Okamura–Seymour.
 - New **Prop 24** (proved; numbered 22 before the C2 update): completely splitting off any vertex v in G_b (Mader) preserves the EMM conditions at every other vertex. What splitting loses is only the "each path passes v once" constraint: the cycles through t may use at most one split edge from v. So a splitting proof of EMM must choose Mader pairs compatibly with this, which is the same equality phenomenon as in §T.
 - Lovász–Cherkassky is recorded as an analogy of proof structure (simultaneous Menger numbers), not as a reduction. With pendant terminals, the slot-respecting packing is trivial here; the content of EMM is covering all edges.
+- **EMM₃** (δ ≥ 3), the corrected target, survives the first refutation attempts (E17 addendum 2, Remark 7.7).
+  - The bridge or edge-cut analogue of the counterexample mechanism needs a δ ≥ 3 "core" (pendant leaves plus a cut-feasible non-realisable simple profile). There is none up to order 8 exhaustively, and none in 4,000 random cores of orders 9 and 10.
+  - EMM₃ has no failure on 3,000 random graphs at n = 10 or 300 at n = 12. These samples never hit a cut-infeasible half-set.
+  - Next: targeted dense cores (2-separators with TVS records), then the equality lemma inside δ ≥ 3, with linkage conditions for below-budget pieces.
+
 
 **C2 closed (later the same day): CS holds for every connected graph of even order** (manuscript Thm 21; Lemmas 19–20; Cor 22 as revised after EMM was refuted: EMM₃ at δ ≥ 5 ⇒ every Gallai failure is an SP 10.16(1) witness).
 - *Construction.* J = the T-join (T = Ev) of a spanning tree, and F = G − J. F^v is F − (edges at v) + (v joined to its non-neighbours).
