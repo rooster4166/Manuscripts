@@ -1,0 +1,4 @@
+lsearch
+out/*.log
+out/*.g6
+__pycache__/
