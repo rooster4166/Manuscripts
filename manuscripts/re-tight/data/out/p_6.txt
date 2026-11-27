@@ -1,0 +1,6 @@
+E?~o -1 2 3 OK
+ECxw -1 2 3 OK
+EElw -1 2 3 OK
+ETzg -1 2 3 OK
+E]zg -1 3 3 OK
+E]~o -1 3 3 OK
