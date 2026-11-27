@@ -1,0 +1,7 @@
+n=11 graphs=3000 pairings=6604 local_ok_pairings=19 graphs_local=19 (0.6%) graphs_girth5=19 (0.6%)
+n=51 graphs=3000 pairings=8540 local_ok_pairings=4217 graphs_local=2042 (68.1%) graphs_girth5=111 (3.7%)
+n=101 graphs=3000 pairings=8779 local_ok_pairings=6224 graphs_local=2507 (83.6%) graphs_girth5=106 (3.5%)
+
+real	8m47.040s
+user	8m28.132s
+sys	0m0.063s

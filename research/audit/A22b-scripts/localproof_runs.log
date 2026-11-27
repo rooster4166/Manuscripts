@@ -1,0 +1,10 @@
+geng -c -D5 10 {'graphs': 8860, 'graphs_girth5': 7, 'instances': 1136, 'inst_G_not_girth5': 300, 'cases': 1360, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 80, 'M_nbr_of_X_on_short_cycle': 260, 'exceptional_v': 260, 'exceptional_v_on_short_cycle': 0, 'bf_ok': 1136, 'bf_timeout': 0, 'BF_FAIL': 0}
+elapsed 14 s
+geng -c -D3 12 {'graphs': 509, 'graphs_girth5': 11, 'instances': 8120, 'inst_G_not_girth5': 4900, 'cases': 10248, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 1016, 'M_nbr_of_X_on_short_cycle': 4504, 'exceptional_v': 1384, 'exceptional_v_on_short_cycle': 0, 'bf_ok': 8120, 'bf_timeout': 0, 'BF_FAIL': 0}
+elapsed 2 s
+geng -c -d3 -D3 14 {'graphs': 509, 'graphs_girth5': 9, 'instances': 15180, 'inst_G_not_girth5': 9132, 'cases': 21220, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 196, 'M_nbr_of_X_on_short_cycle': 9440, 'exceptional_v': 3232, 'exceptional_v_on_short_cycle': 0, 'bf_ok': 15180, 'bf_timeout': 0, 'BF_FAIL': 0}
+elapsed 5 s
+geng -c -d3 -D3 16 {'graphs': 4060, 'graphs_girth5': 49, 'instances': 223280, 'inst_G_not_girth5': 178592, 'cases': 306568, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 7312, 'M_nbr_of_X_on_short_cycle': 176770, 'exceptional_v': 33880, 'exceptional_v_on_short_cycle': 0, 'bf_ok': 223280, 'bf_timeout': 0, 'BF_FAIL': 0}
+elapsed 161 s
+Terminated
+elapsed 684 s

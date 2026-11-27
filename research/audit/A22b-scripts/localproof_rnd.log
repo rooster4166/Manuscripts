@@ -1,0 +1,5 @@
+random 1000 13 12 26 {'graphs': 1000, 'graphs_girth5': 2, 'instances': 72672, 'inst_G_not_girth5': 69972, 'cases': 95480, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 23680, 'M_nbr_of_X_on_short_cycle': 64754, 'exceptional_v': 3352, 'exceptional_v_on_short_cycle': 328, 'bf_ok': 0, 'bf_timeout': 0, 'BF_FAIL': 0, '_bf_this_graph': 0}
+
+real	0m4.190s
+user	0m4.067s
+sys	0m0.004s

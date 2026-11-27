@@ -1,0 +1,9 @@
+n=11 graphs=300 pairings=673 local_ok_pairings=3 graphs_local=3 (1.0%) graphs_girth5=3 (1.0%)
+n=15 graphs=300 pairings=742 local_ok_pairings=35 graphs_local=31 (10.3%) graphs_girth5=4 (1.3%)
+n=21 graphs=300 pairings=771 local_ok_pairings=103 graphs_local=74 (24.7%) graphs_girth5=9 (3.0%)
+n=31 graphs=300 pairings=815 local_ok_pairings=264 graphs_local=159 (53.0%) graphs_girth5=13 (4.3%)
+n=51 graphs=300 pairings=858 local_ok_pairings=441 graphs_local=215 (71.7%) graphs_girth5=11 (3.7%)
+
+real	0m8.683s
+user	0m8.024s
+sys	0m0.000s

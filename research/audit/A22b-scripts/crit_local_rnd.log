@@ -1,0 +1,5 @@
+random {'tests': 200000, 'lhs_true': 96968, 'mismatch': 0, 'g_true': 94549, 'g_mismatch': 0, 'local_not_global': 2419}
+
+real	0m18.616s
+user	0m18.280s
+sys	0m0.004s
