@@ -92,3 +92,17 @@ def random_graphs(n, count, seed, pmin=0.25, pmax=0.7, mmax=64, min_even=2):
             continue
         out.append(G)
     return out
+
+
+def kotzig_even(name):
+    """G'(H) of endpoint-min-max Thm 45 (all degrees even, >= 4): H = prism (n = 16) or
+    petersen (n = 28)."""
+    sys.path.insert(0, EMM)
+    import kotzig_even as KE
+    H = nx.circular_ladder_graph(3) if name == "prism" else nx.petersen_graph()
+    G = KE.build(H)[0]
+    H2 = nx.convert_node_labels_to_integers(G, label_attribute="old")
+    out = nx.Graph()
+    out.add_nodes_from(H2)
+    out.add_edges_from(H2.edges())
+    return out

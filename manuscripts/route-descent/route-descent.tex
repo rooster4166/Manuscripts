@@ -47,8 +47,9 @@ realisation in which \emph{all} routes are terminal segments is equivalent to a 
 Lov\'asz decomposition} of the free graph, in which every vertex is the end of exactly one path and the
 paths at the unmarked ends avoid their routes.
 \item \emph{Separation.} We prove a strengthening of Lov\'asz's theorem. If a graph has at most one vertex
-of positive even degree, and $c$ and $a$ are at distance at least three, then it has a path
-decomposition with the parity-forced ends in which no path contains both $c$ and $a$. The proof runs
+of positive even degree, and $X$ is a set of vertices at pairwise distance at least three, then it has a
+path decomposition with the parity-forced ends in which every path meets $X$ at most once. In
+particular any two vertices at distance at least three can be separated. The proof runs
 Lov\'asz's induction and uses that Fan's addible-edge lemma changes the vertex set of only one path, by
 one vertex. We show by example that distance three cannot be replaced by two.
 \end{itemize}
@@ -104,8 +105,9 @@ at once (Proposition~\ref{prop:spine}).
 \item Realisations in which every route is terminal are exactly the \emph{constrained Lov\'asz
 decompositions} of the free graph $G-J$ (Proposition~\ref{prop:rr}). This turns TRC into a problem about
 graphs with all degrees odd.
-\item \emph{Separation theorem} (Theorem~\ref{thm:sep}): Lov\'asz decompositions can separate any two
-vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
+\item \emph{Separation theorem} (Theorem~\ref{thm:sep}): for every set $X$ of vertices at pairwise
+distance at least three, some Lov\'asz decomposition has every path meeting $X$ at most once; in
+particular, it can separate any two vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
 (Lemma~\ref{lem:fan}), proved in full. Both are formalised in Lean (Section~\ref{sec:lean}).
 \item TRC holds for \emph{Fan-isolated} route systems, and every orientation of a unique perfect matching
 of $G[\Ev]$ is realisable (Section~\ref{sec:classes}). Both are proved with Fan's lemma alone.
@@ -442,59 +444,67 @@ The next section proves $L_1$ when $c$ and $a$ have no common neighbour.
 
 \section{Lov\'asz decompositions that separate two vertices}\label{sec:sep}
 
-Say that a path partition \emph{separates} $c$ and $a$ if no path contains both.
+Say that a path partition \emph{separates} $c$ and $a$ if no path contains both. A set $X$ of
+vertices is \emph{packed} if its vertices are pairwise at distance at least three, that is, no two are
+adjacent and no two have a common neighbour.
 
 \begin{theorem}[separation]\label{thm:sep}
-Let $K$ have at most one vertex of positive even degree, and let $c,a$ be vertices with
-$\mathrm{dist}_K(c,a)\ge3$ (possibly in different components). Then $K$ has a Lov\'asz decomposition that
-separates $c$ and $a$.
+Let $K$ have at most one vertex of positive even degree, and let $X$ be a packed set of vertices. Then
+$K$ has a Lov\'asz decomposition in which every path contains at most one vertex of $X$. In particular,
+if $\mathrm{dist}_K(c,a)\ge3$, then some Lov\'asz decomposition of $K$ separates $c$ and $a$.
 \end{theorem}
 
 \begin{proof}
-Induction on $\nu(K)=2|E(K)|+[\text{$K$ has no vertex of positive even degree}]$. If $E(K)=\emptyset$ the
-empty partition works. Let $X=\{c,a\}$. Throughout, a graph obtained from $K$ by deleting edges and adding
-pendant edges at new vertices has distance at least $\mathrm{dist}_K(c,a)$ between $c$ and $a$, since a
-new pendant vertex lies on no $c$--$a$ path. The key observation is this. If $\cD$ separates $c$ and $a$
-and $\cD^+$ is obtained by Lemma~\ref{lem:fan} with target $u\notin X$, then $\cD^+$ separates $c$ and $a$.
-Indeed, all vertex sets are preserved except one, which gains $u$; a set containing both $c$ and $a$
-after adding $u\notin X$ contained both before.
+Induction on $\nu(K)=2|E(K)|+[\text{$K$ has no vertex of positive even degree}]$. Call a partition
+\emph{good} if each of its paths contains at most one vertex of $X$. Deleting edges and adding pendant
+edges at new vertices keeps $X$ packed, since a new pendant vertex lies on no path between two old
+vertices. The key observation is this. If $\cD$ is good and $\cD^+$ is obtained by Lemma~\ref{lem:fan}
+with target $u\notin X$, then $\cD^+$ is good. Indeed, all vertex sets are preserved except one, which
+gains $u\notin X$.
 
-\emph{Case I: $K$ has a vertex $z$ of positive even degree.} If $N(z)\subseteq X$, then $|N(z)|\ge2$
-forces $N(z)=X$. If $z\notin X$, then $z$ is a common neighbour of $c$ and $a$; if $z\in X$, then $z$ is
-adjacent to itself or to the other vertex of $X$. Both contradict $\mathrm{dist}(c,a)\ge3$. So we may
-choose $u\in N(z)\setminus X$. Let
-$K'=K-uz$. In $K'$ the vertex $z$ is odd. The vertex $u$ was odd, since $z$ is the only even vertex, so
-it is now even or isolated. All other degrees are unchanged. So $K'$ has at most one vertex of positive
-even degree, and $\nu(K')<\nu(K)$. By induction $K'$ has a Lov\'asz decomposition $\cD'$ separating $c$
-and $a$. Then $b_{\cD'}(z)=1$ and $b_{\cD'}(u)=0$. Every neighbour of $u$ in $K'$ has odd degree, hence
-one end, so $Z_{\cD'}(u)=\emptyset$. Lemma~\ref{lem:fan} with $t=z$ and target $u$ gives a decomposition of
-$K$ with ends $b_{\cD'}-\mathbf 1_z+\mathbf 1_u=d_K\bmod2$. It separates $c$ and $a$ since $u\notin X$.
+\emph{Case I: $K$ has a vertex $z$ of positive even degree.} Then $z$ has a neighbour $u\notin X$. If
+$z\in X$, no neighbour of $z$ lies in $X$. If $z\notin X$, at most one of its (at least two)
+neighbours lies in $X$, since two would have the common neighbour $z$. Let $K'=K-uz$. In $K'$ the
+vertex $z$ is odd. The vertex $u$ was odd, since $z$ is the only even vertex, so it is now even or
+isolated. All other degrees are unchanged. So $K'$ has at most one vertex of positive even degree, and
+$\nu(K')<\nu(K)$. By induction $K'$ has a good Lov\'asz decomposition $\cD'$. Then
+$b_{\cD'}(z)=1$ and $b_{\cD'}(u)=0$. Every neighbour of $u$ in $K'$ has odd degree, hence one end, so
+$Z_{\cD'}(u)=\emptyset$. Lemma~\ref{lem:fan} with $t=z$ and target $u$ gives a decomposition of $K$
+with ends $b_{\cD'}-\mathbf 1_z+\mathbf 1_u=d_K\bmod2$. It is good, as $u\notin X$.
 
-\emph{Case II: all degrees are odd or zero, and some $x\notin X$ has degree at least $3$.} Choose any
-$u\in N(x)$, and let $H$ be $K-ux$ together with a new vertex $\ell$ and the edge $u\ell$. In $H$ the vertex
-$x$ has positive even degree $d(x)-1$, and every other vertex has odd degree or degree zero. Since $H$ has
-as many edges as $K$ but has an even vertex, $\nu(H)<\nu(K)$. By induction $H$ has a Lov\'asz
-decomposition $\cD_H$ separating $c$ and $a$. The leaf $\ell$ is an end of its path $Q_\ell$. Delete
-$\ell$. If $Q_\ell=u\ell$, delete this path; then $u$ loses its only end. Otherwise $u$ was interior to
-$Q_\ell$ and becomes an end of $Q_\ell-\ell$, while keeping its own end; so it has two. The result
-$\cD'$ is a partition of $K'=K-ux$ that still separates $c$ and $a$. It has $b_{\cD'}(x)=0$,
-$b_{\cD'}(u)\in\{0,2\}$, and $b_{\cD'}(w)=d_K(w)\bmod2$ for $w\ne u,x$.
+\emph{Case II: no vertex has positive even degree, and some $x\notin X$ has degree at least $3$.}
+Choose any $u\in N(x)$, and let $H$ be $K-ux$ together with a new vertex $\ell$ and the edge $u\ell$. In $H$
+the vertex $x$ has positive even degree $d(x)-1$, and every other vertex has odd degree or degree zero.
+$H$ has as many edges as $K$ but has an even vertex, so $\nu(H)<\nu(K)$. By induction $H$ has a good
+Lov\'asz decomposition $\cD_H$. The leaf $\ell$ is an end of its path $Q_\ell$. Delete $\ell$. If
+$Q_\ell=u\ell$, delete this path; then $u$ loses its only end. Otherwise $u$ was interior to $Q_\ell$ and
+becomes an end of $Q_\ell-\ell$, while keeping its own end; so it has two. The result $\cD'$ is a good
+partition of $K'=K-ux$. It has $b_{\cD'}(x)=0$, $b_{\cD'}(u)\in\{0,2\}$, and
+$b_{\cD'}(w)=d_K(w)\bmod2$ for $w\ne u,x$.
 \begin{itemize}
-\item If $b_{\cD'}(u)=0$, add the one-edge path $ux$. It contains both $c$ and $a$ only if $\{u,x\}=X$,
-which fails as $x\notin X$.
+\item If $b_{\cD'}(u)=0$, add the one-edge path $ux$. It contains at most one vertex of $X$, as
+$x\notin X$.
 \item If $b_{\cD'}(u)=2$, use Lemma~\ref{lem:fan} with $t=u$ and target $x$. Every neighbour of $x$ in
 $K'$ has odd degree in $K'$ and one end; $u$ itself is not a neighbour of $x$ in $K'$. So
-$Z_{\cD'}(x)=\emptyset<2$. The result has one end at $u$ and at $x$, and separates $c$ and $a$ as
-$x\notin X$.
+$Z_{\cD'}(x)=\emptyset<2$. The result has one end at $u$ and at $x$, and is good as $x\notin X$.
 \end{itemize}
 
-\emph{Case III: all degrees are odd or zero, and every vertex outside $X$ has degree at most one.} Then
-no vertex outside $X$ can be interior to a path. As $c,a$ are not adjacent, no path of $K$ joins
-them, so they lie in different components. Every path of any Lov\'asz decomposition, which exists by
-Theorem~\ref{thm:lovasz}, lies in one component.
+\emph{Case III: no vertex has positive even degree, every vertex outside $X$ has degree at most two,
+and some $v\notin X$ has positive degree.} Then $d(v)=1$. Let $w$ be its neighbour and $K'=K-vw$. In
+$K'$ the vertex $v$ is isolated. The vertex $w$ was odd, so it is now even or isolated. All other
+degrees are unchanged, and $\nu(K')<\nu(K)$. A good Lov\'asz decomposition of $K'$ has no end at $w$.
+Adding the one-edge path $vw$ gives a Lov\'asz decomposition of $K$. It is good, since $v\notin X$.
 
-These cases are exhaustive, which completes the induction.
+\emph{Case IV: every vertex outside $X$ has degree zero.} An edge would have an end outside $X$, since
+no two vertices of $X$ are adjacent; so $K$ has no edges, and the empty partition is good.
+
+These cases are exhaustive. If there is no even vertex and no vertex outside $X$ of degree at least
+three, then the vertices outside $X$ have degree at most one, being odd or isolated; so Case~III or
+Case~IV applies. This completes the induction. For the last statement, take $X=\{c,a\}$.
 \end{proof}
+
+Theorem~\ref{thm:sep} is formalised in Lean as \texttt{separation\_set}, with the case
+$X=\{c,a\}$ as \texttt{separation} (Section~\ref{sec:lean}).
 
 \begin{corollary}[$L_1$ at distance three]\label{cor:L1}
 If all degrees of $F$ are odd and $c,a$ are non-adjacent with no common neighbour, then $F$ has a
@@ -511,6 +521,22 @@ terminal edge at $c$.
 In $F=G-ac$ all degrees are odd, and $c,a$ are non-adjacent with no common neighbour. Apply
 Corollary~\ref{cor:L1} and Proposition~\ref{prop:rr} with the single route $ca$.
 \end{proof}
+
+\begin{corollary}\label{cor:packedroutes}
+Let $(P,\cR)$ be a route system for $G$ with union $J$, and suppose $V(J)$ is packed in the free graph
+$F=G-J$. Then one Lov\'asz decomposition of $F$ is $M$-compatible for every transversal $M$; so all
+transversals are realised by appending the routes to the paths of a single partition of $F$.
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:sep}, some Lov\'asz decomposition of $F$ has every path meeting $V(J)$ at most once.
+Then (RR1) holds for every choice of tails, and (RR2) holds vacuously, since no path has two ends in
+$V(J)$.
+\end{proof}
+
+The hypothesis of Corollary~\ref{cor:packedroutes} forces $G[V(J)]=J$, a forest, so $G[\Ev]$ is a forest.
+These graphs lie in Pyber's class, and the corollary adds only the uniform realisation of all
+transversals.
 
 \begin{example}[distance two]\label{ex:dist2}
 Separation can fail at distance two in the presence of an even vertex. Let $K$ have vertices
@@ -636,8 +662,8 @@ paired, and the path that gains the target may contain its partner.
 
 \begin{itemize}
 \item Lov\'asz's theorem~\cite{L68} is the base of route descent. Theorem~\ref{thm:sep} strengthens its
-strong form: the decomposition can be chosen to separate two prescribed vertices at distance at least
-three. We have not found this in the literature.
+strong form: the decomposition can be chosen so that every path meets a prescribed packed set at most
+once. We have not found this in the literature.
 \item Pyber~\cite{Pyb96} (even subgraph a forest), Fan~\cite{Fan05} (blocks triangle-free of maximum
 degree at most three) and Botler and Sambinelli~\cite{BS21} prove Gallai's conjecture under structural
 conditions on $G[\Ev]$. Theorem~\ref{thm:isolated} lies inside Pyber's class. Corollary~\ref{cor:upm}
@@ -669,11 +695,10 @@ files are sorry-free, and each theorem listed depends only on the standard axiom
   \end{itemize}
 \item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
 \texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
-\item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation}) and
-Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}). The formal proof follows the cases of the proof
-above. Case~III is replaced by an induction step that deletes a leaf outside $\{c,a\}$ and restores it
-as a one-edge path. The leaf of Case~II lives on the type \texttt{Option W} and is removed by a
-projection lemma; a strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets.
+\item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation\_set}, and
+\texttt{separation} for $X=\{c,a\}$) and Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}). The formal
+proof follows Cases I--IV above. The leaf of Case~II lives on the type \texttt{Option W} and is removed
+by a projection lemma; a strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets.
 \end{itemize}
 Not formalised: Lemmas~\ref{lem:hered} and~\ref{lem:ext} (routes as walks), Lemma~\ref{lem:min}(1)--(3),
 Proposition~\ref{prop:rr}, and Theorem~\ref{thm:isolated} and Corollary~\ref{cor:upm}. The latter are
