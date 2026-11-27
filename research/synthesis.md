@@ -65,9 +65,46 @@ Let (F, r) be a least even-order failure of the rooted test (R). It is equivalen
 | B | Uniform endpoint matroid on 3-connected critical graphs | — | **Refuted in general** by ED Thm 46 (cut obstruction at every connectivity). EMC (non-uniform) remains open |
 | C | **Endpoint min-max (EMM)**: a half-set is realisable in n/2 paths iff it meets the local conditions and every cut inequality ED (1) | **Yes** | Unifies SP 14.1 (dense: cuts never bind), ED Prop 45 / Thm 46 (cut inequality necessary and tight), TVS (exact gluing), RE 13.1 and MR Cor 39 (Hall conditions), and JM-repair (Hoffman cuts). Under EMM, Gallai becomes a pure **cut-selection** statement |
 
-## 5. Decision
+## 5. Decision: Architecture C, the endpoint min-max programme
 
-(Filled in after the n = 8 test of EMM; see §6.)
+**Conjecture EMM (endpoint min-max).** Let G be connected of even order n = 2k. Let M be a half-set of its even vertices, with simple profile b (1 on odd vertices, 2 on M, 0 on the other even vertices). Then b is realised by a partition into k paths **if and only if** for every vertex v and every W ⊆ V − v,
+
+  b(W) ≤ |δ(W)| + 2k − d(v) − b(v)                (ED, inequality (1))
+
+The local conditions b(v) ≤ d(v) and d(v) + b(v) ≤ 2k hold automatically for simple profiles.
+
+Necessity is ED §12.4: each path through v gives each of its ends in W a private edge of δ(W). Sufficiency is the conjecture. Evidence (§6): exact at every connected graph of order ≤ 8, and on samples at order 10, with **2,368 non-realisable half-sets, every one cut-excluded, and no exceptions**.
+
+**Why this is the right architecture.**
+
+1. **It is parameter-free.** There is no degree, no held-edge cap and no n0.
+2. **It unifies the portfolio:**
+   - SP Thm 14.1 is the dense case, where cuts never bind and only local conditions remain;
+   - ED Prop 45 / Thm 46 give the necessary side and its sharpness;
+   - TVS Thm 7 (exact gluing records) is a two-vertex cut computation;
+   - RE Thm 13.1 and MR Cor 39 are Hall, that is cut, conditions at one vertex;
+   - JM-repair's extension lemma is exactly a Hoffman cut theorem;
+   - our hub, flower and barrier results are supply-versus-cut computations at a vertex.
+3. **It explains EMC.** The cut inequalities are upper bounds |M ∩ X| ≤ f(X) on how many marks a set may contain. If the cap function is submodular, the realisable half-sets are the bases of the induced matroid. Uniformity fails exactly when some cut caps a shore, which is what ED Thm 46 shows.
+4. **It splits Gallai into a hard analytic half and a combinatorial half.** Gallai ⇐ EMM + **(CS) cut selection**: every connected even-order G and every even r have a half-set M ∋ r meeting all inequalities (1). Conversely Gallai + EMM ⇒ CS. CS is a pure cut/flow statement. **For cones (a universal vertex) CS follows from the classical T-join pairing lemma**: x = ±1 on marked/unmarked even vertices is unit-flow routable in G − apex.
+
+**What it does not do.** EMM's sufficiency is a min-max theorem for path decompositions, and it is at least as hard as Gallai. The gain is that the difficulty is now a single structural statement with a natural inductive proof template:
+- induction on |E|;
+- deleting an edge and adjusting the profile so that the cut conditions persist;
+- re-inserting the edge by Fan, hub or flower moves, whose failure must exhibit a violated cut (a tight-set, uncrossing argument).
+
+Every local engine of the archive is a candidate move, and the cut conditions are the invariant that says which move applies.
+
+**Plan.**
+
+| Track | Work | Lean |
+|---|---|---|
+| C1 | Manuscript `manuscripts/endpoint-min-max`: statement, evidence, the dictionary in point 2 above, and consequences (EMC explanation; Gallai ⇐ EMM + CS) | `CutFeasible`; necessity of (1); `gallai_of_emm_cs` |
+| C2 | Prove **CS** unconditionally: T-join and flow arguments, starting from the cone case | yes |
+| C3 | Prove EMM in classes: e ≤ 4 (two-step descent); cones/apex graphs; κ-connected with e ≤ 2κ (EMM predicts *every* half-set is realisable); 2-separator gluing (TVS); dense (SP 14.1) | per class |
+| C4 | Attack EMM's sufficiency: the minimal counterexample to EMM and its tight cuts | — |
+| D | Bank "exact Gallai below Dirac" (close Cor 14.39) | **Deprioritised**: parameterised, and it does not lead to full Gallai |
+| Spine | Finish MR Thm 59 (N3), giving a full Lean spine | yes |
 
 ## 6. Test of EMM
 
@@ -76,4 +113,8 @@ Let (F, r) be a least even-order failure of the rooted test (R). It is equivalen
 | Order | Graphs | Half-sets | EMM failures | Unsound |
 |---|---|---|---|---|
 | 6 | 99 | 518 | **0** | 0 |
-| 8 | (running) | | | |
+| 8 | 10,893 (all connected, e ≥ 2) | 101,714 (2,100 non-realisable) | **0** | 0 |
+| 10, random sample (G(10,p), p = .3–.8, plus CP(5) and Inv~\|~zbw) | 246 | 4,724 (44 non-realisable) | **0** | 0 |
+| ≤ 10, bottleneck families (cliques joined by 1–3 edges, theta graphs, cones over path unions, 2-sums) | 86 | 2,340 (206 non-realisable) | **0** | 0 |
+
+"Unsound" counts realisable half-sets that violate (1); it must be 0, since (1) is necessary. The order-12 bottleneck instances were skipped because the exact oracle enumerates whole families and is too slow there.
