@@ -565,3 +565,30 @@ Before the proof, the last reduction was checked to keep cut-feasibility on all 
 - Every stuck instance at n = 6 has a cut-feasible move that lacks only its guarantee: a transfer at Fan's equality, or a concatenation with one end at each of u and v (`tmpl6_red_diag.log`, `tmpl6_plus_diag.log`).
 - Reading: single-edge and bounded path-insertion moves do not make cut-feasibility inductive. The missing ingredient is an **equality lemma**: at Fan's equality, either the move succeeds or a tight cut appears.
 
+
+## E18. Cut selection, pairing selection and caps (tracks C1/C2; cloud session `claude/emc-four-even`)
+
+Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas.c` (all cut-feasible half-sets) and `tools/capsub.c` (caps).
+
+- **EMM** (`evidence.py`). 0 failures and 0 unsound throughout:
+  - n = 6: 99 graphs, 518 half-sets;
+  - n = 8: 10,893 graphs, 101,714 half-sets, 2,100 non-realisable;
+  - n = 10, G(10,p) with seed 20261127: 250 graphs, 4,222 half-sets, 8 non-realisable;
+  - bottleneck families of order 6–10: 82 graphs, 1,568 half-sets, 208 non-realisable.
+- **CS and PS** (`cut_selection.py`). There is no failure at n ≤ 8, in the n = 10 sample or in the bottleneck families.
+  - PS (a pairing of Ev all of whose transversals are cut-feasible) always holds.
+  - A good pairing made of edges of G exists in 6,773 of 10,893 graphs at n = 8.
+  - At n = 6 the script also confirms the arm form and the pairing criterion against enumeration.
+- **Certificates** (`certificates.py`) for the guarded route lemma:
+  - n = 8: 9,848 by a Hamiltonian path, 996 by a linkage, 49 by guarded routes, 0 uncertified;
+  - n = 6: 82 / 16 / 1;
+  - n = 10 random: 236 / 14;
+  - bottleneck: 69 / 13;
+  - also all trees of order ≤ 12 (guards are needed for 1, 8 and 62 trees at orders 8, 10, 12), 300 sparse G(n,p) at each of n = 10, 12, and K_{2,m} for m = 6, 8, 10.
+  - Every certified pairing is good by enumeration.
+  - Stress test (`certificates.py stress`): random route systems in 400 random graphs (n = 8, 10). All 3,310 guarded systems with a busy vertex and all 1,691 linkages are good. 7,079 of the 7,227 unguarded systems are also good, so the guards are far from necessary.
+- **Caps** (`caps.py`).
+  - Every per-vertex family F_v is a matroid basis family (n = 6, 8).
+  - The global cap is non-submodular in 1,063 graphs at n = 8, and the cap system is a non-matroid in 70.
+  - F is not a matroid basis family in 48 graphs at n = 8 (all non-critical, e.g. GsaAD{) and in 1 at n = 6.
+  - Critical graphs at n = 8: all 1,082 have matroid F. F = F_v for one v in 1,071; the cap is submodular in 1,057; 4 are explained by neither.

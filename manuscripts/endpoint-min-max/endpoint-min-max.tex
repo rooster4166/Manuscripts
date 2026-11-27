@@ -1,0 +1,701 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cP}{\mathcal P}
+
+\title{An endpoint min-max conjecture for path decompositions}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ be a connected graph of even order $n=2k$ and let $M$ be a set of half of its even-degree
+vertices. The simple profile of $M$ asks for a partition of $E(G)$ into $k$ paths with one end at every
+odd vertex, two ends at every vertex of $M$ and none at the other even vertices. A cut inequality of
+the even-degrees manuscript is necessary for this. We conjecture that it is also sufficient (EMM), and
+we confirm this on every connected graph of order at most eight and on samples of order ten. Under
+EMM, Gallai's conjecture reduces to a statement about cuts alone: some half-set meets every
+inequality (CS).
+
+We give the inequality four equivalent forms. The most useful one asks that the edges at each vertex
+$v$ extend to edge-disjoint \emph{arms} in $G-v$ that end at the prescribed ends. For half-sets it
+becomes a single-commodity cut condition in the graph $G^v$ obtained by complementing the star at
+$v$.
+
+From this we prove four things.
+\begin{itemize}
+\item In a cone, the cut-feasible half-sets are exactly the transversals of pairings of the even
+vertices by edge-disjoint paths avoiding the apex. CS for cones follows from the $T$-join pairing
+lemma.
+\item A \emph{guarded route lemma}: if the even vertices are paired by edge-disjoint paths and every
+passage through a vertex used by two or more of them is guarded locally, then every half-set with
+one marked end per pair is cut-feasible. This covers linkages, traceable graphs and cones.
+\item A computer search finds such certificates for every connected graph of order at most eight.
+So CS holds there with a proof that never uses realisability.
+\item For each vertex, the half-sets meeting its inequalities are the bases of a matroid. The
+cut-feasible family is the intersection of these matroids, and the global cap function is not
+submodular. EMM therefore does not formally imply the endpoint matroid conjecture, although the
+intersection is a matroid for every critical graph of order at most eight.
+\end{itemize}
+We also restate several results of the archive as cut statements.
+\end{abstract}
+\maketitle
+
+\section{Setting}\label{sec:setting}
+
+All graphs are finite and simple. A path has at least one edge, and its ends are its two distinct end
+vertices. A \emph{partition} of a graph is a partition of its edge set into paths. Throughout, $G$ is
+connected of even order $n=2k\ge 2$. We write $d(v)$ for degree, $N(v)$ for the neighbourhood and
+$e(v,Y)=|N(v)\cap Y|$. $\Od$ and $\Ev$ are the sets of odd and even vertices, and $e=|\Ev|$, which is
+even. Since $G$ is connected, every even vertex has degree at least two. For $Y\subseteq V$,
+$\delta(Y)$ is the edge cut. For $v\notin Y$, $\delta_{G-v}(Y)$ is the set of edges between $Y$ and
+$V-Y-v$.
+
+A \emph{profile} is a map $b:V\to\mathbb Z_{\ge 0}$, and $b(Y)=\sum_{y\in Y}b(y)$. A partition
+\emph{realises} $b$ if it has exactly $b(v)$ path ends at each vertex $v$. A realisation has $b(V)/2$
+paths. A \emph{half-set} is a set $M\subseteq\Ev$ with $|M|=e/2$. Its \emph{simple profile} is
+\[
+b_M=1 \text{ on }\Od,\qquad b_M=2\text{ on }M,\qquad b_M=0\text{ on }\Ev\setminus M,
+\]
+so $b_M(V)=n$ and a realisation of $b_M$ has exactly $k$ paths. Thus Gallai's conjecture for $G$
+follows if some half-set is realisable. The \emph{local conditions} for a profile with $b(V)=2k$ are
+\[
+b(v)\equiv d(v)\pmod 2,\qquad b(v)\le d(v),\qquad d(v)+b(v)\le 2k .
+\]
+They are necessary, and they hold automatically for simple profiles: $d(v)\le n-1$, and
+$d(v)\le n-2$ when $d(v)$ is even.
+
+We cite the archive by the abbreviations of \texttt{research/synthesis.md}:
+ED (even-degrees), SP (separating-pairs), TVS (two-vertex-separators), RE (root-endpoint-costs),
+MR (marked-reduction), ES (endpoint-structure) and JM-repair.
+
+\section{The cut inequality and the conjecture}\label{sec:emm}
+
+ED~\S12.4 states the following inequality for a profile $b$ with $b(V)=2k$, a vertex $v$ and a set
+$W\subseteq V-v$:
+\begin{equation}\label{eq:one}
+b(W)\le |\delta(W)|+2k-d(v)-b(v).
+\end{equation}
+
+\begin{lemma}[four forms]\label{lem:forms}
+Let $b$ be a profile with $b(V)=2k$ and let $v$ be a vertex. The following are equivalent.
+\begin{enumerate}
+\item[(a)] Inequality \eqref{eq:one} holds for every $W\subseteq V-v$.
+\item[(b)] $d(v)+b(v)\le b(U)+|\delta(U)|$ for every $U\ni v$ (demand form).
+\item[(c)] $e(v,Y)\le b(Y)+|\delta_{G-v}(Y)|$ for every $Y\subseteq V-v$ (arm form).
+\item[(d)] There are paths $A_y$ $(y\in N(v))$ of $G-v$ with the following properties. They are
+pairwise edge-disjoint. $A_y$ starts at $y$ and may have length $0$. Every vertex $z\ne v$ is the
+last vertex of at most $b(z)$ of them. (An \emph{arm system} at $v$.)
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a)$\Leftrightarrow$(b): put $U=V-W$. Then $b(W)=2k-b(U)$ and $\delta(W)=\delta(U)$, so
+\eqref{eq:one} becomes $d(v)+b(v)\le b(U)+|\delta(U)|$. The sets $W\subseteq V-v$ correspond exactly
+to the sets $U\ni v$.
+
+(b)$\Leftrightarrow$(c): put $U=Y\cup\{v\}$. Then $b(U)=b(v)+b(Y)$ and
+$|\delta(U)|=|\delta_{G-v}(Y)|+d(v)-e(v,Y)$. Substituting gives (c).
+
+(c)$\Leftrightarrow$(d): build a network from $G-v$. Every edge becomes two opposite arcs of
+capacity $1$. Add a source $\sigma$ with an arc of capacity $1$ to each $y\in N(v)$, and a sink $\tau$
+with an arc of capacity $b(z)$ from each $z\ne v$. An arm system is the same thing as an integral flow
+of value $d(v)$. Indeed, cancel opposite flows on each edge, discard cycles and decompose the rest
+into $\sigma$--$\tau$ paths. A cut is given by the set $X\subseteq V-v$ of vertices on the source
+side, and its capacity is $|N(v)\setminus X|+|\delta_{G-v}(X)|+b(X)$. By the max-flow min-cut
+theorem, a flow of value $d(v)$ exists if and only if every such capacity is at least $d(v)$, and that
+is (c).
+\end{proof}
+
+\begin{proposition}[necessity; ED \S12.4]\label{prop:nec}
+If a partition $\cP$ realises $b$, then (a)--(d) hold at every vertex.
+\end{proposition}
+
+\begin{proof}
+We construct an arm system at $v$. Each edge $vy$ lies on a unique path $Q\in\cP$. Traverse $Q$ from
+$v$ through $y$ to the end of $Q$ on that side. Let $A_y$ be this walk with the edge $vy$ removed. It
+is a path of $G-v$ from $y$ to an end $z\neq v$ of $Q$, since $Q$ visits $v$ only once. Two arms
+from different paths are edge-disjoint. The two arms of a path through $v$ are edge-disjoint, and they
+end at its two different ends. Hence every end occurrence of every path terminates at most one arm,
+and $z$ is the last vertex of at most $b(z)$ arms.
+\end{proof}
+
+ED proves the necessity of~\eqref{eq:one} by the same count. Each path through $v$ gives each of its
+ends in $W$ its own edge of $\delta(W)$, and each of the $k-(d(v)+b(v))/2$ paths missing $v$ has at
+most two ends in $W$.
+
+\begin{definition}
+A half-set $M$ is \emph{cut-feasible} if $b_M$ satisfies (a)--(d) at every vertex.
+\end{definition}
+
+\begin{conjecture}[EMM, endpoint min-max]\label{conj:emm}
+Let $G$ be connected of even order. A half-set $M$ is realisable if and only if it is cut-feasible.
+\end{conjecture}
+
+Only sufficiency is conjectural. For $W=\emptyset$, inequality~\eqref{eq:one} is the local condition
+$d(v)+b(v)\le 2k$. For $e=0$ the empty half-set is trivially cut-feasible, and its realisability is
+Lov\'asz's theorem for graphs with all degrees odd~\cite{L68}. Section~\ref{sec:evidence} gives the
+evidence.
+
+\begin{remark}[Eulerian form]\label{rem:euler}
+Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ parallel edges. For a
+simple profile, $G_b$ is Eulerian. Form (b) at every $v$ says $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$ for
+every $v\in V$: every vertex is joined to $t$ by as many edge-disjoint paths as its degree. A
+realisation is a decomposition of $G_b$ into $k$ cycles through $t$, none of length two. EMM thus
+asserts that this connectivity condition is sufficient for such special Eulerian graphs. The closest
+classical min-max theorem of this shape is the Lov\'asz--Cherkassky theorem on edge-disjoint
+$T$-paths in inner-Eulerian graphs (\texttt{research/synthesis.md}~\S7).
+\end{remark}
+
+\subsection{The signed form for half-sets}
+For a half-set $M$, define
+\[
+x_M=+1 \text{ on } \Ev\setminus M,\qquad x_M=-1\text{ on }M,\qquad x_M=0\text{ on }\Od.
+\]
+For a vertex $v$, let $G^v$ be the graph obtained from $G$ by deleting the edges at $v$ and joining
+$v$ to every vertex of $V-v-N(v)$. For $Y\subseteq V-v$,
+\[
+|\delta_{G^v}(Y)|=|\delta_{G-v}(Y)|+|Y\setminus N(v)|.
+\]
+
+\begin{lemma}[signed form]\label{lem:signed}
+A half-set $M$ satisfies (c) at $v$ if and only if
+\begin{equation}\label{eq:signed}
+x_M(Y)\le|\delta_{G^v}(Y)|\qquad\text{for every } Y\subseteq V-v .
+\end{equation}
+Equivalently, by Gale's supply--demand theorem: in $G^v$, the unmarked even vertices other than $v$
+can each send one unit along edge-disjoint paths to distinct marked vertices or to $v$, and $v$ may
+receive any number of units.
+\end{lemma}
+
+\begin{proof}
+$b_M(Y)=|Y\cap\Od|+2|Y\cap M|=|Y|-x_M(Y)$, because there are no isolated vertices. So (c) reads
+$x_M(Y)\le |Y|-e(v,Y)+|\delta_{G-v}(Y)|=|\delta_{G^v}(Y)|$. For the flow statement, apply max-flow
+min-cut to $G^v$ with these supplies, unit demands at the marked vertices, and an uncapacitated sink
+at $v$. The cuts that do not separate $v$ from the sink are exactly the sets $Y\subseteq V-v$.
+\end{proof}
+
+A non-neighbour of $v$ is joined to $v$ in $G^v$. So the content of~\eqref{eq:signed} at $v$ is that
+the unmarked even neighbours of $v$ can be routed in $G-v$. Each can go to a marked neighbour of $v$
+(one slot each), to a marked non-neighbour (two slots) or to an odd non-neighbour (one slot). The
+constant profile $b\equiv 1$, which is $x\equiv 0$, satisfies (c) trivially. So CS below is a parity
+rounding problem: round $b\equiv1$ on $\Ev$ to values in $\{0,2\}$ while keeping $n$ cut systems
+satisfied at once.
+
+\begin{lemma}[parity]\label{lem:parity}
+For $v\in V$ and $Y\subseteq V-v$, we have $|\delta_{G^v}(Y)|\equiv |Y\cap\Ev|\pmod 2$. In particular
+both sides of~\eqref{eq:signed} have the same parity, so a violated inequality is violated by at
+least two.
+\end{lemma}
+
+\begin{proof}
+$|\delta_{G^v}(Y)|=|\delta(Y)|+|Y|-2e(v,Y)\equiv\sum_{y\in Y}(d(y)+1)$, and $d(y)+1$ is odd exactly
+when $y\in\Ev$. Also $x_M(Y)\equiv|Y\cap\Ev|$.
+\end{proof}
+
+\section{Consequences}\label{sec:consequences}
+
+\begin{definition}
+\textbf{(CS$_0$)}: $G$ has a cut-feasible half-set. \textbf{(CS)}: for every even vertex $r$, $G$ has a
+cut-feasible half-set containing $r$. \textbf{(PS)}: $\Ev$ has a \emph{good pairing}, that is, a
+partition into pairs such that every half-set meeting each pair in exactly one vertex is
+cut-feasible. Clearly PS$\Rightarrow$CS$\Rightarrow$CS$_0$.
+\end{definition}
+
+\begin{proposition}\label{prop:gallai}
+If EMM and CS$_0$ hold for every connected graph of even order, then Gallai's conjecture holds.
+\end{proposition}
+
+\begin{proof}
+For even order, a cut-feasible half-set is realisable by EMM, which gives $n/2$ paths. For odd order,
+attach a pendant vertex, decompose the resulting graph into $(n+1)/2$ paths, and delete the pendant
+edge. This leaves at most $(n+1)/2=\lceil n/2\rceil$ paths.
+\end{proof}
+
+\begin{remark}[the converse direction]\label{rem:converse}
+By Proposition~\ref{prop:nec}, CS for $(G,r)$ follows from the \emph{simple-profile rooted statement}
+(R$_s$): $r$ lies in a realisable half-set. Under EMM, CS and (R$_s$) are equivalent. Gallai's
+conjecture is equivalent to the rooted test (R) (Lean \texttt{gallai\_iff\_rootedTest}, ES \S1).
+However, (R) gives a partition into $n/2$ paths with an end at $r$, and that partition need not have a
+simple profile (ES Corollary~6). So ``Gallai and EMM imply CS'' is \emph{not} formal; it needs
+(R)$\Rightarrow$(R$_s$). Both hold at order $\le 8$ by the computations below. The general-profile extension EMM$^+$
+(\texttt{research/synthesis.md}~\S8: every profile with at least $\lceil n/2\rceil$ paths is realisable
+if and only if it is cut-feasible) would let one replace CS$_0$ by the existence of \emph{any}
+cut-feasible profile with $b(V)=n$. We have not found a direct proof of that either.
+\end{remark}
+
+\subsection{Caps, matroids and EMC}\label{sec:caps}
+
+The \emph{endpoint matroid conjecture} (EMC; \texttt{research/experiments.md} E6) says that for
+critical $G$, meaning $p(G)=n/2$, the realisable half-sets are the bases of a loopless matroid on
+$\Ev$. Under EMM these are the cut-feasible half-sets. The inequalities are upper bounds
+$|M\cap X|\le f(X)$, and Edmonds' theorem turns a submodular cap into a matroid. So one asks whether
+the cap is submodular. The answer has two parts.
+
+\begin{proposition}[one vertex at a time]\label{prop:pervertex}
+For each vertex $v$, the half-sets satisfying (c) at $v$ form the set $\cF_v$ of bases of a matroid
+on $\Ev$.
+\end{proposition}
+
+\begin{proof}
+For $Y\subseteq V-v$ put $\lambda_v(Y)=e(v,Y)-|\Od\cap Y|-|\delta_{G-v}(Y)|$. Condition (c) at $v$
+reads $2|M\cap Y|\ge\lambda_v(Y)$. The function $\lambda_v$ is modular minus a cut function, hence
+supermodular, and it is even. Evenness holds because
+$|\delta_{G-v}(Y)|\equiv\sum_{y\in Y}(d(y)-[y\in N(v)])\equiv|Y\cap\Od|+e(v,Y)$. For
+$X\subseteq\Ev-v$ put
+\[
+\ell_v(X)=\max\{\lambda_v(Y)/2:\ Y\subseteq V-v,\ Y\cap\Ev=X\}.
+\]
+This projection of a supermodular function is supermodular. If $Y_1$ and $Y_2$ attain $\ell_v(X_1)$
+and $\ell_v(X_2)$, then $Y_1\cup Y_2$ and $Y_1\cap Y_2$ project to $X_1\cup X_2$ and $X_1\cap X_2$.
+Condition (c) at $v$ is $|M\cap X|\ge\ell_v(X)$ for all $X\subseteq\Ev-v$. Since
+$\lambda_v(Y)\le|Y|-|Y\cap\Od|=|X|$, we get $\ell_v(X)\le\lfloor |X|/2\rfloor$.
+
+In terms of the unmarked set $N=\Ev\setminus M$, the condition says $|N\cap X|\le g_v(X)$ for all
+$X\subseteq\Ev$, where $g_v(X):=|X|-\ell_v(X\setminus\{v\})$. (For $X\ni v$ this is the condition at
+$X-v$ together with $|N\cap\{v\}|\le1$.) The function $g_v$ is submodular on $2^{\Ev}$, and
+$g_v(X)\ge\lceil |X|/2\rceil\ge 0$. By Edmonds' theorem~\cite{Edm70}, the sets $N$ with
+$|N\cap X|\le g_v(X)$ for all $X$ are the independent sets of a matroid $\mathcal I_v$. Its rank is
+$\min_X(|\Ev\setminus X|+g_v(X))\ge\min_X(e-|X|+|X|/2)\ge e/2$. So the complements of the members of
+$\cF_v$ are the independent sets of size $e/2$, which are the bases of the truncation of
+$\mathcal I_v$ to rank $e/2$. Complements of bases are bases of the dual.
+\end{proof}
+
+The cut-feasible family is $\cF=\bigcap_v\cF_v$, an intersection of $n$ matroid basis families. In
+the form~\eqref{eq:one} the caps are on the marks. For $v$ even, the inequalities at $v$ bound
+$|M\cap X|$ for $X=(W\cup\{v\})\cap\Ev$; for $v$ odd they bound it for $X=W\cap\Ev$. Let $f_v(X)$ be
+the least such bound, $\tfrac12\min_W(|\delta(W)|-|W\cap\Od|+2k-d(v)-[v\in\Od])$. Parity makes the
+halving exact, so $f_v$ is again a projection of a submodular function and is submodular on its
+domain. The global cap is $f=\min_v f_v$. The minimum of submodular functions need not be
+submodular, and computation confirms that it fails here (Table~\ref{tab:caps}).
+\begin{itemize}
+\item The global cap $f$ is not submodular for $1{,}063$ of the $10{,}893$ connected graphs of order
+eight. In $70$ of these, the cap system $\{I:|I\cap X|\le f(X)\}$ is not even a matroid.
+\item $\cF$ fails to be a matroid basis family in $48$ graphs of order eight, and in one of order
+six. All of them are non-critical, so this does not contradict EMC. An example is
+\texttt{GsaAD\{}: two adjacent vertices $0,7$ of degree $6$, four common neighbours $2,3,4,5$ and the
+path $0,1,6,7$. Here $X=\{1,4,5,6\}$ and $Y=\{0,1,4,7\}$ are in $\cF$, but neither
+$X-5+0$ nor $X-5+7$ is.
+\item For every one of the $1{,}082$ critical graphs of order eight, $\cF$ is a matroid basis family.
+In $1{,}071$ of them $\cF=\cF_v$ for a single vertex $v$, so EMC follows from EMM through
+Proposition~\ref{prop:pervertex}. In $1{,}057$ the global cap is submodular. Four critical graphs are
+explained by neither:
+\texttt{Gs`ALo}, \texttt{GsQcaO}, \texttt{GqHTTS} and \texttt{GqhTTS}.
+\end{itemize}
+So \textbf{EMM does not formally imply EMC}. What EMM does give is that EMC is equivalent, for
+critical graphs, to the statement that $\bigcap_v\cF_v$ is a loopless matroid basis family.
+Looplessness is CS.
+
+\begin{question}\label{q:emc}
+Why is $\bigcap_v\cF_v$ a matroid basis family when $G$ is critical? Is there always a set of
+vertices whose conditions imply all others and whose caps combine submodularly?
+\end{question}
+
+\section{Cut selection}\label{sec:cs}
+
+\begin{lemma}[good pairings]\label{lem:pairing}
+A partition $P$ of $\Ev$ into pairs is good if and only if, for every $v$ and every $Y\subseteq V-v$,
+\[
+\sigma_P(Y)\le|\delta_{G^v}(Y)|,
+\]
+where $\sigma_P(Y)$ is the number of pairs with exactly one vertex in $Y$. Equivalently, the demand
+graph $P$ satisfies the cut condition in $G^v$ for every vertex $v$.
+\end{lemma}
+
+\begin{proof}
+For a transversal $M$ of $P$, a pair inside $Y$ contributes $1-1=0$ to $x_M(Y)$, a pair outside $Y$
+contributes $0$, and a split pair contributes $\pm1$. So $x_M(Y)\le\sigma_P(Y)$, and
+Lemma~\ref{lem:signed} gives sufficiency. Conversely, for given $v$ and $Y$, mark in each split pair
+the vertex outside $Y$. Then $x_M(Y)=\sigma_P(Y)$. Every cut has a side avoiding $v$, so this is the
+cut condition in $G^v$.
+\end{proof}
+
+\subsection{Cones}
+The following answers the cone case.
+
+\begin{lemma}[$T$-join pairing]\label{lem:tjoin}
+In any graph $H$, the odd vertices can be partitioned into pairs joined by pairwise edge-disjoint paths
+of $H$.
+\end{lemma}
+
+\begin{proof}
+Induct on $|E(H)|$. If $H$ has a cycle, delete its edges. This changes no parity, so the induction
+hypothesis applies. If $H$ is a forest with an edge, some tree component has two leaves $a$ and $c$.
+Both are odd. Deleting the edges of the $a$--$c$ path makes $a$ and $c$ isolated and keeps all other
+parities. Apply induction and add the pair $\{a,c\}$.
+\end{proof}
+
+\begin{theorem}[cones]\label{thm:cone}
+Let $G$ have a universal vertex $u$ and even order $n$, and put $H=G-u$. A half-set $M$ is
+cut-feasible if and only if $\Ev$ can be partitioned into pairs, each consisting of one vertex of $M$
+and one of $\Ev\setminus M$, that are joined by pairwise edge-disjoint paths of $H$. Consequently,
+every pairing of $\Ev$ by edge-disjoint paths of $H$ is good, such pairings exist, and PS and CS hold
+for cones.
+\end{theorem}
+
+\begin{proof}
+Here $d(u)=n-1$ is odd, so $u\notin\Ev$ and $\Ev(G)=\Od(H)$. In $G^u$ the vertex $u$ is isolated, so
+by Lemma~\ref{lem:signed} the conditions at $u$ read $x_M(Y)\le|\delta_H(Y)|$ for $Y\subseteq V(H)$.
+Since $x_M(V(H))=0$, applying them to $V(H)\setminus Y$ gives $|x_M(Y)|\le|\delta_H(Y)|$. This is the
+Gale--Hoffman condition~\cite{Gale57,Hof60} for the supplies $x_M$ (unit supply at each unmarked even
+vertex, unit demand at each marked one) to be routable by a flow of value at most one on each edge of
+$H$. An integral such flow consists of edge-disjoint paths from unmarked to marked vertices, each such
+vertex being the end of exactly one, together with cycles that can be discarded. Conversely, such
+paths are a flow, and they imply the cut condition.
+
+It remains to show that the conditions at $u$ imply those at every $v\neq u$. Use form (a). Write
+$s(w)=2k-d(w)-b(w)$, so that \eqref{eq:one} at $(w,W)$ reads $b(W)-|\delta(W)|\le s(w)$. All
+$s(w)\ge 0$, and $s(u)=2k-(2k-1)-1=0$. Let $W\subseteq V-v$. If $u\notin W$, then \eqref{eq:one} at
+$(v,W)$ follows from \eqref{eq:one} at $(u,W)$, since $s(u)\le s(v)$. If $u\in W$, use form (b) with
+$U=V-W$, which contains $v$ and lies in $V(H)$. Then $|\delta(U)|=|\delta_H(U)|+|U|$, and
+$d(v)=1+d_H(v)\le 1+|\delta_H(U)|+(|U|-1)$. Also $b(v)\le b(U)$. Hence
+$d(v)+b(v)\le b(U)+|\delta(U)|$.
+
+Finally, any pairing by edge-disjoint paths of $H$ gives, for every choice of marked ends, the paths
+required above. Lemma~\ref{lem:tjoin} applied to $H$ provides such a pairing, and choosing the end $r$
+gives CS.
+\end{proof}
+
+So EMM for cones is the statement that \emph{a half-set of a cone is realisable if and only if its
+marked and unmarked vertices pair up by edge-disjoint paths of $G-u$} (track C3).
+
+\subsection{The guarded route lemma}
+
+\begin{definition}
+A \emph{route system} for a pairing $P$ of $\Ev$ consists of pairwise edge-disjoint paths $R_p$ of $G$
+($p\in P$), with $R_p$ joining the two vertices of $p$. Let $J$ be the union of their edges. A vertex
+is \emph{busy} if it lies on two or more routes. A \emph{passage} at $v$ is a pair $(x,y)$ such that
+$x,v,y$ are consecutive on a route.
+
+A passage $(x,y)$ at a busy vertex $v$ is \emph{guarded} if it has
+\begin{itemize}
+\item[(a)] a \emph{bypass}: a vertex $u\neq v$, which is not an end of another passage at $v$, with
+$xu,yu\in E(G)\setminus J$; or
+\item[(b)] \emph{private neighbours}: vertices $w_x,w_y\notin N(v)\cup\{v\}$ with
+$xw_x,yw_y\in E(G)\setminus J$.
+\end{itemize}
+The private neighbours used by the passages at $v$ must be pairwise distinct. The route system is
+\emph{guarded} if every passage at every busy vertex is guarded. It is a \emph{linkage} if the routes
+are pairwise vertex-disjoint, in which case no vertex is busy.
+\end{definition}
+
+\begin{theorem}[guarded route lemma]\label{thm:guarded}
+If a pairing $P$ of $\Ev$ has a guarded route system, then $P$ is good. In particular, every linkage
+of $\Ev$ is a good pairing.
+\end{theorem}
+
+\begin{proof}
+Fix $v$ and $Y\subseteq V-v$. By Lemma~\ref{lem:pairing} we must show
+$\sigma_P(Y)\le|\delta_{G^v}(Y)|$. By Lemma~\ref{lem:parity}, both sides are congruent to
+$|Y\cap\Ev|$ modulo $2$, so it suffices to prove $\sigma_P(Y)\le|\delta_{G^v}(Y)|+1$.
+
+Let $p=\{a,c\}$ be split, with $a\in Y$ and $c\notin Y$. Call $p$ \emph{good} if $R_p$ contains an
+edge of $\delta_{G-v}(Y)$, and choose one such edge $\varepsilon_p\in J$. Distinct good pairs have
+distinct $\varepsilon_p$, because routes are edge-disjoint.
+
+Now suppose $p$ is bad. Follow $R_p$ from $a$. Every edge from $Y$ to $V-Y$ either goes to $v$ or lies
+in $\delta_{G-v}(Y)$. So $R_p$ first leaves $Y$ along an edge $xv$ with $x\in Y$. If $c=v$, we call
+$p$ a \emph{bad end}. There is at most one bad end, since $v$ lies in at most one pair. Otherwise $v$
+is interior to $R_p$; let $y$ follow $v$. If $y\in Y$, the rest of $R_p$ would have to leave $Y$
+again without returning to $v$, through an edge of $\delta_{G-v}(Y)$, which is impossible. So
+$(x,y)$ is a passage at $v$ with $x\in Y$ and $y\notin Y\cup\{v\}$.
+
+If $v$ lies on at most one route, at most one pair is bad. So
+$\sigma_P(Y)\le|\delta_{G-v}(Y)|+1\le|\delta_{G^v}(Y)|+1$.
+
+Let $v$ be busy. To each bad pair $p$ that is not the bad end we assign a \emph{token} $\tau_p$ from
+$(\delta_{G-v}(Y)\setminus J)\cup(Y\setminus N(v))$, using the guard of its passage $(x,y)$:
+\begin{itemize}
+\item bypass $u$: take $\tau_p=xu$ if $u\notin Y$, and $\tau_p=yu$ if $u\in Y$;
+\item private neighbours: take $\tau_p=xw_x$ if $w_x\notin Y$, and $\tau_p=w_x$ (a vertex of
+$Y\setminus N(v)$) if $w_x\in Y$.
+\end{itemize}
+In each case the edge token lies in $\delta_{G-v}(Y)$ and not in $J$, since $u,w_x\ne v$.
+
+We claim that tokens are distinct. Vertex tokens are distinct by hypothesis, and they are never
+edges. Suppose an edge token $\tau_p=z_ph_p$ equals $\tau_{p'}=z_{p'}h_{p'}$ for $p\neq p'$. Here
+$z_p\in\{x,y\}$ is the end of the passage of $p$ and $h_p$ is its bypass or private neighbour. We
+cannot have $z_p=z_{p'}$, because then the edge $vz_p$ would lie on both routes. Hence $z_p=h_{p'}$
+and $z_{p'}=h_p$. Now $z_{p'}\in N(v)$, so $h_p$ is not a private neighbour. So $h_p$ is a bypass,
+and it is an end of the passage of $p'$ at $v$, which the definition forbids.
+
+Therefore
+$\sigma_P(Y)\le|\delta_{G-v}(Y)\cap J|+|\delta_{G-v}(Y)\setminus J|+|Y\setminus N(v)|+1
+=|\delta_{G^v}(Y)|+1$.
+\end{proof}
+
+\begin{corollary}\label{cor:linkage}
+PS (hence CS) holds for $G$ in each of the following cases.
+\begin{enumerate}
+\item $G$ has a path, not necessarily spanning, through all even vertices. Pair consecutive even
+vertices along it. In particular, this covers every graph with a Hamiltonian path.
+\item More generally, $G$ has vertex-disjoint paths covering $\Ev$, each containing an even number of
+even vertices.
+\item $G[\Ev]$ has a perfect matching. When $\Ev=V$, a linkage of $\Ev$ is exactly a perfect matching
+of $G$.
+\item $G$ is a cone, by Theorem~\ref{thm:cone}, or by Theorem~\ref{thm:guarded} with the apex as a
+bypass of every passage.
+\item $G=K_{2,m}$ with $m$ even. This has no linkage for $m\ge 4$. Let $p,q$ be the hubs and
+$\ell_1,\dots,\ell_m$ the leaves. Pair $\{p,\ell_1\}$ and $\{q,\ell_2\}$ by edges, and pair
+$\{\ell_{2i-1},\ell_{2i}\}$ ($i\ge 2$) through $p$. The only busy vertex is $p$, and $q$ bypasses each
+of its passages.
+\end{enumerate}
+\end{corollary}
+
+\begin{theorem}[computer-checked]\label{thm:small}
+Every connected graph of order at most $8$ with $e\ge 2$ has a Hamiltonian path, a linkage of $\Ev$,
+or a guarded route system. Hence, by Theorem~\ref{thm:guarded}, PS and CS hold for every connected
+graph of order at most eight, by an argument that never uses realisability. The same holds for all
+trees of order at most $12$, for $K_{2,m}$ ($m\le 10$ even), and for every graph in the order-$10$ and
+order-$12$ samples described in Section~\ref{sec:evidence}.
+\end{theorem}
+
+The certificate counts are in Table~\ref{tab:cert}. At order $8$, $9{,}848$ graphs have a Hamiltonian
+path, $996$ more have a linkage, and the remaining $49$ have guarded route systems. Those $49$ are
+sparse graphs in which many routes must pass through one or two hubs, such as $K_{2,m}$-like graphs
+(Corollary~\ref{cor:linkage}(5)) and spiders.
+
+\begin{conjecture}[guarded routes]\label{conj:gr}
+Every connected graph of even order has a guarded route system pairing its even vertices.
+\end{conjecture}
+
+Conjecture~\ref{conj:gr} implies PS, hence CS. Together with EMM, it would imply Gallai's
+conjecture.
+
+\subsection{Remarks on the general case}
+\begin{enumerate}
+\item \emph{The apex network.} One natural auxiliary network is an apex joined to the vertices with
+positive slack $s(v)=2k-d(v)-b(v)$. Lemma~\ref{lem:signed} carries this out exactly, but separately
+for each $v$. In $G^v$ the vertex $v$ is an apex joined to its $n-1-d(v)=s(v)+b(v)-1$
+non-neighbours, and Gale's theorem decides the conditions at $v$. A single global network cannot
+work. The conditions at different vertices define different matroids
+(Proposition~\ref{prop:pervertex}), and their intersection is not a matroid in general.
+\item \emph{Simultaneity is the difficulty.} The half-integral point $b\equiv 1$ satisfies every
+condition. CS asks for a simultaneous parity rounding of $n$ cut systems. A route system is a single
+global object, and the guards make it valid at each vertex. The parity of Lemma~\ref{lem:parity}
+absorbs one unit of excess per vertex for free. That is why linkages need no guards, and why a cone
+needs only its apex.
+\item \emph{Towards Conjecture~\ref{conj:gr}.} Linkages fail only when many routes must pass through
+a few hubs. The guards then use free edges at the other hubs (bypasses) or pendant structure (private
+neighbours, as in trees). A proof might take a $T$-join minimising the number of busy vertices, and
+show that an unguarded passage allows an exchange that lowers this number.
+\end{enumerate}
+
+\section{The dictionary}\label{sec:dictionary}
+
+In each item below, the first sentence gives the source statement, as extracted from the PDFs. The
+rest is our reading in terms of~\eqref{eq:one}.
+
+\begin{enumerate}
+\item \textbf{SP Theorem 14.1 (dense case: cuts never bind).} For $\varepsilon>0$ and $r$, and $n$
+large: if $\delta(G)\ge(1/2+\varepsilon)n$ and $b\le r$ has $b(V)=2k$, then $b$ is realised by $k$
+paths if and only if the local conditions hold. The following proposition shows that in this range
+inequality~\eqref{eq:one} is implied by the local conditions. So SP 14.1 is EMM in the dense range,
+for all bounded profiles, not only simple ones.
+
+\begin{proposition}\label{prop:dense}
+If $b\le r$ satisfies the local conditions and $\delta(G)\ge(n+r-1)/2$, then (c) holds at every
+vertex. In particular, if $\delta(G)\ge(n+1)/2$, every half-set is cut-feasible.
+\end{proposition}
+
+\begin{proof}
+Let $Y\subseteq V-v$. If $|Y|\le\delta-1$, each $y\in Y$ has at least $d(y)-1-(|Y|-1)\ge 1$
+neighbours in $V-Y-v$. So $|\delta_{G-v}(Y)|\ge|Y|\ge e(v,Y)$. If $|Y|\ge\delta$, put $Z=V-v-Y$, so
+$|Z|\le n-1-\delta$. Then (c) is equivalent to
+$b(Z)-|\delta_{G-v}(Z)|\le 2k-d(v)-b(v)+e(v,Z)$, whose right side is non-negative. Each $z\in Z$ has
+at least $\delta-|Z|\ge 2\delta-n+1\ge r$ neighbours in $V-Z-v$, so $|\delta_{G-v}(Z)|\ge r|Z|\ge
+b(Z)$.
+\end{proof}
+
+SP's sharpness example consists of two cliques of order $2h+1$ joined by one edge, so $\delta=n/2-1$.
+It puts one end at each end of the bridge, two at the other vertices of one clique, and none at the
+other vertices of the second clique $B$. This violates~\eqref{eq:one} at every unmarked vertex $v$ of $B$. In arm form, take $Y=B-v$: then
+$e(v,Y)=2h$ exceeds $b(Y)+|\delta_{G-v}(Y)|=1+1$ once $h\ge2$. So the two regimes are separated exactly
+by the cut inequality.
+
+\item \textbf{ED Proposition 45 and Theorem 46 (necessity and sharpness).} Proposition 45: if $G$ is
+$\kappa$-connected with $\kappa\ge2$ and at most $2\kappa$ even vertices, then every choice of marks
+meets every inequality~\eqref{eq:one}. So EMM predicts that \emph{every} half-set of such a graph is
+realisable (track C3). Theorem 46: for $s\ge1$, there are graphs of connectivity $s+1$ and large
+minimum degree with $2h$ even vertices in which prescribing two ends at $h$ specified even vertices
+costs $F\ge k+(h-s)/2$ paths. The lower bound is \eqref{eq:one} with $k+j$ paths in place of $k$, at
+$W=$ one shore and $v=$ the apex. EMM thus refines Theorem 46: \eqref{eq:one} is the only reason
+such a prescription fails at $k$ paths.
+
+\item \textbf{TVS Theorems 1 and 7 (exact gluing at a 2-separator $\{u,v\}$).} Every attainable global
+endpoint vector arises from two local records, three-piece joins $i,j$, and a matching of residual
+path types in a $5\times5$ table. The pole counts are $b_A(z)+b_B(z)-2(i+j+m_z)$. The only global
+ingredient is the matching number, which the paper computes by its K\"onig dual
+$\min_I(\sum_{i\notin I}a_i+\sum_{j\in N(I)}b_j)$, a min-cut. Under EMM, the outcome of this gluing on half-sets must agree with~\eqref{eq:one}. We have
+no derivation of one from the other. Deriving the inequalities~\eqref{eq:one} that see the separation
+($W$ a shore, possibly with a pole, or $v$ a pole) from TVS's K\"onig minimum is a consistency target
+for track C3 (2-separator gluing).
+
+\item \textbf{RE Theorem 13.1 (simultaneous rotation criterion).} Fix a partition $P$, a vertex $z$
+and a set $A$ of non-neighbours of $z$. Spokes $zi$ ($i\in I$) can be restored by Fan's rotations and
+appends if and only if a bipartite graph between $A$ and the rows omitting $z$ has a matching covering
+$I$. This is Hall's condition, and it is the arm condition (d) at $z$, restricted to the arms that
+rotations can build from the fixed partition $P$. Each new spoke needs its own arm to a row end not
+at $z$, and the trees $T_i$ are the reachable arm ends.
+
+\item \textbf{MR Corollary 39 (vertex insertion).} A new vertex $x$ is joined to $d$ ends of an
+$s$-path partition. Let $r$ be the largest number of these sites that can be assigned to distinct old
+paths ending there, and put $q=d-r$. Then $s+\lceil q/7\rceil$ paths suffice, with at least
+$d-2q+2\lceil q/7\rceil$ ends at $x$. The denominator becomes $8$ by the remark after MR Theorem 175.
+Here $q$ is the Hall deficiency of the trivial arm system at $x$ (arms of length $0$ into old ends).
+Corollary 39 therefore says that a deficiency of $q$ in the arm condition at the inserted vertex,
+relative to the old partition, costs at most $\lceil q/7\rceil$ extra paths.
+
+\item \textbf{JM-repair Proposition 6.4 (Hoffman cuts).} The two-vertex extension step (Theorem~B) is
+reduced to an admissible record. That in turn is reduced, through Hoffman's circulation
+theorem~\cite{Hof60}, to two families of cut inequalities (UH), (LH) indexed by $B\subseteq V$. This is
+the archive's one existing exact min-max for an endpoint-slot problem, and it has the same shape as
+EMM: slots at vertices must be matched to colours, and feasibility is decided by cuts. EMM asks for
+the analogous statement with paths in place of colour classes, and with the cut function of $G$ in
+place of $\psi_i$.
+
+\item \textbf{This project.} The hub, flower and last-edge results of ES \S7 have the same
+supply-versus-cut shape at a single vertex. They compare the ends available near a vertex with the
+edges that must leave a small set around it. Writing each of them out as an explicit instance of (c)
+is left to track C4.
+\end{enumerate}
+
+\section{Evidence}\label{sec:evidence}
+
+All numbers are produced by the scripts in \texttt{scripts/}. They use the exact realisability oracle
+\texttt{tools/realis.c} and the cut-feasibility enumerator \texttt{tools/cutfeas.c}, which is
+cross-checked against \texttt{tools/cut\_test.py} at order six. The order-$10$ sample consists of $250$
+connected graphs $G(10,p)$, $p\in\{.3,\dots,.8\}$, with seed $20261127$. The bottleneck families are
+cliques joined by $1$--$3$ edges, theta graphs, cones over unions of paths, the eight-vertex example of
+ED \S12.4, and 2-sums of small dense graphs. They have orders $6$--$10$, $82$ graphs after isomorphism
+reduction.
+
+\begin{table}[h]
+\caption{EMM (\texttt{scripts/evidence.py}). ``Unsound'' counts realisable half-sets that violate
+\eqref{eq:one}. It must be $0$.}\label{tab:emm}
+\begin{tabular}{lrrrr}
+\toprule
+Graphs & count & half-sets (non-realisable) & EMM failures & unsound\\
+\midrule
+all connected, order 6 & 99 & 518 (18) & 0 & 0\\
+all connected, order 8 & 10{,}893 & 101{,}714 (2{,}100) & 0 & 0\\
+random, order 10 & 250 & 4{,}222 (8) & 0 & 0\\
+bottleneck families, orders 6--10 & 82 & 1{,}568 (208) & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{CS and PS by enumeration (\texttt{scripts/cut\_selection.py}). At order $6$ the script also
+checks Lemma~\ref{lem:forms}(c) and Lemma~\ref{lem:pairing} against the enumeration on every half-set
+and pairing.}\label{tab:cs}
+\begin{tabular}{lrrrr}
+\toprule
+Graphs & count & CS failures & PS failures & a good pairing of edges of $G$\\
+\midrule
+all connected, order 6 & 99 & 0 & 0 & 63\\
+all connected, order 8 & 10{,}893 & 0 & 0 & 6{,}773\\
+random, order 10 & 250 & 0 & 0 & 181\\
+bottleneck families & 82 & 0 & 0 & 35\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Certificates for Theorem~\ref{thm:guarded} (\texttt{scripts/certificates.py}).}\label{tab:cert}
+\begin{tabular}{lrrrrr}
+\toprule
+Graphs & count & Hamiltonian path & other linkage & guarded routes & none\\
+\midrule
+all connected, order 6 & 99 & 82 & 16 & 1 & 0\\
+all connected, order 8 & 10{,}893 & 9{,}848 & 996 & 49 & 0\\
+random, order 10 & 250 & 236 & 14 & 0 & 0\\
+bottleneck families & 82 & 69 & 13 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The certificate search was also run outside the scripts' fixed families. It found certificates for
+all trees of orders $8$, $10$ and $12$: $20$, $99$ and $538$ trees with $e\ge 2$, of which $1$, $8$ and
+$62$ need guards. It also found them for $300$ sparse random graphs ($p\in[.15,.3]$) of each of the
+orders $10$ and $12$, and for $K_{2,m}$ and $K_{2,m}$ plus the hub edge, $m=6,8,10$.
+
+Every certified pairing in Table~\ref{tab:cert} and every tree is also checked against the enumeration
+of \texttt{tools/cutfeas.c}, and all of them are good. As a direct test of Theorem~\ref{thm:guarded},
+\texttt{certificates.py stress} draws random pairings with random edge-disjoint route systems in $400$
+random graphs of orders $8$ and $10$. All $3{,}310$ guarded systems with a busy vertex and all
+$1{,}691$ linkages give good pairings. Of the $7{,}227$ unguarded systems, $7{,}079$ still give good
+pairings. So the guards are far from necessary, which leaves room for Conjecture~\ref{conj:gr} and for
+weaker hypotheses.
+
+\begin{table}[h]
+\caption{Caps (\texttt{scripts/caps.py}); order $8$. The columns are: global cap submodular; cap system a
+matroid; $\cF$ a matroid basis family; $\cF=\cF_v$ for one $v$; critical. At order $6$: $98$ of $99$
+families are matroid basis families, and all $34$ critical graphs are.}\label{tab:caps}
+\begin{tabular}{cccccr}
+\toprule
+$f$ submod. & cap matroid & $\cF$ matroid & single $v$ & critical & graphs\\
+\midrule
+no & no & no & no & no & 48\\
+no & no & yes & no & no & 20\\
+no & no & yes & no & yes & 2\\
+no & yes & yes & no & no & 16\\
+no & yes & yes & no & yes & 2\\
+no & yes & yes & yes & no & 954\\
+no & yes & yes & yes & yes & 21\\
+yes & yes & yes & no & yes & 7\\
+yes & yes & yes & yes & no & 8{,}773\\
+yes & yes & yes & yes & yes & 1{,}050\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The script also verifies Proposition~\ref{prop:pervertex} by brute force: every $\cF_v$ is a matroid
+basis family, at orders $6$ and $8$.
+
+\section{Formalisation}
+The Lean side lives in the \texttt{lean-d6-frontier} track: the definition \texttt{CutFeasible}, the
+necessity of~\eqref{eq:one} and \texttt{gallai\_of\_emm\_cs}. The shared definitions are fixed in
+\texttt{research/connections.md}~\S U. We recommend the arm form (c) as the definition, since its
+quantifiers are the simplest, with (a) proved equivalent.
+Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing} and Theorem~\ref{thm:guarded} are finite and
+elementary, and they are good targets.
+
+\section{Open problems}
+\begin{enumerate}
+\item EMM (Conjecture~\ref{conj:emm}): sufficiency.
+\item Conjecture~\ref{conj:gr} (guarded routes), or directly PS or CS.
+\item Question~\ref{q:emc}: why EMM's family is a matroid for critical graphs.
+\item (R)$\Rightarrow$(R$_s$) (Remark~\ref{rem:converse}): can a partition with an end at $r$ always be
+made simple?
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Edm70} J.~Edmonds, Submodular functions, matroids, and certain polyhedra, in: Combinatorial
+Structures and their Applications (Calgary, 1969), Gordon and Breach, 1970, 69--87.
+\bibitem{Gale57} D.~Gale, A theorem on flows in networks, Pacific J.\ Math.\ 7 (1957) 1073--1082.
+\bibitem{Hof60} A.~J.~Hoffman, Some recent applications of the theory of linear inequalities to extremal
+combinatorial analysis, Proc.\ Sympos.\ Appl.\ Math.\ 10 (1960) 113--127.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, 1968, 231--236.
+\end{thebibliography}
+\end{document}

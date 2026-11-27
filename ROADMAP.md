@@ -27,8 +27,8 @@ This is the single source of truth for the proof architecture. Every node is a s
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
 **Main line: the endpoint min-max programme (EMM).** Conjecture: a half-set of even vertices is realisable in n/2 paths iff it satisfies the cut inequality of even-degrees §12.4 for every vertex v and every W ⊆ V − v. It is **exact on every connected graph of order ≤ 8 and on n = 10 samples** (2,368 non-realisable half-sets, all cut-excluded). Gallai ⇐ EMM + **CS (cut selection)**, where CS is a pure cut/flow statement that the T-join lemma already settles for cones. Tracks:
-- C1: manuscript and Lean framework;
-- C2: prove CS;
+- C1: manuscript and Lean framework. **Draft done**: `manuscripts/endpoint-min-max/` (10 pp.; scripts reproduce the evidence table). EMM has four equivalent forms, the most useful being the **arm form** e(v,Y) ≤ b(Y) + |δ_{G−v}(Y)|. **EMM does not formally imply EMC**: each vertex's inequalities define a matroid (Prop. 11 there), but the global cap is not submodular (1,063 graphs at n = 8). EMC holds for all 1,082 critical graphs at n = 8 anyway;
+- C2: prove CS. **CS is proved for cones** (exact: cut-feasible ⇔ marked/unmarked pairing by edge-disjoint paths of G − apex), **for graphs with a linkage of Ev** (e.g. a Hamiltonian path), and via the **guarded route lemma**. Computer certificates of that lemma give the stronger **PS (pairing selection)** for **every connected graph of order ≤ 8, without using realisability**. The open general form is Conjecture GR (guarded routes ⇒ PS ⇒ CS). Lean definitions: connections §U;
 - C3: EMM in classes (e ≤ 4, cones, κ-connected with e ≤ 2κ, 2-separator gluing, dense);
 - C4: EMM sufficiency through tight cuts.
 
@@ -219,6 +219,13 @@ Candidate uniform mechanisms (`research/connections.md`):
 | Q6 | **Two-even-vertex Lovász problem** (connections §O, §P): when does a graph with exactly two even vertices meet the parity bound |odd|/2? **Mostly done** (§P): exact dictionary with G^{Ev−{u,v}}; Fan descent; second step except twins; pair step; goal (b) except K_3 + r. Open: the two residual configurations of §P.4, and deeper FD steps with the Fan calculus | equivalent to the second faithful-descent step |
 
 ## Log
+
+- 2026-11-27 (cloud, `claude/emc-four-even`, tracks C1/C2): `manuscripts/endpoint-min-max/`, with scripts `scripts/{evidence,cut_selection,certificates,caps}.py` and tools `cutfeas.c`, `capsub.c`.
+  - EMM evidence re-run reproducibly: n = 6, 8 exhaustive (as in synthesis §6); n = 10 random seed 20261127, 250 graphs; 82 bottleneck graphs. 0 failures, 0 unsound.
+  - Forms: (1) ⇔ demand ⇔ arm ⇔ arm-system (max-flow). For half-sets it is a cut condition in G^v (star at v complemented), with exact parity.
+  - Cones: CS and the exact pairing criterion. Guarded route lemma ⇒ PS. Certified at every n ≤ 8, all trees ≤ 12, and samples.
+  - Caps: per-vertex matroids; f not submodular; EMM ⇏ EMC formally; 4 critical n = 8 graphs are explained by neither single-vertex dominance nor submodular caps.
+  - Caveat: "Gallai + EMM ⇒ CS" needs (R) ⇒ (R_s) (simple profiles; ES Cor. 6). It is not formal.
 
 - 2026-11-26: collection pushed; orientation `STATUS.md`; tools built.
 - FD and EMC hold on all critical graphs with n ≤ 6.
