@@ -861,13 +861,15 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 
 **(A) STL on all connected graphs of odd order ≤ 9 with exactly one even vertex** (`gen_one_even.py`, then `stl_run.py`). There are 7, 130 and 11,936 graphs at n = 5, 7, 9, built from `data/conn{n-1}.g6` with isomorphism rejection.
 
-| n | graphs | pairs (J,r) | STL fails | BAL fails | Test1 fails | ST fails |
+| n | graphs | pairs (J,r) | STL fails | BAL fails | Test1 fails among these | ST fails |
 |---|---|---|---|---|---|---|
 | ≤ 7 | 138 | 464 | 10 | 10 | 10 | 1 |
 | 9 | 11,936 | 48,850 | 48 | 48 | 48 | 2 |
 
-- Every failure has J − z disconnected, and Test1 fails at the same pairs. So on all graphs of order ≤ 9, **STL(r) ⇔ BAL(r) ⇔ Test1(r)**.
-- With J − z connected (10,996 graphs, 54,336 pairs), STL never fails.
+- Test1 was evaluated only at STL failures. Every failure has J − z disconnected, and Test1 fails at each of them. With the criterion theorem, on all graphs of order ≤ 9 and at every r with d(r) ≥ 3: **STL(r) ⇔ BAL(r) ⇔ Test1(r)**.
+- The equivalence fails at d(r) = 1. There STL can hold through an SS path while r is isolated in J − z; the audit counted 1,192 such pairs, e.g. the spider r–z–a–{b,c}.
+- Most pairs with J − z disconnected satisfy both STL and Test1. At n = 7, 76 of the 83 such pairs with d(r) ≥ 3 do.
+- With J − z connected (10,996 graphs, 44,336 pairs), STL never fails. The earlier figure 54,336 was an arithmetic slip, found by audit A20.
 - 3-connected graphs at n = 9: 5,231 graphs, 25,210 pairs, 0 failures (4,699 of the graphs have J − z ∈ C).
 
 **(B) STL2 (Test2 analogue) on all connected graphs of even order ≤ 8** (`stl2_run.py`).
@@ -899,7 +901,7 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 - Wheels W₄ … W₁₈.
 - J = H + universal z, with H random 4-regular of order 10, 12, 14, 16 (102 graphs, 1,232 pairs; J − z Eulerian, d(z) up to 16).
 - Random non-3-connected J with J − z connected, n = 11 and 13 (250 graphs, 780 pairs).
-- Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9.
+- Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9. At n = 13 (200 graphs, 1,087 pairs): STL holds at 1,080, fails at 3 (Test1 fails at all 3), and 4 remain undecided after budgets up to 2·10⁹ nodes; an exact run, `resolve_fam.py`, is in progress.
 
 **(F) Composition: two terminal edges at once** (`ptm_run.py`). Setup: a random connected all-odd graph G of order n and a random matching F of m edges. By the pairing proposition, PTM(G, F) is STL-P(J, F) for J = (G − F) + z(V(F)).
 - PTM(G, F): some Lovász decomposition of G has every F-edge terminal *at some end* and no path with two F-edges.

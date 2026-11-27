@@ -189,9 +189,11 @@ def stl2_file(fn, limit=None, only3c=True, seed=None):
             cnt['t2_fail'] += (not t)
             if not s or not t:
                 print('  ', l.decode(), z, r, 'STL2', s, 'T2', t)
+        if int(__import__('os').environ.get('PROGRESS', '0')):
+            print('  graph', cnt['graphs'], l.decode(), json.dumps(cnt), flush=True)
         if limit and cnt['graphs'] >= limit:
             break
-    print(json.dumps(cnt))
+    print(json.dumps(cnt), flush=True)
 
 
 if __name__ == '__main__':

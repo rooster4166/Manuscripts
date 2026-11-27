@@ -1,0 +1,15 @@
+RFAIL G?`vfc 0-4 1-5 2-6 3-7 end=0 GFconn=0
+RFAIL G?`vfc 0-4 1-5 2-7 3-6 end=0 GFconn=0
+RFAIL G?`vfc 0-4 1-6 2-5 3-7 end=0 GFconn=0
+RFAIL G?`vfc 0-4 1-6 2-7 3-5 end=0 GFconn=0
+RFAIL G?`vfc 0-4 1-7 2-5 3-6 end=0 GFconn=0
+RFAIL G?`vfc 0-4 1-7 2-6 3-5 end=0 GFconn=0
+RFAIL G?otTG 0-7 1-4 2-6 3-5 end=4 GFconn=0
+RFAIL G?otTG 0-7 1-4 2-6 3-5 end=5 GFconn=0
+RFAIL G?qjf? 0-7 1-4 2-5 3-6 end=6 GFconn=0
+RFAIL GCQuQo 0-6 1-4 2-5 3-7 end=5 GFconn=0
+RFAIL GCQvRs 0-6 1-4 2-5 3-7 end=0 GFconn=0
+RFAIL GCQvRs 0-6 1-4 2-5 3-7 end=2 GFconn=0
+RFAIL GCQvRs 0-6 1-4 2-5 3-7 end=3 GFconn=0
+RFAIL GCpdbw 0-4 1-5 2-6 3-7 end=3 GFconn=0
+SUMMARY inst=1955 ptm_fail=0 ptm_und=0 par_inst=0 par_fail=0 r_tests=15640 r_fail=14 r_und=0 pee_tests=31280 pee_fail=2787 verified=35214 badwit=0

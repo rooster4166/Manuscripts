@@ -1,0 +1,5 @@
+scripts/ptm
+scripts/walk
+scripts/out/odd10*.g6
+scripts/out/pairs_*.txt
+scripts/out/odd10_part*

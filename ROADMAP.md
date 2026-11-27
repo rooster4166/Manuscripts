@@ -60,13 +60,18 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`, new): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
+- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`, new): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
 - **multi-sep**: **finished** (04207b3). MSEP is open, with 36M+ cubic pairings and 0 failures. EE3 is proved in Lean. Audit A18 is sound.
 - (original entry) **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
 - **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
-- **stl** (session_01FxXpVdsDUXK6XVuG52iCDL, branch `claude/stl`, new): star-terminal Lovász decompositions ⇒ spine Test1 (synthesis §19). It looks for a Test2 analogue, runs exhaustive tests, and attempts a proof via Lovász's induction at the even vertex.
+- **stl** (session_01FxXpVdsDUXK6XVuG52iCDL): **finished** (ac34940).
+  - **Lean:** `gallai_of_stl` (STL + STL2 on 3-connected J ⇒ Gallai), `stl_deg_two` (STL at every degree-2 z).
+  - **Data:** STL never fails with J − z connected (all 44,336 pairs to n = 9, and samples to n = 17). STL-P holds on 54,213 pairings; its only failure is W₄ with the diagonal pairing.
+  - **Audit A20:** sound, and its fixes are applied.
+  - **Open, in order:** PTM₂ (free-end, two edges) ⇒ STL-P at d(z) = 4; Test1 ⇒ STL; STL-P on 3-connected J ≠ W₄.
 - **Queued, not assigned:** Lean for MR Thms 38/175 and Cor 39 (flowers). This is a banking task, not on the critical path.
 - **Finished:** two-even, spine (113/114), missing-move, bs-prescribed, jm-repair, six-clique, lean-d6-frontier.
 
@@ -473,3 +478,14 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `pee_adjEven`: PEE at xy for y ∈ N(z) with ≤ 1 common neighbour besides z, by a general mechanism (delete zy, apply EE at y, restore by Fan).
   - **Remaining for EE:** |N(u) ∩ N(z)| ≥ 2. It reduces to "in K − triangle(uzw), the path ending at w avoids u and z", which held on 88,356 triples at n = 9 and 44,892 random ones at n = 11–17.
   - EE has 0 failures exhaustively to n = 9 and about 13M tests at n = 11.
+- **ptm, first verdict (08:05).**
+  - **PTM_2 is false only at K4** with a perfect matching F (= W₄ with the diagonal pairing; F is simple).
+    - Exhaustive to n = 8 (13,240 instances), with G − F allowed to be disconnected: K4 is the only failure.
+    - PTM_3 and PTM(r) fail only when G − F is disconnected.
+    - Multigraph PTM fails only when G − F has a cut vertex, which a 3-connected J excludes.
+  - **Proposed statement:** PTM_m for G − F connected, with the K4 exception at m = 2; for STL, the multigraph form with G − F 2-connected.
+  - **Proof route** (leafify e1, walk the even vertex along a shortest e1–e2 path, restore by Fan in the two-leaf graph, two leaf merges) gives **PTM_2 and PTM_2(r) on all connected all-odd graphs of girth ≥ 5**. Write-up and Lean are in progress.
+- **PTM_2 at girth ≥ 5, in Lean (ptm d5d4db2; standard axioms, verified).** `ptm2_girth5`: let G be connected and all-odd with no triangle and no 4-cycle, and let ab, cd be disjoint edges. Then some Lovász decomposition has ab terminal at the PRESCRIBED end a and cd terminal at an end of cd, on different paths.
+  - The engine is `ptm2_of_base` (the walk theorem): leafify, then walk back by iterated Fan with vertex sets, then two leaf merges.
+  - The base hypothesis held in 12,193 of 13,025 2-matchings at n = 8, so the reduction is strong beyond girth 5.
+  - **Next:** the STL lift (PTM_2 ⇒ STL-P / Test1 at d(z) = 4), the manuscript, and audit A22.

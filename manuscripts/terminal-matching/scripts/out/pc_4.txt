@@ -1,0 +1,2 @@
+PTMFAIL C] 0-1 2-3 GFconn=1
+SUMMARY inst=6 ptm_fail=1 ptm_und=0 par_inst=4 par_fail=0 r_tests=14 r_fail=0 r_und=0 pee_tests=14 pee_fail=4 verified=20 badwit=0

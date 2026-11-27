@@ -11,3 +11,24 @@
   graph 11 HsPjvW} c3 True ST True pairs so far 56 STL fails 0 undecided 8
   graph 12 HsPJ]}~ c3 True ST True pairs so far 62 STL fails 0 undecided 8
   graph 13 Hs`_I}} c3 True ST True pairs so far 68 STL fails 0 undecided 8
+  graph 14 HsZRR]~ c3 True ST True pairs so far 74 STL fails 0 undecided 8
+  graph 15 HsObrXu c3 True ST True pairs so far 78 STL fails 0 undecided 8
+  graph 16 HsOpj|~ c3 True ST True pairs so far 82 STL fails 0 undecided 8
+  graph 17 HsOeuX~ c3 True ST True pairs so far 86 STL fails 0 undecided 8
+  graph 18 HsOtbv} c3 True ST True pairs so far 90 STL fails 0 undecided 8
+  graph 19 HsOtvg} c3 True ST True pairs so far 94 STL fails 0 undecided 8
+  graph 20 Hs`FBx{ c3 True ST True pairs so far 98 STL fails 0 undecided 8
+  graph 21 HsbbevY c3 True ST True pairs so far 102 STL fails 0 undecided 8
+  graph 22 HsOtjrz c3 True ST True pairs so far 106 STL fails 0 undecided 8
+  graph 23 HsOvRrf c3 True ST True pairs so far 112 STL fails 0 undecided 8
+  graph 24 HsOuVVU c3 True ST True pairs so far 118 STL fails 0 undecided 8
+  graph 25 HsOefZ[ c3 True ST True pairs so far 124 STL fails 0 undecided 8
+{"graphs": 25, "pairs": 124, "stl_fail": 0, "bal_fail": 0, "t1_fail": 0, "st_fail": 0, "stl_true_t1_false": 0, "stl_neq_t1_dr3": 0, "jz_conn_fail": 0, "jz_conn_pairs": 116, "undecided": 8}
+   {"g6": "Hs`vfz~", "z": 8, "r": 0, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 1, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 2, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 3, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 4, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 5, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 6, "undecided": [true, null, true]}
+   {"g6": "Hs`vfz~", "z": 8, "r": 7, "undecided": [true, null, true]}

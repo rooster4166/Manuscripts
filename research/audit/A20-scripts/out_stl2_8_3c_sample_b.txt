@@ -1,0 +1,21 @@
+  graph 1 GsRJ~w {"graphs": 1, "inst": 2, "stl2_fail": 0, "t2_fail": 0, "beta0": 2}
+  graph 2 Gqil~{ {"graphs": 2, "inst": 4, "stl2_fail": 0, "t2_fail": 0, "beta0": 2}
+  graph 3 GsOt]{ {"graphs": 3, "inst": 6, "stl2_fail": 0, "t2_fail": 0, "beta0": 4}
+  graph 4 Gsbep{ {"graphs": 4, "inst": 8, "stl2_fail": 0, "t2_fail": 0, "beta0": 6}
+  graph 5 GsPep{ {"graphs": 5, "inst": 10, "stl2_fail": 0, "t2_fail": 0, "beta0": 8}
+  graph 6 GsOmvk {"graphs": 6, "inst": 12, "stl2_fail": 0, "t2_fail": 0, "beta0": 10}
+  graph 7 Gsbet{ {"graphs": 7, "inst": 14, "stl2_fail": 0, "t2_fail": 0, "beta0": 10}
+  graph 8 Gqg~\{ {"graphs": 8, "inst": 16, "stl2_fail": 0, "t2_fail": 0, "beta0": 12}
+  graph 9 GsZR]w {"graphs": 9, "inst": 18, "stl2_fail": 0, "t2_fail": 0, "beta0": 14}
+  graph 10 Gs^vv{ {"graphs": 10, "inst": 20, "stl2_fail": 0, "t2_fail": 0, "beta0": 14}
+  graph 11 GsRa~o {"graphs": 11, "inst": 22, "stl2_fail": 0, "t2_fail": 0, "beta0": 16}
+  graph 12 GsQkzw {"graphs": 12, "inst": 24, "stl2_fail": 0, "t2_fail": 0, "beta0": 18}
+  graph 13 GsZUj{ {"graphs": 13, "inst": 26, "stl2_fail": 0, "t2_fail": 0, "beta0": 20}
+  graph 14 GsOk~{ {"graphs": 14, "inst": 28, "stl2_fail": 0, "t2_fail": 0, "beta0": 20}
+  graph 15 GqJrv[ {"graphs": 15, "inst": 30, "stl2_fail": 0, "t2_fail": 0, "beta0": 22}
+  graph 16 GqjRn[ {"graphs": 16, "inst": 32, "stl2_fail": 0, "t2_fail": 0, "beta0": 24}
+  graph 17 Gspmr{ {"graphs": 17, "inst": 34, "stl2_fail": 0, "t2_fail": 0, "beta0": 26}
+  graph 18 Gs`czw {"graphs": 18, "inst": 36, "stl2_fail": 0, "t2_fail": 0, "beta0": 28}
+  graph 19 GsPne{ {"graphs": 19, "inst": 38, "stl2_fail": 0, "t2_fail": 0, "beta0": 30}
+  graph 20 GsRvvW {"graphs": 20, "inst": 40, "stl2_fail": 0, "t2_fail": 0, "beta0": 32}
+{"graphs": 20, "inst": 40, "stl2_fail": 0, "t2_fail": 0, "beta0": 32}
