@@ -1588,6 +1588,11 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **The base conjecture** (Conj 5.1): six end-path conditions at six vertices of a nearly complete K6, in a graph with one even vertex.
   - It is the dense-regime analogue of L1* (§AA) and of class separation (§W), now with several end-path constraints at once.
   - The single-vertex tools (`lovasz_avoid_set`, `separation_sparse`) need packed or sparse special vertices, the opposite of the dense regime.
+- **Not a conjunction of L1\* instances** (coordinator's question; E28(B″)).
+  - The even vertex of M is x3 ∈ U, adjacent to ≥ 3 other vertices of U. In every labelling of every shape some base condition avoids a neighbour of x3. That is the regime where L1\* is false in general (`DTw`).
+  - Fewest such conditions: C4 {E1, E7}; K3 {E1, E2}; P3 {E2, E4′, E7}; K2 {E1, E2, E4′, E7}; ∅ all of them.
+  - These conditions are binding. Of 1,920 C4 bases satisfying only the admissible conditions, E1 holds in 186 and E7 in 1,042.
+  - So no constraint-by-constraint reduction to L1\* / TR + ST exists. The base conjecture is a joint statement in the tight-Fan regime: for C4, "the path through the leaf z at y1 avoids x1 ∈ N(x3)", plus E7 or the predecessor condition E6.
 - **For l1-induction (§AC).** (E7) is the T(6)-i face of L1E (a good D whose relevant chain is trivial): the protected step becomes an append exactly when the path ending at x1 avoids y2. An induction for L1-type end-path constraints with several constrained vertices would attack Conj 5.1 directly.
 - **For the coordinator.**
   - T(6)-i now follows from Conj 5.1, because every failure has a dense shape by the root-shape theorem.

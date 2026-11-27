@@ -1407,6 +1407,18 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - 0 failures of executed constructions.
 - The random sparse graphs of orders 11–17 of E24(J) have no dense core.
 
+**(B″) The base conjecture versus L1\*** (`admissible.py`, `partial.py`).
+- A condition "P_c avoids A" is L1\*-admissible if A misses N_M[c] ∪ N_M(x3).
+- Fewest inadmissible base conditions over all labellings:
+  - C4: E1, E7;
+  - K3: E1, E2;
+  - P3: E2, E4′, E7;
+  - K2: E1, E2, E4′, E7;
+  - ∅: every one of E1–E7 except the avoidance of z.
+  - E4′ is the avoidance strengthening of E4.
+- Residual C4 graphs (|O| = 8, canonical labellings, 3 seeds): 1,920 Lovász decompositions of M were found satisfying only the admissible conditions (E1′, E2, E3, E4, E5). Of these, E1 holds in 186, E7 in 1,042, and both in 120.
+- So the inadmissible conditions are binding, and the base conjecture is a joint statement in the regime A ∩ N(g) ≠ ∅, where single-constraint L1\* is false in general (`DTw`).
+
 **(C) Undecided searches.** Dense residual graphs make many searches hit the budget. On average a root needs 3–25 labellings, depending on shape; ∅ and P3 are the hardest. No search returned NONE (a proved absence of a base) for a labelling that was later needed.
 
 **Verdict.**
