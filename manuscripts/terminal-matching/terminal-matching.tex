@@ -60,7 +60,11 @@ such that no cycle of length at most four of the lifted graph $(J-z)+ab+cd$ pass
 neighbour of $z$, and through it the first deletion test. That test at degree four was already
 known, from Lov\'asz's theorem and Fan's transfers alone; here it is the base case of a
 composition method whose first open case is degree six, with three prescribed transitions.
-All theorems are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
+There every pairing of the neighbourhood has the three-edge property in all computed cases, and a
+chained walk theorem reduces it to a separation problem with one even vertex, which has a
+solution in nearly every random sparse instance and always when the six neighbours are pairwise
+far apart; this gives the first deletion test at degree six for such neighbourhoods whenever two
+suitable walks exist. The theorems up to degree four are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
 standard axioms.
 \end{abstract}
 \maketitle
@@ -148,6 +152,15 @@ reachable from $a$ in it), then $\STL(J,z,r)$ holds for every $r\in N(z)$; if mo
 neighbour of $z$ has degree at least three, the first deletion test holds at $z$. The first test
 at degree four is not new (Remark~\ref{rem:known}); the star-terminal decomposition with
 prescribed transitions is, and so is the route to it.
+\item \emph{Degree six} (Section~\ref{sec:six}). For $3$-connected $J$ with $d(z)=6$, every
+perfect matching of $N(z)$ satisfies $\PTM_3(r)$ in all computed cases (exhaustive at orders $7$
+and $9$, random to order $17$). The \emph{chained walk theorem} (Theorem~\ref{thm:chain}) walks
+the even vertex twice and reduces three terminal edges to a base separation problem with six
+pairs; its hypothesis holds for every $r\in N(z)$ in $999$ of $1000$ random graphs of orders
+$11$--$17$. The base problem is open in general, but automatic when the six neighbours of $z$ are
+pairwise at distance at least $3$ in $J-z$ (Proposition~\ref{prop:far}): then the first deletion
+test at $z$, the open case T(6)-i, holds as soon as suitable chains exist
+(Corollary~\ref{cor:six}; paper proof, not yet formalised).
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
 \texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
 connected to \texttt{test1\_of\_stl}.
@@ -515,6 +528,210 @@ $N(z)$ into the pairing-prescribed STL with three transitions, hence the first t
 six, which is the open case T(6)-i of the spine~\cite{SP}. Nothing at degree six is proved here.
 \end{remark}
 
+\section{Degree six: three transitions}\label{sec:six}
+
+At $d(z)=6$ the first deletion test is open (T(6)-i). By the lift of Section~\ref{sec:stl} applied
+three times, a Lov\'asz decomposition of $G=(J-z)+F$, with $F$ a perfect matching of $N(z)$, in
+which every edge of $F$ is terminal and no path has two of them, un-lifts to a star-terminal
+decomposition of $J$ with transitions $F$; an edge $rs\in F$ terminal at $s$ puts $r$ on a long
+side. So $\STL(J,z,r)$ holds as soon as $\PTM(G,F;rs@s)$ holds for one $F$ containing a pair
+$rs$, and the first test at degree six follows from these for all $r\in N(z)$ by
+\texttt{test1\_of\_stl}. This section gives the data and the reduction for this case; the base
+problem it leads to is not solved.
+
+\subsection*{Data}
+All $3$-connected graphs $J$ of order $7$ and $9$ in which $z$ is the only even vertex and
+$d(z)=6$ (\texttt{gen\_d6.py}, from \texttt{geng -c -d3}: $7$ and $1{,}819$ graphs), with all
+$15$ perfect matchings $F$ of $N(z)$, including those with pairs adjacent in $J-z$ (multigraph
+$G$): $105$ and $27{,}285$ instances, of which $95$ and $24{,}328$ have such a pair. $\PTM_3$ and
+$\PTM(G,F;e@x)$ for all six choices of $e@x$ hold in every instance ($0$ failures in $630$ and
+$163{,}710$ tests). Prescribing all three short ends fails in $1{,}156$ of $218{,}280$ tests at
+order $9$, so one prescribed end is the right strength. Random $3$-connected $J$ with degrees
+$6,3,\dots$ (the other degrees $3$ or $5$, configuration model, simple graphs kept): orders $11$,
+$13$ ($200$ graphs each, $3000$ instances), $15$ and $17$ ($300$ graphs each, $4500$ instances,
+node budget $2\cdot10^6$; order $17$ still running): no failure and nothing undecided; see Section~\ref{sec:comp} and
+E24(J). In short: \emph{for $3$-connected $J$ with $d(z)=6$, every pairing of $N(z)$ satisfies
+$\PTM_3(r)$}, the multigraph pairings included.
+
+\subsection*{The chained walk theorem}
+Let $G$ have no vertex of positive even degree and let $x_1y_1,x_2y_2,x_3y_3$ be a matching of
+$G$; we aim at $x_iy_i$ terminal at $x_i$ for each $i$, on three different paths. The first edge
+is replaced by a leaf, and the even vertex is walked twice: from $y_3$ to $x_2$, and from $y_2$
+to $x_1$.
+
+\begin{definition}\label{def:chain}
+An \emph{admissible chain} is a pair of edge-disjoint paths of $G-\{x_1y_1,x_2y_2,x_3y_3\}$,
+$P_2=q_0\cdots q_s$ from $q_0=y_3$ to $q_s=x_2$ and $P_1=p_0\cdots p_k$ from $p_0=y_2$ to
+$p_k=x_1$ ($s,k\ge1$), such that
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $x_1,y_1,y_2,x_3\notin V(P_2)$, and $q_i\notin N(x_3)$ for $0<i<s$;
+\item $y_1,x_2,x_3\notin V(P_1)$, $y_2\notin N(x_3)$, and $p_i\notin N(x_2)\cup N(x_3)$ for
+$0<i<k$.
+\end{enumerate}
+Its \emph{base graph} is
+$M=\bigl((G-x_1y_1)+\ell_1y_1\bigr)-x_2y_2-x_3y_3-E(P_1)-E(P_2)$, with a new leaf $\ell_1$ at $y_1$.
+\end{definition}
+
+$P_1$ may pass through $y_3$ and through inner vertices of $P_2$. In $M$ the degrees of $x_1$,
+$x_2$, $y_2$, $y_3$ and of the inner vertices of the walks drop by an even number, $y_1$ keeps its
+degree, and $x_3$ loses one; so $x_3$ is the only vertex of $M$ that can have positive even
+degree.
+
+\begin{theorem}[chained walk theorem]\label{thm:chain}
+Let $P_1,P_2$ be an admissible chain with base graph $M$. If $M$ has a Lov\'asz decomposition in
+which no path contains both vertices of any of the six pairs
+\[
+\{x_1,\ell_1\},\ \{x_2,y_2\},\ \{x_3,y_3\},\ \{\ell_1,y_2\},\ \{\ell_1,y_3\},\ \{y_2,y_3\},
+\]
+then $G$ has a Lov\'asz decomposition in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, and
+the three paths are different.
+\end{theorem}
+
+\begin{proof}
+Write $T_2=\{q_0,\dots,q_{s-1}\}$ and $T_1=\{p_0,\dots,p_{k-1}\}$ for the Fan targets of the two
+walks. By Lemmas~\ref{lem:fan} and~\ref{lem:walkback}, after a walk every path has its vertex set
+inside that of a path before it together with targets; a leaf is never a target, so the path
+containing a leaf comes from the path that contained it. Let $\cD_0$ be the given decomposition
+of $M$: $x_3$ has no end and every other non-isolated vertex has one. Let $Q_1$ be its path
+through $\ell_1$.
+
+\emph{Step 1.} Extend the path $Q_3$ of $\cD_0$ ending at $y_3$ by a leaf $\ell_3$
+(Lemma~\ref{lem:leaf}(a)). Now $y_3$ has no end. As $Q_3$ contains $y_3$, it avoids $x_3$,
+$\ell_1$ and $y_2$, so $Q_3\ne Q_1$.
+
+\emph{Step 2.} Walk back along $P_2$ (Lemma~\ref{lem:walkback}) in $M+\ell_3y_3+E(P_2)$. The vertices
+without an end are $x_3$, $y_3=q_0$ and isolated vertices. A vertex isolated in $M$ is $x_3$ or
+isolated in $G$, because every other vertex loses an even number from an odd degree and the
+vertices of the walks keep positive degree; so it is adjacent to no $q_i$. And $x_3$ is adjacent
+to no $q_i$ with
+$i<s$, by~(i) for $i>0$ and because $x_3y_3$ is not an edge of this graph. We get $\cD_2$ with
+$x_2$ endless and $y_3$ with one end. The path through $\ell_3$ lies in
+$V(Q_3)\cup\{\ell_3\}\cup T_2$ and the path through $\ell_1$ in $V(Q_1)\cup T_2$.
+
+\emph{Step 3.} The vertex $y_2$ is not in $T_2$, so it still has one end. Let $Q_2$ be the path of
+$\cD_2$ ending at $y_2$; it lies in $V(Q)\cup T_2$ for a path $Q$ of $\cD_0$ or $Q_3\ell_3$ through
+$y_2$. That is not $Q_3\ell_3$ and not $Q_1$, since $y_2\notin V(Q_3)\cup V(Q_1)\cup T_2$; so $Q$ is a
+path of $\cD_0$ through $y_2$, and avoids $x_2$ and $\ell_1$. Since $x_2\notin T_2$ ($x_2=q_s$),
+$Q_2$ contains none of $x_2$, $\ell_1$, $\ell_3$. Extend $Q_2$ by a leaf $\ell_2$ at $y_2$.
+
+\emph{Step 4.} Walk back along $P_1$ in the three-leaf graph
+\[
+H=(G-x_1y_1-x_2y_2-x_3y_3)+\ell_1y_1+\ell_2y_2+\ell_3y_3.
+\]
+The endless vertices are $x_3$, $x_2$, $y_2=p_0$ and isolated vertices. No $p_i$ with $i<k$ is
+adjacent in $H$ to $x_2$ or $x_3$: for $i=0$ because $x_2y_2\notin E(H)$ and $y_2\notin N(x_3)$,
+for $0<i<k$ by~(ii). The result $\cD_4$ decomposes $H$; $x_1$ has lost its end, $y_2$ has one, and
+the separations hold: the $\ell_3$-path lies in $V(Q_3)\cup\{\ell_3\}\cup T_2\cup T_1$, which avoids
+$x_3$, $\ell_1$ and $\ell_2$ (by~(i),~(ii), the base separations, and because $\ell_2$ was added
+to $Q_2$ only); the $\ell_2$-path lies in $V(Q_2)\cup\{\ell_2\}\cup T_1$, which avoids $x_2$ (as
+$x_2\notin V(P_1)$) and $\ell_1$; and the $\ell_1$-path lies in $V(Q_1)\cup T_2\cup T_1$, which
+avoids $x_1$, since $x_1\notin V(P_2)$ and $x_1=p_k\notin T_1$.
+
+\emph{Step 5.} Merge $\ell_3$ into $x_3$, then $\ell_2$ into $x_2$, then $\ell_1$ into $x_1$
+(Lemma~\ref{lem:leaf}(b), three times: $H$ is a leaf graph of a two-leaf graph, and so on). Each
+merge is allowed because no path contains $x_i$ and $\ell_i$, and a merge renames only the
+merged leaf. The result is a decomposition of $G$ in which $x_1,x_2,x_3$ have one end each and
+every other vertex has the end count of a Lov\'asz decomposition, and the image of the
+$\ell_i$-path ends at $x_i$ through $y_ix_i$. These three paths are different: $y_ix_i$ has the
+single preimage $y_i\ell_i$, and no path of $\cD_4$ contains two leaves.
+\end{proof}
+
+The same argument chains $m-1$ walks for $m$ edges, with the separations $\{x_1,\ell_1\}$,
+$\{x_i,y_i\}$ $(i\ge2)$ and all pairs of $\{\ell_1,y_2,\dots,y_m\}$, and each walk avoiding the
+neighbourhoods of the short ends that are endless when it is walked back.
+
+\subsection*{Far-apart ends}
+When the six ends are far apart, the base hypothesis is automatic.
+
+\begin{proposition}[far-apart form]\label{prop:far}
+Let $G$ have no vertex of positive even degree, and let $F=\{x_1y_1,x_2y_2,x_3y_3\}$ be a matching
+of $G$ whose six ends are pairwise at distance at least $3$ in $G-F$. Then for every admissible
+chain the base graph $M$ has a Lov\'asz decomposition separating the six pairs of
+Theorem~\ref{thm:chain}. Hence, if an admissible chain exists, $G$ has a Lov\'asz decomposition
+in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, on three different paths.
+\end{proposition}
+
+\begin{proof}
+Let $X=\{x_1,x_2,x_3,y_2,y_3,\ell_1\}$. Adjacency in $M$ is adjacency in $G-F$, except for the
+edge $\ell_1y_1$; so two ends of $F$ have no common neighbour in $M$ and are not adjacent in
+$M$. The leaf $\ell_1$ has the single neighbour $y_1\notin X$, and $y_1$ has no neighbour among the
+other five ends in $M$ ($y_1x_1$ is deleted, and the others are at distance at least $3$ from
+$y_1$). Hence every vertex of $M$ has at most one neighbour in $X$, that is, $X$ is sparse; and
+each of the sets $\{x_1,\ell_1\}$, $\{x_2,y_2\}$, $\{x_3,y_3\}$, $\{\ell_1,y_2,y_3\}$ is packed (for
+$\ell_1$ the only possible common neighbour is $y_1$, which is adjacent to none of $x_1,y_2,y_3$
+in $M$). By the parity computation after Definition~\ref{def:chain}, $M$ has at most one vertex
+of positive even degree. Theorem~\ref{thm:sparsesep} gives a Lov\'asz decomposition of $M$ meeting
+each of the four sets at most once per path, which separates the six pairs. Theorem~\ref{thm:chain}
+finishes.
+\end{proof}
+
+\begin{corollary}[degree six, far-apart neighbours]\label{cor:six}
+Let $z$ be the only even vertex of $J$, $d(z)=6$, every neighbour of $z$ of degree at least
+three, and suppose the neighbours of $z$ are pairwise at distance at least $3$ in $J-z$. If
+$F=\{x_1y_1,x_2y_2,x_3y_3\}$ is a pairing of $N(z)$ such that $(J-z)+F$ has an admissible chain
+for this labelling, then $\STL(J,z,y_i)$ holds for $i=1,2,3$. If for every $r\in N(z)$ some
+pairing and labelling with $r\in\{y_1,y_2,y_3\}$ has an admissible chain, then the first deletion
+test holds at $z$.
+\end{corollary}
+
+\begin{proof}
+$G=(J-z)+F$ has the degrees of $J$ off $z$, and $z$ is isolated, so $G$ has no vertex of positive
+even degree, and $G-F=J-z$. Proposition~\ref{prop:far} gives a Lov\'asz decomposition of $G$ with
+$x_iy_i$ terminal at $x_i$ on three different paths. Un-lift the three pairs one after the other
+as in the proof of Theorem~\ref{thm:stl}: the path ending at $x_i$ through $x_iy_i$ avoids $z$
+and becomes $x_i\,z\,y_i\cdots$. The result is a star-terminal Lov\'asz decomposition of $J$
+with transitions $F$ at $z$, in which $y_i$ is on a long side unless that path is $x_i\,z\,y_i$.
+This is $\STL(J,z,y_i)$, and the first test follows from STL at every neighbour by
+\texttt{test1\_of\_stl}.
+\end{proof}
+
+At degree six this is the first deletion test, the open case T(6)-i, for every $J$ whose six
+neighbours of $z$ are pairwise far apart in $J-z$ and which has the required chains.
+Corollary~\ref{cor:six} is proved on paper only; it is not yet formalised. How often it applies:
+random $3$-connected $J$ with degrees $6,3,\dots$ (the others $3$ or $5$; \texttt{d6\_reach.py},
+$200$ graphs per order, chains searched greedily: a shortest $P_2$, then a shortest $P_1$
+edge-disjoint from it):
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order & $21$ & $31$ & $51$ & $101$ & $201$\\
+\midrule
+neighbours of $z$ pairwise at distance $\ge3$ in $J-z$ & $0$ & $1$ & $15$ & $69$ & $99$\\
+\quad of which every $r\in N(z)$ has a chain & $0$ & $1$ & $15$ & $69$ & $99$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Whenever the neighbours were far apart, chains were found for every $r$. The existence of
+chains is not proved in general; the far-apart hypothesis is the restrictive one, and it holds
+for half of the graphs of order $201$.
+
+\subsection*{How far it reaches at degree six}
+\texttt{walk3.c} tests the base hypothesis of Theorem~\ref{thm:chain} for every simple pairing
+(no pair adjacent in $J-z$), all $48$ orders and orientations, and shortest admissible chains.
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order of $J$ & $9$ (all) & $11$ & $13$ & $15$ & $17$\\
+\midrule
+simple instances & $2957$ & $1375$ & $1673$ & $2614$ & $2881$\\
+with a base & $2269$ & $1367$ & $1669$ & $2613$ & $2880$\\
+no admissible chain & $120$ & $2$ & $1$ & $0$ & $0$\\
+$J$ with every $r\in N(z)$ covered & $509/1819$ & $199/200$ & $200/200$ & $300/300$ & $300/300$\\
+\bottomrule
+\end{tabular}
+\end{center}
+At order $9$, $593$ of the $1{,}819$ graphs have no simple pairing at all, and $315$ more have
+simple pairings but no base. For the others, and for all but one random graph of order at least
+$11$, Theorem~\ref{thm:chain} reduces $\STL(J,z,r)$ at every $r\in N(z)$, hence the first test at
+$z$, to the existence of a separating Lov\'asz decomposition of a base graph with one even vertex.
+Cross-check: at order $9$ the base exists for $9{,}457$ choices of pairing, order and
+orientation, and for each of them prescribing the three short ends is realisable by the oracle,
+while the $207$ failures of that prescription among the simple instances never meet a base
+(\texttt{d6\_cover.py}, E24(J)). As at $d(z)=4$, what is missing is a proof of the base
+hypothesis: a sparse form needs the six special vertices $x_1,x_2,x_3,y_2,y_3,\ell_1$ sparse in
+$M$ and the four sets $\{x_1,\ell_1\}$, $\{x_2,y_2\}$, $\{x_3,y_3\}$, $\{\ell_1,y_2,y_3\}$ packed
+(Theorem~\ref{thm:sparsesep}), which again calls for local girth and distance conditions.
+
 \section{Computations}\label{sec:comp}
 
 \emph{This section is computational; no proof above depends on it.} Scripts are in
@@ -647,10 +864,12 @@ separable (audit~A22).
 
 \begin{enumerate}
 \item \emph{Degree six: the first open rung.} At $d(z)=4$ the first test is known
-(Remark~\ref{rem:known}); at $d(z)=6$ it is the open case T(6)-i. The composition route needs
-$\PTM_3$ for $G=(J-z)+F$ with $F$ a perfect matching of $N(z)$, $J$ $3$-connected: a walk
-theorem with two pending edges (item~3 below) and data on these matchings. The prism with its
-rungs shows that some matchings fail; STL-P needs only one good pairing.
+(Remark~\ref{rem:known}); at $d(z)=6$ it is the open case T(6)-i. Section~\ref{sec:six} gives the
+data (every pairing works) and the chained walk theorem, which leaves the base problem: a
+Lov\'asz decomposition of $M$ separating six pairs. A sparse form along the lines of
+Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
+girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
+new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain} is not yet formalised.
 \item \emph{$\PTM_2$ beyond local girth five.} The walk theorem reduces it to the base separation
 problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
 alone does not suffice (Section~\ref{sec:comp}). At order eight its failures are local copies of
@@ -660,13 +879,10 @@ A second mechanism is needed where the obstruction appears locally, presumably o
 rest of the graph to break the wheel. The obstructions to
 sparseness are short cycles through the special vertices. $K_4$ shows that some such
 configurations are genuinely bad.
-\item \emph{More than two edges.} The walk theorem chains: leaf the first edge, and for each
-further edge walk the even vertex from the previous short end to the next long end, deleting
-the walk; restore in reverse order, re-attaching each leaf before walking back. The base graph
-then needs separations of $\{x_i,y_i\}$, $\{x_1,\ell_1\}$ and all pairs of long ends, and each
-walk must avoid the neighbourhoods of the later short ends. Writing down a clean sufficient
-condition (large girth and large mutual distances) is routine but has not been done or
-formalised.
+\item \emph{More than two edges.} The walk theorem chains (Theorem~\ref{thm:chain} for three
+edges, and the remark after it for $m$). A clean sufficient condition for its base hypothesis
+(local girth and mutual distances, through Theorem~\ref{thm:sparsesep}) has not been written down
+or formalised.
 \item \emph{The multigraph case.} Theorem~\ref{thm:walk} assumes $G$ simple. For STL at a vertex
 whose neighbourhood is dense, every pairing may contain adjacent pairs.
 \item \emph{Relation to EE.} $\PTM_2(r)$ at $d(z)=4$ contains the end-edge conjecture EE of~\cite{PE}

@@ -1,0 +1,5 @@
+n=21 graphs=200 far=0 far_and_all_r_covered=0
+n=31 graphs=200 far=1 far_and_all_r_covered=1
+n=51 graphs=200 far=15 far_and_all_r_covered=15
+n=101 graphs=200 far=69 far_and_all_r_covered=69
+n=201 graphs=200 far=99 far_and_all_r_covered=99
