@@ -1,0 +1,6 @@
+FAIL DEk x=3 y=1 z=0 away
+FAIL DEk x=4 y=2 z=0 away
+FAIL DTw x=0 y=4 z=3 away
+FAIL DTw x=2 y=4 z=3 away
+FAIL DTw x=4 y=1 z=3 away
+SUMMARY graphs=7 with_even=7 tests_at_z=14 fail_at_z=0 tests_away=37 fail_away=5 graphs_failing=2 graphs_all_z_edges_fail=0

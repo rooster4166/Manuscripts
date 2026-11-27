@@ -1237,3 +1237,42 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 1. **STL-P for 3-connected J ≠ W₄**, i.e. the terminal-matching property for matchings of virtual edges on N(z). This is the form suited to induction: lifting a pair lowers d(z) by 2, and the base case is `lovasz_endEdge`. The obstruction is carrying two pending terminal edges.
 2. Test1 ⇒ STL (manuscript Conjecture "STL = (T1)"). Supported by all graphs to order 9 and by 1,282 random pairs with J − z disconnected, where STL fails exactly when Test1 does. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
 3. The d(z) = 2 two-triangle configuration (EE at distance 2).
+
+## Y. Prescribed end edges with one even vertex (cloud session `claude/ee`, 2026-11-27)
+
+*Experiments: E23. Manuscript: `manuscripts/prescribed-end/prescribed-end.tex`. Lean: `lean/GallaiLean/PrescribedEnd.lean`. Audit: `research/audit/A21-pee.md`.*
+
+### Y.1 Verdict
+- **PEE is false away from the even vertex z.** On five vertices: d(z) = 2, N(z) = {x, t}, N(x) = {z, t, y}. If xy is terminal at x, then x pairs xz with xt and z pairs zx with zt, which repeats t.
+  - At n = 9, 1,410 of 330,449 away edges fail.
+  - Every failure found (n ≤ 9, and 56,739 in a partial n = 11 run) is *unreachable*: every z–y path has an interior vertex in N[x].
+- **EE (at z) has no counterexample.** Exhaustive to n = 9; the exhaustive EE-only run at n = 11 had 37.9M tests with 0 failures at the time of writing (see E23 for the final count); 25,962 random tests at n = 11–17.
+- So the right statement is: EE at z, and PEE at reachable edges away from z. Two further conjectures fit all the data (manuscript Question 6.5): every away edge is terminal at one of its two ends, and every edge with dist(x, z) ≥ 3 is terminal at x.
+
+### Y.2 Proved (Lean unless noted)
+- **EE whenever |N(u) ∩ N(z)| ≤ 1**, for every d(u) (`sep_atMostOneCommon`, `ee_atMostOneCommon`).
+  - Let w be the unique common neighbour. Then u and z are at distance ≥ 3 in K − uz − uw, whose only even vertex is w. Separate them there.
+  - Restore uw by Fan's lemma with target w. Only one vertex set changes, and it gains w, so the separation survives. Then append zu.
+  - This contains `ee_noTriangle`, `ee_split`, `ee_triangle` and STL's `stl_of_deg_two`, `stl_of_deg_two_tri`.
+- **EE whenever d(z) = 2**, in every configuration (`ee_deg_two`). **STL is therefore complete at d(z) = 2**, including the "two triangles" case left open in §X.4.
+- **Protected-end lemma** (manuscript Lemma 4.1; formal through the leaf graph). A Fan transfer with target g keeps xy terminal at x when x ∉ N(g) or y = g.
+  - Proof: in the leaf graph H = K − xy + ℓ@y, "terminal at x" is a vertex-set property (separate x from ℓ), and x ∉ N_H(g).
+  - Lean infrastructure: `PathDecomp.append_move_exact`, `PathDecomp.liftLeaf`, `endEdge_of_leafSep`.
+- **Reduction of away edges to EE** (Theorem 6.1, manuscript). Walk the even vertex along a z–y path whose interior avoids N[x], using one Lovász Case I step per edge. Then EE in the final graph at (y, x) gives PEE at xy.
+  - Unconditional when y ∈ N(z) and x, y have at most one common neighbour other than z (`pee_adjEven`).
+  - Also unconditional when z has a pendant neighbour (Proposition 6.4, manuscript only).
+- **Triangle reduction** (`ee_of_triangle`). For w ∈ N(u) ∩ N(z), EE at u follows if K − {uz, uw, wz} has a Lovász decomposition whose path ending at w avoids u and z. That hypothesis held for *every* triple at n ≤ 9 (88,356) and in 44,892 random ones.
+- **Outside neighbour** (Proposition 7.1, manuscript only). For w ∈ N(u) ∖ N[z], EE at u follows from "K − uz − uw has a Lovász decomposition with u ∉ Q_z".
+
+### Y.3 The open case and the unifying conjecture
+- EE is open exactly when |N(u) ∩ N(z)| ≥ 2 (so d(z) ≥ 4).
+- **Conjecture L1\*.** Let G have ≤ 1 positive even vertex g, let c be odd, and let A be a set of at most two vertices with A ∩ (N[c] ∪ N(g)) = ∅ (g ∈ A allowed). Then some Lovász decomposition has Q_c ∩ A = ∅.
+  - **L1\* ⇒ EE** (Corollary 7.4).
+  - It contains L1 (no even vertex), EE (A = {g}), and L1 with an even vertex not adjacent to the avoided vertex.
+  - Data: at n = 9 every one of the 6,423 failures of L1 with an even vertex has g ~ a, and the case g ≁ a never fails (161,652 tests). |A| = 2 never fails (203,658 tests at n = 9).
+- What does not work: full separation of u and z in K − uz (fails for |T| ≥ 2), and separating w from {u, z} after removing the triangle (267/622 fail at n = 7). The needed avoidance is one-sided, like L1, and the leaf trick that proves L1 from separation would create a second even vertex.
+
+### Y.4 For STL (§X) and the composition problem
+- The protected-end lemma is the composition tool §X.4 asked for. A prescribed end edge xy survives every Fan transfer whose target is not adjacent to x, or is y itself.
+- This matches E22(F), where PEE_m fails only with *adjacent* prescribed ends. A Fan transfer whose target is adjacent to neither prescribed end (or is the other end of a prescribed edge) keeps both prescriptions. What remains is to choose the Case I targets that way.
+- Not attempted here: STL's multi-transition work, which belongs to §X.
