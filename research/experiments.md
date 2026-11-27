@@ -634,3 +634,10 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
   - order 12: 300 graphs, m ∈ [18, 30], 8,396 half-sets, **0 failures**.
   - Every sampled half-set was cut-feasible, so these runs test realisability, not the sharpness of (1).
 - Toughness-type Hamiltonicity obstructions are cut-detected. At slack 0, (C) for the complements of the components of G − S gives #components ≤ |S| + 1.
+
+**E18 addendum 2: the Kotzig reduction** (`manuscripts/endpoint-min-max/scripts/kotzig.py`). The script builds G(H) for each test graph H. It checks cut-feasibility of the gadget by max-flow (Lemma 1(d)), cross-checks by brute force where n ≤ 10, and checks the following.
+- λ(L(H)) ≥ 4 ⟺ H is bridgeless ⟺ the gadget is cut-feasible (Lemma 23, Prop 24).
+- Hamiltonian decomposability of L(H) ⟺ H is Hamiltonian (Kotzig; searched where |V(L(H))| ≤ 24).
+- Realisability by the oracle where n ≤ 16 (Prop 25).
+
+Test graphs: K4, the prism, K33, the cube, Petersen, six random cubic graphs of orders 8–18, and a cubic graph with a bridge. All are consistent. Petersen gives cut-feasible but not realisable, and the bridged graph is not cut-feasible.

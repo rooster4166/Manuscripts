@@ -44,7 +44,7 @@ EMM sufficiency work is **stopped**. Sessions:
   - At each v, choose J's transitions by a T-join pairing in F^v. J is a forest, so any transitions give paths pairing Ev.
   - Every bad split at v is paid by its own edge of δ_{F^v}(Y).
   - **EMM itself is false** (missing-move Thm 7.5, n = 12, saturated degree-2 vertices). The corrected EMM₃ needs δ ≥ 3.
-  - **Consequence (Cor 22):** EMM₃ at δ ≥ 5 plus Thm 21 excludes SP 10.16(2). So a Gallai failure must be an SP 10.16(1) odd-floor witness.
+  - The earlier Cor 22 (a conditional reduction of Gallai) is **removed**. Thm 21 now stands alone; its use in the descent route is synthesis §13.
   - Checked against enumeration on all n ≤ 8 and samples. Lean definitions: connections §U;
 - C3: EMM in classes (e ≤ 4, cones, κ-connected with e ≤ 2κ, 2-separator gluing, dense);
 - C4: EMM sufficiency through tight cuts.
@@ -239,7 +239,16 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 ## Log
 
-- 2026-11-27 (cloud, `claude/emc-four-even`, track C2 completed): **cut selection is a theorem** (endpoint-min-max Thm 21, `scripts/construction.py`). Every connected even-order graph has an explicit good pairing; it comes from a spanning-tree T-join with transitions chosen by T-join pairings in F^v. (Cor 22, after EMM was refuted: EMM₃ at δ ≥ 5 ⇒ any Gallai failure is an SP 10.16(1) odd witness.)
+- 2026-11-27 (cloud, `claude/emc-four-even`, post-pivot): **endpoint-min-max rewritten as a paper on prescribed ends** (17 pp.). The paper now covers:
+  - the cut inequality: necessary, with its four forms;
+  - **cut selection** (Thm 21, unchanged numbering);
+  - sufficiency at n ≤ 8 and in the dense range (Prop 29 with SP 14.1);
+  - failure at n = 12 (missing-move Thm 7.5) and n = 28;
+  - **Thm 27 (hardness; construction due to the project lead, with full proofs).** For connected **bridgeless** cubic H (essential 4-edge-connectivity is not needed), the gadget half-set of G(H) is cut-feasible and is realisable iff H is Hamiltonian. The proof uses Lemma 23: cuts of L(H) have size 2·(mixed vertices), so λ(L(H)) ≥ 4 iff H is bridgeless; and Prop 24: cut-feasible ⟺ λ(L(H)) ≥ 4. Then Prop 25 (realisation ⟺ Hamiltonian decomposition of L(H)), Kotzig 1957, and Garey–Johnson–Tarjan. So half-set realisability is NP-complete, even for cut-feasible half-sets with degrees in {2,4}.
+  - Removed: all claims that Gallai reduces to EMM (Prop 9, Cor 22). EMM is now Question 4; EMC is Conjecture 10.
+  - Script: `scripts/kotzig.py`.
+
+- 2026-11-27 (cloud, `claude/emc-four-even`, track C2 completed): **cut selection is a theorem** (endpoint-min-max Thm 21, `scripts/construction.py`). Every connected even-order graph has an explicit good pairing; it comes from a spanning-tree T-join with transitions chosen by T-join pairings in F^v. (Its Gallai corollary was later removed; see the next entry.)
   - Also: the per-vertex matroids are now Thm 11.
   - Edmonds' intersection gives CS for any two vertices' conditions, but not for three (example in the remark).
   - The guarded-routes conjecture is superseded.
