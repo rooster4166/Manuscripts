@@ -905,3 +905,25 @@ Tools: `tools/emm_glue_search.py`, `tools/emm3_core_search.py`, `tools/emm3_sep_
 3. Hence the pairing of Odd(B) from step 1 is a good pairing of Ev (Lemma 13). **So Thm 21 = the pairing lemma applied to B.**
 
 This is the Lean route: the T-join (paths + symmetric difference), the pairing lemma (edge deletion), B with its parity and cut identity, and the CutOK algebra. It will also go into the manuscript as the main proof after A13's edits land; the transition proof becomes a remark.
+
+#### T.result-3 (emm3-gadgets session, 2026-11-27): forcing gadgets exist; EMM₃ is false; hardness at even degrees ≥ 4
+
+Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 45). Branch `claude/emm3-gadgets`, merged with the coordinator branch at 5976455.
+
+- **Placement (done, no further edits needed from emc-four).** §6 is a separate section, "Minimum degree three and beyond: forcing gadgets", placed after §5 (`sec:hard`) rather than as §5.3, because it brings eight lemmas of its own. This session has already made the follow-up edits proposed above:
+  - Remark 28 now points to §6;
+  - open problem 1 is replaced by gadget questions;
+  - the abstract, overview and the paragraph after Question 4 are updated;
+  - `Als08` (Walecki) is added to the bibliography.
+  If emc-four has meanwhile edited Remark 28, keep either wording; the content is the same.
+- **Handoff-2 correction.** A "double-end gadget" (forcing the two leaves apart) is useless. By Lemma 29 applied to the outside, the outside always sees two leaves, and forcing apart constrains nothing (Remark 32(1)). Only *joined* forcing matters. It imitates a degree-2 vertex with b = 0, never the saturated b = 2 vertex of Thm 7.5. The search plan "replace each degree-2 vertex of GsOeBW" therefore cannot work for the saturated vertex. The closing lemma (both forced edges at one outside vertex s) replaces it.
+- **Gadget ⟺ one-saturated-vertex failure** (Remark 32(2)). A two-leaf gadget at x₁ ≠ x₂ is the same as a non-realisable profile X + w with w the only degree-2 vertex (b(w) = 2), all other degrees ≥ 3, and the cut conditions at every other vertex. Ports of a forced pair carry no ends (Remark 32(3)).
+- **Results.**
+  - The two-leaf gadget D₂ has order 10 and is of least order (none with |X| ≤ 9).
+  - G₁₈ has order 18, δ = 3, λ = 2.
+  - G_r, r ≥ 2, has δ = λ = 2r, all degrees even, and κ = 3 (half blow-up) or 2r − 1 (full blow-up, r = 2, 3).
+  - G′(H), the Kotzig graph with a marked clique in place of the saturated tail, gives NP-completeness for 4-edge-connected graphs with all degrees even and ≥ 4 (Thm 45). G′(Petersen) has n = 28 and δ = 4.
+  - Every proof is oracle-free. The forcing comes from the 2r-regular multigraph M_r (C_{2r}, multiplicities r−1, r, plus w), which has a unique Hamiltonian decomposition; K_{2r} blocks are crossed exactly twice by each cycle (Lemma 34).
+- **TRC (synthesis §15) survives every construction here.** All failing half-sets starve the gadget, so they need N > |δ(D_r)| = 2r pairs across the cut, while Thm 21 routes are edge-disjoint. Refuting TRC with gadgets would need a forcing gadget with about half its even vertices marked. None exists with |X| ≤ 9, of any kind.
+  - Suggested test of TRC: G_r and G′(H) with marks moved inside the gadget, using Thm 21 pairings from random spanning trees. Realisability at n > 16 needs `tools/realis_wide.c`, which is slow on dense S, or a sparse S.
+- **Lean (task item 3) not applicable.** Gadgets exist, so the positive structural lemma it would formalise is false. A Lean proof of Thm 41 would need path-partition infrastructure for the closing lemma (Lemmas 29, 31), plus the Hamiltonian-decomposition argument for D₂ (Lemmas 33, 34, 36). The cut-feasibility half is a finite check, too large for `decide` at n = 18. Not attempted.

@@ -646,3 +646,47 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
 - Realisability by the oracle where n ≤ 16 (Prop 25).
 
 Test graphs: K4, the prism, K33, the cube, Petersen, six random cubic graphs of orders 8–18, and a cubic graph with a bridge. All are consistent. Petersen gives cut-feasible but not realisable, and the bridged graph is not cut-feasible.
+
+## E19. Forcing gadgets: EMM₃ and every connectivity class (cloud session `claude/emm3-gadgets`)
+
+Manuscript: endpoint-min-max §6 ("Minimum degree three and beyond: forcing gadgets"; Lemmas 29–40, Thms 41, 42, 45). Logs are in `manuscripts/endpoint-min-max/scripts/outputs/`.
+
+**Forcing gadget.** A two-leaf gadget is a graph X with leaves ℓ₁ at x₁ and ℓ₂ at x₂, all other degrees ≥ 3, and a simple profile. It is *forcing* if X⁺ is realisable and every realisation has a path ℓ₁…ℓ₂. Equivalently, for x₁ ≠ x₂: X + w (w joined to x₁, x₂, b(w) = 2) is not realisable.
+- `tools/gadget.c` runs the exact search of realis.c on X⁺. Inputs: every connected X (geng -c -d1), every port pair x₁ ≤ x₂ (x₁ = x₂ allowed), every simple profile. It computes tot (realisable) and sep (a realisation whose ℓ₁-path does not end at ℓ₂). A gadget has tot ∧ ¬sep.
+- **No forcing gadget with |X| ≤ 9** (`gadget_search_le9.log`):
+  - |X| = 8: 113,914 port pairs, 2,415,862 profiles;
+  - |X| = 9: 4,425,119 port pairs, 145,724,764 profiles (4 shards).
+- **Sanity check.** With min degree 2 allowed, the search finds the trivial gadgets (b(X) = 0, X a path): DQo, ECZ?, and others.
+
+**Hamiltonian regime** (manuscript Lemma 33). If d + b = 2r on X, every realisation of X⁺ is r Hamiltonian paths of X. Closing them through w gives a Hamiltonian decomposition of the 2r-regular graph X + w. A forced pair is then a forced transition at w.
+- `tools/hamdec.c` checks 4-regular graphs for a vertex with a single transition over all Hamiltonian decompositions (`hamdec_4reg_le12.log`). Forced vertices exist:
+  - none up to order 10;
+  - **2 graphs of order 11**, `JCQTbQsZAU?` (= D₂ + w, 16 decompositions) and `JCQTbQsYaY?`;
+  - 10 graphs of order 12.
+- **Structure of D₂.** It consists of two K₄ blocks A, B and vertices p, q, with edges pa₁, pa₂, pb₁, qa₃, qb₂, qb₃ and ports p, b₀ (a₀ and q odd, b = 1). Contracting the blocks gives M₂: the 4-cycle with side multiplicities 1, 2, 1, 2, plus w. M₂ has a unique Hamiltonian decomposition.
+- **Generalisation.** M_r is C_{2r} with side multiplicities alternating r−1 and r, plus w. Its unique decomposition pairs c_{2j} with c_{2j+1}. Blowing up into K_{2r} blocks gives the gadgets D_r. In a half blow-up only the odd c_i are blown up (|D_r| = 2r² + r); in a full blow-up all of them are (4r²).
+
+**Counterexamples** (cut-feasible, not realisable; non-realisability is the gluing argument, Lemma 31):
+
+| graph | n | δ | λ | κ | check |
+|---|---|---|---|---|---|
+| G₁₈ = D₂ + K₄,₄ + {sp, sb₀} | 18 | 3 | 2 | – | gemm_test, cut_test, cutfeas.c (12,609 cut-feasible half-sets in all), max-flow; realis_wide.c: not realisable (75 s) |
+| G₂ half | 20 | 4 | 4 | 3 | gemm_test, cut_test, max-flow; forcing by realis.c |
+| G₂ full | 32 | 4 | 4 | 3 | max-flow |
+| G₃ half | 42 | 6 | 6 | 3 | max-flow |
+| G₃ full | 72 | 6 | 6 | 5 | max-flow |
+| G′(Petersen) | 28 | 4 | 4 | – | max-flow; L(P) has no Hamiltonian decomposition |
+
+Scripts: `emm3_counterexample.py` (G₁₈; it also checks that the outer side K₄,₄ + 2 leaves is realisable, so the obstruction is the pairing), `emm_connectivity.py` (G_r, both blow-ups, r = 2, 3), and `kotzig_even.py`.
+
+**`kotzig_even.py` (Thm 45, hardness at even degrees ≥ 4).** G′(H) is L(H) − w* plus a marked clique S on N = |E(H)| − 1 vertices, joined to u₁…u₄. The script checks:
+- the prism, K₃,₃, the cube, Petersen, 5 random cubic graphs of orders 8–16, and a bridged cubic graph;
+- the degrees, λ = 4 and cut-feasibility by max-flow (and that the bridged graph is not cut-feasible);
+- for the Hamiltonian graphs, an explicit realisation from a Hamiltonian decomposition of L(H) and the clique lemma, which is verified for 6 ≤ N ≤ 29;
+- realis.c at n = 16 (the prism and K₃,₃).
+
+All checks agree.
+
+**`tools/realis_wide.c`.** This is realis.c with 2-bit profile packing, valid because simple profiles keep b ≤ 2 throughout the search. It handles n ≤ 30 and m ≤ 64, and agrees with realis.c on 2,470 random simple-profile queries (`realis_wide_G18.log`). G₂ (n = 20, dense S) did not finish within 600 s.
+
+**TRC (synthesis §15).** None of these failing half-sets is a transversal of a Thm 21 pairing. They starve the gadget: all of D_r's even vertices are unmarked, so all N pairs would have to cross δ(D_r), which has only 2r edges, while the routes are edge-disjoint. A gadget attack on TRC would need a forcing gadget with about half its even vertices marked, i.e. near or above its budget. The exhaustive search found no gadget of any kind with |X| ≤ 9.
