@@ -1115,6 +1115,19 @@ def NoTriangle (G : SimpleGraph W) : Prop := ∀ u v w, G.Adj u v → G.Adj v w 
 def NoSquare (G : SimpleGraph W) : Prop :=
   ∀ u v w t, G.Adj u v → G.Adj v w → G.Adj w t → G.Adj t u → u ≠ w → v ≠ t → False
 
+/-- No triangle and no four-cycle passes through a vertex of `S` (local girth five at `S`). -/
+def NoShortCycleAt (G : SimpleGraph W) (S : W → Prop) : Prop :=
+  (∀ u v w, S u → G.Adj u v → G.Adj v w → G.Adj w u → False) ∧
+  (∀ u v w t, S u → G.Adj u v → G.Adj v w → G.Adj w t → G.Adj t u → u ≠ w → v ≠ t → False)
+
+theorem NoShortCycleAt.mono {G : SimpleGraph W} {S T : W → Prop} (h : NoShortCycleAt G S)
+    (hTS : ∀ v, T v → S v) : NoShortCycleAt G T :=
+  ⟨fun u v w hu => h.1 u v w (hTS u hu), fun u v w t hu => h.2 u v w t (hTS u hu)⟩
+
+theorem noShortCycleAt_of_girth {G : SimpleGraph W} (h3 : NoTriangle G) (h4 : NoSquare G)
+    (S : W → Prop) : NoShortCycleAt G S :=
+  ⟨fun u v w _ => h3 u v w, fun u v w t _ => h4 u v w t⟩
+
 omit [Fintype W] in
 /-- A path of length one or two, read off. -/
 theorem walk_len_one {G : SimpleGraph W} {u v : W} (p : G.Walk u v) (h : p.length = 1) :
@@ -1140,15 +1153,18 @@ theorem walk_len_two {G : SimpleGraph W} {u v : W} (p : G.Walk u v) (h : p.lengt
       | cons _ _ => simp at h
 
 /-- **Core of the girth theorem.** Let `p` be a shortest walk between the edges `ab` and `xy`,
-running from `y` to `a`. In a graph without triangles and four-cycles the walk theorem applies
-with short ends `a` and `x`. -/
+running from `y` to `a`. If no triangle and no four-cycle passes through `a`, `b`, `x` or `y`, the
+walk theorem applies with short ends `a` and `x`. -/
 theorem ptm2_girth_core (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
-    (h3 : NoTriangle G) (h4 : NoSquare G) {a b x y : W} (hab : G.Adj a b) (hxy : G.Adj x y)
+    {a b x y : W} (hS : NoShortCycleAt G (fun v => v = a ∨ v = b ∨ v = x ∨ v = y))
+    (hab : G.Adj a b) (hxy : G.Adj x y)
     (hax : a ≠ x) (hay : a ≠ y) (hbx : b ≠ x) (hby : b ≠ y)
     (p : G.Walk y a) (hp : p.IsPath)
     (hmin : ∀ u w, (u = a ∨ u = b) → (w = x ∨ w = y) → ∀ r : G.Walk w u, p.length ≤ r.length) :
     PTM2At G a b x y := by
   classical
+  have h3 := hS.1
+  have h4 := hS.2
   have hab' : a ≠ b := hab.ne
   have hxy' : x ≠ y := hxy.ne
   set q := p.support.tail with hq
@@ -1188,7 +1204,7 @@ theorem ptm2_girth_core (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, 
     have h2 := hpos (p.takeUntil t ht') (Ne.symm hty)
     have := hsplit t ht'
     have h1' : (p.takeUntil t ht').length = 1 := by omega
-    exact h3 t x y htx hxy (Walk.adj_of_length_eq_one h1')
+    exact h3 x y t (Or.inr (Or.inr (Or.inl rfl))) hxy (Walk.adj_of_length_eq_one h1') htx
   -- short distances
   have hlen1 : ∀ {c d : W}, G.Adj c d → (d = a ∨ d = b) → (c = x ∨ c = y) → p.length = 1 := by
     intro c d hcd hd hc
@@ -1198,34 +1214,35 @@ theorem ptm2_girth_core (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, 
   have hya1 : p.length = 1 → G.Adj y a := fun h => Walk.adj_of_length_eq_one h
   have hbx' : ¬ G.Adj b x := by
     intro h
-    exact h4 a y x b (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inl rfl))).symm hxy.symm h.symm hab.symm
+    exact h4 a y x b (Or.inl rfl) (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inl rfl))).symm hxy.symm h.symm hab.symm
       hax (Ne.symm hby)
   have hby' : ¬ G.Adj b y := by
     intro h
-    exact h3 a b y hab h (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inr rfl)))
+    exact h3 a b y (Or.inl rfl) hab h (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inr rfl)))
   have hya_chain : G.Adj y a → s(y, a) ∈ chainEdges (y :: q) := by
     intro h
     have h1 := hlen1 h (Or.inl rfl) (Or.inr rfl)
     have : q = [a] := walk_len_one p h1
     rw [this]; simp [chainEdges]
-  have hxy_common : ∀ u, G.Adj u x → G.Adj u y → False := fun u h1 h2 => h3 u x y h1 hxy h2.symm
+  have hxy_common : ∀ u, G.Adj u x → G.Adj u y → False := fun u h1 h2 =>
+    h3 x y u (Or.inr (Or.inr (Or.inl rfl))) hxy h2.symm h1
   have hxa_common : ∀ u u', G.Adj u x → G.Adj u a → G.Adj u' x → G.Adj u' a → u = u' := by
     intro u u' h1 h2 h1' h2'
     by_contra hne
-    exact h4 x u a u' h1.symm h2 h2'.symm h1' hax.symm hne
+    exact h4 x u a u' (Or.inr (Or.inr (Or.inl rfl))) h1.symm h2 h2'.symm h1' hax.symm hne
   have hya_common : ∀ u, G.Adj u y → G.Adj u a → s(u, a) ∉ chainEdges (y :: q) → False := by
     intro u h1 h2 hch2
     have hle := hmin a y (Or.inl rfl) (Or.inr rfl) (Walk.cons h1.symm (Walk.cons h2 Walk.nil))
     simp only [Walk.length_cons, Walk.length_nil] at hle
     by_cases h1' : p.length = 1
-    · exact h3 u y a h1 (hya1 h1') h2.symm
+    · exact h3 y a u (Or.inr (Or.inr (Or.inr rfl))) (hya1 h1') h2.symm h1
     · obtain ⟨m, hym, hma, hq2⟩ := walk_len_two p (by omega)
       by_cases hum : u = m
       · subst hum
         apply hch2
         have : q = [u, a] := hq2
         rw [this]; simp [chainEdges]
-      · exact h4 y u a m h1.symm h2 hma.symm hym.symm hay.symm hum
+      · exact h4 y u a m (Or.inr (Or.inr (Or.inr rfl))) h1.symm h2 hma.symm hym.symm hay.symm hum
   -- adjacency facts in the base graph `M`
   have hNs : ∀ u, (baseG G a b x y q).Adj (some u) none → u = b := by
     intro u h
@@ -1355,13 +1372,13 @@ theorem PTM2At.symm {G : SimpleGraph W} [DecidableRel G.Adj] {a b x y : W} [Fint
   obtain ⟨D, hD, P₁, hP₁, P₂, hP₂, hne, h1, h2, h3, h4⟩ := h
   exact ⟨D, hD, P₂, hP₂, P₁, hP₁, Ne.symm hne, h3, h4, h1, h2⟩
 
-/-- **PTM₂ at girth five.** Let `G` be connected, without vertices of positive even degree, and
-without triangles and four-cycles (it suffices that `c` is reachable from `a`; isolated vertices
-are allowed). For disjoint edges `ab` and `cd` there is a Lovász
-decomposition in which `ab` is terminal at the prescribed end `a`, `cd` is terminal at one of
-its ends, and the two edges lie on different paths. -/
-theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
-    (h3 : NoTriangle G) (h4 : NoSquare G) {a b c d : W} (hconn : G.Reachable c a)
+/-- **PTM₂ at local girth five.** Let `G` have no vertex of positive even degree, and let `ab`,
+`cd` be disjoint edges with `c` reachable from `a`, such that no triangle and no four-cycle passes
+through `a`, `b`, `c` or `d`. Then some Lovász decomposition has `ab` terminal at the prescribed
+end `a`, `cd` terminal at one of its ends, and the two edges on different paths. -/
+theorem ptm2_localgirth (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    {a b c d : W} (hS : NoShortCycleAt G (fun v => v = a ∨ v = b ∨ v = c ∨ v = d))
+    (hconn : G.Reachable c a)
     (hab : G.Adj a b) (hcd : G.Adj c d) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c)
     (hbd : b ≠ d) :
     PTM2At G a b c d ∨ PTM2At G a b d c := by
@@ -1380,25 +1397,37 @@ theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
     omega
   rcases hu₀ with h | h <;> rcases hw₀ with h' | h' <;> subst u₀ <;> subst w₀
   · right
-    exact ptm2_girth_core G hodd h3 h4 hab hcd.symm had hac hbd hbc p hp
+    exact ptm2_girth_core G hodd (hS.mono (fun v hv => by tauto)) hab hcd.symm had hac hbd hbc p hp
       (fun u w hu hw r => hplen ▸ hmin u w hu hw.symm r)
   · left
-    exact ptm2_girth_core G hodd h3 h4 hab hcd hac had hbc hbd p hp
+    exact ptm2_girth_core G hodd (hS.mono (fun v hv => by tauto)) hab hcd hac had hbc hbd p hp
       (fun u w hu hw r => hplen ▸ hmin u w hu hw r)
   · left
-    refine PTM2At.symm (ptm2_girth_core G hodd h3 h4 hcd hab (Ne.symm hac) (Ne.symm hbc)
+    refine PTM2At.symm (ptm2_girth_core G hodd (hS.mono (fun v hv => by tauto)) hcd hab (Ne.symm hac) (Ne.symm hbc)
       (Ne.symm had) (Ne.symm hbd) p.reverse hp.reverse ?_)
     intro u w hu hw r
     rw [Walk.length_reverse, hplen]
     have := hmin w u hw hu r.reverse
     rwa [Walk.length_reverse] at this
   · right
-    refine PTM2At.symm (ptm2_girth_core G hodd h3 h4 hcd.symm hab (Ne.symm had) (Ne.symm hbd)
+    refine PTM2At.symm (ptm2_girth_core G hodd (hS.mono (fun v hv => by tauto)) hcd.symm hab (Ne.symm had) (Ne.symm hbd)
       (Ne.symm hac) (Ne.symm hbc) p.reverse hp.reverse ?_)
     intro u w hu hw r
     rw [Walk.length_reverse, hplen]
     have := hmin w u hw hu.symm r.reverse
     rwa [Walk.length_reverse] at this
+
+/-- **PTM₂ at girth five.** Let `G` be connected, without vertices of positive even degree, and
+without triangles and four-cycles (it suffices that `c` is reachable from `a`; isolated vertices
+are allowed). For disjoint edges `ab` and `cd` there is a Lovász
+decomposition in which `ab` is terminal at the prescribed end `a`, `cd` is terminal at one of
+its ends, and the two edges lie on different paths. -/
+theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    (h3 : NoTriangle G) (h4 : NoSquare G) {a b c d : W} (hconn : G.Reachable c a)
+    (hab : G.Adj a b) (hcd : G.Adj c d) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c)
+    (hbd : b ≠ d) :
+    PTM2At G a b c d ∨ PTM2At G a b d c :=
+  ptm2_localgirth G hodd (noShortCycleAt_of_girth h3 h4 _) hconn hab hcd hac had hbc hbd
 
 end girth
 
@@ -1930,17 +1959,17 @@ theorem PTM2At.congr [Fintype V] {G G' : SimpleGraph V} [DecidableRel G.Adj] [De
     (hG : G = G') {a b x y : V} (h : PTM2At G a b x y) : PTM2At G' a b x y := by
   subst hG; convert h
 
-/-- **Test 1 at girth five.** Let `z` be the only even vertex of `J`, with `N(z) = {a, b, c, d}`
-and `ab, cd ∉ E(J)`, every neighbour of `z` of degree at least three. If the lifted graph
-`(J − z) + ab + cd` has no triangle and no four-cycle, and `c` is reachable from `a` in it, then
-STL holds at every neighbour of `z` (`STL J z r`), hence `Test1 J z`. -/
-theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+/-- **STL at local girth five.** Let `z` be the only even vertex of `J`, with
+`N(z) = {a, b, c, d}` and `ab, cd ∉ E(J)`. If in the lifted graph `(J − z) + ab + cd` no triangle
+and no four-cycle passes through `a`, `b`, `c` or `d`, and `c` is reachable from `a` in it, then
+STL holds at every neighbour of `z` (`STL J z r`). -/
+theorem stl_of_localgirth (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
     (hev : ∀ v, Even (J.degree v) ↔ v = z)
     (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
     (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
     (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d)
     (hreach : (liftJ J z a b c d).Reachable c a)
-    (h3 : NoTriangle (liftJ J z a b c d)) (h4 : NoSquare (liftJ J z a b c d)) :
+    (hS : NoShortCycleAt (liftJ J z a b c d) (fun v => v = a ∨ v = b ∨ v = c ∨ v = d)) :
     ∀ r, J.Adj z r → STL J z r := by
   have hza : J.Adj z a := (hN a).2 (Or.inl rfl)
   have hzb : J.Adj z b := (hN b).2 (Or.inr (Or.inl rfl))
@@ -1990,19 +2019,19 @@ theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
   intro r hr
   rcases (hN r).1 hr with hr' | hr' | hr' | hr' <;> subst r
   · -- `r = a`: prescribe `b` short
-    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 (hreach.trans hGab.reachable) hGab.symm hGcd
+    rcases ptm2_localgirth (liftJ J z a b c d) hodd (hS.mono (fun v hv => by tauto)) (hreach.trans hGab.reachable) hGab.symm hGcd
       hbc hbd hac had with h | h
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hab') hbc hbd hac had hcd'
         (fun h => hab h.symm) hcd (h.congr e2)).1
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hab') hbd hbc had hac
         (Ne.symm hcd') (fun h => hab h.symm) (fun h => hcd h.symm) (h.congr e3)).1
   · -- `r = b`: prescribe `a` short
-    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 hreach hGab hGcd hac had hbc hbd with h | h
+    rcases ptm2_localgirth (liftJ J z a b c d) hodd (hS.mono (fun v hv => by tauto)) hreach hGab hGcd hac had hbc hbd with h | h
     · exact (stl_of_ptm2 J hN hab' hac had hbc hbd hcd' hab hcd h).1
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hab' had hac hbd hbc (Ne.symm hcd') hab
         (fun h => hcd h.symm) (h.congr e1)).1
   · -- `r = c`: prescribe `d` short
-    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 (hreach.symm.trans hGcd.reachable) hGcd.symm hGab
+    rcases ptm2_localgirth (liftJ J z a b c d) hodd (hS.mono (fun v hv => by tauto)) (hreach.symm.trans hGcd.reachable) hGcd.symm hGab
       (Ne.symm had) (Ne.symm hbd) (Ne.symm hac) (Ne.symm hbc) with h | h
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hcd') (Ne.symm had) (Ne.symm hbd)
         (Ne.symm hac) (Ne.symm hbc) hab' (fun h => hcd h.symm) hab (h.congr e6)).1
@@ -2010,12 +2039,35 @@ theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
         (Ne.symm hbc) (Ne.symm hac) (Ne.symm hab') (fun h => hcd h.symm) (fun h => hab h.symm)
         (h.congr e7)).1
   · -- `r = d`: prescribe `c` short
-    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 hreach.symm hGcd hGab (Ne.symm hac) (Ne.symm hbc)
+    rcases ptm2_localgirth (liftJ J z a b c d) hodd (hS.mono (fun v hv => by tauto)) hreach.symm hGcd hGab (Ne.symm hac) (Ne.symm hbc)
       (Ne.symm had) (Ne.symm hbd) with h | h
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hcd' (Ne.symm hac) (Ne.symm hbc)
         (Ne.symm had) (Ne.symm hbd) hab' hcd hab (h.congr e4)).1
     · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hcd' (Ne.symm hbc) (Ne.symm hac)
         (Ne.symm hbd) (Ne.symm had) (Ne.symm hab') hcd (fun h => hab h.symm) (h.congr e5)).1
+
+/-- **STL at girth five**: the lifted graph has no triangle and no four-cycle. -/
+theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hev : ∀ v, Even (J.degree v) ↔ v = z)
+    (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d)
+    (hreach : (liftJ J z a b c d).Reachable c a)
+    (h3 : NoTriangle (liftJ J z a b c d)) (h4 : NoSquare (liftJ J z a b c d)) :
+    ∀ r, J.Adj z r → STL J z r :=
+  stl_of_localgirth J hev hN hab' hac had hbc hbd hcd' hab hcd hreach
+    (noShortCycleAt_of_girth h3 h4 _)
+
+/-- **Test 1 at local girth five**, the spine form. -/
+theorem test1_of_localgirth (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d) (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
+    (hreach : (liftJ J z a b c d).Reachable c a)
+    (hS : NoShortCycleAt (liftJ J z a b c d) (fun v => v = a ∨ v = b ∨ v = c ∨ v = d)) :
+    Test1 J z :=
+  test1_of_stl z hdeg fun hev =>
+    stl_of_localgirth J hev hN hab' hac had hbc hbd hcd' hab hcd hreach hS
 
 /-- **Test 1 at girth five**, the spine form. -/
 theorem test1_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}

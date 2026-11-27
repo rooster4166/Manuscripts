@@ -1317,11 +1317,17 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
   - With the three pairs packed in M, it is a case of the MS class-separation questions. All 11,810 packed base graphs of order 8 are separable (audit A22).
 - **Sparse form.** The base hypothesis follows from separation_sparse, possibly after one Fan transfer for an exceptional vertex v adjacent to x (sep_sparse_fix, the mechanism of ee_atMostOneCommon isolated as a lemma).
 - **Girth five** (ptm2_girth5): every connected all-odd graph without triangles and 4-cycles satisfies PTM₂, with one end prescribed. The sparse hypotheses hold along a shortest e1–e2 path; the only exception is a 5-cycle, handled by the fix.
+- **Local girth five** (ptm2_localgirth, `NoShortCycleAt`): it suffices that no triangle and no 4-cycle passes through a, b, c or d. Every short cycle the proof excludes passes through one of the four ends.
 
 ### Z.3 For STL and the spine (proved, Lean)
 - stl_of_ptm2: un-lifting both pairs turns PTM2At((J − z) + ab + cd; a, c) into STL J z b and STL J z d.
 - stl_of_girth5, test1_of_girth5: if d(z) = 4, N(z) = {a, b, c, d}, ab, cd ∉ E(J), and (J − z) + ab + cd has girth ≥ 5, then STL holds at every neighbour and Test1 J z holds (through test1_of_stl).
-- This is narrow: 3-connected J rarely has a lifted graph of girth 5. Its value is the mechanism, and that it is the first unconditional two-prescription result.
+- **Local form** (stl_of_localgirth, test1_of_localgirth): only cycles of length ≤ 4 of J* through a, b, c, d are excluded. In terms of J:
+  - no such cycle of J − z;
+  - d_{J−z}(a,b), d_{J−z}(c,d) ≥ 4;
+  - d(a,c) + d(b,d) ≥ 3 and d(a,d) + d(b,c) ≥ 3.
+- **Reach on random 3-connected graphs** with degrees 4, 3, …, 3 (E24(I)): some pairing qualifies in 5/300 graphs at order 11 and 210/300 at order 51. With global girth 5 the counts are 5/300 and 14/300.
+- This still needs sparse graphs around z. Its value is the mechanism, and that it is the first unconditional two-prescription result.
 
 ### Z.4 Open (in order of promise)
 1. **The base separation problem beyond sparseness.**

@@ -1041,7 +1041,7 @@ Every failure other than K4 has a cut vertex in G' = G − F, and J of connectiv
 **(E) Random, n = 12, 14, 16** (`gen_random.py`, `run_random.sh`; G(n,p), p ∈ [0.15, 0.5], parities repaired; m = 2, 3, 4; F chosen at random, or "close" (each new F-edge adjacent to an earlier one), or "share" (each new F-edge at distance exactly two, sharing neighbourhoods); 150 instances per cell, budget 2·10⁵ nodes per attempt). 0 PTM failures, 0 PTM(e@x) failures (4,050 instances, 23,950 e@x queries); undecided counts in `out/random.log`.
 - 56 PTM and 75 e@x queries were undecided.
 - Re-run of the 120 instances concerned (`und_rerun.py` → `ptm f`, budget 5·10⁶; `out/rnd_und.log`): all but 8 PTM and 23 e@x queries decided, every one positively.
-- The audit's brute force does not decide the remaining ones either.
+- The audit's independent brute force (`A22-scripts/und_bf.py`) decides 82 of the 120 as positive for PTM and every e@x: all 23 with m = 2, 39 of 40 with m = 3, 20 of 57 with m = 4. One m = 3 instance (``OAdCiI?HMc@?KqaKB`laP``) is still open after 8 × 120 s; the rest were not reached. No failure.
 
 **(F) Reach of the walk theorem** (`walk.c`, all 2-matchings of all connected all-odd graphs; all 8 orientations; all admissible walks of least length):
 
@@ -1074,6 +1074,19 @@ Supports Conjecture 2.4.
 |---|---|---|---|---|
 | 12 | 3,745 | 14,980 | 0 | 0 |
 | 14 | 46,407 | 185,628 | 0 | 0 |
+
+**(I) Reach of the local-girth corollary** (`localgirth_stat.py 300 7 11 15 21 31 51`; `out/localgirth.log`). Random 3-connected J with degree sequence (4, 3, …, 3): configuration model, simple graphs only, node connectivity ≥ 3. A pairing {ab, cd} of N(z) qualifies if:
+- ab, cd ∉ E(J);
+- c is reachable from a in J* = (J − z) + ab + cd;
+- no triangle or 4-cycle of J* passes through a, b, c, d (the hypothesis of stl_of_localgirth / test1_of_localgirth).
+
+| order | graphs | pairings (non-adjacent) | local hypothesis holds | J* girth ≥ 5 | graphs with a local pairing | graphs with a girth-5 pairing |
+|---|---|---|---|---|---|---|
+| 11 | 300 | 638 | 5 | 5 | 5 | 5 |
+| 15 | 300 | 710 | 34 | 5 | 29 | 3 |
+| 21 | 300 | 775 | 91 | 7 | 73 | 6 |
+| 31 | 300 | 815 | 216 | 17 | 138 | 11 |
+| 51 | 300 | 856 | 438 | 32 | 210 | 14 |
 
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
 

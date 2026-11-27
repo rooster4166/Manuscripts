@@ -7,6 +7,11 @@ Thm 7.1, Cor 7.2), `lean/GallaiLean/TerminalMatching.lean`, `scripts/` and `scri
 E24 (experiments.md) and §Z (connections.md). Audit scripts: `research/audit/A22-scripts/`.
 Nothing under audit was modified.
 
+*Post-audit note.* This report audits the text as of commit 09ce96a. While the audit was running,
+commit 53093b4 applied the corrections of §6. I spot-checked items 1–7 in the current tex and all
+are addressed. The cleaned-up `TerminalMatching.lean` still elaborates and prints the same axioms
+(`A22Axioms.lean`, re-run).
+
 **Verdict.** The mathematics is correct: Theorems 4.2, 5.2, 6.1, 7.1, Corollary 7.2 and Lemmas
 3.4, 5.1 are sound, and the Lean statements say what the paper says (sorry-free, standard
 axioms only). Every table entry I recounted matches, and an independent brute force reproduces all
@@ -229,9 +234,9 @@ e@x and PEE are read off the same 2^m assignments.
 | K₄, prism | both fail by exhaustive search (inside the rows above) |
 | iso classes n = 8 (`isocount.py`, orbit counting with networkx automorphisms) | 13,025 instances → **3,913** classes = `iso8_2.txt`. Validates the encode/labelg/decode reduction |
 | n = 10 iso classes, chunk f2_00 (144,775 classes, all, `cmp_f.py`) | all 144,775 positive (PTM and every e@x), 0 disagreements with `f2_00.out` |
-| walk reach (`walkcheck.py`, own walk enumeration and base graphs) | n = 6: 206 / 1 / 160 / 31; n = 8 with excess 3: 13,025 / 68 / – / 3,093. WALK8. `walk 0 1` and `walk 3 1` re-run: 2,288 and 3,093 (these outputs are not saved in `out/`) |
-| consistency (theorem checks) | at n = 6, 8, every base-hypothesis or sparse success for (a,b,x,y) has the assignment (a, x) feasible by bf; sparse ⇒ base always; 0 violations |
-| random undecided (`out/rnd_und_*.in`, 120 instances, `und_bf.py`) | UND |
+| walk reach (`walkcheck.py`, own walk enumeration and base graphs) | n = 6: 206 / 1 / 160 / 31; n = 8 with excess 3: 13,025 / 68 / – / 3,093. n = 8, base hypothesis: a random sample of 400 instances (`walksample.py`) agrees instance by instance with `walk_8_0.txt` (380 base, 20 NOBASE). The full n = 8 base recount (`walkcheck.py 8 0`) was stopped after 48 CPU-minutes. `walk 0 1` and `walk 3 1` re-run: 2,288 and 3,093 (these outputs are not saved in `out/`) |
+| consistency (theorem checks) | at n = 6 (base and sparse) and n = 8 (sparse, excess ≤ 3), every success for (a,b,x,y) has the assignment (a, x) feasible by bf; sparse ⇒ base always; 0 violations |
+| random undecided (`out/rnd_und_*.in`, 120 instances, `und_bf.py`) | `ptm` left these undecided. bf decides 82 of them as positive for PTM and every e@x (all 23 with m = 2, 39/40 with m = 3, 20/57 with m = 4). One m = 3 instance (``OAdCiI?HMc@?KqaKB`laP``) is still open after 8 × 120 s, and the rest were not reached. No failure found |
 
 `ptm.c` is a verbatim copy of `tools/stl.c` (`extend`, `prune_ok`, `solve`, `classify`, `term_ok`
 are byte-identical), and its independent verifier is genuinely independent. The `.inc` files in
@@ -294,7 +299,7 @@ n ≤ 8 (plus partial n = 10), or wait for the run.
 
 1. Abstract: replace "at most 10 vertices" by "at most 8 vertices (order 10 in progress)", or
    complete the n = 10 run first. Same in §Z.1 ("and n = 10 up to isomorphism").
-2. Fix the [STL] numbers: Prop 3.4 → 4.4 (lines 105), Ex 3.7 → 4.5 (159), Conj 6.4 → 7.4 (195).
+2. Fix the [STL] numbers: Prop 3.4 → 4.4 (line 105), Ex 3.7 → 4.5 (159), Conj 6.4 → 7.4 (195).
    Cite the PEE data as [STL, §6, Table 3].
 3. Results (1): "the only known failure … of STL" → "the only known failure with J 3-connected".
 4. Add the K₄ exception to:

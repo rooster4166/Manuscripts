@@ -1,0 +1,5 @@
+n=11 graphs=300 pairings=638 local_ok_pairings=5 girth5_pairings=5 graphs_local=5 graphs_girth5=5
+n=15 graphs=300 pairings=710 local_ok_pairings=34 girth5_pairings=5 graphs_local=29 graphs_girth5=3
+n=21 graphs=300 pairings=775 local_ok_pairings=91 girth5_pairings=7 graphs_local=73 graphs_girth5=6
+n=31 graphs=300 pairings=815 local_ok_pairings=216 girth5_pairings=17 graphs_local=138 graphs_girth5=11
+n=51 graphs=300 pairings=856 local_ok_pairings=438 girth5_pairings=32 graphs_local=210 graphs_girth5=14

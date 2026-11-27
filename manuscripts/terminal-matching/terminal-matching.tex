@@ -51,10 +51,12 @@ the resulting even vertex along a path to the second edge, and restore the path 
 Fan's transfer lemma inside a two-leaf graph, where both prescriptions have become separations of
 vertex sets. This reduces two terminal edges to a separation problem with a single even vertex,
 which the sparse separation theorem solves when the special vertices are locally sparse. As a
-consequence, every connected graph with all degrees odd and girth at least five has the
-property for every pair of disjoint edges, even with one end prescribed. Lifting back gives the
-star-terminal condition, hence the first deletion test, for every vertex $z$ of degree four whose
-lifted graph $(J-z)+ab+cd$ has girth at least five. All theorems are formalised in Lean~4 with
+consequence, a graph with all degrees odd has the property for a pair of disjoint edges in one
+component, even with one end prescribed, whenever no cycle of length at most four passes through
+an end of the two edges; in particular for every pair when the girth is at least five. Lifting
+back gives the star-terminal condition, hence the first deletion test, for every vertex $z$ of
+degree four with a pairing $ab,cd$ of $N(z)$ such that no cycle of length at most four of the
+lifted graph $(J-z)+ab+cd$ passes through a neighbour of $z$. All theorems are formalised in Lean~4 with
 Mathlib, without \texttt{sorry} and with only the standard axioms.
 \end{abstract}
 \maketitle
@@ -131,13 +133,14 @@ a Lov\'asz decomposition of a base graph obtained by deleting a path.
 \item \emph{The sparse form} (Theorem~\ref{thm:sparse}). That separation problem is solved by the
 sparse separation theorem of~\cite{MS} when four special vertices are sparse, up to one
 exceptional vertex, which is removed by one more Fan transfer (Lemma~\ref{lem:fix}).
-\item \emph{Girth five} (Theorem~\ref{thm:girth}). If $G$ is connected, has all degrees odd and
-has no triangles and no $4$-cycles, then $\PTM(G,F;e@x)$ holds for every pair $F$ of disjoint
-edges and every choice of $e\in F$ and of its end $x$.
+\item \emph{Local girth five} (Theorem~\ref{thm:girth}). If $G$ has all degrees odd, $F$ is a
+pair of disjoint edges in one component, and no triangle and no $4$-cycle passes through an end
+of an edge of $F$, then $\PTM(G,F;e@x)$ holds for every choice of $e\in F$ and of its end $x$. In
+particular this holds for every $F$ when $G$ is connected and has girth at least five.
 \item \emph{STL and the first test} (Theorem~\ref{thm:stl}, Corollary~\ref{cor:test1}). If $z$ has
-degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and $(J-z)+ab+cd$ has girth at least five
-(and $c$ is reachable from $a$ in it), then $\STL(J,z,r)$ holds for every $r\in N(z)$, and the
-first deletion test holds at $z$.
+degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and no triangle and no $4$-cycle of
+$(J-z)+ab+cd$ passes through $a$, $b$, $c$ or $d$ (and $c$ is reachable from $a$ in it), then
+$\STL(J,z,r)$ holds for every $r\in N(z)$, and the first deletion test holds at $z$.
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
 \texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
 connected to \texttt{test1\_of\_stl}.
@@ -146,11 +149,13 @@ connected to \texttt{test1\_of\_stl}.
 \subsection*{Honest status}
 $\PTM_2$ in general is not proved. The walk theorem is a reduction, and its base hypothesis holds
 in $93.6\%$ of all instances on eight vertices when only shortest walks are used
-(Section~\ref{sec:comp}); the sparse form that we can prove covers girth five, and $17.6\%$ of
-the (mostly dense) eight-vertex instances. The girth-five consequence for the spine is narrow:
-the lifted graph of a $3$-connected $J$ rarely has girth five. Its value is that it is the first
-unconditional two-prescription result in this programme, and that the mechanism (walk the even
-vertex, restore inside the leaf graph) is general.
+(Section~\ref{sec:comp}); the sparse form that we can prove covers local girth five, and
+$17.6\%$ of the (mostly dense) eight-vertex instances. The consequence for the spine needs sparse
+graphs: for random $3$-connected graphs with degrees $4,3,\dots,3$ the local hypothesis of
+Corollary~\ref{cor:test1} holds for some pairing in $2\%$ of the graphs of order $11$ and $70\%$
+of those of order $51$ (global girth five: $2\%$ and $5\%$; Section~\ref{sec:comp}). Its value
+is that it is the first unconditional two-prescription result in this programme, and that the
+mechanism (walk the even vertex, restore inside the leaf graph) is general.
 
 \section{Statements, examples and conjectures}\label{sec:statements}
 
@@ -371,11 +376,11 @@ Theorem~\ref{thm:sparsesep} or Lemma~\ref{lem:fix}, then Theorem~\ref{thm:walk}.
 
 \section{Girth five}\label{sec:girth}
 
-\begin{theorem}\label{thm:girth}
-Let $G$ have no vertex of positive even degree and no cycle of length three or four. Let $ab$ and
-$cd$ be disjoint edges, with $c$ reachable from $a$. Then $G$ has a Lov\'asz decomposition in
-which $ab$ is terminal at $a$, $cd$ is terminal at $c$ or at $d$, and $ab$, $cd$ lie on
-different paths.\lean{ptm2\_girth5}
+\begin{theorem}[local girth five]\label{thm:girth}
+Let $G$ have no vertex of positive even degree. Let $ab$ and $cd$ be disjoint edges, with $c$
+reachable from $a$, such that no cycle of length three or four passes through $a$, $b$, $c$ or
+$d$. Then $G$ has a Lov\'asz decomposition in which $ab$ is terminal at $a$, $cd$ is terminal at
+$c$ or at $d$, and $ab$, $cd$ lie on different paths.\lean{ptm2\_localgirth, ptm2\_girth5}
 \end{theorem}
 
 The end of $ab$ is prescribed, so for every $r\in\{a,b,c,d\}$ there is such a decomposition in
@@ -383,7 +388,8 @@ which $r$ is the long end of its edge: apply the theorem to $(b,a)$ or to $(a,b)
 of the two edges exchanged if $r\in\{c,d\}$. In the language of Definition~\ref{def:ptm}:
 \emph{$\PTM_2$ and $\PTM_2(r)$ hold for all graphs of girth at least five with all degrees odd},
 when the two edges lie in one component; otherwise apply Theorem~\ref{thm:endedge} in each
-component.
+component. More generally $\PTM(G,F;e@x)$ holds for every pair $F$ none of whose ends lies on a
+cycle of length three or four.
 
 \begin{proof}
 Choose $u\in\{a,b\}$, $w\in\{c,d\}$ and a walk from $w$ to $u$ of least possible length $k$ over
@@ -397,7 +403,8 @@ $w$, to the edge $ab$ with $y=b$ and short end $x=a$, and to the reversed path. 
 are in the following situation, which we now treat: $ab$ and $xy$ are disjoint edges, $P$ is a
 path from $y$ to $a$ of length $k$, and every walk between $\{a,b\}$ and $\{x,y\}$ has length at
 least $k$. We show that Theorem~\ref{thm:sparse} applies; it yields $ab$ terminal at $a$ and $xy$
-terminal at $x$.
+terminal at $x$. Every triangle and every $4$-cycle excluded below passes through one of $a$, $b$,
+$x$, $y$, which is all the hypothesis provides.
 
 \emph{Admissibility.} If $b\in V(P)$, the part of $P$ from $y$ to $b$ is shorter than $k$, since
 $b\ne a$. If $x\in V(P)$, the part from $x$ to $a$ is shorter. If an inner vertex $p_i$ were
@@ -459,10 +466,10 @@ length two; likewise at $d$.
 
 \begin{corollary}\label{cor:test1}
 Let $z$ be the only even vertex of $J$, with $N(z)=\{a,b,c,d\}$, $ab,cd\notin E(J)$, and every
-neighbour of $z$ of degree at least three. If $J^\ast$ has no triangle and no $4$-cycle and $c$ is
-reachable from $a$ in $J^\ast$, then $\STL(J,z,r)$ holds for every $r\in N(z)$, and the first
+neighbour of $z$ of degree at least three. If no triangle and no $4$-cycle of $J^\ast$ passes
+through $a$, $b$, $c$ or $d$, and $c$ is reachable from $a$ in $J^\ast$, then $\STL(J,z,r)$ holds for every $r\in N(z)$, and the first
 deletion test holds at $z$: for every $r\in N(z)$, $J-z$ has a decomposition into at most
-$(|J|-1)/2$ paths with two ends at $r$.\lean{stl\_of\_girth5, test1\_of\_girth5}
+$(|J|-1)/2$ paths with two ends at $r$.\lean{stl\_of\_localgirth, test1\_of\_localgirth}
 \end{corollary}
 
 \begin{proof}
@@ -472,10 +479,11 @@ Theorem~\ref{thm:stl} gives $\STL(J,z,r)$. The first test follows from STL~\cite
 (\texttt{test1\_of\_stl}).
 \end{proof}
 
-In terms of $J$: $J^\ast$ has girth at least five exactly when $J-z$ has girth at least five,
-$d_{J-z}(a,b),d_{J-z}(c,d)\ge4$, and
-$d_{J-z}(a,c)+d_{J-z}(b,d)\ge3$ and $d_{J-z}(a,d)+d_{J-z}(b,c)\ge3$. Each of the other two
-pairings gives its own condition, and one of them suffices.
+In terms of $J$: no cycle of length at most four of $J^\ast$ passes through $a,b,c,d$ exactly
+when no such cycle of $J-z$ does, $d_{J-z}(a,b),d_{J-z}(c,d)\ge4$, and
+$d_{J-z}(a,c)+d_{J-z}(b,d)\ge3$ and $d_{J-z}(a,d)+d_{J-z}(b,c)\ge3$. (With ``$J-z$ has girth at
+least five'' in place of the first condition, this characterises girth five of $J^\ast$.) Each of
+the other two pairings gives its own condition, and one of them suffices.
 
 \section{Computations}\label{sec:comp}
 
@@ -531,11 +539,27 @@ repaired; $m=2,3,4$; $F$ random, or each new edge of $F$ adjacent to an earlier 
 distance exactly two from it so that the edges share neighbourhoods; $150$ instances per cell):
 $4{,}050$ instances and $23{,}950$ end-prescribed queries, no failure. With a node budget,
 $56$ PTM and $75$ PTM$(e@x)$ queries were undecided; a re-run of the $120$ instances concerned
-with budget $5\cdot10^6$ decided all but $8$ and $23$ of them, every one positively. Multigraph
+with budget $5\cdot10^6$ decided all but $8$ and $23$ of them, every one positively (an
+independent brute force of audit~A22 decides $82$ of the $120$, all positively). Multigraph
 instances with $G-F$ $2$-connected (Conjecture~\ref{conj:multi}): $120$ random graphs $G'$ for
 each order $10$, $12$, $14$ and each $m=2,3$, with $2m$ even vertices and every pairing $F$ of
 them; $6{,}480$ instances, $4{,}978$ with an $F$-edge parallel to an edge of $G'$, no failure
 ($48$ PTM and $86$ PTM$(e@x)$ queries undecided within the budget).
+
+\subsection*{How often Corollary~\ref{cor:test1} applies}
+\texttt{localgirth\_stat.py}: random $3$-connected graphs $J$ with degree sequence $4,3,\dots,3$
+(configuration model, simple graphs kept), $300$ per order; a graph counts if some pairing of
+$N(z)$ into non-adjacent pairs satisfies the hypothesis.
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order & $11$ & $15$ & $21$ & $31$ & $51$\\
+\midrule
+local hypothesis (Corollary~\ref{cor:test1}) & $5$ & $29$ & $73$ & $138$ & $210$\\
+$J^\ast$ of girth $\ge5$ & $5$ & $3$ & $6$ & $11$ & $14$\\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \subsection*{How far the walk theorem reaches}
 \texttt{walk.c} tests, for every instance with $|F|=2$, all eight choices of which edge is $ab$
@@ -609,12 +633,13 @@ The two leaves live in \texttt{Option (Option W)}; \texttt{PathDecomp.liftLeaf} 
 \texttt{leaf\_merge} (twice) do the leaf bookkeeping.
 \item \texttt{sep\_sparse\_fix}, \texttt{ptm2\_of\_sparse}: Lemma~\ref{lem:fix} and
 Theorem~\ref{thm:sparse}, from \texttt{separation\_sparse}.
-\item \texttt{NoTriangle}, \texttt{NoSquare}, \texttt{ptm2\_girth\_core}, \texttt{ptm2\_girth5}:
-Theorem~\ref{thm:girth}. The minimal walk is taken by \texttt{Nat.find} and made a path by
+\item \texttt{NoShortCycleAt}, \texttt{ptm2\_girth\_core}, \texttt{ptm2\_localgirth}, and
+\texttt{ptm2\_girth5} through \texttt{NoTriangle}, \texttt{NoSquare}: Theorem~\ref{thm:girth}. The minimal walk is taken by \texttt{Nat.find} and made a path by
 \texttt{Walk.bypass}; the distance arguments use \texttt{takeUntil}/\texttt{dropUntil}.
 \item \texttt{swapG}, \texttt{liftJ}, \texttt{swapG\_degree}, \texttt{GPath.subdivide\_start},
 \texttt{PathDecomp.replace\_edges}, \texttt{unlift}, \texttt{stl\_of\_ptm2}: Theorem~\ref{thm:stl}.
-\item \texttt{stl\_of\_girth5}, \texttt{test1\_of\_girth5}: Corollary~\ref{cor:test1}, through
+\item \texttt{stl\_of\_localgirth}, \texttt{test1\_of\_localgirth} (and the girth-five forms
+\texttt{stl\_of\_girth5}, \texttt{test1\_of\_girth5}): Corollary~\ref{cor:test1}, through
 \texttt{test1\_of\_stl}.
 \end{itemize}
 
