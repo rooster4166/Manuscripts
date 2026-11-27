@@ -903,3 +903,9 @@ Sorry-free. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.s
 - **`cutOK_of_pairing`**: the pairing criterion implies `CutOK`, via `key_identity` (|δ(W)| + |Y| = |δ_{G^v}(Y)| + d(v)).
 
 This formalises the manuscript's second, shorter proof: the pairing lemma applied once to B. It independently checks Thm 21.
+## NearDirac (cloud session `dense-near-dirac`)
+
+File: `GallaiLean/NearDirac.lean`. It is sorry-free. `#print axioms` reports only `propext`, `Classical.choice` and `Quot.sound`. It holds the two finite lemmas of `manuscripts/near-dirac` (balanced return theorem):
+
+* `NearDirac.matrix_cut_ineq` proves 0.6x + 0.6y − 0.4 − xy + 0.03·min(x,y) < 0 on [0, 0.65]². This closes the max-flow cut check of the membership-matrix lemma (manuscript Lemma 3.1, SP Lemma 14.28).
+* `NearDirac.dense_bipartite_hall`: if |L| = |R| = k ≥ 4M and every vertex on either side is related to at least k − 2M vertices of the other, then there is an injective matching L → R. This is the Hall step of the weaving lemma (manuscript Lemma 3.2, SP Lemma 14.29), derived from Mathlib's `Finset.all_card_le_biUnion_card_iff_exists_injective`.
