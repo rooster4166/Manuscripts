@@ -1740,7 +1740,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
     - With an orientation fixed, DL is a matching constraint system (in-degree 1), but a non-local one when the heads lie in N(g). That is exactly where clt's data show fixed-orientation joint failures (18 graphs at n = 7, e.g. `FCdcw`), and the free orientation removes them.
     - Universal twins violate locality at the tail, so they never arise inside CLT-B.
     - **The forest-base counterexample (Example 4.7) is clt's in-degree-2 obstruction**: a parent avoided by the end paths of two children (the minimal all-odd example is `EEiW`, n = 6).
-    - clt also reports that on its 30 residual graphs a triangle base exists for *every* root, data choice and orientation (8,016 instances, E30(G)).
+    - clt also reports that on its 30 residual graphs a triangle base exists for *every* root, data choice and **fixed** orientation (8,016/8,016, every witness checked; `clt/scripts/tb_all.py`, E30(G)). So on T(6)-i residual graphs even the strongest form holds (all data, all orientations), and DL's free orientation matters only in small or sparse graphs (19:47).
 
 ### AF.5 For the clt session (§AE)
 - DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.
