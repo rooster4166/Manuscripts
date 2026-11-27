@@ -638,7 +638,7 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
 
 ## 27. Cones, worked out: rooted Gallai for Eulerian graphs (eulerian-cone session, 2026-11-27)
 
-Manuscript `manuscripts/eulerian-cone` (10 pp.), Lean `EulerianCone.lean`, data E30, literature `research/notes/eulerian-gallai-literature.md`. Audit A30 pending.
+Manuscript `manuscripts/eulerian-cone`, Lean `EulerianCone.lean` + `CycleInsert.lean`, data E30, literature `research/notes/eulerian-gallai-literature.md`. **Audit A30: §§2–5 sound, Lean faithful; one false coverage sentence and provenance gaps, all fixed.**
 
 **What the spine needs of cones.** All of the following is in Lean with standard axioms.
 - At the apex: Test1 ⇔ RE(B) (`test1_fullCone_iff`), and the cone is 3-connected ⇔ B is 2-connected.
@@ -654,7 +654,7 @@ Manuscript `manuscripts/eulerian-cone` (10 pp.), Lean `EulerianCone.lean`, data 
 - Chu–Wang 2025, "Path decompositions of Eulerian graphs", proves only 3n/5.
 
 **What the data say.**
-- RE holds exhaustively to even order 10, and on all dense order-12 graphs (m ≥ 46).
+- RE holds exhaustively to even order 10, and on all dense order-12 graphs (m ≥ 45, 258,774 graphs).
 - **Every tight root is tight by end-counting.** The bound is CB(B, r) = least p with 2p − d_r ≥ 2 and Σ_v min(d_v, 2p − d_v) ≥ 2p. p_r = CB at 99.9% of roots.
 - Almost all tight roots have d(r) = n − 2.
 - **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) on 2-connected B. One path is to spare unless counting forbids it.
@@ -669,5 +669,10 @@ Suppression, cycle insertion and ear gluing are proved, and the constructions we
 **Where the difficulty sits.** Two places, both of the project's familiar kind:
 1. **The even-order ear.** Inserting the triangle into an optimal decomposition of B − v − ab is free only under an avoidance or disjointness condition at a or b (manuscript Rem. 5.8). This is L1*/DL-type.
 2. **Roots of degree n − 2**, where RE is tight. Then B − r has exactly one even vertex, and RE becomes a constrained Lovász decomposition of B − r: one piece attached at each neighbour of r, grouped into n/2 − 2 vertex-disjoint pairs and 2 singletons (Rem. 7.2). This is terminal-matching type.
+
+**The project's own collection.**
+- Marked-reduction Thm 170 (unrefereed; checked exactly to order 10) gives RE whenever ≥ n/2 − 1 vertices have degree n − 2. That covers only about 9% of the tight roots at order 10.
+- MR Thm 177/180 and SP Cor 13.12 constrain a least counterexample to *Gallai* with an Eulerian host. They are not proofs of RE in a range.
+- The "fat theta" (many degree-2 vertices between two hubs, the shape that defeats every terminal lift) is reducible in the RE* induction: degree-2 twins (Thm 5.7(b)), whichever hub is the root.
 
 So the cone case does not escape the open core. It lands on the same constrained-Lovász targets, and the n − 2 formulation is a clean new instance of them.

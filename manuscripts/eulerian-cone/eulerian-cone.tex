@@ -33,20 +33,20 @@ The spine reduction of the project turns Gallai's path decomposition conjecture 
 tests on $3$-connected graphs. We study the first test, (T1), on cones $J=B+z$. Then (T1) is exactly
 the following statement RE: every $2$-connected Eulerian graph $B$ of even order $n$ has, for every
 vertex $r$, a decomposition into at most $n/2$ paths of which at least two end at $r$. The spine needs
-RE precisely for such $B$ without a matching cut. Gallai's conjecture implies RE, and RE implies
-Gallai's conjecture for $2$-connected Eulerian graphs of even order. The correspondence is
-machine-checked.
+RE for such $B$ without a matching cut: at the apex of a cone over a graph of even order, the
+instances of the spine are exactly RE. Gallai's conjecture implies RE, and RE implies Gallai's
+conjecture for $2$-connected Eulerian graphs of even order. The correspondence is machine-checked.
 
-Published floor-bound theorems give RE for planar graphs, graphs of treewidth at most $3$,
-$2$-degenerate graphs and $K_5$-minor-free graphs. A doubling argument added here derives RE for
+Floor-bound theorems in the literature give RE for planar graphs, graphs of treewidth at most $3$,
+$2$-degenerate graphs and $K_5$-minor-free graphs; the last rests on an unrefereed 2026 preprint. A doubling argument added here derives RE for
 maximum degree at most $4$ from Bonamy and Perrett's ceiling theorem. We prove a lower bound
 $\CB(B,r)$ on the rooted path number by counting ends. We also prove reductions at vertices of
 degree $2$: in a smallest counterexample to the parity-free form RE$^*$, every degree-$2$ vertex other
 than $r$ is a triangle ear, no two are twins, and at odd order there are none.
 
 By exhaustive computation, RE holds for all $2$-connected Eulerian graphs of even order at most $10$
-($300{,}540$ roots). It also holds on several families of order $12$ to $16$, including all
-$124{,}004$ dense $2$-connected Eulerian graphs of order $12$ with at least $46$ edges. At order at
+($301{,}882$ roots). It also holds on several families of order $12$ to $16$, including all
+$258{,}774$ dense $2$-connected Eulerian graphs of order $12$ with at least $45$ edges. At order at
 most $10$ the rooted path number equals the counting bound at $99.9\%$ of the roots, and every tight
 root is tight for counting reasons. This leads to a strengthened conjecture UC: unless the counting
 bound forbids it, one path is always to spare.
@@ -80,7 +80,9 @@ $J-z$ has no matching cut. The first test, (T1) (Lean \lean{Test1}), asks: if $z
 vertex of $J$, then for every $r\in N(z)$ the graph $J-z$ has a decomposition into at most
 $(|J|-1)/2$ paths with at least two ends at $r$. Synthesis \S26 observed that on cones $J=B+z$ this is
 RE. The triangle, forest and forest-through-$r$ lifts of \texttt{direct-test1} all fail on the cone
-over $K_{2,6}$ (\texttt{direct-test1}, Example~4.7), so the cone case needs its own treatment.
+over $K_{2,6}$: there is no triangle data, the forest base fails (\texttt{direct-test1}, Example~4.7),
+and so does the variant through $r$ (synthesis \S25, addendum). So the cone case needs its own
+treatment.
 
 \subsection*{What is proved, and how}
 \begin{center}\small
@@ -90,9 +92,10 @@ Statement & Status & Where \\
 \midrule
 (T1) on cones $\iff$ RE; spine scope (Cor.~\ref{cor:spine}) & proved & Lean \lean{EulerianCone.lean} \\
 Gallai $\Rightarrow$ RE$^*$ at even order; RE $\iff$ leaf test; double & proved & Lean, \S\ref{sec:lit} \\
-RE on planar, tw $\le 3$, $2$-degenerate, $K_5$-minor-free, $\Delta\le4$ & from the literature & Thm.~\ref{thm:lit} \\
+RE on planar, tw $\le 3$, $2$-degenerate, $\Delta\le4$; $K_5$-minor-free; $B-r$ a forest & from the literature; (d) unrefereed preprint, (g) via restatements & Thm.~\ref{thm:lit} \\
 Counting bound $\pr\ge\CB$ & proved & Prop.~\ref{prop:cb} \\
-Reductions at degree $2$; smallest counterexample & proved, data-checked; insertion lemma in Lean & \S\ref{sec:red}, \lean{CycleInsert.lean} \\
+Reductions at degree $2$; smallest counterexample, parts (a)--(c) & proved, data-checked; insertion lemma in Lean & \S\ref{sec:red}, \lean{CycleInsert.lean} \\
+Smallest counterexample has $n\ge11$ (Thm.~\ref{thm:min}(d)) & computation & \S\ref{sec:comp} \\
 RE, $|B|\le 10$, all roots & computation (exhaustive) & \S\ref{sec:comp} \\
 RE, families of order $12$--$16$ & computation (scope in Table~\ref{tab:fam}) & \S\ref{sec:comp} \\
 UC (Conj.~\ref{conj:uc}) & conjecture; exhaustive to order $10$ & \S\ref{sec:uc} \\
@@ -133,8 +136,9 @@ connected and equals $B-X$; a walk avoiding $z$ uses only edges of $B$. Also $n\
 
 \begin{proposition}[Lean: \lean{fullConeDelIso}, \lean{test1At\_fullCone\_iff},
 \lean{test1\_fullCone\_iff}]\label{prop:t1}
-$J-z\cong B$. For every $r\in W$, (T1) holds at $(J,z,r)$ if and only if $B$ has a decomposition into
-at most $n/2$ paths with $e(r)\ge2$. Consequently (T1) holds at $(J,z)$ if and only if the following
+$J-z\cong B$. For every $r\in W$, the \emph{conclusion} of (T1) at $(J,z,r)$ (Lean \lean{Test1At}:
+$J-z$ has a decomposition into at most $(|J|-1)/2$ paths with $e(r)\ge2$) holds if and only if $B$
+has a decomposition into at most $n/2$ paths with $e(r)\ge2$. Consequently (T1) holds at $(J,z)$ if and only if the following
 holds: if $n$ is even and $B$ is Eulerian, then $B$ has such a decomposition for every $r$. When $B$
 is $2$-connected this is RE$(B,\cdot)$; the equivalence itself does not use connectivity.
 \end{proposition}
@@ -177,10 +181,14 @@ Matching cuts are invariant under isomorphism (Lean \lean{HasMatchingCut.of\_iso
 \lean{rootedDecomp\_of\_gallai}]\label{cor:spine}
 \leavevmode
 \begin{enumerate}[label=(\roman*)]
-\item The cone instances of the spine, in its weakest form \lean{SpineTestsNMC}, are exactly RE$(B,r)$
-for $2$-connected Eulerian $B$ of even order \emph{without a matching cut}, at every $r$. For $B$ of
-even order, every test at every vertex of $B+z$ holds if and only if RE$(B,\cdot)$ holds (when $B$ is
-Eulerian).
+\item At the apex, the instances of the spine's weakest form \lean{SpineTestsNMC} on cones over
+graphs of even order are exactly RE$(B,r)$, at every $r$, for $2$-connected Eulerian $B$
+\emph{without a matching cut}. Lean proves the direction \lean{SpineTestsNMC} $\Rightarrow$ RE for
+these $B$ (\lean{rootedDecomp\_of\_spineTestsNMC}). It also proves the unrestricted equivalence: for $B$
+of even order, every test at every vertex of $B+z$ holds if and only if, when $B$ is Eulerian, $B$
+has a rooted decomposition with at most $n/2$ paths at every $r$ (\lean{fullConeTests\_iff}). For
+odd $n$, the spine's cone instances also include the genuine (T2) tests at non-apex vertices
+(Proposition~\ref{prop:vac}), which are not RE.
 \item Gallai's conjecture implies $\pr(B)\le |B|/2$ for every connected Eulerian $B$ of even order and
 every $r$ with $d(r)>0$. So
 \[
@@ -207,16 +215,21 @@ has none.
 Let $B^r$ be $B$ with a new vertex $\ell$ joined to $r$ only. Let $B\oplus_r B$ be two disjoint copies
 of $B$ joined by an edge between the two copies of $r$ (Lean \lean{dbl}).
 
-\begin{lemma}[Lean: \lean{rootedDecomp\_iff\_addLeaf}]\label{lem:leaf}
-If $d_B(r)$ is even and positive, then $\pr(B)=p(B^r)$.
+\begin{lemma}[threshold form in Lean: \lean{rootedDecomp\_iff\_addLeaf}]\label{lem:leaf}
+If $d_B(r)>0$, then $\pr(B)=p(B^r)$.
 \end{lemma}
+In Lean, the threshold form for even $d_B(r)>0$ is stated: $B$ has at most $|B|/2$ paths with two ends at
+$r$ if and only if $p(B^r)\le|B|/2$. Evenness is needed only to turn one end into two. The
+equality is assembled on paper from the same pieces (\lean{pathNumber\_addLeaf\_le},
+\lean{exists\_leafCost\_le}).
 
 \begin{proof}
 ($\ge$) Extend a path ending at $r$ by $r\ell$.
 ($\le$) Let $D$ decompose $B^r$, and let $P$ be the path containing $r\ell$.
 \begin{itemize}[leftmargin=*]
 \item If $P=r\ell$, then $D-P$ decomposes $B$ into $|D|-1$ paths. If $r$ is an end of none of them, some
-path passes through $r$, because $d_B(r)>0$. Splitting it there gives $|D|$ paths with two ends at $r$.
+path passes through $r$: some edge at $r$ lies on a path, and $r$ is not its end. Splitting it there gives $|D|$
+paths with two ends at $r$.
 \item Otherwise $P-\ell$ ends at $r$, and the count is unchanged.
 \end{itemize}
 \end{proof}
@@ -244,17 +257,18 @@ the following cases.
 \item $B$ is planar.
 \item $B$ has treewidth at most $3$.
 \item $B$ is $2$-degenerate.
-\item $B$ is $K_5$-minor-free.
+\item $B$ is $K_5$-minor-free (conditional on \cite{ZLH}, an unrefereed preprint).
 \item $\Delta(B)\le 4$.
 \item $\Delta(B-r)\le3$.
-\item $B-r$ is a forest.
+\item $B-r$ is a forest (via the restatements of Pyber's theorem in \cite{BS,BP}).
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
 In (a)--(d) and (f)--(g) we apply Lemma~\ref{lem:leaf}. The graph $B^r$ has odd order $|B|+1$ and a leaf,
-so it is none of the exceptions $K_3$, $K_5^-$, $K_5$, or a SET graph (whose odd vertices have two even
-neighbours; the odd vertex $\ell$ has none). It lies in the class whenever $B$ does.
+so it is none of the exceptions $K_3$, $K_5^-$, $K_5$. Nor is it a SET graph (a graph whose
+even-vertex subgraph is a triangle and whose every odd vertex has at least two even neighbours): the odd
+vertex $\ell$ has no even neighbour. It lies in the class whenever $B$ does.
 \begin{enumerate}[label=(\alph*)]
 \item Blanch\'e, Bonamy and Bonichon \cite[Thm.~1.2]{BBB}: every connected planar graph except $K_3$ and
 $K_5^-$ decomposes into $\lfloor n/2\rfloor$ paths.
@@ -266,8 +280,8 @@ $K_5-e$. This is an arXiv preprint (November 2026), not yet refereed.
 \item This case uses Lemma~\ref{lem:dbl} instead. The double is connected and has maximum degree
 $\max(\Delta(B),d(r)+1)\le 5$. Bonamy and Perrett \cite[Thm.~1.3]{BP} decompose every connected graph
 of maximum degree at most $5$ into $\lceil n/2\rceil$ paths. So $p(B\oplus_rB)\le|B|$.
-\item Botler and Sambinelli \cite[Thm.~13]{BS}: if $\Delta(\mathrm{EV}(G))\le3$, then $G$ is a Gallai
-graph or a SET graph. Here $\mathrm{EV}(B^r)=B-r$.
+\item Botler and Sambinelli \cite[Thm.~13]{BS}: if $G$ is connected and simple and
+$\Delta(\mathrm{EV}(G))\le3$, then $G$ is a Gallai graph or a SET graph. Here $\mathrm{EV}(B^r)=B-r$.
 \item Pyber's theorem: if the even vertices induce a forest, then $p\le\lfloor n/2\rfloor$. We used the
 restatements in \cite[Thm.~2(b)]{BS} and \cite{BP}, not Pyber's paper itself, which we could not access
 (\texttt{research/notes/eulerian-gallai-literature.md}).
@@ -286,10 +300,44 @@ two ends at a prescribed vertex. We read Fan--Hou--Zhou only in its abstract and
 restatement.
 For $2$-connected Eulerian graphs their hypotheses force a cycle, or an edge with all other vertices of
 degree $2$.
-\item Botler--Sambinelli \cite[Lemma~10]{BS} is a rooted lemma for non-Eulerian SET graphs.
+\item Botler--Sambinelli \cite[Lemma~10]{BS} is a rooted lemma for ESET graphs, a non-Eulerian class
+that contains the SET graphs.
 \end{itemize}
-Chu and Wang \cite{CW}, whose title is \emph{Path decompositions of Eulerian graphs}, prove $3n/5$. The
-survey with access levels is \texttt{research/notes/eulerian-gallai-literature.md}.
+Chu and Wang \cite{CW}, whose title is \emph{Path decompositions of Eulerian graphs}, prove $3n/5$ for
+Eulerian graphs whose triangles are pairwise at distance at least $3$, and for graphs with a triangle
+removal set. The survey with access levels is \texttt{research/notes/eulerian-gallai-literature.md}.
+
+\subsection*{Results in the project's own collection}
+The project's collection (\texttt{gallai/}, unrefereed) contains Eulerian results of two kinds.
+\begin{itemize}[leftmargin=*]
+\item \emph{The dense regime, unconditionally.} Marked-reduction Cor.~168: in a connected Eulerian
+graph of order $2k$, any $k$ vertices of degree $2k-2$ are the ends, twice each, of a $k$-path
+decomposition. Thm.~170: if at least $k-1$ vertices have degree $2k-2$, then RE holds at
+\emph{every} root. Thm.~172 extends this to $(1-1/1000)k$ such vertices for large $k$.
+\begin{itemize}
+\item The proof of Thm.~170 uses $6{,}131$ finite certificates whose supplement is not in the
+repository. We checked both statements exactly, with the profile oracle \texttt{tools/route\_ext.c},
+on every connected Eulerian graph of even order at most $10$: all $1{,}579$ instances of Cor.~168 and
+all $14{,}096$ instances of Thm.~170 are realisable (\texttt{scripts/dense\_check.py}).
+\item The hypothesis of Thm.~170 holds in only $319$ of these $31{,}219$ graphs. At order $10$ it
+covers $1{,}323$ of the $14{,}156$ tight roots: most roots with $d(r)=n-2$ lie in graphs with fewer
+than $n/2-1$ such vertices.
+\end{itemize}
+\item \emph{Reductions inside Gallai's induction.} Marked-reduction Thm.~177, Cor.~178 and Thm.~180,
+and separating-pairs Cor.~13.12, describe a least failure of the rooted private-leaf test, which is
+equivalent to Gallai's conjecture, when the failing host is Eulerian. Examples: a degree-$(n-2)$ root
+whose non-neighbour has degree $2$ forces neighbours of degree at least $16$; a degree-$2$ vertex that
+is not an ear forces all other degrees to be at least $18$; and, conditionally, minimum degree at
+least $10$.
+\begin{itemize}
+\item These results assume the rooted bound for \emph{all} connected graphs of smaller even order.
+They constrain a first counterexample to Gallai and do not prove RE in any range.
+\item Theorem~\ref{thm:min} works in a different induction, inside the Eulerian class but over both
+parities. There RE$^*$ at odd order supplies the slack, so no degree hypotheses are needed. The two
+are not comparable: RE$^*$ at odd order is implied by Gallai but is not a consequence of RE.
+\end{itemize}
+\end{itemize}
+
 
 \section{A lower bound by counting ends}\label{sec:cb}
 
@@ -449,7 +497,7 @@ Let $(B,r)$ be a counterexample to RE$^*$ with $|V(B)|+|E(B)|$ minimum. Then:
 \item no two vertices other than $r$ of degree $2$ have the same neighbourhood;
 \item if $n$ is odd, every vertex other than $r$ has degree at least $4$. If moreover $d(r)=2$, then
 $N(r)=\{a,b\}$ is an edge and $B-r-ab$ is disconnected;
-\item $n\ge 11$.
+\item $n\ge 11$ (by computation, \S\ref{sec:comp}).
 \end{enumerate}
 \end{theorem}
 
@@ -473,18 +521,31 @@ and RE$^*(B')$ allows $n/2$ paths, so Lemma~\ref{lem:ins} gives $n/2+1$, one too
 is free in either of two situations:
 \begin{itemize}[leftmargin=*]
 \item $a$ is an end of two paths $P_1,P_2$ of $D'$ with $b\notin P_1$: replace them by $P_1\,a\,b\,v$
-and $P_2\,a\,v$;
+and $P_2\,a\,v$. This moves two ends from $a$ to $v$, so it keeps an end at $r$ only if $a\ne r$ or
+$e_{D'}(a)\ge4$;
 \item $a,b$ are ends of vertex-disjoint paths $P_a,P_b$: merge them through $ab$ and add $a\,v\,b$.
 \end{itemize}
 These are avoidance conditions of the kind that the project's open core (L1$^*$, DL) is about. On the
-data the bound $n/2+1$ is actually needed: in $56$ of the $1{,}225$ even-order ear instances of order
-at most $9$, the optimal rooted decomposition of $B'$ already has $n/2$ paths. Yet $\pr(B)\le n/2$
-always held. Remark~\ref{rem:degn2} gives another formulation of the hard case.
+data, the insertion bound $\pr(B')+1$ equals $n/2+1$ in $56$ of the $1{,}225$ even-order ear instances
+of order at most $9$, because $\pr(B')=n/2$ there. Yet $\pr(B)\le n/2$ always held.
 \end{remark}
 
+\begin{remark}[fat thetas]\label{rem:theta}
+The configuration that defeats the terminal-structure lifts of \texttt{direct-test1} consists of many
+degree-$2$ vertices of $B$ between the root and a second hub, as in $K_{2,t}$. The three order-$9$
+roots missed by all lifts have this shape (\texttt{direct-test1}, Example~4.7, and the triangle-base
+data). Two such vertices are twins with $N=\{r,r'\}$. By Lemma~\ref{lem:supp}, or by
+Proposition~\ref{prop:twin} when $rr'\in E$, they cannot both be present in a smallest counterexample
+to RE$^*$: Theorem~\ref{thm:min}(b). So the fat theta is reducible in the RE$^*$ induction,
+whichever hub is the root.
+\end{remark}
+
+
 \emph{Data check.} \texttt{scripts/reductions\_check.py} executes every construction of this section
-on optimal decompositions produced by the solver, and verifies each output independently: partition
-into paths, sizes, ends at every old vertex, end at $r$.
+on optimal decompositions produced by the solver, and verifies each output independently. It checks
+the partition into paths, the size, and the end at $r$ in every case. It checks the ends at every old
+vertex for the ear and twin insertions, the only claims that need them. It checks the bound $\lceil n/2\rceil$
+wherever the text claims it.
 \begin{itemize}[leftmargin=*]
 \item Every connected Eulerian graph of order $4$ to $9$, every root and every applicable vertex:
 $15{,}776$ suppressions, $13{,}827$ ear insertions, $2{,}537$ ears at a cut, $3{,}559$ twin
@@ -492,8 +553,8 @@ insertions, $2{,}024$ root suppressions and $1{,}763$ root-ear insertions, with 
 (\texttt{data/out/reductions\_check\_le9.txt}).
 \item At order $10$: the first $3{,}000$ of the $2$-connected graphs and all $972$ connected graphs
 that are not $2$-connected. That is $62{,}838$ suppressions, $54{,}306$ ear insertions,
-$16{,}002$ ears at a cut and $19{,}472$ twin insertions, with no failure
-(\texttt{reductions\_check\_10.txt}).
+$16{,}002$ ears at a cut, $19{,}472$ twin insertions, $6{,}982$ root suppressions and $6{,}034$ root-ear
+insertions, with no failure (\texttt{reductions\_check\_10.txt}).
 \end{itemize}
 
 \section{Computation}\label{sec:comp}
@@ -512,12 +573,14 @@ The validation has four parts:
 \item \textbf{Brute force.} \texttt{scripts/bf.py} enumerates all paths and all exact covers. On all
 $473$ connected graphs of order $3$ to $7$ with at most $10$ edges it agrees with \texttt{re.c} on all
 $3{,}622$ values of $\pr$ (every root) and $p$.
-\item \textbf{Witnesses.} Every positive answer comes with a witness, and \texttt{scripts/verify\_witness.py}
-checks it independently.
+\item \textbf{Witnesses.} Every upper bound below comes with a witness checked by
+\texttt{scripts/verify\_witness.py} or, in UC mode, \texttt{scripts/verify\_uc.py}. The full witness dumps
+are regenerated by \texttt{run\_all.sh}; the shipped tables keep the sizes only.
 \item \textbf{Lower bounds.} Every lower bound used below is either the counting bound of
 Proposition~\ref{prop:cb}, which is a proof, or was re-decided by CP-SAT. The CP-SAT model is the
 project's circuit model \texttt{tools/pathnum2.py}, which shares no code with \texttt{re.c}. It agrees on
-all $219$ roots with $\pr>\CB$ (\texttt{data/out/above\_cb\_cpsat.txt}).
+all $219$ roots with $\pr>\CB$ (\texttt{data/out/above\_cb\_cpsat.txt}). It also agrees on the $6$ UC failures
+of \S\ref{sec:uc} (\texttt{ucfail\_cpsat.txt}).
 \item \textbf{Generation.} The graphs come from nauty's \texttt{geng} (Debian package). The counts of
 connected Eulerian graphs of orders $3,\dots,10$ are $1,1,4,8,37,184,1782,31026$.
 \end{itemize}
@@ -562,23 +625,23 @@ gives Theorem~\ref{thm:min}(d).
 \toprule
 family ($2$-connected Eulerian) & graphs & roots & result\\
 \midrule
-order $12$, $m\ge46$ (complement $\le20$ edges, all odd) & 124{,}004 & 1{,}488{,}048 & RE; UC \\
+order $12$, $m\ge45$ (complement $\le21$ edges, all odd) & 258{,}774 & 3{,}105{,}288 & RE; UC \\
 order $12$, $4$-, $6$-, $8$-, $10$-regular & 1{,}542; 7{,}849; 94; 1 & 113{,}832 & RE \\
 order $14$, $4$-regular & 88{,}126 & 1{,}233{,}764 & RE \\
 order $14$, $10$-regular & 540 & 7{,}560 & RE \\
 complete multipartite, even parts, $n\le16$ & 58 & 760 & RE \\
-random, orders $12$, $14$, $16$ & 2{,}100 each & 88{,}200 & RE \\
+random, orders $12$, $14$, $16$ & 2{,}100 samples each & 88{,}200 & RE \\
 \bottomrule
 \end{tabular}
 \caption{Families. RE was decided at every root (witness verified). For the dense order-$12$ family
-UC (\S\ref{sec:uc}) was also decided at every root. $29$ roots needed CP-SAT, and all have
-$\pr=\CB=5$.}\label{tab:fam}
+UC (\S\ref{sec:uc}) was also decided at every root. $32$ roots needed CP-SAT, and all have
+$\pr=\CB=5$. The random samples may contain isomorphic repeats.}\label{tab:fam}
 \end{table}
 
 Families with maximum degree $4$ are covered by Theorem~\ref{thm:lit}(e). They serve here as a solver
-check. The dense family contains every $2$-connected Eulerian graph of order $12$ with at least $46$
+check. The dense family contains every $2$-connected Eulerian graph of order $12$ with at least $45$
 edges, so it contains every graph of that order whose edge bound $\lceil m/11\rceil$ is at least
-$5=n/2-1$. Tight roots also occur in sparse graphs: for instance $K_{2,10}$ is tight at its two roots of
+$5=n/2-1$. The slice $m=45$ was added after audit A30, whose own run on it agrees. Tight roots also occur in sparse graphs: for instance $K_{2,10}$ is tight at its two roots of
 degree $10=n-2$.
 
 \section{Tightness and a strengthened conjecture}\label{sec:uc}
@@ -610,10 +673,15 @@ At order $10$, $99.8\%$ of the tight roots have $d(r)=n-2$.
 \item Deleting $r$ cuts each path into one or two \emph{pieces}, possibly trivial. There is one piece for
 each neighbour $x$ of $r$, the part of the path containing $rx$ on the side of $x$.
 \end{itemize}
-So RE at such a root is a statement about $B-r$, a graph with one even vertex. It asks for a
-decomposition of $B-r$ into $n-2$ pieces, one attached at each neighbour of $r$, that group into
-$n/2-2$ vertex-disjoint pairs and two singletons. Conversely, every such system reassembles into a
-rooted decomposition of $B$ with $n/2$ paths.
+So RE at such a root is a statement about $B-r$, a graph with one even vertex. It asks for a family
+$(Q_x)_{x\in N(r)}$ with the following properties:
+\begin{itemize}[leftmargin=*]
+\item each $Q_x$ is a path of $B-r$ with an end at $x$, or the trivial path $x$;
+\item the nontrivial $Q_x$ partition $E(B-r)$;
+\item $N(r)$ splits into $n/2-2$ pairs $\{x,y\}$ with $Q_x,Q_y$ vertex-disjoint, and two singletons.
+\end{itemize}
+Conversely, every such family reassembles into a rooted decomposition of $B$ with $n/2$ paths:
+$Q_x\,x\,r\,y\,Q_y$ for each pair, and $Q_x\,x\,r$ for each singleton.
 This is a constrained Lov\'asz decomposition problem with prescribed attachments, of the
 terminal-matching type studied elsewhere in the project. It is the natural next target for the cone
 case of (T1).
@@ -621,6 +689,9 @@ case of (T1).
 
 \section*{Files}
 \begin{itemize}[leftmargin=*]
+\item Audit: \texttt{research/audit/A30-eulerian-cone.md} (adversarial referee). It found the proofs of
+\S\S2--5 sound and the Lean faithful; its findings (one false coverage sentence, one gap in a remark,
+wording and provenance) have been applied, as listed at the end of the report.
 \item Lean: \texttt{lean/GallaiLean/EulerianCone.lean} (\S\ref{sec:cones}, Lemmas~\ref{lem:leaf}, \ref{lem:dbl}) and
 \texttt{lean/GallaiLean/CycleInsert.lean} (Lemma~\ref{lem:ins}, the insertion step of Proposition~\ref{prop:ear}). No \texttt{sorry}. Every theorem named above
 depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the full
@@ -636,8 +707,11 @@ tables.
 \item \texttt{mcut.c}, \texttt{evenfilter.c}, \texttt{oddfilter.c}, \texttt{random\_euler.py},
 \texttt{multipartite.py}: generation.
 \end{itemize}
-\item Data: input graph6 files, and per-root tables \texttt{data/out/*.tab.gz} (graph6, root, $\pr$,
-$n/2$, status). The witness dumps are regenerated by \texttt{run\_all.sh}.
+\item Data: input graph6 files (the larger ones gzipped). Per-root tables \texttt{data/out/*.tab.gz} give
+graph6, root, $\pr$, $n/2$ and status. For the two largest families (dense order $12$, $4$-regular
+order $14$) the tables are per graph, \texttt{data/out/*.pg.gz}: graph6, the witness size at each root,
+and a status letter per root. All witness dumps are regenerated by \texttt{run\_all.sh}, and
+\texttt{data/SHA256SUMS} records the inputs.
 \end{itemize}
 
 \begin{thebibliography}{99}

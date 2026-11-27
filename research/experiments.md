@@ -1603,7 +1603,7 @@ Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/e
 - RE* holds for all connected Eulerian graphs of order 3–9 (17,844 roots) and for the 972 non-2-connected ones of order 10 (9,720 roots).
 
 **(B) Families of order 12–16** (RE decided at every root, witnesses verified):
-- all 124,004 2-connected Eulerian graphs of order 12 with ≥ 46 edges (complement ≤ 20 edges, all degrees odd): 1,488,048 roots;
+- all 258,774 2-connected Eulerian graphs of order 12 with ≥ 45 edges (complement ≤ 21 edges, all degrees odd): 3,105,288 roots. The m = 45 slice (134,770 graphs) was added after audit A30 found the first version (m ≥ 46) did not cover every graph with edge bound 5. UC was run with witnesses (`re -u`, `verify_uc.py`): 3,105,256 roots directly; 32 budget-undecided roots got 5-path decompositions from CP-SAT (CB = 5), witnesses verified;
 - all 2-connected 4/6/8/10-regular graphs of order 12: 1,542 / 7,849 / 94 / 1 graphs, 113,832 roots;
 - all 88,126 4-regular graphs of order 14 (1,233,764 roots) and all 540 10-regular graphs of order 14 (7,560 roots);
 - all 58 complete multipartite graphs with even parts, n ≤ 16 (760 roots);
@@ -1611,8 +1611,8 @@ Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/e
 
 **(C) Conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected Eulerian B.**
 - It holds at every root of order 3–10, both parities.
-- It holds on the whole dense order-12 family. 29 critical roots (CB = 5) were undecided at budget 2·10⁶ and CP-SAT found 5 paths at each (`out/uc12_unk_cpsat.txt`, verified).
-- **False without 2-connectivity:** 1 root at order 8 (`GCXnbW`, a triangle at a cut vertex, rooted there) and 5 at order 10.
+- It holds on the whole dense order-12 family (m ≥ 45). 32 critical roots (CB = 5) were undecided at budget 2·10⁶, and CP-SAT found 5 paths at each (`out/uc12_unk_cpsat.txt`, verified).
+- **False without 2-connectivity:** 1 root at order 8 (`GCXnbW`, a triangle at a cut vertex, rooted there) and 5 at order 10. All 6 were confirmed by CP-SAT (`out/ucfail_cpsat.txt`).
 
 **(D) Reduction constructions executed** (`reductions_check.py`). Every connected Eulerian graph of order 4–9, every root, every applicable vertex:
 - 15,776 suppressions, 13,827 ear insertions, 2,537 ears at a cut, 3,559 twin insertions, 2,024 root suppressions and 1,763 root-ear insertions;
@@ -1621,3 +1621,16 @@ Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/e
 In 56 of the 1,225 even-order ear instances the +1 of the insertion exceeds n/2. These are the hard case (manuscript Remark 5.8).
 
 **(E) Matching cuts.** 2-connected Eulerian graphs of orders 4/6/8/10 without a matching cut number 0/5/130/27,933 (of 1/7/162/30,054). Only these cones are needed by `SpineTestsNMC`.
+
+**(F) The project's own dense-regime theorems** (marked-reduction Cor 168 / Thm 170, unrefereed; `dense_check.py` with `tools/route_ext.c`):
+- Every instance in the connected Eulerian graphs of even order ≤ 10 is realisable: 1,579 for Cor 168 and 14,096 for Thm 170.
+- Thm 170's hypothesis (≥ k − 1 vertices of degree 2k − 2) holds in only 319 of the 31,219 graphs. It covers 1,323 of the 14,156 tight roots at order 10.
+
+**(G) Audit A30** (`research/audit/A30-eulerian-cone.md`) reproduced:
+- Tables 1–2, the tight split, and the matching-cut counts;
+- the brute-force validation;
+- the reduction counters;
+- the dense and 4-regular runs, with witnesses.
+
+It found one false sentence (the m ≥ 46 coverage claim; fixed by extending to m ≥ 45) and provenance gaps, now fixed in `run_all.sh`. Shipped tables now include per-graph tables `out/uc_dense12.pg.gz` and `out/re_reg14_4.pg.gz`, and `out/budget8_decide.txt`.
+
