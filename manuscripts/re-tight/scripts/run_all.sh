@@ -44,7 +44,24 @@ for n in 6 8; do ./re -p -m < $O/hasn2_$n.g6 > $O/p_$n.txt; ./ret -z < $O/hasn2_
 #   ./ret -z -b 20000000 < $O/hasn2_10.g6 > $O/retz_10_partial.txt; python3 compare_z.py $O/p_10.txt $O/retz_10_partial.txt
 
 # the Lovasz-plus-matching method (-L) and Theorem 3.1 against every Lovasz decomposition (-T)
-for n in 6 8 10; do ./ret -L -b 200000000 < $O/hasn2_$n.g6 > $O/retL_$n.txt; done   # n = 10: ~15 min
-python3 verify_family.py < $O/retL_10.txt
-for n in 6 8 10; do ./ret -T -b 50000000 < $O/hasn2_$n.g6 > $O/retT_$n.txt; python3 check_star.py $O/retT_$n.txt; done
+# Shipped retL_10: this command (budget 2e8) for all but 28 of the dense last roots, which were
+# re-run one at a time with -b 20000000 (run_roots.py); the 77 UNK lines mix the two budgets.
+for n in 6 8 10; do ./ret -L -b 200000000 < $O/hasn2_$n.g6 > $O/retL_$n.txt; done   # n = 10: hours (dense UNK roots)
+for n in 6 8 10; do python3 verify_family.py -L < $O/retL_$n.txt; done
+# shipped retT_10 is a partial run (stopped after 9,905 roots): ./ret -T -b 50000000 on hasn2_10.g6
+for n in 6 8; do ./ret -T -b 50000000 < $O/hasn2_$n.g6 > $O/retT_$n.txt; python3 check_star.py $O/retT_$n.txt; done
 for n in 6 8 10; do python3 coverage.py $n $O/retL_$n.txt $O/cov_$n.txt; done
+
+# order 12 to 16 samples (Section 5.3); samples.py reproduces the shipped inputs byte for byte
+gcc -O2 -march=native -DWIDE -o retw ret.c
+python3 samples.py $O
+./ret -L -b 20000000 < $O/mid12_sample.g6 > $O/retL_mid12.txt
+# rand12: the shipped retL_rand12_all ran every root outside Thm 170 (u <= 4) and 514 of the 1,016
+# inside, at -b 20000000; the full run is
+./ret -L -b 20000000 < $O/rand12_n2.g6 > $O/retL_rand12_all.txt                    # hours
+(./ret -L -r 0 < $O/nr12.g6; ./ret -L -r 0 < $O/nr14.g6; ./retw -L -r 0 < $O/nr16.g6) > $O/retL_nr.txt
+./retw -L -r 0 -b 20000000 < $O/mixed16.g6 > $O/retL_mixed16.txt
+./retw -r 0 -b 200000000 < $O/mixed16.g6 > $O/ret_mixed16.txt
+for f in retL_mid12 retL_rand12_all retL_nr retL_mixed16; do python3 verify_family.py -L < $O/$f.txt; done
+python3 verify_family.py < $O/ret_mixed16.txt
+./retw -L -r 0 -b 3000000000 < $O/m16_u4.g6; ./retw -L -r 0 -b 3000000000 < $O/m16_u6.g6   # both UNK

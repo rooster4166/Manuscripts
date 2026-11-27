@@ -3,12 +3,12 @@ of order N by the sufficient conditions of the manuscript, by the literature, an
 method (ret.c -L output RETL_FILE).
 
 Per root r (d(r) = n - 2, s the non-neighbour, k = n/2, h_t = #{x in N(r): d(x) >= 2t}):
-  star     condition (*) (Corollary 3.4(c)): floor(h_t / 2) <= k + 1 - t for 3 <= t <= k - 1
+  star     condition (*) (Corollary 3.3(c)): floor(h_t / 2) <= k + 1 - t for 3 <= t <= k - 1
   star2    condition (**) of Theorem 3.1: for 3 <= t <= k - 1, floor(h_t / 2) <= k + 1 - t or
            floor(h_{t+1} / 2) <= k + 1 - 2t
   cor168   at least k vertices of degree n - 2 (marked-reduction Cor 168, with r in R)
   thm170   at least k - 1 vertices of degree n - 2 (marked-reduction Thm 170)
-  lit      a class of eulerian-cone Thm 2.3 that is decided here exactly: planar, Delta(B) <= 4,
+  lit      a class of eulerian-cone Thm 3.3 that is decided here exactly: planar, Delta(B) <= 4,
            Delta(B - r) <= 3, 2-degenerate, B - r a forest.  (Treewidth <= 3 and K5-minor-free are not
            tested, so 'lit' undercounts.)
   lov      ret.c -L found a Lovasz decomposition and orientation that work

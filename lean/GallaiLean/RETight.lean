@@ -27,6 +27,7 @@ two leftover trivial ends form one more path through `r`.
   writing `h_t = #{x ∈ N(r) : d(x) ≥ 2t}`, either `⌊h_t/2⌋ + t ≤ k + 1` or
   `⌊h_{t+1}/2⌋ + 2t ≤ k + 1`, then `B` has a decomposition into `k` paths with exactly two ends
   at `r`. **`rootedDecomp_of_degStar`**: hence `RootedDecomp B r`.
+* **`test1At_fullCone_of_degStar`**: hence (T1) at the apex of the cone over `B`, root `r`.
 * **`rootedDecomp_of_few_heavy`** (Corollary 3.3(a)): at most five neighbours of `r` have degree
   at least `6`. **`rootedDecomp_of_deg_le_six`** (Corollary 3.3(b)): `n ≥ 10` and every neighbour
   of `r` has degree at most `6`.
@@ -871,6 +872,16 @@ theorem rootedDecomp_of_deg_le_six (B : SimpleGraph W) [DecidableRel B.Adj]
   · left
     rw [h4 t ht4, card_empty]
     omega
+
+/-- **The spine at such cones.** Under the hypotheses of Theorem 3.1, the two-end test (T1) holds
+at the apex of the cone over `B` for the root `r` (`test1At_fullCone_iff`). -/
+theorem test1At_fullCone_of_degStar (B : SimpleGraph W) [DecidableRel B.Adj]
+    (hB : ∀ a, Even (B.degree a)) {k : ℕ} (hk : 2 ≤ k) (hW : Fintype.card W = 2 * k) (r : W)
+    (hr : B.degree r + 2 = 2 * k)
+    (hstar : ∀ t, 3 ≤ t → t ≤ k - 1 →
+      #(heavyNbrs B r t) / 2 + t ≤ k + 1 ∨ #(heavyNbrs B r (t + 1)) / 2 + 2 * t ≤ k + 1) :
+    Test1At (fullCone B) none (some r) :=
+  (test1At_fullCone_iff r).2 (rootedDecomp_of_degStar B hB hk hW r hr hstar)
 
 end main
 
