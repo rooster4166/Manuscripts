@@ -300,6 +300,41 @@ $k$ paths. The appends happen at ends $v\ne r$ and add vertices $p(v)\ne r$, so 
 two paths. This is (T1).
 \end{proof}
 
+\begin{proposition}[the forest converse; coordinator, proof checked here]\label{prop:forestconv}
+For fixed $(r,w,\Phi)$ and rooting, $M$ has a Lov\'asz decomposition with (i) and (ii) if and only if
+$J-z$ has a decomposition into at most $k$ paths, with at least two ends at $r$, in which every edge
+$p(v)v$ of $\Phi$ is the end edge, at $p(v)$, of its path.
+\end{proposition}
+
+\begin{proof}
+($\Rightarrow$) is Theorem~\ref{thm:forest}: the edge $p(v)v$ is appended at $v$ and becomes the end
+edge at $p(v)$, and no later append acts at $p(v)$ on that path.
+
+($\Leftarrow$) Let $c(u)$ be the number of children of $u$ in $\Phi$. A vertex $u$ has at least $c(u)$ ends,
+of the parity of $d_B(u)$, and $r$ has at least two. Recall that $d_B(u)$ is even exactly for
+$u\in N(z)$, and that $d_\Phi(u)=c(u)+[u\text{ is not a root}]$ is odd exactly for $u\in T$. The
+resulting lower bounds are:
+\begin{itemize}[leftmargin=*]
+\item $c(u)$ at a non-root vertex of $\Phi$, and at $w$;
+\item $c(u)+1$ at the other roots;
+\item $2$ at $r$;
+\item $d_B(u)\bmod 2$ elsewhere.
+\end{itemize}
+Since $\sum_u c(u)=|E(\Phi)|$ and $\Phi$ has one root per component, these bounds sum to exactly $2k$.
+So every bound is attained. In particular no path is a single edge of $\Phi$: its end at the child
+would exceed the bound there. A path cannot have $\Phi$-end-edges at both ends with length $2$,
+because the middle vertex would have two parents.
+
+Remove every edge $p(v)v$ from the end $p(v)$ of its path. The ends move from $p(v)$ to $v$, which
+leaves one end at every vertex of $V(\Phi)-\{w\}$, none at $w$, and two at $r$. Then append $z$ to one
+of the two paths ending at $r$. The result is a Lov\'asz decomposition of $M$. The shortened path
+ending at $v$ no longer contains $p(v)$, which gives (i). Two siblings on one path would have made
+$p(v)$ both ends of a path, which gives (ii).
+\end{proof}
+
+So Conjecture~\ref{conj:forest} is (T1) with a \emph{terminal forest $T$-join}. It is again of PTM type,
+and weaker than the terminal-matching form.
+
 \begin{remark}
 \begin{itemize}[leftmargin=*]
 \item \emph{Special case.} Theorem~\ref{thm:lift} is the case where $\Phi=M_0$ is a perfect matching
