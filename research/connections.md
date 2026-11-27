@@ -1671,6 +1671,18 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - Elsewhere the forest lift is very effective: 2,435 of the 2,438 roots have a forest base, and all 12 at order 7 do.
 - A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
 
+### AF.4″ DL versus clt's CLT-B1 (coordinator's question)
+*Based on the coordinator's summary of CLT-B1: pairwise disjoint avoid-sets A_j at constrained vertices c_j, with cross-locality A ∩ (N[C] ∪ N(g)) = ∅. The clt branch is not on the remote, so the exact statement was not checked.*
+- **Resolving the disjunctions.** Choosing an orientation turns a DL instance into constraints "Q(v_i) avoids {u_i}". The avoid-sets are pairwise disjoint, because M0 is a matching.
+- **When DL is a special case of CLT-B1.** Exactly when some orientation satisfies cross-locality: every u_i ≁ g (= w) and u_i ∉ N[v_j] for all j. That is the sparse, L1\*-admissible regime of Props 7.1–7.2.
+- **The dense T(6)-i regime.** Every pair lies in N(w), so **every orientation violates cross-locality**, and DL there is outside CLT-B1.
+  - This is DL's content: the free choice of end replaces cross-locality. In random graphs one fixed orientation fails in 6–58% of instances, but the disjunction held in every decided instance.
+  - So CLT-B1 alone does not give the triangle base in the dense regime. DL does not follow from it there unless CLT-B1 is extended by a per-constraint disjunction.
+- **The failures are of different kinds.**
+  - DL's only failures are universal twins: N(a) = N(b) = C − {a, b}, so a, b ∈ N(g) and d(a) = |C| − 2, and *both* orientations fail.
+  - clt's boundary examples (in-degree 2, chains/cycles, or dropped cross-locality with d(g) = 2 in a triangle) are fixed-orientation failures. Universal twins with d(g) = 2 force |C| ≤ 4, so on the face of it the two lists do not overlap.
+  - A precise match needs clt's instance list.
+
 ### AF.5 For the clt session (§AE)
 - DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.
 - The hardest instances found are the residual ∅ graphs and E28's K2 |O| = 8 graphs. Graph6 strings are in E29 and in `t6-dense` E28.
