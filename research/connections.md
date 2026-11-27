@@ -1039,6 +1039,29 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 - In addition, leaves adjacent to c finish at once (Q_c = cv), and leaves outside N[c] are deleted.
 - Separation itself fails at distance 2 in about 15% of all-odd instances (E20), so the residual cases need an invariant strictly between L1 and separation.
 
+### V.4a Proved: L1 in full (the leaf trick)
+**Theorem (L1).** If all degrees of F are odd and c, a are distinct and non-adjacent, some Lovász decomposition of F has a ∉ V(Q_c). More generally, Q_c can avoid any packed set Y ⊆ V ∖ N[c], while every path meets Y at most once.
+
+Proof, in one step from the separation theorem. Attach a new leaf ℓ at c: K = F + cℓ.
+- In K the vertex c is the **only** vertex of positive even degree, and dist_K(ℓ, a) = 1 + dist_F(c, a) ≥ 3.
+- Separation therefore gives a Lovász decomposition of K in which no path contains both ℓ and a.
+- The path through ℓ is ℓ c w ⋯. It does not stop at c, because c has no end.
+- Delete ℓ. The result is a Lovász decomposition of F whose path ending at c avoids a.
+
+**Lean (done).** `Separation.lean`: **`lovasz_avoid_set`** and **`lovasz_avoid_nonadj`**, sorry-free, standard axioms. `OnePair.lean`: **`realisable_two_even_adj`**, one step of route descent end to end (L1 on G − ca as the base, `route_append` as the step, which now also records that R is terminal). `Retract.delete_supp` now also returns that each new path is the kept part of an old path.
+
+So the residual configurations (R-I), (R-II) of V.4 are moot: the right invariant was not to be found inside Lovász's induction on F, but on F + leaf.
+
+What L1 does and does not give:
+- It is the m = 1 case of L_N / RR, and it makes the edge ca terminal at a (Cor "onepair", now without the triangle condition).
+- It gives **no new realisability class by itself**. The first pair of any Fan schedule is always free, and one-edge "mixed schedules" (one pair appended last via L1, the rest by Fan) need the special pair to be a sink of the schedule digraph, so they are already acyclic.
+- **Limits** (E20):
+  - L1 is false in graphs that already have an even vertex z (e.g. the path c z a). In 5,399 random pairs it failed 648 times, always with dist(c, a) = 2, z ~ a, and N(z) ⊆ N[c] ∪ N[a].
+  - For m ≥ 2 pairs, the leaf trick creates m even vertices, one per tail. So L_N ⇔ separating each leaf from its head in a graph whose even vertices all carry pendant leaves. MSEP (all-odd) is the analogue without even vertices. A proof of MSEP that tolerates even vertices with pendant leaves would give L_N at distance ≥ 2, hence Gallai for every graph whose even subgraph has a perfect matching.
+- **Open, with evidence.**
+  - **S1**: both a ∉ Q_c and c ∉ Q_a at distance 2, in one decomposition. 998 decided instances, 0 failures.
+  - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 1,984 instances, 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
+
 ### V.5 Existential version and BranchBase
 - A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).
 - Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.
@@ -1047,4 +1070,4 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 - *G[Ev] has a unique perfect matching ⇒ every orientation is realisable.* This is Fan descent along an acyclic order. It is a direct corollary of endpoint-structure Cor 25 / `realisable_of_fanSchedule`; uniqueness is exactly what makes every orientation acyclic. Not new as Gallai: Gallai for these graphs follows from Cor 25.
 - *Fan-isolated routes* (every vertex of a route has no even neighbours except its route-neighbours): TRC by Fan transfers along each route. Inside Pyber's class (G[Ev] is then a matching), so new only as a TRC (all-transversals) statement.
 - *Separation theorem*: new as far as we know; a strengthening of Lovász's theorem.
-- *Conjectures RR / L_N / L1*: new; L_N would be a genuinely new Gallai class.
+- *L1*: now a theorem (V.4a), new as far as we know. *Conjectures RR / L_N*: new; L_N would be a genuinely new Gallai class.

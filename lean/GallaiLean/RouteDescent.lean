@@ -381,14 +381,17 @@ variable {U : Type u} [DecidableEq U]
 /-- **Appending a route** (route-descent manuscript, Lemma "extension", (i) ⇒ (ii)). Let `R` be a
 path of `G` from `c` to `a`, let `K = G − E(R)`, and let `D'` decompose `K`. If some path `Q` of
 `D'` ends at `c` and meets `R` only in `c`, then `Q ∪ R` is a path, and replacing `Q` by it gives
-a decomposition of `G` of the same size with one end moved from `c` to `a`. -/
+a decomposition of `G` of the same size with one end moved from `c` to `a`, in which `R` is a terminal
+segment, ending at `a`, of some path. -/
 theorem PathDecomp.route_append {G K : SimpleGraph U} {R : GPath G} {a c : U}
     (hRs : R.src = c) (hRt : R.tgt = a)
     (hK : ∀ e, e ∈ K.edgeSet ↔ e ∈ G.edgeSet ∧ e ∉ R.edges)
     (D' : PathDecomp K) {Q : GPath K} (hQ : Q ∈ D'.paths) (hQc : Q.src = c ∨ Q.tgt = c)
     (hdisj : ∀ x ∈ Q.walk.support, x ∈ R.walk.support → x = c) :
     ∃ D : PathDecomp G, D.size = D'.size ∧
-      ∀ w, D.ends w + (if c = w then 1 else 0) = D'.ends w + (if a = w then 1 else 0) := by
+      (∀ w, D.ends w + (if c = w then 1 else 0) = D'.ends w + (if a = w then 1 else 0)) ∧
+      ∃ P ∈ D.paths, ∃ hPt : P.tgt = a, ∃ p : G.Walk P.src c,
+        P.walk.copy rfl hPt = p.append (R.walk.copy hRs hRt) := by
   obtain ⟨Q₁, hQ₁s, hQ₁e, hQ₁ends, hQ₁supp⟩ := Q.exists_orient hQc
   have hKG : ∀ e ∈ Q₁.walk.reverse.edges, e ∈ G.edgeSet := by
     intro e he
@@ -433,7 +436,7 @@ theorem PathDecomp.route_append {G K : SimpleGraph U} {R : GPath G} {a c : U}
   have hmemP' : ∀ e, e ∈ P'.edges ↔ e ∈ Q.edges ∨ e ∈ R.edges := by
     intro e
     rw [hP'edges, List.mem_append, List.mem_reverse, hQ₁e.mem_iff]
-  obtain ⟨D, hsize, -, hends, -⟩ := D'.replace hQ P' (by
+  obtain ⟨D, hsize, hP'mem, hends, -⟩ := D'.replace hQ P' (by
       intro e
       rw [hmemP' e]
       constructor
@@ -452,7 +455,7 @@ theorem PathDecomp.route_append {G K : SimpleGraph U} {R : GPath G} {a c : U}
       rcases (hmemP' e).1 he with heQ | heR
       · exact Or.inl heQ
       · exact Or.inr (fun hk => ((hK e).1 hk).2 heR))
-  refine ⟨D, hsize, fun w => ?_⟩
+  refine ⟨D, hsize, fun w => ?_, P', hP'mem, rfl, A, rfl⟩
   have h1 := hends w
   have h2 : P'.endsAt w = (if Q₁.tgt = w then 1 else 0) + (if a = w then 1 else 0) := rfl
   have h3 : Q.endsAt w = (if c = w then 1 else 0) + (if Q₁.tgt = w then 1 else 0) := by

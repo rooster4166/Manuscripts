@@ -1,6 +1,6 @@
 # Route descent
 
-`route-descent.tex` / `route-descent.pdf` (13 pages): route descent for the transversal realisability conjecture TRC, minimum T-joins, route-respecting realisations as constrained Lovász decompositions, and the separation theorem for Lovász decompositions.
+`route-descent.tex` / `route-descent.pdf` (14 pages): route descent for the transversal realisability conjecture TRC, minimum T-joins, route-respecting realisations as constrained Lovász decompositions, the separation theorem for Lovász decompositions, and its corollary L₁.
 
 No proof in the manuscript depends on computation. The scripts below produced the evidence in its section "Conjectures and their status" and in `research/experiments.md` E20.
 
@@ -14,8 +14,9 @@ All files are in `lean/GallaiLean/`. They are sorry-free, use only the standard 
   - `isMinTJoin_sdiff`, `isMinTJoin_of_two_mul_card_le` (Lemma "minimum T-joins" (4), (5));
   - `realisable_of_even_matching` (Theorem "Fan-isolated routes", one-edge routes);
   - `PathDecomp.route_append` (Lemma "extension", (i) ⇒ (ii): the inductive step of route descent).
+- `OnePair.lean`: `realisable_two_even_adj` (Corollary "onepair": one step of route descent end to end, with L₁ as the base).
 - `FanSupport.lean`: `fan_single_supp`, `fan_grouped_supp`, `fan_exec_supp` (Lemma "Fan's lemma with vertex sets").
-- `Separation.lean`: `separation_set` (Theorem "separation", packed sets), `separation` (two vertices), `lovasz_avoid` (Corollary "L₁ at distance three").
+- `Separation.lean`: `separation_set` (Theorem "separation", packed sets), `separation` (two vertices), `lovasz_avoid` (Corollary "symmetric L₁ at distance three"), `lovasz_avoid_set` and `lovasz_avoid_nonadj` (Theorem "L₁": the path ending at c avoids any non-neighbour, via a leaf at c).
 
 ## Oracle
 
@@ -48,5 +49,9 @@ All files are in `lean/GallaiLean/`. They are sorry-free, use only the standard 
 | `msep3.py trials budget` | multi-pair separation at distance ≥ 3 |
 | `sep2.py trials budget` | separation at distance 2 (fails often) |
 | `unlinked.py n count budget` | minimum T-joins with unlinked transitions (linking is needed) |
+| `l1_leaf_check.py trials budget` | checks the leaf reduction of L₁ to separation |
+| `l1z_test.py trials budget nmin nmax z\|odd` | L₁ and its two-sided form S₁, with one even vertex or all odd |
+| `l1z_classify.py trials budget nmin nmax` | classifies L₁ failures in graphs with one even vertex |
+| `ball_test.py trials budget z\|leaf` | one-sided separation (Q_s within distance two), and Q_c ⊆ N[c] |
 
 Logs are in `scripts/outputs/`.
