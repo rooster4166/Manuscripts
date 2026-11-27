@@ -125,6 +125,8 @@ EMM sufficiency work is **stopped**.
   - **Where the induction stops:** for k = 1 it is exactly L1Blocked. For k ≥ 2 the new residuals are adjacent tails and tails with a common neighbour in N(g).
   - **Outside CLT:** ST, and DL, the free-orientation non-local condition. Both still hold on all residual data.
   - **Open:** CLT-B1 at k = 2; a free-orientation CLT containing DL.
+  - **Audit A30: done.** §§2–5 sound, Lean faithful. Fixed: one false coverage sentence (dense family extended to m ≥ 45), Remark 5.8 gap at a = r, literature caveats moved into the statements, and provenance.
+- **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
 - **t6-dense**: **finished** (ec9fcc4).
   - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
   - **Audit A26:** sound; fixes F1–F10 applied. Conj 5.1's (E7) branch is equivalent to STL-P plus two terminal edges, a strengthening of STL.
@@ -660,6 +662,6 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Cones: Test1 = rooted Gallai for Eulerian graphs (eulerian-cone, E30, synthesis §27).**
   - Lean `EulerianCone.lean` (standard axioms, full build 18,406 jobs). **`rootedDecomp_of_spineTestsNMC`**: the cone instances of the spine are RE for 2-connected Eulerian B of even order without a matching cut. `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `fullConeTests_iff` (for even |B| every other test at a cone is vacuous), `rootedDecomp_of_gallai`, `rootedDecomp_of_dbl`.
   - RE from the literature: planar (BBB), treewidth ≤ 3 (BSCL), 2-degenerate (Anto–Basavaraju), K5-minor-free (ZLH 2026, arXiv) via the leaf; Δ ≤ 4 via the double and Bonamy–Perrett.
-  - RE exhaustive to even order 10, and dense order 12 (124,004 graphs with ≥ 46 edges). Tight ⇔ counting-tight on these data. Conjecture UC.
+  - RE exhaustive to even order 10, and dense order 12 (258,774 graphs with ≥ 45 edges, RE and UC at every root). Tight ⇔ counting-tight on these data. Conjecture UC. Internal results compared: marked-reduction Thm 170 (dense regime) was checked exactly to order 10 but covers about 9% of tight roots; MR Thm 177/180 and SP 13.12 are least-counterexample constraints for Gallai, not RE in a range.
   - Smallest-counterexample structure at degree 2 (manuscript Thm 5.7). The next targets are the even-order ear (free insertion is an avoidance condition) and roots of degree n − 2 (a constrained Lovász problem on B − r, which has one even vertex).
 

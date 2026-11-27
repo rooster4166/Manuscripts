@@ -374,9 +374,9 @@ Here $\mathcal{G}$ = {connected triangle-free graphs with odd distance ≥ 3}. T
 | Δ ≤ 4, except K3 and K5 | ⌊n/2⌋ | BSCL Thm 4.1 | full (arXiv) | partial: §0 gives roots of degree 2 only (B^r has Δ = 5 when d(r) = 4) |
 | Δ ≤ 5 | ⌈n/2⌉ | Bonamy–Perrett Thm 1.3 | full (arXiv v1) | not through the leaf (ceiling bound), **but yes through the double (§0′) for Eulerian B with Δ(B) ≤ 4, every root** |
 | Δ ≤ 6, degree-6 vertices independent, except K3 and K5 | ⌊n/2⌋ (as restated by Anto–Basavaraju) | Chu–Fan–Liu 2021 | abstract only | partial: §0 gives roots with d(r) ≤ 4, which would cover all of Eulerian Δ ≤ 4, if the hypothesis is Δ ≤ 6 (inferred, unverified) |
-| planar, except K3 | ⌊n/2⌋ | Blanché–Bonamy–Bonichon Thm 1.2 | full (arXiv v2) | **yes** (§0; B^r planar, not K3 or K5^-) |
-| K5-minor-free, except K3 | ⌊n/2⌋ | Zhang–Liu–Hong 2026, Thm 1.1 | full (arXiv) | **yes** (§0; the leaf device also appears in their Lemma 2.2) |
-| treewidth ≤ 3, except K3 | ⌊n/2⌋ | BSCL Thm 3.2 | full (arXiv) | **yes** (§0) |
+| planar, except K3 and K5⁻ | ⌊n/2⌋ | Blanché–Bonamy–Bonichon Thm 1.2 | full (arXiv v2) | **yes** (§0; B^r planar, not K3 or K5^-) |
+| K5-minor-free, except K3 and K5 − e | ⌊n/2⌋ | Zhang–Liu–Hong 2026, Thm 1.1 | full (arXiv) | **yes** (§0; the leaf device also appears in their Lemma 2.2) |
+| treewidth ≤ 3, except K3 and K5⁻ | ⌊n/2⌋ | BSCL Thm 3.2 | full (arXiv) | **yes** (§0) |
 | 3-degenerate, except K3 | ⌊n/2⌋ (restated) | Zhang–Liu–Hong 2024 (DM 347, 114057) | restatement in ZLH 2026 | yes, if the restatement is accurate (§0) |
 | 2-degenerate, except K3 | ⌊n/2⌋ | Anto–Basavaraju Thm 1 | full (arXiv) | **yes** (§0) |
 | triangle-free planar | ⌊n/2⌋ | BJS Thm 6 | full (arXiv) | **yes** (§0; subsumed by planar) |
@@ -391,3 +391,22 @@ Here $\mathcal{G}$ = {connected triangle-free graphs with odd distance ≥ 3}. T
 | triangles pairwise at distance ≥ 3 | 3n/5 | Chu–Wang Thm 1.3 | full (arXiv) | no: bound exceeds n/2 |
 | all Eulerian (and all graphs) | 2n/3, (g+1)n/(2g), 3n/5 | Dean–Kouider; Harding–McGuinness; Chu–Fan–Zhou | restatements | no: bounds exceed n/2 |
 | any graph whose leaf extensions B^r satisfy Bonamy–Perrett Q1.1 / BSCL Conj. 3 / BS Conj. 4 | ⌊n/2⌋ (conjectural) | — | — | these conjectures imply RE in full (§0, consequence 3) |
+
+---
+
+## Addendum: the project's own collection (unrefereed; eulerian-cone session)
+
+Read in `gallai/01-original-manuscripts/marked-reduction.pdf` (§§23, 25) and `gallai/02-november-25/separating-pairs.pdf` (Cor. 13.12). Checked against the text and, where possible, by computation.
+
+- **Dense regime, unconditional.**
+  - MR Thm 166 / Cor 168: in a connected Eulerian F of order 2k, any k vertices of degree 2k − 2 can be the ends, twice each, of k paths.
+  - MR Thm 170: if F has ≥ k − 1 vertices of degree 2k − 2, adding a leaf at any vertex gives path number ≤ k. That is RE at every root.
+  - MR Thm 172: the same with (1 − 1/1000)k such vertices.
+  - Thm 170 rests on 6,131 finite certificates that the repository does not ship.
+  - **Checked exactly** (`manuscripts/eulerian-cone/scripts/dense_check.py`, profile oracle `tools/route_ext.c`): all 1,579 Cor 168 instances and all 14,096 Thm 170 instances in connected Eulerian graphs of even order ≤ 10 are realisable.
+  - Coverage: 319 of 31,219 graphs; 1,323 of the 14,156 tight roots at order 10.
+- **Least failure of the rooted test (≡ Gallai) with an Eulerian host.** These assume the rooted bound for all connected graphs at smaller even orders.
+  - MR Thm 177 / Cor 178: a degree-(n − 2) root whose non-neighbour has degree 2 forces neighbour degrees ≥ 16.
+  - MR Thm 180: a non-ear degree-2 vertex forces other degrees ≥ 18; a degree-2 root forces support degrees ≥ 20.
+  - SP Cor 13.12 (conditional on "the smaller odd alternative is absent"): an Eulerian failing host has δ ≥ 10.
+  - None proves RE in a range. They constrain a first counterexample to Gallai. Compare eulerian-cone Thm 5.7, which works inside the Eulerian class over both parities.

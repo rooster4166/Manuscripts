@@ -1,22 +1,24 @@
-"""reductions_check.py: executes the constructions of the reduction lemmas (eulerian-cone, Section 6)
-on real decompositions and verifies every output.
+"""reductions_check.py: executes the constructions of the reduction lemmas (eulerian-cone, Section 5)
+on real decompositions and verifies every output (manuscript Section 5).
 
 For every connected Eulerian graph B in the input files, every root r and every vertex v != r of
 degree 2 with neighbours a, b:
 
-  * SUPPRESS (Lemma 6.1): if ab is not an edge, take an optimal rooted decomposition of B/v
+  * SUPPRESS (Lemma 5.1): if ab is not an edge, take an optimal rooted decomposition of B/v
     (re.c), subdivide ab by v, and check that the result is a decomposition of B with the same
     number of paths and an end at r.
-  * EAR (Lemma 6.2, Prop. 6.3): if ab is an edge and B' = B - v - ab is connected, take an optimal
+  * EAR (Lemma 5.2, Prop. 5.3): if ab is an edge and B' = B - v - ab is connected, take an optimal
     rooted decomposition D' of B', insert the triangle avb at a (or b), and check that the result
     has |D'| + 1 paths and the same number of ends as D' at every vertex of B'.
-  * EAR-CUT (Prop. 6.4): if ab is an edge and B' is disconnected, glue rooted decompositions of the
+  * EAR-CUT (Prop. 5.4): if ab is an edge and B' is disconnected, glue rooted decompositions of the
     two components and check that the result has |D_a| + |D_b| paths (|D_b| + 1 if the component
     of a is {a}) and an end at r.
-  * TWIN (Prop. 6.5): for a second degree-2 vertex u != r with N(u) = N(v) and B - u - v
+  * TWIN (Prop. 5.5): for a second degree-2 vertex u != r with N(u) = N(v) and B - u - v
     connected, insert the 4-cycle a u b v at a, and check |D''| + 1 paths and the same ends.
-In every case the size is also compared with ceil(n/2) (RE* for B), using the exact rooted path
-numbers of the smaller graphs.
+  * ROOT2 (Prop. 5.6): the root itself of degree 2 (suppress and split, or insert the ear with r last).
+Checked in every case: partition into paths, size, end(s) at r.  Ends at every old vertex are checked
+for EAR and TWIN.  The bound ceil(n/2) is checked where the manuscript claims it: SUPPRESS, EAR at odd
+n, EAR-CUT, TWIN at even n, ROOT2 at odd n.
 
 usage: python3 reductions_check.py RE_BINARY FILE.g6 ...
 """
@@ -199,7 +201,7 @@ def main():
                         e = check_decomp(B, D)
                         assert size_ok and e[r] >= 1 and len(D) <= ce, (line, r, v)
                         stats["EAR-CUT"] += 1
-                # the root itself of degree 2 (Prop. 5.7): suppress and split, or insert the
+                # the root itself of degree 2 (Prop. 5.6): suppress and split, or insert the
                 # triangle with r as the last chain vertex
                 if B.degree(r) == 2:
                     a, b = list(B[r])
