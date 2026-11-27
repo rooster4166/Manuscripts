@@ -22,6 +22,8 @@ and Lemma 7 (parity) on every (v, Y), and the edge-disjointness and simplicity o
 
 Usage:
   a13_check.py g6 FILE [trials]       all graphs in a graph6 file
+  a13_check.py g6deep FILE [trials]   the same, and also eq:split, Lemma 7 and the sigma criterion
+                                      of Lemma 13 on every (v, Y) (always done at n <= 6)
   a13_check.py families [trials]      trees, cycles, K_{a,b}, random graphs, special graphs
   a13_check.py sanity                 checker sanity: count cut-infeasible half-sets at n = 6, 8;
                                       Lemma 13 (pairing criterion) vs the definition at n = 6
@@ -309,7 +311,7 @@ def check_graph(G, rng, trials, methods=('proof', 'greedy'), deep=False):
     return None, agg, e
 
 
-def run_g6(path, trials):
+def run_g6(path, trials, deep_all=False):
     rng = random.Random(20261127)
     tot = {'graphs': 0, 'e0': 0, 'runs': 0, 'Fv_disconnected': 0, 'Fv_odd_component_sizes': 0,
            'v_even_paired': 0}
@@ -322,7 +324,7 @@ def run_g6(path, trials):
             G = nx.from_graph6_bytes(s.encode())
             if G.number_of_nodes() % 2 or not nx.is_connected(G):
                 continue
-            deep = G.number_of_nodes() <= 6
+            deep = deep_all or G.number_of_nodes() <= 6
             res, agg, e = check_graph(G, rng, trials, deep=deep)
             tot['graphs'] += 1
             tot['e0'] += (e == 0)
@@ -370,6 +372,13 @@ def families():
             if nx.is_connected(G):
                 fam.append(('gnp%d_%.2f_%d' % (n, p, cnt), G))
                 cnt += 1
+    # random graphs of order 10 with many even vertices (e >= 6)
+    cnt = 0
+    while cnt < 100:
+        G = nx.gnp_random_graph(10, rng.choice([.3, .4, .5, .6]), seed=rng.randrange(10 ** 9))
+        if nx.is_connected(G) and sum(1 for v in G if G.degree(v) % 2 == 0) >= 6:
+            fam.append(('gnp10hi_%d' % cnt, G))
+            cnt += 1
     # even-degree-heavy random graphs: random 4-regular and graphs with many even vertices
     for n in (10, 12):
         for i in range(20):
@@ -470,9 +479,9 @@ def sigma_criterion(G, pairs):
 
 if __name__ == '__main__':
     mode = sys.argv[1]
-    if mode == 'g6':
+    if mode in ('g6', 'g6deep'):
         trials = int(sys.argv[3]) if len(sys.argv) > 3 else 3
-        f = run_g6(sys.argv[2], trials)
+        f = run_g6(sys.argv[2], trials, deep_all=(mode == 'g6deep'))
         sys.exit(1 if f else 0)
     elif mode == 'families':
         trials = int(sys.argv[2]) if len(sys.argv) > 2 else 3

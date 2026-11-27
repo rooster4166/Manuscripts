@@ -215,3 +215,38 @@ The construction uses saturated degree-2 vertices, the same mechanism as at n = 
 The first test is **pairing-guided descent**: for the Thm 21 pairing, can one always descend from Ev to some transversal, choosing within pairs, keeping every intermediate set realisable? Check this exactly at n ≤ 8.
 
 **Bank in parallel.** Target D, exact Gallai below Dirac: return the o(n) exceptional set of SP Cor 14.39 using near-half-mixed-vertices and absorption. It is a major unconditional theorem, but parameterised.
+
+**Addendum (emc-four report, 2026-11-27).**
+- Thm 21 passed the author session's own adversarial review: about 50k graphs of orders 8–12, with no gap found. Audit A13, which is independent of the author, is running.
+- **Evidence caveat.** At n ≤ 8, and in the random n = 10 sample, *every* half-set of every δ ≥ 3 graph is realisable (19,422 of 19,422 at n = 8). So the small-order evidence for EMM₃ was vacuous: cuts never bind there. The only informative δ ≥ 3 data are the two-blob and bottleneck families (282 cut-excluded half-sets, 0 failures).
+- The conditional reduction "EMM₃ at δ ≥ 5 + Thm 21 ⇒ every Gallai failure is an odd SP 10.16(1) witness" is correct as an implication. It is moot, given §12: EMM₃ is expected to fail via gadgets.
+
+## 14. EMM₃ is false as well (emm3-gadgets session, 2026-11-27; verified)
+
+The gadget D is two K4 blocks plus vertices p and q, with ports p and b₀. It is **joined-forcing**: every realisation joins its two ports through a single segment. The host is G = D + K_{4,4} + {s p, s b₀}, with n = 18, m = 36, **minimum degree 3** and edge-connectivity 2. The half-set M = V(K_{4,4}) is cut-feasible, by three implementations and the max-flow form. It is not realisable, by the gluing argument; D's forcing property was checked by the oracle and by enumerating all 16 Hamiltonian decompositions of D′. Verification: `manuscripts/endpoint-min-max/scripts/emm3_counterexample.py` (9 s).
+
+**Conclusion.** Cut conditions do not characterise realisable half-sets at any minimum degree tested. With §12, realisability of a prescribed half-set is NP-hard; a forcing-gadget version of the Kotzig reduction should give hardness at δ ≥ 3, which the gadgets session is writing up. The characterisation direction is closed. The existential-descent pivot of §13 stands.
+
+**Addendum (verified).** EMM fails in **every connectivity class** (`scripts/emm_connectivity.py`). The graphs G_r have minimum degree and edge-connectivity 2r and vertex-connectivity 3, with a cut-feasible, non-realisable half-set:
+- G₂: n = 20, δ = λ = 4;
+- G₃: n = 42, δ = λ = 6.
+
+No hypothesis of the form "δ ≥ c" or "λ ≥ c" rescues the cut characterisation. In particular, it cannot rescue it at the least counterexample of (R), where δ ≥ 6 and λ ≥ 6.
+
+## 15. Audit A13, and the transversal conjecture TRC (2026-11-27)
+
+**A13 verdict: Theorem 21 (cut selection) is SOUND**, in both versions and in the auxiliary-graph proof. The hardness section (§5: Lemma 23, Props 24–25, Thm 27) is sound. One ERROR is flagged: Remark 28 still calls EMM₃ open, and the emc-four session is fixing it. A13 reproduced every count independently, with about 113k constructions and no failure.
+
+**The key finding (A13).** Not every *good* pairing has only realisable transversals. In KsOeBW??G`?A, the good pairing {03, 18, 45, 69, 7 10} has the counterexample as a transversal. But on all 12 order-12 counterexamples, **every transversal of every pairing the Thm 21 construction can produce is realisable**, and the order-28 starving half-set L is never such a transversal.
+
+**Why.** Thm 21 pairings run along *edge-disjoint routes* (paths of a T-join), so a cut of size c is crossed by at most c routes. A transversal therefore cannot starve a region behind a small cut. For S = L in G_bad to be a transversal, 14 routes would have to cross a 4-edge cut.
+
+**Conjecture TRC (transversal realisability).** For every connected graph G of even order, every pairing P produced by the Thm 21 construction (forest T-join J, edge-disjoint pairings of the odd vertices of each F^v), and every transversal M of P, the half-set M is realisable in n/2 paths.
+
+- **TRC ⇒ Gallai**: take the transversal containing r.
+- Its necessary half (cut-feasibility of every transversal) is Thm 21.
+- It is not refuted by the NP-hardness constructions, which use starving half-sets.
+
+TRC is trivially true at n ≤ 8, where every cut-feasible half-set is realisable. Informative tests are the counterexample families (orders 12, 18, 20, 28, and G_r) and larger random graphs.
+
+**Next.** First try to refute TRC (the emm3-gadgets session, the natural adversary). If it survives, attack its single descent step: removing one vertex of a pair, guided by the route structure.

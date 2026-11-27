@@ -1184,8 +1184,14 @@ $11{,}832$ cut-feasible simple profiles, all realisable (\texttt{tools/emm3\_cor
 $3$ and $15$ to $30$ edges ($48{,}784$ half-sets), nor on $300$ of order $12$ ($8{,}396$ half-sets)
 (\texttt{tools/emm3\_random.py}).
 \end{itemize}
-In these random samples every half-set was cut-feasible, so they test realisability but not the
-sharpness of~(1). Hamiltonicity obstructions of toughness type are cut-detected. If every vertex
+Cores at a vertex $2$-separator, where no record of ends at the two terminals is realisable but
+some record is cut-feasible, do not occur up to order $8$ either. There are $8{,}774$ graphs,
+$101{,}524$ terminal pairs and $976{,}339$ profiles (\texttt{tools/emm3\_sep\_core.py}). In the random
+samples every half-set was cut-feasible, so they test realisability but not the sharpness of~(1).
+A structured sample does bind, but only weakly. It consists of $47$ graphs: cliques $K_4$--$K_6$
+joined by $3$--$5$ edges, chains of $K_4$'s, and cones over two cycles joined by $1$--$3$ edges.
+Of its $1{,}063$ half-sets, $8$ are cut-infeasible, and all the others are realisable
+(\texttt{tools/emm3\_binding.py}). Hamiltonicity obstructions of toughness type are cut-detected. If every vertex
 has slack $2p-d-b=0$, then (C) applied to the complements of the components of $G-S$ already
 bounds their number by $|S|+1$.
 \end{remark}

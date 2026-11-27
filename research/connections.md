@@ -785,6 +785,93 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
   - Thm 27: NP-completeness.
 - Note: bridgeless suffices; the synthesis's "essentially 4-edge-connected" is stronger than needed.
 - Lean: Lemma 23 and Props 24–25 are elementary. Kotzig would be imported.
+### T.handoff (missing-move session → fresh session on the equality lemma), 2026-11-27
+
+**Exact current target: EMM₃.** Let G be connected, of even order n = 2k and minimum degree ≥ 3. Let M be a half-set of Ev(G), with the simple profile b (1 on odd vertices, 2 on M, 0 on Ev − M). Then b is realised by k paths **iff** (L) and ED inequality (1) hold for every v and every W ⊆ V − v. Lean predicate: `CutOK G b k` in `EmmTemplate.lean`.
+
+**What is known to fail, so the statement must not claim it** (missing-move §7):
+- **General profiles.** One failure at n = 7 (FqJBo, p = 2, a 2-linkage), and 17 at n = 8 with p ≤ 3 (Prop 7.1).
+- **The budget class EMM⁺.** Padding FqJBo with leaves at its saturated vertex gives a failure at n = 10 with p = 5 (Ex 7.4).
+- **EMM.** Gluing a below-budget failure with a leaf to a gadget through a degree-2 vertex with b = 2 gives 12 graphs of order 12 (Thm 7.5).
+- **Common mechanism.** A vertex with b = d is never crossed, and an edge cut restricts exactly to its side plus temporary leaves. The decomposition can therefore isolate a **below-budget piece**, where a linkage obstruction is invisible to (1).
+
+**What a general inductive statement must add.** Edge deletion leaves δ ≥ 3 and simple profiles, creating degree-2 vertices and b up to 3. So the induction needs a general class. Proposed shape, untested:
+- Decompose (G, b) at every saturated vertex (b = d), at every edge cut, and along forced one-edge paths (both ends saturated). Assign each piece its own budget p_piece = Σ_piece b / 2.
+- Assert: if every piece has p_piece ≥ ⌈n_piece/2⌉, then cut-feasible ⇒ realisable.
+- For pieces below their budget, a separate **linkage condition** is needed, in the spirit of the Seymour–Shiloach–Thomassen 2-linkage theorem. FqJBo is the planar square with two doubled sides.
+- Test set for that condition: the 17 n = 8 failures (`gemm8_lowp.log`) and FqJBo (`gemm7.log`).
+- Checks still to make: that the decomposition is well defined, and that the padding and gluing counterexamples are exactly the below-budget-piece cases.
+
+**Equality lemma, (c′) form** (the target of the next session). Setting: (G, b) is in the class and cut-feasible, uv is an edge, H = G − uv, and D is a partition of H with the adjusted profile b′. Suppose the re-insertion move is at equality: a Fan transfer with b′(u) = |Z_H(v)|, or a concatenation with b′(u) = b′(v) = 1. Then one of the following holds:
+- (a) the move succeeds for D;
+- (b) another move succeeds: a concatenation, a rotation then append, a guarded split, or a path insertion;
+- (c′) D exhibits a set W with uv ∈ δ(W) on which (1) is **tight**, or a saturated separator that splits G into pieces one of which is below its budget.
+
+(c) with a *violated* cut is impossible in any class that contains the counterexamples above, by minimality. The force behind (c′) should be `hub_cycles`: at equality every path ending at u passes v, entering through distinct blank neighbours.
+
+**Test cases (stuck instances, all n = 6, reduced).**
+- EMM⁺ class, single-edge moves: 14 stuck (`tmpl6_plus.log`, with diagnosis in `tmpl6_plus_diag.log`). Every one has a cut-feasible move that fails only at equality.
+- With guarded splits and path insertion (L ≤ 5): 4 stuck, namely EsRo with b = (0,3,0,2,1,0) and (0,3,2,0,1,0), Eqzo with (0,0,3,0,3,0), and Eu^o with (0,0,3,0,3,0) (`tmpl6_plus_split_peel5.log`).
+  - Eqzo reduces exactly to a below-budget piece: the edge 24 between two saturated vertices is a forced path, which leaves 2 paths on G − 24.
+- The simple class (b ≤ 2) has more: 38/456 stuck, 28 with splits and path insertion (`tmpl6_simple*.log`).
+- Further test cases: the butterfly, the octahedron with four ends at antipodes, and C4 with b = (0,2,2,0) (`tmpl6_red_diag.log`).
+
+**EMM₃ evidence so far: no counterexample.**
+- Cores (pendant leaves, all other degrees ≥ 3, cut-feasible but not realisable): none up to order 8, exhaustively; none in 4,000 random cores at orders 9–10.
+- Cores at a vertex 2-separator (no end-record at the terminals realisable, though some record is cut-feasible): none among 8,774 graphs, 101,524 terminal pairs and 976,339 profiles up to order 8 (`emm3_sep_core.log`).
+- Random EMM₃ at n = 10 and 12: no failure, but no half-set was cut-infeasible, so the test is non-discriminating.
+- Binding test (`tools/emm3_binding.py`, `emm3_binding.log`): 47 structured δ ≥ 3 graphs (cliques K4–K6 joined by 3–5 edges, spread or concentrated; K4 chains and triangles; cones over two cycles joined by 1–3 edges, ED Thm 46 type, n ≤ 12).
+  - 1,063 half-sets, of which only **8 are cut-infeasible**, all in K5+K5 with 3 or 4 concentrated join edges. The other 1,055 are realisable: **0 failures**.
+  - So the test discriminates only weakly. At n ≤ 12 these cones never bind.
+  - A sharper binding test needs sparse δ = 3 graphs with small edge cuts and many marks on one shore (cubic-like shores). Larger n needs `tools/cutfeas.c`.
+- Forcing gadgets (proposed next, not done): δ ≥ 3 blocks with two temporary leaves whose every realisation joins, or always separates, the leaves. They would replace the degree-2 vertices of a below-budget core (n ≈ 25–35).
+
+**Tools.** All take graph6 input. The logs are in `manuscripts/missing-move/scripts/outputs/` and are reproduced by `emm_runs.sh`.
+- `tools/gemm_test.py`: the cut criterion, general profiles.
+- `tools/emm_template.py`: the template moves, with options reduced, atleasthalf, simpleclass, split, vertex, peelL and diag.
+- `tools/emm_split.py`: splitting off, with exact lifting.
+- `tools/emm_glue_search.py`, `tools/emm_lift_search.py`: the counterexample constructions.
+- `tools/emm3_core_search.py`, `tools/emm3_sep_core.py`, `tools/emm3_random.py`, `tools/emm3_binding.py`: the EMM₃ searches.
+- `tools/emm_reduction_check.py`.
+- Lean: `lean/GallaiLean/EmmTemplate.lean` (`CutOK`, `cutCount`, `leaf_step`). No sorry.
+
+#### T.handoff-2: the forcing-gadget search for an EMM₃ counterexample (for a fresh session)
+
+**Exact gluing argument** (edge-cut restriction; proved, missing-move Remark 7.7 and Theorem 7.5).
+- Let F = δ(K) be an edge cut of G with |F| = s, and let D be any partition of G into paths with profile b. Then D restricted to E(K) ∪ F is a partition of K⁺ := K plus one new pendant leaf ℓ_f per cut edge f, with profile b on K and b(ℓ_f) = 1, into (b(K) + s)/2 segments.
+- Reason: a path meets K ∪ F in segments, and each segment ends at a vertex of K with an end of the path, or at a cut edge, which then ends at its leaf.
+- So: **G realisable ⇒ K⁺ realisable**. If K⁺ with this profile is cut-feasible but not realisable (a core), no G built on K by an edge cut realises b.
+- A vertex with b(c) = d(c) is likewise never crossed (Thm 7.5, used at d(c) = 2). Under EMM₃ (δ ≥ 3, simple profiles) such vertices do not exist, so only edge cuts remain.
+
+**The difficulty.** Every known core has degree-2 vertices: FqJBo (n = 7), the 17 order-8 failures in `gemm8_lowp.log`, and in particular **GsOeBW** with b = (0,0,1,1,2,0,0,0) and **GqGUDg** with b = (0,1,1,1,1,0,0,0), the two with a leaf. There is no δ ≥ 3 core up to order 8:
+- edge cuts and leaves: 1,146 graphs (`emm3_cores*.log`);
+- vertex 2-separators: 8,774 graphs (`emm3_sep_core.log`);
+- random orders 9–10: 4,000 graphs.
+
+**Gadget specifications.** Replace each degree-2 vertex w of a core, with neighbours x and y, by a block D attached through two edges x–x′ and y–y′. Here x′ and y′ are in D, every vertex of D has degree ≥ 3 in the result, and D has a simple profile. By the gluing argument, D⁺ is D plus temporary leaves λ_x (at x′) and λ_y (at y′), each with one end.
+- **Pass-through gadget** (for w with b(w) = 0): every partition of D⁺ with the chosen profile has **one segment with ends λ_x and λ_y**, and it must have at least one partition. The core then sees exactly "a path from x to y", as through w. Realisations correspond: a core partition with x–w–y ↔ a G-partition joining the two core segments through D. The segments must be distinct, which holds because w is interior.
+- **Double-end gadget** (for w with b(w) = 2): every partition of D⁺ has λ_x and λ_y on **different** segments, each ending inside D, and at least one partition exists. The core then sees two separate path ends, as at w.
+- **The core's own leaf** (for example vertex 3 of GsOeBW) needs no gadget: make it a bridge into the surplus block B.
+- Global constraints:
+  - the glued G must have δ ≥ 3;
+  - its profile must be a **simple half-set** (Σb = n), with the surplus coming from B, as in Thm 7.5;
+  - it must be **cut-feasible**.
+- Non-realisability then follows from the gluing argument; no oracle is needed.
+
+**Search plan.**
+1. Enumerate small δ ≥ 3 blocks D (order 4–8, graph6 from `data/conn*.g6`) with two attachment vertices x′, y′ and simple profiles. For each, determine with `realis.profile_ok` and the enumerator `all_partitions` in `tools/emm_split.py` whether every partition of D⁺ joins the leaves (pass-through) or separates them (double-end).
+2. Assemble GsOeBW (or GqGUDg) with gadgets for its degree-2 vertices and a surplus block B joined by a bridge at the core leaf. The order will be about 25–35.
+3. Verify cut-feasibility with **`tools/cutfeas.c`**. Its input is one graph per line, "n m u1 v1 … um vm" (n ≤ 20, n even), and its output is the number of cut-feasible half-sets and their bitmasks. It is O(2^n) per half-set, so it needs **n ≤ 20**. Either keep the assembly small (gadgets of order ≤ 4–5, shared or merged), or extend it to n ≤ 32 with uint64 masks and a single prescribed half-set instead of all of them.
+4. As a cheaper first step, glue just one gadget into the core and check the partial instance (degree-2 vertices remaining elsewhere) with `tools/cut_test.py` / `realis` at n ≤ 14. This verifies the gadget's forcing behaviour in context.
+
+**Logs and tools** (all in `manuscripts/missing-move/scripts/outputs/`; `emm_runs.sh` reproduces them):
+- `emm_counterexamples12.g6` and `emm_counterexamples12_cut_test.log`: the Thm 7.5 graphs;
+- `emm_glue_GsOeBW.log`, `emm_glue_GqGUDg.log`: the gluing search;
+- `gemm7.log`, `gemm8_lowp.log`: the cores below budget;
+- `emm3_*.log`: the EMM₃ searches.
+
+Tools: `tools/emm_glue_search.py`, `tools/emm3_core_search.py`, `tools/emm3_sep_core.py`, `tools/emm3_random.py`, `tools/emm3_binding.py`, `tools/emm_split.py` (`all_partitions`), `tools/gemm_test.py` (`prepare`, `feasible` for general profiles), `tools/cut_test.py`, `tools/realis.c`, `tools/cutfeas.c`.
+
 
 **Coordination after EMM₃ was refuted (n = 18, emm3-gadgets) and while audit A13 runs.**
 - *Placement.* The gadgets/δ ≥ 3 material belongs to the emm3-gadgets session. Proposal: it becomes §5.3 "Minimum degree three" of endpoint-min-max, written by that session. After A13's edits land, emc-four will only:

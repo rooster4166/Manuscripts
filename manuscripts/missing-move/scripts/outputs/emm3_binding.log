@@ -1,0 +1,48 @@
+K4+K4 j3 spread: n=8 m=15 half-sets 20, cut-infeasible 0, failures 0
+K4+K4 j3 conc: n=8 m=15 half-sets 6, cut-infeasible 0, failures 0
+K4+K4 j4 spread: n=8 m=16 half-sets 70, cut-infeasible 0, failures 0
+K4+K4 j4 conc: n=8 m=16 half-sets 6, cut-infeasible 0, failures 0
+K4+K4 j5 spread: n=8 m=16 half-sets 70, cut-infeasible 0, failures 0
+K4+K4 j5 conc: n=8 m=16 half-sets 6, cut-infeasible 0, failures 0
+K4+K6 j3 spread: n=10 m=24 half-sets 20, cut-infeasible 0, failures 0
+K4+K6 j3 conc: n=10 m=24 half-sets 6, cut-infeasible 0, failures 0
+K4+K6 j4 spread: n=10 m=25 half-sets 70, cut-infeasible 0, failures 0
+K4+K6 j4 conc: n=10 m=25 half-sets 6, cut-infeasible 0, failures 0
+K4+K6 j5 spread: n=10 m=26 half-sets 70, cut-infeasible 0, failures 0
+K4+K6 j5 conc: n=10 m=26 half-sets 20, cut-infeasible 0, failures 0
+K5+K5 j3 spread: n=10 m=23 half-sets 6, cut-infeasible 0, failures 0
+K5+K5 j3 conc: n=10 m=23 half-sets 20, cut-infeasible 4, failures 0
+K5+K5 j4 spread: n=10 m=24 half-sets 2, cut-infeasible 0, failures 0
+K5+K5 j4 conc: n=10 m=24 half-sets 20, cut-infeasible 4, failures 0
+K5+K5 j5 spread: n=10 m=25 half-sets 1, cut-infeasible 0, failures 0
+K5+K5 j5 conc: n=10 m=25 half-sets 6, cut-infeasible 0, failures 0
+K6+K6 j3 spread: n=12 m=33 half-sets 20, cut-infeasible 0, failures 0
+K6+K6 j3 conc: n=12 m=33 half-sets 6, cut-infeasible 0, failures 0
+K6+K6 j4 spread: n=12 m=34 half-sets 70, cut-infeasible 0, failures 0
+K6+K6 j4 conc: n=12 m=34 half-sets 6, cut-infeasible 0, failures 0
+K6+K6 j5 spread: n=12 m=35 half-sets 252, cut-infeasible 0, failures 0
+K6+K6 j5 conc: n=12 m=35 half-sets 20, cut-infeasible 0, failures 0
+K4-K4-K4 chain: n=12 m=24 half-sets 70, cut-infeasible 0, failures 0
+K4 triangle: n=12 m=27 half-sets 20, cut-infeasible 0, failures 0
+cone C3+C4 s1: n=8 m=15 half-sets 2, cut-infeasible 0, failures 0
+cone C3+C4 s2: n=8 m=16 half-sets 6, cut-infeasible 0, failures 0
+cone C3+C4 s3: n=8 m=17 half-sets 20, cut-infeasible 0, failures 0
+cone C3+C6 s1: n=10 m=19 half-sets 2, cut-infeasible 0, failures 0
+cone C3+C6 s2: n=10 m=20 half-sets 6, cut-infeasible 0, failures 0
+cone C3+C6 s3: n=10 m=21 half-sets 20, cut-infeasible 0, failures 0
+cone C3+C8 s1: n=12 m=23 half-sets 2, cut-infeasible 0, failures 0
+cone C3+C8 s2: n=12 m=24 half-sets 6, cut-infeasible 0, failures 0
+cone C3+C8 s3: n=12 m=25 half-sets 20, cut-infeasible 0, failures 0
+cone C4+C5 s1: n=10 m=19 half-sets 2, cut-infeasible 0, failures 0
+cone C4+C5 s2: n=10 m=20 half-sets 6, cut-infeasible 0, failures 0
+cone C4+C5 s3: n=10 m=21 half-sets 20, cut-infeasible 0, failures 0
+cone C4+C7 s1: n=12 m=23 half-sets 2, cut-infeasible 0, failures 0
+cone C4+C7 s2: n=12 m=24 half-sets 6, cut-infeasible 0, failures 0
+cone C4+C7 s3: n=12 m=25 half-sets 20, cut-infeasible 0, failures 0
+cone C5+C6 s1: n=12 m=23 half-sets 2, cut-infeasible 0, failures 0
+cone C5+C6 s1 chord: n=12 m=25 half-sets 2, cut-infeasible 0, failures 0
+cone C5+C6 s2: n=12 m=24 half-sets 6, cut-infeasible 0, failures 0
+cone C5+C6 s2 chord: n=12 m=26 half-sets 2, cut-infeasible 0, failures 0
+cone C5+C6 s3: n=12 m=25 half-sets 20, cut-infeasible 0, failures 0
+cone C5+C6 s3 chord: n=12 m=27 half-sets 2, cut-infeasible 0, failures 0
+{'graphs': 47, 'halfsets': 1063, 'cut_infeasible': 8, 'feasible_realisable': 1055, 'failures': 0}

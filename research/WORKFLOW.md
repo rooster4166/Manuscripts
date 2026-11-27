@@ -41,3 +41,7 @@ This file says how the work is organised, so that any session can resume it. `RO
 
 - Building downloaded third-party code (nauty sources; Shaik's Lean repository) is blocked by the session's permission policy. Such checks are recorded in `ROADMAP.md` with the exact commands, so a person can run them.
 - The machine has 4 cores and is shared by the agents. Run background jobs with `nice`, and print with `flush` so partial results survive.
+
+## Rule added 2026-11-27: never commit during someone else's merge
+
+Before any checkpoint commit, for example one prompted by the stop hook, check `test -f .git/MERGE_HEAD` and `git diff --name-only --diff-filter=U`. If a merge is in progress or files are unmerged, an agent is mid-resolution. Do not commit: wait for that agent, or ask it to finish. A checkpoint commit made with `git add -A` during a merge once pushed conflict markers in `endpoint-min-max.tex` (commit 328eb52).

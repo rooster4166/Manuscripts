@@ -1,0 +1,1 @@
+not completed: stopped by the auditor after about 20 min CPU (the DFS oracle is slow on all 101,714 order-8 half-sets); the report relies only on the n = 6 self-test and on the exact match with realis.c on the 12 order-12 graphs (1,932 half-sets, 269 non-realisable)
