@@ -552,5 +552,4 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Engine: `ptm3_of_base`, the chained walk theorem, and `ptm3_of_far`, where the base is automatic by sparse separation.
   - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
   - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
-  - **Correction (audit A22c, E2; checked against `research/notes/reader-six-even-program.md`).** The far-apart case is not open: far-apart N(z) gives |S(x)| ≤ 1, and six-even-incidence Thm 1(2) (audited A6, I6/I7) already gives Test1 there. `test1_of_chains3` is a new, conditional, Lean-verified proof of a known case. The open T(6)-i residual has B[N(z)] nearly complete (D ∈ {∅, K2, P3, K3, C4}), the opposite extreme.
-  - Audit A22c of the paper proofs is running.
+  - Audit A22c: the mathematics is sound (paper and Lean). Its fixes are applied on claude/ptm (0353495).
