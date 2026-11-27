@@ -25,68 +25,50 @@
 \newcommand{\NA}{\mathrm{NA}}
 \emergencystretch=3em
 
-\title[Conjecture N]{Conjecture N: the witness closes the hypothesis side.\\
-A reduction to the tight transfer and an all-odd residual,\\
-a protected Fan calculus, and the closure obstruction}
+\title[Conjecture N]{Conjecture N: a reduction to the tight transfer\\
+and an all-odd residual, a protected Fan calculus,\\ and the closure obstruction}
 \author{Gallai project (cloud session \texttt{claude/conj-n})}
 \date{27 November 2026 (working draft)}
 
 \begin{document}
 \begin{abstract}
-Let $G$ have at most one vertex $g$ of positive even degree, let $x,y$ be odd and non-adjacent,
-and let $y$ have a neighbour $w\ne g$ with $w\notin N(x)$. Conjecture~N of~\cite{DL} asks for a
-Lov\'asz decomposition whose path $Q(y)$ ending at $y$ avoids $x$. With Proposition~9.2
-of~\cite{DL} it gives DL(1). Unlike the avoidance conjecture $L_1^*$, it allows $x\sim g$.
-We ran the counterexample-guided search for an inductive class of avoidance instances that
-contains every instance of N and is closed under the proved transfers. We did not find a closed
-class. What we prove and find is the following.
+Let $G$ have at most one even vertex $g$, let $x,y$ be odd and non-adjacent, and let $y$ have a
+neighbour $w\ne g$ with $w\notin N(x)$. Conjecture~N of~\cite{DL} asks for a Lov\'asz
+decomposition whose path ending at $y$ avoids $x$; with~\cite[Prop.~9.2]{DL} it gives DL(1). We
+searched for an inductive class containing N and closed under proved transfers, and found none.
 \begin{itemize}
-\item \emph{Proved and formalised} (Lean, no \texttt{sorry}, standard axioms): \textbf{N follows from
-two statements}, $\TRN\wedge\NA\Rightarrow$ N (Theorem~\ref{thm:red}).
+\item \emph{Proved and formalised} (Lean, standard axioms): $\TRN\wedge\NA\Rightarrow$ N
+(Theorem~\ref{thm:red}).
   \begin{itemize}
-  \item $\TRN$ is the tight transfer conjecture TR of~\cite{L1I} for one forbidden vertex, with the
-  tail also allowed to be adjacent to $g$.
-  \item $\NA$ is a statement about graphs with \emph{no} even vertex: $Q(y)$ can avoid a
-  \emph{neighbour} $x$ when $y$ has another neighbour not adjacent to $x$.
-  \item $\NA$ is exactly the case $N(g)=\{x,y\}$ of N.
+  \item $\TRN$ is the tight transfer TR of~\cite{L1I} for one forbidden vertex, with the tail also
+  allowed to be adjacent to $g$; that second case is a new conjecture, and the proof needs it.
+  \item NA says that in a graph with no even vertex, $Q(y)$ can avoid a \emph{neighbour} $x$ when
+  $y$ has another neighbour not adjacent to $x$. It is equivalent to the case $N(g)=\{x,y\}$ of~N
+  (the direction NA $\Rightarrow$ that case is formalised, the converse is on paper).
+  \item The induction stays inside N: a non-tight target always gives an N-child, so the hypothesis
+  side of Lov\'asz's Case~I is automatic, and no $L_1^*$ is used.
   \end{itemize}
-  The induction never leaves the class of N. A non-tight target always gives a child that is again
-  an instance of N, because the witness survives. So the hypothesis side of Lov\'asz's Case~I,
-  which is the obstruction for $L_1^*$ (the conjecture ST of~\cite{L1I}), is automatic here. The
-  proof uses no $L_1^*$. For the instances of the blocked case of $L_1^*$ with $|A|=1$ that N
-  covers, it replaces ST by the all-odd statement NA.
-\item \emph{Proved}: three new transfers.
+\item \emph{Proved} (partly formalised): a leaf-path move, Fan's lemma keeping a protected path,
+and moves for instances that also forbid a set of far ends, among them Case~I across a target
+inside the forbidden set.
+\item \emph{Computed} (exhaustive):
   \begin{itemize}
-  \item A leaf-path move.
-  \item A \emph{protected} form of Fan's lemma, which keeps one path of the old decomposition
-  unchanged.
-  \item From it, moves for instances with a forbidden set $B$ of far ends of $Q(c)$. Among them is
-  a \emph{target-in-$A$} move, Case~I across a target that lies in the forbidden set.
+  \item $115$ of the $263{,}264$ instances of N of order $9$ have no certificate in the calculus
+  of~\cite{L1I}; with the new moves $5$ remain, all with $g$ of degree two on a triangle.
+  \item $\TRN$ and NA have no failure: $490{,}923$ tests of $\TRN$ at order $9$ and $831{,}785$ on
+  two order-$11$ slices; NA through order $10$.
   \end{itemize}
-  The protected Fan lemma, in its basic form, and the target-in-$A$ move are also formalised.
-\item \emph{Computed}, all exhaustive in the stated range:
+\item \emph{The obstruction}, in three shapes:
   \begin{itemize}
-  \item With the calculus of~\cite[Thm.~3.1]{L1I}, $115$ of the $263{,}264$ instances of N of
-  order $9$ have no certificate. With the new moves, $7$ remain; all have $g$ of degree two on a
-  triangle.
-  \item $\TRN$: no violation in $490{,}923$ tests of order $9$ and $831{,}785$ on two order-$11$
-  slices.
-  \item NA: no failure through order $10$ ($1{,}305{,}621$ instances at order $10$).
-  \item Under $\TRN$, the class N $\cup$ NA has \emph{no} stuck instance at orders $5$, $7$, $9$.
+  \item \emph{All-tight configurations.} Without a transfer conjecture, every stuck instance of N
+  is all-tight ($35{,}338$ of the $52{,}070$ all-tight instances of order $9$).
+  \item \emph{The residual NA.} Under TR$^*$, every instance of N of order $5$, $7$, $9$ moves
+  into N, into NA, or into a base case; but NA itself stays stuck.
+  \item \emph{The triangle.} An even vertex of degree two on a triangle recurs throughout.
   \end{itemize}
-\item \emph{The obstruction.}
-  \begin{itemize}
-  \item Under the unconditional calculus, N is stuck exactly at \emph{all-tight} configurations,
-  where every neighbour of $g$ other than $x$ is $y$ or adjacent to $y$ ($37{,}652$ of the
-  $263{,}264$ at order $9$).
-  \item Every enlargement we tried either stays stuck or contains false instances: set forms,
-  witness forms, far-end forms, subcubic graphs.
-  \item The persistent shapes are (i) the all-tight configurations, which need a transfer through
-  a tight target; (ii) NA, whose leaf-graph children carry a forbidden pair $\{x,g\}$ with
-  $x\in N(g)$; and (iii) an even vertex of degree two on a triangle, a subdivided double edge.
-  \end{itemize}
+  Every enlargement we tried stays stuck or contains false instances.
 \end{itemize}
-Conjecture~N itself is not proved here.
+Conjecture~N is not proved here.
 \end{abstract}
 \maketitle
 
@@ -104,7 +86,7 @@ Let $G$ have at most one even vertex $g$, let $x,y$ be odd and non-adjacent, and
 \[
 W(G,y,x)=N(y)\setminus\bigl(N(x)\cup\{g\}\bigr)
 \]
-is non-empty. Then some Lov\'asz decomposition of $G$ has $x\notin V(Q(y))$.
+is non-empty (with $\{g\}$ read as $\emptyset$ if $G$ has no even vertex). Then some Lov\'asz decomposition of $G$ has $x\notin V(Q(y))$.
 \lean{ConjNOn}
 \end{conjecture}
 
@@ -135,16 +117,17 @@ lists the runs.
 
 \subsection*{Results}
 \begin{enumerate}
-\item Section~\ref{sec:moves}, \emph{three new transfers}, proved on paper:
+\item Section~\ref{sec:moves}, \emph{three new transfers}, proved (partly formalised):
   \begin{itemize}
   \item the leaf-path move (Lemma~\ref{lem:leafpath});
   \item Fan's lemma keeping a protected path (Lemma~\ref{lem:protected});
   \item the far-end calculus (Theorem~\ref{thm:far}), with the target-in-$A$ move~(x).
   \end{itemize}
-\item Section~\ref{sec:red}, \emph{the reduction}, proved and formalised:
+\item Section~\ref{sec:red}, \emph{the reduction}, proved and (except where noted) formalised:
   \begin{itemize}
   \item $\TRN\wedge\NA\Rightarrow$ N (Theorem~\ref{thm:red});
-  \item the degree-two case of N is NA (Lemma~\ref{lem:deg2});
+  \item the degree-two case of N is NA (Lemma~\ref{lem:deg2}; the converse direction and its last
+  clause on paper only);
   \item the unconditional part (Proposition~\ref{prop:uncond}): a smallest counterexample to N is
   all-tight.
   \end{itemize}
@@ -159,14 +142,15 @@ refinement.
 \begin{itemize}
 \item \emph{Proved and formalised}:
   \begin{itemize}
-  \item Theorem~\ref{thm:red}, Lemma~\ref{lem:deg2}, Lemma~\ref{lem:split},
-  Corollary~\ref{cor:TR};
+  \item Theorem~\ref{thm:red}, Lemma~\ref{lem:split}, Corollary~\ref{cor:TR}, and the first
+  sentence of Lemma~\ref{lem:deg2} (NA implies the degree-two case);
   \item Lemma~\ref{lem:protected}, in the case where no end of $P$ lies in $N_K(u)$;
   \item move~(x) of Theorem~\ref{thm:far}.
   \end{itemize}
 \item \emph{Proved on paper}:
   \begin{itemize}
   \item Lemma~\ref{lem:leafpath};
+  \item the converse and the last clause of Lemma~\ref{lem:deg2}, and Remark~\ref{rem:naeasy};
   \item Lemma~\ref{lem:protected} with ends of degree one in $N_K(u)$;
   \item the moves (b$_B$), (C), (c$_B$) of Theorem~\ref{thm:far};
   \item Proposition~\ref{prop:uncond}, whose content is also the first step of the formal proof.
@@ -197,8 +181,9 @@ Let $t\ne u$ be non-adjacent vertices of $K$ and $\cD$ a decomposition of $K$ wi
 $b_\cD(t)>|Z_\cD(u)|$. Then $K+tu$ has a decomposition $\cD^+$ with
 $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$. Every path $Q$ of $\cD^+$ comes from a path $Q'$ of $\cD$
 with $V(Q)\subseteq V(Q')\cup\{u\}$, and every end $w\notin\{t,u\}\cup N_K(u)$ of $Q$ is an end of
-$Q'$. If $b_\cD\le1$, the chain is \emph{forced}: $x_0=t$, and $x_{i+1}$ is the vertex before $u$
-on the path ending at $x_i$, read from $x_i$. Only the paths ending at $x_0,\dots,x_k$ change. The
+$Q'$. If $b_\cD\le1$ everywhere (for any decomposition $\cD$ of any graph $K$, not only Lov\'asz
+decompositions), the chain is \emph{forced}~\cite[Prop.~2.1]{TF}, \cite[Lemma~2.2]{RD}: $x_0=t$,
+and $x_{i+1}$ is the vertex before $u$ on the path ending at $x_i$, read from $x_i$. Only the paths ending at $x_0,\dots,x_k$ change. The
 first $k$ are re-routed, which keeps their vertex sets and replaces the end $x_i$ by $x_{i+1}$; then
 $u$ is appended to the last.
 \end{lemma}
@@ -220,7 +205,8 @@ vertices of $A$ with a neighbour in $C$.
 \end{enumerate}
 \end{theorem}
 
-The base cases are as in~\cite{L1I,DL}:
+The base cases are as in~\cite{L1I,DL}. A set is \emph{packed} if its vertices are pairwise at
+distance at least three.
 \begin{itemize}
 \item $A$ misses the component of $c$;
 \item no even vertex, $d(c)=1$, and the neighbour of $c$ is not in $A$;
@@ -228,8 +214,10 @@ The base cases are as in~\cite{L1I,DL}:
 \item no even vertex, $A$ packed and disjoint from $N[c]$ ($L_1$, \texttt{lovasz\_avoid\_set});
 \item every vertex has at most one neighbour in $A\cup\{c\}$, and $A\cap N[c]=\emptyset$; this
 is \texttt{csys\_good\_of\_sparse};
-\item the leaf case $N(x)=\{g\}$ (\texttt{avoid\_leaf}), and the degree-two case
-(\texttt{avoid\_deg\_two}) of~\cite{DL}.
+\item $A=\{x\}$ with $N(x)=\{g\}$, unless $x,c$ are universal twins, that is, the component is
+the path $x\,g\,c$ (\texttt{avoid\_leaf} of~\cite{DL});
+\item $A=\{x\}$ with $N(g)=\{c,x\}$, $cx\notin E$, $N(c)\cap N(x)=\{g\}$ and $d(c)\ge3$
+(\texttt{avoid\_deg\_two} of~\cite{DL}).
 \end{itemize}
 For extended instances with $B\ne\emptyset$ only two base cases are used:
 \begin{itemize}
@@ -277,8 +265,8 @@ Lemma~\ref{lem:fan} alone does not give this. Its tracking statement allows the 
 $P$ to gain $u$ or to change its ends; Lemma~\ref{lem:protected} keeps $P$ itself.
 
 \begin{theorem}[the far-end calculus]\label{thm:far}
-Let $(G,c,A,B)$ be an extended instance with even vertex $g$. In each case below, goodness of the
-child implies goodness of $(G,c,A,B)$.
+Let $(G,c,A,B)$ be an extended instance. In each case below, goodness of the child implies
+goodness of $(G,c,A,B)$. The moves (x), (b$_B$), (C), (c$_B$) require an even vertex $g$.
 \begin{enumerate}[label=(\roman*)]
 \item[(x)] \emph{Target in $A$.} $u\in N(g)\setminus N[c]$, \emph{with $u$ allowed in $A$ or $B$}:
 child $(G-gu,\ c,\ A,\ B\cup N_G(u))$.
@@ -288,7 +276,8 @@ $(G-gu,\ c,\ A,\ B)$.
 \item[(c$_B$)] $u\in N(g)\cap N(c)\setminus A$ and $N_G(u)\cap B=\emptyset$: child
 $(G-cu-gu,\ u,\ A\cup\{c\},\ B)$.
 \end{enumerate}
-The moves (a), (d)--(h) and the leaf-path move carry $B$ unchanged. Move (i) carries $B$ as
+The moves (a), (d)--(h) of Theorem~\ref{thm:calc}, under their own hypotheses ((d) needs no even
+vertex), and the leaf-path move carry $B$ unchanged. Move (i) carries $B$ as
 $B\cap C$.
 \end{theorem}
 
@@ -331,7 +320,9 @@ The result is a Lov\'asz decomposition of $G$ with $Q_c=cuR_0$. This path avoids
 end is $p\notin B$.
 
 (c$_B$). Make the same construction, with Lemma~\ref{lem:fan} in place of
-Lemma~\ref{lem:protected}. In $H$ every vertex has at most one end, so the chain is forced.
+Lemma~\ref{lem:protected}. In $H$ every vertex has at most one end, so the chain is forced
+(Lemma~\ref{lem:fan}; $\cD_H$ need not be a Lov\'asz decomposition, as $u$ and $c$ may both have
+even degree in $H$, and the forced form holds for every decomposition with $b\le1$).
 \begin{itemize}
 \item $\ell$ is never a chain vertex: it precedes $u$ only on $R$ read from $\ell$, and $x_0=g\ne\ell$.
 \item $R$ contains $u$, so it is never appended to. It changes only if $p=x_i$ for some $i$. Then it
@@ -394,10 +385,34 @@ $N(g)=\{x,y\}$ this is the case $N(x)\cap N(y)=\{g\}$, covered by~\cite[Thm.~6.1
 \begin{proof}
 In $H$, $g$ is isolated and every other vertex keeps its degree. The new edge is $xy$. A witness
 $w\ne g$ is not adjacent to $x$ in $H$, since $w\ne y$. Apply NA in $H$, then
-Lemma~\ref{lem:split}; $Q(y)$ avoids $x$, so it does not use $xy$. For the converse, the
-subdivided graph has the single even vertex $g$ of degree two. For the last claim,
-take~\cite[Thm.~6.1]{DL} with $a=y$, $b=x$; $d(y)\ge3$, since $y\sim g$ and $y\sim w$.
+Lemma~\ref{lem:split}; $Q(y)$ avoids $x$, so it does not use $xy$.
+
+For the converse, let $(H,y,x)$ be an instance of NA and $G$ the graph obtained by subdividing $xy$
+by a new vertex $g$. Then $g$ is the single even vertex of $G$, $N(g)=\{x,y\}$, $x\not\sim y$ in
+$G$, and the witness of $(H,y,x)$ is a witness of $(G,y,x)$. Goodness goes back by suppressing $g$:
+in a Lov\'asz decomposition of $G$, $g$ has no end, so it is interior to the path containing
+$x\,g\,y$; replace $x\,g\,y$ by the edge $xy$. The ends do not change, so the result is a Lov\'asz
+decomposition of $H$. If $Q(y)$ avoided $x$ in $G$, it did not contain $g$ (whose path contains
+$x$), so it is unchanged and still avoids $x$.
+
+For the last claim, take~\cite[Thm.~6.1]{DL} with $a=y$, $b=x$ in the subdivided graph ($d(y)\ge3$,
+since $y\sim g$ and $y\sim w$), and suppress $g$ as above.
 \end{proof}
+
+\begin{remark}[easy cases of NA]\label{rem:naeasy}
+Let $(G,y,x)$ be an instance of NA, with witness $w$.
+\begin{itemize}
+\item If $d(y)=3$, NA holds. The pair $x,w$ is non-adjacent, so the split (g) of
+Theorem~\ref{thm:calc} at $c=y$ with $y_1=x$, $y_2=w$ applies. Its child
+$(G-yx-yw+xw,\ y,\ \{x\})$ has no even vertex, $y$ is a leaf at its third neighbour, which is not
+$x$, and this is a base case.
+\item If $d(x)=1$, NA holds: by Lemma~NP of~\cite[Lemma~4.2]{DL}, some Lov\'asz decomposition has
+$Q(x)\ne Q(y)$ ($d(y)\ge3$ as $y\sim x,w$), and $x$ lies only on $Q(x)$.
+\item If $x,y$ have no common neighbour, NA holds by Lemma~\ref{lem:deg2}.
+\end{itemize}
+The census of the remaining instances ($d(y)\ge5$, $d(x)\ge3$, a common neighbour) is in
+Section~\ref{sec:comp}.
+\end{remark}
 
 \begin{theorem}\label{thm:red}
 $\TRN$ and the degree-two case of N together imply Conjecture~N. Hence $\TRN\wedge\NA$ implies N.
@@ -440,6 +455,14 @@ TR of~\cite{L1I} ($y\notin N(g)$), its counterpart for tails adjacent to $g$, an
 \lean{tightTransferNOn\_of, conjN\_of\_TR\_neighbourAvoid}
 \end{corollary}
 
+\begin{remark}[the hypotheses are stronger than the proof needs]
+The proof of Theorem~\ref{thm:red} applies $\TRN$ only when the child $(G-gu,y,x)$ has a witness, and
+Corollary~\ref{cor:TR} uses TR and its counterpart only for $A=\{x\}$. In Lean,
+\texttt{TightTransferAdj} is stated for all $A$, like \texttt{TightTransfer}; this is stronger than
+the data, which cover $|A|\le2$ at order $9$ and all $A$ at order $7$ (Section~\ref{sec:comp}).
+\texttt{TightTransferNOn}, used in Theorem~\ref{thm:red}, is the form with $A=\{x\}$.
+\end{remark}
+
 \begin{proposition}[the unconditional part]\label{prop:uncond}
 \begin{itemize}
 \item A smallest counterexample to~N is \emph{all-tight}: every neighbour of $g$ other than $x$ is
@@ -450,7 +473,7 @@ no even vertex, or to $N(g)=\{x,u\}$ with $x\not\sim u\in W$.
 \end{itemize}
 \end{proposition}
 
-\begin{remark}[N and the blocked case of $L_1^*$]
+\begin{remark}[N and the blocked case of $L_1^*$]\label{rem:blocked}
 \begin{itemize}
 \item \emph{The setting.} Let $(G,c,\{x\})$ be blocked in the sense of~\cite{L1S,L1I}: $c\notin
 N(g)$, $x\notin N[c]\cup N(g)$, and $N(g)\subseteq N(x)$. Lov\'asz's Case~I at a non-tight target
@@ -458,7 +481,12 @@ $u$ produces the child $(G-gu,c,\{x\})$. That child has $x\sim u$, the new even 
 not admissible for $L_1^*$. This is the \emph{hypothesis side} of~\cite{L1I}, the conjecture ST.
 \item \emph{What N changes.} If $c$ has a neighbour outside $N(x)$, the child is again an instance
 of N, and step~(2) applies. So for such instances, Theorem~\ref{thm:red} replaces ST by NA, a
-statement about graphs without an even vertex. The transfer side TR is still needed.
+statement about graphs without an even vertex, \emph{together with} the counterpart of TR for
+tails adjacent to $g$ with $A=\{x\}$. That counterpart is needed: once step~(3) has been applied
+at a tight target $u$, the new even vertex $u$ is adjacent to the tail, and every later step~(3)
+is an instance of it. It is a new conjecture, not part of the reduction TR $\wedge$ ST $\Rightarrow$
+\texttt{L1Blocked} of~\cite{L1I}, which uses TR only for $c\notin N(g)$. The transfer side TR
+itself is still needed as well.
 \item \emph{The other gain.} The induction runs inside N, where $x\sim g$ is allowed, and never
 calls $L_1^*$.
 \end{itemize}
@@ -482,9 +510,14 @@ first path.
 decompositions (\texttt{enum.c} of~\cite{DL}) on all $399{,}762$ queries $(c,A,B)$ of the graphs of
 orders $4$--$6$ with at most one even vertex and the $130$ graphs of order~$7$
 (\texttt{xcheckb.py}). With $B=\emptyset$ it agrees with \texttt{lind.h} on every child tested.
-\item \emph{Moves.} \texttt{ext.h} implements Theorem~\ref{thm:calc}, Lemma~\ref{lem:leafpath}
-(paths of length two), Theorem~\ref{thm:far}, the base cases of Section~\ref{sec:prelim}, and
-optionally the move (t) of TR or TR$^*$.
+\item \emph{Moves.} \texttt{ext.h} implements Theorem~\ref{thm:calc} (with every $g$--$c$ route
+for (h)), Lemma~\ref{lem:leafpath} (leaf paths of every length), Theorem~\ref{thm:far}, the base
+cases of Section~\ref{sec:prelim}, and optionally the move (t) of TR or TR$^*$. Every count below
+is for this uncapped calculus. A first draft capped leaf paths at length two and (h) at eight
+shortest routes; the audit (\texttt{research/audit/conj-n-audit.md}) gives those counts. The caps
+change some stuck counts, but not the 115 below, the false counts, or any conclusion. An
+independent checker in the audit tested every implemented move against the exact oracle, through
+order $8$ with all $A$ and $B$, and found no violation.
 \item \emph{Closure.} \texttt{closure2.cpp} enumerates every instance of a class, every $A$, and
 every $B$ when the class allows it, and reports \texttt{STUCK} and \texttt{FALSE} instances.
 \end{itemize}
@@ -492,12 +525,12 @@ every $B$ when the class allows it, and reports \texttt{STUCK} and \texttt{FALSE
 \subsection{Certificates}
 An instance is \emph{certified} if a sequence of moves leads to a base case.
 \begin{itemize}
-\item \emph{Old calculus.} With Theorem~\ref{thm:calc} and the bases of~\cite{L1I,DL}
-(\texttt{ncert.cpp}), all $12+1{,}161$ instances of N of orders $5,7$ are certified, but $115$ of the
-$263{,}264$ of order $9$ are not. All $115$ are good. So no class closes under the old calculus.
-\item \emph{New calculus.} With the moves of Section~\ref{sec:moves} (\texttt{xcert.cpp}), $108$ of
+\item \emph{Old calculus.} With Theorem~\ref{thm:calc} (every route for (h)) and the bases
+of~\cite{L1I,DL} (\texttt{ncert.cpp}), all $12+1{,}161$ instances of N of orders $5,7$ are certified,
+but $115$ of the $263{,}264$ of order $9$ are not. All $115$ are good. So no class closes under the old calculus.
+\item \emph{New calculus.} With the moves of Section~\ref{sec:moves} (\texttt{xcert.cpp}), $110$ of
 the $115$ are certified.
-\item \emph{The $7$ left} (\texttt{data/xcert9\_uncertified.txt}) all have $d(g)=2$ with
+\item \emph{The $5$ left} (\texttt{data/xcert9\_uncertified.txt}) all have $d(g)=2$ with
 $N(g)=\{u,x\}$, $u\sim x$, $u\in N(y)$, $y\notin N(g)$ and $d(y)=5$. An example is
 \texttt{HsOceO\}}, $g=5$, $y=0$, $x=8$.
 \end{itemize}
@@ -514,6 +547,7 @@ $\TRN$, $y\notin N(g)$ / $y\in N(g)$ & order $9$ & $236{,}891$ / $254{,}032$ tes
 $\TRN$, both & order $11$, slices $17$, $517$ of $2{,}000$ & $831{,}785$ tests, $0$ violations\\
 TR$^*$ with $c\in N(g)$, $|A|\le2$ & order $9$ (all $A$ at order $7$) & $565{,}744$ ($2{,}036$) tests, $0$ violations\\
 NA & orders $4,6,8,10$ & $3$, $129$, $4{,}970$, $1{,}305{,}621$ instances, all good\\
+NA outside Remark~\ref{rem:naeasy} & orders $6,8,10$ & $29$, $2{,}879$, $1{,}011{,}733$ instances\\
 $N^+$: $Q(y)\not\ni x$, far end $\notin N(x)$, for $x\sim g$ & order $9$ & $134{,}911$ of $134{,}911$\\
 $N^+$ for $x\not\sim g$ & order $9$ & fails in $417$ of $128{,}353$\\
 (x)-child of the core & order $9$ & $18{,}315$ of $18{,}315$ good\\
@@ -545,7 +579,7 @@ has $N(w)\cap A\subseteq\{g\}$.
   \begin{itemize}
   \item N$_2^B$: N$_2$ with any $B$, the witness outside $B$;
   \item N$_2^{N(A)}$: the same with $B\subseteq N(A)$;
-  \item XC: N$_2$ together with the (x)-children of N$_2$ instances.
+  \item XC: N$_2$ together with the (x)-children of N$_2$ instances whose target lies in $A$.
   \end{itemize}
 \item W: a witness $w\notin A\cup\{g\}$ with $N(w)\cap A\subseteq\{g\}$, while $A$ may meet $N(c)$.
 \end{itemize}
@@ -562,22 +596,23 @@ Source: \texttt{data/tables.txt}.
 \toprule
 class & moves & order 5: stuck/size & order 7: stuck/size & order 9: stuck/size & false\\
 \midrule
-N$_1$ & U & $4/12$ & $214/1{,}161$ & $37{,}652/263{,}264$ & $0$\\
-N$_1$ & T & $4/12$ & $154/1{,}161$ & & \\
-N$_1$ & T$^*$ & $0/12$ & $14/1{,}161$ & $1{,}521/263{,}264$ & \\
+N$_1$ & U & $2/12$ & $197/1{,}161$ & $35{,}338/263{,}264$ & $0$\\
+N$_1$ & T & $2/12$ & $144/1{,}161$ & & \\
+N$_1$ & T$^*$ & $0/12$ & $13/1{,}161$ & $1{,}396/263{,}264$ & \\
 N$_1\cup$NA & T$^*$ & $0/12$ & $0/1{,}161$ & $0/263{,}264$ & \\
-\quad (NA part, orders 6, 8) & T$^*$ & \multicolumn{3}{l}{order 6: $22/215$;\ order 8: $2{,}522/9{,}558$} & \\
-C$_1$ & T$^*$ & $0/44$ & $164/2{,}842$ & \multicolumn{1}{l}{(orders 6, 8: $0$)} & $0$\\
-N$_2$ & U & $2/46$ & $249/3{,}638$ & $112{,}226/1{,}066{,}750$ & $0$\\
-N$_2$ & T / T$^*$ & $2$ / $0$ & $173$ / $72$ & & \\
-N$_2$, subcubic & U & $2/36$ & $8/812$ & $182/22{,}592$ & $0$\\
-V & U & $0/55$ & $258/4{,}006$ & & $0$\\
+\quad (NA part, orders 6, 8) & T$^*$ & \multicolumn{3}{l}{order 6: $22/215$;\ order 8: $2{,}451/9{,}558$} & \\
+C$_1$ & U & $4/44$ & $379/2{,}842$ & & $0$\\
+C$_1$ & T$^*$ & $0/44$ & $160/2{,}842$ & \multicolumn{1}{l}{(orders 6, 8: $0$)} & \\
+N$_2$ & U & $0/46$ & $228/3{,}638$ & $106{,}014/1{,}066{,}750$ & $0$\\
+N$_2$ & T / T$^*$ & $0$ / $0$ & $159$ / $71$ & & \\
+N$_2$, subcubic & U & $0/36$ & $8/812$ & $138/22{,}592$ & $0$\\
+V & U & $0/55$ & $235/4{,}006$ & & $0$\\
 L$_1$ & U & $0/51$ & $26/2{,}930$ & & $0$\\
-U & U & $0/59$ & $94/4{,}592$ & & $0$\\
-N$_2^B$ & U & $20/202$ & $4{,}856/47{,}449$ & & $22$; $445$\\
-N$_2^{N(A)}$ & U & $12/70$ & $2{,}239/13{,}368$ & & $12$; $222$\\
-XC & U & $2/46$ & $781/4{,}610$ & & $0$; $28$\\
-W & U & $30/120$ & $1{,}858/12{,}712$ & & $48$; $2{,}229$\\
+U & U & $0/59$ & $88/4{,}592$ & & $0$\\
+N$_2^B$ & U & $18/202$ & $4{,}572/47{,}449$ & & $22$; $445$\\
+N$_2^{N(A)}$ & U & $10/70$ & $2{,}164/13{,}368$ & & $12$; $222$\\
+XC & U & $0/46$ & $762/4{,}610$ & & $0$; $28$\\
+W & U & $28/120$ & $1{,}736/12{,}712$ & & $48$; $2{,}229$\\
 \bottomrule
 \end{tabular}}
 \end{center}
@@ -588,19 +623,16 @@ instance of N moves into N, into NA, or into a base case.
 \section{The obstruction}\label{sec:obs}
 
 \subsection{The single-vertex class}
-Under the unconditional calculus, the stuck instances of N$_1$ are \emph{exactly} the all-tight
-instances with no other move. Every stuck instance has no target outside $N[y]\cup\{x\}$, and
-every instance with such a target moves by~(2) of the proof of Theorem~\ref{thm:red}. There are
-$4$ stuck at order $5$, $214$ at order $7$ and $37{,}652$ at order $9$
-(\texttt{n1stuck.py}). The smallest are two of order~$5$:
+Under the unconditional calculus, the stuck instances of N$_1$ are all-tight: none has a target
+outside $N[y]\cup\{x\}$, since every instance with such a target moves by~(2) of the proof of
+Theorem~\ref{thm:red}. The converse fails: many all-tight instances are base cases or move
+otherwise. At orders $5$, $7$, $9$ there are $10$, $403$, $52{,}070$ all-tight instances, of which
+$2$, $197$, $35{,}338$ are stuck (\texttt{n1stuck.py}, \texttt{data/n1\_stuck*.txt}). The smallest
+are two instances of order~$5$ in \texttt{DTw}: edges $02,03,04,14,23,24$, $g=3$, $(y,x)=(0,1)$ or
+$(2,1)$. Here $d(g)=2$, and the only target other than $x$ or $y$ is tight. Adding the transfer:
 \begin{itemize}
-\item \texttt{DEk}: edges $03,04,13,24,34$, $g=0$, $(y,x)=(3,2)$ or $(4,1)$;
-\item \texttt{DTw}: edges $02,03,04,14,23,24$, $g=3$, $(y,x)=(0,1)$ or $(2,1)$.
-\end{itemize}
-In both, $d(g)=2$ and the only target other than $x$ or $y$ is tight. Adding the transfer:
-\begin{itemize}
-\item with TR the stuck instances are those with $y\in N(g)$ ($154$ at order $7$);
-\item with TR$^*$ all of them have $N(g)=\{x,y\}$ ($14$ at order $7$, $1{,}521$ at order $9$);
+\item with TR, all stuck instances have $y\in N(g)$ ($144$ at order $7$);
+\item with TR$^*$, all of them have $N(g)=\{x,y\}$ ($13$ at order $7$, $1{,}396$ at order $9$);
 \item with NA added to the class, none remain.
 \end{itemize}
 So the all-tight configurations are the obstruction, and a transfer statement through a tight
@@ -617,20 +649,23 @@ $(G-yw+w\ell,\ \ell,\ \{x,y\})$:
 \end{itemize}
 This is an N$_2$ instance with $g\in A$ and $A\cap N(g)\ne\emptyset$, outside N$_1$.
 
-The smallest NA instances with no move into N$_1\cup$NA are of order $6$: \texttt{EF\char`~w}, which
-is $K_6$ minus a triangle $\{0,1,2\}$, with $y=3$ and $x\in\{0,1,2\}$. Adding the set-form instances
-with $A\subseteq N[g]$ (class C$_1$) closes the even orders $6$ and $8$. It reopens the odd
-orders, with $164$ stuck at order $7$ under TR$^*$. Every one of them has a good child, but none
+The NA instances with no move into N$_1\cup$NA start at order $6$: $22$ instances in three graphs.
+The one with fewest edges is \texttt{EUZw}, the wheel with five spokes, with $y$ the hub and $x$ any
+rim vertex. Another is \texttt{EF\char`~w}, which is $K_6$ minus a triangle. At order $8$, $2{,}451$
+of the $9{,}558$ NA instances are stuck. Adding the set-form instances with $A\subseteq N[g]$ (class
+C$_1$) closes the even orders $6$ and $8$. It reopens the odd orders, with $160$ stuck at order $7$
+under TR$^*$. Every one of them has a good child, but none
 inside C$_1$. In $89$ of them $g\in A$, and in $102$ every witness is adjacent to $g$.
 
 \subsection{Set forms, far ends, and the triangle at a degree-two even vertex}
 \begin{itemize}
-\item \emph{Set forms.} The set form N$_2$ never closes: $2$, $249$ and $112{,}226$ stuck at
-orders $5$, $7$, $9$. With TR$^*$, $72$ remain at order $7$, each with a good child: $g\in A$ in
-$54$ of them, and every witness is adjacent to $g$ in $58$. The union U with the $L_1^*$-admissible instances inherits the blocked
+\item \emph{Set forms.} The set form N$_2$ does not close: $0$, $228$ and $106{,}014$ stuck at
+orders $5$, $7$, $9$. With TR$^*$, $71$ remain at order $7$, each with a good child: $g\in A$ in
+$53$ of them, and every witness is adjacent to $g$ in $57$. The union U with the
+$L_1^*$-admissible instances ($88$ stuck at order $7$) inherits the blocked
 family of~\cite{L1I}: $26$ stuck in L$_1$ alone at order $7$.
 \item \emph{Subcubic graphs.} All moves preserve maximum degree, and in a subcubic graph $d(g)=2$.
-Even so, N$_2$ does not close: $8$ stuck at order $7$, $182$ at order $9$. All $8$ at order $7$
+Even so, N$_2$ does not close: $8$ stuck at order $7$, $138$ at order $9$. All $8$ at order $7$
 have $g$ on a triangle.
 \item \emph{Far-end classes.} Every far-end class we tried contains false instances. The smallest
 is in \texttt{DEk} (edges $03,04,13,24,34$, $g=0$): $c=1$, $A=\{2\}$, $B=\{4\}$. The witness is
@@ -651,7 +686,7 @@ vertices and four edges on three vertices. Move~(f) only removes $g$ from $A$.
   $Q^K(u),Q^K(v)$, besides $Q^K(c)\ne Q^K(u),Q^K(v)$.
   \item That is a system of three or four atoms, outside single-tail instances.
   \end{itemize}
-  The $7$ instances of N of order~$9$ that the extended calculus leaves uncertified, all $8$ stuck
+  The $5$ instances of N of order~$9$ that the extended calculus leaves uncertified, all $8$ stuck
   subcubic instances at order $7$, and the smallest false far-end instances all have this shape.
 \end{itemize}
 
@@ -678,7 +713,7 @@ statement & Lean\\
 \midrule
 Conjecture~\ref{conj:n}, $\TRN$, NA, degree-two case & \texttt{ConjNOn}, \texttt{TightTransferNOn}, \texttt{NeighbourAvoidOn}, \texttt{ConjNDegTwoOn}\\
 Lemma~\ref{lem:split} & \texttt{avoid\_of\_splitOff}\\
-Lemma~\ref{lem:deg2} & \texttt{conjNDegTwo\_of\_neighbourAvoid}\\
+Lemma~\ref{lem:deg2}, first sentence & \texttt{conjNDegTwo\_of\_neighbourAvoid}\\
 Theorem~\ref{thm:red} & \texttt{conjN\_of\_tight\_degTwo} (induction \texttt{conjN\_strong}), \texttt{conjN\_of\_tight\_neighbourAvoid}\\
 Corollary~\ref{cor:TR} & \texttt{tightTransferNOn\_of}, \texttt{conjN\_of\_TR\_neighbourAvoid}; \texttt{TightTransferAdj}\\
 Lemma~\ref{lem:protected}, ends outside $N_K(u)$ & \texttt{fan\_single\_protected\_path} (with \texttt{PathDecomp.erase\_path}, \texttt{PathDecomp.add\_path})\\
@@ -688,7 +723,8 @@ Theorem~\ref{thm:far}, move (x) & \texttt{avoidFar\_target}; extended instances 
 \end{center}
 
 \begin{itemize}
-\item \emph{Library results used.} \texttt{lovasz\_avoid\_nonadj} ($L_1$),
+\item \emph{Library results used.} \texttt{lovasz\_avoid\_nonadj} ($L_1$), \texttt{fan\_single}
+(Fan's lemma, in \texttt{ConjNFar.lean}),
 \texttt{avoid\_free\_target} (Case~I, via \texttt{csys\_caseI}), \texttt{splitOff\_facts},
 \texttt{exists\_subst\_path}, \texttt{exists\_decomp\_of\_edgesM'}, and the definitions
 \texttt{AvoidDecomp}, \texttt{TightTransfer}.
@@ -707,7 +743,8 @@ neighbour. By Lemma~\ref{lem:deg2} it is the degree-two case of~N.
 \item An inductive class that handles the triangle at a degree-two even vertex. This most likely
 needs systems of two or three atoms in the sense of~\cite{CLT}, not single-tail instances.
 \item The strengthening $N^+$ for $x\sim g$, which held in every case to order $9$. Its far-end
-constraint is what move~(x) needs. It would be a natural hypothesis for a far-end class that
+constraint has the same shape as the one that move~(x) puts on its child, though the (x)-child,
+whose even vertex lies in $A$, is not itself an instance of $N^+$. It would be a natural hypothesis for a far-end class that
 handles the core.
 \end{enumerate}
 
@@ -723,5 +760,6 @@ Tihany, 1966), Academic Press, 1968, 231--236.
 \bibitem{MS} Multi-pair separation, \texttt{manuscripts/multi-sep}.
 \bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
 \bibitem{STL} Star-terminal Lov\'asz decompositions, \texttt{manuscripts/stl}.
+\bibitem{TF} Fan's lemma at equality, \texttt{manuscripts/tight-fan}.
 \end{thebibliography}
 \end{document}

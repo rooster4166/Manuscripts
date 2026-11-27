@@ -1,0 +1,2 @@
+instances 12 all-tight 10 stuck-and-all-tight 2 stuck-not-all-tight 0
+instances 1161 all-tight 403 stuck-and-all-tight 197 stuck-not-all-tight 0

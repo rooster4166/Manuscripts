@@ -1,0 +1,14 @@
+3690 ('y!~g', 'x!~g', 'nontight=0', 'tight-with-witness=1', 'dg=2')
+2131 ('y!~g', 'x!~g', 'nontight=0', 'tight-with-witness=1', 'dg=4')
+2597 ('y!~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=2')
+4795 ('y!~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=4')
+526 ('y!~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=6')
+5140 ('y~g', 'x!~g', 'nontight=0', 'tight-with-witness=1', 'dg=2')
+5261 ('y~g', 'x!~g', 'nontight=0', 'tight-with-witness=1', 'dg=4')
+688 ('y~g', 'x!~g', 'nontight=0', 'tight-with-witness=1', 'dg=6')
+1396 ('y~g', 'x~g', 'nontight=0', 'tight-with-witness=0', 'dg=2')
+6578 ('y~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=4')
+2334 ('y~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=6')
+202 ('y~g', 'x~g', 'nontight=0', 'tight-with-witness=1', 'dg=8')
+stuck 35338
+instances 263264 all-tight 52070 stuck-and-all-tight 35338 stuck-not-all-tight 0

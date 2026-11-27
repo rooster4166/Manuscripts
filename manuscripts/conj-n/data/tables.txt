@@ -1,45 +1,43 @@
-n=5 class=N1 flags=[-s -b 0] CLOSURE2 class=N1 STUCK=4 base=8 inclass=12
-n=5 class=N2 flags=[-s -b 0] CLOSURE2 class=N2 STUCK=2 base=31 inclass=46 move_b=2 move_c=6 move_g=3 move_i=2 moved=13
-n=5 class=V flags=[-s -b 0] CLOSURE2 class=V base=39 inclass=55 move_b=2 move_c=6 move_g=5 move_i=2 move_k=1 moved=16
-n=5 class=U flags=[-s -b 0] CLOSURE2 class=U base=39 inclass=59 move_b=7 move_c=5 move_g=5 move_i=2 move_k=1 moved=20
-n=5 class=L1 flags=[-s -b 0] CLOSURE2 class=L1 base=33 inclass=51 move_b=7 move_c=5 move_g=5 move_k=1 moved=18
-n=5 class=C1 flags=[-s -b 0] CLOSURE2 class=C1 STUCK=6 base=31 inclass=44 move_b=2 move_c=2 move_f=1 move_i=2 moved=7
-n=5 class=N2B flags=[-s] CLOSURE2 class=N2B FALSE=22 STUCK=20 base=31 inclass=202 move_a=35 move_b=6 move_c=30 move_e=6 move_f=10 move_g=44 move_h=2 move_i=8 move_x=10 moved=151
-n=5 class=NBA flags=[-s] CLOSURE2 class=NBA FALSE=12 STUCK=12 base=31 inclass=70 move_b=2 move_c=12 move_f=2 move_g=7 move_i=4 moved=27
-n=5 class=W flags=[-s] CLOSURE2 class=W FALSE=48 STUCK=30 base=31 inclass=120 move_a=8 move_b=2 move_c=6 move_f=6 move_g=24 move_i=13 moved=59
-n=5 class=N2XC flags=[-s] CLOSURE2 class=N2XC STUCK=2 base=31 inclass=46 move_b=2 move_c=6 move_g=3 move_i=2 moved=13
-n=5 class=D_N2 flags=[-s -b 0 -D 3] CLOSURE2 class=D_N2 STUCK=2 base=31 inclass=46 move_b=2 move_c=6 move_g=3 move_i=2 moved=13
-n=5 class=N1 flags=[-T -b 0] CLOSURE2 class=N1 STUCK=4 base=8 inclass=12
-n=5 class=N2 flags=[-T -b 0] CLOSURE2 class=N2 STUCK=2 base=31 inclass=46 move_b=2 move_c=2 move_g=3 move_i=2 move_t=4 moved=13
-n=5 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 base=8 inclass=12 move_t=4 moved=4
-n=5 class=N2 flags=[-T2 -b 0] CLOSURE2 class=N2 base=31 inclass=46 move_b=2 move_c=2 move_g=3 move_i=2 move_t=6 moved=15
-n=5 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=8 inclass=12 move_t=4 moved=4
-n=5 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 base=31 inclass=44 move_b=2 move_i=2 move_t=9 moved=13
-n=7 class=N1 flags=[-s -b 0] CLOSURE2 class=N1 STUCK=214 base=381 inclass=1161 move_a=2 move_b=411 move_c=5 move_e=44 move_g=59 move_k=45 moved=566
-n=7 class=N2 flags=[-s -b 0] CLOSURE2 class=N2 STUCK=249 base=1238 inclass=3638 move_a=88 move_b=450 move_c=339 move_e=35 move_f=46 move_g=724 move_i=314 move_k=155 moved=2151
-n=7 class=V flags=[-s -b 0] CLOSURE2 class=V STUCK=258 base=1359 inclass=4006 move_a=158 move_b=482 move_c=339 move_e=35 move_f=46 move_g=818 move_i=346 move_k=165 moved=2389
-n=7 class=U flags=[-s -b 0] CLOSURE2 class=U STUCK=94 base=1359 inclass=4592 move_a=180 move_b=523 move_c=445 move_e=100 move_f=65 move_g=1079 move_h=43 move_i=409 move_k=295 moved=3139
-n=7 class=L1 flags=[-s -b 0] CLOSURE2 class=L1 STUCK=26 base=1086 inclass=2930 move_a=180 move_b=242 move_c=166 move_e=98 move_f=47 move_g=649 move_h=44 move_i=144 move_k=248 moved=1818
-n=7 class=C1 flags=[-s -b 0] CLOSURE2 class=C1 STUCK=399 base=1193 inclass=2842 move_a=2 move_b=447 move_c=82 move_e=89 move_f=59 move_g=337 move_i=128 move_k=103 move_x=3 moved=1250
-n=7 class=N2B flags=[-s] CLOSURE2 class=N2B FALSE=445 STUCK=4856 base=1238 inclass=47449 move_a=6549 move_b=1810 move_c=2702 move_e=1073 move_f=1416 move_g=12737 move_h=403 move_i=3424 move_k=3020 move_x=8221 moved=41355
-n=7 class=NBA flags=[-s] CLOSURE2 class=NBA FALSE=222 STUCK=2239 base=1238 inclass=13368 move_a=423 move_b=865 move_c=1042 move_e=315 move_f=222 move_g=3389 move_h=43 move_i=1808 move_k=294 move_x=1490 moved=9891
-n=7 class=W flags=[-s] CLOSURE2 class=W FALSE=2229 STUCK=1858 base=1238 inclass=12712 move_a=1304 move_b=1277 move_c=1341 move_e=163 move_f=276 move_g=2602 move_h=49 move_i=2044 move_k=560 moved=9616
-n=7 class=N2XC flags=[-s] CLOSURE2 class=N2XC FALSE=28 STUCK=781 base=1238 inclass=4610 move_a=88 move_b=321 move_c=286 move_e=50 move_f=46 move_g=897 move_i=328 move_k=155 move_x=420 moved=2591
-n=7 class=D_N2 flags=[-s -b 0 -D 3] CLOSURE2 class=D_N2 STUCK=104 base=569 inclass=1683 move_a=11 move_b=96 move_c=88 move_e=1 move_f=2 move_g=483 move_i=254 move_k=75 moved=1010
-n=7 class=N1 flags=[-T -b 0] CLOSURE2 class=N1 STUCK=154 base=381 inclass=1161 move_a=2 move_b=384 move_c=4 move_e=10 move_g=59 move_k=45 move_t=122 moved=626
-n=7 class=N2 flags=[-T -b 0] CLOSURE2 class=N2 STUCK=173 base=1238 inclass=3638 move_a=88 move_b=437 move_c=179 move_e=7 move_f=13 move_g=724 move_i=314 move_k=155 move_t=310 moved=2227
-n=7 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 STUCK=14 base=381 inclass=1161 move_a=2 move_b=326 move_c=3 move_e=10 move_g=59 move_k=45 move_t=321 moved=766
-n=7 class=N2 flags=[-T2 -b 0] CLOSURE2 class=N2 STUCK=72 base=1238 inclass=3638 move_a=88 move_b=406 move_c=121 move_e=7 move_f=13 move_g=724 move_i=314 move_k=155 move_t=500 moved=2328
-n=7 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=381 inclass=1161 move_a=2 move_b=326 move_c=3 move_e=24 move_g=59 move_k=45 move_t=321 moved=780
-n=7 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 STUCK=164 base=1193 inclass=2842 move_a=2 move_b=363 move_c=38 move_e=47 move_f=31 move_g=337 move_i=128 move_k=103 move_t=433 move_x=3 moved=1485
+n=5 class=N1 flags=[-s -b 0] CLOSURE2 class=N1 STUCK=2 base=8 inclass=12 move_k=2 moved=2
+n=5 class=N2 flags=[-s -b 0] CLOSURE2 class=N2 base=31 inclass=46 move_c=6 move_g=3 move_i=2 move_k=4 moved=15
+n=5 class=V flags=[-s -b 0] CLOSURE2 class=V base=39 inclass=55 move_c=6 move_g=5 move_i=2 move_k=3 moved=16
+n=5 class=U flags=[-s -b 0] CLOSURE2 class=U base=39 inclass=59 move_b=1 move_c=5 move_g=5 move_i=2 move_k=7 moved=20
+n=5 class=L1 flags=[-s -b 0] CLOSURE2 class=L1 base=33 inclass=51 move_b=1 move_c=5 move_g=5 move_k=7 moved=18
+n=5 class=C1 flags=[-s -b 0] CLOSURE2 class=C1 STUCK=4 base=31 inclass=44 move_c=2 move_f=1 move_i=2 move_k=4 moved=9
+n=5 class=N2B flags=[-s] CLOSURE2 class=N2B FALSE=22 STUCK=18 base=31 inclass=202 move_a=35 move_c=30 move_e=6 move_f=10 move_g=44 move_h=2 move_i=8 move_k=14 move_x=4 moved=153
+n=5 class=NBA flags=[-s] CLOSURE2 class=NBA FALSE=12 STUCK=10 base=31 inclass=70 move_c=12 move_f=2 move_g=7 move_i=4 move_k=4 moved=29
+n=5 class=W flags=[-s] CLOSURE2 class=W FALSE=48 STUCK=28 base=31 inclass=120 move_a=8 move_c=6 move_f=4 move_g=24 move_i=13 move_k=6 moved=61
+n=5 class=N2XC flags=[-s] CLOSURE2 class=N2XC base=31 inclass=46 move_c=6 move_g=3 move_i=2 move_k=4 moved=15
+n=5 class=N1 flags=[-T -b 0] CLOSURE2 class=N1 STUCK=2 base=8 inclass=12 move_k=2 moved=2
+n=5 class=N2 flags=[-T -b 0] CLOSURE2 class=N2 base=31 inclass=46 move_c=2 move_g=3 move_i=2 move_k=4 move_t=4 moved=15
+n=5 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 base=8 inclass=12 move_k=2 move_t=2 moved=4
+n=5 class=N2 flags=[-T2 -b 0] CLOSURE2 class=N2 base=31 inclass=46 move_c=2 move_g=3 move_i=2 move_k=4 move_t=4 moved=15
+n=5 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=8 inclass=12 move_k=2 move_t=2 moved=4
+n=5 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 base=31 inclass=44 move_i=2 move_k=4 move_t=7 moved=13
+n=7 class=N1 flags=[-s -b 0] CLOSURE2 class=N1 STUCK=197 base=381 inclass=1161 move_b=377 move_c=2 move_e=43 move_g=59 move_k=102 moved=583
+n=7 class=N2 flags=[-s -b 0] CLOSURE2 class=N2 STUCK=228 base=1238 inclass=3638 move_a=67 move_b=407 move_c=296 move_e=32 move_f=40 move_g=724 move_i=314 move_k=292 moved=2172
+n=7 class=V flags=[-s -b 0] CLOSURE2 class=V STUCK=235 base=1359 inclass=4006 move_a=129 move_b=439 move_c=296 move_e=32 move_f=40 move_g=818 move_i=346 move_k=312 moved=2412
+n=7 class=U flags=[-s -b 0] CLOSURE2 class=U STUCK=88 base=1359 inclass=4592 move_a=153 move_b=444 move_c=408 move_e=91 move_f=57 move_g=1079 move_h=37 move_i=409 move_k=467 moved=3145
+n=7 class=L1 flags=[-s -b 0] CLOSURE2 class=L1 STUCK=26 base=1086 inclass=2930 move_a=153 move_b=183 move_c=145 move_e=91 move_f=41 move_g=649 move_h=38 move_i=144 move_k=374 moved=1818
+n=7 class=C1 flags=[-s -b 0] CLOSURE2 class=C1 STUCK=379 base=1193 inclass=2842 move_b=401 move_c=71 move_e=87 move_f=55 move_g=337 move_i=128 move_k=190 move_x=1 moved=1270
+n=7 class=N2B flags=[-s] CLOSURE2 class=N2B FALSE=445 STUCK=4572 base=1238 inclass=47449 move_a=5922 move_b=1394 move_c=2380 move_e=995 move_f=1234 move_g=12737 move_h=392 move_i=3424 move_k=5635 move_x=7526 moved=41639
+n=7 class=NBA flags=[-s] CLOSURE2 class=NBA FALSE=222 STUCK=2164 base=1238 inclass=13368 move_a=383 move_b=757 move_c=950 move_e=285 move_f=202 move_g=3389 move_h=41 move_i=1808 move_k=708 move_x=1443 moved=9966
+n=7 class=W flags=[-s] CLOSURE2 class=W FALSE=2229 STUCK=1736 base=1238 inclass=12712 move_a=1178 move_b=1157 move_c=1181 move_e=158 move_f=235 move_g=2602 move_h=49 move_i=2044 move_k=1134 moved=9738
+n=7 class=N2XC flags=[-s] CLOSURE2 class=N2XC FALSE=28 STUCK=762 base=1238 inclass=4610 move_a=67 move_b=282 move_c=245 move_e=43 move_f=40 move_g=897 move_i=328 move_k=306 move_x=402 moved=2610
+n=7 class=N1 flags=[-T -b 0] CLOSURE2 class=N1 STUCK=144 base=381 inclass=1161 move_b=353 move_c=2 move_e=10 move_g=59 move_k=102 move_t=110 moved=636
+n=7 class=N2 flags=[-T -b 0] CLOSURE2 class=N2 STUCK=159 base=1238 inclass=3638 move_a=67 move_b=395 move_c=166 move_e=7 move_f=12 move_g=724 move_i=314 move_k=292 move_t=264 moved=2241
+n=7 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 STUCK=13 base=381 inclass=1161 move_b=301 move_c=2 move_e=10 move_g=59 move_k=102 move_t=293 moved=767
+n=7 class=N2 flags=[-T2 -b 0] CLOSURE2 class=N2 STUCK=71 base=1238 inclass=3638 move_a=67 move_b=368 move_c=110 move_e=7 move_f=12 move_g=724 move_i=314 move_k=292 move_t=435 moved=2329
+n=7 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=381 inclass=1161 move_b=301 move_c=2 move_e=23 move_g=59 move_k=102 move_t=293 moved=780
+n=7 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 STUCK=160 base=1193 inclass=2842 move_b=325 move_c=37 move_e=46 move_f=30 move_g=337 move_i=128 move_k=190 move_t=395 move_x=1 moved=1489
 n=6 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA STUCK=22 base=86 inclass=215 move_d=8 move_g=92 move_k=7 moved=107
 n=6 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 base=86 inclass=215 move_d=30 move_g=92 move_k=7 moved=129
-n=8 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA STUCK=2522 base=4588 inclass=9558 move_d=455 move_g=1840 move_k=153 moved=2448
-n=8 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 base=4588 inclass=9558 move_d=2977 move_g=1840 move_k=153 moved=4970
-n=9 class=N1 flags=[-b 0] CLOSURE2 class=N1 STUCK=37652 base=47222 inclass=263264 move_a=126 move_b=158703 move_c=636 move_e=6651 move_g=6878 move_k=5396 moved=178390
-n=9 class=N2 flags=[-b 0] CLOSURE2 class=N2 STUCK=112226 base=157088 inclass=1066750 move_a=49041 move_b=255163 move_c=126408 move_e=10384 move_f=11199 move_g=232881 move_h=821 move_i=88166 move_k=23264 move_x=109 moved=797436
-n=9 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 STUCK=1521 base=47222 inclass=263264 move_a=126 move_b=88779 move_c=132 move_e=683 move_g=6878 move_k=5396 move_t=112527 moved=214521
-n=9 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=47222 inclass=263264 move_a=126 move_b=88779 move_c=132 move_e=2204 move_g=6878 move_k=5396 move_t=112527 moved=216042
-subcubic n=5 CLOSURE2 class=D_N2 STUCK=2 base=21 inclass=36 move_b=2 move_c=6 move_g=3 move_i=2 moved=13
-subcubic n=7 CLOSURE2 class=D_N2 STUCK=8 base=303 inclass=812 move_b=44 move_c=47 move_e=1 move_f=2 move_g=256 move_i=129 move_k=22 moved=501
-subcubic n=9 CLOSURE2 class=D_N2 STUCK=182 base=4433 inclass=22592 move_b=1466 move_c=688 move_e=93 move_f=9 move_g=8305 move_i=7107 move_k=298 move_x=11 moved=17977
+n=8 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA STUCK=2451 base=4588 inclass=9558 move_d=312 move_g=1840 move_k=367 moved=2519
+n=8 class=C1 flags=[-T2 -b 0] CLOSURE2 class=C1 base=4588 inclass=9558 move_d=2763 move_g=1840 move_k=367 moved=4970
+n=9 class=N1 flags=[-b 0] CLOSURE2 class=N1 STUCK=35338 base=47222 inclass=263264 move_a=57 move_b=151366 move_c=351 move_e=6235 move_g=6878 move_k=15817 moved=180704
+n=9 class=N2 flags=[-b 0] CLOSURE2 class=N2 STUCK=106014 base=157088 inclass=1066750 move_a=44666 move_b=240347 move_c=116782 move_e=9500 move_f=10305 move_g=232881 move_h=802 move_i=88166 move_k=60115 move_x=84 moved=803648
+n=9 class=N1 flags=[-T2 -b 0] CLOSURE2 class=N1 STUCK=1396 base=47222 inclass=263264 move_a=57 move_b=85087 move_c=90 move_e=646 move_g=6878 move_k=15817 move_t=106071 moved=214646
+n=9 class=N1NA flags=[-T2 -b 0] CLOSURE2 class=N1NA base=47222 inclass=263264 move_a=57 move_b=85087 move_c=90 move_e=2042 move_g=6878 move_k=15817 move_t=106071 moved=216042
+subcubic n=5 CLOSURE2 class=D_N2 base=21 inclass=36 move_c=6 move_g=3 move_i=2 move_k=4 moved=15
+subcubic n=7 CLOSURE2 class=D_N2 STUCK=8 base=303 inclass=812 move_b=34 move_c=25 move_e=1 move_f=2 move_g=256 move_i=129 move_k=54 moved=501
+subcubic n=9 CLOSURE2 class=D_N2 STUCK=138 base=4433 inclass=22592 move_b=1010 move_c=471 move_e=75 move_f=8 move_g=8305 move_i=7107 move_k=1040 move_x=5 moved=18021
