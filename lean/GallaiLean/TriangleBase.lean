@@ -23,7 +23,8 @@ pair is non-adjacent. This file proves the cases reached by the project's single
 * `UnivTwins`, **`DisjL1`** (Conjecture DL, the disjunctive avoidance conjecture: no multi-pair
   compatibility beyond excluding universal twins), `TriangleData.not_univTwins`,
   **`triangleBase_of_disjL1`**, `triangleBase_of_disjL1_reach`, **`test1At_of_disjL1`**: DL gives a
-  triangle base, hence Test1, at every root with data whose `M` is connected.
+  triangle base, hence Test1, at every root with data whose `M` is connected. `disjL1_one_allOdd`: with
+  no even vertex, DL for one pair is `L₁` and has no exception.
 * **`triangleBase_of_E5_E7`**, `triangleBase_of_lovaszBase_E7` (audit A28): on the base graph of
   t6-dense, (E5) and (E7) are disjuncts of (2.1), so every (E7)-branch base of t6-dense Conjecture 5.1
   is a triangle base at `y₁`.
@@ -239,6 +240,18 @@ theorem test1At_of_disjL1 (hDL : DisjL1.{u}) (hz : ∀ v, Even (J.degree v) ↔ 
     Test1At J z r :=
   test1At_of_triangleBase J hz hr3
     (triangleBase_of_disjL1_reach hDL hz hD fun _ _ => hM.preconnected _ _)
+
+omit [DecidableRel J.Adj] in
+/-- **DL for one pair without an even vertex** is `L₁` (`lovasz_avoid_nonadj`): the path ending at
+`b` can always avoid a non-adjacent `a`, with no exception. So the content of DL is the even vertex. -/
+theorem disjL1_one_allOdd (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
+    {a b : V} (hb : G.degree b % 2 = 1) (hab : a ≠ b) (hnadj : ¬ G.Adj a b) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ TriangleDisj D [(a, b)] := by
+  obtain ⟨D, hD, hav⟩ := lovasz_avoid_nonadj G hev hb hab.symm (fun h => hnadj h.symm)
+  refine ⟨D, hD, fun p hp => ?_⟩
+  rw [List.mem_singleton] at hp
+  subst hp
+  exact Or.inl hav
 
 end DL
 
