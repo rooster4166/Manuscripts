@@ -1,0 +1,2 @@
+n 18 m 36 min degree 3 e 16 connected True
+M = V(K44) satisfies (1) at every v, W: True
