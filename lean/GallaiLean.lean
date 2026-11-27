@@ -57,4 +57,5 @@ import GallaiLean.Thm59
 import GallaiLean.RouteDescent
 import GallaiLean.FanSupport
 import GallaiLean.Separation
+import GallaiLean.MultiSep
 import GallaiLean.NearDirac
