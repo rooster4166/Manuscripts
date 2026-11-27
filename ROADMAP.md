@@ -576,3 +576,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **ST (hypothesis side):** every blocked instance has x ∈ N(g) with (G − gx, c, A) good. Tests: all 135,188 blocked instances at n ≤ 9, 0 failures.
   - The instance-level variant ST′ is FALSE (n = 7). No closed induction class has been found for ST yet.
   - So **L1*, EE and L∞ now reduce to two concrete, heavily tested conjectures, TR and ST.**
+- **The whole dense T(6)-i residual reduces to one base conjecture, in Lean (t6-dense, T6Dense.lean; standard axioms, verified).**
+  - `star_of_appendBase` / `star_of_protectedBase` / `test1_of_appendBases`: suppose the base M = J − {zx1, zx2, zx3, zy2, zy3, x1y2, x2y3} (z a leaf at y1, x3 the only even vertex) has a Lovász decomposition with the end-path conditions (E1)–(E5) and (E7) or (E6). Then J has a star-terminal decomposition, and Test1 J z holds.
+  - The only shape hypothesis is x1y2, x2y3 ∈ E(J). It is available for every root in all five dense shapes (∅/K2/P3/K3/C4).
+  - The chain conjecture is not needed.
+  - **This is a reduction, not a closure. The remaining statement is the base conjecture (t6-dense manuscript, Conj 5.1).**
+  - Data in the exact Lean form: C4, K3 and P3 48/48 roots certified; K2 and ∅ are running.
+  - Audit A26 is in progress.
