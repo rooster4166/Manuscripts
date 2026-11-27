@@ -23,6 +23,9 @@ spine" and Lemma "minimum T-joins".
 * `IsEvenPairing.of_isPairing`: the cut-selection pairings of `cs_all` are even pairings, with the
   same transversals; so `cs_all` supplies the cut-feasibility half of TRC, and `gallai_of_pairingTRC`
   needs only the realisability half.
+* **`realisable_of_even_matching`**: TRC for one-edge routes when every even vertex has exactly one
+  even neighbour (`G[Ev]` a perfect matching): every transversal is realisable, by Fan descent
+  (`realisable_transfer`).
 * T-joins: `IsTJoin G T J`, `IsMinTJoin G T J`.
   **`isMinTJoin_sdiff`**: deleting a sub-edge-set `R` of a minimum `T`-join leaves a minimum join
   of `G − R` (for the parity set it induces); this is the heredity of minimality under route
@@ -84,6 +87,7 @@ structure IsEvenPairing (H : SimpleGraph V) [DecidableRel H.Adj] (σ : V → V) 
   ne : ∀ v ∈ evenSet H, σ v ≠ v
   invol : ∀ v ∈ evenSet H, σ (σ v) = v
 
+omit [DecidableEq V] in
 /-- The pairings of `cs_all` (`IsPairing (evenSet H) π`, `PairingLemma.lean`) are even pairings in
 the present sense, and `cs_all`'s transversal condition is `IsTransversal`. -/
 theorem IsEvenPairing.of_isPairing {H : SimpleGraph V} [DecidableRel H.Adj] {π : V → V}
@@ -277,5 +281,92 @@ theorem isMinTJoin_of_two_mul_card_le {G : SimpleGraph V} {T : Finset V} {K : Fi
   ⟨hK, fun K' hK' => by have := card_le_two_mul_of_isTJoin hK'; omega⟩
 
 end tjoins
+
+/-! ### TRC for one-edge routes when `G[Ev]` is a perfect matching -/
+
+section evenMatching
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **TRC for one-edge routes in the Fan-isolated case** (route-descent manuscript, Theorem
+"Fan-isolated routes" with every route an edge). If every even vertex has exactly one even
+neighbour, then every set `M` of even vertices containing exactly one end of every edge of
+`G[Ev]` is realisable. Induction on `|Ev|`: delete the edge `ac` at some `a ∈ M` and restore it by
+Fan's transfer (`realisable_transfer`), which applies because `a` has no other even neighbour. -/
+theorem realisable_of_even_matching : ∀ (n : ℕ) (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card = n →
+    (∀ u ∈ evenSet G, ∀ v ∈ evenSet G, ∀ w ∈ evenSet G, G.Adj u v → G.Adj u w → v = w) →
+    (∀ u ∈ evenSet G, ∃ v ∈ evenSet G, G.Adj u v) →
+    ∀ M : Finset V, M ⊆ evenSet G →
+      (∀ u ∈ evenSet G, ∀ v ∈ evenSet G, G.Adj u v → (u ∈ M ↔ v ∉ M)) →
+      Realisable G M := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  intro G _ hn huniq hex M hM htr
+  by_cases hMe : M = ∅
+  · subst hMe
+    have hE : evenSet G = ∅ := by
+      apply Finset.eq_empty_of_forall_notMem
+      intro u hu
+      obtain ⟨v, hv, huv⟩ := hex u hu
+      have := htr u hu v hv huv
+      simp at this
+    have h := realisable_evenSet_ni G
+    rwa [hE] at h
+  · obtain ⟨a, haM⟩ := Finset.nonempty_iff_ne_empty.mpr hMe
+    have haE := hM haM
+    obtain ⟨c, hcE, hac⟩ := hex a haE
+    have hcM : c ∉ M := (htr a haE c hcE hac).mp haM
+    have hEK := evenSet_delE_even haE hcE hac
+    have hne : a ≠ c := hac.ne
+    have hmemK : ∀ u, u ∈ evenSet (delE G {s(a, c)}) ↔ u ∈ evenSet G ∧ u ≠ a ∧ u ≠ c := by
+      intro u
+      rw [hEK, Finset.mem_erase, Finset.mem_erase]
+      tauto
+    have hKG : ∀ x y, (delE G {s(a, c)}).Adj x y → G.Adj x y := fun x y h => (delE_adj.mp h).1
+    have hcardK : (evenSet (delE G {s(a, c)})).card < n := by
+      rw [hEK]
+      have h1 := Finset.card_erase_of_mem haE
+      have h2 : c ∈ (evenSet G).erase a := Finset.mem_erase.mpr ⟨hne.symm, hcE⟩
+      have h3 := Finset.card_erase_of_mem h2
+      have hpos : 0 < (evenSet G).card := Finset.card_pos.mpr ⟨a, haE⟩
+      omega
+    have hR : Realisable (delE G {s(a, c)}) (M.erase a) := by
+      refine ih _ hcardK (delE G {s(a, c)}) rfl ?_ ?_ (M.erase a) ?_ ?_
+      · intro u hu v hv w hw huv huw
+        exact huniq u ((hmemK u).1 hu).1 v ((hmemK v).1 hv).1 w ((hmemK w).1 hw).1
+          (hKG _ _ huv) (hKG _ _ huw)
+      · intro u hu
+        obtain ⟨huE, hua, huc⟩ := (hmemK u).1 hu
+        obtain ⟨v, hvE, huv⟩ := hex u huE
+        have hva : v ≠ a := by
+          rintro rfl
+          exact huc (huniq v hvE u huE c hcE huv.symm hac)
+        have hvc : v ≠ c := by
+          rintro rfl
+          exact hua (huniq v hvE u huE a haE huv.symm hac.symm)
+        refine ⟨v, (hmemK v).2 ⟨hvE, hva, hvc⟩, delE_adj.mpr ⟨huv, ?_⟩⟩
+        rw [Finset.mem_singleton]
+        intro h
+        rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, -⟩
+        · exact hua h1
+        · exact huc h1
+      · intro x hx
+        obtain ⟨hxa, hxM⟩ := Finset.mem_erase.mp hx
+        exact (hmemK x).2 ⟨hM hxM, hxa, fun h => hcM (h ▸ hxM)⟩
+      · intro u hu v hv huv
+        obtain ⟨huE, hua, -⟩ := (hmemK u).1 hu
+        obtain ⟨hvE, hva, -⟩ := (hmemK v).1 hv
+        rw [Finset.mem_erase, Finset.mem_erase]
+        have := htr u huE v hvE (hKG _ _ huv)
+        tauto
+    have hfinal := realisable_transfer haE hcE hac hR (by
+      intro u hu _ hau
+      obtain ⟨huE, -, huc⟩ := (hmemK u).1 hu
+      exact huc (huniq a haE u huE c hcE hau hac))
+    rwa [Finset.insert_erase haM] at hfinal
+
+end evenMatching
 
 end Gallai
