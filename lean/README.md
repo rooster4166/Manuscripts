@@ -866,3 +866,20 @@ Cor 106 and Thm 144. The work was done in a cloud session on branch `claude/bs-p
 | **`FiveEven.five_even_floor`** | `W` connected, even set `T` with `|T| = 5`, exactly one vertex of `T` adjacent to the rest, and a leaf at an odd support ⇒ `∃ D : PathDecomp W, 2 * D.size + 1 = card V` |
 
 Sorry-free. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
+
+## Cut selection (endpoint-min-max Thm 21; cloud session, branch `claude/emc-four-even`)
+
+`PairingLemma.lean` and `CutSelection.lean`, 1,237 lines, no `sorry`. **`cs_all` depends only on `propext`, `Classical.choice` and `Quot.sound`.** The full library builds.
+
+- **`cs_all`**: `G.Connected → Even (card V) → ∃ P, IsPairing (evenSet G) P ∧ ∀ M ⊆ evenSet G, (∀ a ∈ evenSet G, a ∈ M ↔ P a ∉ M) → CutOK G (profile G M) (card V / 2)`.
+  - Every connected graph of even order has a pairing of its even vertices all of whose transversal half-sets satisfy the cut conditions of even-degrees §12.4.
+  - `CutOK` is the definition from `EmmTemplate.lean`; `profile` and `evenSet` come from `Realisable.lean`.
+- **`pairing_lemma`** (`PairingLemma.lean`): the odd vertices of any finite graph pair up with `splitCount ≤ crossCount` for every vertex set. The proof is by edge deletion with the triangle inequality of `sep`.
+- **`exists_tjoin`**: T-joins in connected graphs, built from paths and symmetric differences of edge sets.
+- **Auxiliary graph B.** `auxB` lives on `V × V`, with `freeStar` (F^v) and `starComp` (G^v).
+  - `odd_degree_auxB`: Odd(B) is the diagonal over the even vertices.
+  - `crossCount_auxB_le`: an injection of the crossing edges of B into those of G^v.
+  - `pairing_transfer`.
+- **`cutOK_of_pairing`**: the pairing criterion implies `CutOK`, via `key_identity` (|δ(W)| + |Y| = |δ_{G^v}(Y)| + d(v)).
+
+This formalises the manuscript's second, shorter proof: the pairing lemma applied once to B. It independently checks Thm 21.

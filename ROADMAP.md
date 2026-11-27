@@ -239,6 +239,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 ## Log
 
+- 2026-11-27 (cloud, `claude/emc-four-even`): **Lean: cut selection formalised.**
+  - `cs_all` in `CutSelection.lean` (with `PairingLemma.lean`, 1,237 lines). No sorry; standard axioms; the full library builds.
+  - It follows the second proof of Thm 21: the cut-form pairing lemma (by edge deletion) applied to one auxiliary graph B on V × V, plus T-join existence, the parity of B, the cut comparison and the CutOK algebra.
+
 - 2026-11-27 (cloud, `claude/emc-four-even`, post-pivot): **endpoint-min-max rewritten as a paper on prescribed ends** (17 pp.). The paper now covers:
   - the cut inequality: necessary, with its four forms;
   - **cut selection** (Thm 21, unchanged numbering);

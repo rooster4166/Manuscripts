@@ -1,5 +1,6 @@
 import GallaiLean.PairingLemma
 import GallaiLean.EmmTemplate
+import GallaiLean.Realisable
 
 /-!
 # Cut selection (endpoint-min-max, Theorem 21)
@@ -551,5 +552,296 @@ theorem pairing_transfer (hXG : ∀ e ∈ X, e ∈ G.edgeSet)
       exact (Prod.mk.injEq _ _ _ _ ▸ hab).1
 
 end cut
+
+section algebra
+
+variable {V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+
+/-- Ordered adjacent pairs from `A` to `B`. -/
+def adjCount (A B : Finset V) : ℕ := ∑ u, ∑ y, (if u ∈ A ∧ y ∈ B ∧ G.Adj u y then 1 else 0)
+
+theorem adjCount_comm (A B : Finset V) : adjCount G A B = adjCount G B A := by
+  unfold adjCount
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl; intro u _
+  apply Finset.sum_congr rfl; intro y _
+  by_cases h1 : y ∈ A <;> by_cases h2 : u ∈ B <;> by_cases h3 : G.Adj u y <;>
+    simp [h1, h2, h3, G.adj_comm y u]
+
+theorem sum_card_filter (W : Finset V) (Q : V → V → Prop) [∀ u y, Decidable (Q u y)] :
+    ∑ u ∈ W, #(univ.filter (fun y => Q u y)) =
+      ∑ u, ∑ y, (if u ∈ W ∧ Q u y then 1 else 0 : ℕ) := by
+  rw [← Finset.sum_subset (Finset.subset_univ W) (fun u _ hu => ?_)]
+  · apply Finset.sum_congr rfl
+    intro u hu
+    rw [Finset.card_filter]
+    simp [hu]
+  · simp [hu]
+
+theorem adjCount_singleton (v : V) (B : Finset V) :
+    adjCount G {v} B = ∑ y, (if y ∈ B ∧ G.Adj v y then 1 else 0) := by
+  unfold adjCount
+  rw [Finset.sum_eq_single v]
+  · simp
+  · intro u _ hu; simp [hu]
+  · simp
+
+theorem card_filter_eq_sum (Y : Finset V) (p : V → Prop) [DecidablePred p] :
+    #(Y.filter p) = ∑ y, (if y ∈ Y ∧ p y then 1 else 0) := by
+  rw [Finset.card_filter, ← Finset.univ_inter Y, ← Finset.sum_ite_mem]
+  apply Finset.sum_congr rfl; intro y _
+  by_cases hy : y ∈ Y <;> by_cases hp : p y <;> simp [hy, hp]
+
+/-- The basic identity: `|δ(W)| + |Y| = |δ_{G^v}(Y)| + d(v)` for the partition `W, {v}, Y`. -/
+theorem key_identity (v : V) (W : Finset V) (hv : v ∉ W) :
+    cutCount G W + #(univ \ insert v W) =
+      crossCount (starComp G v) (univ \ insert v W) + G.degree v := by
+  set Y := univ \ insert v W with hY
+  have hmemY : ∀ y, y ∈ Y ↔ y ≠ v ∧ y ∉ W := by
+    intro y; simp [hY]
+  -- cutCount G W = E(W, Y) + E(W, {v})
+  have h1 : cutCount G W = adjCount G W Y + adjCount G W {v} := by
+    unfold cutCount adjCount
+    rw [sum_card_filter, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro u _
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro y _
+    by_cases hyv : y = v
+    · subst hyv; by_cases hu : u ∈ W <;> by_cases ha : G.Adj u y <;> simp [hu, ha, hv, hmemY]
+    · by_cases hu : u ∈ W <;> by_cases hyW : y ∈ W <;> by_cases ha : G.Adj u y <;>
+        simp [hu, hyW, ha, hyv, hmemY]
+  -- crossCount G^v Y = E(Y, W) + #(Y non-neighbours of v)
+  have h2 : crossCount (starComp G v) Y =
+      adjCount G Y W + #(Y.filter (fun u => ¬ G.Adj v u)) := by
+    unfold crossCount adjCount
+    rw [sum_card_filter, card_filter_eq_sum, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro u _
+    by_cases hu : u ∈ Y
+    · have huv : u ≠ v := ((hmemY u).mp hu).1
+      have key : ∀ y, (if u ∈ Y ∧ ((starComp G v).Adj u y ∧ y ∉ Y) then 1 else 0 : ℕ) =
+          (if u ∈ Y ∧ y ∈ W ∧ G.Adj u y then 1 else 0) +
+            (if y = v ∧ ¬ G.Adj v u then 1 else 0) := by
+        intro y
+        show (if u ∈ Y ∧ (((u ≠ v ∧ y ≠ v ∧ G.Adj u y) ∨ (u = v ∧ y ≠ v ∧ ¬ G.Adj v y) ∨
+          (y = v ∧ u ≠ v ∧ ¬ G.Adj v u)) ∧ y ∉ Y) then 1 else 0 : ℕ) = _
+        by_cases hyv : y = v
+        · subst hyv
+          have : y ∉ Y := fun h => ((hmemY y).mp h).1 rfl
+          by_cases ha : G.Adj y u
+          · have ha' : G.Adj u y := ha.symm
+            simp [hu, huv, ha, ha', this, hv]
+          · have ha' : ¬ G.Adj u y := fun h => ha h.symm
+            simp [hu, huv, ha, ha', this, hv]
+        · by_cases hyW : y ∈ W
+          · have : y ∉ Y := fun h => ((hmemY y).mp h).2 hyW
+            simp [hu, huv, hyv, hyW, this]
+          · have : y ∈ Y := (hmemY y).mpr ⟨hyv, hyW⟩
+            simp [hu, huv, hyv, hyW, this]
+      rw [Finset.sum_congr rfl (fun y _ => key y), Finset.sum_add_distrib, sum_ite_eq_and]
+      simp [hu]
+    · simp [hu]
+  -- degree and |Y| split at v
+  have h3 : G.degree v = adjCount G {v} W + adjCount G {v} Y := by
+    rw [degree_eq_sum, adjCount_singleton, adjCount_singleton, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro y _
+    by_cases ha : G.Adj v y
+    · have hyv : y ≠ v := fun h => G.loopless.irrefl v (h ▸ ha)
+      by_cases hyW : y ∈ W
+      · have : y ∉ Y := fun h => ((hmemY y).mp h).2 hyW
+        simp [ha, hyW, this]
+      · have : y ∈ Y := (hmemY y).mpr ⟨hyv, hyW⟩
+        simp [ha, hyW, this]
+    · simp [ha]
+  have h4 : #Y = adjCount G {v} Y + #(Y.filter (fun u => ¬ G.Adj v u)) := by
+    rw [adjCount_singleton, card_filter_eq_sum, ← Finset.filter_true_of_mem (s := Y) (p := fun _ => True)
+      (fun _ _ => trivial), card_filter_eq_sum, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro y _
+    by_cases hy : y ∈ Y <;> by_cases ha : G.Adj v y <;> simp [hy, ha]
+  have c1 := adjCount_comm G W Y
+  have c2 := adjCount_comm G W {v}
+  omega
+
+end algebra
+
+section assembly
+
+variable {V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+
+/-- The even vertices (degree parity only). -/
+def evenV : Finset V := univ.filter (fun a => Even (G.degree a))
+
+/-- **From good pairings to the cut conditions.** If a pairing `P` of the even vertices satisfies
+the criterion `σ_P(Y) ≤ |δ_{G^v}(Y)|` for all `v ∉ Y`, then every transversal satisfies `CutOK`. -/
+theorem cutOK_of_pairing (hn : Even (Fintype.card V)) (hpos : ∀ v, 0 < G.degree v)
+    {P : V → V} (hP : IsPairing (evenV G) P)
+    (hcut : ∀ v Y, v ∉ Y → splitCount (evenV G) P Y ≤ crossCount (starComp G v) Y)
+    {M : Finset V} (hM : M ⊆ evenV G) (htr : ∀ a ∈ evenV G, (a ∈ M ↔ P a ∉ M)) :
+    CutOK G (profile G M) (Fintype.card V / 2) := by
+  have hev : ∀ a, a ∈ evenV G ↔ Even (G.degree a) := by intro a; simp [evenV]
+  have hprof : ∀ u, profile G M u = (if Odd (G.degree u) then 1 else 0) + 2 * (if u ∈ M then 1 else 0) := by
+    intro u
+    unfold profile
+    by_cases ho : Odd (G.degree u)
+    · have : u ∉ M := fun h => (Nat.not_even_iff_odd.mpr ho) ((hev u).mp (hM h))
+      simp [ho, this]
+    · by_cases hu : u ∈ M <;> simp [ho, hu]
+  -- sums of the profile over a set
+  have hsumY : ∀ Y : Finset V, ∑ u ∈ Y, profile G M u =
+      #(Y.filter (fun u => Odd (G.degree u))) + 2 * #(Y.filter (fun u => u ∈ M)) := by
+    intro Y
+    rw [Finset.sum_congr rfl (fun u _ => hprof u), Finset.sum_add_distrib, ← Finset.mul_sum,
+      Finset.card_filter, Finset.card_filter]
+  have hcardY : ∀ Y : Finset V, #Y = #(Y.filter (fun u => Odd (G.degree u))) +
+      #(Y.filter (fun u => u ∈ M)) + #(Y.filter (fun u => Even (G.degree u) ∧ u ∉ M)) := by
+    intro Y
+    rw [Finset.card_filter, Finset.card_filter, Finset.card_filter, Finset.card_eq_sum_ones,
+      ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl; intro u _
+    by_cases ho : Odd (G.degree u)
+    · have hne : ¬ Even (G.degree u) := Nat.not_even_iff_odd.mpr ho
+      have : u ∉ M := fun h => hne ((hev u).mp (hM h))
+      simp [ho, hne, this]
+    · have he : Even (G.degree u) := Nat.not_odd_iff_even.mp ho
+      by_cases hu : u ∈ M <;> simp [ho, he, hu]
+  -- the unmarked even vertices of Y are bounded by its marks and the split pairs
+  have hI4 : ∀ Y : Finset V, #(Y.filter (fun u => Even (G.degree u) ∧ u ∉ M)) ≤
+      #(Y.filter (fun u => u ∈ M)) + splitCount (evenV G) P Y := by
+    intro Y
+    set N := Y.filter (fun u => Even (G.degree u) ∧ u ∉ M)
+    rw [← Finset.card_filter_add_card_filter_not (s := N) (p := fun a => P a ∈ Y)]
+    apply Nat.add_le_add
+    · apply Finset.card_le_card_of_injOn P
+      · intro a ha
+        simp only [N, Finset.coe_filter, Finset.mem_filter, Set.mem_setOf_eq] at ha ⊢
+        obtain ⟨⟨_, haE, haM⟩, hPa⟩ := ha
+        exact ⟨hPa, by
+          by_contra h
+          exact haM ((htr a ((hev a).mpr haE)).mpr h)⟩
+      · intro a ha b hb hab
+        simp only [N, Finset.coe_filter, Finset.mem_filter, Set.mem_setOf_eq] at ha hb
+        have h1 := (hP a ((hev a).mpr ha.1.2.1)).2.2
+        have h2 := (hP b ((hev b).mpr hb.1.2.1)).2.2
+        rw [← h1, ← h2, hab]
+    · unfold splitCount
+      apply Finset.card_le_card
+      intro a ha
+      simp only [N, Finset.mem_filter] at ha ⊢
+      exact ⟨(hev a).mpr ha.1.2.1, ha.1.1, ha.2⟩
+  -- the profile sums to n
+  have hMcard : #M = #((evenV G).filter (fun u => u ∉ M)) := by
+    apply le_antisymm
+    · apply Finset.card_le_card_of_injOn P
+      · intro a ha
+        have haE := hM ha
+        simp only [Finset.coe_filter, Finset.mem_filter, Set.mem_setOf_eq]
+        exact ⟨(hP a haE).1, (htr a haE).mp ha⟩
+      · intro a ha b hb hab
+        rw [← (hP a (hM ha)).2.2, ← (hP b (hM hb)).2.2, hab]
+    · apply Finset.card_le_card_of_injOn P
+      · intro a ha
+        simp only [Finset.coe_filter, Finset.mem_filter, Set.mem_setOf_eq] at ha
+        by_contra h
+        exact ha.2 ((htr a ha.1).mpr h)
+      · intro a ha b hb hab
+        simp only [Finset.coe_filter, Finset.mem_filter, Set.mem_setOf_eq] at ha hb
+        rw [← (hP a ha.1).2.2, ← (hP b hb.1).2.2, hab]
+  have htotal : ∑ u, profile G M u = Fintype.card V := by
+    rw [hsumY univ, ← Finset.card_univ, hcardY univ]
+    have : #((univ : Finset V).filter (fun u => u ∈ M)) = #M := by
+      congr 1; ext u; simp
+    have h2 : #((univ : Finset V).filter (fun u => Even (G.degree u) ∧ u ∉ M)) =
+        #((evenV G).filter (fun u => u ∉ M)) := by
+      congr 1; ext u; simp [evenV]
+    omega
+  have hn2 : 2 * (Fintype.card V / 2) = Fintype.card V := Nat.two_mul_div_two_of_even hn
+  refine ⟨fun v => ?_, fun v W hvW => ?_⟩
+  · -- local conditions
+    have hlt := G.degree_lt_card_verts v
+    rw [hn2, hprof]
+    by_cases ho : Odd (G.degree v)
+    · have : v ∉ M := fun h => (Nat.not_even_iff_odd.mpr ho) ((hev v).mp (hM h))
+      simp only [ho, this, if_true, if_false]
+      have : 1 ≤ G.degree v := ho.pos
+      omega
+    · have he : Even (G.degree v) := Nat.not_odd_iff_even.mp ho
+      by_cases hu : v ∈ M
+      · simp only [ho, hu, if_true, if_false]
+        have hp := hpos v
+        rw [Nat.even_iff] at he hn
+        omega
+      · simp only [ho, hu, if_false]; omega
+  · -- the cut condition at v and W
+    set Y := univ \ insert v W with hY
+    have hkey := key_identity G v W hvW
+    rw [← hY] at hkey
+    have hsplit := hcut v Y (by simp [hY])
+    have h3 := hsumY Y
+    have h4 := hcardY Y
+    have h5 := hI4 Y
+    -- the profile over W, v and Y sums to n
+    have hpart : ∑ u ∈ W, profile G M u + profile G M v + ∑ u ∈ Y, profile G M u =
+        Fintype.card V := by
+      rw [← htotal, ← Finset.sum_add_sum_compl W]
+      have hc : Wᶜ = insert v Y := by
+        ext u; simp [hY]; by_cases h : u = v <;> simp [h, hvW]
+      rw [hc, Finset.sum_insert (by simp [hY])]
+      ring
+    rw [hn2]
+    omega
+
+/-- In a connected graph with at least two vertices, every vertex has a neighbour. -/
+theorem cs_degree_pos (hG : G.Connected) (hn : 2 ≤ Fintype.card V) (v : V) :
+    0 < G.degree v := by
+  obtain ⟨w, hw⟩ : ∃ w, w ≠ v := by
+    by_contra h
+    push_neg at h
+    have : Fintype.card V ≤ 1 := Fintype.card_le_one_iff.mpr (fun a b => (h a).trans (h b).symm)
+    omega
+  obtain ⟨p⟩ := hG.preconnected v w
+  cases p with
+  | nil => exact absurd rfl hw
+  | cons h _ =>
+    rw [← card_neighborFinset_eq_degree]
+    exact Finset.card_pos.mpr ⟨_, (mem_neighborFinset _ _ _).mpr h⟩
+
+/-- **Cut selection (endpoint-min-max, Theorem 21).** Every connected graph of even order has a
+pairing `P` of its even vertices such that every half-set containing exactly one vertex of each
+pair satisfies the cut conditions of even-degrees §12.4 for `n/2` paths. -/
+theorem cs_all (hG : G.Connected) (hn : Even (Fintype.card V)) :
+    ∃ P : V → V, IsPairing (evenSet G) P ∧
+      ∀ M : Finset V, M ⊆ evenSet G → (∀ a ∈ evenSet G, (a ∈ M ↔ P a ∉ M)) →
+        CutOK G (profile G M) (Fintype.card V / 2) := by
+  have hcard : 2 ≤ Fintype.card V := by
+    have : 0 < Fintype.card V := Fintype.card_pos_iff.mpr hG.nonempty
+    rw [Nat.even_iff] at hn
+    omega
+  have hpos := cs_degree_pos G hG hcard
+  have hEv : evenSet G = evenV G := by
+    ext a; simp [evenSet, evenV, hpos a]
+  rw [hEv]
+  -- a T-join for the even vertices
+  have hcardE : Even #(evenV G) := by
+    have hodd := G.even_card_odd_degree_vertices
+    have hsplit : #(evenV G) + #(univ.filter (fun a => Odd (G.degree a))) = Fintype.card V := by
+      rw [evenV, Finset.card_filter, Finset.card_filter, ← Finset.sum_add_distrib,
+        ← Finset.card_univ, Finset.card_eq_sum_ones]
+      apply Finset.sum_congr rfl; intro a _
+      rcases Nat.even_or_odd (G.degree a) with h | h
+      · simp [h, Nat.not_odd_iff_even.mpr h]
+      · simp [h, Nat.not_even_iff_odd.mpr h]
+    rw [Nat.even_iff] at hn hodd ⊢
+    have : #(univ.filter (fun a => Odd (G.degree a))) = #{v | Odd (G.degree v)} := rfl
+    omega
+  obtain ⟨k, hk⟩ := hcardE
+  obtain ⟨X, hXG, hX⟩ := exists_tjoin hG k (evenV G) (by omega)
+  have hX' : ∀ v, Odd (edgeDeg X v) ↔ Even (G.degree v) := by
+    intro v; rw [hX v]; simp [evenV]
+  -- the pairing lemma on B, and the transfer
+  obtain ⟨π, hπ, hπcut⟩ := pairing_lemma (auxB G X)
+  obtain ⟨hP, hPsplit⟩ := pairing_transfer G X hXG hX' hn hπ
+  refine ⟨_, hP, fun M hM htr => cutOK_of_pairing G hn hpos hP (fun v Y hv => ?_) hM htr⟩
+  exact (hPsplit v Y hv).trans ((hπcut _).trans (crossCount_auxB_le G X hXG hv))
+
+end assembly
 
 end Gallai
