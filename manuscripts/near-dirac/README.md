@@ -43,7 +43,9 @@ Exceptional vertices enter the slots only through prebuilt partner blocks u x u'
     - Lemma 8.2 is the robust form.
     - Proposition 8.3: the one-apex window e_R(I) − e_R(K) ∈ [D(t−1)/2, D(t+1)/2] with |W| ≥ 0 can always be met if the healthy shores differ by more than |X| (any |X|), or if |X| ≤ √D/6.
     - Open counting case: nearly equal healthy shores with |X| ≳ √n.
-  - **Scheduling half: open.** It needs SP 14.31/14.33 re-derived with weak exceptional sites.
+  - **Open counting regime:** named as Problem 8.5, with the error term E = −e(G[X_I]) + e(G[X_K]) + e(X_K, W) of order |X|².
+  - **Scheduling half: open.** It is stated precisely as the **Scheduling Hypothesis SH** (Def. 9.1, not proved). With X = ∅, SH is the regime of the last sentence of SP 14.37's proof.
+  - **Theorem 9.3 (conditional, proved).** Assume SH. Then every failure sequence with Δ ≤ (1/2 + o(1))n must, at all large n, contain intermediate vertices, i.e. q²/(nω) ≤ own(v) < d(v) − D (Problem 9.4), or lie in the open counting regime (Problem 8.5).
 - **Problem 7.2.** Exceptional vertices of degree at least (1/2 + β)n. NH handles at most two, under exact regularity.
 
 ## Lean
