@@ -133,7 +133,7 @@ EMM sufficiency work is **stopped**.
   - Also in Lean: the protected Fan move and the target-in-A move.
   - **Data:** NA has 0 failures at order ≤ 10 (1.3M instances), and TR\* has 0 violations at order 9.
   - **Status:** the open core for DL(1) is now TR plus NA.
-  - **Finished** (256651b; audit A31 applied: mathematics and Lean sound).
+  - **Finished** (256651b; audit A32 applied: mathematics and Lean sound).
     - Conjecture N is not proved, and no closed class was found.
     - The obstruction is three persistent shapes:
       1. all-tight configurations;

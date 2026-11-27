@@ -34,7 +34,7 @@ Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixab
 - **Numbering in the compiled PDF.** Fan's lemma with end paths is **Lemma 2.2**, and the transfer calculus is **Theorem 2.3**. The brief's "Lemma 2.1" is the dl-one numbering. Remark 3.4 follows Theorem 3.3; Conjectures 4.1 (TRN) and 4.2 (NA); Lemma 4.3 (split); Lemma 4.4 (degree two); Theorem 4.5; Corollary 4.6; Proposition 4.7; Remark 4.8 (blocked L1*).
 - "l." below means a line of `conj-n.tex` at 27cf961.
 
-**Auditor files.** `research/audit/A31-scripts/` contains:
+**Auditor files.** `research/audit/A32-scripts/` contains:
 - `axioms.lean`: `#print axioms` and `#print` of the definitions;
 - `movecheck.cpp`: for every instance (G, c, A, B) and **every move** of `ext.h`, it checks that a good child implies a good parent, and that every base case is good, using the exact oracle;
 - `make_variants.sh`: builds auditor variants of `ext.h` in a scratch directory:
@@ -189,7 +189,7 @@ The authors' code was compiled **unmodified** into a scratch directory (`g++ -O2
 
 ### 3.1 Build and axioms
 - `lake build` (my run, after ConjNFar was added): **18416 jobs, green**. `/tmp/fullbuild.log` (18,414 jobs, `EXIT 0`) predates ConjNFar.
-- `#print axioms` (`A31-scripts/axioms.lean`, run with `lake env lean`) gives `[propext, Classical.choice, Quot.sound]` for:
+- `#print axioms` (`A32-scripts/axioms.lean`, run with `lake env lean`) gives `[propext, Classical.choice, Quot.sound]` for:
   - `conjN_of_tight_degTwo`, `conjN_of_tight_neighbourAvoid`, `conjNDegTwo_of_neighbourAvoid`;
   - `conjN_of_TR_neighbourAvoid`, `avoid_of_splitOff`, `tightTransferNOn_of`, `conjN_strong`;
   - `evenSet_delEdge_sub`, `evenSet_delEdge_card`, `avoidDecomp_singleton_iff`;

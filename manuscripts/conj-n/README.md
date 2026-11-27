@@ -27,7 +27,7 @@ Manuscript: `conj-n.tex` (compile with `pdflatex` twice). Lean: `lean/GallaiLean
   - Certificates for N:
     - Old calculus (l1-induction Thm 3.1, every route for (h)): 115 of the 263,264 order-9 N-instances have no certificate.
     - New moves: 5 remain, all with d(g) = 2 and g on a triangle.
-    - Every count is for the *uncapped* calculus: leaf paths of every length, every g–c route for (h). The first draft capped both (7 instead of 5 uncertified, and higher stuck counts); see `research/audit/A31-conj-n.md`, F2.
+    - Every count is for the *uncapped* calculus: leaf paths of every length, every g–c route for (h). The first draft capped both (7 instead of 5 uncertified, and higher stuck counts); see `research/audit/A32-conj-n.md`, F2.
   - TRN: 0 violations.
     - Order 9: 236,891 tests with y ≁ g and 254,032 with y ~ g.
     - Order-11 geng slices 17 and 517 (of 2000): 831,785 tests.

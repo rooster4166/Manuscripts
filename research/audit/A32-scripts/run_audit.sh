@@ -1,12 +1,12 @@
 #!/bin/bash
-# run_audit.sh (auditor, conj-n audit): the runs of research/audit/A31-conj-n.md.
+# run_audit.sh (auditor, conj-n audit): the runs of research/audit/A32-conj-n.md.
 # usage: run_audit.sh SCRATCH_DIR      (builds the authors' tools unmodified into SCRATCH_DIR/bin)
 set -e
 S=${1:?scratch dir}; mkdir -p "$S/bin" "$S/out"
 SC=/home/user/Manuscripts/manuscripts/conj-n/scripts
 L=/home/user/Manuscripts/manuscripts/l1-induction/scripts
 O=/home/user/Manuscripts/manuscripts/stl/scripts
-A=/home/user/Manuscripts/research/audit/A31-scripts
+A=/home/user/Manuscripts/research/audit/A32-scripts
 cd "$SC"
 for t in ncert closure2 xcert tx nplus gplus nadj tradj trn qb; do g++ -O2 -I "$L" -o "$S/bin/$t" $t.cpp; done
 gcc -O2 -o "$S/bin/allodd" allodd.c
