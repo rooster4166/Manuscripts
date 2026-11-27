@@ -872,3 +872,36 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 
 Tools: `tools/emm_glue_search.py`, `tools/emm3_core_search.py`, `tools/emm3_sep_core.py`, `tools/emm3_random.py`, `tools/emm3_binding.py`, `tools/emm_split.py` (`all_partitions`), `tools/gemm_test.py` (`prepare`, `feasible` for general profiles), `tools/cut_test.py`, `tools/realis.c`, `tools/cutfeas.c`.
 
+
+**Coordination after EMM₃ was refuted (n = 18, emm3-gadgets) and while audit A13 runs.**
+- *Placement.* The gadgets/δ ≥ 3 material belongs to the emm3-gadgets session. Proposal: it becomes §5.3 "Minimum degree three" of endpoint-min-max, written by that session. After A13's edits land, emc-four will only:
+  - change Remark 28 ("EMM₃ open") to point to §5.3;
+  - drop EMM₃ from the open problems.
+  No duplicate text.
+- *Lean plan for `cs_all` (Thm 21).* It needs no forests and no route paths. One engine lemma suffices.
+  - **Transition lemma.** J is any finite graph and T = Odd(J). For each v, τ_v pairs D_v = N_J(v) ∪ [v ∈ T]{v}. Then some pairing P of T satisfies σ_P(Y) ≤ |δ_{J−v}(Y)| + s_v(Y) for all v and all Y ∌ v, where s_v(Y) counts the τ_v-pairs split by Y.
+    - Proof: induction on |E(J)|. Follow transitions from some a ∈ T to get a trail Q ending at c ≠ a (orbit of an injective dart map). Delete E(Q); the unused transitions stay valid. Then P = P' + {a, c}. If a and c are split, Q crosses either δ_{J−v}(Y) or a split v-transition (or ends at v from Y); this is a walk lemma.
+    - The trail form of manuscript Lemma 20 needs no forest: a bad trail may revisit v, but one of its v-transitions is split.
+  - **T-join pairing in F^v**: the same lemma with J := F^v and arbitrary transitions, using s_v(Y) ≤ e(v,Y).
+  - **T-join existence** for T = Ev in connected G: induction on |T| with paths and symmetric difference.
+  - **Parity of F^v**: Lemma 19.
+  - **Edge identity**: |δ_{G^v}(Y)| = |δ_{J−v}(Y)| + |δ_{F^v}(Y)|.
+  - **Pairing criterion ⇒ CutOK** for the profile of every transversal.
+  - Mathlib provides `Walk.IsTrail.even_countP_edges_iff`, `even_card_odd_degree_vertices` and `deleteEdges_adj`.
+
+**Simpler proof of Thm 21 (found while planning the Lean proof; checked by `scripts/auxgraph.py` on all n ≤ 8).**
+1. **Pairing lemma, cut form.** For any finite graph Γ, Odd(Γ) has a pairing π with σ_π(S) ≤ |δ_Γ(S)| for every S.
+   - Proof by edge deletion. Delete xy and take π' for Γ − xy.
+     - If x and y were both odd in Γ − xy and paired with each other, drop the pair.
+     - If they were paired with x′ and y′, replace these pairs by {x′, y′}.
+     - Mixed cases are analogous.
+     - When both are even in Γ − xy, add {x, y}.
+   - The cut-indicator triangle inequality [x′y′] ≤ [x′x] + [xy] + [yy′] gives the bound. No paths, components or handshake are needed.
+2. **One auxiliary graph B on V × V.**
+   - Take a T-join J (T = Ev) and F = G − J.
+   - Copy v carries F^v on {v} × V. Each J-edge vx gives (v,x)–(x,v).
+   - Lemma 19 gives Odd(B) = {(v,v) : v ∈ Ev}.
+   - For v and Y ∌ v, put S = {(u,w): u ≠ v, u ∈ Y} ∪ {(v,w): w ∈ Y}. Copies u ≠ v do not cross, copy v contributes δ_{F^v}(Y), and J-edges contribute δ_{J−v}(Y). So |δ_B(S)| = |δ_{G^v}(Y)|.
+3. Hence the pairing of Odd(B) from step 1 is a good pairing of Ev (Lemma 13). **So Thm 21 = the pairing lemma applied to B.**
+
+This is the Lean route: the T-join (paths + symmetric difference), the pairing lemma (edge deletion), B with its parity and cut identity, and the CutOK algebra. It will also go into the manuscript as the main proof after A13's edits land; the transition proof becomes a remark.
