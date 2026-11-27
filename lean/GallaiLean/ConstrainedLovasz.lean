@@ -92,7 +92,9 @@ theorem PathDecomp.append_move_track (D : PathDecomp K) {t u : U} (hadj : ¬ K.A
     (hu : u ∉ P.walk.support) :
     ∃ D' : PathDecomp K', D'.size = D.size ∧
       (∀ w, D'.ends w + (if t = w then 1 else 0) = D.ends w + (if u = w then 1 else 0)) ∧
-      Tracks D D' {t, u} u := by
+      Tracks D D' {t, u} u ∧
+      ∀ Q' ∈ D'.paths, (∀ x ∈ Q'.walk.support, x ∈ P.walk.support ∨ x = u) ∨
+        ∃ Q₀ ∈ D.paths, Q'.src = Q₀.src ∧ Q'.tgt = Q₀.tgt ∧ Q'.walk.support = Q₀.walk.support := by
   obtain ⟨Q, hQs, hQe, hQends, hQsupp⟩ := P.exists_orient hend
   have hQK : ∀ e ∈ Q.walk.edges, e ∈ K'.edgeSet := fun e he =>
     (hK' e).2 (Or.inl (Q.walk.edges_subset_edgeSet he))
@@ -131,12 +133,22 @@ theorem PathDecomp.append_move_track (D : PathDecomp K) {t u : U} (hadj : ¬ K.A
       rcases he with rfl | he
       · exact Or.inr htuK
       · exact Or.inl he)
-  refine ⟨D', hsize, fun w => ?_, fun Q' hQ' => ?_⟩
+  refine ⟨D', hsize, fun w => ?_, fun Q' hQ' => ?_, fun Q' hQ' => ?_⟩
   · have h1 := hends w
     have h2 : P'.endsAt w = (if u = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := rfl
     have h3 : P.endsAt w = (if t = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := by
       rw [← hQends]; simp only [GPath.endsAt, hQs]
     omega
+  swap
+  · rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, hsrc, htgt, hs₀⟩
+    · left
+      intro x hx
+      have : x ∈ (Walk.cons hut (Q.walk.transfer K' hQK)).support := hx
+      rw [Walk.support_cons, Walk.support_transfer, List.mem_cons] at this
+      rcases this with rfl | h
+      · exact Or.inr rfl
+      · exact Or.inl ((hQsupp x).1 h)
+    · exact Or.inr ⟨Q₀, hQ₀, hsrc, htgt, hs₀⟩
   rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, hsrc, htgt, hs₀⟩
   · refine ⟨P, hP, fun x hx => ?_, fun w hw hwe => ?_⟩
     · have : x ∈ (Walk.cons hut (Q.walk.transfer K' hQK)).support := hx
@@ -317,7 +329,7 @@ theorem fan_exec_track (u : U) (xs : List U) : ∀ {K : SimpleGraph U} (D : Path
     obtain ⟨-, x, hx, P, hP, hend, hu⟩ := hch
     simp only [List.getLast?_singleton, Option.some.injEq] at hx
     subst hx
-    obtain ⟨D', h1, h2, h3⟩ := D.append_move_track hadj hK' hP hend hu
+    obtain ⟨D', h1, h2, h3, -⟩ := D.append_move_track hadj hK' hP hend hu
     refine ⟨D', h1, h2, h3.mono ?_⟩
     intro w hw
     rcases hw with rfl | rfl
@@ -596,6 +608,106 @@ theorem csys_caseI (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).c
       rw [this]
 
 end systems
+
+section caseAdj
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+omit [Fintype V] [DecidableEq V] in
+/-- A sub-system is satisfied when the system is. -/
+theorem CSys.sat_cons {G : SimpleGraph V} {D : PathDecomp G} {cA : V × Finset V} {S : CSys V}
+    (h : CSys.Sat ⟨cA :: S.av, S.ne⟩ D) : S.Sat D :=
+  ⟨fun dB hdB => h.1 dB (List.mem_cons_of_mem _ hdB), h.2⟩
+
+omit [Fintype V] in
+/-- A path with an end at `v` contributes to `ends v`. -/
+theorem PathDecomp.ends_pos_of_end {G : SimpleGraph V} (D : PathDecomp G) {P : GPath G}
+    (hP : P ∈ D.paths) {v : V} (h : P.src = v ∨ P.tgt = v) : 0 < D.ends v := by
+  have hle : P.endsAt v ≤ D.ends v := by
+    unfold PathDecomp.ends
+    exact List.le_sum_of_mem (List.mem_map_of_mem hP)
+  have : 0 < P.endsAt v := by
+    unfold GPath.endsAt
+    rcases h with h | h <;> simp [h]
+  omega
+
+/-- **Move (M2), a tail at the even vertex, for constraint systems.**  Let `g` be the even vertex,
+`c ∈ N(g)` an odd tail with avoid set `A ∌ c`, and `S` further constraints touching neither `g` nor
+`c` and not avoiding `c`.  If `G − gc` (where `c` is even) has a Lovász decomposition whose path
+ending at `g` avoids `A ∪ {c}` and which satisfies `S`, then appending `gc` gives a Lovász
+decomposition of `G` whose path ending at `c` avoids `A` and which satisfies `S`. -/
+theorem csys_case_adj (G : SimpleGraph V) [DecidableRel G.Adj]
+    {g c : V} (hg : g ∈ evenSet G) (hgc : G.Adj g c) (hc : G.degree c % 2 = 1) {A : Finset V}
+    (hcA : c ∉ A) (S : CSys V) (hS : ∀ w, S.Touched w → w ≠ g ∧ w ≠ c) (hcS : ¬ S.Avoided c)
+    (hchild : CSys.Good (delEdge G g c) ⟨(g, insert c A) :: S.av, S.ne⟩) :
+    CSys.Good G ⟨(c, A) :: S.av, S.ne⟩ := by
+  classical
+  obtain ⟨D', hD', hsat⟩ := hchild
+  have hgc' : g ≠ c := hgc.ne
+  have hgd := mem_evenSet_iff.mp hg
+  have hdeg := delEdge_degree G hgc
+  have hD'g : D'.ends g = 1 := by
+    rw [hD']
+    have := hdeg g
+    simp only [hgc', ite_true, ite_false] at this
+    omega
+  have hD'c : D'.ends c = 0 := by
+    rw [hD']
+    have := hdeg c
+    simp only [hgc'.symm, ite_true, ite_false] at this
+    omega
+  obtain ⟨P, hP, hPend⟩ := D'.exists_end_of_pos (by rw [hD'g]; omega)
+  have hPav : ∀ a ∈ insert c A, a ∉ P.walk.support :=
+    hsat.1 (g, insert c A) List.mem_cons_self P hP hPend
+  have hcP : c ∉ P.walk.support := hPav c (Finset.mem_insert_self _ _)
+  have hnadj : ¬ (delEdge G g c).Adj g c := fun h => h.2 rfl
+  have hK : ∀ e, e ∈ G.edgeSet ↔ e ∈ (delEdge G g c).edgeSet ∨ e = s(g, c) := by
+    intro e
+    rw [delEdge_edgeSet]
+    constructor
+    · intro he
+      by_cases h : e = s(g, c)
+      · exact Or.inr h
+      · exact Or.inl ⟨he, h⟩
+    · rintro (⟨he, -⟩ | rfl)
+      · exact he
+      · exact hgc
+  obtain ⟨D, -, hends, htr, hcopy⟩ := D'.append_move_track hnadj hK hP hPend hcP
+  have hSD : S.Sat D := S.sat_of_tracks htr (fun w hw hwT => by
+      obtain ⟨h1, h2⟩ := hS w hw
+      rcases hwT with h | h
+      · exact h1 h
+      · exact h2 h) hcS (CSys.sat_cons hsat)
+  refine ⟨D, fun w => ?_, ⟨fun cA hcA' => ?_, hSD.2⟩⟩
+  · have h := hends w
+    by_cases hwg : w = g
+    · rw [hwg] at h ⊢
+      have e1 : (if g = g then 1 else 0) = 1 := by simp
+      have e2 : (if c = g then 1 else 0) = 0 := by simp [hgc'.symm]
+      rw [e1, e2, hD'g] at h
+      rw [show D.ends g = 0 by omega, hgd.2]
+    · by_cases hwc : w = c
+      · rw [hwc] at h ⊢
+        have e1 : (if g = c then 1 else 0) = 0 := by simp [hgc']
+        have e2 : (if c = c then 1 else 0) = 1 := by simp
+        rw [e1, e2, hD'c] at h
+        rw [show D.ends c = 1 by omega, hc]
+      · simp only [Ne.symm hwg, Ne.symm hwc, ite_false, add_zero] at h
+        rw [h, hD']
+        have := hdeg w
+        simp only [hwg, hwc, ite_false, add_zero] at this
+        rw [this]
+  · rcases List.mem_cons.mp hcA' with rfl | hcA'
+    · intro Q hQ hQend a ha haQ
+      rcases hcopy Q hQ with hsub | ⟨Q₀, hQ₀, hsrc, htgt, -⟩
+      · rcases hsub a haQ with h | h
+        · exact hPav a (Finset.mem_insert_of_mem ha) h
+        · exact hcA (h ▸ ha)
+      · have := D'.ends_pos_of_end hQ₀ (v := c) (by rw [← hsrc, ← htgt]; exact hQend)
+        omega
+    · exact hSD.1 cA hcA'
+
+end caseAdj
 
 section conjectures
 

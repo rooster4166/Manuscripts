@@ -1637,4 +1637,5 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 - Every witness is checked independently (`clt_lib.check`: edge partition, Lovász ends, every condition).
 - With budget 3·10⁵ and five vertex orders the exact DFS decides 9,188 of the 16,032 (all positively); on whole graphs it stalls, e.g. `M^~~zMn]n|zqjV~Z_` (K2): 0/624 decided even at 10⁷ nodes, while the unconstrained decomposition is instant and the local search finds every base in well under a second. Dropping any single condition does not help the DFS.
+- Also every labelling of 15 residual graphs with |O| = 10 (`gen_resid.py 3 10 2 11 SHAPE`, 8,016 labellings) and of 6 sparse C4 graphs (`gen_core.py C4 6 10 5`, |B| = 16, 2,208 labellings): 26,256 labellings in all, 0 without an (E7) base. (Exceptions exist in small graphs: at order 9, 16 of 14,144 labellings have no (E7) base, E28.)
 - So in the dense residual the t6 base holds for *every* admissible labelling, not only for one per root.

@@ -1641,7 +1641,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **L1\* local form**: inside (k = 1).
 - **L_N**: inside (CLT-B). **MSEP**: its avoidance shadow (2-cycles at distance ≥ 3) is inside in the data; MSEP itself is a vertex-set statement.
 - **ST**: the child (G − gx, c, A) is non-local at the new even vertex x. "L1\* + EE at *every* x ∈ N(g)" fails (39/2,210 at n = 7, always N(x) ∩ A ≠ ∅); "for *some* x" (= L1E, which implies ST) never fails to n = 7. So ST is an *existential* statement outside the local region, as l1-induction found.
-- **t6 base (E7)**: a chain z → x1 → y2 → x2 → y3 → x3 = g with ne on {z, y2, y3}, non-local in the dense shapes (agrees with A26/§AD.4). **But in the dense residual it holds for every labelling**: 30 residual graphs (all five shapes, |O| = 8), all 16,032 labellings with x1y2, x2y3 ∈ B have an (E7) base, witnesses checked (E30(F)). The exact DFS stalls on these (UND at 10⁷ nodes on graphs where the unconstrained decomposition is instant); the local search `lsls.py` finds the bases at once.
+- **t6 base (E7)**: a chain z → x1 → y2 → x2 → y3 → x3 = g with ne on {z, y2, y3}, non-local in the dense shapes (agrees with A26/§AD.4). **But in the dense residual it holds for every labelling**: 30 residual graphs (all five shapes, |O| = 8), all 16,032 labellings with x1y2, x2y3 ∈ B have an (E7) base, witnesses checked; likewise 8,016 labellings at |O| = 10 and 2,208 on sparse C4 graphs (E30(F)). Small graphs do have exceptions (16 of 14,144 at order 9, E28). The exact DFS stalls on these (UND at 10⁷ nodes on graphs where the unconstrained decomposition is instant); the local search `lsls.py` finds the bases at once.
 - **Triangle base / DL / forest base** (§24–25): free-orientation matchings, non-local (pairs inside N(g)); forest base: in-forest (in-degree = number of children) plus ne on siblings. Our non-local compatibility failures (AE.1, last item) have *fixed* orientations; DL's free orientation removes them in the triangle-base data. This is consistent with DL being the right non-local generalisation of the matching case of CLT-B.
 - **The forest base failure (E29(G)) is the in-degree obstruction.** A parent avoided by the end paths of two children has in-degree two in the constraint digraph, the first relaxation of CLT-B that fails (`EEiW`); the triangle-base session finds that its 3 forest-base counterexamples are caused exactly by the sibling condition (ii). Matchings (in-degree one) survive; in-forests with branching do not.
 
@@ -1649,11 +1649,12 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **`fan_single_track`: Fan's lemma with end paths** (t6-dense Lemma 4.1, until now paper only), in the stronger one-path form: every new path comes from *one* old path, its vertex set lies in that path plus the target u, and each of its ends outside {u, v} ∪ N(u) is an end of that path. Pieces: `Tracks`, `append_move_track`, `reroute_core_track`, `reroute_move_track`, `fan_exec_track`, `FanPre.adj_of_mem`.
 - **`csys_fan_transfer`**: a Fan transfer carries any constraint system (avoidance and distinctness atoms) when no constrained vertex is u, v or in N(u), and u is not avoided.
 - **`csys_caseI`: Lovász's Case I for constraint systems** across a free target, with no admissibility of the child. For one constraint this is `avoid_of_target_child` (l1-induction), now without the leaf graph, which is what makes several constraints possible.
+- **`csys_case_adj`**: move (M2), a tail at the even vertex, for several tails (append `gc` to the path ending at g; uses the strengthened `append_move_track`).
 - `CSys`, `CSys.Sat`, `CSys.Good`, `CLTB`, `CLTB1`, `LN`, `BLocal`, `CrossLocal`; `l1StarGen_of_cltB1`, `lInfty_of_cltB1`, `ee_of_cltB1`, `lN_of_cltB`.
 - Unconditional cases: **`csys_good_of_packed`** (all tails and heads in a packed set: every avoidance and distinctness system among them), **`csys_good_of_sparse`** (every vertex has ≤ 1 neighbour among tails and heads: every avoidance system with heads outside N[c], no disjointness needed).
 
 ### AE.4 Lovász's induction for CLT-B: exactly where it stops (manuscript §6, paper)
-- Moves that carry a B-local system, with their instance conditions: (M1) free target (Lean); (M2) tail at g; (M3) tight target; (M4) all odd, a tail of degree ≥ 3 (leaf graph); (M5) all odd, Case II at a free vertex. Transfers never need the child to be an instance.
+- Moves that carry a B-local system, with their instance conditions: (M1) free target (Lean); (M2) tail at g (Lean); (M3) tight target; (M4) all odd, a tail of degree ≥ 3 (leaf graph); (M5) all odd, Case II at a free vertex. Transfers never need the child to be an instance.
 - **Residual** (Prop 6.1, CLT-B1): every non-tail u ∈ N(g) has a neighbour in A − g, or two tail neighbours, or one tail neighbour adjacent to another tail; and a tail in N(g) forces g ∈ A or a tail–tail adjacency.
   - k = 1: exactly the blocked configuration of l1star (§AA), which splits into ST and TR (§AC).
   - k ≥ 2 adds two obstructions: **tail–tail adjacency** ((M2)–(M4) turn a tail into a head next to a tail, leaving the cross-local class) and **heads of one tail next to another tail** (they meet N(new even vertex)). Neither occurs when tails are pairwise at distance ≥ 3, where the residual is the blocked configuration for the union of the avoid sets.
@@ -1664,7 +1665,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 
 ### AE.6 Open
 1. CLT-B1 for two tails (k = 2), even with |A_i| = 1 (this contains L_N with two pairs; still open).
-2. Formalise (M2)–(M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
+2. Formalise (M3)–(M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
 3. A non-local CLT with free orientation containing DL and the forest base: in the data the free choice removes every compatibility failure.
 
 ## AF. The triangle base and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`, 2026-11-27)
