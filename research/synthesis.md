@@ -226,3 +226,9 @@ The first test is **pairing-guided descent**: for the Thm 21 pairing, can one al
 The gadget D is two K4 blocks plus vertices p and q, with ports p and b₀. It is **joined-forcing**: every realisation joins its two ports through a single segment. The host is G = D + K_{4,4} + {s p, s b₀}, with n = 18, m = 36, **minimum degree 3** and edge-connectivity 2. The half-set M = V(K_{4,4}) is cut-feasible, by three implementations and the max-flow form. It is not realisable, by the gluing argument; D's forcing property was checked by the oracle and by enumerating all 16 Hamiltonian decompositions of D′. Verification: `manuscripts/endpoint-min-max/scripts/emm3_counterexample.py` (9 s).
 
 **Conclusion.** Cut conditions do not characterise realisable half-sets at any minimum degree tested. With §12, realisability of a prescribed half-set is NP-hard; a forcing-gadget version of the Kotzig reduction should give hardness at δ ≥ 3, which the gadgets session is writing up. The characterisation direction is closed. The existential-descent pivot of §13 stands.
+
+**Addendum (verified).** EMM fails in **every connectivity class** (`scripts/emm_connectivity.py`). The graphs G_r have minimum degree and edge-connectivity 2r and vertex-connectivity 3, with a cut-feasible, non-realisable half-set:
+- G₂: n = 20, δ = λ = 4;
+- G₃: n = 42, δ = λ = 6.
+
+No hypothesis of the form "δ ≥ c" or "λ ≥ c" rescues the cut characterisation. In particular, it cannot rescue it at the least counterexample of (R), where δ ≥ 6 and λ ≥ 6.
