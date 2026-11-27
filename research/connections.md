@@ -771,3 +771,17 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 - The manuscript now states **EMM₃** (δ ≥ 3) as Conjecture 4, with the example. Prop 9 and Cor 22 are rephrased: EMM₃ at δ ≥ 5 plus CS (Thm 21) excludes SP 10.16(2). Hence any Gallai failure is an SP 10.16(1) witness: odd order 2h+1, 2-connected, no matching cut, ≥ h+1 missing edges, p > h.
 - **Evidence caveat.** At n = 6, 8 and in the n = 10 random sample, every half-set of a δ ≥ 3 graph is realisable (19,422/19,422 at n = 8), so EMM₃ holds vacuously there. Binding cuts at δ ≥ 3 occur in the bottleneck families (22 graphs, 62 cut-excluded half-sets, 0 failures) and in the two-blob samples (`evidence.py blobs`). EMM₃ needs larger tests with binding cuts.
 - CS (Thm 21) is unaffected: it concerns cut-feasibility only.
+
+**Post-pivot (endpoint-min-max rewritten).**
+- Gallai-reduction statements are removed (old Prop 9, Cor 22). Theorem numbers up to Thm 21 are unchanged (EMC became Conjecture 10 to keep them).
+- New Sect. 5, hardness:
+  - Def 22: G(H).
+  - Lemma 23: |δ_{L(H)}(A)| = 2·#mixed vertices, so λ(L(H)) ≥ 4 iff H is bridgeless.
+  - Prop 24: the gadget is cut-feasible iff λ(L(H)) ≥ 4.
+    - At R-vertices, (c) reduces to |δ_{L(H)}(X)| ≥ 4 for X ∌ w*, because adding gadget vertices to Y never lowers the slack.
+    - At gadget vertices it is automatic once L(H) − w* is connected.
+  - Prop 25: realisable iff L(H) is Hamiltonian-decomposable.
+  - Thm 26: Kotzig.
+  - Thm 27: NP-completeness.
+- Note: bridgeless suffices; the synthesis's "essentially 4-edge-connected" is stronger than needed.
+- Lean: Lemma 23 and Props 24–25 are elementary. Kotzig would be imported.

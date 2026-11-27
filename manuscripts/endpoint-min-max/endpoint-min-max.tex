@@ -24,44 +24,39 @@
 \newcommand{\cF}{\mathcal F}
 \newcommand{\cP}{\mathcal P}
 
-\title{An endpoint min-max conjecture for path decompositions}
+\title[Prescribed ends in path decompositions]{Prescribed ends in path decompositions: a cut inequality, cut selection, and hardness}
 \author{Justin Williams}
 \date{November 2026 (working draft)}
 
 \begin{document}
 \begin{abstract}
-Let $G$ be a connected graph of even order $n=2k$ and let $M$ be a set of half of its even-degree
-vertices. The simple profile of $M$ asks for a partition of $E(G)$ into $k$ paths with one end at every
-odd vertex, two ends at every vertex of $M$ and none at the other even vertices. A cut inequality of
-the even-degrees manuscript is necessary for this. Its sufficiency (EMM) holds on every connected graph
-of order at most eight, but it fails at order twelve, through vertices of degree two whose two edges
-must both end paths (missing-move Theorem 7.5), and by the same mechanism at order $28$. We
-therefore conjecture sufficiency for minimum degree at least three (EMM$_3$).
-
-We give the inequality four equivalent forms. The most useful one asks that the edges at each vertex
-$v$ extend to edge-disjoint \emph{arms} in $G-v$ that end at the prescribed ends. For half-sets it
-becomes a single-commodity cut condition in the graph $G^v$ obtained by complementing the star at
-$v$.
-
-Our main result is that the cut inequality can always be met. Every connected graph of even order has
-an explicit pairing of its even vertices such that every half-set with one vertex from each pair is
-cut-feasible. The construction takes the $T$-join of a spanning tree. At each vertex $v$ it chooses the
-transitions of the $T$-join by the $T$-join pairing lemma in the free part of $G^v$. A parity lemma
-makes the odd vertices there exactly the ends of these transitions. Combined with Theorem 10.16 of the
-separating-pairs manuscript, this gives the following. If EMM$_3$ holds at minimum degree at least
-five, every failure of Gallai's conjecture yields a two-connected odd-order witness of that theorem's
-first alternative.
-
-We also prove the following.
+Let $G$ be a connected graph of even order $n=2k$, and let $M$ consist of half of its vertices of even
+degree. The \emph{simple profile} of $M$ asks for a partition of $E(G)$ into $k$ paths with one end at
+every odd vertex, two ends at every vertex of $M$, and none at the other even vertices. Such a
+partition attains Gallai's bound. A cut inequality of the even-degrees manuscript is necessary for
+it. We study this inequality.
 \begin{itemize}
-\item In a cone, the cut-feasible half-sets are exactly the transversals of pairings of the even
-vertices by edge-disjoint paths avoiding the apex.
-\item For each vertex, the half-sets meeting its inequalities are the bases of a matroid. The
-cut-feasible family is the intersection of these matroids, and the global cap function is not
-submodular. EMM therefore does not formally imply the endpoint matroid conjecture, although the
-intersection is a matroid for every critical graph of order at most eight.
+\item \emph{Equivalent forms.} The inequality has four equivalent forms. The most useful asks that
+the edges at each vertex $v$ extend to edge-disjoint \emph{arms} in $G-v$ ending at the prescribed
+ends. For half-sets it becomes a single-commodity cut condition in the graph $G^v$ obtained by
+complementing the star at $v$.
+\item \emph{Cut selection.} The inequality can always be met. Every connected graph of even order has
+an explicit pairing of its even vertices such that every half-set with one vertex from each pair
+satisfies all the inequalities. The construction takes the $T$-join of a spanning tree. At each
+vertex it chooses the transitions of the $T$-join by the $T$-join pairing lemma in the free part of
+$G^v$. A parity lemma makes the odd vertices there exactly the ends of these transitions.
+\item \emph{Sufficiency fails, and characterisation is hard.} The inequality suffices for every graph
+of order at most eight and in the dense range, but not in general. Following a construction of the
+project lead, we prove the following. For every connected bridgeless cubic graph $H$ there is a graph
+$G(H)$, with degrees $2$ and $4$, and a half-set of it that satisfies every cut inequality and is
+realisable if and only if $H$ is Hamiltonian. The proof combines Kotzig's theorem on Hamiltonian
+decompositions of line graphs with a computation of the cuts of line graphs. Hence deciding
+realisability of a half-set is NP-complete, even for half-sets that meet every cut inequality.
+\item \emph{Matroid structure.} For each vertex, the half-sets meeting its inequalities are the bases
+of a matroid. The cut-feasible family is the intersection of these matroids, and is not a matroid in
+general. In cones it is described exactly by edge-disjoint pairings avoiding the apex.
 \end{itemize}
-We restate several results of the archive as cut statements and discuss related work.
+We also restate several results of the archive as cut statements and discuss related work.
 \end{abstract}
 \maketitle
 
@@ -89,11 +84,17 @@ b(v)\equiv d(v)\pmod 2,\qquad b(v)\le d(v),\qquad d(v)+b(v)\le 2k .
 They are necessary, and they hold automatically for simple profiles: $d(v)\le n-1$, and
 $d(v)\le n-2$ when $d(v)$ is even.
 
+\emph{Overview.} Section~\ref{sec:emm} gives the cut inequality and its forms. Section~\ref{sec:consequences}
+sets up the selection statements and the matroid structure. Section~\ref{sec:cs} proves cut selection
+(Theorem~\ref{thm:ps}), and Section~\ref{sec:hard} shows that the inequality is not sufficient and
+that realisability is NP-complete (Theorem~\ref{thm:hard}). Sections~\ref{sec:dictionary}--\ref{sec:evidence}
+contain the dictionary, related work and computations.
+
 We cite the archive by the abbreviations of \texttt{research/synthesis.md}:
 ED (even-degrees), SP (separating-pairs), TVS (two-vertex-separators), RE (root-endpoint-costs),
 MR (marked-reduction), ES (endpoint-structure) and JM-repair.
 
-\section{The cut inequality and the conjecture}\label{sec:emm}
+\section{The cut inequality}\label{sec:emm}
 
 ED~\S12.4 states the following inequality for a profile $b$ with $b(V)=2k$, a vertex $v$ and a set
 $W\subseteq V-v$:
@@ -152,50 +153,23 @@ most two ends in $W$.
 A half-set $M$ is \emph{cut-feasible} if $b_M$ satisfies (a)--(d) at every vertex.
 \end{definition}
 
-\begin{conjecture}[EMM$_3$, endpoint min-max]\label{conj:emm}
-Let $G$ be connected of even order with minimum degree at least $3$. A half-set $M$ is realisable if
-and only if it is cut-feasible.
-\end{conjecture}
+\begin{question}[EMM, endpoint min-max]\label{conj:emm}
+Is every cut-feasible half-set realisable?
+\end{question}
 
-Only sufficiency is conjectural. For $W=\emptyset$, inequality~\eqref{eq:one} is the local condition
-$d(v)+b(v)\le 2k$. For $e=0$ the empty half-set is trivially cut-feasible, and its realisability is
-Lov\'asz's theorem for graphs with all degrees odd~\cite{L68}.
-
-The degree hypothesis is needed. The first version of the conjecture, \emph{EMM}, had none, and it is
-false.
-
-\begin{example*}[missing-move Theorem 7.5]
-Let $G=$\,\texttt{KsOeBW??G`?A} ($n=12$), with edges
-$01,\allowbreak 02,\allowbreak 03,\allowbreak 06,\allowbreak 14,\allowbreak 16,\allowbreak 17,\allowbreak 25,\allowbreak 27,\allowbreak 47,\allowbreak 57$ and the tail $3\text{--}10\text{--}8\text{--}9\text{--}11$, and let
-$M=\{3,4,8,9,10\}$. Then $M$ is cut-feasible (by \texttt{tools/cutfeas.c} and
-\texttt{tools/cut\_test.py}) but not realisable (by the exact oracle and by an independent brute force).
-
-The vertices $3,4,8,9,10$ have degree $2$ and $b=2$. They are \emph{saturated}: every edge at them
-ends a path there, so no path passes through them. Hence $3\text{--}10$, $10\text{--}8$,
-$8\text{--}9$ and $9\text{--}11$ are one-edge paths, and the remaining eleven edges must form the
-other two of the six paths. These two paths start at $3$ and at $2$ and both end at $4$. The
-eight-vertex core thus sits below its own budget, where a two-linkage obstruction that no cut
-detects prevents this. Twelve such graphs of order $12$ are known, and all have minimum degree at
-most $2$ (\texttt{scripts/evidence.py counterexamples}). A further counterexample, of order $28$
-with all degrees even, is in \texttt{research/synthesis.md}~\S12. It also rests on saturated vertices
-of degree $2$.
-\end{example*}
-
-For a simple profile, $b\le 2$, so a vertex can be saturated only if its degree is at most $2$. This
-is why EMM$_3$ asks for minimum degree $3$. Section~\ref{sec:evidence} gives the evidence. It is
-thinner than for EMM: at order $\le 8$, every half-set of a graph of minimum degree $\ge 3$ is
-realisable, so there the cut inequality never binds. \emph{EMM$_3$ is false as well}: \texttt{research/synthesis.md}~\S14
-gives a cut-feasible, non-realisable half-set in a graph of order $18$ with minimum degree $3$
-(\texttt{scripts/emm3\_counterexample.py}). Corollary~\ref{cor:gallai_emm} assumes minimum degree at
-least $5$, and that example does not reach it. So EMM$_3$ is used below only as a hypothesis.
+For $W=\emptyset$, inequality~\eqref{eq:one} is the local condition $d(v)+b(v)\le 2k$. For $e=0$ the
+empty half-set is trivially cut-feasible, and its realisability is Lov\'asz's theorem for graphs with
+all degrees odd~\cite{L68}. The answer to Question~\ref{conj:emm} is yes for every connected graph of
+order at most $8$ (Table~\ref{tab:emm}) and in the dense range (Proposition~\ref{prop:dense} with SP
+Theorem~14.1). It is no in general (Section~\ref{sec:hard}).
 
 \begin{remark}[Eulerian form]\label{rem:euler}
 Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ parallel edges. For a
 simple profile, $G_b$ is Eulerian. Form (b) at every $v$ says $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$ for
 every $v\in V$: every vertex is joined to $t$ by as many edge-disjoint paths as its degree. A
-realisation is a decomposition of $G_b$ into $k$ cycles through $t$, none of length two. EMM$_3$ thus
-asserts that this connectivity condition is sufficient for such special Eulerian graphs when
-$\delta(G)\ge3$. The closest
+realisation is a decomposition of $G_b$ into $k$ cycles through $t$, none of length two.
+Question~\ref{conj:emm} asks whether this connectivity condition suffices for such special Eulerian
+graphs; Section~\ref{sec:hard} shows that it does not. The closest
 classical min-max theorem of this shape is the Lov\'asz--Cherkassky theorem on edge-disjoint
 $T$-paths in inner-Eulerian graphs (\texttt{research/synthesis.md}~\S7).
 \end{remark}
@@ -247,7 +221,7 @@ $|\delta_{G^v}(Y)|=|\delta(Y)|+|Y|-2e(v,Y)\equiv\sum_{y\in Y}(d(y)+1)$, and $d(y
 when $y\in\Ev$. Also $x_M(Y)\equiv|Y\cap\Ev|$.
 \end{proof}
 
-\section{Consequences}\label{sec:consequences}
+\section{Selection statements and matroid structure}\label{sec:consequences}
 
 \begin{definition}
 \textbf{(CS$_0$)}: $G$ has a cut-feasible half-set. \textbf{(CS)}: for every even vertex $r$, $G$ has a
@@ -256,50 +230,27 @@ partition into pairs such that every half-set meeting each pair in exactly one v
 cut-feasible. Clearly PS$\Rightarrow$CS$\Rightarrow$CS$_0$.
 \end{definition}
 
-\begin{proposition}\label{prop:gallai}
-Suppose that every connected graph of even order and minimum degree at least $5$ satisfies EMM$_3$
-and CS. If Gallai's conjecture fails, then alternative~(1) of SP Theorem~10.16 occurs. That is, for
-some $h$ there is a two-connected graph $W$ of odd order $2h+1$ with no matching cut, at least
-$h+1$ missing edges, and $p(W)>h$.
-\end{proposition}
-
-\begin{proof}
-Gallai's conjecture is equivalent to the rooted test: $p(F^t)\le n/2$ for every connected $F$ of even
-order $n$ and every vertex $t$, where $F^t$ is $F$ with a private leaf at $t$ (Lean
-\texttt{gallai\_iff\_rootedTest}; SP~\S1). Suppose it fails, and let $2h+2$ be the least even order
-with a failure. By SP Theorem~10.16, either alternative~(1) occurs, or every failing host of order
-$2h+2$ is two-connected, four-edge-connected, without a matching cut, and of minimum degree at least
-$5$.
-
-In the second case let $(F,t)$ fail. If $t$ is even, CS gives a cut-feasible half-set $M\ni t$, and
-EMM$_3$ realises it by $h+1$ paths, two of which end at $t$. Extending one of them by the leaf edge
-gives $p(F^t)\le h+1$. If $t$ is odd, a cut-feasible half-set (or $M=\emptyset$ when $e=0$) is
-realised with an end at $t$, and we extend in the same way. Either way this contradicts the failure.
-\end{proof}
-
-Alternative~(1) is a failure of the \emph{odd floor} $p(W)\le\lfloor n/2\rfloor$ at odd order, which is
-one path below Gallai's budget. Excluding it needs the analogue of EMM$_3$ and CS for profiles with
-$(n-1)/2$ paths. Below budget, cuts alone are not enough in general
-(\texttt{research/synthesis.md}~\S\S8,~10), so the hypotheses of SP~10.16(1) (two-connected, no
-matching cut, many missing edges) would have to enter. By Theorem~12.28 of SP, if alternative~(1) is
-absent, the minimum degree in alternative~(2) is even at least $6$.
-
-\begin{remark}[the converse direction]\label{rem:converse}
-By Proposition~\ref{prop:nec}, CS for $(G,r)$ follows from the \emph{simple-profile rooted statement}
-(R$_s$): $r$ lies in a realisable half-set. Under EMM$_3$ (when $\delta\ge3$), CS and (R$_s$) are
-equivalent. Gallai's
-conjecture is equivalent to the rooted test (R) (Lean \texttt{gallai\_iff\_rootedTest}, ES \S1).
-However, (R) gives a partition into $n/2$ paths with an end at $r$, and that partition need not have a
-simple profile (ES Corollary~6). So ``Gallai and EMM imply CS'' is not formal. The question is now
-moot, because CS holds unconditionally (Theorem~\ref{thm:ps}). Under EMM$_3$, Theorem~\ref{thm:ps}
-also gives (R$_s$), and hence (R), for graphs of minimum degree at least $3$.
+\begin{remark}[relation to Gallai's conjecture]\label{rem:converse}
+A realisable half-set gives a partition into $n/2$ paths. By Proposition~\ref{prop:nec},
+cut-feasibility is necessary for a half-set to be realisable. So CS at $(G,r)$ follows from the
+\emph{simple-profile rooted statement} (R$_s$): $r$ lies in a realisable half-set. Gallai's
+conjecture is equivalent to the rooted test (R) (Lean \texttt{gallai\_iff\_rootedTest}, ES~\S1).
+However, (R) gives a partition into $n/2$ paths with an end at $r$ that need not have a simple profile
+(ES Corollary~6). Theorem~\ref{thm:ps} proves CS outright. Section~\ref{sec:hard} shows that a
+cut-feasible half-set need not be realisable. So cut selection by itself says nothing about Gallai's
+conjecture, and we make no such claim. Its role in the project is as a guide for an existential
+descent towards (R$_s$) (\texttt{research/synthesis.md}~\S13).
 \end{remark}
 
 \subsection{Caps, matroids and EMC}\label{sec:caps}
 
-The \emph{endpoint matroid conjecture} (EMC; \texttt{research/experiments.md} E6) says that for
-critical $G$, meaning $p(G)=n/2$, the realisable half-sets are the bases of a loopless matroid on
-$\Ev$. Under EMM$_3$, when $\delta\ge3$, these are the cut-feasible half-sets. The inequalities are upper bounds
+\begin{conjecture}[EMC, endpoint matroid conjecture; \texttt{research/experiments.md} E6]\label{conj:emc}
+If $G$ is critical, meaning $p(G)=n/2$, then the realisable half-sets are the bases of a loopless
+matroid on $\Ev$.
+\end{conjecture}
+
+It holds for every critical graph of order at most $8$ (E15). Where Question~\ref{conj:emm} has a
+positive answer (for instance at order $\le 8$), the realisable half-sets are the cut-feasible ones. The inequalities are upper bounds
 $|M\cap X|\le f(X)$, and Edmonds' theorem turns a submodular cap into a matroid. So one asks whether
 the cap is submodular. The answer has two parts.
 
@@ -348,12 +299,13 @@ six. All of them are non-critical, so this does not contradict EMC. An example i
 path $0,1,6,7$. Here $X=\{1,4,5,6\}$ and $Y=\{0,1,4,7\}$ are in $\cF$, but neither
 $X-5+0$ nor $X-5+7$ is.
 \item For every one of the $1{,}082$ critical graphs of order eight, $\cF$ is a matroid basis family.
-In $1{,}071$ of them $\cF=\cF_v$ for a single vertex $v$, so EMC follows from EMM$_3$ through
+In $1{,}071$ of them $\cF=\cF_v$ for a single vertex $v$, so EMC follows there through
 Theorem~\ref{prop:pervertex}. In $1{,}057$ the global cap is submodular. Four critical graphs are
 explained by neither:
 \texttt{Gs`ALo}, \texttt{GsQcaO}, \texttt{GqHTTS} and \texttt{GqhTTS}.
 \end{itemize}
-So \textbf{EMM$_3$ does not formally imply EMC}. What EMM$_3$ does give is that EMC is equivalent, for
+So \textbf{a positive answer to Question~\ref{conj:emm} would not formally imply EMC}. What it would
+give is that EMC is equivalent, for
 critical graphs, to the statement that $\bigcap_v\cF_v$ is a loopless matroid basis family.
 Looplessness is CS.
 
@@ -442,9 +394,9 @@ required above. Lemma~\ref{lem:tjoin} applied to $H$ provides such a pairing, an
 gives CS.
 \end{proof}
 
-So EMM$_3$ for a cone whose base $G-u$ has minimum degree at least $2$ is the statement that \emph{a
-half-set of the cone is realisable if and only if its marked and unmarked vertices pair up by
-edge-disjoint paths of $G-u$} (track C3).
+So, for a cone, Question~\ref{conj:emm} asks whether \emph{a half-set is realisable if and only if
+its marked and unmarked vertices pair up by edge-disjoint paths of $G-u$}. This is open; the
+construction of Section~\ref{sec:hard} is not a cone.
 
 \subsection{The guarded route lemma}
 
@@ -613,37 +565,25 @@ then $v\in\Od$ (by the parity of $d_J$) and $v$ has neither passages nor an end 
 Lemma~\ref{lem:linked} shows that the pairing is good.
 \end{proof}
 
-\begin{corollary}\label{cor:gallai_emm}
-If EMM$_3$ holds for connected graphs of even order and minimum degree at least $5$, then every
-failure of Gallai's conjecture yields a witness of SP Theorem~10.16(1): a two-connected graph of odd
-order $2h+1$ without a matching cut, with at least $h+1$ missing edges and with path number above $h$.
-\end{corollary}
+So the cut inequality can always be met, by an explicit half-set, and even by every transversal of
+an explicit pairing. The script \texttt{scripts/construction.py} runs the construction with random
+spanning trees and checks the result against the cut enumeration. With three trees per graph, it
+checks all $99$ connected graphs of order $6$ with $e>0$ (of $112$ connected graphs) and all
+$10{,}893$ with $e>0$ of order $8$ (of $11{,}117$). It also covers the order-$10$ sample and the
+bottleneck families (three trees each), all trees of orders $8$, $10$ and $12$ with $e\ge2$ ($20$,
+$99$ and $538$ trees), and $150$ random graphs of order $12$ (two trees each). There are no failures.
+An independent re-implementation of inequality~\eqref{eq:one} and of the construction, with arbitrary
+edge-disjoint pairings in the $F^v$ (\texttt{research/audit/A13-cut-selection.md}), checked all
+connected graphs of orders $6$ and $8$ and $1{,}133$ further graphs of orders $4$--$12$ (all trees of
+orders $8$, $10$, $12$, cycles, complete bipartite graphs, random graphs), in about $113{,}000$
+constructions, and found no failure.
 
-\begin{proof}
-Theorem~\ref{thm:ps} gives CS for every graph. Now apply Proposition~\ref{prop:gallai}.
-\end{proof}
-
-So the combinatorial half of the programme is unconditional. The cut inequality can always be met, by
-an explicit half-set, and even by every transversal of an explicit pairing. In the main alternative of
-SP~10.16, Gallai's conjecture reduces to the sufficiency direction of EMM$_3$ at minimum degree
-$\ge5$. The odd alternative remains a separate target. The script
-\texttt{scripts/construction.py} runs the construction with random spanning trees and checks the result
-against the cut enumeration. With three trees per graph, it checks all $99$ connected graphs of order
-$6$ with $e>0$ (of $112$ connected graphs) and all $10{,}893$ with $e>0$ of order $8$ (of $11{,}117$).
-It also covers the order-$10$ sample and the bottleneck families (three trees each), all trees of
-orders $8$, $10$ and $12$ with $e\ge2$ ($20$, $99$ and $538$ trees), and $150$ random graphs of order
-$12$ (two trees each). There are no failures.
-
-\begin{remark*}[what Corollary~\ref{cor:gallai_emm} uses]
-The first version of Corollary~\ref{cor:gallai_emm}, ``EMM implies Gallai's conjecture'', is a correct
-but vacuous implication, since EMM is false. The proof of Proposition~\ref{prop:gallai} applies
-EMM$_3$ to a single cut-feasible half-set of each failing host. So what it needs is only (R$_s$) for
-the hosts of SP~10.16(2): every even vertex lies in a realisable half-set, and some half-set is
-realisable. Theorem~\ref{thm:ps} says where to look, namely among the transversals of an explicit good
-pairing. The stronger statement that every transversal of every good pairing is realisable fails
-without a degree condition. In \texttt{KsOeBW??G`?A} the pairing $\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\ 7\,10\}$
-is good, and its transversal $\{3,4,8,9,10\}$ is the non-realisable half-set of the example in
-Section~\ref{sec:emm} (\texttt{research/audit/A13-cut-selection.md}).
+\begin{remark*}[transversals of good pairings]
+A good pairing may have a non-realisable transversal. In \texttt{KsOeBW??G`?A} the pairing
+$\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\ 7\,10\}$ is good, and its transversal $\{3,4,8,9,10\}$ is the
+non-realisable half-set of the example in Section~\ref{sec:hard}. No pairing produced by
+Theorem~\ref{thm:ps} has that transversal: $3\,10$ and $8\,9$ are bridges that lie in every $T$-join,
+and each is a whole route.
 \end{remark*}
 
 \begin{remark*}[certificates and guards]
@@ -669,6 +609,165 @@ exactly the even vertices, every vertex keeps an odd number of free edges. The o
 are then precisely the ends of the transitions at $v$, so the $T$-join lemma links them.
 \end{enumerate}
 
+\section{Cut-feasibility is not sufficient, and realisability is hard}\label{sec:hard}
+
+The answer to Question~\ref{conj:emm} is positive at every order up to $8$ and in the dense range.
+Both counterexamples below use \emph{saturated} vertices, that is, vertices with $b(v)=d(v)$. Every
+edge at a saturated vertex ends a path there, so no path passes through it. For a simple profile
+this needs $d(v)\le2$.
+
+\begin{example*}[order $12$; missing-move Theorem~7.5]
+Let $G=$\,\texttt{KsOeBW??G`?A}, with edges $01,\allowbreak 02,\allowbreak 03,\allowbreak 06,\allowbreak 14,\allowbreak 16,\allowbreak 17,\allowbreak 25,\allowbreak 27,\allowbreak 47,\allowbreak 57$ and the tail
+$3\text{--}10\text{--}8\text{--}9\text{--}11$, and let $M=\{3,4,8,9,10\}$. Then $M$ is cut-feasible
+(\texttt{tools/cutfeas.c}, \texttt{tools/cut\_test.py}) but not realisable (the exact oracle, and an
+independent brute force). The vertices $3,4,8,9,10$ are saturated. So $3\text{--}10$, $10\text{--}8$,
+$8\text{--}9$ and $9\text{--}11$ are one-edge paths, and the remaining eleven edges must form the
+other two of the six paths: one from $3$ and one from $2$, both ending at $4$. The eight-vertex core
+thus sits below its own budget, where a two-linkage obstruction prevents this and no cut detects it.
+Twelve such graphs of order $12$ are known (\texttt{scripts/evidence.py counterexamples}).
+\end{example*}
+
+\subsection{A reduction from Hamiltonicity}
+The construction and the observation that it encodes Hamiltonicity are due to the project lead. We
+give complete proofs.
+
+\begin{definition}\label{def:GH}
+Let $H$ be a connected cubic graph, and let $L(H)$ be its line graph: $4$-regular, with vertex set
+$E(H)$. Fix a vertex $w^*$ of $L(H)$ with neighbours $u_1,\dots,u_4$. Put $R=V(L(H))\setminus\{w^*\}$
+and $N=|R|=|E(H)|-1\ge5$. The graph $G(H)$ has vertex set $R\cup\{l_1,\dots,l_N\}$ and edge set
+consisting of
+\begin{itemize}
+\item the edges of $L(H)-w^*$;
+\item the path $l_1l_5l_6\cdots l_Nl_2$ and the edge $l_3l_4$;
+\item the \emph{cross edges} $l_iu_i$ for $1\le i\le 4$.
+\end{itemize}
+Vertices of $R$ have degree $4$ and the $l_i$ have degree $2$. So $n=2N$, $\Ev=V$, and the
+\emph{gadget} $\mathcal L=\{l_1,\dots,l_N\}$ is a half-set. Its profile $b$ is $2$ on $\mathcal L$ and
+$0$ on $R$, and it asks for $N$ paths.
+\end{definition}
+
+\begin{lemma}[cuts of line graphs of cubic graphs]\label{lem:linecuts}
+Let $H$ be a connected cubic graph and $E(H)=A\sqcup B$ with $A,B\ne\emptyset$. Then
+$|\delta_{L(H)}(A)|=2m(A)$, where $m(A)$ is the number of vertices of $H$ incident with edges of both
+$A$ and $B$. Consequently $L(H)$ is $4$-edge-connected if and only if $H$ is bridgeless.
+\end{lemma}
+
+\begin{proof}
+Two edges of the simple graph $H$ are adjacent in $L(H)$ exactly when they share one endpoint. At a
+vertex whose three edges split $1+2$ between $A$ and $B$, exactly two adjacent pairs cross. At a
+vertex with all three edges on one side, none do. This proves the formula, and $m(A)\ge1$ because $H$
+is connected.
+
+Suppose $m(A)=1$, with mixed vertex $x$. Let $e=xy$ be the edge at $x$ that is alone on its side,
+say $e\in A$, so $x$'s other two edges lie in $B$. We show that $e$ is a bridge. Every vertex other
+than $x$ has all its edges on one side. Take a path $y=p_0,p_1,\dots,p_t=x$ in $H-e$. The edge
+$p_0p_1$ is in $A$, because $y\ne x$ is incident with $e\in A$. Each internal vertex $p_i\ne x$
+passes the side on, so every edge of the path is in $A$. But the last edge ends at $x$, whose only
+$A$-edge is $e$, which is not on the path. This is a contradiction, so $e$ is a bridge.
+
+Conversely, let $xy$ be a bridge, and let $K$ be the component of $H-xy$ containing $x$. Take $A=E(K)$,
+which is nonempty because $x$ has degree $2$ in $K$. The only mixed vertex is $x$, so
+$|\delta_{L(H)}(A)|=2$. Finally, every edge cut of $L(H)$ is $\delta(A)$ for some such partition, so
+$L(H)$ is $4$-edge-connected exactly when $m(A)\ge2$ always.
+\end{proof}
+
+\begin{proposition}[cut-feasibility]\label{prop:Lfeasible}
+The gadget $\mathcal L$ is a cut-feasible half-set of $G(H)$ if and only if $L(H)$ is
+$4$-edge-connected, that is, if and only if $H$ is bridgeless.
+\end{proposition}
+
+\begin{proof}
+We use the arm form (c) of Lemma~\ref{lem:forms} at every vertex $v$ and every $Y\subseteq V-v$. Put
+$f_v(Y)=b(Y)+|\delta_{G-v}(Y)|-e(v,Y)$; we need $f_v\ge0$.
+
+\emph{$v\in R$.} Adding a gadget vertex $l$ to $Y$ never decreases $f_v$. Indeed, $b$ grows by $2$.
+The cut $\delta_{G-v}$ loses at most $\deg_{G-v}(l)=2-[l\sim v]$ edges. And $e(v,\cdot)$ grows by
+$[l\sim v]$. So the net change is at least $2-(2-[l\sim v])-[l\sim v]=0$. It therefore suffices to
+take $Y\subseteq R-v$, where $b(Y)=0$. For such $Y$, the cross edges from $Y\cap\{u_1,\dots,u_4\}$
+play the role of the edges to $w^*$ in $L(H)$. So $|\delta_{G-v}(Y)|=|\delta_{L(H)-v}(Y)|$ and
+$e(v,Y)=e_{L(H)}(v,Y)$. With $X=Y\cup\{v\}$ and $d_{L(H)}(v)=4$,
+$|\delta_{L(H)}(X)|=|\delta_{L(H)-v}(Y)|+4-e_{L(H)}(v,Y)$. Hence (c) at $v$ is equivalent to
+$|\delta_{L(H)}(X)|\ge4$ for every $X$ with $v\in X\subseteq R$. As $v$ ranges over $R$, these $X$
+are all the nonempty vertex sets of $L(H)$ avoiding $w^*$, and every edge cut of $L(H)$ has such a
+side. So the conditions at the vertices of $R$ hold if and only if $L(H)$ is $4$-edge-connected.
+
+\emph{$v\in\mathcal L$, assuming $L(H)$ is $4$-edge-connected.} Here $d(v)=2$. If $Y$ meets
+$\mathcal L$, then $b(Y)\ge2\ge e(v,Y)$. If $Y\subseteq R$, then $e(v,Y)\le1$, with equality only when
+$v=l_i$ and $u_i\in Y$. In that case $\delta_{G-v}(Y)\ne\emptyset$. Indeed, $L(H)-w^*$ is connected,
+since a cut vertex $w^*$ of the $4$-regular $L(H)$ would leave a side with at most $3$ edges to the
+rest. So $Y\subsetneq R$ has an edge to $R\setminus Y$. And $Y=R$ has the three cross edges to the
+other $l_j$.
+
+Finally, Lemma~\ref{lem:linecuts} translates $4$-edge-connectivity of $L(H)$ into bridgelessness of
+$H$.
+\end{proof}
+
+\begin{proposition}[realisations]\label{prop:Lreal}
+The half-set $\mathcal L$ is realisable in $G(H)$ if and only if $L(H)$ has a Hamiltonian
+decomposition, that is, two edge-disjoint Hamiltonian cycles covering $E(L(H))$.
+\end{proposition}
+
+\begin{proof}
+Let $\mathcal P$ realise $b$ with $N$ paths. Every gadget vertex has $b=d=2$, so every edge at it ends
+a path there. An edge between two gadget vertices therefore ends paths at both of its ends, so it is a
+path by itself. These are the $N-3$ edges of the path $l_1l_5\cdots l_Nl_2$ and the edge $l_3l_4$,
+which gives $N-2$ paths. A cross edge $l_iu_i$ ends a path at $l_i$. The vertices of $R$ have $b=0$
+and degree $4$, so each lies, as an interior vertex, on exactly two paths. The remaining two paths
+$Q_1,Q_2$ cover $E(L(H)-w^*)$ and the four cross edges, and their four ends are $l_1,\dots,l_4$. Each
+vertex of $R$ is visited twice in total and at most once by each path, so by both. So $Q_1-\{l_a,l_b\}$
+is a Hamiltonian path of $L(H)-w^*$ from $u_a$ to $u_b$, and $Q_2-\{l_c,l_d\}$ is one from $u_c$ to
+$u_d$, with $\{a,b,c,d\}=\{1,2,3,4\}$. Closing them through $w^*$ gives two edge-disjoint Hamiltonian
+cycles of $L(H)$ that cover all its edges.
+
+Conversely, in a Hamiltonian decomposition $C_1,C_2$ of $L(H)$, each cycle uses two of the four edges
+at $w^*$. Deleting $w^*$ and extending through the cross edges gives two paths $l_a\cdots l_b$ and
+$l_c\cdots l_d$. Together with the $N-2$ one-edge gadget paths, they realise $b$.
+\end{proof}
+
+\begin{theorem}[Kotzig~\cite{Kot57}; see also~\cite{Ber78}]\label{thm:kotzig}
+A cubic graph $H$ is Hamiltonian if and only if its line graph $L(H)$ has a Hamiltonian decomposition.
+\end{theorem}
+
+\begin{theorem}[hardness]\label{thm:hard}
+Let $H$ be a connected bridgeless cubic graph. Then the gadget $\mathcal L$ is a cut-feasible half-set
+of $G(H)$, and it is realisable if and only if $H$ is Hamiltonian. Consequently, deciding whether a
+given half-set of a given connected graph is realisable is NP-complete. This remains true for graphs
+with all degrees in $\{2,4\}$ and half-sets that satisfy every cut inequality~\eqref{eq:one}. Unless
+P$\,=\,$NP, no condition checkable in polynomial time characterises the realisable half-sets.
+\end{theorem}
+
+\begin{proof}
+Cut-feasibility is Proposition~\ref{prop:Lfeasible}. Realisability is Proposition~\ref{prop:Lreal}
+together with Theorem~\ref{thm:kotzig}. Membership in NP holds because a realisation is a certificate.
+Hardness follows because $G(H)$ has size $O(|V(H)|)$, and deciding Hamiltonicity is NP-complete
+already for $3$-connected cubic planar graphs~\cite{GJT76}, which are bridgeless. Cut-feasibility, in
+contrast, is decidable in polynomial time by the max-flow form (d) of Lemma~\ref{lem:forms}.
+\end{proof}
+
+\begin{example*}[order $28$]
+For the Petersen graph $P$ (bridgeless, cubic, not Hamiltonian), $G(P)$ has $n=28$ and $m=42$, every
+vertex is even, and every slack $2k-d(v)-b(v)$ equals $24$. The gadget is cut-feasible but not
+realisable. \texttt{scripts/petersen\_counterexample.py} checks this directly: $L(P)$ has $160$
+Hamiltonian cycles and no Hamiltonian decomposition, and no risky $W$ violates~\eqref{eq:one}.
+\texttt{scripts/kotzig.py} checks Proposition~\ref{prop:Lfeasible} by max-flow. It checks
+Proposition~\ref{prop:Lreal} with the exact oracle where $n\le16$ ($K_4$, the prism and $K_{3,3}$), and
+Theorem~\ref{thm:kotzig} by search where $L(H)$ has at most $24$ vertices. The graphs
+used are $K_4$, the prism, $K_{3,3}$, the cube, the Petersen graph, six random cubic graphs of orders
+$8$--$18$, and a cubic graph with a bridge, for which $\mathcal L$ is not cut-feasible.
+\end{example*}
+
+\begin{remark}[what remains]\label{rem:what}
+The counterexamples use saturated vertices of degree $2$. Whether cut-feasibility suffices at minimum
+degree at least $3$ (\emph{EMM$_3$}) is open. The evidence is thin: at order $\le8$, every half-set
+of a graph with $\delta\ge3$ is realisable, so the inequality never binds there
+(Section~\ref{sec:evidence}). Replacing the gadget by degree-$3$ forcing structures would very likely
+carry Theorem~\ref{thm:hard} to $\delta\ge3$ (\texttt{research/synthesis.md}~\S12). Theorem~\ref{thm:hard}
+concerns a \emph{prescribed} half-set, and it does not bear on the existence of some realisable
+half-set. In $G(H)$, for instance, $\mathcal L$ starves $R$ of ends: fourteen even vertices and only
+four boundary edges in the Petersen case. Marks placed inside $R$ remove the Hamiltonicity requirement
+at once.
+\end{remark}
+
 \section{The dictionary}\label{sec:dictionary}
 
 In each item below, the first sentence gives the source statement, as extracted from the PDFs. The
@@ -678,8 +777,8 @@ rest is our reading in terms of~\eqref{eq:one}.
 \item \textbf{SP Theorem 14.1 (dense case: cuts never bind).} For $\varepsilon>0$ and $r$, and $n$
 large: if $\delta(G)\ge(1/2+\varepsilon)n$ and $b\le r$ has $b(V)=2k$, then $b$ is realised by $k$
 paths if and only if the local conditions hold. The following proposition shows that in this range
-inequality~\eqref{eq:one} is implied by the local conditions. So SP 14.1 is EMM$_3$ in the dense range,
-for all bounded profiles, not only simple ones.
+inequality~\eqref{eq:one} is implied by the local conditions. So in the dense range the answer to
+Question~\ref{conj:emm} is positive, for all bounded profiles and not only simple ones.
 
 \begin{proposition}\label{prop:dense}
 If $b\le r$ satisfies the local conditions and $\delta(G)\ge(n+r-1)/2$, then (c) holds at every
@@ -703,22 +802,20 @@ by the cut inequality.
 
 \item \textbf{ED Proposition 45 and Theorem 46 (necessity and sharpness).} Proposition 45: if $G$ is
 $\kappa$-connected with $\kappa\ge2$ and at most $2\kappa$ even vertices, then every choice of marks
-meets every inequality~\eqref{eq:one}. So EMM$_3$ predicts, when also $\delta\ge3$, that \emph{every} half-set of such a graph is
-realisable (track C3). Theorem 46: for $s\ge1$, there are graphs of connectivity $s+1$ and large
+meets every inequality~\eqref{eq:one}. Whether every half-set of such a graph is realisable is open;
+by Theorem~\ref{thm:hard} it cannot follow from the cut inequality alone. Theorem 46: for $s\ge1$, there are graphs of connectivity $s+1$ and large
 minimum degree with $2h$ even vertices in which prescribing two ends at $h$ specified even vertices
 costs $F\ge k+(h-s)/2$ paths. The lower bound is \eqref{eq:one} with $k+j$ paths in place of $k$, at
-$W=$ one shore and $v=$ the apex. EMM$_3$ thus refines Theorem 46, whose graphs have minimum degree at
-least $4$: \eqref{eq:one} is the only reason
-such a prescription fails at $k$ paths.
+$W=$ one shore and $v=$ the apex.
 
 \item \textbf{TVS Theorems 1 and 7 (exact gluing at a 2-separator $\{u,v\}$).} Every attainable global
 endpoint vector arises from two local records, three-piece joins $i,j$, and a matching of residual
 path types in a $5\times5$ table. The pole counts are $b_A(z)+b_B(z)-2(i+j+m_z)$. The only global
 ingredient is the matching number, which the paper computes by its K\"onig dual
-$\min_I(\sum_{i\notin I}a_i+\sum_{j\in N(I)}b_j)$, a min-cut. Under EMM$_3$, the outcome of this gluing on half-sets must agree with~\eqref{eq:one}. We have
-no derivation of one from the other. Deriving the inequalities~\eqref{eq:one} that see the separation
-($W$ a shore, possibly with a pole, or $v$ a pole) from TVS's K\"onig minimum is a consistency target
-for track C3 (2-separator gluing).
+$\min_I(\sum_{i\notin I}a_i+\sum_{j\in N(I)}b_j)$, a min-cut. So TVS's exact gluing is a cut
+computation at a two-vertex separator, while~\eqref{eq:one} gives only necessary conditions. The
+graphs of Section~\ref{sec:hard} show that the gap between the two can be NP-hard to close in
+general.
 
 \item \textbf{RE Theorem 13.1 (simultaneous rotation criterion).} Fix a partition $P$, a vertex $z$
 and a set $A$ of non-neighbours of $z$. Spokes $zi$ ($i\in I$) can be restored by Fan's rotations and
@@ -738,51 +835,52 @@ relative to the old partition, costs at most $\lceil q/7\rceil$ extra paths.
 \item \textbf{JM-repair Proposition 6.4 (Hoffman cuts).} The two-vertex extension step (Theorem~B) is
 reduced to an admissible record. That in turn is reduced, through Hoffman's circulation
 theorem~\cite{Hof60}, to two families of cut inequalities (UH), (LH) indexed by $B\subseteq V$. This is
-the archive's one existing exact min-max for an endpoint-slot problem, and it has the same shape as
-EMM$_3$: slots at vertices must be matched to colours, and feasibility is decided by cuts. EMM$_3$ asks for
-the analogous statement with paths in place of colour classes, and with the cut function of $G$ in
-place of $\psi_i$.
+the archive's one existing exact min-max for an endpoint-slot problem: slots at vertices must be
+matched to colours, and feasibility is decided by cuts. Question~\ref{conj:emm} asked for the analogous
+statement with paths in place of colour classes. Theorem~\ref{thm:hard} shows that for paths no such
+statement can hold.
 
 \item \textbf{This project.} The hub, flower and last-edge results of ES \S7 have the same
 supply-versus-cut shape at a single vertex. They compare the ends available near a vertex with the
-edges that must leave a small set around it. Writing each of them out as an explicit instance of (c)
-is left to track C4.
+edges that must leave a small set around it.
 \end{enumerate}
 
 \section{Related work}\label{sec:related}
 
 \textbf{Gallai's conjecture.} Lov\'asz~\cite{L68} proved that every graph on $n$ vertices decomposes
 into at most $\lfloor n/2\rfloor$ paths and cycles. When all degrees are odd, the decomposition
-consists of $n/2$ paths, which is the case $e=0$ of EMM$_3$ and of its refuted predecessor EMM. Pyber~\cite{Pyb96} proved Gallai's
+consists of $n/2$ paths, which is the case $e=0$ of Question~\ref{conj:emm}. Pyber~\cite{Pyb96} proved Gallai's
 conjecture when the even vertices induce a forest, and Fan~\cite{Fan05} extended this to wider
 classes. Bonamy and Perrett~\cite{BP19} proved it for maximum degree at most $5$, and Botler and
 Sambinelli~\cite{BS21} survey the area. These results bound the number of paths without prescribing
 the ends. As far as two literature searches show (\texttt{research/synthesis.md}~\S7), no
-characterisation of path partitions with prescribed end counts by cut conditions has appeared, so
-EMM seems to be new. Corollary~\ref{cor:linkage}(3) ($G[\Ev]$ has a perfect matching) is reminiscent
+characterisation of path partitions with prescribed end counts by cut conditions has appeared.
+Theorem~\ref{thm:hard} explains why none can. Corollary~\ref{cor:linkage}(3) ($G[\Ev]$ has a perfect matching) is reminiscent
 of Pyber's and Fan's hypotheses on the subgraph induced by the even vertices. Here, however, it
 yields only the cut conditions, not a realisation.
 
 \textbf{The Lov\'asz--Cherkassky theorem.} In an inner-Eulerian graph with terminal set $T$, the
 maximum number of edge-disjoint $T$-paths is $\frac12\sum_{t\in T}\lambda(t,T-t)$
 (Lov\'asz~\cite{L76}, Cherkassky~\cite{Ch77}; Frank~\cite{FrankBook} gives a splitting-off proof).
-It is the classical min-max theorem closest to EMM$_3$, in two respects.
+It is the classical min-max theorem closest to Question~\ref{conj:emm}, in two respects.
 \begin{itemize}
 \item \emph{The upper bound is charged to cuts in the same way.} A $T$-path leaving $t$ crosses every
 cut separating $t$ from $T-t$. In the proof of Proposition~\ref{prop:nec}, each arm leaving $v$
 either ends in $U$ or crosses $\delta(U)$.
 \item \emph{The content is simultaneity.} Each $\lambda(t,T-t)$ is a single Menger number, and the
 theorem says that all of them are attained, up to the factor $\frac12$, by one packing. In the same
-way, each vertex condition of EMM$_3$ is a single Menger statement, $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$
-(Remark~\ref{rem:euler}), and EMM$_3$ says that all of them are attained by one partition.
+way, each vertex condition here is a single Menger statement, $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$
+(Remark~\ref{rem:euler}). Question~\ref{conj:emm} asked whether all of them are attained by one
+partition. Theorem~\ref{thm:ps} shows that they can all be met by one half-set, and
+Theorem~\ref{thm:hard} that this does not suffice for a partition.
 \end{itemize}
 The analogy concerns the proof structure; it is not a reduction. Attaching $b(z)$ pendant terminals at
 each vertex $z$ gives an inner-Eulerian graph for a simple profile. There, a packing of $k$
 edge-disjoint $T$-paths that uses every end slot once is easy to find: pair the odd vertices by a
 $T$-join (Lemma~\ref{lem:tjoin}), and pair the two slots of each marked vertex with each other. The
-substance of EMM$_3$ is that the packing can be chosen to \emph{cover every edge} with non-trivial paths,
-so that no even subgraph is left over. This is where the flower and missing-move arguments of the
-project operate, and inequality~\eqref{eq:one} is the obstruction.
+substance of realisability is that the packing can be chosen to \emph{cover every edge} with
+non-trivial paths, so that no even subgraph is left over. In $G(H)$ this is a Hamiltonian
+decomposition problem.
 
 \textbf{Splitting off.} Mader's theorem~\cite{Mad78} is as follows. Let $s$ be a vertex of degree
 other than $3$ that is not incident with a cut edge. Then some pair of edges at $s$ can be split off
@@ -810,9 +908,9 @@ only degrees that change are those of $v$ and $t$. Hence $\lambda'(w,t)\ge\lambd
 So the cut conditions survive the elimination of any vertex. The slack $2k-d(v)-b(v)$ of the anchor
 $v$ is twice the number of paths that miss $v$, and those paths are untouched by the splitting. What splitting loses is the constraint that a path passes
 through $v$ at most once. In $G'_b$, the cycles through $t$ must use at most one split edge from $v$
-each. A splitting-off proof of EMM$_3$ would therefore have
-to choose Mader pairs \emph{compatibly} with the cycle structure. That is the same equality
-phenomenon that the missing-move session isolates (\texttt{research/synthesis.md}~\S8). For CS, the
+each. Any splitting-off argument for realisability would therefore have to choose Mader pairs
+\emph{compatibly} with the cycle structure, and Theorem~\ref{thm:hard} shows that in general this
+cannot be done by cut considerations. For CS, the
 analogous step would be to split at $t$ in $G+t$ with $t$ joined once to every vertex (the
 half-integral point $b\equiv1$). A good pairing is a complete splitting of the $t$-edges at $\Ev$
 whose pairs satisfy the cut condition in every $G^v$ (Lemma~\ref{lem:pairing}). We have not found a
@@ -839,10 +937,9 @@ ED \S12.4, and 2-sums of small dense graphs. They have orders $6$--$10$, $82$ gr
 reduction.
 
 \begin{table}[h]
-\caption{EMM and EMM$_3$ (\texttt{scripts/evidence.py}). A failure is a cut-feasible half-set that is
-not realisable. ``Unsound'' counts realisable half-sets that violate \eqref{eq:one}, and it must be
-$0$. Rows marked $\delta\ge3$ are the range of EMM$_3$. The order-$12$ rows call the oracle only on
-cut-feasible half-sets.}\label{tab:emm}
+\caption{Realisability versus cut-feasibility (\texttt{scripts/evidence.py}). A failure is a
+cut-feasible half-set that is not realisable. ``Unsound'' counts realisable half-sets that violate
+\eqref{eq:one}, and it must be $0$.}\label{tab:emm}
 \begin{tabular}{lrrrr}
 \toprule
 Graphs & count & half-sets (non-realisable) & failures & unsound\\
@@ -861,14 +958,13 @@ counterexamples of missing-move Thm 7.5, order 12 & 12 & 1{,}932 (269) & 12 & 0\
 \end{tabular}
 \end{table}
 
-\textbf{How strong is the evidence for EMM$_3$?} At orders $6$ and $8$, and in the order-$10$ random
-sample, \emph{every} half-set of a graph of minimum degree at least $3$ is realisable. There, EMM$_3$
-holds vacuously, because the cut inequality never excludes anything. All $2{,}100$ non-realisable
-half-sets at order $8$ live in graphs with a vertex of degree at most $2$. The informative rows are
-the bottleneck families and the two-blob graphs (two random dense blobs joined by $1$--$3$ edges).
-In those rows the cut inequality excludes half-sets at minimum degree $\ge3$, and every half-set it
-admits is realisable. Larger and more varied tests of EMM$_3$, at orders $10$--$14$ with binding
-cuts, are the most useful next computation.
+\textbf{Minimum degree at least three.} At orders $6$ and $8$, and in the order-$10$ random sample,
+\emph{every} half-set of a graph of minimum degree at least $3$ is realisable, so the cut inequality
+never excludes anything there. All $2{,}100$ non-realisable half-sets at order $8$ live in graphs with
+a vertex of degree at most $2$. The rows in which the inequality does exclude half-sets at minimum
+degree $\ge3$ are the bottleneck families and the two-blob graphs (two random dense blobs joined by
+$1$--$3$ edges). In those rows every half-set it admits is realisable. The order-$28$ example of
+Section~\ref{sec:hard} and the twelve order-$12$ examples all have vertices of degree at most $2$.
 
 \begin{table}[h]
 \caption{CS and PS by enumeration (\texttt{scripts/cut\_selection.py}). At order $6$ the script also
@@ -938,35 +1034,35 @@ The script also verifies Theorem~\ref{prop:pervertex} by brute force: every $\cF
 basis family, at orders $6$ and $8$.
 
 \section{Formalisation}
-The Lean side is planned for the \texttt{lean-d6-frontier} track: the definition \texttt{CutFeasible}, the
-necessity of~\eqref{eq:one} and \texttt{gallai\_of\_emm\_cs}. None of these is formalised yet; the
-existing \texttt{EmmTemplate.lean} has \texttt{CutOK}, form (a) for general profiles. The shared definitions are fixed in
-\texttt{research/connections.md}~\S U. We recommend the arm form (c) as the definition, since its
-quantifiers are the simplest, with (a) proved equivalent.
+The shared Lean definitions are fixed in \texttt{research/connections.md}~\S U. We recommend the arm
+form (c) as the definition, since its quantifiers are the simplest, with (a) proved equivalent.
 Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing}, Lemma~\ref{lem:free}, Lemma~\ref{lem:linked} and
-Theorem~\ref{thm:ps} are finite and elementary. Since EMM is false, the natural Lean target is
-Theorem~\ref{thm:ps} itself (\texttt{cs\_all}). Proposition~\ref{prop:gallai} can follow if SP
-Theorem~10.16 is formalised.
+Theorem~\ref{thm:ps} are finite and elementary, so Theorem~\ref{thm:ps} (\texttt{cs\_all}) is the
+natural target. Lemma~\ref{lem:linecuts} and Propositions~\ref{prop:Lfeasible} and~\ref{prop:Lreal}
+are also elementary. Kotzig's theorem would be an imported hypothesis.
 
 \section{Open problems}
 \begin{enumerate}
-\item EMM$_3$ (Conjecture~\ref{conj:emm}) is false at minimum degree $3$ (Section~\ref{sec:emm}).
-Does sufficiency hold at minimum degree $\ge5$ (Corollary~\ref{cor:gallai_emm})? An inductive proof passes through graphs with low-degree
-vertices, so it needs a corrected general statement. That statement would decompose at saturated
-vertices, give each piece its own budget, and add linkage conditions for pieces below their budget
-(\texttt{research/synthesis.md}~\S10).
-\item The odd alternative of SP~10.16: cut selection and a min-max statement one path below the
-budget, at odd order, under the hypotheses of SP~10.16(1).
-\item Question~\ref{q:emc}: why the cut-feasible family is a matroid for critical graphs.
+\item EMM$_3$: is every cut-feasible half-set of a connected graph of minimum degree at least $3$
+realisable? Or does Theorem~\ref{thm:hard} extend to minimum degree $3$ via forcing gadgets?
+\item Existence instead of characterisation. Theorem~\ref{thm:hard} rules out characterising the
+realisable half-sets, but not proving that \emph{some} half-set containing a given $r$ is realisable,
+which is (R$_s$). Can the good pairing of Theorem~\ref{thm:ps} guide a descent from $\Ev$, which is
+realisable (ES Lemma~2), to one of its transversals, keeping every intermediate set realisable?
+(\texttt{research/synthesis.md}~\S13.)
+\item Question~\ref{q:emc}: why is the cut-feasible family a matroid for critical graphs at order
+$\le 8$, and does this persist?
 \item Which cut-feasible half-sets are transversals of good pairings? Their union is closed under
 complementation, but $\cF$ need not be: it is not in $593$ graphs of order $8$. At order $\le 8$, the
 union equals the complement-closed part $\{M\in\cF:\Ev\setminus M\in\cF\}$ except in two graphs of
 order $8$. In cones it is all of $\cF$ (Theorem~\ref{thm:cone}).
-\item (R)$\Rightarrow$(R$_s$) (Remark~\ref{rem:converse}) without EMM$_3$: can a partition with an end at
-$r$ always be made simple?
+\item (R)$\Rightarrow$(R$_s$) (Remark~\ref{rem:converse}): can a partition with an end at $r$ always be
+made simple?
 \end{enumerate}
 
 \begin{thebibliography}{99}
+\bibitem{Ber78} J.-C.~Bermond, Hamiltonian decompositions of graphs, directed graphs and hypergraphs,
+Ann.\ Discrete Math.\ 3 (1978) 21--28.
 \bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
 maximum degree, Discrete Math.\ 342 (2019) 1293--1299.
 \bibitem{BS21} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph
@@ -982,8 +1078,12 @@ Programming 5 (1973) 88--124.
 \bibitem{Fr92} A.~Frank, On a theorem of Mader, Discrete Math.\ 101 (1992) 49--57.
 \bibitem{FrankBook} A.~Frank, Connections in Combinatorial Optimization, Oxford University Press, 2011.
 \bibitem{Gale57} D.~Gale, A theorem on flows in networks, Pacific J.\ Math.\ 7 (1957) 1073--1082.
+\bibitem{GJT76} M.~R.~Garey, D.~S.~Johnson and R.~E.~Tarjan, The planar Hamiltonian circuit problem is
+NP-complete, SIAM J.\ Comput.\ 5 (1976) 704--714.
 \bibitem{Hof60} A.~J.~Hoffman, Some recent applications of the theory of linear inequalities to extremal
 combinatorial analysis, Proc.\ Sympos.\ Appl.\ Math.\ 10 (1960) 113--127.
+\bibitem{Kot57} A.~Kotzig, Aus der Theorie der endlichen regul\"aren Graphen dritten und vierten Grades,
+\v{C}asopis P\v{e}st.\ Mat.\ 82 (1957) 76--92.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
 Academic Press, 1968, 231--236.
 \bibitem{L76} L.~Lov\'asz, On some connectivity properties of Eulerian graphs, Acta Math.\ Acad.\ Sci.\
