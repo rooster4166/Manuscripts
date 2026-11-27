@@ -45,3 +45,9 @@ This file says how the work is organised, so that any session can resume it. `RO
 ## Rule added 2026-11-27: never commit during someone else's merge
 
 Before any checkpoint commit, for example one prompted by the stop hook, check `test -f .git/MERGE_HEAD` and `git diff --name-only --diff-filter=U`. If a merge is in progress or files are unmerged, an agent is mid-resolution. Do not commit: wait for that agent, or ask it to finish. A checkpoint commit made with `git add -A` during a merge once pushed conflict markers in `endpoint-min-max.tex` (commit 328eb52).
+
+## Rule added 2026-11-27 (later): push a merge only after a green full build
+
+A merge of a session branch that touches `.lean` files is pushed to the base only after `lake build` of the **whole library** succeeds, with no `sorry`. If the build fails, undo the merge locally (`git reset --hard <pre-merge>`) and ask the session to merge the base and fix. A branch that compiles on its own can still break against API changes from other sessions.
+
+Incident: multi-sep 1e11ecc was pushed to the base broken, then reverted in 14dbc55. Re-merging it later needs `git revert 14dbc55` first, or the session's own fix-up commit restoring its files.
