@@ -158,7 +158,7 @@ every edge of $M_0$ is terminal (the first or last edge of its path).
 (a)$\Rightarrow$(b) is Theorem~\ref{thm:lift}. The edge $a_ib_i$ becomes the terminal edge at $u_i$, and
 no later append acts at $u_i$.
 
-(b)$\Rightarrow$(a). The even vertices of $B$ are exactly $N(z)$. Count ends: the $2k-2m+2$ odd vertices
+(b)$\Rightarrow$(a). The even vertices of $B$ are exactly $N(z)$. Count ends: the $2k-2m$ odd vertices
 have at least one each, $r$ has at least two, and the vertex at which $a_ib_i$ is terminal has an end,
 hence at least two. That is at least $2k$ ends, and there are at most $2k$. So every count is exact:
 $k$ paths, one end at each odd vertex, two at $r$ and at each such $u_i$, none at $w$ or at the other
@@ -203,7 +203,9 @@ adjacencies of $r$ inside $N(z)$ play no role.
 there has between $5$ and $15$ data choices.
 \item A root isolated in the core ($D\supseteq K_{1,5}$) also has data whenever the other five
 core vertices carry two disjoint edges, for example when $D=K_{1,5}$. Such roots need no separate
-treatment.
+treatment. For ``Conjecture~\ref{conj:base} implies T(6)-i'', MR Theorem~144 is needed only at
+isolated roots with $\nu(J[N(z)-r])\le1$ (audit A26, F1). Roots without data are covered by the
+forest lift of \S\ref{sec:forest}.
 \item When $J[N(z)-r]$ has no such matching, one can peel the triangles of a maximal matching. This is
 a heuristic only: no statement here covers the peeled instance.
 \end{itemize}
@@ -343,7 +345,11 @@ of the disjunction~\eqref{eq:disj}; condition (ii) is vacuous.
 \item \emph{Availability.} When $J$ is $3$-connected, Theorem~\ref{thm:forest} applies at every root
 $r$ and every $w$, with no hypothesis on $J[N(z)]$. In particular it covers the regime where
 $N(z)-r$ is independent, which the triangle data miss.
-\item \emph{Lean.} Only the matching case is formalised (\texttt{test1At\_of\_triangleBase}).
+\item \emph{Lean.} The matching case is \texttt{test1At\_of\_triangleBase}. The forest lift is
+\texttt{test1At\_of\_forestBase} (\texttt{ForestLift.lean}, standard axioms). There $\Phi$ is a list of
+(child, parent) pairs in parent-first order, meaning no parent is a later child, with distinct
+children and edges, $w$ never a child, and the $T$-join parity. The appends are made in that order,
+so each child still has exactly its original end when it is processed. Acyclicity is not used.
 \end{itemize}
 \end{remark}
 
@@ -356,6 +362,20 @@ At a root that admits triangle data, Conjecture~\ref{conj:base} is the special c
 Conjecture~\ref{conj:forest} in which $\Phi$ is required to be a matching inside $N(z)$, so
 Conjecture~\ref{conj:forest} is formally weaker there. Conjecture~\ref{conj:forest} would give (T1) for
 every $3$-connected $J$, which is one of the two tests of the spine reduction.
+
+\begin{example}[a root without triangle data; coordinator, checked by hand]\label{ex:k34}
+Let $J=K_{3,4}+x_1x_2$, with parts $\{z,x_1,x_2\}$ and $\{y_1,\dots,y_4\}$. Then $z$ is the only even
+vertex, $N(z)=\{y_1,\dots,y_4\}$ is independent, and no root admits triangle data. Take $r=y_1$,
+$w=y_2$ and $\Phi=\{x_1y_3,x_1y_4\}$, rooted at $y_3$, so that $p(x_1)=y_3$ and $p(y_4)=x_1$.
+\begin{itemize}[leftmargin=*]
+\item The graph $M$ has the $8$ edges $zy_1$, $x_1y_1$, $x_1y_2$, $x_1x_2$, $x_2y_1,\dots,x_2y_4$.
+\item $D_0=\{x_1y_2x_2,\ y_1x_1x_2y_3,\ y_4x_2y_1z\}$ is a Lov\'asz decomposition of $M$. It satisfies~(i),
+since $Q_0(x_1)\not\ni y_3$ and $Q_0(y_4)\not\ni x_1$, and (ii) is vacuous.
+\item The lift is $\{y_3x_1y_2x_2,\ y_1x_1x_2y_3,\ x_1y_4x_2y_1\}$. These are $3=k$ paths covering the
+$9$ edges of $J-z$, with two ends at $y_1$.
+\end{itemize}
+The same holds at every root (\texttt{scripts/verify/fb\_k34.py}).
+\end{example}
 
 \begin{remark}[a single pair is not settled by one-sided avoidance]\label{rem:onepair}
 Take $m=2$, so that $M=J-\{zw,za_1,zb_1,a_1b_1\}$. Assume $J$ is $2$-connected on at least $5$ vertices.
@@ -488,8 +508,8 @@ the K2-residual run of \texttt{dtl\_resid.py}, $|B|=14$ & $6$ & $36$ & \RESIDK &
 Experiment E28 lists $8$ residual graphs in which every search for a t6-dense base hit the budget, at
 $46$ roots. On the same graphs the triangle base certifies \HEADTOHEAD{} of the $48$ roots, including
 every root of the $P_3$ ($|O|=8$, $|O|=10$) and $K_3$ ($|O|=10$) graphs and of the $\emptyset$ graph.
-Every certified root was lifted and verified. In the order-$9$ dense cores the two bases coexist at
-every root and data choice (A28).
+Every certified root was lifted and verified. On the $18$ of the $28$ order-$9$ dense cores that the
+auditor compared ($108$ of $168$ roots), the two bases coexist at every root and data choice (A28).
 
 \subsection{Larger random graphs}
 \RANDOMTB

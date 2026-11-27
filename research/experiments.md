@@ -1556,7 +1556,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - The other 6 are certified at budget 2·10⁷ with seeds 7, 11, 13, 17, 19: the ∅ graph at r = 1, 3; K2 |O|=10 at r = 5; `M^~~Zxv^N~RJZujl_` at r = 1, 3, 5. Each took 23–270 s.
 - Every lift was verified edge by edge.
 - So on the instances where the dense-residual base was out of reach, the triangle base is decided by the same oracle. It is weaker in form, and much easier to find.
-- On order-9 dense cores the two bases coexist at every root and data choice. The auditor's `e7dense.py` checked 16 of the 28 cores (920 data choices) before its time limit (A28).
+- On order-9 dense cores the two bases coexist at every root and data choice, as far as checked: the auditor's `e7dense.py` compared 18 of the 28 cores (108 of 168 roots) before it was stopped (A28).
 
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
 - n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).

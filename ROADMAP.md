@@ -620,4 +620,4 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
   - Conj 4.5 (forest base) is weaker than the triangle base.
   - **Lean: pending (only the matching case exists).**
-- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.6).
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).

@@ -1637,6 +1637,10 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - `triangleBase_of_L1Star` / `_of_L1Blocked`: one pair with a ≁ w or b ≁ w.
   - `triangleBase_of_E5_E7` (from audit A28): every (E7)-branch base of t6-dense Conj 5.1 is a triangle base at y1, because the base graphs coincide.
 - **DL ⇒ Test1.** `DisjL1` (Conjecture DL), `TriangleData.not_univTwins` and **`test1At_of_disjL1`**: DL gives Test1 at every root whose data have M connected.
+- **The forest lift** (coordinator's §4) is in Lean too: **`test1At_of_forestBase`** (`ForestLift.lean`).
+  - Φ is given as (child, parent) pairs in parent-first order, and the T-join parity is a hypothesis.
+  - `append_forest` carries three invariants: (i), the sibling condition (ii), and ends at the children.
+  - `test1At_of_leafDecomp` is the generic deletion step. Acyclicity is not needed.
 
 ### AF.2 What the audit changed (A28)
 - **The conjecture.** The note's Conj 3.1 asserted that data exist at every root. That is false: K_{3,4} + x1x2 has none. It is now restricted to roots with data, as in Lean. Data exist at r iff J[N(z) − r] has a matching of size m − 1; the adjacency of r inside N(z) is irrelevant.

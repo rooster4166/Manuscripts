@@ -581,7 +581,7 @@ The project lead forwarded three claims from another agent and asked that each b
    - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
    - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
    - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
-   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.6.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.7.
 
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
 

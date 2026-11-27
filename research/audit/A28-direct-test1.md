@@ -2,7 +2,13 @@
 
 Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixable), **ERROR** (false as stated), **OVERCLAIM** (true content, overstated).
 
-**Version.** Branch `claude/triangle-base` at **d9aad30** (tex and pdf from d2e13de, scripts from 2a92f02, Lean from bd616c7). The working tree was clean except for an untracked `manuscripts/direct-test1/scripts/tb.py`. Another session created it at 17:39, during this audit. It is not committed and is out of scope.
+**Version.** Everything below is audited at branch `claude/triangle-base`, **d9aad30**: tex and pdf from d2e13de, scripts from 2a92f02, Lean from bd616c7. The branch moved during the audit:
+- `tb.py` appeared at 17:39, untracked.
+- 159820d added `TriangleBase.lean` (Conjecture DL).
+- 468582a added E29 (draft) and the `dl_*.py` scripts.
+- An uncommitted rewrite of `direct-test1.tex` appeared, which already adopts most fixes below.
+
+None of the new material is audited here. §7 records the status of the rewrite as of 18:06.
 
 **Line numbers.** "l." is `direct-test1.tex` (186 lines). "L." is `lean/GallaiLean/DirectTest1.lean` (845 lines).
 
@@ -13,7 +19,7 @@ Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixab
 - `aud28.py`: data availability, the counterexample, and an independent brute-force equivalence check.
 - `equiv9.py`: the same equivalence check on random order-9 graphs.
 - `tb9.py`: exhaustive order-9 triangle-base run with witness verification.
-- `e7dense.py`, `e7lib.py`, `e7cmp.py`: (E7) base versus triangle base on the same graph M.
+- `e7dense.py`, `e7dense_rest.py`, `e7lib.py`, `e7cmp.py`: (E7) base versus triangle base on the same graph M (logs `e7dense.log`, `e7dense_rest.log`).
 - `run/`: the compiled oracle, the logged reruns of `dtl.py`, and the `recheck.py` output.
 
 ---
@@ -166,7 +172,11 @@ The proof shows `baseM J z x₁ x₂ y₂ x₃ y₃ = triM J z x₃ [(x₁,y₂)
     - the direct (T1) target, bypassing STL;
     - the general-m Lean.
   - Remark 2.2 should say this. The proposal is credited to an external collaborator (l. 34–35), which is fine.
-- **Data.** On the 28 dense-core graphs of TM's order-9 list, every root and data choice has both a triangle base and an (E7)-labelling base (`e7dense.py`; final counts in §5). So the strictness of the implication is not visible at order 9.
+- **Data (partial).** `e7dense.py` is an exact Python brute force with no budget. It ran over **18 of the 28** dense-core graphs of TM's order-9 list, then I stopped it, because some graphs take about 10 minutes each.
+  - Covered: 108 roots, 1,052 data choices and 8,416 labellings.
+  - Every data choice has both a triangle base and an (E7) base for at least one of its 8 labellings, and in fact every labelling has an (E7) base.
+  - There is no case with a triangle base but no (E7) base. So strictness is not visible on these graphs.
+  - The other 10 graphs (60 roots) are unchecked. A26 found 16 labellings without an (E7) base in this family, so none of them lies in the 18 graphs covered.
 - **"Five or six end-path conditions"** is accurate if read as six with (E7), or five end-path conditions plus the predecessor condition (E6). t6-dense itself says "six of them" (l. 639).
 
 ### 2.2 The lift is an equivalence (the triviality question)
@@ -182,7 +192,7 @@ The proof shows `baseM J z x₁ x₂ y₂ x₃ y₃ = triM J z x₃ [(x₁,y₂)
   - The 2k − 2m odd vertices have at least one end each.
   - r has at least two.
   - The vertex u_i at which a_ib_i is terminal is even and has an end, so it has at least two.
-  - That totals at least 2k = 2·(k paths) ≥ 2·size. So equality holds everywhere:
+  - That totals at least (2k − 2m) + 2 + 2(m − 1) = 2k ends. There are 2·size ≤ 2k ends, so equality holds everywhere:
     - exactly k paths;
     - one end at each odd vertex;
     - two at r and two at each u_i;
@@ -200,7 +210,7 @@ The proof shows `baseM J z x₁ x₂ y₂ x₃ y₃ = triM J z x₃ [(x₁,y₂)
 - Results:
   - **All graphs of order 7** with one even vertex and δ ≥ 3 (35 graphs, 28 of them 3-connected): 444 data choices, 426 with both sides, 18 with neither, 0 with one side only.
   - **Random order 9**, d(z) = 6 (40 graphs) and d(z) = 4 (60 graphs): 828 + 320 data choices, 0 disagreements.
-  - In every run, each root where (T1) holds and data exist also has a triangle base. The only (T1) failures (6 roots) are in the one graph of order 7 with a cut vertex (z joined to two triangles).
+  - In every run, each root where (T1) holds and data exist also has a triangle base. The only (T1) failures (6 roots) are all in one order-7 graph, which has a cut vertex (z joined to two triangles).
 
 **Consequence.**
 - Conjecture 2.4 [3.1] says that (T1) at r holds with a **terminal matching**: a perfect matching of N(z) − {r, w} by edges of J, each matching edge terminal at its doubled end.
@@ -342,7 +352,35 @@ The dense counts (28 graphs, 168 roots) agree with A26's order-9 census. 1,465 o
 - **O4.** Fold the auditor's Lean lemma `triangleBase_of_E5_E7` into `DirectTest1.lean`. It is about 90 lines, needs no new infrastructure, and has standard axioms.
 - **O5.** Lemma 1.2, l. 71: delete "Disconnected M is handled componentwise", or move it to the existence statement of Lovász's theorem.
 
-## 7. Fixes applied (triangle-base session, after the audit)
+## 7. Status of the uncommitted rewrite (snapshot 18:06, not audited in full)
+
+The working tree's `direct-test1.tex` (uncommitted, about 390 changed lines) and `TriangleBase.lean` (159820d plus uncommitted changes) already take up most of the fixes. Line numbers in this section ("w.l.") refer to the working-tree tex.
+
+| Finding | Status in the rewrite |
+|---|---|
+| F1 | Adopted. The conjecture is restated as `TriangleBaseConj`, with the K_{3,4}+x1x2 example and the 354/1,819 count. |
+| F2 | Adopted: the Remark is rewritten and the abstract says "keeps, on the same graph M, only two of the conditions". Not checked: whether synthesis §24 and ROADMAP l. 601 were aligned. |
+| F3 | Adopted as "Proposition (the converse; audit A28)". **New slip, w.l. 147:** it reads "the 2k−2m+2 odd vertices". B has 2k − 2m odd vertices, and with "+2" the count gives 2k + 2 > 2k. Fix: "2k−2m". |
+| F4 | Adopted ("reaches about 80%"). |
+| F5 | Adopted. The command is recorded and the log is `scripts/out/run11_d6.log`. |
+| F6 | Partly adopted. The d = 8 sentence is gone and the K2-residual run is in a table. But the table cells `\RESIDA`, `\RESIDK`, `\HEADTOHEAD` and `\RANDOMTB` are **unfilled placeholders** (w.l. 311, 313, 320, 326). The claim that `tb.py` verifies D0 was not checked here. |
+| F7, F8 | Adopted. |
+| F9 | Adopted. The conjecture has its own section, so it is Conjecture 3.1 again, matching the Lean docstrings and the brief. Lean pointers are added, and the Remark cites `test1_of_lovaszBases`. `triangleBase_of_E5_E7` is now at `TriangleBase.lean` l. 287. |
+| O1, O2, O4, O5 | Adopted. |
+| "In the order-9 dense cores the two bases coexist at every root and data choice (A28)" | **Overstates A28.** A28 checked 18 of the 28 dense cores (108 of 168 roots; §2.1). Write "in 18 of the 28 order-9 dense cores", or finish the run (a C version of the search would be faster). |
+
+**Not audited (new content):**
+- the exhaustive order ≤ 9 table over `one_even_{5,7,9}.g6` (κ = 1, 2, ≥ 3);
+- the residual-family and head-to-head tables;
+- §6, "Toward the conjecture": Props `triangleBase_of_packed`/`farApart`, `triangleBase_of_L1Star`, Conjecture DL (`DisjL1`), `triangleBase_of_disjL1_reach`;
+- `TriangleBase.lean`;
+- E29.
+
+**Wording.** The abstract (w.l. 40–41), "it holds at every root of every 2-connected graph that admits the data", should say "of order at most 9". As written it reads as a general claim.
+
+**Recommendation.** These need a follow-up audit (A28b) once they are committed.
+
+## 8. Fixes applied (triangle-base session, after the audit)
 
 | Finding | Status | Where |
 |---|---|---|
@@ -360,3 +398,4 @@ The dense counts (28 graphs, 168 roots) agree with A26's order-9 census. 1,465 o
 | O3 | **Done.** Data: "some data" cannot be "all data" in 3-connected J (4 of 88,526 data choices at n = 9 have no base). "First data choice" holds at 36,779 of 36,781 roots. No (T1)-but-no-base instance exists in 2-connected J of order ≤ 9. | E29 (A), (B) |
 | O4 | **Done.** | `TriangleBase.lean` |
 | O5 | **Done.** The sentence is deleted. | tex Lemma 1.2 |
+| Final hand-back (two points on the rewrite, §7) | **Fixed.** The converse proof now counts 2k − 2m odd vertices (it said 2k − 2m + 2). The coexistence of the two bases is stated for the 18 of 28 order-9 dense cores (108 of 168 roots) that were actually compared. | tex Prop 2.2, §6.4; E29 (E) |
