@@ -51,3 +51,4 @@ import GallaiLean.Thm59Transfer
 import GallaiLean.Thm59Hall
 import GallaiLean.Thm59ClassC
 import GallaiLean.Thm59Lemma6
+import GallaiLean.Thm59Leaves
