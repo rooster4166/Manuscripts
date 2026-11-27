@@ -691,3 +691,11 @@ All checks agree.
 
 **TRC (synthesis §15).** None of these failing half-sets is a transversal of a Thm 21 pairing. They starve the gadget: all of D_r's even vertices are unmarked, so all N pairs would have to cross δ(D_r), which has only 2r edges, while the routes are edge-disjoint. A gadget attack on TRC would need a forcing gadget with about half its even vertices marked, i.e. near or above its budget. The exhaustive search found no gadget of any kind with |X| ≤ 9.
 - `trc_probe.py` on G₁₈ (`trc_G18.log`) built 10 distinct Thm 21 pairings from 12 random spanning trees. In each, no pair crosses δ(D₂), so every transversal has 4 marks in D₂. **All 2,560 transversals are realisable** (tools/realis_wide.c).
+
+**E19 addendum: the balance condition** (connections §T.result-4).
+- **Balance lemma** (proved). If M is a transversal of a constructible pairing and U = Ev − M, then for every X ⊆ V,
+
+  | |M ∩ X| − |U ∩ X| | ≤ #(pairs split by X) ≤ |δ_J(X)| ≤ |δ(X)|.
+
+- On G₁₈: of the 12,609 cut-feasible half-sets, 10,136 are balanced (`scripts/balance.c`). **All 10,136 balanced ones are realisable** (`scripts/bemm_run.py` with `tools/realis_wide.c`, about 45 min on 4 threads; `outputs/bemm_G18.log`). The 2,473 unbalanced half-sets include M = V(K₄,₄), which is not realisable; the others were not tested.
+- **Connectivity of G′(H)** (Thm 45). By networkx, κ = 4 and λ = 4 for the prism, K₃,₃, the cube and Petersen. So the hardness instances are 4-connected there, even where L(H) itself is only 3-connected (the prism). There is no general proof.

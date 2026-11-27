@@ -938,3 +938,36 @@ Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 
 - Formalisation (`sec:lean`) records `cs_all`.
 - TRC is open problem 1, the main one.
 - One correction to the gadgets text: open problem 2, bullet 2 now says "constructible pairing" instead of "good pairing". A13's n = 12 witness is a failing transversal of a *good* pairing that needs no gadget.
+
+#### T.result-4 (emm3-gadgets session): TRC versus gadgets, the balance lemma, and a test of "balanced EMM"
+
+This answers the coordinator's TRC messages. The route-descent session owns the TRC extension step; this note is for it.
+
+1. **Is V(S) a transversal of a constructible pairing?** No: not in G₁₈, G_r or G′(H). The reason is the balance lemma below.
+   - G₁₈: D₂ has 8 even vertices, all unmarked, and |δ(D₂)| = 2. A transversal equal to V(S) would need 8 split pairs.
+   - G_r: N split pairs are needed, but there are only 2r cut edges.
+   - G′(H): N split pairs against 4 cut edges.
+
+   On G₁₈ the constructible pairings built from 12 random trees give 10 distinct pairings. **None of them splits δ(D₂) at all**, so every transversal has exactly 4 marks in D₂, and **all 2,560 transversals are realisable** (`scripts/trc_probe.py`, `outputs/trc_G18.log`). G₂ was not tested: realis_wide.c does not finish on its dense S within 600 s.
+
+2. **Balance lemma** (the obstruction that protects TRC from every gadget construction here). Let P be a constructible pairing with edge-disjoint routes in J, and M a transversal, U = Ev − M. Then for every X ⊆ V,
+
+   | |M ∩ X| − |U ∩ X| | ≤ #(pairs split by X) ≤ |δ_J(X)| ≤ |δ(X)|.
+
+   Proof: a pair inside X contributes one vertex to M and one to U; a pair outside contributes nothing; a split pair contributes ±1. Each split pair's route crosses δ(X), and routes are edge-disjoint.
+   - So constructible transversals cannot starve or flood a region behind a small cut. This is exactly what Lemma 31 (closing), Thm 41, Thm 42, Thm 45 and the Kotzig graph G(H) exploit.
+   - The lemma is **not** implied by cut-feasibility: V(S) in G₁₈ is cut-feasible with imbalance 8 across a 2-edge cut.
+   - Nor is it necessary for realisability: L in G(H), for Hamiltonian H, is realisable with imbalance N − 4 across 4 edges.
+
+3. **"Balanced EMM" (BEMM), a candidate clean statement between Thm 21 and TRC.** Every cut-feasible half-set satisfying the balance condition | |M ∩ X| − |U ∩ X| | ≤ |δ(X)| for all X is realisable.
+   - BEMM ⇒ TRC ⇒ Gallai, by the lemma.
+   - **Test on G₁₈** (the only informative δ ≥ 3 failure graph small enough for the oracle): 10,136 of 12,609 cut-feasible half-sets are balanced, and **all 10,136 are realisable** (`scripts/balance.c`, `scripts/bemm_run.py`, `outputs/bemm_G18.log`).
+   - The n = 12 failures (KsOeBW-type) are good tests too. Their failing half-sets contain a whole one-edge route (manuscript remark). A version with δ(X) restricted to the T-join's edges, |δ_J(X)|, is the sharper invariant to test there.
+   - Caveat: BEMM is a characterisation-type statement, so by Thm 27 it cannot be decided in polynomial time unless P = NP. Balance is polynomially checkable (it is a cut condition on the signed vector χ_M − χ_U), so BEMM would contradict the hardness theorem unless every hard instance is unbalanced. **That holds for G(H) and G′(H)**: their starving half-sets are unbalanced. So BEMM is consistent with Thm 27 and Thm 45, but a balanced hard family would refute it.
+   - A natural adversarial next step: hardness reductions whose half-sets are balanced.
+
+4. **Hardness and connectivity.** G′(H) (Thm 45) is 4-connected and 4-edge-connected on the prism, K₃,₃, the cube and Petersen, by computation only. So prescribed-half-set realisability is NP-hard on graphs with δ ≥ 4 and λ ≥ 4, and very likely on 4-connected graphs too, but there is no proof of κ ≥ 4 in general.
+5. **Balance as linkage** (Gale/Hoffman; added). With x = χ_M − χ_U, the balance condition is |x(X)| ≤ |δ(X)| for every X. Since x(V) = 0, this is the cut condition for a single-commodity flow with unit supplies on M, unit demands on U and unit edge capacities.
+   - So **M is balanced iff M and U can be paired by edge-disjoint paths of G, each pair consisting of one marked and one unmarked vertex.** This is checkable by one max-flow.
+   - BEMM thus reads: *a cut-feasible half-set that admits an edge-disjoint M–U linkage is realisable.*
+   - This parallels the cone theorem (manuscript Thm 15). In a cone, the cut-feasible half-sets are exactly the transversals of pairings of Ev by edge-disjoint paths avoiding the apex.
