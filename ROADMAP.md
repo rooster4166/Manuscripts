@@ -467,3 +467,9 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **PEE away from z is FALSE.** The smallest counterexample has n = 5. In every failure y ≁ z, and the reverse prescription holds. The candidate statements are (P1) PEE for y ∈ N[z], and (P2) every edge is terminal at one of its two ends.
   - **New proof, not yet in Lean: EE holds whenever |N(u) ∩ N(z)| ≤ 1.** The argument: separate u from z in K − uz − uw, restore uw by Fan's lemma with target w, then append zu. This subsumes EE3 (a)–(c) and the STL d(z) = 2 triangle case.
   - **Open:** |N(u) ∩ N(z)| ≥ 2.
+- **EE progress in Lean (ee ec4d26b, PrescribedEnd.lean; standard axioms, verified).**
+  - `ee_atMostOneCommon`: EE whenever |N(u) ∩ N(z)| ≤ 1, for any d(u). It subsumes EE3 and the STL triangle case.
+  - `ee_deg_two`: EE whenever d(z) = 2, so **STL is complete at d(z) = 2**.
+  - `pee_adjEven`: PEE at xy for y ∈ N(z) with ≤ 1 common neighbour besides z, by a general mechanism (delete zy, apply EE at y, restore by Fan).
+  - **Remaining for EE:** |N(u) ∩ N(z)| ≥ 2. It reduces to "in K − triangle(uzw), the path ending at w avoids u and z", which held on 88,356 triples at n = 9 and 44,892 random ones at n = 11–17.
+  - EE has 0 failures exhaustively to n = 9 and about 13M tests at n = 11.
