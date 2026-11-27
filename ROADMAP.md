@@ -94,8 +94,14 @@ EMM sufficiency work is **stopped**.
   - **Paper (`manuscripts/l1star`):** five more reductions narrow down a smallest counterexample.
   - **Audit A23:** applied.
   - **Open:** the blocked case. It is the same tight Fan configuration as route-descent's L∞ residual (§V.4c). In the original statement L1* (|A| ≤ 2) is still open, so EE is still open.
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
-- **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`, new): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
+- **t6-dense**: **finished** (ec9fcc4).
+  - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
+  - **Audit A26:** sound; fixes F1–F10 applied. Conj 5.1's (E7) branch is equivalent to STL-P plus two terminal edges, a strengthening of STL.
+  - **Data:** 536 roots certified, 46 budget-undecided (the K2 |O| = 8 cell is hardest).
+  - **Superseded as a target** by the triangle base conjecture (§24).
+- (original entry) **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
 - **ptm**: **finished**.
   - **Lean:** the walk theorems (PTM₂: sparse and local girth 5), the STL lift, the chained walk (PTM₃: far-apart), and `test1_of_chains3`. These re-derive the known d = 4 and far-apart d = 6 cases; the new content is STL-P with prescribed transitions.
   - **Audits:** A22, A22b and A22c are all sound.

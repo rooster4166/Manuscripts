@@ -1435,7 +1435,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - Total: 46 roots in 8 graphs.
   - **Recheck with a count of proved absences** (`dense.py` now prints `none=` when a search returns NONE). For the five graphs found last (`out/hard3`–`hard5`), every one of the 4 searches per labelling was undecided (und = 4 · labs_tried), and none = 0.
   - **The search, not the base.** On `M^~~Zxv^N~RJZujl_`, STL-P for the labelled pairing (weaker than the base) is undecided for 20/20 labellings at the same budget 2·10⁶ (scratch check with `equiv.jsharp_query`). Dense residual graphs of this size are at the limit of `lsearch`.
-  - Reruns of `OV~~N}}…` and `M~~zwF…` with budget 10⁷ and 3 seeds: `out/hard2.log`.
+  - A rerun of `OV~~N}}…` and `M~~zwF…` with budget 10⁷ and 3 seeds timed out after 3,000 s inside the first graph: inconclusive.
 - "failures" counts bases whose executed construction did not verify. In the six-separation and `end` modes the protected step fails for 216/1,050 and 288/1,280 bases (A); those modes are not theorem hypotheses. No base satisfying (E1)–(E5) with (E6) or (E7), in any mode, failed to verify.
 
 **(B′) Exhaustive, order 9** (`relabel.py` on `terminal-matching/scripts/out/d6_9.g6`; exact search, no budget).
