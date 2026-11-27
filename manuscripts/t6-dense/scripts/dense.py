@@ -18,7 +18,9 @@ Input: g6 lines of B = J - z with U = N(z) = {0..5}.  For every root r in U and 
 This is Theorem 3.1 of manuscripts/t6-dense (Lean `stl_of_appendBase`).  Mode `end` drops (E5)
 and (E6) and runs the first walk as a Fan transfer (forced chain) and the protected step with
 the forced chain (Theorem 3.3 / Remark).  Mode `endZ` is the form proved in Lean, with every
-leaf identified with z: in (E6) the end e must moreover not be l1 (= z) or y3.  Roots are tried in all labellings in a fixed random
+leaf identified with z: in (E6) the end e must moreover not be l1 (= z) or y3.  Mode `endT`
+replaces (E6) by (E7) the path ending at x1 avoids y2, so that the protected step is an append
+as well (Theorem 2.1, Lean `stl_of_appendBase`).  Roots are tried in all labellings in a fixed random
 order; per root the search stops at the first labelling whose base executes.
 
 usage: dense.py MODE SEEDS BUDGET [MAXLAB] < graphs.g6
@@ -89,6 +91,9 @@ def base_query(B, L, mode, seed, budget):
         if mode == 'endZ':      # all leaves are z: z (= l1) and y3 (-> z) are neighbours of y2
             mask |= {l1, y3}
         q['es'] = [(p, y2, sorted(mask)) for p in (x2, x3) if p in Ny2]
+    if mode == 'endT':          # all seven steps are appends: (E1)-(E5) and (E7) P_x1 avoids y2
+        ef.setdefault(x2, []).append(y3)
+        ef.setdefault(x1, []).append(y2)
     q['ef'] = ef
     return q
 
@@ -127,7 +132,7 @@ def run_walk(B, L, D0, mode):
     return 'OK', info
 
 
-def run_walk_z(B, L, D0):
+def run_walk_z(B, L, D0, mode='endZ'):
     """the Lean sequence (`stl_of_appendBase`) on subgraphs of J, z = l1 = l2 = l3:
     append y3->z, append x2->y3, append y2->z, protected Fan y2 <- x1 (static condition checked
     with z in N(y2)), append z->x1, z->x2, z->x3; verify the decomposition of J"""
@@ -147,13 +152,16 @@ def run_walk_z(B, L, D0):
     D = app(D0, y3, z)
     D = app(D, x2, y3)
     D = app(D, y2, z)
-    prot = {p for p in (x2, x3) if B.has_edge(p, y2)}
-    nbrs = [v for v in B.neighbors(y2) if v != x1] + [z]
-    if not static_pred_ok(D, y2, x1, nbrs, prot):
-        return 'STATIC_FAIL'
-    D, f = fan(D, y2, x1)
-    if not f['ok']:
-        return 'W2FAIL'
+    if mode == 'endT':           # the fourth step is an append as well
+        D = app(D, x1, y2)
+    else:
+        prot = {p for p in (x2, x3) if B.has_edge(p, y2)}
+        nbrs = [v for v in B.neighbors(y2) if v != x1] + [z]
+        if not static_pred_ok(D, y2, x1, nbrs, prot):
+            return 'STATIC_FAIL'
+        D, f = fan(D, y2, x1)
+        if not f['ok']:
+            return 'W2FAIL'
     for yi, xi in ((y1, x1), (y2, x2), (y3, x3)):
         P = [P for P in D if (P[0] == z and P[1] == yi) or (P[-1] == z and P[-2] == yi)]
         if len(P) != 1 or xi in P[0]:
@@ -207,8 +215,8 @@ def main():
                         continue
                     st['bases'] += 1
                     out, info = run_walk(B, L, D0, mode)
-                    if mode == 'endZ':
-                        outz = run_walk_z(B, L, D0)
+                    if mode in ('endZ', 'endT'):
+                        outz = run_walk_z(B, L, D0, mode)
                         if outz != 'OK':
                             st['zfail'] = st.get('zfail', 0) + 1
                             print('Z-NOT-OK', line, L, outz, file=sys.stderr)
@@ -220,7 +228,7 @@ def main():
                     if out.startswith('BAD'):
                         st['bad'] += 1
                         print('BAD', line, L, out, file=sys.stderr)
-                    if mode in ('endA', 'endZ'):
+                    if mode in ('endA', 'endZ', 'endT'):
                         st['notok'] += 1
                         print('ENDA-NOT-OK', line, L, out, info, file=sys.stderr)
                 if ok:
