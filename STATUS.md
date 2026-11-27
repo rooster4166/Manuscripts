@@ -257,7 +257,8 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
   - the d6-frontier certificates: Lemma 2.3, Thm 4.1, Thm 5.2, and Thm 6.1 at every deletion degree;
   - the five-even floor bound (`FiveEven.five_even_local`, `five_even_bowtie`; 131 kernel-checked certificates), which replaces Shaik in MR Cor 106 (audit A11 running);
   - **the reduction of Gallai to one named statement** (`gallai_of_branchBase3`);
-  - **the barrier theorems** for Fan moves on cocktail party graphs.
+  - **the barrier theorems** for Fan moves on cocktail party graphs;
+  - **cut selection** (`cs_all`): every connected even-order graph has a pairing whose transversals all satisfy the cut inequality.
 
 **Open risks:**
 
