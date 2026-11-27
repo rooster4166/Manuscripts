@@ -29,6 +29,8 @@ def main():
     ap.add_argument("--budget", type=int, default=0)
     ap.add_argument("--conn", type=int, default=1)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--allodd", action="store_true", help="graphs with no even vertex instead")
+    ap.add_argument("--stride", type=int, default=1)
     args = ap.parse_args()
     C = Counter()
     ng = 0
@@ -36,17 +38,20 @@ def main():
         line = line.strip()
         if not line:
             continue
+        nline = C["lines"] = C["lines"] + 1
+        if (nline - 1) % args.stride:
+            continue
         G = nx.convert_node_labels_to_integers(nx.from_graph6_bytes(line.encode()))
         n = G.number_of_nodes()
         ev = [v for v in G if G.degree(v) > 0 and G.degree(v) % 2 == 0]
-        if len(ev) != 1:
+        if len(ev) != (0 if args.allodd else 1) or any(G.degree(v) == 0 for v in G):
             continue
         if args.conn > 1 and nx.node_connectivity(G) < args.conn:
             continue
         ng += 1
         if args.limit and ng > args.limit:
             break
-        g = ev[0]
+        g = ev[0] if ev else -1
         C["graphs"] += 1
         odd = [v for v in G if G.degree(v) % 2 == 1]
         pairs = [(a, b) for a, b in itertools.combinations(odd, 2) if not G.has_edge(a, b)]

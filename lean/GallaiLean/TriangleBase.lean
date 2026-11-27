@@ -20,6 +20,10 @@ pair is non-adjacent. This file proves the cases reached by the project's single
   blocked case `L1Blocked` holds.
 * `test1At_of_packed`, `test1At_of_farApart`, `test1At_of_L1Star`: the corresponding cases of
   Test1 through the direct lift.
+* `UnivTwins`, **`DisjL1`** (Conjecture DL, the disjunctive avoidance conjecture: no multi-pair
+  compatibility beyond excluding universal twins), `TriangleData.not_univTwins`,
+  **`triangleBase_of_disjL1`**, `triangleBase_of_disjL1_reach`, **`test1At_of_disjL1`**: DL gives a
+  triangle base, hence Test1, at every root with data whose `M` is connected.
 -/
 
 open SimpleGraph
@@ -167,5 +171,72 @@ theorem test1At_of_L1Star (hL : L1Star.{u}) {a b : V} (hz : ∀ v, Even (J.degre
     (hr3 : 3 ≤ J.degree r) (hD : TriangleData J z r w [(a, b)])
     (haw : ¬ J.Adj w a ∨ ¬ J.Adj w b) : Test1At J z r :=
   test1At_of_triangleBase J hz hr3 (triangleBase_of_L1Star hL hz hD haw)
+
+/-! ### The disjunctive avoidance conjecture DL -/
+
+section DL
+
+omit [Fintype V] [DecidableEq V] [DecidableRel J.Adj] in
+/-- `a, b` are **universal twins** of their component: `b` is in the component of `a`, and every
+other vertex of that component is adjacent to both. -/
+def UnivTwins (G : SimpleGraph V) (a b : V) : Prop :=
+  G.Reachable a b ∧ ∀ x, x ≠ a → x ≠ b → G.Reachable a x → G.Adj a x ∧ G.Adj b x
+
+/-- **Conjecture DL (disjunctive avoidance)** (manuscript Conjecture 6.3). If `G` has at most one
+vertex of positive even degree and `L` lists disjoint pairs of non-adjacent odd vertices, none of
+them universal twins of its component, then some Lovász decomposition of `G` has, for every pair
+`(a, b)`, the path ending at `b` avoiding `a` or the path ending at `a` avoiding `b`. -/
+def DisjL1 : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (G : SimpleGraph W) [DecidableRel G.Adj],
+    (evenSet G).card ≤ 1 → ∀ L : List (W × W), (pairVerts L).Nodup →
+    (∀ p ∈ L, G.degree p.1 % 2 = 1 ∧ G.degree p.2 % 2 = 1 ∧ ¬ G.Adj p.1 p.2 ∧
+      ¬ UnivTwins G p.1 p.2) →
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ TriangleDisj D L
+
+omit [Fintype V] [DecidableEq V] [DecidableRel J.Adj] in
+/-- In `M`, a pair whose first vertex is connected to `z` is never a pair of universal twins: `z` is
+not adjacent to it. -/
+theorem TriangleData.not_univTwins (hD : TriangleData J z r w L) {p : V × V} (hp : p ∈ L)
+    (hreach : (triM J z w L).Reachable p.1 z) : ¬ UnivTwins (triM J z w L) p.1 p.2 := by
+  obtain ⟨-, -, hzL, -, -, -, -⟩ := hD.facts
+  intro h
+  have h1 : z ≠ p.1 := fun e => hzL (e ▸ fst_mem_pairVerts hp)
+  have h2 : z ≠ p.2 := fun e => hzL (e ▸ snd_mem_pairVerts hp)
+  have hadj := (h.2 z h1 h2 hreach).1
+  have := (hD.triM_adj_z (x := p.1)).1 hadj.symm
+  obtain ⟨-, -, -, -, hrL, -, -⟩ := hD.facts
+  exact hrL (this ▸ fst_mem_pairVerts hp)
+
+/-- **DL gives triangle bases** wherever no pair is a pair of universal twins of its component of
+`M`, in particular (`triangleBase_of_disjL1_reach`) whenever every pair is connected to `z` in
+`M`. -/
+theorem triangleBase_of_disjL1 (hDL : DisjL1.{u}) (hz : ∀ v, Even (J.degree v) ↔ v = z)
+    (hD : TriangleData J z r w L) (htw : ∀ p ∈ L, ¬ UnivTwins (triM J z w L) p.1 p.2) :
+    TriangleBase J z r := by
+  obtain ⟨-, -, -, -, -, hwL, hnd⟩ := hD.facts
+  have hpar := hD.triM_parity hz
+  obtain ⟨D, hD₀, hdisj⟩ := hDL V (triM J z w L) (hD.triM_evenSet hz) L hnd (by
+    intro p hp
+    have hw1 : p.1 ≠ w := fun h => hwL (h ▸ fst_mem_pairVerts hp)
+    have hw2 : p.2 ≠ w := fun h => hwL (h ▸ snd_mem_pairVerts hp)
+    have h1 := hpar p.1
+    have h2 := hpar p.2
+    simp only [hw1, hw2, ite_false] at h1 h2
+    exact ⟨h1, h2, hD.triM_not_adj hp, htw p hp⟩)
+  exact ⟨w, L, hD, D, hD₀, hdisj⟩
+
+theorem triangleBase_of_disjL1_reach (hDL : DisjL1.{u}) (hz : ∀ v, Even (J.degree v) ↔ v = z)
+    (hD : TriangleData J z r w L) (hreach : ∀ p ∈ L, (triM J z w L).Reachable p.1 z) :
+    TriangleBase J z r :=
+  triangleBase_of_disjL1 hDL hz hD fun p hp => hD.not_univTwins hp (hreach p hp)
+
+/-- **DL gives Test1** at every root with triangle data whose auxiliary graph `M` is connected. -/
+theorem test1At_of_disjL1 (hDL : DisjL1.{u}) (hz : ∀ v, Even (J.degree v) ↔ v = z)
+    (hr3 : 3 ≤ J.degree r) (hD : TriangleData J z r w L) (hM : (triM J z w L).Connected) :
+    Test1At J z r :=
+  test1At_of_triangleBase J hz hr3
+    (triangleBase_of_disjL1_reach hDL hz hD fun _ _ => hM.preconnected _ _)
+
+end DL
 
 end Gallai
