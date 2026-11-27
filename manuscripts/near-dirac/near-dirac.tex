@@ -629,6 +629,116 @@ The remaining counting case has nearly equal healthy shores and $|X|\ge c\sqrt n
 The scheduling half of Problem~\ref{prob:twosided} is untouched. In the version used in Proposition~\ref{prop:bal-app}, every exceptional vertex keeps all its internal edges in its own shore and consumes only cross edges: $d_x-D$ of them, about $q$. So it enters SP's interval and bin construction as a \emph{weak site}, with $p_x\approx q/2$ visits, whose neighbours on the other shore may be a small linear fraction of that shore. What is missing is SP's construction (Theorems~14.31 and 14.33) re-derived with $o(q)$ weak sites per slot placed before the gap matching, together with the corresponding lost-neighbour bounds, and with the one-apex end pattern adjusted to the value of $b'(K)-b'(I)$ fixed by \eqref{eq:window}.
 \end{remark}
 
+\begin{problem}[The open counting regime]\label{prob:counting}
+Let the healthy shores differ by $|\Delta|\le|X|=s$, with $s>\sqrt D/6$. For a configuration $(\nu,M,t)$, the exact value of $e_R(I)-e_R(K)$ coming from $X$ is
+\[
+S-e(G[X_I])+e(G[X_K])+e(X_K,W),\qquad |W|=\Gamma+t\le2s+1 .
+\]
+The error $E=-e(G[X_I])+e(G[X_K])+e(X_K,W)$ satisfies $|E|\le\binom s2+s(2s+1)$. It can be of order $s^2$, for example when every exceptional vertex is adjacent to most of the healthy bin shore. It then exceeds the tolerance $D/8$ of Lemma~\ref{lem:bal-robust}.
+
+Decide whether, in this regime, some naming, placement, $t$ and choice of $W$ satisfy \eqref{eq:window} with the exact imbalance. The freedom available includes choosing the members of $W$, not only its size, and keeping fewer internal edges at interval-shore vertices. Alternatively, exhibit a configuration in which no choice does.
+\end{problem}
+
+\section{A conditional reduction of the near-regular case}\label{sec:conditional}
+
+This section states precisely what the results so far give for Target~D in the near-regular regime $\Delta\le(1/2+o(1))n$, assuming a single open scheduling statement.
+
+\begin{definition}[Scheduling Hypothesis SH]\label{def:SH}
+Consider a sequence of graphs $G$ with $n=|V(G)|\to\infty$. Each comes with:
+\begin{itemize}[nosep]
+\item a partition $V(G)=I\cup K$ and sets $X\subseteq V(G)$ and $W\subseteq K\setminus X$;
+\item an integer $t\in\{-1,0,1\}$ and an even integer $D$;
+\item a profile $b:V(G)\to\{0,1,2\}$ of the degree parity with $b(V)\in\{2\lfloor n/2\rfloor,n\}$.
+\end{itemize}
+Put $q=\lfloor n/2\rfloor-D$. Let $h$ be the maximum of $\own(v)+\mis(v)$ over $v\notin X$, taken with respect to $(I,K)$, and let $e=|\{v:b(v)\ne1\}|$. Assume:
+\begin{enumerate}[label=(H\arabic*),nosep]
+\item\label{H1} $q=o(n)$, $h+e+|X|+|W|=o(q)$ and $n\,(h+|W|)=o(q^2)$;
+\item\label{H2} every $x\in X$ has $|N(x)\cap I|\le D$, $|N(x)\cap K|\le D$, $d(x)\le5D/4$ and $d(x)-|N(x)\cap W|\ge D$;
+\item\label{H3} $|I|-|K\setminus W|=t$;
+\item\label{H4} $e_X(I)-e_X(K\setminus W)\in[D(t-1)/2,D(t+1)/2]$, where $e_X(S)$ is the number of edges inside $S$ with at least one end in $X$.
+\end{enumerate}
+\emph{SH asserts} that for all sufficiently large members, $G$ has a decomposition into exactly $b(V)/2$ paths realising~$b$.
+\end{definition}
+
+\begin{remark}[Status and meaning of SH]\label{rem:SH}
+SH is \emph{not proved} here.
+
+With $X=\emptyset$, hypotheses \ref{H2} and \ref{H4} are vacuous, and SH asks for the realisation of a bounded profile with $o(q)$ entries different from~$1$ on a bipartite-like graph with $o(q)$ size and degree errors. This is the regime of SP Theorems~14.33 and 14.37. The final sentence of SP's proof of 14.37 says that ``the same construction realizes any cap-two profile of the degree parity on unequal shores when the number of even-degree sites and the three size and degree errors are $o(m)$''. SP chooses its removed set itself; in SH, $W$ is prescribed, but any healthy set of the right size serves.
+
+The intended proof of SH runs SP's one-apex construction (Theorems~14.31 and 14.33) on $I\cup(K\setminus W)$, with the healthy internal edges first cleared as in SP~14.37. In that construction:
+\begin{itemize}[nosep]
+\item the exceptional vertices keep all their internal edges, which \ref{H4} makes compatible with the one-apex identity~\eqref{eq:window};
+\item they enter the preliminary slots only through prebuilt partner blocks, as in Step~4 of \S\ref{sec:proof}, consuming $d(x)-D$ cross edges;
+\item the edges from $X_K$ to $W$ are routed through blocks of the form $u'\,x\,w\,u$.
+\end{itemize}
+What such a proof must supply is SP's interval, bin and queue scheduling with $o(q)$ such blocks per slot, the corresponding lost-neighbour bounds, and the end pattern for the value of $b'(K)-b'(I)$ fixed by \ref{H4}.
+\end{remark}
+
+\begin{theorem}[Conditional reduction]\label{thm:conditional}
+Assume SH. Let $(G_n)$ be a failure sequence as in SP Corollary~14.24 with $\Delta(G_n)\le(1/2+o(1))n$. Then there are integers $q_n=o(n)$ with the following property. For all sufficiently large $n$, put $D_n=\lfloor n/2\rfloor-q_n$, which is even. For every maximum cut $(A,B)$ of $G_n$, put
+\[
+X=\{v:\own(v)\ge d(v)-D_n\},\qquad\Delta_H=|B\setminus X|-|A\setminus X| .
+\]
+Then at least one of the following holds:
+\begin{enumerate}[label=\textup{(\alph*)},nosep]
+\item \emph{(intermediate vertices)} some vertex $v$ has $\lambda_n\le\own(v)<d(v)-D_n$, where $\lambda_n:=q_n^2/(n\,\omega_n)$ for a sequence $\omega_n\to\infty$ fixed in the proof;
+\item \emph{(open counting regime)} $|\Delta_H|\le|X|$ and $|X|>\sqrt{D_n}/6$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\emph{Parameters.} By SP Corollary~14.26 and the hypothesis on $\Delta$, there is $\xi_n\to0$ such that every maximum cut $(A,B)$ of $G_n$ satisfies all of the following:
+\begin{itemize}[nosep]
+\item $\bigl||A|-|B|\bigr|\le\xi_nn$ and $e(A)+e(B)\le\xi_nn^2$;
+\item every degree lies in $[n/2-\xi_nn,\,n/2+\xi_nn]$;
+\item at most $\xi_nn$ vertices have even degree, because $\Delta\le n/2+o(n)$ forces $\odd(G_n)=n-o(n)$.
+\end{itemize}
+The first two items use the proof of SP Corollary~14.39 for the bounds on the cut.
+
+Choose $q_n=o(n)$ with the parity making $D_n$ even and with
+\[
+q_n\ge\omega_n\bigl(\xi_n^{1/3}n+\xi_n^{1/4}n\bigr),\qquad\text{for instance }q_n\approx\xi_n^{1/5}n,\ \omega_n=\xi_n^{-1/100}.
+\]
+Then $\lambda_n=q_n^2/(n\omega_n)\ge\omega_n\xi_n^{1/2}n$, so $\lambda_n$ dominates $\xi_nn$.
+
+\emph{Sizes.} Every $v\in X$ has $\own(v)\ge d(v)-D_n\ge q_n-2\xi_nn\ge q_n/2$. So $|X|\le4(e(A)+e(B))/q_n\le4\xi_nn^2/q_n=o(q_n)$. Also $|\Delta_H|\le\xi_nn+|X|=o(q_n)$.
+
+Suppose now that neither~(a) nor~(b) holds, for some large $n$ and some maximum cut. We derive a contradiction.
+
+\emph{Healthy vertices.} A vertex $v\notin X$ has $\own(v)<d(v)-D_n$, so by $\neg$(a), $\own(v)<\lambda_n$. Then
+\[
+\mis(v)\le\max(|A|,|B|)-d(v)+\own(v)\le3\xi_nn+\lambda_n .
+\]
+
+\emph{Exceptional vertices.} Every $x\in X$ has $\max(d_A(x),d_B(x))=d(x)-\own(x)\le D_n$, using that the maximum cut makes $\own$ the smaller side. Also $\min(d_A(x),d_B(x))\le d(x)/2\le D_n$, and
+\[
+d(x)\ge n/2-\xi_nn\ge D_n+q_n-\xi_nn-1 .
+\]
+So \eqref{eq:B1} holds for the degrees into healthy vertices, up to subtracting $|X|=o(q_n)$. Moreover $D_n+|\Delta_H|+2|X|+2\le d_x\le5D_n/4$, because $q_n$ dominates $|\Delta_H|+|X|+\xi_nn$. We also have $|\Delta_H|+5|X|+1<D_n$.
+
+\emph{Placement.} Since (b) fails, either $|\Delta_H|\ge|X|+1$ or $|X|\le\sqrt{D_n}/6$. Proposition~\ref{prop:bal-app} therefore applies. It gives a naming $(I,K)$, a placement of $X$, an integer $t$ and a set $W$ of healthy bin-shore vertices with $|W|=\Gamma+t\le|\Delta_H|+|X|+1$. With these, \ref{H3} holds, \ref{H4} holds because the proposition controls the exact imbalance, and \ref{H2} holds. Healthy vertices stay on their maximum-cut sides; the exceptional vertices are placed as the proposition says.
+
+\emph{Hypothesis \ref{H1}.} With respect to $(I,K)$, every healthy $v$ has $\own(v)+\mis(v)\le\lambda_n+3\xi_nn+\lambda_n+|X|=:h$, since moving $X$ changes these counts by at most $|X|$. Then:
+\begin{itemize}[nosep]
+\item $h=O(\lambda_n)+o(q_n)=o(q_n)$;
+\item $n\,h=O(q_n^2/\omega_n)+O(n\,\xi_nn)+n|X|=o(q_n^2)$, using $n|X|\le4\xi_nn^3/q_n=o(q_n^2)$ by the choice of $q_n$;
+\item $n|W|=o(q_n^2)$ likewise;
+\item $e\le\xi_nn=o(q_n)$.
+\end{itemize}
+
+\emph{Profile.} Put $b=1$ on odd-degree vertices; their number is even. If $n$ is even, the number of even-degree vertices is even. Let $t_0$ be a failing root and give two ends to half of the even-degree vertices, including $t_0$ if its degree is even, so $b(V)=n$ and $b(t_0)\ge1$. If $n$ is odd, the number $e_0$ of even-degree vertices is odd; give two ends to $(e_0-1)/2$ of them, so $b(V)=n-1$. In both cases $e\le\xi_nn$. SH gives $b(V)/2$ paths realising $b$. At even order, append the private leaf at $t_0$. This contradicts the failure of $G_n$.
+\end{proof}
+
+\begin{problem}[Intermediate vertices]\label{prob:intermediate}
+In the setting of Theorem~\ref{thm:conditional}, handle vertices with $q_n^2/(n\omega_n)\le\own(v)<d(v)-D_n$.
+
+Such a vertex is too far from bipartite for SP's one-apex scheduling. That scheduling needs every site to miss only $o(q^2/n)$ opposite neighbours. It is also too close to bipartite for the balancing of \S\ref{sec:balance}: its larger side exceeds $D$, so it cannot keep all its internal edges on the bin shore.
+
+On the interval shore it is harmless: it consumes its few internal edges through labelled pairs there. On the bin shore it must either be moved, contributing about $D$ to the imbalance, or keep its internal edges. A version of Proposition~\ref{prop:bal-app} with such vertices fixed on one side, together with SH for weak sites missing up to $q$ opposite neighbours, would remove alternative~(a).
+\end{problem}
+
+\noindent\emph{Summary of the near-regular case.} Assume SH. A failure sequence with $\Delta\le(1/2+o(1))n$ must, at all large orders, contain intermediate vertices (Problem~\ref{prob:intermediate}) or lie in the open counting regime (Problem~\ref{prob:counting}). Failures with $\Delta\ge(1/2+\beta)n$ fall under Problem~\ref{prob:high}.
+
 \section{Lean formalisation}\label{sec:lean}
 
 Two finite lemmas used above are cleanly separable from the asymptotic argument. They are formalised in \texttt{lean/GallaiLean/NearDirac.lean} against the project's Mathlib pin. Both are sorry-free, and \texttt{\#print axioms} reports only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
