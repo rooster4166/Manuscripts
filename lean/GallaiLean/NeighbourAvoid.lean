@@ -5,26 +5,37 @@ import GallaiLean.ConjN
 
 Manuscript `manuscripts/na`.
 
-**Theorem** (`neighbourAvoid`, hence `NeighbourAvoidOn V` for every `V`). Let `G` have no vertex of
-positive even degree, let `x ~ y`, and let `y` have a neighbour `w ≠ x` with `w ≁ x`. Then some
-Lovász decomposition of `G` has the path ending at `y` avoiding `x`.
+**Theorem** (`neighbourAvoid`, hence `NeighbourAvoidOn V` for every `V`: `neighbourAvoidOn`). Let `G`
+have no vertex of positive even degree, let `x ~ y`, and let `y` have a neighbour `w ≠ x` with
+`w ≁ x`. Then some Lovász decomposition of `G` has the path ending at `y` avoiding `x`.
 
-Proof (manuscript Section 3).
+It is the case `Y = {x}`, walk `y w`, of the set form **`avoid_packed_of_reach`**: if `Y` is packed,
+`y ∉ Y` is odd, and a vertex `w` of positive degree with no neighbour in `Y` is joined to `y` by a walk
+avoiding `Y`, then some Lovász decomposition has every path meeting `Y` at most once and the path
+ending at `y` disjoint from `Y`. This extends `L₁` (`lovasz_avoid_set`), which needs `y ∉ N(Y)`.
+`avoid_of_reach` is the single-vertex form (the manuscript shows it is sharp).
+
+Consequences: `conjNDegTwoOn` (the degree-two case of Conjecture N, unconditionally),
+`conjN_of_tightTransferN` (TRN ⇒ N), `conjN_of_TR` (TR ∧ `TightTransferAdj` ⇒ N).
+
+Proof (manuscript Sections 3–5).
 1. Hang a leaf `ℓ = none` at `y` (`apex G {y}`); now `y` is the only vertex of positive even
-   degree, and it suffices that no path contains both `ℓ` and `x` (`avoid_of_apexSep`).
+   degree, and it suffices that every path meets `X = {ℓ} ∪ Y` at most once (`apexSep_meetsOnce`).
 2. **Steering** (`Steer`, `steer_meetsOnce`). Run Lovász's Case I from the even vertex `y`, always
-   with a target outside `X = {ℓ, x}`: delete `g u`, the target `u` becomes the even vertex. Fan's
-   lemma with vertex sets (`fan_single_supp`) restores each edge and only adds the target `u ∉ X`
-   to one path, so "every path meets `X` at most once" goes back up the chain
-   (`fan_step_meetsOnce`). The chain stops when the target is left isolated; then there is no even
-   vertex, `ℓ` is a leaf at `y` and `x ≠ y`, and L₁ (`lovasz_avoid_set`) starts the chain.
-3. **The chain exists** (`steer_of_inv`, `exists_inv_subgraph`). It is a trail in `G − x` that
-   starts at `y` and ends at a vertex `t ∉ N[x]` all of whose edges it uses. Such a trail is read off
-   a subgraph `S` with odd vertices exactly `y` and `t` that contains every edge at `t`
-   (an invariant maintained edge by edge, `steer_of_inv`); `S` is `G − x` minus a parity
-   correction `J`, the symmetric difference of shortest paths from `y` to the odd vertices of the
-   component other than a farthest one, `t` (`exists_inv_subgraph`). The witness `w` makes that
-   component contain an odd vertex.
+   with a target outside `X`: delete `g u`, and the target `u` becomes the even vertex. Fan's lemma
+   with vertex sets (`fan_single_supp`) restores each edge and only adds the target `u ∉ X` to one
+   path, so "every path meets `X` at most once" goes back up the chain (`fan_step_meetsOnce`). The
+   target may be `y` itself: since `ℓ` is a leaf, the condition is about vertex sets only. The chain
+   stops when the target is left isolated; then there is no even vertex, `ℓ` is a leaf at `y ∉ Y`,
+   and `L₁` (`lovasz_avoid_set`) starts the chain.
+3. **The chain exists** (`steer_of_inv`, `exists_inv_subgraph`). Let `H = K − X`. It suffices to
+   have `S ≤ H` whose odd vertices other than `y` are odd vertices of `H` (all of them have no
+   neighbour in `X`) at which `S` contains every edge; walking along `S` keeps this invariant and
+   can only stop at such a vertex, which is then isolated (`steer_of_inv`). `S` is `H` with shortest
+   paths from `y` to the odd vertices of its component other than a farthest one, `t`, toggled
+   (`exists_toggle_walk`, `exists_inv_subgraph`); the parity of the component
+   (`even_card_odd_reachable`) makes `y` odd in `S`. The witness `w` makes the component contain an
+   odd vertex.
 -/
 
 open SimpleGraph
@@ -522,23 +533,120 @@ theorem offX_degree [Fintype W] [DecidableEq W] (K : SimpleGraph W) [DecidableRe
     if K.Adj v z then 1 else 0
   by_cases h1 : K.Adj v z <;> by_cases h2 : z ∈ X <;> simp [h1, h2, hv]
 
+end na
+
+/-! ### The set form, under the weak hypothesis -/
+
+section setForm
+
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/-- **Neighbour avoidance (NA).** Let `G` have no vertex of positive even degree, let `x ~ y`, and
-let `y` have a neighbour `w ≠ x` not adjacent to `x`. Then some Lovász decomposition of `G` has
-its path ending at `y` avoiding `x`. -/
-theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
-    {x y w : V} (hy : G.degree y % 2 = 1) (hxy : G.Adj x y) (hyw : G.Adj y w) (hwx : w ≠ x)
-    (hxw : ¬ G.Adj x w) : AvoidDecomp G y {x} := by
+/-- **Deleting the leaf, keeping a packed set.** A decomposition of the leaf graph `apex G {c}`
+with the end counts of `G` away from `c`, no end at `c`, and every path meeting `{ℓ} ∪ Y` at most
+once gives a Lovász decomposition of `G` in which every path meets `Y` at most once and the path
+ending at `c` avoids `Y` (the tail of `lovasz_avoid_set`). -/
+theorem apexSep_meetsOnce (G : SimpleGraph V) [DecidableRel G.Adj] {c : V}
+    (hc : G.degree c % 2 = 1) (DH : PathDecomp (apex G {c}))
+    (hDH : ∀ w, w ≠ c → DH.ends (some w) = G.degree w % 2) (hc0 : DH.ends (some c) = 0)
+    {Y : Finset V} (hsep : MeetsOnce DH (insert none (Y.image some))) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D Y ∧
+      ∀ P ∈ D.paths, (P.src = c ∨ P.tgt = c) → ∀ y ∈ Y, y ∉ P.walk.support := by
   classical
-  have hxy' : x ≠ y := hxy.ne
-  have hyw' : y ≠ w := hyw.ne
+  obtain ⟨D, hD, hcov⟩ := (apexRetract G {c} c).delete_supp DH (by
+    intro P _ y hy hky
+    cases y with
+    | some _ => simp [apexRetract] at hky
+    | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
+  have hmemX : ∀ q ∈ Y, some q ∈ insert none (Y.image some) := fun q hq =>
+    Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ hq)
+  refine ⟨D, fun w => ?_, ?_, ?_⟩
+  · by_cases hwc : w = c
+    · subst hwc
+      have hle := (hD w).2 (fun e₁ he₁ e₂ he₂ hk₁ hk₂ hv₁ hv₂ => by
+        rw [(apex_nonkept he₁ hk₁ hv₁).1, (apex_nonkept he₂ hk₂ hv₂).1])
+      change D.ends w ≤ DH.ends (some w) + 1 at hle
+      rw [hc0] at hle
+      have hp := D.ends_mod_two w
+      rw [hc] at hp ⊢
+      omega
+    · rw [(hD w).1 (fun e he hk hwe => hwc (Finset.mem_singleton.mp (apex_nonkept he hk hwe).2))]
+      change DH.ends (some w) = _
+      exact hDH w hwc
+  · intro Q hQ p hp q hq hpQ hqQ
+    obtain ⟨P, hP, hPs, -⟩ := hcov Q hQ
+    exact Option.some.inj (hsep P hP (some p) (hmemX p hp) (some q) (hmemX q hq)
+      (hPs p hpQ) (hPs q hqQ))
+  · intro Q hQ hend y hy hyQ
+    obtain ⟨P, hP, hPs, hperm⟩ := hcov Q hQ
+    have hyP : some y ∈ P.walk.support := hPs y hyQ
+    have hnoneP : none ∉ P.walk.support := fun h =>
+      absurd (hsep P hP none (Finset.mem_insert_self _ _) (some y) (hmemX y hy) h hyP)
+        (by simp)
+    have hsome : ∀ e ∈ P.edges, ∃ x y : V, e = s(some x, some y) := by
+      intro e he
+      induction e using Sym2.inductionOn with
+      | hf x y =>
+        have hx : x ∈ P.walk.support := Walk.fst_mem_support_of_mem_edges _ he
+        have hy : y ∈ P.walk.support := Walk.snd_mem_support_of_mem_edges _ he
+        cases x with
+        | none => exact absurd hx hnoneP
+        | some x' =>
+          cases y with
+          | none => exact absurd hy hnoneP
+          | some y' => exact ⟨x', y', rfl⟩
+    have hfilt : P.edges.filter (bothKept (apexRetract G {c} c).kept) = P.edges := by
+      rw [List.filter_eq_self]
+      intro e he
+      obtain ⟨x, y, rfl⟩ := hsome e he
+      simp [apexRetract, bothKept_mk]
+    rw [hfilt] at hperm
+    have hQc : Q.incid c = 1 := by
+      have h := Q.endsAt_eq_ite c
+      have h1 : 1 ≤ Q.endsAt c := by
+        unfold GPath.endsAt
+        rcases hend with h' | h' <;> simp [h']
+      split_ifs at h with hh
+      · exact hh
+      · omega
+    have hPc : P.incid (some c) = 1 := by
+      rw [← hQc]
+      unfold GPath.incid
+      rw [hperm.countP_eq, List.countP_map]
+      apply List.countP_congr
+      intro e he
+      obtain ⟨x, y, rfl⟩ := hsome e he
+      simp [apexRetract]
+    have hPend : P.endsAt (some c) = 1 := by rw [P.endsAt_eq_ite, hPc]; rfl
+    have hle : P.endsAt (some c) ≤ DH.ends (some c) := by
+      unfold PathDecomp.ends
+      exact List.le_sum_of_mem (List.mem_map_of_mem hP)
+    omega
+
+/-- **Avoiding a packed set that contains a neighbour (the set form of NA).** Let `G` have no vertex
+of positive even degree, let `Y` be packed, and let `y ∉ Y` have odd degree. Suppose some vertex
+`w` of positive degree with no neighbour in `Y` is joined to `y` by a walk avoiding `Y` (that is, the
+component of `y` in `G − Y` is not contained in `N(Y)`). Then some Lovász decomposition of `G` has
+every path meeting `Y` at most once and the path ending at `y` disjoint from `Y`.
+
+When `y` has no neighbour in `Y` this is `L₁` (`lovasz_avoid_set`); the new case is `y ∈ N(Y)`. -/
+theorem avoid_packed_of_reach (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hev : (evenSet G).card = 0) {Y : Finset V} (hY : Packed G Y) {y : V}
+    (hy : G.degree y % 2 = 1) (hyY : y ∉ Y) {w : V} (p : G.Walk y w)
+    (hp : ∀ v ∈ p.support, v ∉ Y) (hw : ∀ z, G.Adj w z → z ∉ Y) (hwpos : 0 < G.degree w) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D Y ∧
+      ∀ P ∈ D.paths, (P.src = y ∨ P.tgt = y) → ∀ a ∈ Y, a ∉ P.walk.support := by
+  classical
+  by_cases hyN : ∀ a ∈ Y, ¬ G.Adj y a
+  · exact lovasz_avoid_set G hev hy hY (fun a ha => ⟨fun h => hyY (h ▸ ha), hyN a ha⟩)
+  obtain ⟨x, hxY, hyx⟩ : ∃ x ∈ Y, G.Adj y x := by
+    by_contra h
+    exact hyN (fun a ha hya => h ⟨a, ha, hya⟩)
   have hnoev : ∀ v, v ∉ evenSet G := fun v hv => by
     rw [Finset.card_eq_zero] at hev; rw [hev] at hv; simp at hv
   have hpar : ∀ v, 0 < G.degree v → G.degree v % 2 = 1 := fun v hv => by
     have := hnoev v; rw [mem_evenSet_iff] at this; omega
   set K := apex G {y} with hK
-  set X : Finset (Option V) := {none, some x} with hX
+  set X : Finset (Option V) := insert none (Y.image some) with hX
   have hKsome : ∀ v, K.degree (some v) = G.degree v + if v = y then 1 else 0 := by
     intro v
     have h := apex_degree_some (G := G) (T := {y}) v
@@ -548,10 +656,9 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
     have h := apex_degree_none (G := G) (T := {y})
     simp only [Finset.card_singleton] at h
     exact h
-  have hnoneX : (none : Option V) ∈ X := by simp [hX]
-  have hsomeX : ∀ v : V, some v ∈ X ↔ v = x := by intro v; simp [hX]
-  have hyX : some y ∉ X := fun h => hxy' ((hsomeX y).mp h).symm
-  -- the even vertex of `K`
+  have hnoneX : (none : Option V) ∈ X := Finset.mem_insert_self _ _
+  have hsomeX : ∀ v : V, some v ∈ X ↔ v ∈ Y := by intro v; simp [hX]
+  have hyX : some y ∉ X := fun h => hyY ((hsomeX y).mp h)
   have hyK : some y ∈ evenSet K := by
     rw [mem_evenSet_iff, hKsome]
     simp only [ite_true]
@@ -571,24 +678,39 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
           have := hpar v hv.1
           omega
     exact (Finset.card_le_card this).trans (by simp)
-  -- the graph `H = K − X` and its degrees
-  have hfilt : ∀ v : V, v ≠ x →
+  -- neighbours in `Y`: at most one, by packing
+  set nY : V → ℕ := fun v => (Finset.univ.filter (fun z => G.Adj v z ∧ z ∈ Y)).card with hnY
+  have hnY1 : ∀ v, nY v ≤ 1 := by
+    intro v
+    rw [hnY]
+    apply Finset.card_le_one.mpr
+    intro a ha b hb
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+    by_contra hab
+    exact (hY a ha.2 b hb.2 hab).2 v ⟨ha.1.symm, hb.1⟩
+  have hnY0 : ∀ v, nY v = 0 ↔ ∀ z, G.Adj v z → z ∉ Y := by
+    intro v
+    rw [hnY, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+    simp only [Finset.mem_univ, true_imp_iff, not_and]
+  have hnYy : nY y = 1 := by
+    have : nY y ≠ 0 := fun h => (hnY0 y).mp h x hyx hxY
+    have := hnY1 y
+    omega
+  have hfilt : ∀ v : V, v ∉ Y →
       (Finset.univ.filter (fun z => K.Adj (some v) z ∧ z ∈ X)).card =
-        (if v = y then 1 else 0) + (if G.Adj v x then 1 else 0) := by
-    intro v hvx
+        (if v = y then 1 else 0) + nY v := by
+    intro v hvY
     rw [Finset.card_filter, Fintype.sum_option]
+    simp only [hnY]
+    rw [Finset.card_filter]
     congr 1
     · simp [hK, hnoneX]
     · simp only [hK, apex_adj_some_some, hsomeX]
-      rw [Finset.sum_eq_single x (fun z _ hz => by simp [hz]) (fun h => absurd (Finset.mem_univ x) h)]
-      simp
-  have hHdeg : ∀ v : V, v ≠ x → (offX K X).degree (some v) + (if G.Adj v x then 1 else 0) =
-      G.degree v := by
-    intro v hvx
-    have h1 := offX_degree K X (fun h => hvx ((hsomeX v).mp h))
-    rw [hfilt v hvx, hKsome] at h1
+  have hHdeg : ∀ v : V, v ∉ Y → (offX K X).degree (some v) + nY v = G.degree v := by
+    intro v hvY
+    have h1 := offX_degree K X (fun h => hvY ((hsomeX v).mp h))
+    rw [hfilt v hvY, hKsome] at h1
     omega
-  -- odd vertices of `H` are stoppers
   have hstop : ∀ v, (offX K X).degree v % 2 = 1 → v ∉ X ∧ ∀ z, K.Adj v z → z ∉ X := by
     intro v hv
     have hvX : v ∉ X := by
@@ -604,38 +726,50 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
     cases v with
     | none => exact hvX hnoneX
     | some v =>
-      have hvx : v ≠ x := fun h => hvX ((hsomeX v).mpr h)
-      have hd := hHdeg v hvx
+      have hvY : v ∉ Y := fun h => hvX ((hsomeX v).mpr h)
+      have hd := hHdeg v hvY
       cases z with
       | none =>
         have hvy : v = y := by simpa [hK] using hz
         subst hvy
-        simp only [hxy.symm, ite_true] at hd
+        rw [hnYy] at hd
         have := hpar v (by omega)
         omega
       | some z =>
-        have hzx : z = x := (hsomeX z).mp hzX
-        subst hzx
+        have hzY : z ∈ Y := (hsomeX z).mp hzX
         have hvz : G.Adj v z := by simpa [hK] using hz
-        simp only [hvz, ite_true] at hd
+        have h1 : nY v = 1 := by
+          have : nY v ≠ 0 := fun h => (hnY0 v).mp h z hvz hzY
+          have := hnY1 v
+          omega
+        rw [h1] at hd
         have := hpar v (by omega)
         omega
-  -- the parity of `y` and `w` in `H`, and the invariant subgraph
   have hHy : (offX K X).degree (some y) % 2 = 0 := by
-    have hd := hHdeg y (Ne.symm hxy')
-    simp only [hxy.symm, ite_true] at hd
+    have hd := hHdeg y hyY
+    rw [hnYy] at hd
     omega
-  have hwX : some w ∉ X := fun h => hwx ((hsomeX w).mp h)
+  -- the walk lifts to `H`
+  have hlift : ∀ {a b : V} (q : G.Walk a b), (∀ v ∈ q.support, v ∉ Y) →
+      (offX K X).Reachable (some a) (some b) := by
+    intro a b q
+    induction q with
+    | nil => intro _; exact Reachable.refl _
+    | @cons a c b hac q ih =>
+      intro hq
+      have ha : a ∉ Y := hq a (by simp)
+      have hc : c ∉ Y := hq c (by simp)
+      have hadj : (offX K X).Adj (some a) (some c) :=
+        ⟨by simpa [hK] using hac, fun h => ha ((hsomeX a).mp h), fun h => hc ((hsomeX c).mp h)⟩
+      exact hadj.reachable.trans (ih (fun v hv => hq v (by simp [hv])))
+  have hwY : w ∉ Y := hp w p.end_mem_support
   have hHw : (offX K X).degree (some w) % 2 = 1 := by
-    have hd := hHdeg w hwx
-    have : ¬ G.Adj w x := fun h => hxw h.symm
-    simp only [this, ite_false, add_zero] at hd
+    have hd := hHdeg w hwY
+    rw [(hnY0 w).mpr hw, add_zero] at hd
     rw [hd]
-    exact hpar w ((G.degree_pos_iff_exists_adj w).mpr ⟨y, hyw.symm⟩)
-  have hHyw : (offX K X).Adj (some y) (some w) := ⟨by simpa [hK] using hyw, hyX, hwX⟩
+    exact hpar w hwpos
   obtain ⟨t, S, _, hSH, hSoff, hSpar⟩ :=
-    exists_inv_subgraph (offX K X) hHy hHyw.reachable hHw
-  -- the steered chain
+    exists_inv_subgraph (offX K X) hHy (hlift p hp) hHw
   have hSteer : Steer X K (some y) := by
     refine steer_of_inv (fun v => (v ∉ X ∧ ∀ z, K.Adj v z → z ∉ X) ∧
         (v = t ∨ ¬ (offX K X).Reachable (some y) v)) _ K S (some y) rfl
@@ -650,7 +784,6 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
     · exact Or.inr ((hSpar _).mpr (Or.inl rfl))
     · have := (hSpar (some y)).mpr (Or.inl rfl)
       omega
-  -- Fan back up the chain, starting from L₁
   obtain ⟨DH, hDH, hm⟩ := steer_meetsOnce (X := X)
     (fun K' => K' ≤ K ∧ ∀ v ∈ X, ∀ z, (K'.Adj v z ↔ K.Adj v z))
     (fun K' a b hP ha hb => ⟨fun p q h => hP.1 h.1, fun v hv z => by
@@ -675,17 +808,26 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
         have : K'.neighborFinset none = {some y} := by
           ext z; rw [mem_neighborFinset, Finset.mem_singleton, hnK']
         rw [this, Finset.card_singleton]
-      have hY : Packed K' {some x} := by
-        intro p hp q hq hpq
-        rw [Finset.mem_singleton] at hp hq
-        exact absurd (hp.trans hq.symm) hpq
-      obtain ⟨D, hD, -, hav⟩ := lovasz_avoid_set K' hev' (c := none) (by rw [hdn])
-        hY (fun q hq => by
-          rw [Finset.mem_singleton] at hq
-          subst hq
+      have hYK : Packed K' (Y.image some) := by
+        intro a ha b hb hab
+        obtain ⟨a', ha', rfl⟩ := Finset.mem_image.mp ha
+        obtain ⟨b', hb', rfl⟩ := Finset.mem_image.mp hb
+        have hab' : a' ≠ b' := fun h => hab (h ▸ rfl)
+        refine ⟨fun h => (hY a' ha' b' hb' hab').1 (by simpa [hK] using hP.1 h), fun z hz => ?_⟩
+        have h1 := hP.1 hz.1
+        have h2 := hP.1 hz.2
+        cases z with
+        | none =>
+          have : a' = y := by simpa [hK] using h1
+          exact hyY (this ▸ ha')
+        | some z =>
+          exact (hY a' ha' b' hb' hab').2 z ⟨by simpa [hK] using h1, by simpa [hK] using h2⟩
+      obtain ⟨D, hD, hmY, hav⟩ := lovasz_avoid_set K' hev' (c := none) (by rw [hdn])
+        hYK (fun q hq => by
+          obtain ⟨q', hq', rfl⟩ := Finset.mem_image.mp hq
           refine ⟨by simp, fun h => ?_⟩
           rw [hnK'] at h
-          exact hxy' (Option.some.inj h))
+          exact hyY (Option.some.inj h ▸ hq'))
       refine ⟨D, hD, fun P hP a ha b hb haP hbP => ?_⟩
       have hpend : ∀ e ∈ K'.edgeSet, (none : Option V) ∈ e → e = s(none, some y) := by
         intro e he hne
@@ -695,36 +837,57 @@ theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet 
           rcases Sym2.mem_iff.mp hne with rfl | rfl
           · rw [(hnK' q).mp he]
           · rw [(hnK' p).mp he.symm, Sym2.eq_swap]
-      have key : ∀ c ∈ X, c ∈ P.walk.support → c ≠ none → (none : Option V) ∉ P.walk.support := by
+      have hXc : ∀ c ∈ X, c ≠ none → c ∈ Y.image some := by
+        intro c hc hcn
+        rw [hX, Finset.mem_insert] at hc
+        exact hc.resolve_left hcn
+      have key : ∀ c ∈ X, c ∈ P.walk.support → c ≠ none →
+          (none : Option V) ∉ P.walk.support := by
         intro c hc hcP hcn hnP
-        have hcx : c = some x := by
-          rw [hX, Finset.mem_insert, Finset.mem_singleton] at hc
-          exact hc.resolve_left hcn
-        exact hav P hP (P.end_of_pendant hpend hnP) (some x)
-          (Finset.mem_singleton_self _) (hcx ▸ hcP)
+        exact hav P hP (P.end_of_pendant hpend hnP) c (hXc c hc hcn) hcP
       by_cases han : a = none
       · by_cases hbn : b = none
         · rw [han, hbn]
         · exact absurd (han ▸ haP) (key b hb hbP hbn)
       · by_cases hbn : b = none
         · exact absurd (hbn ▸ hbP) (key a ha haP han)
-        · rw [hX, Finset.mem_insert, Finset.mem_singleton] at ha hb
-          rw [ha.resolve_left han, hb.resolve_left hbn])
+        · exact hmY P hP a (hXc a ha han) b (hXc b hb hbn) haP hbP)
     hSteer ⟨le_refl _, fun _ _ _ => Iff.rfl⟩ hyX hyK hevK
-  -- delete the leaf
-  refine avoid_of_apexSep G hy DH (fun v hv => ?_) ?_ (fun P hP hnP a ha haP => ?_)
+  refine apexSep_meetsOnce G hy DH (fun v hv => ?_) ?_ hm
   · rw [hDH, hKsome]; simp [hv]
   · rw [hDH, hKsome]; simp only [ite_true]; omega
-  · rw [Finset.mem_singleton] at ha
-    subst ha
-    exact absurd (hm P hP none hnoneX (some a) (by simp [hX]) hnP haP) (by simp)
+
+/-- **The sharp single-vertex form.** If the component of `y` in `G − x` contains a vertex of positive
+degree not adjacent to `x` (for instance a neighbour `w ≠ x` of `y` with `w ≁ x`), then some Lovász
+decomposition has the path ending at `y` avoiding `x`. -/
+theorem avoid_of_reach (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
+    {x y w : V} (hy : G.degree y % 2 = 1) (hxy : x ≠ y) (p : G.Walk y w)
+    (hp : x ∉ p.support) (hw : ¬ G.Adj w x) (hwpos : 0 < G.degree w) : AvoidDecomp G y {x} := by
+  have hY : Packed G {x} := by
+    intro a ha b hb hab
+    rw [Finset.mem_singleton] at ha hb
+    exact absurd (ha.trans hb.symm) hab
+  obtain ⟨D, hD, -, hav⟩ := avoid_packed_of_reach G hev hY hy (by simpa using Ne.symm hxy) p
+    (fun v hv h => hp (by rw [Finset.mem_singleton] at h; exact h ▸ hv))
+    (fun z hz h => hw (by rw [Finset.mem_singleton] at h; exact h ▸ hz)) hwpos
+  exact ⟨D, hD, hav⟩
+
+/-- **Neighbour avoidance (NA).** Let `G` have no vertex of positive even degree, let `x ~ y`, and
+let `y` have a neighbour `w ≠ x` not adjacent to `x`. Then some Lovász decomposition of `G` has
+its path ending at `y` avoiding `x`. -/
+theorem neighbourAvoid (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
+    {x y w : V} (hy : G.degree y % 2 = 1) (hxy : G.Adj x y) (hyw : G.Adj y w) (hwx : w ≠ x)
+    (hxw : ¬ G.Adj x w) : AvoidDecomp G y {x} :=
+  avoid_of_reach G hev hy hxy.ne (Walk.cons hyw Walk.nil)
+    (by simp [hxy.ne, Ne.symm hwx]) (fun h => hxw h.symm)
+    ((G.degree_pos_iff_exists_adj w).mpr ⟨y, hyw.symm⟩)
 
 /-- **NA** in the form of `ConjN.lean`. -/
 theorem neighbourAvoidOn : NeighbourAvoidOn V := by
   intro G _ hev x y hy hxy ⟨w, hyw, hwx, hxw⟩
   exact neighbourAvoid G hev hy hxy hyw hwx hxw
 
-end na
+end setForm
 
 /-! ### Consequences for Conjecture N -/
 
