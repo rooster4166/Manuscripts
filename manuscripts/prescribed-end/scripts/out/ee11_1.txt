@@ -9,3 +9,5 @@ PARTIAL graphs=1600000 tests_at_z=7187036 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=1800000 tests_at_z=8172521 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=2000000 tests_at_z=9162416 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=2200000 tests_at_z=10172284 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=2400000 tests_at_z=11216664 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=2600000 tests_at_z=12300112 fail_at_z=0 tests_away=0 fail_away=0

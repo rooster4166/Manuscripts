@@ -238,6 +238,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | near-dirac §§8–9 (A19 + §R) | **Prop 8.3 (A19 Prop P) and Thm 9.3 (conditional on SH) sound**; Problem 8.5 solved by the auditor |
 | route-descent: Fan's lemma with vertex sets, separation theorem, L1, route-descent lemmas (A16) | **every result correct as stated**; two wording ERRORs (a remark after Cor 23, and the abstract's "only obstruction" claim) and several evidence/documentation GAPs, all sent for fixing |
 | multi-sep: reduction, leaf merge, prescribed end edge, Case II/I, sparse classes (A18) | **sound**; wording and count fixes applied |
+| STL: star-terminal decompositions ⇒ spine tests, `gallai_of_stl` (A20) | **mathematics sound; Lean matches the paper**; one wrong count (44,336, not 54,336) and one overstated "STL ⇔ BAL ⇔ (T1) to n = 9" claim (needs d(r) ≥ 3) are being fixed |
 | spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 

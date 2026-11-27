@@ -923,3 +923,79 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 - STL-P (every pairing realisable) is false on W₄.
 - HALF (every short half-set realisable) is false in general: 402 of 67,220 half-sets fail at n = 9.
 - ST already fails when J − z is disconnected; the smallest example is two K₄ sharing z.
+
+## E23. Prescribed end edges with one even vertex: PEE, EE, L1* (cloud session `claude/ee`)
+
+Manuscript: `manuscripts/prescribed-end/prescribed-end.tex`. Scripts and outputs: `manuscripts/prescribed-end/scripts/` (README there). Conclusions: connections §Y.
+
+**Oracle.** `pee.c` decides whether xy is terminal at x (the path ending at x has last edge xy) in some Lovász decomposition. It builds Q_x first through xy, then runs an exact search for the rest, with memoised failures and the pruning `deg(v) ≤ 2P − b(v)`. Further modes: avoidance (Q_c ∩ A = ∅), separation, EE-only.
+- Validation against an independent brute force over transition systems (`brute.py`): all graphs n ≤ 7 with ≤ 1 even vertex, 2,279 queries, 0 disagreements.
+- Validation against `tools/route_ext.c` (`xcheck_route_ext.py`), using queries X (EE via Prop EE) and S (away edges via the leaf graph): n = 9, 47,688 + 47,738 queries, 0 disagreements.
+- No failure on the 224 connected all-odd graphs of order 8 (6,359 queries), as `lovasz_endEdge` requires.
+
+**(A) Exhaustive.** Connected graphs with exactly one even vertex (odd order). "Away" counts ordered edges (x, y) with y ≠ z and d(x) ≥ 3.
+
+| n | graphs | EE tests | EE fail | away tests | away fail (graphs) |
+|---|---|---|---|---|---|
+| 5 | 7 | 14 | 0 | 37 | 5 (2) |
+| 7 | 130 | 401 | 0 | 1,910 | 54 (31) |
+| 9 | 11,936 | 47,688 | 0 | 330,449 | 1,410 (1,049) |
+| 11 | ≈ 10⁷ (EE only, `ee11_*.txt`) | see below | 0 | — | — |
+
+- n = 11, EE only: still running when this entry was written; the final line of each `out/ee11_*.txt` has the counts. At 8.0M graphs and 37.9M (z, u) tests there was no failure.
+- A partial n = 11 run over all edges (the initial segment of each of three geng slices, killed for time) found 56,739 away failures and 0 EE failures. The failure lines are in `out/exh11_away_partial_fails.txt.gz`.
+
+**(B) Structure of the away failures.** All of the following hold at n = 5, 7, 9:
+- y ∉ N(z) and dist(x, z) ≤ 2 in every failure;
+- the reverse prescription (xy terminal at y) holds in every failure (5/5, 54/54, 1,410/1,410);
+- d(x) ∈ {3, 5, 7} and d(z) ∈ {2, 4, 6} (`feat.py`).
+
+**Reachability** (manuscript §6): xy is reachable if some z–y path has all interior vertices outside N[x].
+- Every failure is unreachable: n = 7, 9 and the partial n = 11 run (56,739 of 56,739).
+- Among all away edges (`sharp.py`):
+  - n = 7: 1,451 reachable, all succeed; 459 unreachable, 54 fail.
+  - n = 9: 270,875 reachable, all succeed; 59,574 unreachable, 1,410 fail.
+- This matches the theorem "EE ⇒ PEE at reachable edges".
+
+**(C) Invariants for the open case of EE** (|N(u) ∩ N(z)| ≥ 2).
+
+Separation of u and z in K − uz (`sepee`):
+
+| n | \|T\| ≤ 1 | \|T\| = 2 | \|T\| ≥ 3 |
+|---|---|---|---|
+| 5 | always holds | fails 7/7 | — |
+| 7 | always holds (242 tests) | fails 99/135 | fails 65/65 |
+
+Here T = N(u) ∩ N(z). So full separation is the wrong invariant, and only Q_z ∌ u can be carried.
+
+L1 with an even vertex g (`l1p all`; c odd, a odd, a ∉ N[c]):
+
+| n | g ≁ a: tests / fail | g ~ a: tests / fail |
+|---|---|---|
+| 5 | 10 / 0 | 32 / 14 |
+| 7 | 792 / 0 | 1,102 / 158 |
+| 9 | 161,652 / 0 | 170,782 / 6,423 |
+
+Other invariants:
+- **|A| = 2 avoidance** (`l1s2`): ≤ 1 even vertex g, c odd, A = {a₁, a₂} disjoint from N[c] ∪ N(g). 0 failures: n = 5: 5; n = 6: 153; n = 7: 738; n = 8: 8,939; n = 9: 203,658.
+- **Hypothesis of the triangle reduction**: in K − {uz, uw, wz} the path ending at w avoids u and z. It holds for every triple (z, u, w): n = 5: 18; n = 7: 622; n = 9: 88,356 (41,594 pairs (z, u) with a triangle).
+- **Separating w from {u, z}** in K − triangle (`tri_sep.py`) fails in 267 of 622 triples at n = 7.
+
+**(D) Random** (`rand_test.py 6000 101 5000000 11 13 15 17`, `out/rand_A.txt`). 6,000 connected graphs of orders 11–17 with one even vertex, node budget 5·10⁶.
+
+| statement | tests | fail | undecided |
+|---|---|---|---|
+| EE, \|T\| ≤ 1 | 13,200 | 0 | 120 |
+| EE, \|T\| ≥ 2 | 12,762 | 0 | 112 |
+| away edges (12 sampled per graph) | 71,965 | 99 | 457 |
+| L1*, A = {a}, a ≠ z | 42,315 | 0 | 276 |
+| L1*, A = {z} | 5,669 | 0 | 27 |
+| triangle-reduction hypothesis | 44,892 | 0 | 383 |
+
+None of the 99 away failures has y ∈ N(z) or dist(x, z) ≥ 3, and none fails at both ends.
+
+**Negative results.**
+- PEE is false away from z (5-vertex example).
+- Separation of u, z in K − uz fails when |T| ≥ 2.
+- Separation of w from {u, z} after triangle removal fails.
+- L1 with an even vertex adjacent to the avoided vertex fails (known: RD Remark 6.7). Here the adjacency is shown to be exactly the obstruction at n ≤ 9.
