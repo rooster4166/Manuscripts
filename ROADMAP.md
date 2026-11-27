@@ -496,3 +496,7 @@ Candidate uniform mechanisms (`research/connections.md`):
   - The engine is `ptm2_of_base` (the walk theorem): leafify, then walk back by iterated Fan with vertex sets, then two leaf merges.
   - The base hypothesis held in 12,193 of 13,025 2-matchings at n = 8, so the reduction is strong beyond girth 5.
   - **Next:** the STL lift (PTM_2 ⇒ STL-P / Test1 at d(z) = 4), the manuscript, and audit A22.
+- **First end-to-end instance of the spine test from the main line (ptm 7facc07; standard axioms, verified).**
+  - `test1_of_girth5`: let z be the only even vertex with d(z) = 4, N(z) = {a, b, c, d}, and ab, cd ∉ E(J). Suppose every neighbour of z has degree ≥ 3, and liftJ = (J − z) + ab + cd has girth ≥ 5 with c reachable from a. Then **spine Test1 holds at J, z**.
+  - The chain is ptm2_girth5 ⇒ `stl_of_ptm2` ⇒ STL ⇒ `test1_of_stl`.
+  - This is the first unconditional case of a spine test obtained through the star-terminal / terminal-matching ladder.
