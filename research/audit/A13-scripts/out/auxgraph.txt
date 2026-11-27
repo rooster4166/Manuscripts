@@ -1,0 +1,7 @@
+pairing lemma (edge deletion): 300 random graphs of order 2..12, all S: no violation
+data/conn6.g6 graphs 112 constructions 672 (non-forest J in 100) | Odd(B), cut identity (deep sample), goodness by brute force: no failure
+data/conn8.g6 graphs 11117 constructions 22234 (non-forest J in 4492) | Odd(B), cut identity (deep sample), goodness by brute force: no failure
+
+real	0m28.190s
+user	0m28.420s
+sys	0m0.020s
