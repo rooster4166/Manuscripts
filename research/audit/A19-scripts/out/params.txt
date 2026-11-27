@@ -1,0 +1,32 @@
+== Prop 8.3(ii): error bound vs tolerance D/8 ==
+  pairs (s, D) with s <= sqrt(D)/6, D <= 20000 even, where 3s^2+3 > D/8 (the printed chain fails): 17; first few [(0, 2), (0, 4), (0, 6), (0, 8), (0, 10), (0, 12)]
+  pairs where s^2/2 + s(2s+1) > D/8 (the needed bound fails): 0
+  => the conclusion holds for every D; only the intermediate '<= 3s^2+3 <= D/8' needs D >= 72 (or the case s = 0 treated separately).
+
+== Theorem 9.3: q = xi^(1/5) n, omega = xi^(-1/100) ==
+  displayed requirement holds iff xi <= 10^-4.08 (about 8.24e-05); fine since xi_n -> 0
+  worst-case ratios (each must tend to 0); 'n-term' is the extra n/q^2 from the '+1' in |W|:
+   log10 xi |     |X|/q  lambda/q       h/q   n h/q^2  n|W|/q^2 | Prop8.3 hyp  d<=5D/4 lam/(xi n)
+         -2 |  2.52e-01  3.80e-01  1.09e+00  2.73e+00  1.33e+00 |    1.06e+00    False   1.51e+01
+         -5 |  4.00e-03  8.91e-02  1.83e-01  1.83e+00  8.10e-02 |    1.62e-02    False   8.91e+02
+        -10 |  4.00e-06  7.94e-03  1.59e-02  1.59e+00  8.01e-04 |    1.60e-05     True   7.94e+05
+        -30 |  4.00e-18  5.01e-07  1.00e-06  1.00e+00  8.00e-12 |    1.60e-17     True   5.01e+17
+       -100 |  4.00e-60  1.00e-21  2.00e-21  2.00e-01  8.00e-40 |    1.60e-59     True   1.00e+59
+       -200 | 4.00e-120  1.00e-42  2.00e-42  2.00e-02  8.00e-80 |   1.60e-119     True  1.00e+118
+       -300 | 4.00e-180  1.00e-63  2.00e-63  2.00e-03 8.00e-120 |   1.60e-179     True  1.00e+177
+  note: n h/q^2 contains 2/omega = 2 xi^(1/100): it tends to 0, but only at xi ~ 10^-100 is it 0.2.
+
+  The '+1' in |W| <= |Delta_H| + |X| + 1 gives n|W| >= n whenever |W| >= 1.  n/q^2 = 1/(n xi^(2/5)):
+    n = 10^6, xi = 1e-2: q = 3.98e+05, n/q^2 = 6.31e-06
+    n = 10^6, xi = 1e-10: q = 1e+04, n/q^2 = 0.01
+    n = 10^6, xi = 1e-15: q = 1e+03, n/q^2 = 1
+    n = 10^9, xi = 1e-20: q = 1e+05, n/q^2 = 0.1
+    n = 10^9, xi = 1e-25: q = 1e+04, n/q^2 = 10
+    With xi_n = n^-3 (allowed: xi_n is only an upper bound tending to 0): q = n^(2/5), n/q^2 = n^(1/5) -> oo.
+    In that case X is empty, |Delta_H| <= 1, and Lemma 8.2 with s = 0 returns t = 0, |W| = |Delta_H|,
+    so |W| = 1 at odd n and (H1) n|W| = o(q^2) FAILS.  Fix: replace xi_n by max(xi_n, 1/log n).
+
+  Is regime (b) non-vacuous?  |X| <= 4 xi^(4/5) n  versus  sqrt(D)/6 ~ sqrt(n/2)/6:
+    n=1e8, xi=1e-2: max |X| bound 1e+07, sqrt(D)/6 1.18e+03
+    n=1e12, xi=1e-3: max |X| bound 1.59e+10, sqrt(D)/6 1.18e+05
+    n=1e20, xi=1e-5: max |X| bound 4e+16, sqrt(D)/6 1.18e+09

@@ -1,0 +1,24 @@
+[A] Lemma 8.1 construction: 20000 random/extremal instances, failures = 0
+[A] Lemma 8.2 construction, mu = D/8: failures = 0
+[A] Lemma 8.2 construction, mu = D/4 (not claimed; case analysis allows it): failures = 0
+[A]   instance D=400, s=1, alpha=0, beta=300, Delta=5, mu=100.0: config B,[],t=-1, S=-300, window=[-400.0,0.0], robust=True
+[A]   instance D=400, s=1, alpha=0, beta=300, Delta=5, mu=101.0: config B,[],t=-1, S=-300, window=[-400.0,0.0], robust=False
+[B1] exact e_X(I)-e_X(K\W) = S + e(X_I) - e(X_K) + e(X_K,W): holds in all 16606 configurations
+[B1] Problem 8.5 as printed (S - e(X_I) + e(X_K) + e(X_K,W)) disagrees in 13536/16606
+[B1] example: X={x,y}, xy an edge, both on I=A, alpha=(10,10): exact=21, S=20, printed formula=19
+[B2] Prop 8.3(i) sweep on 1302 instances (|Delta|>=s+1):
+[B2]   steps with F(r)-F(r-1) > d_(x_r) [claimed impossible]: 1335 (max excess 23, bound s-1)
+[B2]   steps > 5D/4 [claimed impossible]: 703;  steps <= 0: 0
+[B2]   least r with F(r) >= -D has F(r) >= D/4 [claimed impossible]: 0
+[B2]   conclusion (window met exactly): 1302/1302
+[B2b] D=400, s=20, Delta=21, X complete, alpha=204, beta=296 (d=500=5D/4): F(11)=-401, F(12)=118 >= D/4=100.0; step = 519 > 5D/4; t=1 config valid: True (value 118)
+[B3/4] Prop 8.3(ii) regime (|Delta|<=s<=sqrt(D)/6): 800 instances
+[B3/4]   Lemma 8.2 config + adversarial W: window violated in 0; max |exact - S| = 53
+[B3/4]   two-sided sweep (A19 Prop P): exactly valid in 800/800; branch counts {'sweepB': 461, 'sweepA': 318, 'zero': 21}
+[B3/4] Problem 8.5 regime (|Delta|<=s, s>sqrt(D)/6): 1500 instances
+[B3/4]   Lemma 8.2 config + adversarial W: window violated in 620; max |exact - S| = 33113
+[B3/4]   two-sided sweep (A19 Prop P): exactly valid in 1500/1500; branch counts {'sweepB': 768, 'sweepA': 729, 'zero': 3}
+[B4b] small adversarial instances: exhaustive search finds a valid config and the sweep returns one: 150/150
+[B5] D=400, s=6, Delta=10; x0,x1 have alpha=D, beta=60 and are adjacent; x2..x5 have alpha=30, beta=D.
+[B5]   Prop 8.3(i) sweep in the order x0,...,x5: F = [-1631, -1195, -755, -342, 75, 496, 921]; least r with F(r) >= -D is r = 3
+[B5]   output places M = [0, 1, 2] on I = A; full |N(x0) cap I| = 401, |N(x1) cap I| = 401 > D = 400: (H2) fails, and x0 cannot have R-degree D while keeping all internal edges
