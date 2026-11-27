@@ -1348,17 +1348,18 @@ theorem PTM2At.symm {G : SimpleGraph W} [DecidableRel G.Adj] {a b x y : W} [Fint
   exact ⟨D, hD, P₂, hP₂, P₁, hP₁, Ne.symm hne, h3, h4, h1, h2⟩
 
 /-- **PTM₂ at girth five.** Let `G` be connected, without vertices of positive even degree, and
-without triangles and four-cycles. For disjoint edges `ab` and `cd` there is a Lovász
+without triangles and four-cycles (it suffices that `c` is reachable from `a`; isolated vertices
+are allowed). For disjoint edges `ab` and `cd` there is a Lovász
 decomposition in which `ab` is terminal at the prescribed end `a`, `cd` is terminal at one of
 its ends, and the two edges lie on different paths. -/
 theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
-    (hconn : G.Connected) (h3 : NoTriangle G) (h4 : NoSquare G) {a b c d : W}
+    (h3 : NoTriangle G) (h4 : NoSquare G) {a b c d : W} (hconn : G.Reachable c a)
     (hab : G.Adj a b) (hcd : G.Adj c d) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c)
     (hbd : b ≠ d) :
     PTM2At G a b c d ∨ PTM2At G a b d c := by
   classical
   have hex : ∃ n, ∃ u w, (u = a ∨ u = b) ∧ (w = c ∨ w = d) ∧ ∃ r : G.Walk w u, r.length = n := by
-    obtain ⟨r⟩ := hconn.preconnected c a
+    obtain ⟨r⟩ := hconn
     exact ⟨r.length, a, c, Or.inl rfl, Or.inl rfl, r, rfl⟩
   obtain ⟨u₀, w₀, hu₀, hw₀, r₀, hr₀⟩ := Nat.find_spec hex
   have hmin : ∀ u w, (u = a ∨ u = b) → (w = c ∨ w = d) → ∀ r : G.Walk w u,
@@ -1392,5 +1393,660 @@ theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
     rwa [Walk.length_reverse] at this
 
 end girth
+
+/-! ### From two terminal edges to a star-terminal decomposition -/
+
+section stlLift
+
+variable {U : Type v} [DecidableEq U] {K K' : SimpleGraph U}
+
+/-- `PathDecomp.replace_supp`, recording also that the other paths keep their edges. -/
+theorem PathDecomp.replace_edges (D : PathDecomp K) {P : GPath K} (hP : P ∈ D.paths) (P' : GPath K')
+    (hcov : ∀ e, e ∈ K'.edgeSet ↔ (e ∈ K.edgeSet ∧ e ∉ P.edges) ∨ e ∈ P'.edges)
+    (hnew : ∀ e ∈ P'.edges, e ∈ P.edges ∨ e ∉ K.edgeSet) :
+    ∃ D' : PathDecomp K', D'.size = D.size ∧ P' ∈ D'.paths ∧
+      (∀ w, D'.ends w + P.endsAt w = D.ends w + P'.endsAt w) ∧
+      (∀ Q ∈ D.paths, Q ≠ P → ∃ Q' ∈ D'.paths, Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+        Q'.walk.support = Q.walk.support ∧ Q'.edges = Q.edges) ∧
+      ∀ Q' ∈ D'.paths, Q' = P' ∨ ∃ Q ∈ D.paths, Q ≠ P ∧ Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+        Q'.walk.support = Q.walk.support ∧ Q'.edges = Q.edges := by
+  obtain ⟨l₁, l₂, hl⟩ := List.append_of_mem hP
+  have hnd := D.nodup_edges
+  rw [hl, List.flatMap_append, List.flatMap_cons] at hnd
+  have hmemK : ∀ e, e ∈ K.edgeSet ↔
+      e ∈ l₁.flatMap GPath.edges ∨ e ∈ P.edges ∨ e ∈ l₂.flatMap GPath.edges := by
+    intro e
+    rw [D.covers e, hl, List.flatMap_append, List.flatMap_cons]
+    simp only [List.mem_append]
+  rw [List.nodup_append, List.nodup_append] at hnd
+  obtain ⟨hndA, ⟨hndP, hndB, hPB⟩, hA⟩ := hnd
+  have hAP : ∀ e ∈ l₁.flatMap GPath.edges, e ∉ P.edges := fun e he heP =>
+    hA e he e (List.mem_append_left _ heP) rfl
+  have hAB : ∀ e ∈ l₁.flatMap GPath.edges, e ∉ l₂.flatMap GPath.edges := fun e he heB =>
+    hA e he e (List.mem_append_right _ heB) rfl
+  have hBP : ∀ e ∈ l₂.flatMap GPath.edges, e ∉ P.edges := fun e he heP =>
+    hPB e heP e he rfl
+  have h₁ : ∀ Q ∈ l₁, ∀ e ∈ Q.edges, e ∈ K'.edgeSet := fun Q hQ e he => by
+    have heA : e ∈ l₁.flatMap GPath.edges := List.mem_flatMap.mpr ⟨Q, hQ, he⟩
+    exact (hcov e).2 (Or.inl ⟨(hmemK e).2 (Or.inl heA), hAP e heA⟩)
+  have h₂ : ∀ Q ∈ l₂, ∀ e ∈ Q.edges, e ∈ K'.edgeSet := fun Q hQ e he => by
+    have heB : e ∈ l₂.flatMap GPath.edges := List.mem_flatMap.mpr ⟨Q, hQ, he⟩
+    exact (hcov e).2 (Or.inl ⟨(hmemK e).2 (Or.inr (Or.inr heB)), hBP e heB⟩)
+  let L := l₁.pmap (fun Q hQ => Q.transfer hQ) h₁ ++ P' :: l₂.pmap (fun Q hQ => Q.transfer hQ) h₂
+  have hLe : L.flatMap GPath.edges =
+      l₁.flatMap GPath.edges ++ (P'.edges ++ l₂.flatMap GPath.edges) := by
+    simp only [L, List.flatMap_append, List.flatMap_cons, flatMap_pmap_transfer]
+  have hP'nd : P'.edges.Nodup := P'.isPath.isTrail.edges_nodup
+  have hnd' : (L.flatMap GPath.edges).Nodup := by
+    rw [hLe, List.nodup_append, List.nodup_append]
+    refine ⟨hndA, ⟨hP'nd, hndB, ?_⟩, ?_⟩
+    · intro a ha b hb hab
+      subst hab
+      rcases hnew a ha with h | h
+      · exact hBP a hb h
+      · exact h ((hmemK a).2 (Or.inr (Or.inr hb)))
+    · intro a ha b hb hab
+      subst hab
+      rcases List.mem_append.mp hb with hb | hb
+      · rcases hnew a hb with h | h
+        · exact hAP a ha h
+        · exact h ((hmemK a).2 (Or.inl ha))
+      · exact hAB a ha hb
+  have hcov' : ∀ e, e ∈ K'.edgeSet ↔ e ∈ L.flatMap GPath.edges := by
+    intro e
+    rw [hcov e, hLe, hmemK e]
+    simp only [List.mem_append]
+    constructor
+    · rintro (⟨h | h | h, hn⟩ | h)
+      · exact Or.inl h
+      · exact absurd h hn
+      · exact Or.inr (Or.inr h)
+      · exact Or.inr (Or.inl h)
+    · rintro (h | h | h)
+      · exact Or.inl ⟨Or.inl h, hAP e h⟩
+      · exact Or.inr h
+      · exact Or.inl ⟨Or.inr (Or.inr h), hBP e h⟩
+  let D' : PathDecomp K' := ⟨L, hnd', hcov'⟩
+  refine ⟨D', ?_, ?_, ?_, ?_, ?_⟩
+  · simp [D', PathDecomp.size, L, hl]
+  · simp [D', L]
+  · intro w
+    unfold PathDecomp.ends
+    simp only [D', L, hl, List.map_append, List.map_cons, List.sum_append, List.sum_cons,
+      sum_endsAt_pmap_transfer]
+    omega
+  · intro Q hQ hQP
+    rw [hl, List.mem_append, List.mem_cons] at hQ
+    rcases hQ with hQ | hQ | hQ
+    · exact ⟨Q.transfer (h₁ Q hQ), List.mem_append_left _ (List.mem_pmap_of_mem hQ),
+        rfl, rfl, GPath.transfer_support _ _, GPath.transfer_edges _ _⟩
+    · exact absurd hQ hQP
+    · exact ⟨Q.transfer (h₂ Q hQ),
+        List.mem_append_right _ (List.mem_cons_of_mem _ (List.mem_pmap_of_mem hQ)),
+        rfl, rfl, GPath.transfer_support _ _, GPath.transfer_edges _ _⟩
+  · have hlenE : ∀ R : GPath K, 0 < R.edges.length := fun R => by
+      show 0 < R.walk.edges.length
+      rw [Walk.length_edges]; exact R.pos
+    intro Q' hQ'
+    change Q' ∈ L at hQ'
+    simp only [L, List.mem_append, List.mem_cons, List.mem_pmap] at hQ'
+    rcases hQ' with ⟨Q, hQ, rfl⟩ | rfl | ⟨Q, hQ, rfl⟩
+    · refine Or.inr ⟨Q, by rw [hl]; exact List.mem_append_left _ hQ, ?_, rfl, rfl,
+        GPath.transfer_support _ _, GPath.transfer_edges _ _⟩
+      intro hQP
+      obtain ⟨e, he⟩ := List.exists_mem_of_length_pos (hlenE Q)
+      exact hAP e (List.mem_flatMap.mpr ⟨Q, hQ, he⟩) (hQP ▸ he)
+    · exact Or.inl rfl
+    · refine Or.inr ⟨Q, by rw [hl]; exact List.mem_append_right _ (List.mem_cons_of_mem _ hQ), ?_,
+        rfl, rfl, GPath.transfer_support _ _, GPath.transfer_edges _ _⟩
+      intro hQP
+      obtain ⟨e, he⟩ := List.exists_mem_of_length_pos (hlenE Q)
+      exact hBP e (List.mem_flatMap.mpr ⟨Q, hQ, he⟩) (hQP ▸ he)
+
+
+/-- Subdividing the terminal edge `ab` of a path starting at `a` by a vertex `z` off the path. -/
+theorem GPath.subdivide_start {G J : SimpleGraph U} (P : GPath G) {a b z : U} (hsrc : P.src = a)
+    (hab : s(a, b) ∈ P.edges) (hz : z ∉ P.walk.support) (haz : J.Adj a z) (hzb : J.Adj z b)
+    (hJ : ∀ e ∈ P.edges, e ≠ s(a, b) → e ∈ J.edgeSet) :
+    ∃ P' : GPath J, P'.src = a ∧ P'.tgt = P.tgt ∧ P.edges = s(a, b) :: P.edges.tail ∧
+      P'.edges = s(a, z) :: s(z, b) :: P.edges.tail ∧
+      (∀ w, w ∈ P'.walk.support ↔ w = z ∨ w ∈ P.walk.support) ∧
+      (P.tgt = b → P.edges.tail = []) := by
+  obtain ⟨src, tgt, w, hw, hpos⟩ := P
+  simp only at hsrc
+  subst hsrc
+  cases w with
+  | nil => simp at hpos
+  | @cons _ m _ h rest =>
+    have hpath := (Walk.cons_isPath_iff h rest).mp hw
+    have hnotin : ∀ e ∈ rest.edges, src ∉ e := by
+      intro e he hse
+      induction e using Sym2.inductionOn with
+      | hf c d =>
+        rcases Sym2.mem_iff.mp hse with rfl | rfl
+        · exact hpath.2 (rest.fst_mem_support_of_mem_edges he)
+        · exact hpath.2 (rest.snd_mem_support_of_mem_edges he)
+    have hedges : (GPath.edges ⟨src, tgt, Walk.cons h rest, hw, hpos⟩) = s(src, m) :: rest.edges := rfl
+    rw [hedges] at hab
+    have hmb : m = b := by
+      rcases List.mem_cons.mp hab with h' | h'
+      · rcases Sym2.eq_iff.mp h' with ⟨-, h''⟩ | ⟨h'', -⟩
+        · exact h''.symm
+        · exact absurd h'' h.ne
+      · exact absurd (Sym2.mem_mk_left _ _) (hnotin _ h')
+    subst hmb
+    have hrest : ∀ e ∈ rest.edges, e ∈ J.edgeSet := fun e he =>
+      hJ e (by rw [hedges]; exact List.mem_cons_of_mem _ he)
+        (fun h' => hnotin e he (h' ▸ Sym2.mem_mk_left _ _))
+    have hzrest : z ∉ rest.support := fun h' => hz (by simp [h'])
+    have hP' : (Walk.cons haz (Walk.cons hzb (rest.transfer J hrest))).IsPath := by
+      rw [Walk.cons_isPath_iff, Walk.cons_isPath_iff, Walk.isPath_transfer, Walk.support_cons,
+        Walk.support_transfer, List.mem_cons, not_or]
+      exact ⟨⟨hpath.1, hzrest⟩, haz.ne, hpath.2⟩
+    refine ⟨⟨src, tgt, _, hP', by simp⟩, rfl, rfl, rfl, ?_, fun w => ?_, fun htgt => ?_⟩
+    · show (Walk.cons haz (Walk.cons hzb (rest.transfer J hrest))).edges = _
+      simp [Walk.edges_transfer, GPath.edges]
+    · show w ∈ (Walk.cons haz (Walk.cons hzb (rest.transfer J hrest))).support ↔
+        w = z ∨ w ∈ (Walk.cons h rest).support
+      simp only [Walk.support_cons, Walk.support_transfer, List.mem_cons]
+      tauto
+    · simp only at htgt
+      subst htgt
+      have := Walk.isPath_iff_eq_nil.mp hpath.1
+      subst this
+      rfl
+
+end stlLift
+
+section liftGraph
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- The graph `(J − z) + ab + cd` on the same vertex type; `z` becomes isolated. -/
+def liftG (J : SimpleGraph V) (z a b c d : V) : SimpleGraph V where
+  Adj u v := u ≠ v ∧ ((J.Adj u v ∧ u ≠ z ∧ v ≠ z) ∨ s(u, v) = s(a, b) ∨ s(u, v) = s(c, d))
+  symm := ⟨fun u v h => ⟨h.1.symm, by
+    rcases h.2 with h | h | h
+    · exact Or.inl ⟨h.1.symm, h.2.2, h.2.1⟩
+    · exact Or.inr (Or.inl (by rw [Sym2.eq_swap]; exact h))
+    · exact Or.inr (Or.inr (by rw [Sym2.eq_swap]; exact h))⟩⟩
+  loopless := ⟨fun u h => h.1 rfl⟩
+
+instance liftG.decRel (J : SimpleGraph V) [DecidableRel J.Adj] (z a b c d : V) :
+    DecidableRel (liftG J z a b c d).Adj := fun u v =>
+  inferInstanceAs (Decidable (u ≠ v ∧ ((J.Adj u v ∧ u ≠ z ∧ v ≠ z) ∨ s(u, v) = s(a, b) ∨
+    s(u, v) = s(c, d))))
+
+theorem liftG_comm (J : SimpleGraph V) (z a b c d : V) : liftG J z a b c d = liftG J z c d a b := by
+  ext u v; simp only [liftG]; tauto
+
+theorem liftG_swap (J : SimpleGraph V) (z a b c d : V) : liftG J z a b c d = liftG J z b a c d := by
+  ext u v; simp only [liftG, Sym2.eq_swap (a := a)]
+
+end liftGraph
+
+section swapGraph
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- `K − zc − zd + cd`: the transition `c z d` at `z` lifted to the edge `cd`. -/
+def swapG (K : SimpleGraph V) (z c d : V) : SimpleGraph V where
+  Adj u v := u ≠ v ∧ ((K.Adj u v ∧ s(u, v) ≠ s(z, c) ∧ s(u, v) ≠ s(z, d)) ∨ s(u, v) = s(c, d))
+  symm := ⟨fun u v h => ⟨h.1.symm, by
+    rcases h.2 with h | h
+    · exact Or.inl ⟨h.1.symm, by rw [Sym2.eq_swap]; exact h.2.1, by rw [Sym2.eq_swap]; exact h.2.2⟩
+    · exact Or.inr (by rw [Sym2.eq_swap]; exact h)⟩⟩
+  loopless := ⟨fun u h => h.1 rfl⟩
+
+instance swapG.decRel (K : SimpleGraph V) [DecidableRel K.Adj] (z c d : V) :
+    DecidableRel (swapG K z c d).Adj := fun u v =>
+  inferInstanceAs (Decidable (u ≠ v ∧ ((K.Adj u v ∧ s(u, v) ≠ s(z, c) ∧ s(u, v) ≠ s(z, d)) ∨
+    s(u, v) = s(c, d))))
+
+omit [Fintype V] in
+theorem swapG_adj (K : SimpleGraph V) (z c d u v : V) : (swapG K z c d).Adj u v ↔
+    u ≠ v ∧ ((K.Adj u v ∧ s(u, v) ≠ s(z, c) ∧ s(u, v) ≠ s(z, d)) ∨ s(u, v) = s(c, d)) := Iff.rfl
+
+omit [Fintype V] in
+theorem swapG_edgeSet (K : SimpleGraph V) (z c d : V) (e : Sym2 V) (hcd : c ≠ d) :
+    e ∈ (swapG K z c d).edgeSet ↔
+      (e ∈ K.edgeSet ∧ e ≠ s(z, c) ∧ e ≠ s(z, d)) ∨ e = s(c, d) := by
+  induction e using Sym2.inductionOn with
+  | hf u v =>
+    rw [mem_edgeSet, mem_edgeSet]
+    constructor
+    · rintro ⟨-, h⟩; exact h
+    · intro h
+      refine ⟨fun huv => ?_, h⟩
+      subst huv
+      rcases h with ⟨h, -⟩ | h
+      · exact K.loopless.irrefl u h
+      · rcases Sym2.eq_iff.mp h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> exact hcd rfl
+
+omit [Fintype V] in
+theorem swapG_symm (K : SimpleGraph V) (z c d : V) : swapG K z c d = swapG K z d c := by
+  ext u v
+  simp only [swapG, Sym2.eq_swap (a := c)]
+  tauto
+
+omit [Fintype V] in
+theorem swapG_comm (K : SimpleGraph V) {z a b c d : V} (hza : z ≠ a) (hzb : z ≠ b) (hzc : z ≠ c)
+    (hzd : z ≠ d) : swapG (swapG K z a b) z c d = swapG (swapG K z c d) z a b := by
+  ext u v
+  simp only [swapG]
+  have h1 : s(u, v) = s(a, b) → s(u, v) ≠ s(z, c) ∧ s(u, v) ≠ s(z, d) := by
+    intro h; rw [h]
+    refine ⟨fun h' => ?_, fun h' => ?_⟩ <;> rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨-, h''⟩
+    all_goals first | exact hza h''.symm | exact hzb h''.symm
+  have h2 : s(u, v) = s(c, d) → s(u, v) ≠ s(z, a) ∧ s(u, v) ≠ s(z, b) := by
+    intro h; rw [h]
+    refine ⟨fun h' => ?_, fun h' => ?_⟩ <;> rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨-, h''⟩
+    all_goals first | exact hzc h''.symm | exact hzd h''.symm
+  tauto
+
+/-- A vertex that trades its edge to `z` for an edge to `p` keeps its degree. -/
+theorem degree_trade (L J : SimpleGraph V) [DecidableRel L.Adj] [DecidableRel J.Adj] {v p z : V}
+    (hvz : J.Adj v z) (hvp : ¬ J.Adj v p) (h : ∀ w, L.Adj v w ↔ w = p ∨ (J.Adj v w ∧ w ≠ z)) :
+    L.degree v = J.degree v := by
+  have hset : L.neighborFinset v = insert p ((J.neighborFinset v).erase z) := by
+    ext w
+    simp only [mem_neighborFinset, Finset.mem_insert, Finset.mem_erase, h]
+    tauto
+  rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree, hset,
+    Finset.card_insert_of_notMem (by simp [hvp]),
+    Finset.card_erase_of_mem (by simpa using hvz)]
+  have : 0 < (J.neighborFinset v).card := Finset.card_pos.mpr ⟨z, by simpa using hvz⟩
+  omega
+
+/-- Degrees in `K − zc − zd + cd`: unchanged away from `z`, two less at `z`. -/
+theorem swapG_degree (K : SimpleGraph V) [DecidableRel K.Adj] {z c d : V} (hzc : K.Adj z c)
+    (hzd : K.Adj z d) (hcd : ¬ K.Adj c d) (hcd' : c ≠ d) (v : V) :
+    (swapG K z c d).degree v + (if v = z then 2 else 0) = K.degree v := by
+  have hzc' : z ≠ c := hzc.ne
+  have hzd' : z ≠ d := hzd.ne
+  by_cases hvz : v = z
+  · subst hvz
+    rw [if_pos rfl]
+    have hset : (swapG K v c d).neighborFinset v = ((K.neighborFinset v).erase c).erase d := by
+      ext w
+      rw [Finset.mem_erase, Finset.mem_erase, mem_neighborFinset, mem_neighborFinset, swapG_adj]
+      constructor
+      · rintro ⟨hvw, ⟨h, h1, h2⟩ | h⟩
+        · refine ⟨fun hw => h2 (by rw [hw]), fun hw => h1 (by rw [hw]), h⟩
+        · rcases Sym2.eq_iff.mp h with ⟨rfl, -⟩ | ⟨rfl, -⟩
+          · exact absurd rfl hzc'
+          · exact absurd rfl hzd'
+      · rintro ⟨hwd, hwc, h⟩
+        refine ⟨h.ne, Or.inl ⟨h, fun h' => ?_, fun h' => ?_⟩⟩
+        · rcases Sym2.eq_iff.mp h' with ⟨-, rfl⟩ | ⟨rfl, rfl⟩
+          · exact hwc rfl
+          · exact hwc rfl
+        · rcases Sym2.eq_iff.mp h' with ⟨-, rfl⟩ | ⟨rfl, rfl⟩
+          · exact hwd rfl
+          · exact hwd rfl
+    rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree, hset,
+      Finset.card_erase_of_mem (by simp [hzd, Ne.symm hcd']),
+      Finset.card_erase_of_mem (by simpa using hzc)]
+    have : 1 < (K.neighborFinset v).card := by
+      rw [Finset.one_lt_card]; exact ⟨c, by simpa using hzc, d, by simpa using hzd, hcd'⟩
+    omega
+  · rw [if_neg hvz, add_zero]
+    by_cases hvc : v = c
+    · subst hvc
+      refine degree_trade _ _ hzc.symm hcd (fun w => ?_)
+      rw [swapG_adj]
+      constructor
+      · rintro ⟨hvw, ⟨h, h1, -⟩ | h⟩
+        · exact Or.inr ⟨h, fun hw => h1 (by rw [hw, Sym2.eq_swap])⟩
+        · rcases Sym2.eq_iff.mp h with ⟨-, rfl⟩ | ⟨rfl, -⟩
+          · exact Or.inl rfl
+          · exact absurd rfl hcd'
+      · rintro (rfl | ⟨h, hw⟩)
+        · exact ⟨hcd', Or.inr rfl⟩
+        · refine ⟨h.ne, Or.inl ⟨h, fun h' => hw ?_, fun h' => ?_⟩⟩
+          · rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨-, rfl⟩
+            · exact absurd h'' hvz
+            · rfl
+          · rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨h'', -⟩
+            · exact absurd h'' hvz
+            · exact absurd h'' hcd'
+    · by_cases hvd : v = d
+      · subst hvd
+        refine degree_trade _ _ hzd.symm (fun h => hcd h.symm) (fun w => ?_)
+        rw [swapG_adj]
+        constructor
+        · rintro ⟨hvw, ⟨h, -, h2⟩ | h⟩
+          · exact Or.inr ⟨h, fun hw => h2 (by rw [hw, Sym2.eq_swap])⟩
+          · rcases Sym2.eq_iff.mp h with ⟨rfl, -⟩ | ⟨-, rfl⟩
+            · exact absurd rfl hvc
+            · exact Or.inl rfl
+        · rintro (rfl | ⟨h, hw⟩)
+          · exact ⟨fun h => hcd' h.symm, Or.inr Sym2.eq_swap⟩
+          · refine ⟨h.ne, Or.inl ⟨h, fun h' => ?_, fun h' => hw ?_⟩⟩
+            · rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨h'', -⟩
+              · exact absurd h'' hvz
+              · exact absurd h'' hvc
+            · rcases Sym2.eq_iff.mp h' with ⟨h'', -⟩ | ⟨-, rfl⟩
+              · exact absurd h'' hvz
+              · rfl
+      · rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree]
+        congr 1
+        ext w
+        rw [mem_neighborFinset, mem_neighborFinset, swapG_adj]
+        constructor
+        · rintro ⟨-, ⟨h, -⟩ | h⟩
+          · exact h
+          · rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, -⟩
+            · exact absurd h1 hvc
+            · exact absurd h1 hvd
+        · intro h
+          refine ⟨h.ne, Or.inl ⟨h, fun h' => ?_, fun h' => ?_⟩⟩ <;>
+            rcases Sym2.eq_iff.mp h' with ⟨h1, h2⟩ | ⟨h1, h2⟩
+          all_goals first | exact hvz h1 | exact hvc h1 | exact hvd h1
+
+end swapGraph
+
+section stlFinal
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **Un-lifting one pair.** A path of `K − zc − zd + cd` ending at `c` through `cd`, and avoiding
+`z`, becomes the path `c z d ⋯` of `K`; every other path is kept with its edges. -/
+theorem unlift (K : SimpleGraph V) {z c d : V} (hzc : K.Adj z c) (hzd : K.Adj z d)
+    (hcd : ¬ K.Adj c d) (hcd' : c ≠ d) (D : PathDecomp (swapG K z c d))
+    {P : GPath (swapG K z c d)} (hP : P ∈ D.paths) (hend : P.src = c ∨ P.tgt = c)
+    (hPcd : s(c, d) ∈ P.edges) (hz : z ∉ P.walk.support) :
+    ∃ D' : PathDecomp K, (∀ w, D'.ends w = D.ends w) ∧ ∃ P' ∈ D'.paths, P'.src = c ∧
+      s(c, z) ∈ P'.edges ∧ s(z, d) ∈ P'.edges ∧ (P'.tgt ≠ d ∨ ∀ e ∈ P'.edges, z ∈ e) ∧
+      z ∈ P'.walk.support ∧
+      (∀ Q ∈ D.paths, Q ≠ P → ∃ Q' ∈ D'.paths, Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+        Q'.walk.support = Q.walk.support ∧ Q'.edges = Q.edges) ∧
+      ∀ Q' ∈ D'.paths, Q' = P' ∨ ∃ Q ∈ D.paths, Q ≠ P ∧ Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+        Q'.walk.support = Q.walk.support ∧ Q'.edges = Q.edges := by
+  obtain ⟨Q, hQs, hQe, hQends, hQsupp⟩ := P.exists_orient hend
+  have hQcd : s(c, d) ∈ Q.edges := hQe.mem_iff.mpr hPcd
+  have hzQ : z ∉ Q.walk.support := fun h => hz ((hQsupp z).mp h)
+  have hJ : ∀ e ∈ Q.edges, e ≠ s(c, d) → e ∈ K.edgeSet := by
+    intro e he hne
+    have := Q.walk.edges_subset_edgeSet he
+    rw [swapG_edgeSet K z c d e hcd'] at this
+    rcases this with h | h
+    · exact h.1
+    · exact absurd h hne
+  obtain ⟨P', hP's, hP't, hQedges, hP'e, hP'supp, htail⟩ :=
+    Q.subdivide_start hQs hQcd hzQ hzc.symm hzd hJ
+  have hnd : Q.edges.Nodup := Q.isPath.isTrail.edges_nodup
+  rw [hQedges, List.nodup_cons] at hnd
+  have hcdK : s(c, d) ∉ K.edgeSet := hcd
+  have hzcS : s(c, z) ∉ (swapG K z c d).edgeSet := by
+    rw [swapG_edgeSet K z c d _ hcd']
+    rintro (⟨-, h, -⟩ | h)
+    · exact h Sym2.eq_swap
+    · rcases Sym2.eq_iff.mp h with ⟨-, h'⟩ | ⟨h', -⟩
+      · exact hzd.ne h'
+      · exact hcd' h'
+  have hzdS : s(z, d) ∉ (swapG K z c d).edgeSet := by
+    rw [swapG_edgeSet K z c d _ hcd']
+    rintro (⟨-, -, h⟩ | h)
+    · exact h rfl
+    · rcases Sym2.eq_iff.mp h with ⟨h', -⟩ | ⟨h', -⟩
+      · exact hzc.ne h'
+      · exact hzd.ne h'
+  have hmemP : ∀ e, e ∈ P.edges ↔ e = s(c, d) ∨ e ∈ Q.edges.tail := by
+    intro e
+    rw [← hQe.mem_iff]
+    conv_lhs => rw [hQedges]
+    rw [List.mem_cons]
+  obtain ⟨D', -, hP'mem, hends, hpres, hback⟩ := D.replace_edges hP P' (by
+      intro e
+      rw [hP'e, hmemP, swapG_edgeSet K z c d e hcd']
+      simp only [List.mem_cons]
+      constructor
+      · intro he
+        by_cases h1 : e = s(z, c)
+        · right; left; rw [h1, Sym2.eq_swap]
+        · by_cases h2 : e = s(z, d)
+          · right; right; left; exact h2
+          · by_cases h3 : e ∈ Q.edges.tail
+            · right; right; right; exact h3
+            · left
+              refine ⟨Or.inl ⟨he, h1, h2⟩, ?_⟩
+              rintro (rfl | h)
+              · exact hcdK he
+              · exact h3 h
+      · rintro (⟨h | rfl, hn⟩ | rfl | rfl | h)
+        · exact h.1
+        · exact absurd (Or.inl rfl) hn
+        · rw [Sym2.eq_swap]; exact hzc
+        · exact hzd
+        · exact hJ e (List.mem_of_mem_tail h) (fun h' => hnd.1 (h' ▸ h)))
+    (by
+      intro e he
+      rw [hP'e, List.mem_cons, List.mem_cons] at he
+      rcases he with rfl | rfl | h
+      · exact Or.inr hzcS
+      · exact Or.inr hzdS
+      · exact Or.inl ((hmemP e).2 (Or.inr h)))
+  have hP'ends : ∀ w, P'.endsAt w = P.endsAt w := by
+    intro w
+    rw [← hQends w]
+    simp only [GPath.endsAt, hP's, hP't, hQs]
+  refine ⟨D', fun w => by have := hends w; rw [hP'ends] at this; omega, P', hP'mem, hP's,
+    by rw [hP'e]; exact List.mem_cons_self, by rw [hP'e]; exact List.mem_cons_of_mem _ List.mem_cons_self,
+    ?_, (hP'supp z).2 (Or.inl rfl), hpres, hback⟩
+  by_cases ht : P'.tgt = d
+  · right
+    rw [hP't] at ht
+    rw [hP'e, htail ht]
+    intro e he
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at he
+    rcases he with rfl | rfl
+    · exact Sym2.mem_mk_right _ _
+    · exact Sym2.mem_mk_left _ _
+  · exact Or.inl ht
+
+omit [Fintype V] in
+theorem sym2_ne_left {z c a : V} (hca : c ≠ a) (hza : z ≠ a) : s(z, c) ≠ s(z, a) := fun h => by
+  rcases Sym2.eq_iff.mp h with ⟨-, h'⟩ | ⟨h', -⟩
+  · exact hca h'
+  · exact hza h'
+
+/-- The lifted graph `(J − z) + ab + cd`, as two transitions lifted at `z`. -/
+abbrev liftJ (J : SimpleGraph V) (z a b c d : V) : SimpleGraph V := swapG (swapG J z a b) z c d
+
+/-- Facts about the intermediate graph `J − za − zb + ab`. -/
+theorem liftJ_mid (J : SimpleGraph V) {z a b c d : V} (hza : J.Adj z a) (hzb : J.Adj z b)
+    (hzc : J.Adj z c) (hzd : J.Adj z d)
+    (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd : ¬ J.Adj c d) :
+    (swapG J z a b).Adj z c ∧ (swapG J z a b).Adj z d ∧ ¬ (swapG J z a b).Adj c d := by
+  refine ⟨⟨hzc.ne, Or.inl ⟨hzc, sym2_ne_left (Ne.symm hac) hza.ne,
+      sym2_ne_left (Ne.symm hbc) hzb.ne⟩⟩,
+    ⟨hzd.ne, Or.inl ⟨hzd, sym2_ne_left (Ne.symm had) hza.ne, sym2_ne_left (Ne.symm hbd) hzb.ne⟩⟩,
+    ?_⟩
+  rintro ⟨-, ⟨h, -⟩ | h⟩
+  · exact hcd h
+  · rcases Sym2.eq_iff.mp h with ⟨h', -⟩ | ⟨h', -⟩
+    · exact hac h'.symm
+    · exact hbc h'.symm
+
+/-- Degrees of the lifted graph. -/
+theorem liftJ_degree (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hza : J.Adj z a) (hzb : J.Adj z b) (hzc : J.Adj z c) (hzd : J.Adj z d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d) (v : V) :
+    (liftJ J z a b c d).degree v + (if v = z then 4 else 0) = J.degree v := by
+  obtain ⟨h1c, h1d, h1cd⟩ := liftJ_mid J hza hzb hzc hzd hac had hbc hbd hcd
+  have h1 := swapG_degree J hza hzb hab hab' v
+  have h2 := swapG_degree (swapG J z a b) h1c h1d h1cd hcd' v
+  show (swapG (swapG J z a b) z c d).degree v + _ = _
+  split_ifs at h1 h2 ⊢ <;> omega
+
+/-- **From PTM₂ to STL.** Let `z` be the only even vertex of `J`, with `N(z) = {a, b, c, d}` and
+`ab, cd ∉ E(J)`. A Lovász decomposition of `(J − z) + ab + cd` with `ab` terminal at `a` and `cd`
+terminal at `c`, on different paths, lifts to a star-terminal Lovász decomposition of `J` in
+which `b` and `d` are on long sides (or a path through `z` has length two): STL holds at `b` and
+at `d`. -/
+theorem stl_of_ptm2 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d) (h : PTM2At (liftJ J z a b c d) a b c d) :
+    STL J z b ∧ STL J z d := by
+  have hza : J.Adj z a := (hN a).2 (Or.inl rfl)
+  have hzb : J.Adj z b := (hN b).2 (Or.inr (Or.inl rfl))
+  have hzc : J.Adj z c := (hN c).2 (Or.inr (Or.inr (Or.inl rfl)))
+  have hzd : J.Adj z d := (hN d).2 (Or.inr (Or.inr (Or.inr rfl)))
+  obtain ⟨h1c, h1d, h1cd⟩ := liftJ_mid J hza hzb hzc hzd hac had hbc hbd hcd
+  have hdeg := liftJ_degree J hza hzb hzc hzd hab' hac had hbc hbd hcd' hab hcd
+  -- `z` has degree four in `J`, hence is isolated in the lifted graph
+  have hJz : J.degree z = 4 := by
+    have hset : J.neighborFinset z = {a, b, c, d} := by
+      ext w; simp only [mem_neighborFinset, Finset.mem_insert, Finset.mem_singleton, hN]
+    rw [← card_neighborFinset_eq_degree, hset, Finset.card_insert_of_notMem (by simp [hab', hac, had]),
+      Finset.card_insert_of_notMem (by simp [hbc, hbd]), Finset.card_pair hcd']
+  have hiso : ∀ w, ¬ (liftJ J z a b c d).Adj z w := by
+    intro w hw
+    have h0 := hdeg z
+    rw [if_pos rfl, hJz] at h0
+    have : (liftJ J z a b c d).degree z = 0 := by omega
+    rw [← card_neighborFinset_eq_degree, Finset.card_eq_zero] at this
+    have : w ∈ (liftJ J z a b c d).neighborFinset z := (mem_neighborFinset _ _ _).2 hw
+    simp_all
+  have hzP : ∀ P : GPath (liftJ J z a b c d), z ∉ P.walk.support := fun P =>
+    P.not_mem_of_isolated hiso
+  have hpar : ∀ v, (liftJ J z a b c d).degree v % 2 = J.degree v % 2 := by
+    intro v; have := hdeg v; split_ifs at this <;> omega
+  obtain ⟨D, hD, P₁, hP₁, P₂, hP₂, hne, h1e, h1ab, h2e, h2cd⟩ := h
+  -- un-lift `cd`, then `ab`
+  obtain ⟨D₁, hD₁, P₂', hP₂', h2s, h2cz, h2zd, h2t, hz2, hpres₁, hback₁⟩ :=
+    unlift (swapG J z a b) h1c h1d h1cd hcd' D hP₂ h2e h2cd (hzP P₂)
+  obtain ⟨P₁b, hP₁b, h1s, h1t, h1supp, h1edges⟩ := hpres₁ P₁ hP₁ hne
+  have h1e' : P₁b.src = a ∨ P₁b.tgt = a := by rw [h1s, h1t]; exact h1e
+  obtain ⟨D₂, hD₂, P₁', hP₁', h1s', h1az, h1zb, h1t', hz1, hpres₂, hback₂⟩ :=
+    unlift J hza hzb hab hab' D₁ hP₁b h1e' (h1edges ▸ h1ab) (h1supp ▸ hzP P₁)
+  have hne₂ : P₂' ≠ P₁b := fun h' => (h1supp ▸ hzP P₁) (h' ▸ hz2)
+  obtain ⟨P₂'', hP₂'', h2s'', h2t'', h2supp'', h2edges''⟩ := hpres₂ P₂' hP₂' hne₂
+  have hends : ∀ v, D₂.ends v = J.degree v % 2 := fun v => by
+    rw [hD₂, hD₁, hD, hpar]
+  have hstar : StarAt D₂ z := by
+    intro Q hQ hzQ
+    rcases hback₂ Q hQ with rfl | ⟨Q₁, hQ₁, -, hs, -, hsupp, hedges⟩
+    · left; rw [h1s']; exact h1az
+    · rw [hsupp] at hzQ
+      rcases hback₁ Q₁ hQ₁ with rfl | ⟨Q₀, hQ₀, -, -, -, hsupp₀, -⟩
+      · left; rw [hs, hedges, h2s]; exact h2cz
+      · rw [hsupp₀] at hzQ; exact absurd hzQ (hzP Q₀)
+  refine ⟨⟨D₂, hends, hstar, ?_⟩, ⟨D₂, hends, hstar, ?_⟩⟩
+  · rcases h1t' with ht | hall
+    · exact Or.inl ⟨P₁', hP₁', h1zb, by rw [h1s']; exact hab', ht⟩
+    · exact Or.inr ⟨P₁', hP₁', hall⟩
+  · rcases h2t with ht | hall
+    · exact Or.inl ⟨P₂'', hP₂'', h2edges'' ▸ h2zd, by rw [h2s'', h2s]; exact hcd',
+        by rw [h2t'']; exact ht⟩
+    · exact Or.inr ⟨P₂'', hP₂'', h2edges'' ▸ hall⟩
+
+omit [Fintype V] in
+theorem PTM2At.congr [Fintype V] {G G' : SimpleGraph V} [DecidableRel G.Adj] [DecidableRel G'.Adj]
+    (hG : G = G') {a b x y : V} (h : PTM2At G a b x y) : PTM2At G' a b x y := by
+  subst hG; convert h
+
+/-- **Test 1 at girth five.** Let `z` be the only even vertex of `J`, with `N(z) = {a, b, c, d}`
+and `ab, cd ∉ E(J)`, every neighbour of `z` of degree at least three. If the lifted graph
+`(J − z) + ab + cd` has no triangle and no four-cycle, and `c` is reachable from `a` in it, then
+STL holds at every neighbour of `z` (`STL J z r`), hence `Test1 J z`. -/
+theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hev : ∀ v, Even (J.degree v) ↔ v = z)
+    (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d)
+    (hreach : (liftJ J z a b c d).Reachable c a)
+    (h3 : NoTriangle (liftJ J z a b c d)) (h4 : NoSquare (liftJ J z a b c d)) :
+    ∀ r, J.Adj z r → STL J z r := by
+  have hza : J.Adj z a := (hN a).2 (Or.inl rfl)
+  have hzb : J.Adj z b := (hN b).2 (Or.inr (Or.inl rfl))
+  have hzc : J.Adj z c := (hN c).2 (Or.inr (Or.inr (Or.inl rfl)))
+  have hzd : J.Adj z d := (hN d).2 (Or.inr (Or.inr (Or.inr rfl)))
+  have hdeg := liftJ_degree J hza hzb hzc hzd hab' hac had hbc hbd hcd' hab hcd
+  have hJz : J.degree z = 4 := by
+    have hset : J.neighborFinset z = {a, b, c, d} := by
+      ext w; simp only [mem_neighborFinset, Finset.mem_insert, Finset.mem_singleton, hN]
+    rw [← card_neighborFinset_eq_degree, hset, Finset.card_insert_of_notMem (by simp [hab', hac, had]),
+      Finset.card_insert_of_notMem (by simp [hbc, hbd]), Finset.card_pair hcd']
+  have hodd : ∀ v, v ∉ evenSet (liftJ J z a b c d) := by
+    intro v hv
+    rw [mem_evenSet_iff] at hv
+    have h0 := hdeg v
+    by_cases hvz : v = z
+    · rw [hvz, if_pos rfl, hJz] at h0
+      rw [hvz] at hv
+      omega
+    · rw [if_neg hvz, add_zero] at h0
+      have : ¬ Even (J.degree v) := fun h => hvz ((hev v).1 h)
+      rw [Nat.not_even_iff] at this
+      have : (liftJ J z a b c d).degree v % 2 = 0 := hv.2
+      omega
+  have hGab : (liftJ J z a b c d).Adj a b := ⟨hab', Or.inl ⟨⟨hab', Or.inr rfl⟩, fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨h', -⟩ | ⟨h', -⟩
+    · exact hza.ne h'.symm
+    · exact hac h', fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨h', -⟩ | ⟨h', -⟩
+    · exact hza.ne h'.symm
+    · exact had h'⟩⟩
+  have hGcd : (liftJ J z a b c d).Adj c d := ⟨hcd', Or.inr rfl⟩
+  have e1 : liftJ J z a b c d = liftJ J z a b d c := swapG_symm _ _ _ _
+  have e2 : liftJ J z a b c d = liftJ J z b a c d := by rw [liftJ, liftJ, swapG_symm J z a b]
+  have e3 : liftJ J z a b c d = liftJ J z b a d c := by rw [e2, liftJ, liftJ, swapG_symm _ z c d]
+  have e4 : liftJ J z a b c d = liftJ J z c d a b := swapG_comm J hza.ne hzb.ne hzc.ne hzd.ne
+  have e5 : liftJ J z a b c d = liftJ J z c d b a := by rw [e4, liftJ, liftJ, swapG_symm _ z a b]
+  have e6 : liftJ J z a b c d = liftJ J z d c a b := by rw [e4, liftJ, liftJ, swapG_symm J z c d]
+  have e7 : liftJ J z a b c d = liftJ J z d c b a := by rw [e6, liftJ, liftJ, swapG_symm _ z a b]
+  have hN' : ∀ {p q r s : V}, ({p, q, r, s} : Finset V) = {a, b, c, d} →
+      ∀ w, J.Adj z w ↔ w = p ∨ w = q ∨ w = r ∨ w = s := by
+    intro p q r s hpq w
+    rw [hN]
+    have := congrArg (w ∈ ·) hpq
+    simp only [Finset.mem_insert, Finset.mem_singleton, eq_iff_iff] at this
+    exact this.symm
+  intro r hr
+  rcases (hN r).1 hr with hr' | hr' | hr' | hr' <;> subst r
+  · -- `r = a`: prescribe `b` short
+    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 (hreach.trans hGab.reachable) hGab.symm hGcd
+      hbc hbd hac had with h | h
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hab') hbc hbd hac had hcd'
+        (fun h => hab h.symm) hcd (h.congr e2)).1
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hab') hbd hbc had hac
+        (Ne.symm hcd') (fun h => hab h.symm) (fun h => hcd h.symm) (h.congr e3)).1
+  · -- `r = b`: prescribe `a` short
+    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 hreach hGab hGcd hac had hbc hbd with h | h
+    · exact (stl_of_ptm2 J hN hab' hac had hbc hbd hcd' hab hcd h).1
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hab' had hac hbd hbc (Ne.symm hcd') hab
+        (fun h => hcd h.symm) (h.congr e1)).1
+  · -- `r = c`: prescribe `d` short
+    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 (hreach.symm.trans hGcd.reachable) hGcd.symm hGab
+      (Ne.symm had) (Ne.symm hbd) (Ne.symm hac) (Ne.symm hbc) with h | h
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hcd') (Ne.symm had) (Ne.symm hbd)
+        (Ne.symm hac) (Ne.symm hbc) hab' (fun h => hcd h.symm) hab (h.congr e6)).1
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) (Ne.symm hcd') (Ne.symm hbd) (Ne.symm had)
+        (Ne.symm hbc) (Ne.symm hac) (Ne.symm hab') (fun h => hcd h.symm) (fun h => hab h.symm)
+        (h.congr e7)).1
+  · -- `r = d`: prescribe `c` short
+    rcases ptm2_girth5 (liftJ J z a b c d) hodd h3 h4 hreach.symm hGcd hGab (Ne.symm hac) (Ne.symm hbc)
+      (Ne.symm had) (Ne.symm hbd) with h | h
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hcd' (Ne.symm hac) (Ne.symm hbc)
+        (Ne.symm had) (Ne.symm hbd) hab' hcd hab (h.congr e4)).1
+    · exact (stl_of_ptm2 J (hN' (by ext; simp; tauto)) hcd' (Ne.symm hbc) (Ne.symm hac)
+        (Ne.symm hbd) (Ne.symm had) (Ne.symm hab') hcd (fun h => hab h.symm) (h.congr e5)).1
+
+/-- **Test 1 at girth five**, the spine form. -/
+theorem test1_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
+    (hN : ∀ w, J.Adj z w ↔ w = a ∨ w = b ∨ w = c ∨ w = d)
+    (hab' : a ≠ b) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c) (hbd : b ≠ d) (hcd' : c ≠ d)
+    (hab : ¬ J.Adj a b) (hcd : ¬ J.Adj c d) (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
+    (hreach : (liftJ J z a b c d).Reachable c a)
+    (h3 : NoTriangle (liftJ J z a b c d)) (h4 : NoSquare (liftJ J z a b c d)) :
+    Test1 J z :=
+  test1_of_stl z hdeg fun hev =>
+    stl_of_girth5 J hev hN hab' hac had hbc hbd hcd' hab hcd hreach h3 h4
+
+end stlFinal
 
 end Gallai
