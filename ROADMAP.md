@@ -115,7 +115,13 @@ EMM sufficiency work is **stopped**.
   - Open: RE in general, the ear case at even order, and conjecture UC.
 - **ptm**: order-10 exhaustive PTM₂ **complete** (be6f6c9). 3,474,599 classes and 13.9M end tests with 0 failures, so K₄ is the only PTM₂ failure on ≤ 10 vertices.
 - **re-tight** (session_01FxXpVhoVc4PLGoUX13pape, branch `claude/re-tight`, new): RE at roots of degree n − 2 (99.8% of tight RE roots), using eulerian-cone Rem 7.2 and the Lovász + matching method.
-- **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`, new): prove DL(1), single-pair disjunctive avoidance. The open core is a, b ∈ N(g) with a common neighbour, the tight-Fan obstruction.
+- **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`): **finished** (98d805e). Manuscript `manuscripts/dl-one`; audit A29 applied.
+  - **DL(1) is NOT proved.**
+  - **Lean (`DLOne.lean`):** the twin exception is needed, Lemma NP (leaf exchange), DL(1) for a leaf at g, DL(1) for d(g) = 2 with a single common neighbour, and the free-target transfer.
+  - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
+  - **Certificates from proved moves:** cover every non-twin pair to order 9.
+  - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`, new): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
 - **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): Test1 on cones is rooted Gallai RE for Eulerian graphs (synthesis §§26–27, E30, `manuscripts/eulerian-cone`, Lean `EulerianCone.lean`).
   - **Lean** (standard axioms; full build): `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `hasMatchingCut_delVert_fullCone_iff`, the vacuous tests, and **`rootedDecomp_of_spineTestsNMC`**. The spine needs RE exactly for 2-connected Eulerian B of even order **without a matching cut**. Also `rootedDecomp_of_gallai` (Gallai ⇒ RE), `rootedDecomp_iff_addLeaf` and `rootedDecomp_of_dbl`.
