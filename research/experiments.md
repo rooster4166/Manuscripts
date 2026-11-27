@@ -769,3 +769,68 @@ Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were
 - **Local invariant with an even vertex** (`lloc_z_test.py 700 100000 5 11`): Q_s ⊆ N[s] in graphs with one even vertex z fails 240 / 846 decided when z ~ s, and 90 / 1,036 when z ≁ s (smallest example n = 5). So the strong local invariant cannot be carried through Lovász's induction, and one-sided separation (radius 2) stays open.
 - **Multi-pair separation** (`msep3.py`, query S; `outputs/msep3.log`). F all-odd, a random maximal matching of pairs at F-distance ≥ 3. **2,892 instances, n = 8–16, 0 failures**, of which 925 are perfect matchings; 102 undecided within budget. With some pair at distance 2: 500 / 2,191 fail. So symmetric separation needs distance 3.
 - **n = 14, minimum T-joins** (80 graphs, 160 constructions): 2,232 transversals, 0 not realisable, 8,896 / 8,896 extension queries succeed, RR true for 2,020, undecided for 212, never false.
+
+## E21. Multi-pair separation (MSEP), class separation (CSEP) and the Case I lemma (cloud session `claude/multi-sep`)
+
+Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-sep/scripts/` (see its README); outputs in `scripts/out/`. Oracle: `tools/route_ext.c` (query `S`, also `A` and budgeted `B`), compiled locally as `scripts/route_ext`.
+
+**Tools.**
+- `cubsep.c`: an exact MSEP checker for cubic graphs. It chooses at each vertex an end edge (the other two edges form the transition) by depth-first search, keeping path components by union–find with vertex masks. Linking is allowed iff the two components meet only at the vertex, the end edge is in neither, and the merged component contains no pair. Modes: `all` (every perfect pairing at distance ≥ 3), `rand N seed` (random pairings), `given` (explicit pairs).
+- `validate_cubsep.py` cross-checks `cubsep` against the independent enumerator `msl.all_decomps` on all 19 cubic graphs of order 10: 285 queries, pairs at distance 2 or 3, 12 failures (all at distance 2), 0 disagreements.
+- `randlov.py`: random runs of Lovász's induction (random choices, random Fan chains), then annealed end-swaps. A positive certificate, used for instances the budgeted oracle leaves undecided.
+
+**(A) MSEP on cubic graphs, perfect pairings at distance ≥ 3.** 0 failures.
+
+| order | graphs (nauty `geng -c -d3 -D3`) | pairings tested | time |
+|---|---|---|---|
+| 10 | 19 | 54 (all) | < 1 s |
+| 12 | 85 | 2,846 (all) | < 1 s |
+| 14 | 509 | 269,966 (all) | 0.3 s |
+| 16 | 4,060 | 36,024,731 (all) | minutes |
+| 18 | 41,301 | 8,260,200 (200 random per graph) | 30 s |
+
+**(B) MSEP on other graphs.** 0 failures in every run.
+- `search_general.py 3000 11 pair 12 20 2000000`: random all-odd graphs of orders 12–20 (edge density 0.12–0.5, at most 120 edges), with a random maximal pairing at distance ≥ 3, exact oracle with budgets of 2M, 8M, 32M and 128M nodes. Dense instances are often undecided within the budget. All undecided instances listed in `out/gen_pair.txt` were certified by `randlov.py` (first batch: 26/26).
+- Random regular graphs (`dense_search.py`), perfect pairings at distance ≥ 3, all certified: 5-regular of order 30 (10/10) and 40 (30/30), cubic of order 26 (200/200). For 7-regular graphs of order 40 and 9-regular graphs of order 60, no perfect pairing at distance 3 exists in the samples.
+- *Hardest instances* (`hardness.py`): rank instances by the fraction of random runs of Lovász's induction that separate. Minimum 0.067 for cubic graphs (orders 12–20) and 0.000 for random graphs (order 18). Every one of the hardest eight in each family has a separating decomposition.
+
+**(C) CSEP (classes).** 0 failures except for overlapping families.
+- Classes of size 3, pairwise at distance ≥ 3 (`exp_classes.py`), cubic: 32 (n = 12), 193 (n = 14), 174 (n = 16).
+- Greedy maximal classes: n = 14, 326 instances each for size caps 4, 8 and 32; n = 18, 200 each.
+- **Minimum colourings of the square** (`exp_sqcol.py`; classes = colour classes, so every path must be rainbow), with 4–10 colours: cubic n = 10 (57), 12 (170), 14 (150); random all-odd n = 10 (100) and 12 (100).
+- Overlapping families (`exp_conflict.py`): the union of two perfect pairings (each vertex in two pairs) never fails, in 228 (n = 12) + 398 (n = 14) instances. The union of three fails twice in 228 at n = 12 (e.g. `K??FEaKR@oE_` with pairs 0-9, 0-10, 1-8, 1-11, 2-7, 2-8, 2-9, 3-6, 3-8, 3-9, 4-6, 4-7, 4-11, 5-6, 5-7, 5-10). So CSEP needs disjoint classes.
+
+**(D) The Case I step of Lovász's induction with pairs.**
+- `exp1.py` uses K with one even vertex z whose neighbours are all paired. For each u ∈ N(z) it enumerates all separating Lovász decompositions D′ of K − uz, and all Fan transfers z → u. Over 13 instances:
+  - (A) some (u, D′, chain) works: 13/13;
+  - (B) some u works for every D′: only 6/13;
+  - (C) every u and every D′ works: 2/13.
+  
+  So the plain inductive hypothesis is not enough.
+- `exp2.py`: of the failing transfers, 25,047 have a trivial chain (the end path Q_z contains the partner u′) and 3,838 have chain length 1. Chains of length ≥ 2 almost never fail.
+- **(EE) / CL holds in every test.** (EE) says: z is the only positive even vertex, u ∈ N(z), and uz is the terminal edge at u of some rainbow decomposition.
+  - `exp_ee.py`: 869 decided pairs (z, u) without classes, and 788 with pairings, 0 failures (51 undecided).
+  - `exp_cl.py`: Case I configurations obtained from cubic graphs with perfect pairings by one Case II step (the leaf joins the class of x). Every neighbour w was tested: 456 (n = 12), 796 (n = 14) and 400 (n = 16), 0 failures.
+- `exp_extremal.py`, `exp_min2.py`: among separating D′ of K − uz, those minimising |V(Q_z)| always avoid u's class (228/228, and all cubic-derived configurations). But the minimum is usually a single edge, so this is weak evidence.
+
+**(E) Natural strengthenings that are false.**
+
+| statement | script | failures |
+|---|---|---|
+| end paths avoid the partners of all neighbours (I1′) | `exp_inv.py` | 182/228 (n=12), 209/398 (n=14) |
+| one forbidden class at every vertex | `exp_csepf.py` | 114/199 (dist ≥ 2), 79/199 (dist ≥ 3); 0/199 at half the vertices |
+| even vertex is the centre of a path of length 2 (P2) | `exp_p2.py` | 8/200, 7/102, 4/198 |
+| all neighbours of z end at z (EE-all) | `exp_eeall.py` | 32/200, 7/102 |
+| Q_z ⊆ N[z] with separation (L∞) | `exp_se.py` | 1/600 (all-odd), 37/550 (one even vertex; includes z a leaf at the even vertex) |
+| Kotzig P₄-decompositions (perfect matching + oriented 2-factor) suffice for cubic MSEP | `kotzig.py` | 2/228 at n = 12 (0/40 at 10, 0/298 at 14) |
+
+**(F) Certified strategies.** These are inductions using only certified moves: the leaf merge (Case II), the certified Case I (z joins u's classes, needs distance ≥ 3 in K − uz) and rotation along cycles or leaf paths.
+- `coarsen.py` (randomised) succeeds on cubic graphs: 99/99 (n = 14), 299/300 (n = 16), 269/269 (n = 16, girth ≥ 5) and 200/200 (n = 18, girth ≥ 5).
+- `coarsen_fail.py` (exhaustive over all choices, memoised) fails on 13/24 cubic instances at n = 10, on 6/9 triangle-free instances at n = 10, on 3/63 (n = 12, triangle-free), on 3/15 (n = 12, girth 5), and on 0/108 (n = 14, girth 5).
+- `rotate.py` fails on 1/24 (n = 10), 14/152 (n = 12) and 3/42 (n = 12, triangle-free).
+- `strat_rreg.py`: random 5-regular graphs, n = 30: no certificate found in 10/10 instances (separating decompositions exist).
+- Conclusion: local certificates need room at distance 3, and they cannot prove MSEP.
+
+**(G) Prescribed end edges** (`exp_twoend.py`). The question: are end edges at all vertices of a packed set (|X| ≤ 4) achievable simultaneously? The test uses the split graph with classes {x, ℓ_x}. Result: 311 + 229 instances, 0 failures (1 undecided). |X| = 1 is a theorem (manuscript Thm "prescribed end edge").
+
+**(H) Side test (`exp_elov.py`).** Lovász decompositions with b = deg mod 2 when the even vertices are pairwise at distance ≥ 3: 182 decided random instances, 0 failures. The first version of the test was degenerate: it made the even vertices by pendant leaves, which is trivially solvable.

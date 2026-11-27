@@ -1107,3 +1107,48 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 - *Fan-isolated routes* (every vertex of a route has no even neighbours except its route-neighbours): TRC by Fan transfers along each route. Inside Pyber's class (G[Ev] is then a matching), so new only as a TRC (all-transversals) statement.
 - *Separation theorem*: new as far as we know; a strengthening of Lovász's theorem.
 - *L1*: now a theorem (V.4a), new as far as we know. *Conjectures RR / L_N*: new; L_N would be a genuinely new Gallai class.
+
+## W. Multi-pair separation (cloud session `claude/multi-sep`, 2026-11-27)
+
+*Experiments: E21. Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Lean: `lean/GallaiLean/MultiSep.lean`. Audit: `research/audit/A18-multi-sep.md`.*
+
+### W.1 Verdict
+- **MSEP is not proved, and no counterexample was found.** The evidence is now much stronger:
+  - all 36,024,731 distance-3 perfect pairings of the 4,060 connected cubic graphs of order 16 (and all of orders 10–14);
+  - 8.26M random pairings at order 18;
+  - random all-odd graphs to order 20, and 5-regular graphs of orders 30–40.
+- **The reduction checks** (manuscript Prop. "reduction"). An N-edge ca is at F-distance ≥ 3 iff it lies in no triangle of G. If a path has two tails as ends, both heads are off it and distinct, so all orientations are realisable. The class is new, and it contains all triangle-free Eulerian graphs with a perfect matching.
+
+### W.2 The right generalisation: class separation (CSEP)
+- **Statement.** Partition V into *packed* sets (pairwise distance ≥ 3). Equivalently, take the fibres of a locally injective homomorphism, or the colour classes of a proper colouring of K². CSEP: some Lovász decomposition has every path rainbow.
+- MSEP is the case of classes of size ≤ 2; the separation theorem is the case of one class.
+- **Evidence.** CSEP never failed, including for *minimum* colourings of K² (4–10 colours).
+- It is false for overlapping families (the union of three pairings), but not for the union of two.
+- It holds for the fibres of coverings of all-odd graphs (lift Lovász's decomposition).
+
+### W.3 Proved (all formalised except where noted)
+- **Leaf merge** (`leaf_merge`). Let H = (K − xu) + leaf ℓ at u. A decomposition of H with no path containing both x and ℓ maps to one of K under ℓ ↦ x. The ends at x add up.
+- **Prescribed end edge** (`lovasz_endEdge_set`). This is new and unconditional.
+  - Statement: if all degrees are odd, then for every edge xu some Lovász decomposition has xu as the terminal edge of the path ending at x. Moreover every path can be made to meet a given packed set containing x at most once.
+  - Proof: `separation_set` on H with the packed set X ∪ {ℓ}, then the merge.
+  - It is the dual of the leaf trick that proves L1 (V.4a): there a leaf is attached; here an edge is detached.
+- **Case II is free for CSEP** (`caseII_lift`, `classSep_allOdd`): the leaf joins x's class. So CSEP reduces to graphs with exactly one positive even vertex.
+- **Certified Case I** (`classSep_caseI`): if z joins u's classes in K − uz (and {u, z} is a class), the transfer is a plain append. The manuscript also has a **rotation lemma**: remove a cycle, let c_i join c_{i+1}'s class, then extend each end path by one cycle edge; no even vertex is ever created (not formalised).
+- **Sparse classes** (`separation_sparse`): CSEP holds for *overlapping* packed classes whose union X has at most one neighbour at every vertex. This generalises `separation_set`. Its Gallai corollary (every orientation realisable) lies inside Fan's class for p(G) alone.
+
+### W.4 The obstruction, exactly
+- **Equivalence** (manuscript Prop. "EE"): Lovász's Case I with a trivial Fan chain at the even vertex z and target u is equivalent to "uz is the terminal edge at u of a rainbow Lovász decomposition of K". This is **L1 at the even vertex**: the end path of z in K − uz must avoid u and u's class.
+- **Conjecture EE** (for every u). Tested on 869 + 788 random pairs and 1,652 cubic-derived Case I configurations: 0 failures.
+- **Why L1's leaf trick does not reach it.** The trick would attach a leaf at z, which already has the even vertex u at distance 2, giving two even vertices. L1 with an extra even vertex is false (V.4a).
+- **What the data rule out:**
+  - the plain hypothesis (for ~half of the configurations, no u works for every D′);
+  - six natural strengthened invariants (E21 (E));
+  - inductions built only from certified local moves (E21 (F): they fail on small or dense graphs).
+
+  A proof of MSEP needs non-local information.
+
+### W.5 Open (in order of promise)
+1. Conjecture EE, even without classes.
+2. **Prescribed end edges on a packed set**: are end edges prescribable at every vertex of a packed set at once? 540 tests, 0 failures. Note the split-graph form: even vertices each carrying a pendant leaf separated from them, which is exactly the shape of the remark in V.4a on L_N.
+3. MSEP for cubic graphs, or for two pairs.
+4. CSEP.

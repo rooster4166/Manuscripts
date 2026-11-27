@@ -1,0 +1,599 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cD}{\mathcal D}
+
+\title[Multi-pair separation]{Separating many pairs in Lov\'asz decompositions:\\
+classes, the leaf merge, and the Case~I lemma}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+A \emph{Lov\'asz decomposition} of a graph with at most one vertex of positive even degree is a
+partition of its edges into paths in which every vertex $v$ is the end of exactly $d(v)\bmod 2$
+paths; Lov\'asz proved that one exists. We study the \emph{multi-pair separation conjecture} (MSEP):
+if all degrees are odd and $\{c_1,a_1\},\dots,\{c_t,a_t\}$ are disjoint pairs at distance at least three,
+then some Lov\'asz decomposition has no path containing both vertices of a pair. MSEP would give
+Gallai's conjecture, with every orientation of the matching realisable, for every graph whose even
+vertices induce a subgraph with a perfect matching none of whose edges lies in a triangle; this class
+contains every triangle-free Eulerian graph with a perfect matching. We re-check this reduction.
+
+We do not prove MSEP. We prove the following.
+\begin{itemize}
+\item \emph{Prescribed end edges.} If all degrees are odd, then for every vertex $x$ and every edge
+$xu$ there is a Lov\'asz decomposition in which $xu$ is the terminal edge of the path ending at $x$;
+moreover every path can be made to meet a given packed set containing $x$ at most once.
+\item \emph{Classes.} MSEP is the case of pairs of a \emph{class separation} conjecture (CSEP) for
+partitions of the vertex set into packed sets, equivalently for proper colourings of the square of
+the graph. Lov\'asz's Case~II costs nothing for CSEP: the new leaf joins the class of the split
+vertex, and the lift is a merge (\emph{leaf merge}). So CSEP reduces to graphs with exactly one
+vertex of positive even degree.
+\item \emph{The Case~I lemma.} For such graphs, Lov\'asz's Case~I with a trivial Fan chain is
+equivalent to prescribing, at a neighbour $u$ of the even vertex $z$, the terminal edge $uz$. We
+isolate this single statement, prove a certified version of the step, and a rotation lemma that
+removes a cycle without creating an even vertex.
+\item \emph{Sparse classes.} If every vertex has at most one neighbour in the union of the classes,
+CSEP holds, even for overlapping classes. This contains the separation theorem for packed sets.
+\item \emph{Covers.} CSEP holds for the fibres of a covering map onto a graph with all degrees odd.
+\end{itemize}
+The proofs are computation-free. The Lean library formalises the leaf merge, the prescribed end edge,
+the Case~II reduction, the certified Case~I step and the sparse-class theorem. Separately labelled
+computations give the evidence: no counterexample to MSEP among all $36{,}024{,}731$ distance-three
+perfect pairings of the $4{,}060$ connected cubic graphs of order $16$, $8.26$ million sampled
+pairings at order $18$, and random graphs to order $20$; and no counterexample to CSEP for minimum
+colourings of the square. We also show that every natural strengthening we tried of the inductive
+invariant is false, and that certified local moves alone cannot prove MSEP.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path decomposition} of a graph $K$ is a partition of $E(K)$
+into paths, each with at least one edge. For such a decomposition $\cD$ and a vertex $v$, $b_\cD(v)$ is
+the number of paths of $\cD$ with an end at $v$; always $b_\cD(v)\equiv d_K(v)\pmod 2$. A vertex has
+\emph{positive even degree} if $d(v)>0$ is even. Following~\cite{RD} we call $\cD$ a \emph{Lov\'asz
+decomposition} if $b_\cD(v)=d_K(v)\bmod 2$ for every $v$. Lov\'asz~\cite{L68} proved:
+
+\begin{theorem}[Lov\'asz]\label{thm:lovasz}
+If $K$ has at most one vertex of positive even degree, it has a Lov\'asz decomposition.
+\end{theorem}
+
+A set $X$ of vertices is \emph{packed} if its vertices are pairwise at distance at least three: no two
+are adjacent and no two have a common neighbour. Equivalently, the closed neighbourhoods $N[x]$,
+$x\in X$, are pairwise disjoint. The route-descent manuscript~\cite{RD} proves the \emph{separation
+theorem}: if $K$ has at most one vertex of positive even degree and $X$ is packed, then some Lov\'asz
+decomposition has every path meeting $X$ in at most one vertex. The case $|X|=2$ separates two vertices.
+
+\begin{conjecture}[MSEP, multi-pair separation]\label{conj:msep}
+Let $K$ have all degrees odd, and let $\{c_1,a_1\},\dots,\{c_t,a_t\}$ be pairwise disjoint pairs with
+$\mathrm{dist}_K(c_i,a_i)\ge3$. Then $K$ has a Lov\'asz decomposition in which no path contains both
+$c_i$ and $a_i$, for any $i$.
+\end{conjecture}
+
+Conjecture~\ref{conj:msep} is stated in~\cite[\S8]{RD}, with evidence. Its interest is
+Proposition~\ref{prop:reduction}: it would prove Gallai's conjecture for a class of graphs in which the
+even vertices may induce a dense subgraph.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Proposition~\ref{prop:reduction} re-checks the reduction of a Gallai class to MSEP.
+\item Section~\ref{sec:classes} introduces \emph{class separation} (Conjecture~\ref{conj:csep}). The
+vertex set is partitioned into packed sets, and every path should meet every class at most once. MSEP is
+the case of classes of size at most two. Partitions into packed sets are the fibres of locally
+injective homomorphisms, or the colour classes of proper colourings of $K^2$. We prove the conjecture
+for fibres of coverings (Proposition~\ref{prop:cover}).
+\item Section~\ref{sec:merge}: the \emph{leaf merge} (Lemma~\ref{lem:merge}) and two consequences.
+Theorem~\ref{thm:endedge}: in a graph with all degrees odd, any single edge can be prescribed as the
+terminal edge at its end vertex, together with separation of a packed set. Theorem~\ref{thm:caseII}:
+Lov\'asz's Case~II is free for class separation, so CSEP reduces to graphs with exactly one vertex of
+positive even degree.
+\item Section~\ref{sec:caseI}: the remaining case. The step of Lov\'asz's induction at the even vertex
+$z$ succeeds with a trivial Fan chain exactly when some neighbour $u$ of $z$ can be given the terminal
+edge $uz$ (Proposition~\ref{prop:EE}). We prove a certified form of the step (Lemma~\ref{lem:caseI}) and
+a rotation lemma for cycles (Lemma~\ref{lem:rotation}).
+\item Section~\ref{sec:sparse}, Theorem~\ref{thm:sparse}: class separation holds, for arbitrary
+overlapping families of packed sets, when every vertex has at most one neighbour in their union. This
+contains the separation theorem.
+\item Section~\ref{sec:limits} (computational, labelled): the evidence for MSEP and CSEP, and the
+failure of the natural strengthenings of the inductive invariant.
+\item Section~\ref{sec:lean}: the Lean formalisation.
+\end{enumerate}
+
+\section{Preliminaries}\label{sec:prelim}
+
+For a path decomposition $\cD$ and a vertex $v$ with $b_\cD(v)=1$, $Q_v$ is the path of $\cD$ ending at
+$v$. If $v$ is an end of a path $P$, the \emph{terminal edge of $P$ at $v$} is the edge of $P$ at $v$.
+We use Fan's lemma in the form of~\cite[Lemma~3]{RD}.
+
+\begin{lemma}[Fan's lemma with vertex sets~\cite{Fan05,RD}]\label{lem:fan}
+Let $\cD$ be a path decomposition of $K$, let $t\ne u$ be non-adjacent, and write
+$Z(u)=\{w\in N(u): b_\cD(w)=0\}$. If $b_\cD(t)>|Z(u)|$, then $K+tu$ has a path decomposition $\cD^+$
+with $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$ and a bijection $\varphi:\cD\to\cD^+$ such that
+$V(\varphi(Q))=V(Q)$ for every $Q$ except one, $Q_0$, with $V(\varphi(Q_0))=V(Q_0)\cup\{u\}$.
+\end{lemma}
+
+The path $Q_0$ of Lemma~\ref{lem:fan} is the path to which the last edge of the Fan chain is appended.
+It ends at a neighbour of $u$ or at $t$. In the \emph{trivial chain} case, $u\notin V(Q_t)$ for a path
+$Q_t$ ending at $t$; then $\cD^+$ is obtained by appending $tu$ to $Q_t$.
+
+\begin{theorem}[separation theorem for packed sets~\cite{RD}]\label{thm:sep}
+If $K$ has at most one vertex of positive even degree and $X$ is packed, then $K$ has a Lov\'asz
+decomposition in which every path meets $X$ in at most one vertex.
+\end{theorem}
+
+\emph{The leaf graph.} For an edge $xu$ of $K$ let $H=H(K;x,u)$ be $K-xu$ together with a new vertex
+$\ell$ and the edge $u\ell$. Let $f:V(H)\to V(K)$ be the identity on $V(K)$ and send $\ell$ to $x$. In
+$H$ the vertex $x$ has degree $d_K(x)-1$, the leaf $\ell$ has degree one, and all other degrees are
+those of $K$. This is the graph of Lov\'asz's Case~II.
+
+\section{The reduction to a Gallai class}\label{sec:reduction}
+
+For a graph $G$ let $\Ev$ be its set of vertices of positive even degree. If $N$ is a perfect matching
+of $G[\Ev]$, an \emph{orientation} of $N$ names one end $a_i$ (the head) and the other $c_i$ (the tail)
+of each edge $c_ia_i$ of $N$. A path decomposition of $G$ \emph{realises} the orientation if every head
+is an end of exactly two paths, every tail of none, and every vertex of odd degree of exactly one.
+
+\begin{proposition}\label{prop:reduction}
+Let $G$ be a graph without isolated vertices of order $n$, let $N$ be a perfect matching of $G[\Ev]$,
+and let $F=G-N$.
+\begin{enumerate}
+\item[(a)] Every vertex has odd degree in $F$.
+\item[(b)] For $ca\in N$, $\mathrm{dist}_F(c,a)\ge3$ if and only if $ca$ lies in no triangle of $G$.
+\item[(c)] If $F$ has a Lov\'asz decomposition in which no path contains both ends of an edge of $N$, then
+every orientation of $N$ is realised by a path decomposition of $G$ into $n/2$ paths. In particular
+$G$ satisfies Gallai's bound $\lceil n/2\rceil$.
+\end{enumerate}
+So Conjecture~\ref{conj:msep} implies Gallai's conjecture, with every orientation of $N$ realisable, for
+every graph whose even vertices induce a subgraph having a perfect matching none of whose edges lies in
+a triangle.
+\end{proposition}
+
+\begin{proof}
+(a) Every vertex of $\Ev$ loses exactly one edge, and the other vertices keep their odd degree.
+
+(b) As $G$ is simple, $ca\notin E(F)$, so $\mathrm{dist}_F(c,a)\ge2$, with equality iff some $w$ is
+adjacent in $F$ to $c$ and $a$; then $cwa$ is a triangle of $G$. Conversely, if $caw$ is a triangle of
+$G$, the edges $cw$ and $aw$ are not in the matching $N$, which already covers $c$ and $a$ by $ca$; so
+they lie in $F$.
+
+(c) Let $\cD$ be the decomposition of $F$. By (a) every vertex is the end of exactly one path of $\cD$,
+so $|\cD|=n/2$, and $n$ is even. Fix an orientation. For each path $Q\in\cD$ and each end $s$ of $Q$
+that is a tail $c_i$, attach the edge $c_ia_i$ at $s$. Since $Q$ contains $c_i$, it does not contain
+$a_i$. If both ends of $Q$ are tails $c_i$ and $c_j$, then $i\ne j$, the heads $a_i\ne a_j$ are both
+off $Q$, and $a_ic_iQc_ja_j$ is a path. So every extended $Q$ is a path. Every edge of $N$ is attached
+exactly once, at the unique path ending at its tail. A tail loses its only end. A head keeps its end in
+$\cD$ and gains the end of the attached edge. A vertex of odd degree of $G$ keeps its single end. The
+number of paths is $|\cD|=n/2$.
+\end{proof}
+
+\begin{remark}[on novelty]\label{rem:novelty}
+Gallai's conjecture is open for Eulerian graphs; it is known for maximum degree at most four~\cite{FK}
+and five~\cite{BP19}, and~\cite{CW25} proves $3n/5$ for Eulerian graphs whose triangles are pairwise at
+distance at least three. Pyber~\cite{Pyb96} (even subgraph a forest), Fan~\cite{Fan05} (blocks of the
+even subgraph triangle-free with maximum degree at most three) and Botler and Sambinelli~\cite{BS21}
+impose sparsity on $G[\Ev]$. The class of Proposition~\ref{prop:reduction} imposes only a perfect
+matching avoiding triangles. It contains every triangle-free Eulerian graph with a perfect matching, and
+graphs whose even subgraph has large degrees and many cycles. We found no source treating it.
+\end{remark}
+
+\section{Class separation}\label{sec:classes}
+
+\begin{definition}\label{def:classes}
+A \emph{class family} of $K$ is a family $\cA$ of pairwise disjoint packed sets (\emph{classes}). A path
+decomposition is \emph{rainbow} for $\cA$ if every path meets every class in at most one vertex. For a
+vertex $v$, $\cA(v)$ denotes the class containing $v$, if any.
+\end{definition}
+
+\begin{conjecture}[CSEP, class separation]\label{conj:csep}
+If $K$ has at most one vertex of positive even degree and $\cA$ is a class family of $K$, then $K$ has
+a Lov\'asz decomposition that is rainbow for $\cA$.
+\end{conjecture}
+
+For classes of size at most two and all degrees odd this is Conjecture~\ref{conj:msep}. For one class it is
+Theorem~\ref{thm:sep}. Adding singleton classes changes nothing, so we may take $\cA$ to be a partition of
+$V(K)$.
+
+\emph{Reformulations.} A partition of $V(K)$ into packed sets is the same as the partition into fibres of
+a map $\varphi:V(K)\to V(L)$ that is a homomorphism onto a multigraph $L$ (the quotient) and is injective
+on every closed neighbourhood. These are the \emph{locally injective homomorphisms}, or partial covers.
+Equivalently, the classes are the colour classes of a proper colouring of the square $K^2$. So
+Conjecture~\ref{conj:csep} says: \emph{for every proper colouring of $K^2$, some Lov\'asz decomposition
+of $K$ has all its paths rainbow.} Paths are automatically rainbow on vertices within distance two of each
+other, and the conjecture asks that the colouring never forces two far-apart vertices of the same colour
+onto one path.
+
+\begin{remark}\label{rem:overlap}
+For overlapping families of packed sets the statement is false. The union of three perfect pairings at
+distance three of a cubic graph of order $12$ can admit no rainbow Lov\'asz decomposition
+(Section~\ref{sec:limits}). Disjointness matters.
+\end{remark}
+
+\begin{proposition}[covers]\label{prop:cover}
+Let $\varphi:K\to L$ be a covering map, that is, a surjective homomorphism that maps $N(v)$ bijectively
+onto $N(\varphi(v))$ for every $v$. If every vertex of $L$ has odd degree, then the fibres of $\varphi$ form
+a class family of $K$, and $K$ has a Lov\'asz decomposition that is rainbow for it.
+\end{proposition}
+
+\begin{proof}
+Two vertices of a fibre are not adjacent, since $L$ has no loops. They have no common neighbour $w$,
+since $\varphi$ is injective on $N(w)$. So fibres are packed. Let $\cD_L$ be a Lov\'asz decomposition of
+$L$ (Theorem~\ref{thm:lovasz}). For a path $P=p_0p_1\cdots p_k$ of $\cD_L$ and $v\in\varphi^{-1}(p_0)$
+there is a unique walk $v=v_0v_1\cdots v_k$ with $\varphi(v_i)=p_i$: $v_{i+1}$ is the unique neighbour of
+$v_i$ in $\varphi^{-1}(p_{i+1})$. Its vertices are distinct, since their images are, so it is a path, and it
+meets every fibre at most once. Every edge $vw$ of $K$ lies on exactly one such lift: $\varphi(v)\varphi(w)$
+lies on exactly one path $P$ of $\cD_L$, and the lift of $P$ through $v$ in the direction of $w$ is
+determined. The lifts of $P$ give a bijection between the fibres over its two ends. Each vertex $v$ of $K$
+is therefore the end of exactly one lift, of the path of $\cD_L$ ending at $\varphi(v)$. As
+$d_K(v)=d_L(\varphi(v))$ is odd, the lifts form a Lov\'asz decomposition of $K$.
+\end{proof}
+
+For a $2$-fold covering $K\to L$ of a graph with all degrees odd, Propositions~\ref{prop:cover}
+and~\ref{prop:reduction} give Gallai's bound, with every orientation realisable, for $K$ plus the
+matching of fibres. This easy class shows that Conjecture~\ref{conj:csep} interpolates between covers,
+where it is a lifting statement, and Theorem~\ref{thm:sep}.
+
+\section{The leaf merge}\label{sec:merge}
+
+\begin{lemma}[leaf merge]\label{lem:merge}
+Let $xu$ be an edge of $K$, let $H=H(K;x,u)$ and $f$ be as in Section~\ref{sec:prelim}, and let
+$\cD_H$ be a path decomposition of $H$ in which no path contains both $x$ and $\ell$. Then
+$\cD=\{f(P):P\in\cD_H\}$ is a path decomposition of $K$, $V(f(P))=f(V(P))$ for every $P$,
+$b_\cD(x)=b_{\cD_H}(x)+b_{\cD_H}(\ell)$, and $b_\cD(w)=b_{\cD_H}(w)$ for $w\ne x$.
+\end{lemma}
+
+\begin{proof}
+The map $f$ sends the edge $u\ell$ to $ux$ and fixes the other edges of $H$, which are the edges of
+$K-xu$. So $f$ is a homomorphism $H\to K$ that is a bijection on edges. It identifies only $x$ and $\ell$,
+so it is injective on $V(P)$ for every $P\in\cD_H$, and $f(P)$ is a path with the same number of edges,
+whose ends are the images of the ends of $P$. The images partition $E(K)$, and the end counts are as
+stated.
+\end{proof}
+
+\begin{lemma}\label{lem:packedlift}
+Let $A$ be packed in $K$. Then $A$ is packed in $H$ if $x\notin A$, and $A\cup\{\ell\}$ is packed in $H$
+if $x\in A$.
+\end{lemma}
+
+\begin{proof}
+$H-\ell$ is a subgraph of $K$, so two vertices of $A$ remain at distance at least three. Let $x\in A$
+and $a\in A$. The only neighbour of $\ell$ is $u$, and $u\notin A$ since $u$ is adjacent to $x\in A$. So
+$\ell\not\sim a$. A common neighbour of $\ell$ and $a$ would be $u$, with $ua\in E(H)$. Then $a\ne x$, as
+$xu\notin E(H)$, and $u$ would be a common neighbour of $x$ and $a$ in $K$, which is impossible.
+\end{proof}
+
+\begin{theorem}[prescribed end edge]\label{thm:endedge}
+Let $K$ have no vertex of positive even degree, let $X$ be packed, let $x\in X$, and let $xu\in E(K)$.
+Then $K$ has a Lov\'asz decomposition in which every path meets $X$ at most once and in which the path
+ending at $x$ has terminal edge $xu$. In particular (take $X=\{x\}$), every edge $xu$ is the terminal
+edge at $x$ of some Lov\'asz decomposition.
+\end{theorem}
+
+\begin{proof}
+In $H=H(K;x,u)$ only $x$ can have positive even degree, namely $d_K(x)-1$. By
+Lemma~\ref{lem:packedlift}, $X\cup\{\ell\}$ is packed in $H$. Theorem~\ref{thm:sep} gives a Lov\'asz
+decomposition $\cD_H$ of $H$ in which every path meets $X\cup\{\ell\}$ at most once; in particular no
+path contains $x$ and $\ell$. Let $\cD$ be as in Lemma~\ref{lem:merge}. Then
+$b_\cD(x)=(d_K(x)-1\bmod2)+1=1$, as $d_K(x)$ is odd, and $b_\cD(w)=d_K(w)\bmod2$ for $w\ne x$; so $\cD$ is a
+Lov\'asz decomposition. A path $f(P)$ meets $X$ in $f(V(P)\cap(X\cup\{\ell\}))$, so at most once. The
+path $P_\ell$ of $\cD_H$ ending at the leaf contains its only edge $u\ell$. So $f(P_\ell)$ ends at $x$ and
+contains $ux$, which is its terminal edge at $x$ because $x$ occurs on it once.
+\end{proof}
+
+Theorem~\ref{thm:endedge} is the counterpart of the leaf trick by which~\cite{RD} proves $L_1$. There a
+leaf is attached at $c$ and separated from $a$. Here an edge is detached into a leaf, which is separated
+from its old end and merged back. We did not find Theorem~\ref{thm:endedge} in the literature.
+Prescribing end edges at several vertices of a packed set at once is open
+(Question~\ref{q:pe}).
+
+\begin{theorem}[Case~II is free]\label{thm:caseII}
+Let $K$ have no vertex of positive even degree, let $\cA$ be a class family of $K$, and let $xu\in E(K)$.
+In $H=H(K;x,u)$ let $\cA_H$ consist of the classes $A\in\cA$ with $x\notin A$, together with
+$\cA(x)\cup\{\ell\}$ if $x$ lies in a class, and $\{x,\ell\}$ otherwise. Then $\cA_H$ is a class family
+of $H$, and if $H$ has a Lov\'asz decomposition rainbow for $\cA_H$, then $K$ has one rainbow for $\cA$.
+Consequently, Conjecture~\ref{conj:csep} for all graphs with exactly one vertex of positive even degree
+implies it for all graphs with none.
+\end{theorem}
+
+\begin{proof}
+The sets of $\cA_H$ are packed by Lemma~\ref{lem:packedlift} and pairwise disjoint, since $\ell$ lies in
+exactly one of them. Let $\cD_H$ be rainbow for $\cA_H$. Some class of $\cA_H$ contains $x$ and $\ell$, so
+no path contains both, and Lemma~\ref{lem:merge} applies. The end counts are those of the proof of
+Theorem~\ref{thm:endedge}. A path $f(P)$ meets a class $A\in\cA$ in $f(V(P)\cap A')$, where $A'$ is the
+class of $\cA_H$ corresponding to $A$; so at most once. For the consequence: if some vertex $x$ has degree
+at least three, $H(K;x,u)$ has exactly one vertex of positive even degree, namely $x$. Otherwise every
+degree is at most one, every path of every decomposition is a single edge, and a single edge meets a
+packed set at most once.
+\end{proof}
+
+\section{The Case~I lemma}\label{sec:caseI}
+
+By Theorem~\ref{thm:caseII}, Conjecture~\ref{conj:csep} comes down to graphs $K$ with exactly one vertex
+$z$ of positive even degree. Lov\'asz's induction deletes an edge $uz$, decomposes $K'=K-uz$ (whose only
+positive even vertex is $u$), and restores $uz$ by Lemma~\ref{lem:fan} with target $u$. The path that
+gains $u$ ends at $z$ or at a neighbour of $u$, and it may contain another vertex of the class of $u$.
+When $u$ is in no class this is harmless, and this is the proof of Theorem~\ref{thm:sep}. When all
+vertices are in non-trivial classes, as for MSEP with a perfect pairing, every target is in a class.
+
+\begin{proposition}[Case~I is an end-edge prescription]\label{prop:EE}
+Let $K$ have exactly one vertex $z$ of positive even degree, let $u\in N(z)$, $K'=K-uz$, and let $\cA$ be
+a class family of $K$. The following are equivalent.
+\begin{enumerate}
+\item[(i)] $K$ has a Lov\'asz decomposition, rainbow for $\cA$, in which $uz$ is the terminal edge at $u$
+of the path ending at $u$.
+\item[(ii)] $K'$ has a Lov\'asz decomposition, rainbow for $\cA$, in which the path ending at $z$ avoids
+$u$ and every vertex of $\cA(u)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+In $K'$ the vertex $z$ is odd and $u$ is even or isolated. Given (ii), append $uz$ to the path $Q_z$ of
+$K'$ ending at $z$. This is a path because $u\notin Q_z$; $z$ loses its end and $u$ gains one, so the
+result is a Lov\'asz decomposition of $K$. It meets $\cA(u)$ only in $u$ and every other class as $Q_z$
+did. Given (i), let $P=Rzu$ be the path ending at $u$ with terminal edge $uz$; $z$ is interior, as it
+has no end. Replacing $P$ by $Rz$ gives a Lov\'asz decomposition of $K'$: $u$ loses its only end and $z$
+gains one. $Rz$ is the path ending at $z$; it avoids $u$, and it avoids $\cA(u)$ because $P$ is rainbow.
+\end{proof}
+
+So Lov\'asz's induction proves Conjecture~\ref{conj:csep} as soon as, at every graph with one positive even
+vertex $z$, \emph{some} neighbour $u$ satisfies (i). We state the form we tested.
+
+\begin{conjecture}[EE, end edge at the even vertex]\label{conj:EE}
+If $K$ has exactly one vertex $z$ of positive even degree and $\cA$ is a class family, then for every
+$u\in N(z)$, $K$ has a Lov\'asz decomposition, rainbow for $\cA$, in which $uz$ is the terminal edge at $u$.
+\end{conjecture}
+
+Conjecture~\ref{conj:EE} implies Conjecture~\ref{conj:csep} directly for one positive even vertex, and then
+for none by Theorem~\ref{thm:caseII}. Compare Theorem~\ref{thm:endedge}, which is the analogue without an
+even vertex and is a theorem. Condition (ii) is an $L_1$-type statement: the end path of $z$ must avoid a
+set at distance at least two from $z$ in $K'$ (as $z\sim u$ in $K$ and the other vertices of $\cA(u)$ are
+at distance at least three from $u$). The leaf trick that proves $L_1$ in~\cite{RD}
+attaches a leaf at $z$, which here would create a second even vertex; and $L_1$ is false in graphs with
+an extra even vertex adjacent to the avoided vertex~\cite[E20]{RD}. In (ii) the avoided set contains the
+even vertex $u$ itself, and we found no failure (Section~\ref{sec:limits}).
+
+The next lemma certifies the step when distances allow it.
+
+\begin{lemma}[certified Case~I]\label{lem:caseI}
+Let $K$, $z$, $u$, $K'$ be as in Proposition~\ref{prop:EE}, and let $\cA$ be a family of packed sets of $K$
+(not necessarily disjoint). Suppose $K'$ has a Lov\'asz decomposition $\cD'$ meeting $\{u,z\}$ at most once
+per path, meeting $A\cup\{z\}$ at most once per path for every $A\in\cA$ containing $u$, and meeting every
+other $A\in\cA$ at most once per path. Then appending $uz$ to the path of $\cD'$ ending at $z$ gives a
+Lov\'asz decomposition of $K$ meeting every $A\in\cA$ at most once per path.
+\end{lemma}
+
+\begin{proof}
+Let $Q$ be the path of $\cD'$ ending at $z$; $u\notin Q$ because $Q$ meets $\{u,z\}$ only in $z$. The end
+counts are as in Proposition~\ref{prop:EE}. The paths other than $Q+zu$ are unchanged. Let $A\in\cA$. If
+$u\notin A$, the path $Q+zu$ meets $A$ as $Q$ does. If $u\in A$, then $z\notin A$ ($z\sim u$), and $Q$ meets
+$A\cup\{z\}$ only in $z$, so $Q\cap A=\emptyset$ and $Q+zu$ meets $A$ only in $u$.
+\end{proof}
+
+The hypothesis of Lemma~\ref{lem:caseI} is a rainbow condition for the family in which $z$ has joined the
+class of $u$. It is meaningful only if $\cA(u)\cup\{z\}$ and $\{u,z\}$ are packed in $K'$, that is, if $z$
+is at distance at least three in $K'$ from $u$ and from every vertex of $\cA(u)$. The family is no longer
+disjoint, and the induction that uses Lemma~\ref{lem:caseI} at every step must carry overlapping families;
+these grow along the trails of Lov\'asz's induction, and we show in Section~\ref{sec:limits} that the
+distance conditions eventually fail. The same holds for the following move, which never creates an even
+vertex.
+
+\begin{lemma}[rotation]\label{lem:rotation}
+Let $K$ have all degrees odd, let $C=c_0c_1\cdots c_{r-1}c_0$ be a cycle, and let $K_C=K-E(C)$ (all degrees
+odd). Indices are modulo $r$. Let $\cD_C$ be a Lov\'asz decomposition of $K_C$, rainbow for a class family
+$\cA$, such that for every $i$ the path $Q_i$ ending at $c_i$ avoids $c_{i+1}$ and $\cA(c_{i+1})$, and such
+that $\cA(c_{i+1})\ne\cA(c_{j+1})$ or both are undefined whenever $Q_i=Q_j$ with $i\ne j$. Then extending
+every $Q_i$ by the edge $c_ic_{i+1}$ at $c_i$ gives a Lov\'asz decomposition of $K$, rainbow for $\cA$.
+\end{lemma}
+
+\begin{proof}
+Each $c_i$ is an end of exactly one path $Q_i$ of $\cD_C$. Extending $Q_i$ at $c_i$ by $c_ic_{i+1}$ gives a
+path, since $c_{i+1}\notin Q_i$. If $Q_i=Q_j$ for some $j\ne i$, the path is extended at both ends by
+$c_{i+1}\ne c_{j+1}$, both off $Q_i$, so it is still a path. Every edge of $C$ is used once. The vertex $c_i$
+loses its end and gains the end of the extension of $Q_{i-1}$, so it still has one; other vertices are
+unchanged. The extension of $Q_i$ meets $\cA(c_{i+1})$ only in $c_{i+1}$, and when both ends are extended
+the two added vertices lie in different classes, so every extended path is rainbow.
+\end{proof}
+
+A leaf-to-leaf path $p_0p_1\cdots p_m$ admits the same treatment, with $Q_{p_i}$ extended for $1\le i\le
+m-1$ and $p_0p_1$ added as a new path. The conditions of Lemma~\ref{lem:rotation} can be certified, as in
+Lemma~\ref{lem:caseI}, by letting $c_i$ join the class of $c_{i+1}$ in $K_C$.
+
+\section{Sparse classes}\label{sec:sparse}
+
+\begin{theorem}[sparse class separation]\label{thm:sparse}
+Let $K$ have at most one vertex of positive even degree, and let $\cA$ be a family of packed sets of $K$,
+possibly overlapping, with union $X$, such that every vertex of $K$ has at most one neighbour in $X$. Then
+$K$ has a Lov\'asz decomposition meeting every $A\in\cA$ at most once per path.
+\end{theorem}
+
+If $X$ is packed, every vertex has at most one neighbour in $X$, so Theorem~\ref{thm:sparse} with
+$\cA=\{X\}$ is Theorem~\ref{thm:sep}.
+
+\begin{proof}
+Induction on $\nu(K)=2|E(K)|+[\text{no vertex of }K\text{ has positive even degree}]$, following
+Lov\'asz's cases. The hypotheses pass to subgraphs, and to the graph $H(K;x,u)$ when $x\notin X$: the new
+leaf is not in $X$, and $u$ trades the neighbour $x\notin X$ for $\ell\notin X$. Distances do not decrease,
+so the sets of $\cA$ stay packed. The key observation, as in~\cite{RD}, is that a Fan transfer with
+target outside $X$ preserves the conclusion, since by Lemma~\ref{lem:fan} only one path changes its vertex
+set, by the target.
+
+\emph{Case I: a vertex $z$ of positive even degree.} It has at least two neighbours and at most one in
+$X$, so some $u\in N(z)\setminus X$. In $K-uz$ the only possible positive even vertex is $u$. By induction it
+has a decomposition $\cD'$ as required. Every neighbour of $u$ in $K-uz$ is odd and has one end, so
+$Z(u)=\emptyset<1=b_{\cD'}(z)$, and Lemma~\ref{lem:fan} restores $uz$ with target $u\notin X$.
+
+\emph{Case II: no positive even vertex, and some $x\notin X$ with $d(x)\ge3$.} Take $u\in N(x)$ and
+$H=H(K;x,u)$, in which $x$ is the only positive even vertex. By induction $H$ has a decomposition $\cD_H$
+as required. Delete the leaf: the resulting decomposition $\cD'$ of $K-xu$ has $b_{\cD'}(u)\in\{0,2\}$ and
+the right ends elsewhere, and its paths lie in those of $\cD_H$. If $b_{\cD'}(u)=0$ add the path $ux$, which
+meets $X$ at most in $u$ because $x\notin X$. If $b_{\cD'}(u)=2$, every neighbour of $x$ in $K-xu$ has an
+end, and Lemma~\ref{lem:fan} with $t=u$ and target $x\notin X$ restores $xu$.
+
+\emph{Case III: no positive even vertex, every vertex outside $X$ of degree at most one, and some vertex
+$v\notin X$ of degree one.} Let $vw$ be its edge. $K-vw$ has at most the positive even vertex $w$; decompose
+it by induction and add the path $vw$.
+
+\emph{Case IV: every vertex outside $X$ is isolated.} Then every edge has both ends in $X$, and since every
+vertex has at most one neighbour in $X$, every degree is at most one. Every path of any Lov\'asz
+decomposition is a single edge $ab$, which meets a packed set at most once because $a\sim b$.
+\end{proof}
+
+\begin{corollary}\label{cor:sparse}
+Let $G$ and $N$ be as in Proposition~\ref{prop:reduction}, with no edge of $N$ in a triangle, and suppose
+every vertex has at most one neighbour in $\Ev$ in the graph $F=G-N$. Then every orientation of $N$ is
+realisable. Moreover any family of packed subsets of $\Ev$ (for example several pairings at distance three)
+can be separated simultaneously.
+\end{corollary}
+
+For Gallai's bound alone Corollary~\ref{cor:sparse} is not new: the even subgraph has maximum degree at most
+two and Fan's theorem applies. It is new as a statement about all orientations and about overlapping
+families. In Theorem~\ref{thm:sparse} the Fan targets are always outside $X$; when every vertex lies in a
+class this is impossible, which is the obstruction of Section~\ref{sec:caseI}.
+
+\section{Evidence and limits (computational)}\label{sec:limits}
+
+Nothing in Sections~\ref{sec:intro}--\ref{sec:sparse} depends on this section. The computations used the
+exact oracle \texttt{tools/route\_ext.c} (query \texttt{S}), a dedicated checker for cubic graphs, and a
+randomised constructive search; scripts are in \texttt{manuscripts/multi-sep/scripts}, and the log is
+experiment E21 of \texttt{research/experiments.md}.
+
+\subsection*{MSEP}
+The cubic checker chooses an end edge at every vertex by depth-first search, keeping path components
+with union--find and vertex masks, and was cross-checked against an independent enumerator on all cubic
+graphs of order ten (285 queries, including 12 failures at distance two).
+\begin{center}
+\begin{tabular}{rrrl}
+\toprule
+order & connected cubic graphs & perfect pairings at distance $\ge3$ & separating decomposition\\
+\midrule
+10 & 19 & 54 (all) & all\\
+12 & 85 & 2{,}846 (all) & all\\
+14 & 509 & 269{,}966 (all) & all\\
+16 & 4{,}060 & 36{,}024{,}731 (all) & all\\
+18 & 41{,}301 & 8{,}260{,}200 (200 random per graph) & all\\
+\bottomrule
+\end{tabular}
+\end{center}
+For random graphs with all degrees odd (orders $12$--$20$, edge densities up to $0.5$, maximal pairings at
+distance $\ge3$) no failure occurred. Instances left undecided by the budgeted oracle were all certified
+by the randomised search; so were random $5$-regular graphs of orders $30$ and $40$ with perfect pairings.
+In the hardest instances we found, random runs of Lov\'asz's induction separate in under $7\%$ of cases
+(cubic) or almost never (dense random graphs), and a separating decomposition still exists.
+
+\subsection*{CSEP}
+No failure: classes of size three (399 instances, cubic, orders $12$--$16$); greedy maximal classes (orders
+$14$, $18$); and \emph{minimum} proper colourings of the square (cubic orders $10$, $12$, $14$: $57$,
+$170$, $150$ instances, with $4$ to $10$ colours; random graphs with all degrees odd, orders $10$, $12$:
+$100$ each). Unions of two perfect pairings (each vertex in two pairs) never failed (626 instances); unions
+of three can fail (2 of 228 at order $12$), so Remark~\ref{rem:overlap} is sharp in this sense.
+
+\subsection*{The Case~I lemma}
+Conjecture~\ref{conj:EE} held in every decided instance: $869$ pairs $(z,u)$ without classes and $788$
+with pairings (random graphs, orders $8$--$15$; $51$ undecided within the search budget), and $1{,}652$ Case~I configurations obtained from cubic graphs with
+perfect pairings by one Case~II step (orders $12$, $14$, $16$), each for every neighbour $u$.
+
+\subsection*{What does not work}
+\begin{itemize}
+\item \emph{The plain hypothesis.} In about half of the Case~I configurations tested, no neighbour $u$ of
+$z$ is such that every separating decomposition of $K-uz$ yields a separating decomposition of $K$ by
+Fan's lemma. Most failing chains are trivial: the end path of $z$ contains the partner of $u$. So the
+inductive hypothesis must be strengthened.
+\item \emph{Strengthenings that are false.} (a) End paths avoid the partners of all neighbours: fails in
+182 of 228 and 209 of 398 instances (cubic, orders 12, 14). (b) One forbidden class for every vertex: fails
+in 114 of 199. (c) The even vertex as the centre of a path of length two: fails in 19 of 500. (d) Every
+neighbour of the even vertex ends a path through it: fails in 39 of 302. (e) The end path inside the
+closed neighbourhood: fails, already when the vertex is a leaf at the even vertex. (f) For cubic graphs,
+decompositions into paths of length three built from a perfect matching and an oriented $2$-factor
+(Kotzig's construction~\cite{Kot57}) do not always suffice: 2 failures in 228 at order 12.
+\item \emph{Certified moves.} An induction using only Theorem~\ref{thm:caseII}, Lemma~\ref{lem:caseI} and
+Lemma~\ref{lem:rotation} (exhaustive search over all choices) fails on small graphs: Case~I/II
+certificates fail for 13 of 24 instances at order 10, for 3 of 63 triangle-free and 3 of 15 girth-five
+instances at order 12, but for none of 108 girth-five instances at order 14. Rotation fails for 1 of 24 at
+order 10 and 14 of 152 at order 12. On random $5$-regular graphs of order $30$ a randomised search for
+Case~I/II certificates found none in ten instances, although separating decompositions exist. Local certificates need room at distance three, which dense or small graphs
+do not have; a proof of MSEP must use information that is not local.
+\item \emph{Several prescribed end edges.} Prescribing the terminal edge at every vertex of a packed set of
+up to four vertices never failed ($540$ instances); compare Question~\ref{q:pe}.
+\end{itemize}
+
+\section{Formalisation}\label{sec:lean}
+
+The following are proved in Lean~4 with Mathlib in \texttt{lean/GallaiLean/MultiSep.lean}, sorry-free; each
+depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. They build on
+\texttt{Separation.lean} (\texttt{separation\_set}, Theorem~\ref{thm:sep}) and \texttt{FanSupport.lean}.
+\begin{itemize}
+\item \texttt{PathDecomp.pushOn}: a decomposition pushed along a vertex map injective on every path and on
+edges. \texttt{leaf\_merge}: Lemma~\ref{lem:merge}.
+\item \texttt{lovasz\_endEdge\_set}, \texttt{lovasz\_endEdge}: Theorem~\ref{thm:endedge}.
+\item \texttt{ClassFam}, \texttt{ClassSep}, \texttt{caseII\_lift}, \texttt{classSep\_allOdd}:
+Theorem~\ref{thm:caseII}.
+\item \texttt{classSep\_caseI}: Lemma~\ref{lem:caseI}.
+\item \texttt{SparseFam}, \texttt{separation\_sparse}: Theorem~\ref{thm:sparse}, by the same case structure as
+\texttt{separation\_set}, with a new Case~IV.
+\end{itemize}
+Not formalised: Propositions~\ref{prop:reduction}, \ref{prop:cover} and~\ref{prop:EE}, and
+Lemma~\ref{lem:rotation}. Proposition~\ref{prop:reduction}(c) is an instance of the route-appending lemma
+\texttt{RouteSystem.append\_routes} of the route-descent formalisation, with single-edge routes.
+
+\section{Open problems}\label{sec:open}
+
+\begin{question}\label{q:EE}
+Prove Conjecture~\ref{conj:EE}, even without classes: if $z$ is the only vertex of positive even degree
+and $u\in N(z)$, is $uz$ the terminal edge at $u$ of some Lov\'asz decomposition? By
+Proposition~\ref{prop:EE} this is $L_1$ at the even vertex, for the avoided set $\{u\}$.
+\end{question}
+
+\begin{question}\label{q:cubic}
+Prove Conjecture~\ref{conj:msep} for cubic graphs (all orientations for $4$-regular graphs whose
+perfect matching avoids triangles), or for two pairs.
+\end{question}
+
+\begin{question}[prescribed end edges on a packed set]\label{q:pe}
+If all degrees are odd, $X$ is packed and an edge $xu_x$ is chosen at every $x\in X$, is there a Lov\'asz
+decomposition in which every $xu_x$ is the terminal edge at $x$? Theorem~\ref{thm:endedge} is the case
+$|X|=1$.
+\end{question}
+
+\begin{question}\label{q:csep}
+Is Conjecture~\ref{conj:csep} true? Equivalently: for every proper colouring of the square of a graph
+with at most one vertex of positive even degree, is there a Lov\'asz decomposition into rainbow paths?
+\end{question}
+
+\begin{thebibliography}{99}
+\bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
+maximum degree, Discrete Math.\ 342 (2019) 1293--1299.
+\bibitem{BS21} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph
+Theory 97 (2021) 161--184.
+\bibitem{CW25} Y.~Chu and J.~Wang, Path decompositions of Eulerian graphs, arXiv:2510.12806 (2025).
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
+117--125.
+\bibitem{FK} O.~Favaron and M.~Kouider, Path partitions and cycle partitions of Eulerian graphs of maximum
+degree~4, Studia Sci.\ Math.\ Hungar.\ 23 (1988) 237--244.
+\bibitem{Kot57} A.~Kotzig, Z te\'orie kone\v{c}n\'ych pravideln\'ych grafov tretieho a \v{s}tvrt\'eho
+stup\v{n}a, \v{C}asopis Pest.\ Mat.\ 82 (1957) 76--92.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, New York, 1968, 231--236.
+\bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, J.~Combin.\ Theory Ser.~B 66
+(1996) 152--159.
+\bibitem{RD} J.~Williams, Route descent: transversal realisability, minimum $T$-joins, and Lov\'asz
+decompositions that separate two vertices, manuscript (\texttt{manuscripts/route-descent}), 2026.
+\end{thebibliography}
+\end{document}
