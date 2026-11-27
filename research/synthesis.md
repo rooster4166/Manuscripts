@@ -575,19 +575,20 @@ The project lead forwarded three claims from another agent and asked that each b
    - Step 1 is unchanged. Step 2 is Lemma 4.1 on D1. Conditions (i) and (ii) transfer from Q0 to D1 because every D1 path is a subpath of a unique Q0 path.
    - Computation: 192/192 parity checks hold, 253,834 lifts all valid (T1), and 84 instances have a tree component with ≥ 3 vertices.
    - Manuscript: direct-test1, Thm 4.2.
-   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 4.4) is formally weaker than the triangle base.
+   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 4.5) is formally weaker than the triangle base.
    - Lean has only the matching case (`test1At_of_triangleBase`).
 3. **"A25 (L1*) gives the single-pair OR unconditionally": FALSE as argued.**
    - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
    - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
    - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
-   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.5.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.6.
 
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 3.1 these are single-vertex avoidances plus a sibling condition.
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
 
 **Addendum (18:45).**
 - **The forest lift is reversible.** For fixed (r, w, Φ, rooting), the forest base holds iff J − z has a (T1) decomposition at r in which every Φ-edge p(v)v is the end edge of its path at p(v). The proof is end counting; the lower bounds sum to exactly 2k (sent to triangle-base for the tex).
-  - So Conj 3.4 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
+  - So Conj 4.5 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
   - It is still weaker than the terminal-matching form.
 - **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
   - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
