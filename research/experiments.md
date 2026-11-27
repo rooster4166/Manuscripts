@@ -1414,6 +1414,16 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - The 6 uncertified roots of the endZ P3 row belong to one graph, `MV~~Nv{f~|q|~\lj_`, where every search hit the budget (see (C)).
 - "failures" counts bases whose executed construction did not verify. There were none in any mode: every base satisfying the theorem's conditions gave a verified star-terminal Lovász decomposition of J.
 
+**(B′) Exhaustive, order 9** (`relabel.py` on `terminal-matching/scripts/out/d6_9.g6`; exact search, no budget).
+- The 1,819 3-connected J of order 9 with z the only even vertex and d(z) = 6 include 28 with a dense core: 2 ∅, 6 K2, 8 P3, 5 K3, 7 C4.
+- `dense.py lean 1 0`: all 168 roots certified at the first labelling, through (E7).
+- `labstats.py 0`, over all 42,432 (root, labelling) pairs with the chain edges:
+  - 42,384 have an (E7) base and 24 more an (E6) base;
+  - 24 (all C4) have none;
+  - every root has a base for ≥ 96.7% of its labellings;
+  - 0 failures of executed constructions.
+- The random sparse graphs of orders 11–17 of E24(J) have no dense core.
+
 **(C) Undecided searches.** Dense residual graphs make many searches hit the budget. On average a root needs 3–25 labellings, depending on shape; ∅ and P3 are the hardest. No search returned NONE (a proved absence of a base) for a labelling that was later needed.
 
 **Verdict.**
