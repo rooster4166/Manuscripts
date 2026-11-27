@@ -220,3 +220,9 @@ The first test is **pairing-guided descent**: for the Thm 21 pairing, can one al
 - Thm 21 passed the author session's own adversarial review: about 50k graphs of orders 8–12, with no gap found. Audit A13, which is independent of the author, is running.
 - **Evidence caveat.** At n ≤ 8, and in the random n = 10 sample, *every* half-set of every δ ≥ 3 graph is realisable (19,422 of 19,422 at n = 8). So the small-order evidence for EMM₃ was vacuous: cuts never bind there. The only informative δ ≥ 3 data are the two-blob and bottleneck families (282 cut-excluded half-sets, 0 failures).
 - The conditional reduction "EMM₃ at δ ≥ 5 + Thm 21 ⇒ every Gallai failure is an odd SP 10.16(1) witness" is correct as an implication. It is moot, given §12: EMM₃ is expected to fail via gadgets.
+
+## 14. EMM₃ is false as well (emm3-gadgets session, 2026-11-27; verified)
+
+The gadget D is two K4 blocks plus vertices p and q, with ports p and b₀. It is **joined-forcing**: every realisation joins its two ports through a single segment. The host is G = D + K_{4,4} + {s p, s b₀}, with n = 18, m = 36, **minimum degree 3** and edge-connectivity 2. The half-set M = V(K_{4,4}) is cut-feasible, by three implementations and the max-flow form. It is not realisable, by the gluing argument; D's forcing property was checked by the oracle and by enumerating all 16 Hamiltonian decompositions of D′. Verification: `manuscripts/endpoint-min-max/scripts/emm3_counterexample.py` (9 s).
+
+**Conclusion.** Cut conditions do not characterise realisable half-sets at any minimum degree tested. With §12, realisability of a prescribed half-set is NP-hard; a forcing-gadget version of the Kotzig reduction should give hardness at δ ≥ 3, which the gadgets session is writing up. The characterisation direction is closed. The existential-descent pivot of §13 stands.
