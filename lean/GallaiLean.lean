@@ -74,3 +74,4 @@ import GallaiLean.T6Dense
 import GallaiLean.DirectTest1
 import GallaiLean.TriangleBase
 import GallaiLean.ForestLift
+import GallaiLean.ConstrainedLovasz

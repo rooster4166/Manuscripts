@@ -599,3 +599,50 @@ The project lead forwarded three claims from another agent and asked that each b
 - **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
   - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (19:40): forest base refuted as stated; independent check; r-through variant also fails.**
+- triangle-base found the counterexample (direct-test1 Ex 4.7): J = cone over K_{2,6}, 3-connected, d(z) = 8, at the roots r and r′.
+- I checked it with my own code. `scripts/verify/fb_k26.py` enumerates every w, every forest T-join of J − {z, r} and every rooting, and finds no base at r or r′; there are bases at the y_i. A separate exhaustive search confirms that Test1 holds at r and r′.
+- **Variant tested.** Let Φ be a forest T-join of J − z through r, with r a root. The lift stays valid:
+  - r ∉ T, so d_Φ(r) is even and r is still odd in M;
+  - appends at the children of r add c(r) = d_Φ(r) ≥ 2 ends at r;
+  - if Q0(z) = zr and d_M(r) = 1, D1 simply has k − 1 paths.
+- It also fails on the cone at r and r′ (`scripts/verify/fbr.py`, exhaustive).
+- So the terminal-structure lifts (triangle, forest, forest through r) do not cover Test1 on their own. The cone over K_{2,6}, where B = J − z is all-even and every T1 decomposition has ends at only 4 vertices, needs a different mechanism.
+- At order 9, three roots without triangle data are left uncovered (triangle-base `fb_nodata.py`: 2,435/2,438).
+
+## 26. Cones: Test1 contains rooted Gallai for Eulerian graphs (coordinator, 2026-11-27 19:50)
+
+**Observation.** Let B be any graph of even order 2k, and let J = B + z be the cone, with z joined to every vertex of B. Then:
+- z is the only even vertex of J if and only if B is Eulerian (every degree even); d_J(z) = 2k;
+- J is 3-connected if and only if B is 2-connected;
+- N(z) = V(B), so Test1(J, z, r) says exactly: *B has a decomposition into at most k = |B|/2 paths with at least two ends at r.*
+
+So **Test1 on cones is the rooted Gallai statement for 2-connected Eulerian graphs of even order.** It implies Gallai's conjecture for that class.
+
+Gallai for Eulerian graphs is open in general. Known cases:
+- Δ ≤ 4 (Favaron–Kouider 1988);
+- Δ ≤ 5 (Bonamy–Perrett);
+- some planar classes (Botler–Jiménez–Sambinelli).
+
+Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgraph has triangle-free blocks of max degree ≤ 3, i.e. the opposite extreme. (These citations are from memory and must be checked against the literature before any manuscript uses them.)
+
+**Consequences for the programme.**
+1. No local lift can settle Test1 by itself. The triangle, forest and forest-through-r lifts all have the form "remove a T-join forest of B, take a Lovász decomposition, re-append terminal edges". On a cone this is the classical heuristic for Eulerian Gallai, and it fails on the cone over K_{2,6} (§25 addendum).
+2. Cones and near-cones (d(z) close to n − 1) are where the difficulty sits. The lifts settle 2,435 of the 2,438 no-data roots at order 9, and the triangle base holds at every root that has data.
+3. The direction worth pursuing is an **inductive** argument on B, for Eulerian B with a root, rather than a single base. Possible tools:
+   - reduction at vertices of degree 2 of B, which are the degree-3 vertices of J adjacent to z, as for the y_i in K_{2,6};
+   - the Eulerian Gallai literature.
+
+   A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
+
+**Addendum (20:10): the n = 15 K2 budget root is settled.**
+- clt found a triangle base at the last budget-undecided K2-residual root (n = 15, m = 77, r = 1) by local search: w = 2, M0 = {34, 56} (`manuscripts/clt/data/triangle_base_witnesses.txt`).
+- The coordinator re-checked it independently (`direct-test1/scripts/verify/verify_clt_witness.py`):
+  - D0 is a Lovász decomposition of M;
+  - both disjunctions hold;
+  - the executed lift is a valid (T1) decomposition at r = 1.
+- So every K2-residual root tested so far has a triangle base.
+- clt's two further witnesses are for the ∅ residual graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3. The coordinator also re-checked these (`verify_clt_witness_resid.py`): both are Lovász, satisfy the disjunctions and lift to (T1).
+- clt's E30(G) further reports that on the 30 residual graphs a base exists for *every* root, data choice and orientation: 8,016 instances, all found, none proved absent and none undecided.
+- **No budget-undecided triangle-base instance remains among the d(z) = 6 runs.** The coordinator's d(z) = 8, n = 13 recheck at 3·10⁷ still has undecided roots (n = 13, m = 49, r = 1, and others pending). They are being rerun.
