@@ -39,7 +39,12 @@ EMM sufficiency work is **stopped**.
     - RR for star forests.
   - Its paper proofs are under audit A16.
   - Original brief: the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
-- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
+- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): **finished** at 413233e.
+  - **Unconditional:** Thm 1.1 (balanced return), Cors 1.2/1.3, and Prop 8.3 = A19 Prop P (the counting half of Problem 7.1 under (B1)).
+  - **Under SH:** Thm 9.3 — Target D reduces to SH + Problem 9.4 (intermediate vertices).
+  - **Open:** SH (re-derive SP 14.31/14.33 with weak sites), 9.4 and 7.2.
+  - The session saw no concrete route to SH or 9.4.
+  - Original brief: Target D, the exact Gallai bound below Dirac.
   - **Delivered:** the *balanced return theorem* (`manuscripts/near-dirac/`, 15 pp.). It returns a linear-size exceptional set X under a balance condition; it contains SP Thm 14.27, and its Corollary 1.2 is an exact class.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). **AUDITED (A17): Theorem 1.1 correct.** All CKLOT hypotheses are verified and the constants are consistent; there are wording gaps (N10, N29, N30, N26, N36, N24, N32, N33) and one statement gap (N25, already fixed). The author is fixing the wording.
