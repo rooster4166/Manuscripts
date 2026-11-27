@@ -1,0 +1,20 @@
+n=5
+ball one-even tests 28
+inter one-even tests 28
+leaf one-even tests 11
+n=6
+ball all-odd tests 78
+inter all-odd tests 78
+leaf all-odd tests 18
+n=7
+ball one-even tests 780
+inter one-even tests 780
+leaf one-even tests 137
+n=8
+ball all-odd tests 1792
+inter all-odd tests 1792
+leaf all-odd tests 203
+n=9
+ball one-even tests 95488
+inter one-even tests 95488
+leaf one-even tests 6695

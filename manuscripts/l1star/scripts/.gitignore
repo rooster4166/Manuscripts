@@ -1,3 +1,4 @@
 l1s
 l1s_*
 __pycache__/
+out/*.err
