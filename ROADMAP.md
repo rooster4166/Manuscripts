@@ -24,6 +24,16 @@ This is the single source of truth for the proof architecture. Every node is a s
 | `comp(n≤N)` | exhaustive computation in `tools/` |
 | `—` | none |
 
+## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
+
+**Main line: the endpoint min-max programme (EMM).** Conjecture: a half-set of even vertices is realisable in n/2 paths iff it satisfies the cut inequality of even-degrees §12.4 for every vertex v and every W ⊆ V − v. It is **exact on every connected graph of order ≤ 8 and on n = 10 samples** (2,368 non-realisable half-sets, all cut-excluded). Gallai ⇐ EMM + **CS (cut selection)**, where CS is a pure cut/flow statement that the T-join lemma already settles for cones. Tracks:
+- C1: manuscript and Lean framework;
+- C2: prove CS;
+- C3: EMM in classes (e ≤ 4, cones, κ-connected with e ≤ 2κ, 2-separator gluing, dense);
+- C4: EMM sufficiency through tight cuts.
+
+The dense track D (close Cor 14.39) is deprioritised. The formal targets below (`gallai_of_branchBase3`) remain valid and are compatible with this programme.
+
 ## The formal target (2026-11-26, night)
 
 **`Gallai.gallai_of_branching : (∀ j ≥ 3, BStmt j) → GallaiConjecture`** (lean/GallaiLean/Bridge.lean). No other hypotheses; Lovász's theorem is proved in the library. Standard axioms only.
