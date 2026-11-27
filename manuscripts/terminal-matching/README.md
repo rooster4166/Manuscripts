@@ -13,6 +13,7 @@ Experiment log: `research/experiments.md`, E24. Conclusions: `research/connectio
   - `stl_of_ptm2`, `stl_of_girth5`, `test1_of_girth5`: the STL / Test1 consequences at d(z) = 4, through `test1_of_stl`.
 - **Audit A22**: no error in any proof; corrections to claims applied (STL citation numbers, K₄ caveats, the base problem has genuine NOBASE failures, EE needs a non-adjacent complementary pair).
 - **Audit A22b** (local girth five, Theorem 6.1 and Corollary 7.2 local forms): sound, no error; every excluded short cycle passes through an end of the two edges; `NoShortCycleAt` proved equivalent to Mathlib's cycle-length form (`A22b-scripts/A22bSemantics.lean`). Statement-level wording fixes applied.
+- **Scope.** Test1 at d(z) = 4 was already known (endpoint-structure Cor 22, `rooted_four'`; Botler–Sambinelli). The new content at d = 4 is STL-P for the given pairing and the composition method (Remark 7.3). The first open rung is d(z) = 6: PTM_3 for perfect matchings of N(z), which would give T(6)-i.
 - **Open.** PTM₂ beyond the sparse case (the base problem alone is not enough: 832 NOBASE instances at n = 8); PTM_m for m ≥ 3; the multigraph case (Conjectures 2.3, 2.4).
 - **Counterexamples.** K₄ with a perfect matching (PTM₂); the prism with its rungs (PTM₃, G − F disconnected).
 

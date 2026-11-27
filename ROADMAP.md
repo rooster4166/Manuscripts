@@ -516,6 +516,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Local girth five (ptm 7df9b9c; standard axioms, verified).**
   - `ptm2_localgirth`: PTM2 with a prescribed end holds whenever no triangle or 4-cycle passes through an end of the two edges.
   - `test1_of_localgirth`: spine Test1 at d(z) = 4 (z the only even vertex, every neighbour of degree ≥ 3) holds for a pairing ab, cd of N(z) into pairs non-adjacent in J whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
+  - Test1 at d(z) = 4 was already known (`rooted_four'`, endpoint-structure Cor 22), so this re-derives it by composition. New: STL-P for the given pairing. First open rung: PTM_3 at d(z) = 6 (T(6)-i).
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.

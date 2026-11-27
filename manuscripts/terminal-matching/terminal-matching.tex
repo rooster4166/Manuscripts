@@ -54,10 +54,14 @@ which the sparse separation theorem solves when the special vertices are locally
 consequence, a graph with all degrees odd has the property for a pair of disjoint edges in one
 component, even with one end prescribed, whenever no cycle of length at most four passes through
 an end of the two edges; in particular for every pair when the girth is at least five. Lifting
-back gives the star-terminal condition, hence the first deletion test, for every vertex $z$ of
-degree four with a pairing $ab,cd$ of $N(z)$ into pairs non-adjacent in $J$ such that no cycle of
-length at most four of the lifted graph $(J-z)+ab+cd$ passes through a neighbour of $z$. All theorems are formalised in Lean~4 with
-Mathlib, without \texttt{sorry} and with only the standard axioms.
+back gives a star-terminal decomposition with the transitions $a\,z\,b$ and $c\,z\,d$ prescribed,
+at every vertex $z$ of degree four with a pairing $ab,cd$ of $N(z)$ into pairs non-adjacent in $J$
+such that no cycle of length at most four of the lifted graph $(J-z)+ab+cd$ passes through a
+neighbour of $z$, and through it the first deletion test. That test at degree four was already
+known, from Lov\'asz's theorem and Fan's transfers alone; here it is the base case of a
+composition method whose first open case is degree six, with three prescribed transitions.
+All theorems are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
+standard axioms.
 \end{abstract}
 \maketitle
 
@@ -141,7 +145,9 @@ particular this holds for every $F$ when $G$ is connected and has girth at least
 the only even vertex of $J$, has degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and no
 triangle and no $4$-cycle of $(J-z)+ab+cd$ passes through $a$, $b$, $c$ or $d$ (and $c$ is
 reachable from $a$ in it), then $\STL(J,z,r)$ holds for every $r\in N(z)$; if moreover every
-neighbour of $z$ has degree at least three, the first deletion test holds at $z$.
+neighbour of $z$ has degree at least three, the first deletion test holds at $z$. The first test
+at degree four is not new (Remark~\ref{rem:known}); the star-terminal decomposition with
+prescribed transitions is, and so is the route to it.
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
 \texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
 connected to \texttt{test1\_of\_stl}.
@@ -155,9 +161,14 @@ $17.6\%$ of the (mostly dense) eight-vertex instances. The consequence for the s
 graphs: for random $3$-connected graphs with degrees $4,3,\dots,3$ the local hypothesis of
 Corollary~\ref{cor:test1} holds for some pairing in $5$ of $300$ graphs of order $11$ (about
 $0.6\%$ in a sample of $3000$) and in $70\%$ of those of order $51$ (global girth five: $5$ of
-$300$, and $5\%$; Section~\ref{sec:comp}). Its value
-is that it is the first unconditional two-prescription result in this programme, and that the
-mechanism (walk the even vertex, restore inside the leaf graph) is general.
+$300$, and $5\%$; Section~\ref{sec:comp}). Moreover the first deletion test at degree four
+was already known for every $J$~\cite[Corollary~22]{ES},~\cite[Theorem~13]{BS}
+(Remark~\ref{rem:known}), so Corollary~\ref{cor:test1} is a new proof of a known case. Its value
+is that the conclusion is the stronger pairing-prescribed STL, that it is the first unconditional
+two-prescription result in this programme, and that the mechanism (walk the even vertex, restore
+inside the leaf graph) is general: it is the base of a composition method. The first open case
+is $d(z)=6$, where $\PTM_3$ for the perfect matchings of $N(z)$ would give the first deletion
+test at degree six, the open case T(6)-i of the spine (Section~\ref{sec:open}).
 
 \section{Statements, examples and conjectures}\label{sec:statements}
 
@@ -488,6 +499,22 @@ $d_{J-z}(a,c)+d_{J-z}(b,d)\ge3$ and $d_{J-z}(a,d)+d_{J-z}(b,c)\ge3$. (With ``$J-
 least five'' in place of the first condition, this characterises girth five of $J^\ast$.) Each of
 the other two pairings gives its own condition, and one of them suffices.
 
+\begin{remark}[the first test at degree four is known]\label{rem:known}
+Let $J$ be $3$-connected with $z$ its only even vertex and $d(z)=4$. Then $H=J-z$ is connected,
+of even order, with exactly the four even vertices $a,b,c,d$, and the rooted test for four even
+vertices~\cite[Corollary~22]{ES} (\texttt{rooted\_four'}, from Lov\'asz's theorem and Fan's
+transfers) gives $p(H+\text{leaf at }r)\le|H|/2$ for every $r$. Deleting the leaf edge gives a
+decomposition of $H$ into at most $(|J|-1)/2$ paths in which $r$ is an end (if the leaf edge was a
+path on its own, split a path through $r$ at $r$), hence, $r$ being even in $H$, at least two
+ends at $r$: this is the first deletion test at $z$. It also follows from~\cite[Theorem~13]{BS}.
+So Corollary~\ref{cor:test1} adds nothing to the first test at degree four. What it adds is the
+star-terminal decomposition with both transitions prescribed (the pairing-prescribed STL,
+open in general~\cite[Conjecture~7.4]{STL}), and the method: two transitions composed by
+walking the even vertex. At $d(z)=6$ the same lift turns $\PTM_3$ for a perfect matching of
+$N(z)$ into the pairing-prescribed STL with three transitions, hence the first test at degree
+six, which is the open case T(6)-i of the spine~\cite{SP}. Nothing at degree six is proved here.
+\end{remark}
+
 \section{Computations}\label{sec:comp}
 
 \emph{This section is computational; no proof above depends on it.} Scripts are in
@@ -619,6 +646,11 @@ separable (audit~A22).
 \section{What remains}\label{sec:open}
 
 \begin{enumerate}
+\item \emph{Degree six: the first open rung.} At $d(z)=4$ the first test is known
+(Remark~\ref{rem:known}); at $d(z)=6$ it is the open case T(6)-i. The composition route needs
+$\PTM_3$ for $G=(J-z)+F$ with $F$ a perfect matching of $N(z)$, $J$ $3$-connected: a walk
+theorem with two pending edges (item~3 below) and data on these matchings. The prism with its
+rungs shows that some matchings fail; STL-P needs only one good pairing.
 \item \emph{$\PTM_2$ beyond local girth five.} The walk theorem reduces it to the base separation
 problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
 alone does not suffice (Section~\ref{sec:comp}). At order eight its failures are local copies of
@@ -675,7 +707,11 @@ Theorem~\ref{thm:sparse}, from \texttt{separation\_sparse}.
 \end{itemize}
 
 \begin{thebibliography}{9}
+\bibitem{BS} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph
+Theory 97 (2021) 161--184.
 \bibitem{CONN} Project notes, \texttt{research/connections.md}, \S\S X, Y, Z.
+\bibitem{ES} J.~Williams, Endpoint sets of path decompositions at the Gallai budget,
+\texttt{manuscripts/endpoint-structure}, 2026.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
 (2005) 117--125.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
