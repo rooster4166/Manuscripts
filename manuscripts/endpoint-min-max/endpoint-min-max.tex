@@ -33,16 +33,10 @@
 Let $G$ be a connected graph of even order $n=2k$ and let $M$ be a set of half of its even-degree
 vertices. The simple profile of $M$ asks for a partition of $E(G)$ into $k$ paths with one end at every
 odd vertex, two ends at every vertex of $M$ and none at the other even vertices. A cut inequality of
-<<<<<<< HEAD
-the even-degrees manuscript is necessary for this. We conjectured that it is also sufficient (EMM), and
-we confirm this on every connected graph of order at most eight and on samples of order ten. EMM is,
-however, false: counterexamples of order $12$ (missing-move, Theorem~7.5) and $28$ were found later.
-=======
 the even-degrees manuscript is necessary for this. Its sufficiency (EMM) holds on every connected graph
 of order at most eight, but it fails at order twelve, through vertices of degree two whose two edges
-must both end paths (missing-move Theorem 7.5). We therefore conjecture sufficiency for minimum
-degree at least three (EMM$_3$).
->>>>>>> origin/claude/emc-four-even
+must both end paths (missing-move Theorem 7.5), and by the same mechanism at order $28$. We
+therefore conjecture sufficiency for minimum degree at least three (EMM$_3$).
 
 We give the inequality four equivalent forms. The most useful one asks that the edges at each vertex
 $v$ extend to edge-disjoint \emph{arms} in $G-v$ that end at the prescribed ends. For half-sets it
@@ -53,16 +47,10 @@ Our main result is that the cut inequality can always be met. Every connected gr
 an explicit pairing of its even vertices such that every half-set with one vertex from each pair is
 cut-feasible. The construction takes the $T$-join of a spanning tree. At each vertex $v$ it chooses the
 transitions of the $T$-join by the $T$-join pairing lemma in the free part of $G^v$. A parity lemma
-<<<<<<< HEAD
-makes the odd vertices there exactly the ends of these transitions. Consequently \textbf{EMM implies
-Gallai's conjecture}. Since EMM is false, this implication is vacuous as stated. What it uses is only
-that every connected graph of even order has a realisable half-set.
-=======
 makes the odd vertices there exactly the ends of these transitions. Combined with Theorem 10.16 of the
 separating-pairs manuscript, this gives the following. If EMM$_3$ holds at minimum degree at least
 five, every failure of Gallai's conjecture yields a two-connected odd-order witness of that theorem's
 first alternative.
->>>>>>> origin/claude/emc-four-even
 
 We also prove the following.
 \begin{itemize}
@@ -171,13 +159,6 @@ and only if it is cut-feasible.
 
 Only sufficiency is conjectural. For $W=\emptyset$, inequality~\eqref{eq:one} is the local condition
 $d(v)+b(v)\le 2k$. For $e=0$ the empty half-set is trivially cut-feasible, and its realisability is
-<<<<<<< HEAD
-Lov\'asz's theorem for graphs with all degrees odd~\cite{L68}. Section~\ref{sec:evidence} gives the
-evidence, which covers orders up to ten. \emph{Sufficiency is false in general.} The missing-move
-manuscript (its Theorem~7.5) gives a cut-feasible half-set that is not realisable in the graph
-\texttt{KsOeBW??G`?A} of order $12$, and \texttt{research/synthesis.md}~\S12 gives one of order $28$.
-So EMM is used below only as a hypothesis, and the results that do not assume it are unaffected.
-=======
 Lov\'asz's theorem for graphs with all degrees odd~\cite{L68}.
 
 The degree hypothesis is needed. The first version of the conjecture, \emph{EMM}, had none, and it is
@@ -185,7 +166,7 @@ false.
 
 \begin{example*}[missing-move Theorem 7.5]
 Let $G=$\,\texttt{KsOeBW??G`?A} ($n=12$), with edges
-$01,02,03,06,14,16,17,25,27,47,57$ and the tail $3\text{--}10\text{--}8\text{--}9\text{--}11$, and let
+$01,\allowbreak 02,\allowbreak 03,\allowbreak 06,\allowbreak 14,\allowbreak 16,\allowbreak 17,\allowbreak 25,\allowbreak 27,\allowbreak 47,\allowbreak 57$ and the tail $3\text{--}10\text{--}8\text{--}9\text{--}11$, and let
 $M=\{3,4,8,9,10\}$. Then $M$ is cut-feasible (by \texttt{tools/cutfeas.c} and
 \texttt{tools/cut\_test.py}) but not realisable (by the exact oracle and by an independent brute force).
 
@@ -195,14 +176,15 @@ $8\text{--}9$ and $9\text{--}11$ are one-edge paths, and the remaining eleven ed
 other two of the six paths. These two paths start at $3$ and at $2$ and both end at $4$. The
 eight-vertex core thus sits below its own budget, where a two-linkage obstruction that no cut
 detects prevents this. Twelve such graphs of order $12$ are known, and all have minimum degree at
-most $2$ (\texttt{scripts/evidence.py counterexamples}).
+most $2$ (\texttt{scripts/evidence.py counterexamples}). A further counterexample, of order $28$
+with all degrees even, is in \texttt{research/synthesis.md}~\S12. It also rests on saturated vertices
+of degree $2$.
 \end{example*}
 
 For a simple profile, $b\le 2$, so a vertex can be saturated only if its degree is at most $2$. This
 is why EMM$_3$ asks for minimum degree $3$. Section~\ref{sec:evidence} gives the evidence. It is
 thinner than for EMM: at order $\le 8$, every half-set of a graph of minimum degree $\ge 3$ is
 realisable, so there the cut inequality never binds.
->>>>>>> origin/claude/emc-four-even
 
 \begin{remark}[Eulerian form]\label{rem:euler}
 Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ parallel edges. For a
@@ -621,16 +603,11 @@ At each vertex the transitions pair up the $J$-edges, leaving exactly one unpair
 vertices of odd $J$-degree, that is, at $\Ev$. Following transitions therefore decomposes $J$ into
 edge-disjoint trails and closed trails, and every trail ends at two vertices of $\Ev$, each the end of
 exactly one trail. Since $J$ is a forest, there are no closed trails, and no trail repeats a vertex.
-<<<<<<< HEAD
 (A trail that revisits a vertex contains a closed subtrail, and the edge set of a closed trail
 contains a cycle.) So the trails are edge-disjoint paths pairing $\Ev$. Their transitions at each $v$
-are linked in $F^v$ by construction, so Lemma~\ref{lem:linked} shows that the pairing is good.
-=======
-So the trails are edge-disjoint paths pairing $\Ev$. Their transitions at each $v$ are linked in $F^v$
-by construction. At a vertex with $d_J(v)=0$ there is nothing to link, because then $v\in\Od$ (by the
-parity of $d_J$) and $v$ has neither passages nor an end edge. So Lemma~\ref{lem:linked} shows that
-the pairing is good.
->>>>>>> origin/claude/emc-four-even
+are linked in $F^v$ by construction. At a vertex with $d_J(v)=0$ there is nothing to link, because
+then $v\in\Od$ (by the parity of $d_J$) and $v$ has neither passages nor an end edge. So
+Lemma~\ref{lem:linked} shows that the pairing is good.
 \end{proof}
 
 \begin{corollary}\label{cor:gallai_emm}
@@ -643,40 +620,28 @@ order $2h+1$ without a matching cut, with at least $h+1$ missing edges and with 
 Theorem~\ref{thm:ps} gives CS for every graph. Now apply Proposition~\ref{prop:gallai}.
 \end{proof}
 
-<<<<<<< HEAD
-So the combinatorial half of the programme is unconditional. The cut inequality can always be met,
-by an explicit half-set, and even by every transversal of an explicit pairing. Gallai's conjecture
-would follow from the sufficiency direction of EMM, but that direction is false in general
-(Section~\ref{sec:emm}); see the remark below for what the corollary actually uses. The script
-\texttt{scripts/construction.py} runs the construction with random spanning trees and checks the result
-against the cut enumeration. With three trees per graph, it checks all $99$ graphs of order $6$ and all
-$10{,}893$ of order $8$. It also covers the order-$10$ sample and the bottleneck families (three trees
-each), all trees of orders $8$, $10$ and $12$ with $e\ge2$ ($20$, $99$ and $538$ trees), and $150$
-random graphs of order $12$ (two trees each). There are no failures.
-
-\begin{remark*}[what Corollary~\ref{cor:gallai_emm} uses]
-Since EMM is false, Corollary~\ref{cor:gallai_emm} is a correct but vacuous implication, and so is the
-route CS $+$ EMM $\Rightarrow$ (R$_s$) $\Rightarrow$ (R) $\Rightarrow$ Gallai of
-Remark~\ref{rem:converse}. The proofs apply EMM to a single cut-feasible half-set of each graph. What
-they need is therefore only that \emph{every connected graph of even order has a realisable
-half-set}, which implies Gallai's conjecture through the pendant vertex of
-Proposition~\ref{prop:gallai}. Theorem~\ref{thm:ps} says where to look for one: among the
-transversals of an explicit good pairing. The statement that every transversal of every good
-pairing is realisable is false: in \texttt{KsOeBW??G`?A} the pairing $\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\
-7\,10\}$ is good, and its transversal $\{3,4,8,9,10\}$ is the non-realisable half-set of
-missing-move Theorem~7.5 (\texttt{research/audit/A13-cut-selection.md}).
-\end{remark*}
-=======
 So the combinatorial half of the programme is unconditional. The cut inequality can always be met, by
 an explicit half-set, and even by every transversal of an explicit pairing. In the main alternative of
 SP~10.16, Gallai's conjecture reduces to the sufficiency direction of EMM$_3$ at minimum degree
 $\ge5$. The odd alternative remains a separate target. The script
 \texttt{scripts/construction.py} runs the construction with random spanning trees and checks the result
 against the cut enumeration. With three trees per graph, it checks all $99$ connected graphs of order
-$6$ with $e>0$ (of $112$ connected graphs) and all
-$10{,}893$ with $e>0$ of order $8$ (of $11{,}117$). It also covers the order-$10$ sample, the bottleneck families, all trees of
-orders $8$--$12$ and $150$ random graphs of order $12$. There are no failures.
->>>>>>> origin/claude/emc-four-even
+$6$ with $e>0$ (of $112$ connected graphs) and all $10{,}893$ with $e>0$ of order $8$ (of $11{,}117$).
+It also covers the order-$10$ sample and the bottleneck families (three trees each), all trees of
+orders $8$, $10$ and $12$ with $e\ge2$ ($20$, $99$ and $538$ trees), and $150$ random graphs of order
+$12$ (two trees each). There are no failures.
+
+\begin{remark*}[what Corollary~\ref{cor:gallai_emm} uses]
+The first version of Corollary~\ref{cor:gallai_emm}, ``EMM implies Gallai's conjecture'', is a correct
+but vacuous implication, since EMM is false. The proof of Proposition~\ref{prop:gallai} applies
+EMM$_3$ to a single cut-feasible half-set of each failing host. So what it needs is only (R$_s$) for
+the hosts of SP~10.16(2): every even vertex lies in a realisable half-set, and some half-set is
+realisable. Theorem~\ref{thm:ps} says where to look, namely among the transversals of an explicit good
+pairing. The stronger statement that every transversal of every good pairing is realisable fails
+without a degree condition. In \texttt{KsOeBW??G`?A} the pairing $\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\ 7\,10\}$
+is good, and its transversal $\{3,4,8,9,10\}$ is the non-realisable half-set of the example in
+Section~\ref{sec:emm} (\texttt{research/audit/A13-cut-selection.md}).
+\end{remark*}
 
 \begin{remark*}[certificates and guards]
 Before Theorem~\ref{thm:ps} was found, \texttt{scripts/certificates.py} certified PS at every order
@@ -982,12 +947,6 @@ Theorem~10.16 is formalised.
 
 \section{Open problems}
 \begin{enumerate}
-<<<<<<< HEAD
-\item EMM (Conjecture~\ref{conj:emm}): sufficiency is false in general (Section~\ref{sec:emm}). By
-Corollary~\ref{cor:gallai_emm} and the remark after it, what Gallai's conjecture needs is one
-realisable half-set in each graph, for instance a transversal of a good pairing.
-\item Question~\ref{q:emc}: why EMM's family is a matroid for critical graphs.
-=======
 \item EMM$_3$ (Conjecture~\ref{conj:emm}): sufficiency at minimum degree $\ge3$, or at least
 $\ge5$ (Corollary~\ref{cor:gallai_emm}). An inductive proof passes through graphs with low-degree
 vertices, so it needs a corrected general statement. That statement would decompose at saturated
@@ -996,7 +955,6 @@ vertices, give each piece its own budget, and add linkage conditions for pieces 
 \item The odd alternative of SP~10.16: cut selection and a min-max statement one path below the
 budget, at odd order, under the hypotheses of SP~10.16(1).
 \item Question~\ref{q:emc}: why the cut-feasible family is a matroid for critical graphs.
->>>>>>> origin/claude/emc-four-even
 \item Which cut-feasible half-sets are transversals of good pairings? Their union is closed under
 complementation, but $\cF$ need not be: it is not in $593$ graphs of order $8$. At order $\le 8$, the
 union equals the complement-closed part $\{M\in\cF:\Ev\setminus M\in\cF\}$ except in two graphs of
