@@ -60,7 +60,12 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **l1-induction** (session_01FxXpVeiWdUBGUhHfUiGJdk, branch `claude/l1-induction`, new): closes L1Blocked through a strengthened induction (the "some target" form, which held in all 267,664 admissible order-9 instances). Closing it would complete L1*, EE and L∞.
+- **l1-induction**: **finished** (b55f039). L1Blocked is NOT proved.
+  - **Lean:** L1Blocked ⇐ TR + ST; `l1Blocked_iff_tightTransferAdm`; `l1Blocked_of_out_tight` (TR is needed only when N(g) ⊆ N(c)).
+  - **Core remaining:** ST.
+  - **Data:** 0 failures everywhere (TR 1.7M, ST 135k, 4/100 slices of n = 11).
+  - **Audit A25:** core proofs and Lean sound; 4 errors applied.
+- (original entry) **l1-induction** (session_01FxXpVeiWdUBGUhHfUiGJdk, branch `claude/l1-induction`): closes L1Blocked through a strengthened induction (the "some target" form, which held in all 267,664 admissible order-9 instances). Closing it would complete L1*, EE and L∞.
 - **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`): the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21). Connections §AB, E26, `manuscripts/tight-fan`, Lean `TightFan.lean`.
   - **Finished** (de71567).
   - **Lean, verified:** refined Fan with protected blanks, `fanPred_unique`, `l1_tight_transfer`, `lInfty_of_l1Blocked`, the flower negatives, and `walk_step_protected` (a protected walk-back step; unaudited), which is the tool for the T(6)-i dense residual.
