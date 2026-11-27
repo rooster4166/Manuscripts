@@ -61,3 +61,4 @@ import GallaiLean.OnePair
 import GallaiLean.RouteSystem
 import GallaiLean.MultiSep
 import GallaiLean.NearDirac
+import GallaiLean.StarTerminal

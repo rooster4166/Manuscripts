@@ -1,0 +1,7 @@
+[one_even_9.g6] all: graphs 11936, ST 11934, SS 10543, pairs 48850, STL 48802, BAL 48802, BALfail 48, T1fail 48, STLfail-but-T1 0
+[one_even_9.g6] 3c: graphs 5231, ST 5231, SS 4427, pairs 25210, STL 25210, BAL 25210, BALfail 0, T1fail 0, STLfail-but-T1 0
+[one_even_9.g6] 3c_nomc: graphs 4699, ST 4699, SS 3895, pairs 22462, STL 22462, BAL 22462, BALfail 0, T1fail 0, STLfail-but-T1 0
+
+real	13m36.104s
+user	0m13.367s
+sys	0m1.046s
