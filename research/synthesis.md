@@ -599,3 +599,14 @@ The project lead forwarded three claims from another agent and asked that each b
 - **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
   - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (19:40): forest base refuted as stated; independent check; r-through variant also fails.**
+- triangle-base found the counterexample (direct-test1 Ex 4.7): J = cone over K_{2,6}, 3-connected, d(z) = 8, at the roots r and r′.
+- I checked it with my own code. `scripts/verify/fb_k26.py` enumerates every w, every forest T-join of J − {z, r} and every rooting, and finds no base at r or r′; there are bases at the y_i. A separate exhaustive search confirms that Test1 holds at r and r′.
+- **Variant tested.** Let Φ be a forest T-join of J − z through r, with r a root. The lift stays valid:
+  - r ∉ T, so d_Φ(r) is even and r is still odd in M;
+  - appends at the children of r add c(r) = d_Φ(r) ≥ 2 ends at r;
+  - if Q0(z) = zr and d_M(r) = 1, D1 simply has k − 1 paths.
+- It also fails on the cone at r and r′ (`scripts/verify/fbr.py`, exhaustive).
+- So the terminal-structure lifts (triangle, forest, forest through r) do not cover Test1 on their own. The cone over K_{2,6}, where B = J − z is all-even and every T1 decomposition has ends at only 4 vertices, needs a different mechanism.
+- At order 9, three roots without triangle data are left uncovered (triangle-base `fb_nodata.py`: 2,435/2,438).
