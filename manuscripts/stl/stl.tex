@@ -51,8 +51,9 @@ We do not prove STL. We show that it is exactly as strong as one should fear: al
 existence of \emph{some} star-terminal Lov\'asz decomposition, for all $J$ with $J-z$ connected,
 implies Gallai's conjecture; for $d(z)=2$, STL is the end-edge conjecture EE of~\cite{MS} at the
 other neighbour; and the pairing-prescribed form is equivalent to prescribing a matching of
-terminal edges in an all-odd graph. We prove STL for $d(z)=2$ unless the two neighbours of $z$
-have a second common neighbour.
+terminal edges in an all-odd graph. STL holds at every vertex of degree two: we prove two
+cases directly, and the general case follows from the end-edge theorem \texttt{ee\_deg\_two}
+of~\cite{PE}; all of this is formalised.
 
 Computationally, STL never fails when $J-z$ is connected. We checked all $54{,}336$ such pairs
 $(J,r)$ with $|J|\le9$, and on these graphs STL is \emph{equivalent} to the first test. We also
@@ -121,10 +122,10 @@ $J-z$ has no matching cut imply Gallai's conjecture. No \texttt{sorry}; only the
   \item Prescribing the pairing at $z$ is equivalent to prescribing a matching of terminal edges
   in an all-odd graph (Proposition~\ref{prop:PTM}). It fails on the wheel $W_4$.
   \end{itemize}
-\item \emph{Partial results} (Section~\ref{sec:partial}). STL holds when $d(z)=2$, unless the two
-neighbours of $z$ are adjacent and have a second common neighbour (Theorem~\ref{thm:dz2}). We
-also explain why the available single-vertex tools (separation, the leaf trick, the prescribed end
-edge) stop at one prescription, while $d(z)\ge4$ needs two.
+\item \emph{Partial results} (Section~\ref{sec:partial}). STL holds whenever $d(z)=2$
+(Theorem~\ref{thm:dz2} and Corollary~\ref{cor:dz2}, using~\cite{PE}). We also explain why the
+available single-vertex tools (separation, the leaf trick, the prescribed end edge) stop at one
+prescription, while $d(z)\ge4$ needs two.
 \item \emph{Computation} (Section~\ref{sec:comp}). These are the counts quoted in the abstract.
 \end{enumerate}
 
@@ -330,7 +331,8 @@ is short.
 
 By~\cite[Prop.~EE]{MS}, EE at $u$ is the step of Lov\'asz's induction at $z$ with a trivial Fan
 chain, i.e.\ ``$L_1$ at the even vertex''. It is proved when $uz$ lies in no triangle and in most
-configurations with $d(u)\le3$~\cite[Prop.~EE3]{MS}, and open in general. So STL contains multi-sep's crux as its one-transition
+configurations with $d(u)\le3$~\cite[Prop.~EE3]{MS}, and whenever $u$ and $z$ have at most one common
+neighbour~\cite{PE}; it is open in general. So STL contains multi-sep's crux as its one-transition
 case, and for $d(z)\ge4$ it asks for $k$ such transitions at once.
 
 \subsection{Prescribing the pairing}
@@ -418,10 +420,21 @@ All ends are now $d_J\bmod2$.
 
 Case $uw\notin E$ is the instance $d(z)=2$ of~\cite[Prop.~EE3(a)]{MS} (\texttt{ee\_noTriangle}:
 EE holds whenever $uz$ lies in no triangle, for any $d(z)$), obtained there by the same method. Case
-$uw\in E$ is, by Proposition~\ref{prop:EE}, a new case of EE: $d(z)=2$, $uz$ in the triangle $u\,z\,w$,
-$d(u)$ arbitrary, and $z$ the only common neighbour of $u$ and $w$. (The cases of EE proved
-in~\cite{MS} with $uz$ in a triangle have $d(u)=3$.) The remaining configuration for $d(z)=2$ is
-two triangles $z\,u\,w$ and $t\,u\,w$, which we did not resolve.
+$uw\in E$ is, by Proposition~\ref{prop:EE}, a case of EE with $uz$ in the triangle $u\,z\,w$ and
+$d(u)$ arbitrary (the triangle cases of~\cite{MS} have $d(u)=3$); it is also covered by
+\texttt{ee\_atMostOneCommon}~\cite{PE}, found independently at the same time. The remaining configuration for $d(z)=2$, two triangles $z\,u\,w$
+and $t\,u\,w$, is covered by the following result of the session \texttt{claude/ee}.
+
+\begin{corollary}[STL at $d(z)=2$]\label{cor:dz2}
+If $z$ is the only even vertex of $J$ and $d(z)=2$, then $\STL(J,z,r)$ holds for both neighbours $r$
+of $z$.\lean{stl\_deg\_two}
+\end{corollary}
+
+\begin{proof}
+By~\cite{PE} (\texttt{ee\_deg\_two}, via \texttt{ee\_atMostOneCommon}: EE holds whenever $u$ and
+$z$ have at most one common neighbour, which is automatic when $d(z)=2$), EE holds at both
+neighbours. Apply Proposition~\ref{prop:EE}.
+\end{proof}
 
 \begin{remark}[one prescription is the limit of the present tools]\label{rem:limit}
 Each tool we have makes one terminal edge or one separation by creating at most one even vertex,
@@ -627,9 +640,10 @@ $\#LL=0$;
 \texttt{gallai\_iff\_spineTests'};
 \item \texttt{stl\_of\_deg\_two}, \texttt{stl\_of\_deg\_two\_tri}: Theorem~\ref{thm:dz2}, both
 cases, via \texttt{separation} and \texttt{append\_move\_new}, a version of \texttt{append\_move}
-that exposes the new path and the old ones.
+that exposes the new path and the old ones;
+\item \texttt{stl\_deg\_two}: Corollary~\ref{cor:dz2}, from \texttt{ee\_deg\_two}~\cite{PE}.
 \end{itemize}
-The full library builds, and \texttt{manuscripts/stl/STLAxioms.lean} prints for all six main
+The full library builds, and \texttt{manuscripts/stl/STLAxioms.lean} prints for all seven main
 theorems only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. The general
 criterion with $LL$ transitions (a path may then have two pieces) and the results of
 Section~\ref{sec:strength} are not formalised.
@@ -644,6 +658,9 @@ outputs are in \texttt{scripts/out/}; the experiment log is E22 in
 Academic Press, 1968, 231--236.
 \bibitem{MS} J.~Williams, Separating many pairs in Lov\'asz decompositions: classes, the leaf merge,
 and the Case~I lemma, \texttt{manuscripts/multi-sep}, 2026.
+\bibitem{PE} J.~Williams, Prescribed end edges in Lov\'asz decompositions,
+\texttt{manuscripts/prescribed-end} and \texttt{lean/GallaiLean/PrescribedEnd.lean} (session
+\texttt{claude/ee}), 2026.
 \bibitem{RD} J.~Williams, Route descent: transversal realisability, minimum $T$-joins, and Lov\'asz
 decompositions with constraints, \texttt{manuscripts/route-descent}, 2026.
 \bibitem{SP} J.~Williams, The spine: Gallai's conjecture and two deletion tests on $3$-connected
