@@ -7,9 +7,10 @@ with r = y_1 (y_1 carries no walk condition) -- and, failing that, r = y_2 or y_
 admissible chain, searched exactly: every simple path P2 (y3 -> x2 in H - N[x3] - {x1, y2}, other
 vertices off N(x3)), then a BFS for P1 (y2 -> x1 in H - N[x2] - N[x3]) avoiding the edges of P2.
 
-usage: chain_search.py COUNT SEED EXTRA [DEG_PRIVATE]
+usage: chain_search.py COUNT SEED EXTRA [DEG_PRIVATE [BRIDGES]]
   EXTRA: number of extra outer vertices of degree 3; DEG_PRIVATE: degree of the private
-  neighbours (default 3).
+  neighbours (default 3).  BRIDGES > 0: two halves (three neighbours of z each) wired separately
+  and joined by BRIDGES edges, so that J - z has a small edge cut while J may be 3-connected.
 Prints a summary and every instance (graph6 of J, z = 0) with some r uncovered.
 """
 import sys, random, itertools
@@ -136,15 +137,68 @@ def build(rng, extra, dpriv):
     return G
 
 
+def build_halves(rng, extra, bridges):
+    """Two halves, each with three neighbours of z, their private pairs and extra/2 extra
+    vertices, wired at random inside the half; `bridges` edges between the halves."""
+    G = build_parts(rng, extra, bridges)
+    return G
+
+
+def build_parts(rng, extra, bridges):
+    n = 7 + 12 + extra
+    G = nx.Graph()
+    G.add_nodes_from(range(n))
+    for i in range(1, 7):
+        G.add_edge(0, i)
+    k = 7
+    side = {}
+    for i in range(1, 7):
+        for p in (k, k + 1):
+            G.add_edge(i, p)
+            side[p] = 0 if i <= 3 else 1
+        k += 2
+    for j, e in enumerate(range(19, n)):
+        side[e] = j % 2
+    stubs = {0: [], 1: []}
+    for p in range(7, 19):
+        stubs[side[p]] += [p, p]
+    for e in range(19, n):
+        stubs[side[e]] += [e] * 3
+    # bridges: take one stub from each side per bridge
+    for _ in range(bridges):
+        if not stubs[0] or not stubs[1]:
+            return None
+        u = stubs[0].pop(rng.randrange(len(stubs[0])))
+        v = stubs[1].pop(rng.randrange(len(stubs[1])))
+        if G.has_edge(u, v):
+            return None
+        G.add_edge(u, v)
+    for sd in (0, 1):
+        st = stubs[sd]
+        if len(st) % 2:
+            return None
+        rng.shuffle(st)
+        for u, v in zip(st[::2], st[1::2]):
+            if u == v or G.has_edge(u, v):
+                return None
+            G.add_edge(u, v)
+    if any(G.degree(v) % 2 == 0 for v in G if v != 0):
+        return None
+    if nx.node_connectivity(G) < 3:
+        return None
+    return G
+
+
 def main():
     count, seed, extra = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3])
     dpriv = int(sys.argv[4]) if len(sys.argv) > 4 else 3
+    halves = int(sys.argv[5]) if len(sys.argv) > 5 else 0   # > 0: two halves, this many bridges
     rng = random.Random(seed)
     made = bad = 0
     tries = 0
     while made < count and tries < 1000 * count:
         tries += 1
-        G = build(rng, extra, dpriv)
+        G = build_parts(rng, extra, halves) if halves else build(rng, extra, dpriv)
         if G is None:
             continue
         made += 1

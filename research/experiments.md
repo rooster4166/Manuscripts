@@ -1156,6 +1156,14 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 | 4 | 23 | 100 | 0 | 0 |
 | 6 | 25 | 100 | 0 | 0 |
 
+Second family (`chain_search.py 100 SEED EXTRA 3 BRIDGES`, `out/chain_search_halves.log`): two halves, each holding three neighbours of z with their private pairs and EXTRA/2 extra vertices, wired separately and joined by BRIDGES edges. So J − z has a 2- or 4-edge cut while J is 3-connected.
+
+| EXTRA | order | BRIDGES 2: graphs / uncovered | BRIDGES 4: graphs / uncovered |
+|---|---|---|---|
+| 4 | 23 | 100 / 0 | 100 / 0 |
+| 8 | 27 | 100 / 0 | 100 / 0 |
+| 12 | 31 | 100 / 0 | 100 / 0 |
+
 r = y1 always suffices, which is why Conjecture 8.5 is stated with y1 = r.
 
 **Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.

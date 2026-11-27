@@ -1,0 +1,6 @@
+SUMMARY extra=4 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=1134
+SUMMARY extra=4 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=610
+SUMMARY extra=8 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=2074
+SUMMARY extra=8 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=1216
+SUMMARY extra=12 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=1986
+SUMMARY extra=12 dpriv=3 graphs=100 uncovered=0 r_needing_y2_or_y3=0 tries=1427

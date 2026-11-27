@@ -1345,7 +1345,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
      - In all 184 such graphs chains were found for every r.
      - Chain existence is not proved.
    - **Chain conjecture (manuscript Conj 8.5):** J 3-connected with N(z) far apart ⇒ for every r there are x1 ≠ r and a labelling of the other four with edge-disjoint P2: y3 → x2 in H − N[x3] − {x1, y2} and P1: y2 → x1 in H − N[x2] − N[x3] (H = J − z, y1 = r free).
-     - Evidence: 184 random graphs plus 400 adversarial graphs (orders 19–25, exact search), every r covered, always with r = y1.
+     - Evidence: every r covered, always with r = y1, in 184 random graphs and 1,000 adversarial graphs (exact search). The adversarial set is 400 graphs with private neighbourhoods (orders 19–25) and 600 two-halves graphs with a 2- or 4-edge cut in J − z (orders 23–31).
      - It implies Test1 at every far-apart degree-6 vertex of a 3-connected graph, via `test1_of_chains3`.
      - The difficulty: H is only 2-connected, and deleting N[x3] can disconnect it.
    - **Missing:** the base hypothesis when N(z) is not far apart (local girth / exceptional-vertex forms as at d = 4), and Conjecture 8.5.

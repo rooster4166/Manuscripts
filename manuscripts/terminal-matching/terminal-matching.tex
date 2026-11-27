@@ -733,7 +733,10 @@ neighbours in a $3$-connected graph. Besides the $184$ random instances above, a
 search (\texttt{chain\_search.py}) supports it. It builds $400$ graphs of orders $19$--$25$ in
 which each neighbour of $z$ has two private neighbours and the rest is wired at random; it keeps
 the $3$-connected graphs with all degrees off $z$ odd, and searches chains exactly (every $P_2$,
-then a breadth-first $P_1$). Every $r$ was covered, always with $r=y_1$. The difficulty is that
+then a breadth-first $P_1$). A second family of $600$ graphs (orders $23$--$31$) wires two halves,
+each with three neighbours of $z$, separately and joins them by $2$ or $4$ edges, so that $J-z$
+has a small edge cut while $J$ is $3$-connected. Every $r$ was covered in all $1000$ graphs,
+always with $r=y_1$. The difficulty is that
 $H$ is only $2$-connected, and deleting a closed neighbourhood can disconnect it; a proof has to
 use the freedom in choosing $x_1$ and the labelling.
 
