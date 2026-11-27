@@ -1,0 +1,6 @@
+n=10: graphs 19, colourings 95, colours used {5: 40, 6: 45, 7: 5, 10: 5}
+graphs 95 pairings 95 failures 0 undecided 0
+n=12: graphs 85, colourings 255, colours used {4: 9, 5: 51, 6: 174, 7: 21}
+graphs 255 pairings 255 failures 0 undecided 0
+n=14: graphs 509, colourings 1018, colours used {5: 450, 6: 484, 7: 80, 8: 4}
+graphs 1018 pairings 1018 failures 0 undecided 0
