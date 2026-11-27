@@ -1480,3 +1480,71 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - One ERROR, fixed: roots isolated in the core have D ⊇ K_{1,5}; Conj 5.1 ⇒ T(6)-i needs MR Thm 144 to exclude them.
 - Novelty corrected: the (E7) equivalence (above); end-path tracking was proposed in TM §9(1); STL / `test1_of_stl`, STL-P ⇔ PTM₃ and TM Thm 8.2 were already one-even-vertex reductions.
 - Data overstatements fixed: "every root"; mode definitions; the failure counts of non-theorem modes; the K2 cells.
+
+## E29. The triangle base conjecture and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`)
+
+*Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§§5–6). Scripts: `manuscripts/direct-test1/scripts/` (`tb.py`, `tb_compat.py`, `disj_general.py`, `dl_rand.py`, `dl_recheck.py`; oracle `gcc -O3 -o route_ext tools/route_ext.c`; Python 3 + networkx). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
+
+**Tooling.**
+- `tb.py` handles every J, every root r ∈ N(z) with d(r) ≥ 3, and every data choice (w, M0).
+  - The base question for each data choice is 2^(m−1) exact per-end avoidance queries (route_ext `A`), one per orientation of the disjunctions.
+  - Every base found is checked independently (an edge partition of M, ends = deg mod 2, the disjunctions), lifted by Steps 1–2 of Thm 2.1, and the lift is verified (an edge partition of J − z into simple paths, ≤ k paths, ≥ 2 ends at r).
+  - At a root with no base, Test1 is decided exactly over all profiles with b ≤ 3.
+  - Budgeted queries retry undecided orientations with further seeds.
+- `tb_compat.py`: per data choice, which orientations are satisfiable and which pairs are satisfiable alone (the multi-pair compatibility question).
+- `disj_general.py`, `dl_rand.py`: the disjunctive condition in arbitrary graphs with one even vertex g (Conjecture DL).
+
+**(A) Exhaustive, order ≤ 9.** Every connected J with exactly one even vertex and d(z) ≥ 4 (`stl/scripts/one_even_{5,7,9}.g6`), every root with d(r) ≥ 3, every data choice, exact.
+
+| n | κ(J) | graphs | roots with data | base | failures | Test1 at failures |
+|---|---|---|---|---|---|---|
+| 5 | 1 / 3 | 2 / 1 | 3 / 4 | 3 / 4 | 0 | – |
+| 7 | 1 | 41 | 115 | 108 | 7 | fails at all 7 |
+| 7 | 2 / ≥3 | 6 / 28 | 24 / 114 | 24 / 114 | 0 | – |
+| 9 | 1 | 3,317 | 11,659 | 11,607 | 52 | fails at 28, holds at 24 |
+| 9 | 2 | 583 | 2,402 | 2,402 | 0 | – |
+| 9 | ≥ 3 | 5,231 | 22,772 | 22,772 | 0 | – |
+
+- **Every root with data of every 2-connected J of order ≤ 9 has a triangle base.**
+- At order 9, 36,779 of the 36,781 roots with a base have one at the first data choice tried. 123,787 bases were lifted, and every lift verified.
+- **Every failure is explained by universal twins.** Each of the 243 data choices at the 52 failing roots (n = 9) has a pair (a_i, b_i) that is a pair of universal twins (N(a)=N(b)=C−{a,b}) of a component C of M. Such a C misses z.
+- Roots without data: 5,375 at n = 9, where J[N(z) − r] has no near-perfect matching.
+
+**(B) Orientations and multi-pair compatibility** (`tb_compat.py`, 3-connected, n = 9: 5,231 graphs, 25,210 roots, 88,526 data choices).
+- 88,522 data choices have a base.
+  - The other 4 (d(z) = 8, two graphs) each contain a universal-twin pair in a component of M not containing z.
+- **0 compatibility failures**: whenever each pair's disjunction is satisfiable alone, all of them are jointly.
+- Orientations:
+  - m = 2: both orientations hold in all 20,052 data choices.
+  - m = 3: all four in 45,576 of 45,644.
+  - m = 4: all eight in 22,700 of 22,830.
+- Order 7, 3-connected: 378/378 data choices have a base.
+
+**(C) The disjunctive condition in arbitrary graphs (Conjecture DL).** Setting: G has one vertex g of positive even degree, and the pairs are disjoint pairs of non-adjacent odd vertices.
+- One pair, exhaustive (`disj_general.py … 1`):
+  - n = 5: 21 pairs, 3 failures.
+  - n = 7: 947 pairs, 14 failures.
+  - n = 9: see the final count below.
+  - **Every failure is a pair of universal twins** (a, b adjacent to every other vertex, hence to g).
+  - At n = 7 every universal-twin pair fails. At n = 9 a minority does.
+- Two pairs, exhaustive:
+  - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
+  - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
+- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds. See the table below.
+- **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
+- **Proposition 6.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
+
+**(D) Residual families of T(6)-i** (`t6-dense/scripts/gen_resid.py`, budget 2·10⁶, seeds 7, 11, 13).
+
+| family | graphs | roots | certified | undecided | proved absent |
+|---|---|---|---|---|---|
+| \|O\| = 8, 6 per shape (∅, K2, P3, K3, C4 TW=2) | 30 | 180 | 178 | 2 (one ∅ graph) | 0 |
+| \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
+
+**(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
+- The triangle base certifies 42 of their 48 roots at budget 2·10⁶. Every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs is certified.
+- The 6 roots left undecided were rerun at budget 2·10⁷ with five seeds; see below.
+
+**(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
+- n = 13, d(z) = 8, r = 1: base found (184 s);
+- n = 15, r = 1, 2: see below.
