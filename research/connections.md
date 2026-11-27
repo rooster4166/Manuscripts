@@ -1650,11 +1650,12 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **`csys_fan_transfer`**: a Fan transfer carries any constraint system (avoidance and distinctness atoms) when no constrained vertex is u, v or in N(u), and u is not avoided.
 - **`csys_caseI`: Lovász's Case I for constraint systems** across a free target, with no admissibility of the child. For one constraint this is `avoid_of_target_child` (l1-induction), now without the leaf graph, which is what makes several constraints possible.
 - **`csys_case_adj`**: move (M2), a tail at the even vertex, for several tails (append `gc` to the path ending at g; uses the strengthened `append_move_track`).
+- **`csys_case_leaf`** (with `CSys.liftLeaf`, `GPath.ends_of_support_map`): move (M4), the leaf step at a tail in an all-odd graph, for several tails (leaf merge carries the lifted system).
 - `CSys`, `CSys.Sat`, `CSys.Good`, `CLTB`, `CLTB1`, `LN`, `BLocal`, `CrossLocal`; `l1StarGen_of_cltB1`, `lInfty_of_cltB1`, `ee_of_cltB1`, `lN_of_cltB`.
 - Unconditional cases: **`csys_good_of_packed`** (all tails and heads in a packed set: every avoidance and distinctness system among them), **`csys_good_of_sparse`** (every vertex has ≤ 1 neighbour among tails and heads: every avoidance system with heads outside N[c], no disjointness needed).
 
 ### AE.4 Lovász's induction for CLT-B: exactly where it stops (manuscript §6, paper)
-- Moves that carry a B-local system, with their instance conditions: (M1) free target (Lean); (M2) tail at g (Lean); (M3) tight target; (M4) all odd, a tail of degree ≥ 3 (leaf graph); (M5) all odd, Case II at a free vertex. Transfers never need the child to be an instance.
+- Moves that carry a B-local system, with their instance conditions: (M1) free target (Lean); (M2) tail at g (Lean); (M3) tight target; (M4) all odd, a tail of degree ≥ 3 (leaf graph; Lean); (M5) all odd, Case II at a free vertex. Transfers never need the child to be an instance.
 - **Residual** (Prop 6.1, CLT-B1): every non-tail u ∈ N(g) has a neighbour in A − g, or two tail neighbours, or one tail neighbour adjacent to another tail; and a tail in N(g) forces g ∈ A or a tail–tail adjacency.
   - k = 1: exactly the blocked configuration of l1star (§AA), which splits into ST and TR (§AC).
   - k ≥ 2 adds two obstructions: **tail–tail adjacency** ((M2)–(M4) turn a tail into a head next to a tail, leaving the cross-local class) and **heads of one tail next to another tail** (they meet N(new even vertex)). Neither occurs when tails are pairwise at distance ≥ 3, where the residual is the blocked configuration for the union of the avoid sets.
@@ -1665,7 +1666,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 
 ### AE.6 Open
 1. CLT-B1 for two tails (k = 2), even with |A_i| = 1 (this contains L_N with two pairs; still open).
-2. Formalise (M3)–(M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
+2. Formalise (M3), (M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
 3. A non-local CLT with free orientation containing DL and the forest base: in the data the free choice removes every compatibility failure.
 
 ## AF. The triangle base and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`, 2026-11-27)

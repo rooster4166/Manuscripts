@@ -375,7 +375,7 @@ no other tail.
 $N[u]$. Child $G-gu-c_1u$ with the tail $u$ replacing $c_1$ and avoid set $A_1\cup\{c_1\}$, as in
 \texttt{avoid\_of\_target\_adj\_child}; the other tails are carried by Theorem~\ref{thm:transfer}.
 Same instance conditions as (M2) with $u$ for $g$.
-\item \emph{All odd, a tail of degree $\ge3$.} $y\in N(c_1)$; the leaf graph $G-c_1y+y\ell$, where
+\item \emph{All odd, a tail of degree $\ge3$} (Lean: \texttt{csys\_case\_leaf}). $y\in N(c_1)$; the leaf graph $G-c_1y+y\ell$, where
 $c_1$ is even and the leaf $\ell$ replaces $c_1$ with avoid set $A_1\cup\{c_1\}$; merge. The
 transfer is unconditional; the child is an instance iff $A_j\cap N(c_1)=\emptyset$ for $j\ne1$
 (and $c_1$ adjacent to no other tail, cross-local form).
@@ -406,8 +406,9 @@ each move are checked directly against Definition~\ref{def:blocal} and cross-loc
 example in (M3) the new even vertex is $c_1$, and $A_j\cap N(c_1)=\emptyset$ by cross-locality,
 while the new head $c_1$ is adjacent to no tail other than through deleted edges unless $c_1$ is
 adjacent to another tail. If (a) failed for some $u$, (M1) or (M3) would apply at $u$; if (b)
-failed, (M2) would apply. (M1) and (M2) are formalised (\texttt{csys\_caseI}, \texttt{csys\_case\_adj}, for arbitrary
-further constraints); (M3)--(M5) for several tails are not.
+failed, (M2) would apply. (M1), (M2) and (M4) are formalised (\texttt{csys\_caseI}, \texttt{csys\_case\_adj},
+\texttt{csys\_case\_leaf}, for arbitrary further constraints); (M3) and (M5) for several tails are
+not.
 \end{proof}
 
 For $k=1$ the residual is exactly the blocked configuration of~\cite{L1S}
@@ -474,8 +475,8 @@ DFS then local search.
 \texttt{csys\_caseI} (Theorem~\ref{thm:caseI}); \texttt{BLocal}, \texttt{CrossLocal},
 \texttt{CLTB}, \texttt{CLTB1}, \texttt{LN} and \texttt{l1StarGen\_of\_cltB1},
 \texttt{lInfty\_of\_cltB1}, \texttt{ee\_of\_cltB1}, \texttt{lN\_of\_cltB};
-\texttt{csys\_good\_of\_packed}, \texttt{csys\_good\_of\_sparse}. \texttt{csys\_case\_adj} (move (M2) for several tails). Not formalised: the moves (M3)--(M5) for
-several tails, Proposition~\ref{prop:residual}, and the examples of
+\texttt{csys\_good\_of\_packed}, \texttt{csys\_good\_of\_sparse}. \texttt{csys\_case\_adj}, \texttt{CSys.liftLeaf}, \texttt{csys\_case\_leaf} (moves (M2), (M4) for
+several tails). Not formalised: the moves (M3), (M5) for several tails, Proposition~\ref{prop:residual}, and the examples of
 Section~\ref{sec:sharp} (checked by hand or exhaustively).
 
 \begin{thebibliography}{99}

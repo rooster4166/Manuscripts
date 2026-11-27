@@ -709,6 +709,134 @@ theorem csys_case_adj (G : SimpleGraph V) [DecidableRel G.Adj]
 
 end caseAdj
 
+section caseLeaf
+
+variable {V : Type u} [DecidableEq V]
+
+omit [DecidableEq V] in
+/-- Ends of a path whose support is the image of another path's support. -/
+theorem GPath.ends_of_support_map {W' : Type*} {G : SimpleGraph V} {H : SimpleGraph W'}
+    (Q : GPath G) (P : GPath H) (f : W' → V) (h : Q.walk.support = P.walk.support.map f) :
+    Q.src = f P.src ∧ Q.tgt = f P.tgt := by
+  constructor
+  · have h1 := Q.walk.cons_tail_support
+    have h2 := P.walk.cons_tail_support
+    rw [← h1, ← h2, List.map_cons] at h
+    exact (List.cons.inj h).1
+  · have hq : Q.walk.support.getLast? = some Q.tgt := by
+      rw [List.getLast?_eq_some_getLast Q.walk.support_ne_nil, Walk.getLast_support]
+    have hp : P.walk.support.getLast? = some P.tgt := by
+      rw [List.getLast?_eq_some_getLast P.walk.support_ne_nil, Walk.getLast_support]
+    rw [h, List.getLast?_map, hp] at hq
+    simpa using hq.symm
+
+/-- The system on the leaf graph `apex (G − yc) {y}` used by move (M4): the leaf `none` stands for
+the tail `c` and avoids `A ∪ {c}`; every other constraint is lifted along `some`. -/
+def CSys.liftLeaf (c : V) (A : Finset V) (S : CSys V) : CSys (Option V) :=
+  ⟨(none, insert (some c) (A.image some)) :: S.av.map (fun dB => (some dB.1, dB.2.image some)),
+    S.ne.map (fun pq => (some pq.1, some pq.2))⟩
+
+/-- **Move (M4), the leaf step at a tail, for constraint systems.**  Let `cy ∈ E(G)`, and let `DH`
+decompose the leaf graph `apex (G − yc) {y}` (the leaf `none` at `y` stands for `c`), with no end at
+`c` and one at the leaf, satisfying the lifted system.  Merging the leaf into `c` gives a
+decomposition of `G` with one end at `c`, the ends of `DH` elsewhere, whose path ending at `c` avoids
+`A` and which satisfies `S`, provided `S` does not touch or avoid `c` and `c ∉ A`. -/
+theorem csys_case_leaf [Fintype V] (G : SimpleGraph V) [DecidableRel G.Adj] {c y : V}
+    (hcy : G.Adj c y) {A : Finset V} (hcA : c ∉ A) (S : CSys V) (hS : ∀ w, S.Touched w → w ≠ c)
+    (hcS : ¬ S.Avoided c) (DH : PathDecomp (apex (delEdge G y c) {y}))
+    (hc0 : DH.ends (some c) = 0) (hn1 : DH.ends none = 1) (hsat : (CSys.liftLeaf c A S).Sat DH) :
+    ∃ D : PathDecomp G, D.ends c = 1 ∧ (∀ w, w ≠ c → D.ends w = DH.ends (some w)) ∧
+      CSys.Sat ⟨(c, A) :: S.av, S.ne⟩ D := by
+  classical
+  -- the leaf path avoids `some c`
+  have hleaf : ∀ P ∈ DH.paths, (P.src = none ∨ P.tgt = none) →
+      ∀ o ∈ insert (some c) (A.image some), o ∉ P.walk.support :=
+    hsat.1 _ List.mem_cons_self
+  have hsep : Separates DH (some c) none := by
+    rintro P hP ⟨hc, hn⟩
+    exact hleaf P hP (P.end_of_pendant apex_none_pendant hn) (some c)
+      (Finset.mem_insert_self _ _) hc
+  obtain ⟨D, hDc, hDw, hback, -⟩ := leaf_merge G hcy DH hsep
+  refine ⟨D, by rw [hDc, hc0, hn1], hDw, ⟨fun cA hcA' => ?_, fun pq hpq Q hQ h1 h2 => ?_⟩⟩
+  · -- avoidance constraints
+    intro Q hQ hQend a ha haQ
+    obtain ⟨P, hP, hsupp⟩ := hback Q hQ
+    obtain ⟨hs, ht⟩ := Q.ends_of_support_map P (mergeMap c) hsupp
+    have hmem : a ∈ (P.walk.support).map (mergeMap c) := hsupp ▸ haQ
+    obtain ⟨o, ho, hoa⟩ := List.mem_map.mp hmem
+    rcases List.mem_cons.mp hcA' with rfl | hcA'
+    · -- the tail `c`: `P` ends at the leaf
+      have hPn : P.src = none ∨ P.tgt = none := by
+        have hpos : ∀ x, (P.src = some x ∨ P.tgt = some x) → x ≠ c := by
+          rintro x hx rfl
+          have := DH.ends_pos_of_end hP hx
+          omega
+        rcases hQend with h | h
+        · left
+          rw [hs] at h
+          cases hsrc : P.src with
+          | none => rfl
+          | some x =>
+            rw [hsrc, mergeMap_some] at h
+            exact absurd h (hpos x (Or.inl hsrc))
+        · right
+          rw [ht] at h
+          cases htgt : P.tgt with
+          | none => rfl
+          | some x =>
+            rw [htgt, mergeMap_some] at h
+            exact absurd h (hpos x (Or.inr htgt))
+      cases o with
+      | none => rw [mergeMap_none] at hoa; exact hcA (hoa ▸ ha)
+      | some b =>
+        rw [mergeMap_some] at hoa
+        subst hoa
+        exact hleaf P hP hPn (some b) (Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ ha)) ho
+    · -- another tail `d ≠ c`
+      have hdc : cA.1 ≠ c := hS cA.1 (Or.inl ⟨cA, hcA', rfl⟩)
+      have hPend : P.src = some cA.1 ∨ P.tgt = some cA.1 := by
+        rcases hQend with h | h
+        · left
+          rw [hs] at h
+          cases hsrc : P.src with
+          | none => rw [hsrc, mergeMap_none] at h; exact absurd h.symm hdc
+          | some x => rw [hsrc, mergeMap_some] at h; rw [h]
+        · right
+          rw [ht] at h
+          cases htgt : P.tgt with
+          | none => rw [htgt, mergeMap_none] at h; exact absurd h.symm hdc
+          | some x => rw [htgt, mergeMap_some] at h; rw [h]
+      have hlift := hsat.1 (some cA.1, cA.2.image some)
+        (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨cA, hcA', rfl⟩)) P hP hPend
+      cases o with
+      | none => rw [mergeMap_none] at hoa; exact hcS ⟨cA, hcA', hoa ▸ ha⟩
+      | some b =>
+        rw [mergeMap_some] at hoa
+        subst hoa
+        exact hlift (some b) (Finset.mem_image_of_mem _ ha) ho
+  · -- distinctness constraints
+    obtain ⟨P, hP, hsupp⟩ := hback Q hQ
+    obtain ⟨hs, ht⟩ := Q.ends_of_support_map P (mergeMap c) hsupp
+    have hp1 : pq.1 ≠ c := hS pq.1 (Or.inr ⟨pq, hpq, Or.inl rfl⟩)
+    have hp2 : pq.2 ≠ c := hS pq.2 (Or.inr ⟨pq, hpq, Or.inr rfl⟩)
+    have lift : ∀ x, x ≠ c → (Q.src = x ∨ Q.tgt = x) → (P.src = some x ∨ P.tgt = some x) := by
+      intro x hx h
+      rcases h with h | h
+      · left
+        rw [hs] at h
+        cases hsrc : P.src with
+        | none => rw [hsrc, mergeMap_none] at h; exact absurd h.symm hx
+        | some z => rw [hsrc, mergeMap_some] at h; rw [h]
+      · right
+        rw [ht] at h
+        cases htgt : P.tgt with
+        | none => rw [htgt, mergeMap_none] at h; exact absurd h.symm hx
+        | some z => rw [htgt, mergeMap_some] at h; rw [h]
+    exact hsat.2 (some pq.1, some pq.2) (List.mem_map.mpr ⟨pq, hpq, rfl⟩) P hP
+      (lift pq.1 hp1 h1) (lift pq.2 hp2 h2)
+
+end caseLeaf
+
 section conjectures
 
 /-- **The local bipartite in-degree-one condition** on a list of avoidance constraints (CLT form B):
