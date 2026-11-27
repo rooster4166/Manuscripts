@@ -503,5 +503,11 @@ Candidate uniform mechanisms (`research/connections.md`):
   - This is the first unconditional case of a spine test obtained through the star-terminal / terminal-matching ladder.
 - **L1* reduced to blocked instances, in Lean (l1star 35e03f2, L1Star.lean; standard axioms, verified).** `l1starGen_of_blocked : L1Blocked → L1StarGen` (L1* for any finite admissible A) and `ee_of_l1Blocked : L1Blocked → EE`. Here a *blocked* instance has c ∉ N(g) and every neighbour of g adjacent to a vertex of A ∖ {g}.
   - The proof is Lovász's induction with four reductions (Fan with vertex sets, leaf graphs).
-  - Blocked instances make up 3.4% of the |A| ≤ 2 cases at n = 9, all with d(g) ∈ {2, 4}.
+  - Blocked instances make up 13.9% of the |A| ≤ 2 cases at n = 9 (3.4% remain after the route moves), all with d(g) ∈ {2, 4}.
   - The exhaustive n = 11 run of the local form is about 75% done, with 0 failures.
+- **Local girth five (ptm 7df9b9c; standard axioms, verified).**
+  - `ptm2_localgirth`: PTM2 with a prescribed end holds whenever no triangle or 4-cycle passes through an end of the two edges.
+  - `test1_of_localgirth`: spine Test1 at d(z) = 4 holds whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
+  - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
+  - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
+  - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.
