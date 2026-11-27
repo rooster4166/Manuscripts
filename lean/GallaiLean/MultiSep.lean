@@ -29,6 +29,12 @@ Manuscript `manuscripts/multi-sep/multi-sep.tex`.
   `G − uz` has a Lovász decomposition that is rainbow for the family in which `z` joins every
   class of `u` and `{u, z}` is a class, then appending `zu` gives a rainbow Lovász decomposition
   of `G`.
+* `SparseFam`, `separation_sparse` (**sparse sets**, manuscript Theorem "sparse"(i)): if every
+  vertex has at most one neighbour in `X`, any family of packed subsets of `X`, possibly
+  overlapping, is separated at once by some Lovász decomposition. The set form is
+  `separation_sparse_set` in `MultiSepEE.lean`.
+
+Conjecture EE without classes at degree three (Proposition "EE3") is in `MultiSepEE.lean`.
 -/
 
 open SimpleGraph
@@ -1010,7 +1016,7 @@ theorem sp_case_even {n : ℕ} (ih : ∀ m < n, SpStrong.{u} m)
       simp only [hwu, hwz, ite_false, add_zero] at h
       rw [h]
 
-/-- Case II: every vertex of positive degree is odd and some `x ∉ {c, a}` has degree `≥ 3`. -/
+/-- Case II: every vertex of positive degree is odd and some `x ∉ X` has degree `≥ 3`. -/
 theorem sp_case_big {n : ℕ} (ih : ∀ m < n, SpStrong.{u} m)
     (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hfar : SparseFam G X 𝒜)
     (hn : (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n)
@@ -1196,8 +1202,8 @@ theorem sp_case_big {n : ℕ} (ih : ∀ m < n, SpStrong.{u} m)
         simp only [hwu, hwx, ite_false, add_zero] at h
         rw [h]
 
-/-- Case III: all degrees odd or zero, every vertex outside `{c, a}` has degree `< 3`, and some
-vertex `v ∉ {c, a}` has positive degree (so it is a leaf). -/
+/-- Case III: all degrees odd or zero, every vertex outside `X` has degree `< 3`, and some
+vertex `v ∉ X` has positive degree (so it is a leaf). -/
 theorem sp_case_leaf {n : ℕ} (ih : ∀ m < n, SpStrong.{u} m)
     (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hfar : SparseFam G X 𝒜)
     (hn : (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n)

@@ -1110,7 +1110,7 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 
 ## W. Multi-pair separation (cloud session `claude/multi-sep`, 2026-11-27)
 
-*Experiments: E21. Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Lean: `lean/GallaiLean/MultiSep.lean`. Audit: `research/audit/A18-multi-sep.md`.*
+*Experiments: E21. Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Lean: `lean/GallaiLean/MultiSep.lean`, `lean/GallaiLean/MultiSepEE.lean`. Audit: `research/audit/A18-multi-sep.md`.*
 
 ### W.1 Verdict
 - **MSEP is not proved, and no counterexample was found.** The evidence is now much stronger:
@@ -1122,7 +1122,7 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 ### W.2 The right generalisation: class separation (CSEP)
 - **Statement.** Partition V into *packed* sets (pairwise distance ≥ 3). Equivalently, take the fibres of a locally injective homomorphism, or the colour classes of a proper colouring of K². CSEP: some Lovász decomposition has every path rainbow.
 - MSEP is the case of classes of size ≤ 2; the separation theorem is the case of one class.
-- **Evidence.** CSEP never failed, including for *minimum* colourings of K² (4–10 colours).
+- **Evidence.** CSEP never failed, including for *minimum* colourings of K² of every connected cubic graph of order ≤ 16 (4–10 colours; rerun after audit A18 found that the earlier colourings were not always minimum).
 - It is false for overlapping families (the union of three pairings), but not for the union of two.
 - It holds for the fibres of coverings of all-odd graphs (lift Lovász's decomposition).
 
@@ -1134,7 +1134,8 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
   - It is the dual of the leaf trick that proves L1 (V.4a): there a leaf is attached; here an edge is detached.
 - **Case II is free for CSEP** (`caseII_lift`, `classSep_allOdd`): the leaf joins x's class. So CSEP reduces to graphs with exactly one positive even vertex.
 - **Certified Case I** (`classSep_caseI`): if z joins u's classes in K − uz (and {u, z} is a class), the transfer is a plain append. The manuscript also has a **rotation lemma**: remove a cycle, let c_i join c_{i+1}'s class, then extend each end path by one cycle edge; no even vertex is ever created (not formalised).
-- **Sparse classes** (`separation_sparse`): CSEP holds for *overlapping* packed classes whose union X has at most one neighbour at every vertex. This generalises `separation_set`. Its Gallai corollary (every orientation realisable) lies inside Fan's class for p(G) alone.
+- **Sparse sets** (`separation_sparse`, `separation_sparse_set`): if every vertex has at most one neighbour in X, some Lovász decomposition has every path meeting X in one vertex or in the two ends of an edge. So every family of packed subsets of X, overlapping or not, is separated at once: the family plays no role beyond its union (pointed out by audit A18). This generalises `separation_set`. Its Gallai corollary (every orientation realisable) lies inside Fan's class for p(G) alone.
+- **EE without classes at degree three** (manuscript Prop. "EE3"; `ee_of_avoid`, `ee_noTriangle`, `ee_split`, `ee_triangle`). Let z be the only positive even vertex and u ∈ N(z). Then uz is the terminal edge at u of some Lovász decomposition if (a) uz is in no triangle (separation in K − uz); or (b) N(u) = {z, a, b} with ab, zb ∉ E (suppress u, apply L1 to keep b off Q_z, reinsert u); or (c) N(u) = {z, a, b}, ab ∈ E and u is the only common neighbour of a and b (separate a from b in K − uz − ua − ub − ab, extend P_b by b u a and P_a by a b). This covers every Case I configuration reached from a cubic graph by one Case II step (d(z) = 2, both neighbours of degree 3).
 
 - **The reduction, formally** (`realisable_of_separating`, `realisable_of_lovasz_separating`): a separating Lovász decomposition of G − N realises every transversal of N (single-edge routes appended by `append_routes`).
 
@@ -1145,16 +1146,26 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 - **What the data rule out:**
   - the plain hypothesis (for ~half of the configurations, no u works for every D′);
   - six natural strengthened invariants (E21 (E));
-  - inductions built only from certified local moves (E21 (F): they fail on small or dense graphs).
+  - inductions built only from the certified local moves, even with all three interleaved freely (E21 (F): 2 of 24 failures at order 10; also small or dense graphs).
 
-  A proof of MSEP needs non-local information.
+  A proof of MSEP along these lines needs more than the certified moves.
+- **Without classes the cubic Case I step is now a theorem** (EE3). So in the cubic-derived configurations the whole obstruction is the classes: Q_z must avoid u's partner as well as u. The suppression trick of EE3(b) does not carry the classes, because suppressing u can bring two members of a class within distance 2, and the avoidance with classes is CSEP-strength.
 
 ### W.5 Open (in order of promise)
-1. Conjecture EE, even without classes.
+1. Conjecture EE, even without classes. Open without classes: d(u) ≥ 5, and at d(u) = 3 the configurations where z is adjacent to both a and b, or ab ∈ E, uz lies in a triangle and a, b have a second common neighbour. With classes: already the cubic-derived case.
 2. **Prescribed end edges on a packed set**: are end edges prescribable at every vertex of a packed set at once? 540 tests, 0 failures. Note the split-graph form: even vertices each carrying a pendant leaf separated from them, which is exactly the shape of the remark in V.4a on L_N.
 3. MSEP for cubic graphs, or for two pairs.
 4. CSEP.
 
+### W.6 Audit A18
+- A fresh subagent audited the manuscript, the scripts and `MultiSep.lean` (`research/audit/A18-multi-sep.md`). It found no mathematical error, and every Lean statement matches; the axioms are standard.
+- It found three problems in the computational section, all corrected:
+  - the certified-moves experiment had been described as one mixed search; it was two separate searches, with a cap on cycle length;
+  - the cross-check count was wrong (9, not 12);
+  - the "minimum" square colourings were not always minimum.
+- The auditor's mixed-strategy search (`combined.py`) confirms that the certified moves do not suffice.
+- Wording and citation fixes: L1 is now stated, the precise RD numbers are cited, the overlap counterexample is explicit, and the corollary of the sparse theorem has a proof.
+- The audit predates Proposition EE3 and `MultiSepEE.lean`.
 ## X. Star-terminal Lovász decompositions (cloud session `claude/stl`, 2026-11-27)
 
 *Experiments: E22. Manuscript: `manuscripts/stl/stl.tex`. Lean: `lean/GallaiLean/StarTerminal.lean`. Audit: `research/audit/A20-stl.md`. Origin: synthesis §19.*

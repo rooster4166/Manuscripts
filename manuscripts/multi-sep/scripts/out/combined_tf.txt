@@ -1,0 +1,3 @@
+n=10 -t: mixed certified strategy fails on 0/9
+COMBINED-FAIL K?ABEb_J?sB_ [(2, 7), (0, 6), (10, 5), (11, 1), (3, 9), (8, 4)]
+n=12 -t: mixed certified strategy fails on 1/63

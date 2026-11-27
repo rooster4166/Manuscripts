@@ -27,7 +27,8 @@ def main():
         else:
             dis += 1
             print("DISAGREE", s, p, r, py)
-    print("agree", agree, "disagree", dis, "fails", sum(1 for r in out if r == '0'))
+    res = out[:len(queries)]   # one result per query; the summary line follows
+    print("agree", agree, "disagree", dis, "fails", sum(1 for r in res if r == '0'))
 
 if __name__ == "__main__":
     main()

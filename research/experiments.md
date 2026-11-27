@@ -776,7 +776,8 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 
 **Tools.**
 - `cubsep.c`: an exact MSEP checker for cubic graphs. It chooses at each vertex an end edge (the other two edges form the transition) by depth-first search, keeping path components by union–find with vertex masks. Linking is allowed iff the two components meet only at the vertex, the end edge is in neither, and the merged component contains no pair. Modes: `all` (every perfect pairing at distance ≥ 3), `rand N seed` (random pairings), `given` (explicit pairs).
-- `validate_cubsep.py` cross-checks `cubsep` against the independent enumerator `msl.all_decomps` on all 19 cubic graphs of order 10: 285 queries, pairs at distance 2 or 3, 12 failures (all at distance 2), 0 disagreements.
+- `validate_cubsep.py` cross-checks `cubsep` against the independent enumerator `msl.all_decomps` on all 19 cubic graphs of order 10: 285 queries, pairs at distance 2 or 3, 9 failures (all at distance 2), 0 disagreements. (An earlier version reported 12: it also counted the three zeros of cubsep's summary line. Audit A18 found this; fixed.)
+- `cubsep classes` (one colour per vertex after the graph) checks CSEP for a given colouring; validated against the oracle on 150/150 queries (`validate_classes.py`). Its FAIL line now prints the colouring (it printed zeros before).
 - `randlov.py`: random runs of Lovász's induction (random choices, random Fan chains), then annealed end-swaps. A positive certificate, used for instances the budgeted oracle leaves undecided.
 
 **(A) MSEP on cubic graphs, perfect pairings at distance ≥ 3.** 0 failures.
@@ -790,14 +791,16 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 | 18 | 41,301 | 8,260,200 (200 random per graph) | 30 s |
 
 **(B) MSEP on other graphs.** 0 failures in every run.
-- `search_general.py 3000 11 pair 12 20 2000000`: random all-odd graphs of orders 12–20 (edge density 0.12–0.5, at most 120 edges), with a random maximal pairing at distance ≥ 3, exact oracle with budgets of 2M, 8M, 32M and 128M nodes. Dense instances are often undecided within the budget. All undecided instances listed in `out/gen_pair.txt` were certified by `randlov.py` (26/26 in a first batch, then 182/182, `out/gen_pair_cert.txt`).
+- `search_general.py 3000 11 pair 12 20 2000000`: random all-odd graphs of orders 12–20 (edge density 0.12–0.5, at most 120 edges), with a random maximal pairing at distance ≥ 3, exact oracle with budgets of 2M, 8M, 32M and 128M nodes. Dense instances are often undecided within the budget. This run (3000 planned trials) was stopped before completion, so it printed no totals. All 269 undecided instances it listed in `out/gen_pair.txt` were certified by `randlov.py` (225/225 in `out/gen_pair_cert.txt` and the remaining 44/44 in `out/gen_pair_cert2.txt`; earlier batches 26/26 and 182/182). A complete smaller run, `search_general.py 400 12 pair 12 20 2000000` (`out/gen_pair_400.txt`): 368 instances (122 with perfect pairings), 0 failures, 41 undecided, all 41 certified (`out/gen_pair_400_cert.txt`).
 - Random regular graphs (`dense_search.py`), perfect pairings at distance ≥ 3, all certified: 5-regular of order 30 (10/10) and 40 (30/30), cubic of order 26 (200/200). For 7-regular graphs of order 40 and 9-regular graphs of order 60, no perfect pairing at distance 3 exists in the samples.
 - *Hardest instances* (`hardness.py`): rank instances by the fraction of random runs of Lovász's induction that separate. Minimum 0.067 for cubic graphs (orders 12–20) and 0.000 for random graphs (order 18). Every one of the hardest eight in each family has a separating decomposition.
 
 **(C) CSEP (classes).** 0 failures except for overlapping families.
 - Classes of size 3, pairwise at distance ≥ 3 (`exp_classes.py`), cubic: 32 (n = 12), 193 (n = 14), 174 (n = 16).
 - Greedy maximal classes: n = 14, 326 instances each for size caps 4, 8 and 32; n = 18, 200 each.
-- **Minimum colourings of the square** (`exp_sqcol.py`; classes = colour classes, so every path must be rainbow), with 4–10 colours: cubic n = 10 (57), 12 (170), 14 (150); random all-odd n = 10 (100) and 12 (100).
+- **Minimum colourings of the square** (classes = colour classes, so every path must be rainbow). *Correction (audit A18):* `exp_sqcol.min_colouring` started its search at ⌊Δ(K²)/2⌋ + 1, which is not a lower bound for χ(K²); for 5 of the 85 cubic graphs of order 12 the colourings were not minimum. It now starts at Δ(K) + 1 (closed neighbourhoods are cliques of K²). The old counts (cubic n = 10, 12, 14: 57, 170, 150) are superseded. Rerun, 0 failures:
+  - `cub_sqcol.py` (all connected cubic graphs, `cubsep classes`): n = 10, 5 random minimum colourings per graph (95); n = 12, 3 per graph (255; 24 with 4 colours); n = 14, 2 per graph (1,018); n = 16, 1 per graph (4,060; colours used 4: 55, 5: 914, 6: 2,929, 7: 152, 8: 10). `out/cub_sqcol.txt`.
+  - `exp_sqcol.py ... rand` (random all-odd graphs, oracle): n = 10 (100, 0 undecided) and n = 12 (100, 3 undecided, all certified by `randlov.py`). `out/exp_sqcol_rand.txt`, `out/exp_sqcol_rand12.txt`.
 - Overlapping families (`exp_conflict.py`): the union of two perfect pairings (each vertex in two pairs) never fails, in 228 (n = 12) + 398 (n = 14) instances. The union of three fails twice in 228 at n = 12 (e.g. `K??FEaKR@oE_` with pairs 0-9, 0-10, 1-8, 1-11, 2-7, 2-8, 2-9, 3-6, 3-8, 3-9, 4-6, 4-7, 4-11, 5-6, 5-7, 5-10). So CSEP needs disjoint classes.
 
 **(D) The Case I step of Lovász's induction with pairs.**
@@ -825,17 +828,22 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 | Q_z ⊆ N[z] with separation (L∞) | `exp_se.py` | 1/600 (all-odd), 37/550 (one even vertex; includes z a leaf at the even vertex) |
 | Kotzig P₄-decompositions (perfect matching + oriented 2-factor) suffice for cubic MSEP | `kotzig.py` | 2/228 at n = 12 (0/40 at 10, 0/298 at 14) |
 
-**(F) Certified strategies.** These are inductions using only certified moves: the leaf merge (Case II), the certified Case I (z joins u's classes, needs distance ≥ 3 in K − uz) and rotation along cycles or leaf paths.
-- `coarsen.py` (randomised) succeeds on cubic graphs: 99/99 (n = 14), 299/300 (n = 16), 269/269 (n = 16, girth ≥ 5) and 200/200 (n = 18, girth ≥ 5).
-- `coarsen_fail.py` (exhaustive over all choices, memoised) fails on 13/24 cubic instances at n = 10, on 6/9 triangle-free instances at n = 10, on 3/63 (n = 12, triangle-free), on 3/15 (n = 12, girth 5), and on 0/108 (n = 14, girth 5).
-- `rotate.py` fails on 1/24 (n = 10), 14/152 (n = 12) and 3/42 (n = 12, triangle-free).
+**(F) Certified strategies.** These are inductions using only certified moves: the leaf merge (Case II), the certified Case I (z joins u's classes, needs distance ≥ 3 in K − uz) and rotation along cycles or leaf paths. *Correction (audit A18):* the earlier text described one search mixing all three moves; in fact `coarsen_fail.py` and `rotate.py` are separate searches, and the rotation figures depended on a cap on cycle length.
+- `coarsen.py` (randomised Case I/II) succeeds on cubic graphs: 99/99 (n = 14), 299/300 (n = 16), 269/269 (n = 16, girth ≥ 5) and 200/200 (n = 18, girth ≥ 5).
+- `coarsen_fail.py` (Case I/II only, exhaustive over all choices, memoised; 3 random perfect pairings per graph, seed 1) fails on 13/24 cubic instances at n = 10, on 6/9 triangle-free instances at n = 10, on 3/63 (n = 12, triangle-free), on 3/15 (n = 12, girth 5), and on 0/108 (n = 14, girth 5).
+- `rotate.py n flag per maxlen` (rotation only, own sampled pairings): with cycles and leaf paths of every length (maxlen ≥ n), it fails on 1/24 (n = 10, per 3), 4/152 (n = 12, per 2) and 1/63 (n = 12 triangle-free, per 3). With maxlen 10 it fails on 14/152 at n = 12 (the number reported before); with the default maxlen 8, on 23/152 (audit). `out/rotate_uncapped.txt`.
+- `combined.py` (from the audit's `A18-scripts/combined.py`: all three moves interleaved freely, all cycle lengths, exhaustive, on the instances of `coarsen_fail.py`) fails on 2/24 at n = 10 (`I?`cspoX?` with pairs (7,1)(5,3)(0,8)(9,4)(2,6), `ICOef?kF?` with (7,9)(6,8)(2,3)(0,4)(5,1)), 0/9 at n = 10 triangle-free, 1/63 at n = 12 triangle-free (`K?ABEb_J?sB_`). All are separable. `out/combined.txt`, `out/combined_tf.txt`.
 - `strat_rreg.py`: random 5-regular graphs, n = 30: no certificate found in 10/10 instances (separating decompositions exist).
-- Conclusion: local certificates need room at distance 3, and they cannot prove MSEP.
+- Conclusion: local certificates need room at distance 3. The three certified moves alone do not suffice on some small instances.
 
-**(G) Prescribed end edges** (`exp_twoend.py`). The question: are end edges at all vertices of a packed set (|X| ≤ 4) achievable simultaneously? The test uses the split graph with classes {x, ℓ_x}. Result: 311 + 229 instances, 0 failures (1 undecided). |X| = 1 is a theorem (manuscript Thm "prescribed end edge").
+**(G) Prescribed end edges** (`exp_twoend.py`). The question: are end edges at all vertices of a packed set (|X| ≤ 4) achievable simultaneously? The test uses the split graph with classes {x, ℓ_x}. Result: 311 + 229 instances, 0 failures among the 539 decided (1 undecided). |X| = 1 is a theorem (manuscript Thm "prescribed end edge").
 
 **(H) Side test (`exp_elov.py`).** Lovász decompositions with b = deg mod 2 when the even vertices are pairwise at distance ≥ 3: 182 decided random instances, 0 failures. The first version of the test was degenerate: it made the even vertices by pendant leaves, which is trivially solvable.
 
+
+**(I) Audit A18 and the degree-three case of EE.**
+- Audit A18 (`research/audit/A18-multi-sep.md`, fresh subagent): no mathematical error; Lean statements match. Corrections applied: the certified-moves description (F), the cross-check count (9, not 12), the minimum colourings (C), plus wording and citation fixes in the manuscript.
+- New theorem (manuscript Proposition "EE3", Lean `MultiSepEE.lean`): without classes, Conjecture EE holds when uz lies in no triangle, or when N(u) = {z, a, b} with ab, zb ∉ E (suppress u, apply L₁), or with ab ∈ E and u the only common neighbour of a, b. This covers every Case I configuration reached from a cubic graph by one Case II step, so the 2,272 configurations of (D) are a theorem without classes; with the pairing classes they remain computational evidence.
 ## E22. Star-terminal Lovász decompositions (STL, STL2) and the deletion tests (cloud session `claude/stl`)
 
 Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see `manuscripts/stl/README.md`); outputs in `scripts/out/`. Oracle: `tools/stl.c` (new).

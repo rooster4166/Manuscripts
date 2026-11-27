@@ -184,9 +184,10 @@ int main(int argc, char **argv) {
       /* one colour per vertex follows the graph */
       use_cls = 1; ncls = 0;
       for (int c = 0; c < MAXN; c++) clsmask[c] = 0;
-      for (int v = 0; v < n; v++) { int c; if (scanf("%d", &c) != 1) return 1; clsmask[c] |= 1u << v; if (c + 1 > ncls) ncls = c + 1; }
+      int col[MAXN];
+      for (int v = 0; v < n; v++) { int c; if (scanf("%d", &c) != 1) return 1; col[v] = c; clsmask[c] |= 1u << v; if (c + 1 > ncls) ncls = c + 1; }
       int r = solve(); tested++; Ttot++;
-      if (r == 0) { Ftot++; printf("FAIL %s", g6); for (int v = 0; v < n; v++) printf(" %d", __builtin_ctz(clsmask[0]) * 0 + 0); printf("\n"); }
+      if (r == 0) { Ftot++; printf("FAIL %s", g6); for (int v = 0; v < n; v++) printf(" %d", col[v]); printf("\n"); }
       else if (r < 0) Utot++;
       continue;
     }
