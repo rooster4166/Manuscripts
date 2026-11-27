@@ -11,3 +11,9 @@ PARTIAL graphs=2000000 tests_at_z=9162416 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=2200000 tests_at_z=10172284 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=2400000 tests_at_z=11216664 fail_at_z=0 tests_away=0 fail_away=0
 PARTIAL graphs=2600000 tests_at_z=12300112 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=2800000 tests_at_z=13438199 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=3000000 tests_at_z=14462218 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=3200000 tests_at_z=15535153 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=3400000 tests_at_z=16678499 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=3600000 tests_at_z=17853726 fail_at_z=0 tests_away=0 fail_away=0
+SUMMARY graphs=3664237 with_even=3664237 tests_at_z=18237059 fail_at_z=0 tests_away=0 fail_away=0 graphs_failing=0 graphs_all_z_edges_fail=0

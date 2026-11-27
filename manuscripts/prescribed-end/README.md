@@ -1,6 +1,6 @@
 # Prescribed end edges (PEE / EE) — cloud session `claude/ee`
 
-Manuscript: `prescribed-end.tex` (compile with `pdflatex` twice). Lean: `lean/GallaiLean/PrescribedEnd.lean`.
+Manuscript: `prescribed-end.tex` (compile with `pdflatex` twice). Lean: `lean/GallaiLean/PrescribedEnd.lean`, `lean/GallaiLean/PrescribedEndOutside.lean`.
 Experiment log: `research/experiments.md`, E23. Conclusions: `research/connections.md`, §Y.
 Audit: `research/audit/A21-pee.md`.
 
@@ -10,10 +10,11 @@ Audit: `research/audit/A21-pee.md`.
 - **Protected-end lemma.** A Fan transfer with target g keeps xy terminal at x when x ∉ N(g) or y = g. Consequences:
   - EE implies PEE at every "reachable" edge xy (some z–y path with interior outside N[x]).
   - Unconditionally, PEE holds when y ∈ N(z) and x, y have at most one common neighbour other than z. Lean: `pee_adjEven` (k = 1).
-- **Open: EE when |N(u) ∩ N(z)| ≥ 2.** It reduces to the avoidance conjecture L1* (Corollary 7.4), via the triangle reduction (Lean: `ee_of_triangle`) and Proposition 7.1.
+- **Open: EE when |N(u) ∩ N(z)| ≥ 2.** It reduces to the avoidance conjecture L1* (Corollary 7.4; Lean `ee_of_L1Star`), via the triangle reduction (`ee_of_triangle`) and the outside-neighbour reduction (`ee_of_outside`).
 - No counterexample to EE:
-  - exhaustive to n = 9; exhaustive EE-only run at n = 11 (see E23);
+  - exhaustive to n = 11 (n = 11: 11,959,367 graphs, 59,688,458 pairs (z, u));
   - 25,962 random tests at n = 11–17.
+- Audit A21 found no error or gap; its fixes are applied.
 
 ## Reproduction (scripts/)
 Requirements: gcc, Python 3 with networkx, nauty (`nauty-geng`).
@@ -32,7 +33,9 @@ nauty-geng -cq 7 | ./pee2 sepee                      # separation of u, z in K -
 gcc -O2 -o pee3 pee.c && nauty-geng -cq 7 | python3 tri_sep.py   # separating w from {u, z}
 gcc -O2 -o route_ext ../../../tools/route_ext.c
 nauty-geng -cq 9 | python3 xcheck_route_ext.py ./route_ext       # vs independent oracle
-python3 rand_test.py 6000 101 5000000 11 13 15 17 > out/rand_A.txt
+python3 rand_test.py 6000 101 5000000 11 13 15 17 > out/rand_A2.txt   # prints each away failure with reachability
+nauty-geng -cq 11 0/100 | ./pee g6 w > out/exh11_slice0of100_w.txt   # residue 0 mod 100 of order 11, all edges (we ran the first 84,002 graphs: out/exh11_slice0of100_prefix.txt.gz)
+./regen.sh                                           # regenerates the validation and Section 7 outputs
 ```
 `pee`, `pee2` and `pee3` are the same source; separate copies let long runs continue while the source changes.
 

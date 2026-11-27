@@ -1,0 +1,4 @@
+SUMMARY l1s2 tests=5 fail=0 | triangle-lemma (z,u,w) tests=18 fail=0 ; (z,u) with a triangle: 11, some w works: 11
+SUMMARY l1s2 tests=153 fail=0 | triangle-lemma (z,u,w) tests=0 fail=0 ; (z,u) with a triangle: 0, some w works: 0
+SUMMARY l1s2 tests=738 fail=0 | triangle-lemma (z,u,w) tests=622 fail=0 ; (z,u) with a triangle: 326, some w works: 326
+SUMMARY l1s2 tests=8939 fail=0 | triangle-lemma (z,u,w) tests=0 fail=0 ; (z,u) with a triangle: 0, some w works: 0

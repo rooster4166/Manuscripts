@@ -8,8 +8,10 @@
    Search.  The path ending at x is built first: it starts x, y, ... and ends at a vertex t != x
    with b(t) = 1.  The rest is an exact search for a decomposition of the remaining edges with
    prescribed end counts (b in {0,1}), branching on the paths starting at a vertex with b = 1 of
-   least remaining degree, with memoised failures keyed by (remaining edges, remaining b) and two
-   necessary conditions (every non-trivial component carries an end; parity is automatic).
+   least remaining degree, with memoised failures keyed by (remaining edges, remaining b) and
+   necessary conditions: every non-trivial component carries an end; deg(v) <= 2P - b(v) and
+   |E| <= P (#active - 1), where P is the number of paths still to be chosen (parity is automatic).
+   Further modes: z (EE only), edq (generic PEE / avoidance / separation queries), l1p, l1s2, sepee.
 
    Modes (argv[1]):
      g6   [flags]   read graph6 lines on stdin (e.g. from nauty-geng); test every graph with at

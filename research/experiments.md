@@ -940,18 +940,19 @@ Manuscript: `manuscripts/prescribed-end/prescribed-end.tex`. Scripts and outputs
 | 5 | 7 | 14 | 0 | 37 | 5 (2) |
 | 7 | 130 | 401 | 0 | 1,910 | 54 (31) |
 | 9 | 11,936 | 47,688 | 0 | 330,449 | 1,410 (1,049) |
-| 11 | ≈ 10⁷ (EE only, `ee11_*.txt`) | see below | 0 | — | — |
+| 11 | 11,959,367 (EE only, `ee11_*.txt`) | 59,688,458 | 0 | — | — |
+| 11, part: first 84,002 graphs of residue 0 mod 100 (geng order), all edges | 84,002 | 409,360 | 0 | 3,694,899 | 1,079 (992) |
 
-- n = 11, EE only: still running when this entry was written; the final line of each `out/ee11_*.txt` has the counts. At 8.0M graphs and 37.9M (z, u) tests there was no failure.
+- n = 11, EE only: complete, covering all connected graphs of order 11 with exactly one even vertex; summary lines in `out/ee11_*.txt`.
 - A partial n = 11 run over all edges (the initial segment of each of three geng slices, killed for time) found 56,739 away failures and 0 EE failures. The failure lines are in `out/exh11_away_partial_fails.txt.gz`.
 
-**(B) Structure of the away failures.** All of the following hold at n = 5, 7, 9:
+**(B) Structure of the away failures.** All of the following hold at n = 5, 7, 9; at n = 11 (the part-slice and the partial run; `out/analyze_fail_11partial.txt`, `out/feat_11partial.txt`); and for the 99 random failures:
 - y ∉ N(z) and dist(x, z) ≤ 2 in every failure;
-- the reverse prescription (xy terminal at y) holds in every failure (5/5, 54/54, 1,410/1,410);
-- d(x) ∈ {3, 5, 7} and d(z) ∈ {2, 4, 6} (`feat.py`).
+- the reverse prescription (xy terminal at y) holds in every failure (5/5, 54/54, 1,410/1,410, and 56,739/56,739 in the partial n = 11 run);
+- d(x) ∈ {3, 5, 7}, d(z) ∈ {2, 4, 6} at n ≤ 9; at n = 11 also d(x) = 9 (1,763 failures) and d(z) = 8 (964) (`feat.py`).
 
 **Reachability** (manuscript §6): xy is reachable if some z–y path has all interior vertices outside N[x].
-- Every failure is unreachable: n = 7, 9 and the partial n = 11 run (56,739 of 56,739).
+- Every failure is unreachable: n = 5, 7, 9, the partial n = 11 run (56,739 of 56,739), the n = 11 part-slice (1,079 of 1,079; reachable away edges 3,266,268, all succeed; unreachable 428,631), and the 99 random failures (`out/rand_A2.txt`, a re-run with the same seed that prints each failure with its reachability).
 - Among all away edges (`sharp.py`):
   - n = 7: 1,451 reachable, all succeed; 459 unreachable, 54 fail.
   - n = 9: 270,875 reachable, all succeed; 59,574 unreachable, 1,410 fail.
@@ -992,7 +993,9 @@ Other invariants:
 | L1*, A = {z} | 5,669 | 0 | 27 |
 | triangle-reduction hypothesis | 44,892 | 0 | 383 |
 
-None of the 99 away failures has y ∈ N(z) or dist(x, z) ≥ 3, and none fails at both ends.
+None of the 99 away failures is reachable, has y ∈ N(z) or dist(x, z) ≥ 3, or fails at both ends.
+
+**Outputs.** Every number above has a file in `scripts/out/` (`regen.sh` regenerates the validation and (C) outputs). Audit A21 recounted orders 5, 7, 9 with an independent solver; all agree.
 
 **Negative results.**
 - PEE is false away from z (5-vertex example).
