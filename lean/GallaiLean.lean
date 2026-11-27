@@ -67,4 +67,5 @@ import GallaiLean.L1Star
 import GallaiLean.NearDirac
 import GallaiLean.StarTerminal
 import GallaiLean.TerminalMatching
+import GallaiLean.TerminalMatching3
 import GallaiLean.TightFan

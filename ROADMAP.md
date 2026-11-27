@@ -530,6 +530,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `ptm2_localgirth`: PTM2 with a prescribed end holds whenever no triangle or 4-cycle passes through an end of the two edges.
   - `test1_of_localgirth`: spine Test1 at d(z) = 4 (z the only even vertex, every neighbour of degree ≥ 3) holds for a pairing ab, cd of N(z) into pairs non-adjacent in J whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
   - Test1 at d(z) = 4 was already known (`rooted_four'`, endpoint-structure Cor 22), so this re-derives it by composition. New: STL-P for the given pairing. First open rung: PTM_3 at d(z) = 6 (T(6)-i).
+  - **d(z) = 6 (Lean, TerminalMatching3.lean):**
+    - `ptm3_of_base` (chained walk theorem);
+    - `ptm3_of_far`, and `test1_of_chains3`: Test1 J z when N(z) is pairwise at distance ≥ 3 in J − z and admissible chains exist for every r. **Audit A22c (E2): this Test1 case is already known.** Six-even-incidence Thm 1(2) applies, since |S(x)| ≤ 1. So this is a new, conditional proof of a known case. New: STL-P with three prescribed transitions.
+    - Data: every pairing satisfies PTM_3(r) for 3-connected J (exhaustive to order 9, random to 17).
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.
@@ -541,3 +545,11 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Negative lemmas: flower outputs are never Lovász decompositions.
   - **Data:** in the tight case, the forced chain avoiding the protected end is necessary and sufficient. Every L∞ residual at n = 9 closes for some (u, D′). All 68 PTM no-walk instances close.
   - **Open:** L1Blocked, specifically its hypothesis side: an induction class containing the good-but-inadmissible instances.
+- **CORRECTED (audit A22c, E2): a new proof of a KNOWN case at d(z) = 6, not a new case of T(6)-i (ptm 31eadcb, TerminalMatching3.lean; standard axioms, verified).** Far-apart N(z) gives |S(x)| ≤ 1 for every odd x. Six-even-incidence Thm 1(2) (every |S(x)| ≤ 2 ⇒ every root passes; audited A6 I6/I7) already closes this case.
+  - What is new: STL-P with three prescribed transitions, and the chained-walk mechanism.
+  - The open T(6)-i residual is the *dense* regime: B[U] nearly complete, D ∈ {∅, K2, P3, K3, C4}. That is the opposite extreme from far-apart.
+  - `test1_of_chains3`: Test1 J z holds when N(z) is pairwise at distance ≥ 3 in J − z (`FarNbrs`) and, for every r ∈ N(z), some labelled pairing with r long has an admissible chain (`AdmChain`).
+  - Engine: `ptm3_of_base`, the chained walk theorem, and `ptm3_of_far`, where the base is automatic by sparse separation.
+  - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
+  - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
+  - Audit A22c: the mathematics is sound (paper and Lean). Its fixes are applied on claude/ptm (0353495).

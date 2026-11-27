@@ -12,9 +12,20 @@ Experiment log: `research/experiments.md`, E24. Conclusions: `research/connectio
   - `ptm2_girth5`: PTM₂ with one prescribed end for every all-odd graph of girth ≥ 5 (reachability between the edges suffices).
   - `stl_of_ptm2`, `stl_of_girth5`, `test1_of_girth5`: the STL / Test1 consequences at d(z) = 4, through `test1_of_stl`.
 - **Audit A22**: no error in any proof; corrections to claims applied (STL citation numbers, K₄ caveats, the base problem has genuine NOBASE failures, EE needs a non-adjacent complementary pair).
+- **Audit A22c** (degree six, `research/audit/A22c-chain.md`): Theorem 8.2, Prop 8.3 and Cor 8.4 are correct on paper and in Lean; the proof of 8.2 was executed about 100k times. Fixes applied: E1 (an order-9 reach count), E2 (the far-apart Test1 case is known), G1 (y3 ∉ P1, as in Lean), G2 (the m-edge remark softened), and nits.
 - **Audit A22b** (local girth five, Theorem 6.1 and Corollary 7.2 local forms): sound, no error; every excluded short cycle passes through an end of the two edges; `NoShortCycleAt` proved equivalent to Mathlib's cycle-length form (`A22b-scripts/A22bSemantics.lean`). Statement-level wording fixes applied.
 - **Scope.** Test1 at d(z) = 4 was already known (endpoint-structure Cor 22, `rooted_four'`; Botler–Sambinelli). The new content at d = 4 is STL-P for the given pairing and the composition method (Remark 7.3). The first open rung is d(z) = 6: PTM_3 for perfect matchings of N(z), which would give T(6)-i.
-- **Open.** PTM₂ beyond the sparse case (the base problem alone is not enough: 832 NOBASE instances at n = 8); PTM_m for m ≥ 3; the multigraph case (Conjectures 2.3, 2.4).
+- **Degree six (§8).** Every pairing of N(z) satisfies PTM_3(r) for 3-connected J: exhaustive at orders 7 and 9, random to 17, 0 failures. This section contains:
+  - the chained walk theorem (Thm 8.2, `ptm3_of_base`);
+  - the far-apart form (Prop 8.3, `ptm3_of_far`);
+  - STL-P with three transitions, and Test1, at d(z) = 6 for far-apart N(z) given chains (Cor 8.4, `stl3_of_far`, `test1_of_chains3`). The Test1 part re-derives a known case (six-even-incidence Thm 1(2); Remark 8.5, audit A22c E2).
+
+  The Lean is in `lean/GallaiLean/TerminalMatching3.lean`; `PTM3Axioms.lean` prints the axioms. The data scripts are `gen_d6.py`, `d6_pairings.py`, `walk3.c`, `d6_cover.py` and `d6_reach.py`.
+- **Open.**
+  - PTM₂ beyond the sparse case. The base problem alone is not enough: there are 832 NOBASE instances at n = 8.
+  - PTM_m for m ≥ 3 in general, and the multigraph case (Conjectures 2.3, 2.4).
+  - The chain conjecture (Conj 8.6), which would make `stl3_of_far` unconditional for far-apart degree-6 vertices of 3-connected J. Evidence: 1,184 graphs, 0 counterexamples (`chain_search.py`, `d6_reach.py`).
+  - The real target at d = 6: the base problem for dense B[N(z)], the open T(6)-i residual.
 - **Counterexamples.** K₄ with a perfect matching (PTM₂); the prism with its rungs (PTM₃, G − F disconnected).
 
 ## Reproduction (`scripts/`)

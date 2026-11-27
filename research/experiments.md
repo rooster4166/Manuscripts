@@ -1120,7 +1120,7 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 | order 11, random (degrees 6 and 3/5, seed 611) | 200 | 3,000 (1,625) | 0 | 18,000 / 0 |
 | order 13, random (seed 613) | 200 | 3,000 (1,327) | 0 | 18,000 / 0 |
 | order 15, random (seed 615, first 300; budget 2·10⁶) | 300 | 4,500 (1,886) | 0 (0 UND) | 27,000 / 0 |
-| order 17, random (seed 617, first 300; budget 2·10⁶) | 300 | pending | pending | pending |
+| order 17, random (seed 617, first 300; budget 2·10⁶) | 300 | 4,500 (1,619) | 0 (0 UND) | 27,000 / 0 (3 UND at 2·10⁶, all positive at 10⁸: `out/d6_r17_und.out`) |
 
 - **Every pairing works at d(z) = 6 when J is 3-connected**, parallel pairs included, with any one prescribed end.
 - The prism-with-rungs failure of PTM_3 has J − z disconnected, so it does not occur here.
@@ -1144,6 +1144,29 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 |---|---|---|---|---|---|
 | N(z) pairwise at distance ≥ 3 in J − z | 0 | 1 | 15 | 69 | 99 |
 | of which every r has a chain | 0 | 1 | 15 | 69 | 99 |
+
+**Chain existence (manuscript Conjecture 8.6).** `chain_search.py COUNT SEED EXTRA` (`out/chain_search.log`) is an adversarial search:
+- J: z, its six neighbours, two private neighbours each (so N(z) is far apart), EXTRA further degree-3 vertices, outer edges wired at random; 3-connected, all degrees off z odd.
+- Chains are searched exactly: every P2, then a BFS for P1 avoiding P2's edges. This uses Definition 8.1 as now stated, with y1 free.
+
+| EXTRA | order | graphs | some r uncovered | r needing r ∈ {y2, y3} |
+|---|---|---|---|---|
+| 0 | 19 | 100 | 0 | 0 |
+| 2 | 21 | 100 | 0 | 0 |
+| 4 | 23 | 100 | 0 | 0 |
+| 6 | 25 | 100 | 0 | 0 |
+
+Second family (`chain_search.py 100 SEED EXTRA 3 BRIDGES`, `out/chain_search_halves.log`): two halves, each holding three neighbours of z with their private pairs and EXTRA/2 extra vertices, wired separately and joined by BRIDGES edges. So J − z has a 2- or 4-edge cut while J is 3-connected.
+
+| EXTRA | order | BRIDGES 2: graphs / uncovered | BRIDGES 4: graphs / uncovered |
+|---|---|---|---|
+| 4 | 23 | 100 / 0 | 100 / 0 |
+| 8 | 27 | 100 / 0 | 100 / 0 |
+| 12 | 31 | 100 / 0 | 100 / 0 |
+
+r = y1 always suffices, which is why Conjecture 8.6 is stated with y1 = r.
+
+Audit A22c (G1): the Lean `AdmChain` takes N(x3) in G, so P1 avoids y3. `d6_reach.py` and `chain_search.py` now exclude y3 from P1, and all three tables were re-run with identical counts. The logs now record BRIDGES. The PEE cross-check is reproducible with `scripts/ptm_pee.sh` (207 failures on the order-9 simple instances).
 
 **Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.
 

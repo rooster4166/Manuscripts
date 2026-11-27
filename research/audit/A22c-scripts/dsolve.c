@@ -184,6 +184,14 @@ static int ext_left(void) {
 }
 
 static int prune(void) {
+  /* special edges: each needs its own path and a terminal end that still needs an end */
+  int ns = 0;
+  for (int e = 0; e < m; e++) if (spec[e] != -2 && ((rem >> e) & 1)) {
+    ns++;
+    if (spec[e] >= 0) { if (!((bm >> spec[e]) & 1)) return 0; }
+    else if (!((bm >> EU[e]) & 1) && !((bm >> EV[e]) & 1)) return 0;
+  }
+  if (2 * ns > __builtin_popcountll(bm)) return 0;
   /* parity and capacity at each vertex; every component of the remaining edges has >= 2 ends */
   for (int v = 0; v < n; v++) {
     int d = degrem(v), b = (bm >> v) & 1;

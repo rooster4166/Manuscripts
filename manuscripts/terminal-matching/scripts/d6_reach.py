@@ -56,7 +56,8 @@ def chain(H, X, Y):
     if P2 is None:
         return False
     used = {frozenset(e) for e in zip(P2, P2[1:])}
-    P1 = bfs_path(H, y2, x1, lambda w: w not in (y1, x2, x3, x1) and w not in N2 and w not in N3,
+    # P1 avoids N_G(x3), which contains y3 through the F-edge x3y3 (as in the Lean AdmChain)
+    P1 = bfs_path(H, y2, x1, lambda w: w not in (y1, x2, x3, x1, y3) and w not in N2 and w not in N3,
                   used)
     return P1 is not None
 
