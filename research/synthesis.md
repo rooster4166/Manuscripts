@@ -250,3 +250,49 @@ No hypothesis of the form "δ ≥ c" or "λ ≥ c" rescues the cut characterisat
 TRC is trivially true at n ≤ 8, where every cut-feasible half-set is realisable. Informative tests are the counterexample families (orders 12, 18, 20, 28, and G_r) and larger random graphs.
 
 **Next.** First try to refute TRC (the emm3-gadgets session, the natural adversary). If it survives, attack its single descent step: removing one vertex of a pair, guided by the route structure.
+
+## 16. Gadget section written; hardness at even degrees ≥ 4; TRC versus gadgets (emm3-gadgets session, 2026-11-27)
+
+- **Manuscript.** endpoint-min-max §6, "Minimum degree three and beyond: forcing gadgets", follows the hardness section. It contains:
+  - the restriction and closing lemmas (Lemmas 29, 31);
+  - Hamiltonian realisations and K_{2r} blocks (Lemmas 33, 34);
+  - the cycle multigraph M_r and the gadgets D_r (Lemma 36, Prop 38);
+  - arms across a cut and substitution (Lemmas 39, 40);
+  - Thm 41 (G₁₈, δ = 3), Thm 42 (G_r, δ = λ = 2r) and Thm 45.
+
+  Remark 28 and the open problems are updated, so EMM₃ is no longer listed as open. All proofs are oracle-free.
+- **Thm 45 (new).** Replace the saturated tail of the Kotzig graph G(H) by a clique S of N marked vertices joined to u₁…u₄. The resulting G′(H) is 4-edge-connected, with all degrees even and ≥ 4. The half-set S is cut-feasible, and it is realisable iff H is Hamiltonian. So **NP-completeness holds at δ ≥ 4 and λ ≥ 4**, as §12 predicted. G′(Petersen) has n = 28.
+- **Smallest gadget.** No two-leaf forcing gadget has order ≤ 9 (exhaustive, 1.46 × 10⁸ profiles at order 9). D₂ (order 10) is smallest. The first 4-regular graphs with a forced transition have order 11.
+- **TRC.**
+  - None of the failing half-sets is a transversal of a Thm 21 pairing. They starve the gadget, and edge-disjoint routes allow only |δ(D_r)| = 2r crossing pairs.
+  - On G₁₈ itself, the Thm 21 pairings tested have no pair crossing δ(D₂). So every transversal puts 4 marks into D₂, and all 2,560 transversals of 10 distinct pairings are realisable (`tools/realis_wide.c`, `trc_probe.py`).
+  - A gadget attack on TRC needs a *balanced* forcing gadget, with about half its even vertices marked. None exists at order ≤ 9.
+
+## 17. Route deletion: TRC reduces to one extension lemma (2026-11-27)
+
+The Theorem 21 class is closed under deleting a route, and the base case is Lovász's theorem. TRC, and with it Gallai, therefore comes down to a single extension step. Each step below is elementary and is written out in full.
+
+**Setting.** (G, J, P, R) is a *Thm-21 system*:
+- G is a graph whose components all have even order;
+- J is a forest T-join for T = Ev(G), and F = G − J;
+- R = {R_p : p ∈ P} decomposes J into edge-disjoint paths pairing Ev;
+- at every v, the transitions of R (its passages, plus the end edge if v ∈ Ev) are joined by pairwise edge-disjoint paths of F^v. This is the hypothesis of Lemma linked; Theorem 21 produces such systems on every connected G.
+
+**(U) Upward closure.** If S is realisable and x ∈ Ev ∖ S, then S + x is realisable. Since b(x) = 0, x is interior to some path; split that path at x. Hence TRC is equivalent to "every S ⊆ Ev meeting every pair of P is realisable", and the realisable sets form an up-set.
+
+**(H) Heredity.** Let p = {a, c} and G' = G − E(R_p). Parities change only at a and c, so Ev(G') = Ev − {a, c}. J' = J − E(R_p) is a forest T-join for Ev(G'), and F' = F. For every v, N_{G'}(v) = N_G(v) minus v's R_p-neighbours, so F'^v = F^v + {vw : w an R_p-neighbour of v} ⊇ F^v. The transitions at v in G' are a subset of those in G, and their old linking paths still lie in F'^v. Linking paths do not leave a component: a path can pass through v only once, and F-edges stay inside components. So (G', J', P − p, R − R_p) is again a Thm-21 system, applied componentwise. Every component of G' has even order, because pairs lie within components.
+
+**(B) Base.** If P = ∅, all degrees are odd, and by Lovász's theorem G decomposes into n/2 paths. Each vertex is then an end of exactly one path. This is the profile b_∅.
+
+**(E) Extension.** Let M be a transversal with a ∈ M and c ∉ M. Suppose D' realises M − a in G'. In G', a and c are odd, each the end of exactly one path, Q_a and Q_c. If V(Q_c) ∩ V(R_p) = {c}, then Q_c ∪ R_p is a path with ends a and the far end of Q_c. Replacing Q_c by it realises M in G: a now has 2 ends, c has 0, and the path count is unchanged. If Q_c = Q_a, the condition fails automatically.
+
+**Reduction.** TRC holds if, for every Thm-21 system, every transversal M and some pair p (the order of deletion is free), the inductive realisation D' of G' can be chosen with V(Q_c) ∩ V(R_p) = {c}. The whole difficulty is this **extension lemma**. It is the classical Lovász obstruction, now localised to one route and one end-path. The induction hypothesis must be strengthened so that it hands down end-paths avoiding a prescribed route. Choosing that strengthening is the research problem.
+
+**Existential form (enough for Gallai).** We only need one transversal containing r. At every pair not containing r, either end may be extended: Q_c ∪ R_p, which marks a, or Q_a ∪ R_p, which marks c. Only r's own pair is forced. So the existential induction fails at a pair only if *both* end-paths meet the route.
+
+**Assigned** to the route-descent session (ROADMAP). Its order of work:
+1. falsification on the counterexample families;
+2. measure the extension step;
+3. strengthen the invariant;
+4. compare with the existential version;
+5. bank the special classes (single-edge routes, star-forest J, linkages) as a manuscript plus Lean.

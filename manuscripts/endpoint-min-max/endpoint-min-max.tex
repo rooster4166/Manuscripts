@@ -18,6 +18,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem*{remark*}{Remark}
 \newtheorem*{example*}{Example}
+\newtheorem*{conjecture*}{Conjecture}
 
 \newcommand{\Ev}{\mathrm{Ev}}
 \newcommand{\Od}{\mathrm{Od}}
@@ -44,7 +45,11 @@ complementing the star at $v$.
 an explicit pairing of its even vertices such that every half-set with one vertex from each pair
 satisfies all the inequalities. The construction takes the $T$-join of a spanning tree. At each
 vertex it chooses the transitions of the $T$-join by the $T$-join pairing lemma in the free part of
-$G^v$. A parity lemma makes the odd vertices there exactly the ends of these transitions.
+$G^v$. A parity lemma makes the odd vertices there exactly the ends of these transitions. The proof
+glues the free parts of all the $G^v$ into one auxiliary graph, and applies the pairing lemma to it
+once. It is verified in Lean. We
+conjecture that every half-set with one vertex from each pair of such a pairing is realisable
+(Conjecture~TRC). This would imply Gallai's conjecture, and cut selection is its necessary half.
 \item \emph{Sufficiency fails, and characterisation is hard.} The inequality suffices for every graph
 of order at most eight and in the dense range, but not in general. Following a construction of the
 project lead, we prove the following. For every connected bridgeless cubic graph $H$ there is a graph
@@ -251,7 +256,8 @@ However, (R) gives a partition into $n/2$ paths with an end at $r$ that need not
 (ES Corollary~6). Theorem~\ref{thm:ps} proves CS outright. Section~\ref{sec:hard} shows that a
 cut-feasible half-set need not be realisable. So cut selection by itself says nothing about Gallai's
 conjecture, and we make no such claim. Its role in the project is as a guide for an existential
-descent towards (R$_s$) (\texttt{research/synthesis.md}~\S13).
+descent towards (R$_s$) (\texttt{research/synthesis.md}~\S13). The precise form of this hope is
+Conjecture~TRC in Section~\ref{sec:trc}, whose necessary half is Theorem~\ref{thm:ps}.
 \end{remark}
 
 \subsection{Caps, matroids and EMC}\label{sec:caps}
@@ -566,15 +572,69 @@ an end edge when $z$ is paired with $v$.
 \end{theorem}
 
 \begin{proof}
-At each vertex the transitions pair up the $J$-edges, leaving exactly one unpaired edge at the
-vertices of odd $J$-degree, that is, at $\Ev$. Following transitions therefore decomposes $J$ into
-edge-disjoint trails and closed trails, and every trail ends at two vertices of $\Ev$, each the end of
-exactly one trail. Since $J$ is a forest, there are no closed trails, and no trail repeats a vertex.
-(A trail that revisits a vertex contains a closed subtrail, and the edge set of a closed trail
-contains a cycle.) So the trails are edge-disjoint paths pairing $\Ev$. Their transitions at each $v$
-are linked in $F^v$ by construction. At a vertex with $d_J(v)=0$ there is nothing to link, because
-then $v\in\Od$ (by the parity of $d_J$) and $v$ has neither passages nor an end edge. So
-Lemma~\ref{lem:linked} shows that the pairing is good.
+Let $J$ be any $T$-join for $T=\Ev$, and let $F=G-J$. Build a graph $B$ on $V\times V$, and call
+$\{v\}\times V$ the \emph{copy} of $v$. The copy of $v$ carries $F^v$: join $(v,w)$ and $(v,w')$
+whenever $ww'\in E(F^v)$. In addition, each edge $vx\in J$ joins $(v,x)$ and $(x,v)$.
+
+\emph{Parity.} We have $\deg_B(v,w)=\deg_{F^v}(w)+[vw\in J]$. By Lemma~\ref{lem:free}, this is even
+when $w\neq v$, and $\deg_B(v,v)=\deg_{F^v}(v)$ is odd exactly when $v\in\Ev$. So the odd vertices of
+$B$ are the diagonal vertices $(v,v)$ with $v\in\Ev$.
+
+\emph{Cuts.} Fix $v$ and $Y\subseteq V-v$, and put
+\[
+S=\{(u,w):u\neq v,\ u\in Y\}\cup\{(v,w):w\in Y\}.
+\]
+An edge inside the copy of some $u\neq v$ has both ends in $S$ or neither. An edge inside the copy of
+$v$ leaves $S$ exactly when it lies in $\delta_{F^v}(Y)$. For $ab\in J$ with $a,b\neq v$, the edge
+$(a,b)(b,a)$ leaves $S$ exactly when $ab\in\delta_{J-v}(Y)$. For $vb\in J$, both ends of $(v,b)(b,v)$
+lie in $S$ if $b\in Y$, and neither does otherwise. Hence, by~\eqref{eq:split},
+\[
+|\delta_B(S)|=|\delta_{F^v}(Y)|+|\delta_{J-v}(Y)|=|\delta_{G^v}(Y)|.
+\]
+Moreover $(u,u)\in S$ if and only if $u\in Y$, because $v\notin Y$.
+
+\emph{Goodness.} Let $P$ be a pairing of $\Ev$, and suppose that the diagonal vertices $(a,a)$ and
+$(b,b)$ of each pair $\{a,b\}$ of $P$ are joined by a path of $B$, the paths being pairwise
+edge-disjoint. Then, for every $v$ and $Y$ as above, the path of each pair split by $Y$ crosses
+$\delta_B(S)$. So $\sigma_P(Y)\le|\delta_B(S)|=|\delta_{G^v}(Y)|$, and $P$ is good by
+Lemma~\ref{lem:pairing}. By Lemma~\ref{lem:tjoin}, applied to $B$, such paths exist for some $P$.
+This proves the first statement.
+
+\emph{The construction.} Now let $J$ be a forest, and choose the transitions as in step~2. At each
+vertex the transitions pair up the $J$-edges, leaving exactly one unpaired edge at the vertices of odd
+$J$-degree, that is, at $\Ev$. Following transitions therefore decomposes $J$ into edge-disjoint
+trails and closed trails, and every trail ends at two vertices of $\Ev$, each the end of exactly one
+trail. Since $J$ is a forest, there are no closed trails, and no trail repeats a vertex. (A trail
+that revisits a vertex contains a closed subtrail, and the edge set of a closed trail contains a
+cycle.) So the trails are edge-disjoint paths pairing $\Ev$. Lift such a path $v_0v_1\cdots v_m$ to
+$B$ as follows.
+\begin{itemize}
+\item In the copy of $v_0$, take the path of step~2 from $(v_0,v_0)$ to $(v_0,v_1)$.
+\item Then take the edge $(v_0,v_1)(v_1,v_0)$.
+\item In the copy of $v_1$, take the path of step~2 from $(v_1,v_0)$ to $(v_1,v_2)$.
+\item Continue in this way, ending in the copy of $v_m$ with the path from $(v_m,v_{m-1})$ to
+$(v_m,v_m)$.
+\end{itemize}
+The route visits each vertex once, so the lift is a path of $B$. The paths of step~2 at one vertex are
+edge-disjoint, and each edge of $J$ lies on one route. So the lifts are pairwise edge-disjoint, and
+the pairing is good by the previous paragraph.
+\end{proof}
+
+Conversely, a path of $B$ leaves the copy of $v$ only along an edge $(v,x)(x,v)$ with $vx\in J$. So it
+projects to a trail of $J$, and its segment inside the copy of $v$, from $(v,x)$ to $(v,y)$, links the
+transition $\{x,y\}$ at $v$ in $F^v$. When $J$ is a forest, edge-disjoint paths of $B$ pairing its odd
+vertices use every edge $(v,x)(x,v)$. Indeed, the unused edges form an even graph, and a cycle through
+such an edge would project to a closed trail of $J$. So for a forest $J$, the pairings obtained from
+$B$ by Lemma~\ref{lem:tjoin} are exactly those of the construction. The single graph $B$ carries all
+$n$ cut conditions at once, so no simultaneity argument is needed. This is the proof formalised in
+Lean (Section~\ref{sec:lean}). The construction was first derived from Lemma~\ref{lem:linked}, as
+follows.
+
+\begin{proof}[Second proof of the construction, via linked transitions]
+As in the first proof, following the transitions gives edge-disjoint paths of $J$ pairing $\Ev$.
+Their transitions at each $v$ are linked in $F^v$ by construction. At a vertex with $d_J(v)=0$ there is
+nothing to link, because then $v\in\Od$ (by the parity of $d_J$) and $v$ has neither passages nor an
+end edge. So Lemma~\ref{lem:linked} shows that the pairing is good.
 \end{proof}
 
 So the cut inequality can always be met, by an explicit half-set, and even by every transversal of
@@ -590,6 +650,8 @@ connected graphs of orders $6$ and $8$ and $1{,}133$ further graphs of orders $4
 orders $8$, $10$, $12$, cycles, complete bipartite graphs, random graphs), in about $113{,}000$
 constructions, and found no failure.
 
+\subsection{Transversals of the constructed pairings}\label{sec:trc}
+
 \begin{remark*}[transversals of good pairings]
 A good pairing may have a non-realisable transversal. In \texttt{KsOeBW??G`?A} the pairing
 $\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\ 7\,10\}$ is good, and its transversal $\{3,4,8,9,10\}$ is the
@@ -597,6 +659,33 @@ non-realisable half-set of the example in Section~\ref{sec:hard}. No pairing pro
 Theorem~\ref{thm:ps} has that transversal: $3\,10$ and $8\,9$ are bridges that lie in every $T$-join,
 and each is a whole route.
 \end{remark*}
+
+Call a pairing of $\Ev$ \emph{constructible} if Theorem~\ref{thm:ps} produces it for some forest
+$T$-join $J$ and some choice, at each vertex $v$, of edge-disjoint paths of $F^v$ pairing the odd
+vertices of $F^v$. Audit A13 (\texttt{research/audit/A13-cut-selection.md}) examined the twelve graphs
+of order $12$ that have a non-realisable cut-feasible half-set. In all twelve, no non-realisable
+half-set is a transversal of a constructible pairing. In eight of them the complement of every such
+half-set fails~\eqref{eq:one}, so the half-set is a transversal of no good pairing. In the other four,
+every such half-set contains both ends of a one-edge route that every construction produces, as in
+the remark. The failing half-sets of Section~\ref{sec:gadgets}, and $\mathcal L$ in
+$G(\text{Petersen})$, are not transversals of constructible pairings either. They \emph{starve} a region behind a small cut. The routes of a
+constructible pairing are edge-disjoint, so a cut of $c$ edges splits at most $c$ of its pairs
+(Section~\ref{sec:survives}). For example, $\mathcal L$ in $G(\text{Petersen})$ would need $14$ split
+pairs across a cut of $4$ edges.
+
+\begin{conjecture*}[TRC, transversal realisability]
+Let $G$ be a connected graph of even order. Every transversal of every constructible pairing of $\Ev$
+is realisable.
+\end{conjecture*}
+
+Theorem~\ref{thm:ps} is the necessary half of TRC: every such transversal is cut-feasible. TRC
+implies Gallai's conjecture. A realisable half-set gives a partition into $n/2$ paths, and a
+connected graph of odd order $n$ reduces to even order. Indeed, one adds a pendant edge, partitions
+the new graph into $(n+1)/2$ paths, and deletes the pendant edge. TRC also gives (R$_s$) at every even
+vertex $r$: take the transversal containing $r$. TRC holds trivially at order $\le8$, where every
+cut-feasible half-set is realisable. The order-$12$ graphs above, $G_{18}$, the graphs $G_r$ and
+$G'(H)$ of Section~\ref{sec:gadgets}, and larger random graphs are the informative tests
+(\texttt{research/synthesis.md}~\S15).
 
 \begin{remark*}[certificates and guards]
 Before Theorem~\ref{thm:ps} was found, \texttt{scripts/certificates.py} certified PS at every order
@@ -614,8 +703,8 @@ exactly, but separately for each $v$. In $G^v$ the vertex $v$ is joined to its $
 non-neighbours, and in the proof it is $F^v$, the free part of $G^v$, that carries the linking paths.
 No single global network can work. The conditions at different vertices define different matroids
 (Theorem~\ref{prop:pervertex}), and their intersection is not a matroid in general. Simultaneity is
-achieved instead by fixing $J$ first: the $n$ cut systems then decouple into independent choices of
-transitions.
+achieved instead by fixing $J$ first. The $n$ cut systems then decouple into independent choices of
+transitions, and the auxiliary graph $B$ glues them back into one graph.
 \item \emph{Parity.} Lemma~\ref{lem:free} is the heart of the argument. Because $J$ is a $T$-join for
 exactly the even vertices, every vertex keeps an odd number of free edges. The odd vertices of $F^v$
 are then precisely the ends of the transitions at $v$, so the $T$-join lemma links them.
@@ -1553,23 +1642,40 @@ yes & yes & yes & yes & yes & 1{,}050\\
 The script also verifies Theorem~\ref{prop:pervertex} by brute force: every $\cF_v$ is a matroid
 basis family, at orders $6$ and $8$.
 
-\section{Formalisation}
-The shared Lean definitions are fixed in \texttt{research/connections.md}~\S U. We recommend the arm
-form (c) as the definition, since its quantifiers are the simplest, with (a) proved equivalent.
-Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing}, Lemma~\ref{lem:free}, Lemma~\ref{lem:linked} and
-Theorem~\ref{thm:ps} are finite and elementary, so Theorem~\ref{thm:ps} (\texttt{cs\_all}) is the
-natural target. Lemma~\ref{lem:linecuts} and Propositions~\ref{prop:Lfeasible} and~\ref{prop:Lreal}
-are also elementary. Kotzig's theorem would be an imported hypothesis.
+\section{Formalisation}\label{sec:lean}
+The shared Lean definitions are fixed in \texttt{research/connections.md}~\S U.
+Theorem~\ref{thm:ps} is formalised as \texttt{cs\_all} in \texttt{lean/GallaiLean/CutSelection.lean}.
+For a connected graph $G$ of even order, it gives a pairing of $\Ev$ every transversal $M$ of which
+satisfies \texttt{CutOK} for $b_M$ and $k=n/2$. Here \texttt{CutOK} consists of the local
+inequalities $b\le d$ and $d+b\le2k$ together with inequality~\eqref{eq:one} for every $v$ and every
+$W\subseteq V-v$. The proof is the first proof of Theorem~\ref{thm:ps}:
+\begin{itemize}
+\item the $T$-join is built from paths to a fixed vertex by symmetric differences;
+\item the proof uses Lemma~\ref{lem:tjoin} only in its cut form, which is proved in
+\texttt{PairingLemma.lean}: the odd vertices of any graph pair up so that every vertex set splits at
+most as many pairs as it has boundary edges.
+The proof deletes one edge at a time and uses the triangle inequality for being separated by $S$;
+\item the graph $B$ carries its parity and cut identity;
+\item an algebraic identity turns the cut condition in $G^v$ into~\eqref{eq:one}.
+\end{itemize}
+There is no \texttt{sorry}, and only the standard axioms are used. Lemma~\ref{lem:linecuts} and
+Propositions~\ref{prop:Lfeasible} and~\ref{prop:Lreal} are also elementary. Kotzig's theorem would
+be an imported hypothesis.
 
 \section{Open problems}
 \begin{enumerate}
+\item \emph{The main problem: Conjecture~TRC} (Section~\ref{sec:trc}). Is every transversal of every
+constructible pairing realisable? Theorem~\ref{thm:ps} is its necessary half, and TRC implies Gallai's
+conjecture. A natural line of attack is a descent, one vertex of a pair at a time, guided by the
+routes of $J$. By the discussion before the conjecture, a counterexample cannot starve a region
+behind a small cut.
 \item Forcing gadgets (Section~\ref{sec:gadgets}).
 \begin{itemize}
 \item Is $18$ the least order of a non-realisable cut-feasible half-set at minimum degree $3$? No
 two-leaf gadget has order at most $9$.
 \item Is there a forcing gadget with about half of its even vertices marked? Only such a gadget could
-produce a failing transversal of a good pairing; see the remark on starving half-sets in
-Section~\ref{sec:survives}.
+produce a failing transversal of a constructible pairing, and so refute TRC; see the remark on
+starving half-sets in Section~\ref{sec:survives}.
 \item Does high vertex connectivity make cut-feasibility sufficient? The full blow-ups are
 $(2r-1)$-connected for $r=2,3$.
 \end{itemize}
