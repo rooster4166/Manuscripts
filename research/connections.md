@@ -1090,7 +1090,7 @@ What L1 does and does not give:
 - The leaf-at-u variant gives b(z) = 2.
 - The even vertex cannot be kept near c either: after deleting cu at z = c, the new even vertex u may lie far from c in the smaller graph.
 
-So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n ≤ 15) shows no failure.
+So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n ≤ 15) shows no failure. A targeted test of the residual configuration itself (E20, `residual_test.py`) also shows no failure, in 1,531 instances. The obstruction is in the method, not in the statement.
 
 ### V.4b Lean: Gallai ⟸ RR (formal)
 `RouteSystem.lean`: **`gallai_of_routeRR`** and **`gallai_of_routeRRExists`**. If every connected graph of even order has a pairing of its even vertices, routed by edge-disjoint paths, such that for every transversal (resp. one through each even vertex) the free graph has an M-compatible Lovász decomposition (RR1 + RR2), then Gallai holds.
