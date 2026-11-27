@@ -501,3 +501,7 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `test1_of_girth5`: let z be the only even vertex with d(z) = 4, N(z) = {a, b, c, d}, and ab, cd ∉ E(J). Suppose every neighbour of z has degree ≥ 3, and liftJ = (J − z) + ab + cd has girth ≥ 5 with c reachable from a. Then **spine Test1 holds at J, z**.
   - The chain is ptm2_girth5 ⇒ `stl_of_ptm2` ⇒ STL ⇒ `test1_of_stl`.
   - This is the first unconditional case of a spine test obtained through the star-terminal / terminal-matching ladder.
+- **L1* reduced to blocked instances, in Lean (l1star 35e03f2, L1Star.lean; standard axioms, verified).** `l1starGen_of_blocked : L1Blocked → L1StarGen` (L1* for any finite admissible A) and `ee_of_l1Blocked : L1Blocked → EE`. Here a *blocked* instance has c ∉ N(g) and every neighbour of g adjacent to a vertex of A ∖ {g}.
+  - The proof is Lovász's induction with four reductions (Fan with vertex sets, leaf graphs).
+  - Blocked instances make up 3.4% of the |A| ≤ 2 cases at n = 9, all with d(g) ∈ {2, 4}.
+  - The exhaustive n = 11 run of the local form is about 75% done, with 0 failures.
