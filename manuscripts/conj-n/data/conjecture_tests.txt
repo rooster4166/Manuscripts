@@ -1,0 +1,31 @@
+# Conjecture tests (exhaustive over the stated graphs; exact oracle)
+## N (ncert.cpp, old calculus of l1-induction Thm 3.1 + bases)
+n=5 NCERT instances=12 (x~g 6) certified=12 uncertified=0 (good 0, not good 0)
+n=7 NCERT instances=1161 (x~g 657) certified=1161 uncertified=0 (good 0, not good 0)
+n=9 NCERT instances=263264 (x~g 134911) certified=263149 uncertified=115 (good 115, not good 0)
+## N+ : (G,y,{x},N(x)) for N instances (nplus.cpp)
+n=5 NPLUS total=12 ok=6  (x~g: 6 ok 6)
+n=7 NPLUS total=1161 ok=1124  (x~g: 657 ok 657)
+n=9 NPLUS total=263264 ok=262847  (x~g: 134911 ok 134911)
+## (x)-child of x~g instances, core = N(g)-{x,y} inside N(x) (tx.cpp)
+n=5 TX total=6 ok=6 core=1 okcore=1 sanity_mismatch=0
+n=7 TX total=657 ok=652 core=110 okcore=110 sanity_mismatch=0
+n=9 TX total=134911 ok=134869 core=18315 okcore=18315 sanity_mismatch=0
+## Q_c avoids g, far version (gplus.cpp)
+n=5 GPLUS total=8 far_ok=4 plain_ok=8
+n=7 GPLUS total=338 far_ok=327 plain_ok=338
+n=9 GPLUS total=46638 far_ok=46553 plain_ok=46638
+## TRN (trn.cpp), one forbidden vertex, both y~g and y!~g
+n=5 TRN tests y!~g=4 (viol 0)  y~g=10 (viol 0)
+n=7 TRN tests y!~g=787 (viol 0)  y~g=1060 (viol 0)
+n=9 TRN tests y!~g=236891 (viol 0)  y~g=254032 (viol 0)
+order 11 slices 17/2000 and 517/2000: TRN tests y!~g=178485 (viol 0)  y~g=187180 (viol 0) | TRN tests y!~g=207816 (viol 0)  y~g=258304 (viol 0)
+## TR* with c~g (tradj.cpp): n=5,7 all A; n=9 |A|<=2
+n=5 TRADJ tests=10 violations=0
+n=7 TRADJ tests=2036 violations=0
+n=9 TRADJ tests=565744 violations=0
+## NA (nadj.cpp), all-odd connected graphs
+n=4 NADJ total=3 ok=3
+n=6 NADJ total=129 ok=129
+n=8 NADJ total=4970 ok=4970
+n=10 (32851 out/allodd10.g6) NADJ total=1305621 ok=1305621

@@ -79,3 +79,5 @@ import GallaiLean.EulerianCone
 import GallaiLean.CycleInsert
 import GallaiLean.RETight
 import GallaiLean.DLOne
+import GallaiLean.ConjN
+import GallaiLean.ConjNFar
