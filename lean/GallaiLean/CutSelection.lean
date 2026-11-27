@@ -363,4 +363,193 @@ theorem odd_degree_auxB (hXG : ∀ e ∈ X, e ∈ G.edgeSet)
 
 end parity
 
+section cut
+
+variable {V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+  (X : Finset (Sym2 V))
+
+/-- `G^v`: the edges of `G` not at `v`, together with `v` joined to its non-neighbours. -/
+def starComp (v : V) : SimpleGraph V where
+  Adj w w' := (w ≠ v ∧ w' ≠ v ∧ G.Adj w w') ∨ (w = v ∧ w' ≠ v ∧ ¬ G.Adj v w') ∨
+    (w' = v ∧ w ≠ v ∧ ¬ G.Adj v w)
+  symm := ⟨fun w w' h => by
+    rcases h with ⟨h1, h2, h3⟩ | ⟨h1, h2, h3⟩ | ⟨h1, h2, h3⟩
+    · exact Or.inl ⟨h2, h1, h3.symm⟩
+    · exact Or.inr (Or.inr ⟨h1, h2, h3⟩)
+    · exact Or.inr (Or.inl ⟨h1, h2, h3⟩)⟩
+  loopless := ⟨fun w h => by
+    rcases h with ⟨_, _, h3⟩ | ⟨h1, h2, _⟩ | ⟨h1, h2, _⟩
+    · exact G.loopless.irrefl w h3
+    · exact h2 h1
+    · exact h2 h1⟩
+
+instance starComp.decRel (v : V) : DecidableRel (starComp G v).Adj := fun w w' =>
+  inferInstanceAs (Decidable (_ ∨ _ ∨ _))
+
+/-- The vertex set of `B` attached to `v` and `Y`: whole copies `u ≠ v` with `u ∈ Y`, and the part
+of copy `v` over `Y`. -/
+def liftSet (v : V) (Y : Finset V) : Finset (V × V) :=
+  univ.filter (fun p => (p.1 ≠ v ∧ p.1 ∈ Y) ∨ (p.1 = v ∧ p.2 ∈ Y))
+
+theorem crossCount_eq_card {W : Type*} [Fintype W] [DecidableEq W] (Γ : SimpleGraph W)
+    [DecidableRel Γ.Adj] (S : Finset W) :
+    crossCount Γ S = #((S ×ˢ univ).filter (fun pq => Γ.Adj pq.1 pq.2 ∧ pq.2 ∉ S)) := by
+  unfold crossCount
+  rw [Finset.card_filter, Finset.sum_product]
+  apply Finset.sum_congr rfl
+  intro u _
+  rw [Finset.card_filter]
+
+/-- An edge of `B` leaving the lifted set either lies in copy `v`, or is an `X`-edge away from `v`. -/
+theorem auxB_cross_cases {v : V} {Y : Finset V} {p q : V × V}
+    (hp : p ∈ liftSet v Y) (hq : q ∉ liftSet v Y) (h : (auxB G X).Adj p q) :
+    (p.1 = v ∧ q.1 = v ∧ p.2 ∈ Y ∧ q.2 ∉ Y ∧ (freeStar G X v).Adj p.2 q.2) ∨
+    (p.1 ≠ v ∧ q.1 ≠ v ∧ s(p.1, q.1) ∈ X ∧ p.1 ∈ Y ∧ q.1 ∉ Y ∧ p.2 = q.1 ∧ q.2 = p.1 ∧
+      p.1 ≠ q.1) := by
+  obtain ⟨p1, p2⟩ := p
+  obtain ⟨q1, q2⟩ := q
+  simp only [liftSet, Finset.mem_filter, Finset.mem_univ, true_and] at hp hq
+  rcases h with ⟨h1, h2⟩ | ⟨h1, h2, h3, h4⟩
+  · simp only at h1 h2
+    subst h1
+    by_cases hpv : p1 = v
+    · subst hpv
+      left
+      refine ⟨rfl, rfl, ?_, ?_, h2⟩
+      · rcases hp with ⟨h, _⟩ | ⟨_, h⟩
+        · exact absurd rfl h
+        · exact h
+      · intro hq2; exact hq (Or.inr ⟨rfl, hq2⟩)
+    · exfalso
+      rcases hp with ⟨_, h⟩ | ⟨h, _⟩
+      · exact hq (Or.inl ⟨hpv, h⟩)
+      · exact hpv h
+  · simp only at h1 h2 h3 h4
+    rw [h3] at hp
+    rw [h4] at hq
+    right
+    by_cases hpv : p1 = v
+    · exfalso
+      rcases hp with ⟨h, _⟩ | ⟨_, h⟩
+      · exact h hpv
+      · exact hq (Or.inl ⟨fun h' => h1 (hpv.trans h'.symm), h⟩)
+    · by_cases hqv : q1 = v
+      · exfalso
+        rcases hp with ⟨_, h⟩ | ⟨h, _⟩
+        · exact hq (Or.inr ⟨hqv, h⟩)
+        · exact hpv h
+      · have hpY : p1 ∈ Y := by
+          rcases hp with ⟨_, h⟩ | ⟨h, _⟩
+          · exact h
+          · exact absurd h hpv
+        exact ⟨hpv, hqv, h2, hpY, fun h => hq (Or.inl ⟨hqv, h⟩), h3, h4, h1⟩
+
+/-- **Cut comparison.** The edges of `B` leaving the lifted set inject into the edges of `G^v`
+leaving `Y`. -/
+theorem crossCount_auxB_le (hXG : ∀ e ∈ X, e ∈ G.edgeSet) {v : V} {Y : Finset V} (hv : v ∉ Y) :
+    crossCount (auxB G X) (liftSet v Y) ≤ crossCount (starComp G v) Y := by
+  rw [crossCount_eq_card, crossCount_eq_card]
+  let f : (V × V) × (V × V) → V × V := fun pq =>
+    if pq.1.1 = pq.2.1 then (pq.1.2, pq.2.2) else (pq.1.1, pq.2.1)
+  apply Finset.card_le_card_of_injOn f
+  · intro pq hpq
+    simp only [Finset.coe_filter, Finset.mem_product, Finset.mem_univ, and_true,
+      Set.mem_setOf_eq] at hpq ⊢
+    obtain ⟨hp, hadj, hq⟩ := hpq
+    rcases auxB_cross_cases G X hp hq hadj with ⟨h1, h2, h3, h4, h5⟩ | ⟨h1, h2, h3, h4, h5, _, _, hne⟩
+    · have hf : f pq = (pq.1.2, pq.2.2) := by simp [f, h1, h2]
+      rw [hf]
+      refine ⟨h3, ?_, h4⟩
+      rcases h5 with ⟨a1, a2, a3, _⟩ | ⟨a1, _, _⟩ | ⟨a1, a2, a3⟩
+      · exact Or.inl ⟨a1, a2, a3⟩
+      · exact absurd (a1 ▸ h3) hv
+      · exact Or.inr (Or.inr ⟨a1, a2, a3⟩)
+    · have hf : f pq = (pq.1.1, pq.2.1) := by simp [f, hne]
+      rw [hf]
+      exact ⟨h4, Or.inl ⟨h1, h2, (mem_edgeSet G).mp (hXG _ h3)⟩, h5⟩
+  · intro a ha b hb hab
+    simp only [Finset.coe_filter, Finset.mem_product, Finset.mem_univ, and_true,
+      Set.mem_setOf_eq] at ha hb
+    obtain ⟨⟨a1, a2⟩, ⟨a3, a4⟩⟩ := a
+    obtain ⟨⟨b1, b2⟩, ⟨b3, b4⟩⟩ := b
+    have ca := auxB_cross_cases G X ha.1 ha.2.2 ha.2.1
+    have cb := auxB_cross_cases G X hb.1 hb.2.2 hb.2.1
+    simp only at ca cb
+    rcases ca with ⟨ha1, ha2, _, _, ha5⟩ | ⟨ha1, ha2, ha3, _, _, ha6, ha7, ha8⟩
+    · have hfa : f ((a1, a2), (a3, a4)) = (a2, a4) := by simp [f, ha1, ha2]
+      rcases cb with ⟨hb1, hb2, _, _, _⟩ | ⟨hb1, hb2, hb3, _, _, _, _, hb8⟩
+      · have hfb : f ((b1, b2), (b3, b4)) = (b2, b4) := by simp [f, hb1, hb2]
+        rw [hfa, hfb, Prod.mk.injEq] at hab
+        rw [ha1, ha2, hb1, hb2, hab.1, hab.2]
+      · have hfb : f ((b1, b2), (b3, b4)) = (b1, b3) := by simp [f, hb8]
+        rw [hfa, hfb, Prod.mk.injEq] at hab
+        exfalso
+        rcases ha5 with ⟨_, _, _, h⟩ | ⟨h, _⟩ | ⟨h, _⟩
+        · rw [hab.1, hab.2] at h; exact h hb3
+        · exact hb1 (by rw [← hab.1]; exact h)
+        · exact hb2 (by rw [← hab.2]; exact h)
+    · have hfa : f ((a1, a2), (a3, a4)) = (a1, a3) := by simp [f, ha8]
+      rcases cb with ⟨hb1, hb2, _, _, hb5⟩ | ⟨hb1, hb2, hb3, _, _, hb6, hb7, hb8⟩
+      · have hfb : f ((b1, b2), (b3, b4)) = (b2, b4) := by simp [f, hb1, hb2]
+        rw [hfa, hfb, Prod.mk.injEq] at hab
+        exfalso
+        rcases hb5 with ⟨_, _, _, h⟩ | ⟨h, _⟩ | ⟨h, _⟩
+        · rw [← hab.1, ← hab.2] at h; exact h ha3
+        · exact ha1 (by rw [hab.1]; exact h)
+        · exact ha2 (by rw [hab.2]; exact h)
+      · have hfb : f ((b1, b2), (b3, b4)) = (b1, b3) := by simp [f, hb8]
+        rw [hfa, hfb, Prod.mk.injEq] at hab
+        rw [ha6, ha7, hb6, hb7, hab.1, hab.2]
+
+/-- Membership in the odd set of `B`. -/
+theorem mem_oddV_auxB (hXG : ∀ e ∈ X, e ∈ G.edgeSet)
+    (hX : ∀ v, Odd (edgeDeg X v) ↔ Even (G.degree v)) (hn : Even (Fintype.card V)) (p : V × V) :
+    p ∈ oddV (auxB G X) ↔ p.2 = p.1 ∧ Even (G.degree p.1) := by
+  simp only [oddV, Finset.mem_filter, Finset.mem_univ, true_and]
+  exact odd_degree_auxB G X hXG hX hn p.1 p.2
+
+/-- **Transfer.** A pairing of the odd vertices of `B` induces a pairing of the even vertices of `G`
+whose split counts are bounded by those of `B` at the lifted sets. -/
+theorem pairing_transfer (hXG : ∀ e ∈ X, e ∈ G.edgeSet)
+    (hX : ∀ v, Odd (edgeDeg X v) ↔ Even (G.degree v)) (hn : Even (Fintype.card V))
+    {π : V × V → V × V} (hπ : IsPairing (oddV (auxB G X)) π) :
+    IsPairing (univ.filter (fun a => Even (G.degree a))) (fun a => (π (a, a)).1) ∧
+      ∀ v Y, v ∉ Y → splitCount (univ.filter (fun a => Even (G.degree a))) (fun a => (π (a, a)).1) Y ≤
+        splitCount (oddV (auxB G X)) π (liftSet v Y) := by
+  have hmem := mem_oddV_auxB G X hXG hX hn
+  have hdiag : ∀ a, Even (G.degree a) → π (a, a) = ((π (a, a)).1, (π (a, a)).1) ∧
+      Even (G.degree (π (a, a)).1) ∧ (π (a, a)).1 ≠ a ∧ π ((π (a, a)).1, (π (a, a)).1) = (a, a) := by
+    intro a ha
+    have h0 : (a, a) ∈ oddV (auxB G X) := (hmem _).mpr ⟨rfl, ha⟩
+    obtain ⟨h1, h2, h3⟩ := hπ _ h0
+    obtain ⟨h4, h5⟩ := (hmem _).mp h1
+    have heq : π (a, a) = ((π (a, a)).1, (π (a, a)).1) := Prod.ext rfl h4
+    refine ⟨heq, h5, fun h => h2 ?_, ?_⟩
+    · rw [heq, h]
+    · rw [← heq, h3]
+  refine ⟨?_, ?_⟩
+  · intro a ha
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢
+    obtain ⟨_, h5, hne, hback⟩ := hdiag a ha
+    exact ⟨h5, hne, by rw [hback]⟩
+  · intro v Y hv
+    unfold splitCount
+    apply Finset.card_le_card_of_injOn (fun a => (a, a))
+    · intro a ha
+      simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at ha ⊢
+      obtain ⟨ha1, ha2, ha3⟩ := ha
+      have ha1 : Even (G.degree a) := by simpa using ha1
+      obtain ⟨heq, _, _, _⟩ := hdiag a ha1
+      have hav : a ≠ v := fun h => hv (h ▸ ha2)
+      refine ⟨(hmem _).mpr ⟨rfl, ha1⟩, ?_, ?_⟩
+      · simp only [liftSet, Finset.mem_filter, Finset.mem_univ, true_and]
+        exact Or.inl ⟨hav, ha2⟩
+      · rw [heq]
+        simp only [liftSet, Finset.mem_filter, Finset.mem_univ, true_and, not_or, not_and]
+        exact ⟨fun _ => ha3, fun _ => ha3⟩
+    · intro a _ b _ hab
+      exact (Prod.mk.injEq _ _ _ _ ▸ hab).1
+
+end cut
+
 end Gallai
