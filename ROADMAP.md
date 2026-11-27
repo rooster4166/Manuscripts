@@ -36,6 +36,7 @@ EMM sufficiency work is **stopped**.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). Status CLAIMED, pending audit A17.
 - **audit-a17** (session_01FxXpVf5vzK7baQDaysaQ1o, branch `claude/audit-a17`, new): independent audit of the balanced return theorem.
+- **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
 - **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
@@ -398,3 +399,7 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Proof route.** Lovász's theorem, then MR Thm 113 (separators), then MR Thm 59 (blocks without matching cuts; cones; Lemma 6 by PMP surgery; private leaves; one Hall-defect lemma for §2.1), then MR Thm 114.
   - **Files.** Thm59Transfer, Thm59Hall, Thm59ClassC, Thm59Lemma6, Thm59Leaves, Thm59MatchingCut, Thm59; 1,933 lines.
   - **Audit.** A14 found no gap in MR and lists the formal deviations.
+- **Separation theorem in Lean (2026-11-27, route-descent).** `Gallai.separation`: if G has at most one vertex of positive even degree and c, a are at distance ≥ 3, then some decomposition with ends ≡ degrees mod 2 has no path containing both c and a. `Gallai.lovasz_avoid` is the corresponding L1 at distance three.
+  - **Lean:** Separation.lean and FanSupport.lean (Fan's lemma with vertex sets); sorry-free, standard axioms (verified).
+  - **Status:** new strengthening of Lovász's theorem. Paper proof in route-descent.tex, with audit A16 requested. The manuscript's bibliography and build are still being fixed.
+- **Spine paper draft (2026-11-27).** `manuscripts/spine/spine.tex`, 26 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof (`SpineCheck.lean`). Audit A15 is pending, run by the spine-paper session.
