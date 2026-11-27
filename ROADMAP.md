@@ -615,9 +615,9 @@ Candidate uniform mechanisms (`research/connections.md`):
     - `triangleBase_of_L1Star` / `_of_L1Blocked` (m = 2, needing a ≁ w or b ≁ w);
     - **`test1At_of_disjL1`: DL ⇒ Test1 at every root with data whenever M is connected.**
 - **Forest lift (forwarded claims 1–2, verified 2026-11-27 18:20; direct-test1 §3, synthesis §25).**
-  - Lemma 3.1 (forest stepping, an iff) and Thm 3.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+  - Lemma 4.1 (forest stepping, an iff) and Thm 4.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
   - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
   - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
-  - Conj 3.4 (forest base) is weaker than the triangle base.
+  - Conj 4.4 (forest base) is weaker than the triangle base.
   - **Lean: pending (only the matching case exists).**
-- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 3.5).
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.5).
