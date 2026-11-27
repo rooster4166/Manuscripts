@@ -7,7 +7,7 @@
 
 namespace orc2 {
 using namespace orc;
-static int K; static int S[8]; static uint32_t F[8];
+static int K; static int S[8]; static uint32_t F[8]; static int DISJ = 0;  // DISJ: path 1 must avoid all vertices of path 0
 static int stage_grow(int i);
 // grow path i from a=S[i], current end cur, visited vis
 static int ext2(int i, int a, int cur, uint32_t vis, uint32_t pv) {
@@ -25,7 +25,10 @@ static int ext2(int i, int a, int cur, uint32_t vis, uint32_t pv) {
       for (int j = i + 1; j < K; j++) if (S[j] == w && ((pv | (1u << w)) & F[j] & ~(1u << w))) okc = false;
       if (okc) {
         uint32_t sb = bm; bm &= ~((1u << a) | (1u << w));
+        uint32_t sf = F[1];
+        if (DISJ && i == 0) F[1] |= pv | (1u << w);
         int ok = stage_grow(i + 1);
+        if (DISJ && i == 0) F[1] = sf;
         bm = sb;
         if (ok) { rem |= (u128)1 << e; return 1; }
       }

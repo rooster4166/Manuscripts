@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
   if (argc < 2) { fprintf(stderr, "usage\n"); return 1; }
   std::string mode = argv[1];
   const char* fl = argc > 2 ? argv[2] : "";
-  fB = strchr(fl, 'B'); fM = strchr(fl, 'M'); fS = strchr(fl, 'S'); MV_ROUTE_ALL = strchr(fl, 'R') != nullptr;
+  fB = strchr(fl, 'B'); fM = strchr(fl, 'M'); fS = strchr(fl, 'S'); MV_ROUTE_ALL = strchr(fl, 'R') != nullptr; MV_TR = strchr(fl, 'T') != nullptr;
   char line[256];
   long long inst = 0, norec = 0, blocked = 0, norec_blocked = 0;
   while (fgets(line, sizeof line, stdin)) {

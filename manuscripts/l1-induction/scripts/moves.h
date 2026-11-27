@@ -10,6 +10,7 @@ struct Inst { Gr G; int c; uint32_t A; char mv; };
 
 static int MV_ROUTE_ALL = 0;  // route move: all g--c paths (not only shortest in G - A), up to length ROUTE_MAXLEN
 static int ROUTE_MAXLEN = 4;
+static int MV_TR = 0;      // TR moves: tight target u in N(g) cap N(c), keep c as terminal (valid when A cap N[c] empty)
 
 static void compact_inst(const Gr& G, int c, uint32_t A, Gr& H, int& c2, uint32_t& A2) {
   uint32_t S = G.comp(c);
@@ -73,7 +74,10 @@ static void children(const Gr& G, int c, uint32_t A, bool fB, bool fM, std::vect
   for (int u = 0; u < G.N; u++) if (G.has(g, u) && u != c && !(A >> u & 1)) {
     Gr H = G; H.del(g, u);
     if (!G.has(c, u)) out.push_back({H, c, A, 'b'});
-    else { H.del(c, u); out.push_back({H, u, A | (1u << c), 'c'}); }
+    else {
+      if (MV_TR && !(A & closed_nbhd(G, c)) && !G.has(g, c)) out.push_back({H, c, A, 't'});
+      H.del(c, u); out.push_back({H, u, A | (1u << c), 'c'});
+    }
   }
   if (!fM) return;
   if (G.deg(g) == 2) {
