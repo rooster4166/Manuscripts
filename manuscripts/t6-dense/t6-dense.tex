@@ -58,7 +58,7 @@ terminal at $y_3$. So the base conjecture~\ref{conj:base} is a \emph{strengtheni
 by two prescribed terminal edges, relaxed at $y_2$ by the protected step. It is a uniform
 re-encoding of the dense residual, not a reduction to a weaker statement.
 
-In the computed instances a base exists for every root except $16$ roots in three graphs, where
+In the computed instances a base exists for every root except $34$ roots in six graphs, where
 the search hit its budget. This holds for all five shapes, including random $3$-connected graphs
 carrying a subset of the residual conditions of a smallest failure: minimum degree six,
 odd-neighbour counts, contact sizes, closed twins for $C_4$ and a full exterior vertex for
@@ -157,7 +157,7 @@ $x_1\to y_2$, transported back to the base decomposition through the three appen
 $r\in U$ admits a labelling with $r\in\{y_1,y_2,y_3\}$ and a base.
 \lean{test1\_of\_appendBases}
 \item \textbf{Data} (E28). For all five shapes, in the computed instances, every root has a
-labelling with a base, except $16$ roots in three graphs where every search hit the node budget
+labelling with a base, except $34$ roots in six graphs where every search hit the node budget
 (Section~\ref{sec:comp}). The instances include $3$-connected graphs carrying a subset of the
 residual conditions above. In those graphs the six-separation base of \cite[Thm~8.2]{TM} was
 never found within the search budget.
@@ -460,6 +460,14 @@ because $zy_2$ is not an edge of $J^\sh$. So (E6) is exactly what excludes the r
 The step gives a decomposition with the end counts of step 4 in which every path lies in an old
 path together with $y_2$, and the proof finishes as before.\qed
 
+\begin{remark}[a redundant clause]\label{rem:e6}
+The clause $w=y_3$ of (E6) is not needed (A26, \S1.2). For $x=y_3$, the outcome
+``$\mathrm{pred}_{y_2}(y_3)=p$ in $\cD_0$'' can only come, through step~2 (an append at $x_2$
+with $u=y_3$), from $\mathrm{pred}_{y_2}(y_3)=p$ in $\cD_1$. That would read a path of $\cD_1$
+from the end $y_3$, but $y_3$ has no end in $\cD_1$. So Theorem~\ref{thm:protected} holds with
+(E6) restricted to $w\ne y_3$. The Lean statement keeps the clause.
+\end{remark}
+
 \subsection*{Proof of Proposition~\ref{prop:converse}}
 \emph{(a)$\Rightarrow$(b).} Run the construction of Theorem~\ref{thm:append}. Step~2 gives $y_3$
 an end with terminal edge $x_2y_3$, and step~4 gives $y_2$ an end with terminal edge $x_1y_2$.
@@ -615,7 +623,8 @@ shows that $r$ passes. So every root with a core neighbour passes. By \cite[Thm~
 suffices to test roots with at least three neighbours in the core, so T(6)-i follows. A root isolated
 in $C$ has $D\supseteq K_{1,5}$ and is not covered by Conjecture~\ref{conj:base} as stated. One
 could instead extend the conjecture to $D=K_{1,5}\cup D'$ with $D'\in\{\emptyset,K_2,P_3\}$ and
-labellings with $y_1=r$; the $y_1$-case of Lemma~\ref{lem:labelling} still applies there.
+labellings with $y_1=r$. Labellings with chain edges exist there by the argument of the
+$y_1$-case of Lemma~\ref{lem:labelling}, since $D'$ has at most two edges.
 Corollary~\ref{cor:test1}(a) is per root, so only the roots not already closed by the known
 reductions need a base.
 
@@ -626,7 +635,7 @@ STL-P for those pairings, and it is implied by nothing weaker that we know. It i
 Lov\'asz's setting (one even vertex), like $\STL$ itself, in the family of the separation and
 avoidance statements of \cite{MS,L1S}. In the base form each condition (E1)--(E5), (E7) says that
 the path ending at a prescribed vertex avoids one or two prescribed vertices. These are exactly
-the conditions that make the appends reversible in the proof of
+the conditions that undoing the appends produces in the proof of
 Proposition~\ref{prop:converse}. The difficulty is that there are six of them, at six vertices of
 a nearly complete $K_6$, simultaneously. The known single-vertex tools
 (\texttt{lovasz\_avoid\_set}, \texttt{separation\_sparse}) need the special vertices to be packed
@@ -649,7 +658,9 @@ every shape, some conditions avoid a neighbour of $g$. The fewest such condition
 \item $K_2$: (E1), (E2), (E4) and (E7);
 \item $\emptyset$: all of (E1)--(E7) except the avoidance of $z$.
 \end{itemize}
-These conditions are not implied by the others. In residual $C_4$ graphs (\texttt{partial.py}),
+These conditions are not implied by the others. That is expected from
+Proposition~\ref{prop:converse}: each of them is produced when the appends are undone, so dropping
+one changes the statement. In residual $C_4$ graphs (\texttt{partial.py}),
 $1{,}920$ Lov\'asz decompositions of $M$ were found satisfying only the $L_1^*$-admissible
 conditions. Of these, (E1) holds in $186$, (E7) in $1{,}042$, and both in only $120$. So
 Conjecture~\ref{conj:base} does not reduce to $L_1^*$, or to TR and ST, constraint by
@@ -680,8 +691,8 @@ otherwise (E6), and with (E6) it also checks that the static condition holds in 
 $z$, so the end on $p$'s side must also avoid $z$ and $y_3$. Its bases satisfy (E6).
 \item Mode \texttt{endA} is (E1)--(E5) with (E6) minus the clause $w=y_3$. That clause is
 redundant (A26, \S1.2: the transported predecessor read from $y_3$ never arises, because $y_3$ has
-no end in $\cD_1$). Theorem~\ref{thm:protected} is proved with the full (E6), so \texttt{endA}
-bases of \texttt{dense.py} are verified by execution only. (In \texttt{c4.py}, mode \texttt{endA}
+no end in $\cD_1$; Remark~\ref{rem:e6}). The Lean theorem uses the full (E6), so for
+\texttt{endA} bases of \texttt{dense.py} the guarantee is on paper only; they are also executed. (In \texttt{c4.py}, mode \texttt{endA}
 uses the $C_4$ labelling, where $x_2y_2,y_2y_3\notin E(B)$, and is exactly (E1)--(E6).)
 \item Mode \texttt{end} is (E1)--(E4) followed by Fan walks; it is the hypothesis of no theorem
 here.
@@ -732,8 +743,13 @@ base with (E7) and $24$ more with (E6);
 
 \emph{Exhaustive, order $9$: the cost of the strengthening.} For each of the $14{,}144$
 labellings with chain edges we also decided STL-P for the oriented pairing (a star-terminal
-Lov\'asz decomposition of $J$ with transitions $x_i\,z\,y_i$, $x_i$ an end; exact search).
-@@STLP@@
+Lov\'asz decomposition of $J$ with transitions $x_i\,z\,y_i$, $x_i$ an end; exact search,
+\texttt{stlp.py}; side (b) of Proposition~\ref{prop:converse} is \texttt{equiv.py}).
+STL-P holds for all $14{,}144$. An (E7)-base exists for $14{,}128$, in agreement with
+Proposition~\ref{prop:converse}: the auditor's search of side (b) finds the same $14{,}128$. An
+(E6)-base exists for $8$ of the remaining $16$. The other $8$ labellings, all of shape $C_4$,
+have no base of either kind although STL-P holds for them. So the strengthening is strict on
+single labellings, but at order $9$ it costs no root.
 
 \emph{Random, residual-style and sparse} (node budget $2\cdot10^6$ to $5\cdot10^6$ per search,
 two to four seeds). ``Failures'' counts bases satisfying the mode's conditions whose executed
@@ -757,23 +773,29 @@ residual $C_4$ (twins), $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $K_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $P_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $\emptyset$, $|O|=8$ & lean${}^*$ & 8 & 48 & 42 & 0\\
-residual $K_2$, $|O|=8$ & lean & @@K28@@\\
+residual $K_2$, $|O|=8$ & lean${}^{\dagger}$ & 1 & 6 & 0 & 0\\
 residual $C_4$ (twins), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
 residual $K_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 42 & 0\\
 residual $P_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 44 & 0\\
 residual $\emptyset$, $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
-@@MORE@@\bottomrule
+residual $C_4$ (one twin pair), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
+\bottomrule
 \end{tabular}
 \end{center}
 (${}^*$: at most $60$ labellings per root.) The six-separation and \texttt{end} bases are not
 hypotheses of a theorem here. Their failures are protected steps that hit a blank, which is the
 obstruction of \cite[\S9(1)]{TM}. No base satisfying (E1)--(E5) with (E6) or (E7), in any mode,
 failed to verify. In mode \texttt{lean} almost every certificate uses (E7), so that all seven
-steps are appends. (E6) was needed for @@E6@@ certified roots.
+steps are appends. (E6) was needed for $12$ of the $506$ certified roots in mode \texttt{lean}.
 
-\emph{Uncertified roots.} @@UNC@@ In each of these graphs every search of every tried labelling
+\emph{Uncertified roots.} They lie in six graphs, $34$ roots in all: $6$ in the
+\texttt{endZ} $P_3$ row; $4$, $6$, $6$ and $6$ in the \texttt{lean} rows $P_3$, $K_3$, $K_2$
+($|O|=10$) and $\emptyset$ ($|O|=8$); and $6$ in the first $K_2$ graph with $|O|=8$, where all
+$240$ labellings were tried without a cap. In each such graph all or most roots are uncertified,
+which points at the search rather than at the graph. In each of these graphs every search of every tried labelling
 hit the node budget, or the labelling cap was reached. No search proved that a base is absent, so
-they are undecided, not counterexamples. @@HARD@@
+they are undecided, not counterexamples. (${}^\dagger$: the uncapped run was stopped after one graph; a run with the cap of $60$
+labellings is in progress, see E28.)
 
 For comparison, the six-separation base of \cite[Thm~8.2]{TM}, with the same chains, was tried on
 five residual $C_4$ graphs ($|O|=8$; all $160$ labellings with a root on the cycle; two seeds;
@@ -838,8 +860,9 @@ here for walks of length one. In the computed dense instances the base exists fo
 root, for all five shapes (Section~\ref{sec:comp}).
 
 \section{The formalisation}\label{sec:lean}
-\texttt{lean/GallaiLean/T6Dense.lean} contains no \texttt{sorry}.
-\texttt{manuscripts/t6-dense/T6DenseAxioms.lean} prints only \texttt{propext},
+\sloppy
+The file \texttt{T6Dense.lean} in \texttt{lean/GallaiLean} contains no \texttt{sorry}. The
+file \texttt{T6DenseAxioms.lean} in this directory prints only \texttt{propext},
 \texttt{Classical.choice} and \texttt{Quot.sound} for the main theorems, and the full library
 builds.
 \begin{itemize}

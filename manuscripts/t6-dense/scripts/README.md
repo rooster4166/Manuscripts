@@ -9,13 +9,15 @@ Raw outputs go to `out/`, which is git-ignored and can be regenerated.
 |---|---|
 | `lsearch.c` | Path decompositions with prescribed end counts, found by depth-first search with memoised failures (the engine of `tools/stl.c` and `walk3p.c`). Supported constraints: `sep` (separation), `ef` (the path ending at v avoids S), `ep` (forbidden end pairs), `es` (the end on p's side of the edge pq lies outside S). The input format is in the header comment. |
 | `walksim.py` | Leaves, Fan transfers with the forced chain, the static predecessor check, the J-form un-lift, and an edge-by-edge check of decompositions. |
-| `c4.py` | The C4 shape with the chained walk and one protected step. Modes: `sep` (the six separations of TM Thm 8.2), `end` (end-path conditions with Fan walks), `endA` (E1–E6). |
-| `dense.py` | All five shapes, all roots, all labellings with x1y2, x2y3 ∈ E(B). Modes: `end`, `endA`, `endZ`, `endT` (E1–E5 and E7), and `lean`, which is exactly the Lean hypothesis `AppendBase` (E7 first, otherwise E6). |
+| `c4.py` | The C4 shape with the chained walk and one protected step. Modes: `sep` (the six separations of TM Thm 8.2, chains violating TM Def 8.1(ii), so the protected step is only executed), `end` (E1–E4 with Fan walks), `endA` (for this labelling exactly E1–E6). |
+| `dense.py` | All five shapes, all roots, all labellings with x1y2, x2y3 ∈ E(B). Modes: `lean`, exactly the Lean hypothesis `AppendBase` (`endT` first, otherwise `leanE6`); `endT` (E1–E5, E7; Thm 2.2); `leanE6` (E1–E6; Thm 2.3); `endA` (E6 without its redundant clause w = y3, checked by execution); `endZ` (stronger than E6); `end` (E1–E4 with Fan walks, no theorem). See the docstring and manuscript §6. |
 | `labstats.py` | For each root, counts the labellings that have a base. |
 | `admissible.py`, `partial.py` | Which base conditions are L1*-admissible, and how often the inadmissible ones hold when they are not imposed. |
 | `gen_core.py` | Sparse random J with a dense core (copied from `terminal-matching`). |
 | `gen_resid.py` | Random 3-connected J with a dense core and the residual conditions of a smallest T(6)-i failure imposed. |
 | `relabel.py` | Moves U = N(z) to the front of the vertex order and keeps the graphs with a dense core. Used on `terminal-matching/scripts/out/d6_9.g6`. |
+| `equiv.py` | Prop 2.6 by exact search: an (E7)-base of M exists iff J has a star-terminal Lovász decomposition with transitions x_i z y_i and x1y2, x2y3 terminal at y2, y3 (audit A26 §2.1). |
+| `stlp.py` | E28(B′): per labelling, (E7)-base, (E6)-base and STL-P for the oriented pairing. |
 | `run_big.sh`, `run_lean.sh`, `run_lean2.sh` | The runs of E28. |
 
 ## Typical calls
