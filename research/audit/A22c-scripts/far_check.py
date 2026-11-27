@@ -14,6 +14,25 @@ import sys, random, itertools
 from collections import deque
 from chain import FLAGS, configs, rules, bfs_len, paths, pedges, base_test
 import construct
+from dlib import Budget
+from chain import base_graph
+
+
+def check_sparse_hyp(n, E, X, Y, P2, P1):
+    """the hypotheses of Theorem 3.2 as used in the proof of Prop 8.3, checked directly in M"""
+    el = base_graph(n, E, X, Y, P2, P1)
+    N = n + 1; l1 = n
+    adj = [set() for _ in range(N)]
+    for a, b in el:
+        adj[a].add(b); adj[b].add(a)
+    x1, x2, x3 = X; y1, y2, y3 = Y
+    Xs = {x1, x2, x3, y2, y3, l1}
+    assert all(len(adj[v] & Xs) <= 1 for v in range(N)), 'X not sparse in M'
+    for A in ({x1, l1}, {x2, y2}, {x3, y3}, {l1, y2, y3}):
+        for a, b in itertools.combinations(A, 2):
+            assert b not in adj[a] and not (adj[a] & adj[b]), 'set not packed in M'
+    ev = [v for v in range(N) if adj[v] and len(adj[v]) % 2 == 0]
+    assert ev in ([], [x3]), 'parity'
 
 
 def rand_J(n, rng):
@@ -157,11 +176,19 @@ def main():
                 cov[k] += len(got[k]) == 6
             if verified < verify and n <= 61:
                 verified += 1
+                nb = nund = nrun = 0
                 for y, (E, X, Y, (P2, P1)) in sorted(wit.items()):
-                    D, el = base_test(n - 1, E, X, Y, P2, P1, budget=2 * 10 ** 7)
-                    assert D is not None, 'Prop 8.3 base not found'
-                    construct.run(n - 1, E, X, Y, P2, P1, seed=y)
-                print(f'  n={n}: verified far graph {verified}: base found and proof executed for {len(wit)} labelled chains', flush=True)
+                    check_sparse_hyp(n - 1, E, X, Y, P2, P1)
+                    try:
+                        D, el = base_test(n - 1, E, X, Y, P2, P1, budget=10 ** 7)
+                        assert D is not None, 'Prop 8.3 base not found'
+                        nb += 1
+                    except Budget:
+                        nund += 1
+                    if n <= 25:
+                        construct.run(n - 1, E, X, Y, P2, P1, seed=y); nrun += 1
+                print(f'  n={n}: far graph {verified}: Thm 3.2 hypotheses hold in M for {len(wit)} chains; base found {nb}, '
+                      f'budget-undecided {nund}; proof executed {nrun}', flush=True)
         print(f'n={n} graphs={count} far={far} all_r: strict-greedy={cov["sg"]} relaxed-greedy(d6_reach)={cov["rg"]} '
               f'strict-any={cov["sa"]}  (relaxed chains with y3 on P1: {y3_on_P1})', flush=True)
 

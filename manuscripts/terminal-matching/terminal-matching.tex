@@ -60,11 +60,12 @@ such that no cycle of length at most four of the lifted graph $(J-z)+ab+cd$ pass
 neighbour of $z$, and through it the first deletion test. That test at degree four was already
 known, from Lov\'asz's theorem and Fan's transfers alone; here it is the base case of a
 composition method whose first open case is degree six, with three prescribed transitions.
-There every pairing of the neighbourhood has the three-edge property in all computed cases, and a
-chained walk theorem reduces it to a separation problem with one even vertex, which has a
-solution in nearly every random sparse instance and always when the six neighbours are pairwise
-far apart; this gives the first deletion test at degree six for such neighbourhoods whenever two
-suitable walks exist. All theorems are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
+There every pairing of the neighbourhood has the three-edge property in all computed cases, and,
+for pairings into non-adjacent pairs, a chained walk theorem reduces it to a separation problem
+with one even vertex. That problem has a solution in nearly every random sparse instance, and
+always when the six neighbours are pairwise far apart; there it gives the pairing-prescribed
+star-terminal condition, and with it a new proof of the first deletion test in this case, which
+was already known, whenever two suitable walks exist. All theorems are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
 standard axioms.
 \end{abstract}
 \maketitle
@@ -158,9 +159,11 @@ and $9$, random to order $17$). The \emph{chained walk theorem} (Theorem~\ref{th
 the even vertex twice and reduces three terminal edges to a base separation problem with six
 pairs; its hypothesis holds for every $r\in N(z)$ in $999$ of $1000$ random graphs of orders
 $11$--$17$. The base problem is open in general, but automatic when the six neighbours of $z$ are
-pairwise at distance at least $3$ in $J-z$ (Proposition~\ref{prop:far}): then the first deletion
-test at $z$, the open case T(6)-i, holds as soon as suitable chains exist
-(Corollary~\ref{cor:six}, formalised in Lean).
+pairwise at distance at least $3$ in $J-z$ (Proposition~\ref{prop:far}). Then the
+pairing-prescribed STL holds with three transitions as soon as suitable chains exist, and with
+it the first test at $z$ (Corollary~\ref{cor:six}, formalised in Lean). The first test is known in
+this far-apart case (Remark~\ref{rem:known6}); the open part of T(6)-i has a nearly complete
+neighbourhood, which the base problem does not yet reach.
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
 \texttt{lean/GallaiLean/TerminalMatching.lean}, and the theorems of item (6) (Theorem~\ref{thm:chain},
 Proposition~\ref{prop:far}, Corollary~\ref{cor:six}) in \texttt{TerminalMatching3.lean}; both are
@@ -526,7 +529,7 @@ star-terminal decomposition with both transitions prescribed (the pairing-prescr
 open in general~\cite[Conjecture~7.4]{STL}), and the method: two transitions composed by
 walking the even vertex. At $d(z)=6$ the same lift turns $\PTM_3$ for a perfect matching of
 $N(z)$ into the pairing-prescribed STL with three transitions, hence the first test at degree
-six, which is the open case T(6)-i of the spine~\cite{SP}. Nothing at degree six is proved here.
+six, which is the open case T(6)-i of the spine~\cite{SP}; Section~\ref{sec:six} treats this case.
 \end{remark}
 
 \section{Degree six: three transitions}\label{sec:six}
@@ -552,8 +555,9 @@ $6,3,\dots$ (the other degrees $3$ or $5$, configuration model, simple graphs ke
 $13$ ($200$ graphs each, $3000$ instances), $15$ and $17$ ($300$ graphs each, $4500$ instances,
 node budget $2\cdot10^6$, and $10^8$ for the three end tests left undecided at order $17$): no
 failure and nothing undecided; see Section~\ref{sec:comp} and
-E24(J). In short: \emph{for $3$-connected $J$ with $d(z)=6$, every pairing of $N(z)$ satisfies
-$\PTM_3(r)$}, the multigraph pairings included.
+E24(J). In short: \emph{in all computed cases, for $3$-connected $J$ with $d(z)=6$, every pairing
+$F$ of $N(z)$ satisfies $\PTM(G,F)$ and $\PTM(G,F;e@x)$ for every $e@x$}, the multigraph pairings
+included.
 
 \subsection*{The chained walk theorem}
 Let $G$ have no vertex of positive even degree and let $x_1y_1,x_2y_2,x_3y_3$ be a matching of
@@ -574,9 +578,11 @@ Its \emph{base graph} is
 $M=\bigl((G-x_1y_1)+\ell_1y_1\bigr)-x_2y_2-x_3y_3-E(P_1)-E(P_2)$, with a new leaf $\ell_1$ at $y_1$.
 \end{definition}
 
-$P_1$ may pass through $y_3$ and through inner vertices of $P_2$, and both walks may pass
-through $y_1$ (an earlier version of this definition excluded $y_1$; the proof never uses that,
-as the Lean proof confirms). In $M$ the degrees of $x_1$, $x_2$, $y_2$, $y_3$ and of the inner
+Here $N(\cdot)$ is taken in $G$, so $y_3\in N(x_3)$ and~(ii) keeps $P_1$ off $y_3$; this is the
+form that is formalised (\texttt{AdmChain}), although the proof below also works with $N$ taken
+in $G-F$. $P_1$ may pass through inner vertices of $P_2$, and both walks may pass through $y_1$
+(an earlier version of this definition excluded $y_1$; the proof never uses that, as the Lean
+proof confirms). In $M$ the degrees of $x_1$, $x_2$, $y_2$, $y_3$ and of the inner
 vertices of the walks drop by an even number, $y_1$ loses an even number (the edge $x_1y_1$ is
 replaced by $\ell_1y_1$), and $x_3$ loses one; so $x_3$ is the only vertex of $M$ that can have positive even
 degree.
@@ -640,9 +646,11 @@ $\ell_i$-path ends at $x_i$ through $y_ix_i$. These three paths are different: $
 single preimage $y_i\ell_i$, and no path of $\cD_4$ contains two leaves.
 \end{proof}
 
-The same argument chains $m-1$ walks for $m$ edges, with the separations $\{x_1,\ell_1\}$,
-$\{x_i,y_i\}$ $(i\ge2)$ and all pairs of $\{\ell_1,y_2,\dots,y_m\}$, and each walk avoiding the
-neighbourhoods of the short ends that are endless when it is walked back.
+We expect the same argument to chain $m-1$ walks for $m$ edges, with the separations
+$\{x_1,\ell_1\}$, $\{x_i,y_i\}$ $(i\ge2)$ and all pairs of $\{\ell_1,y_2,\dots,y_m\}$. Writing it
+down needs the order of the walks, the exclusions of short and long ends from the later walks,
+edge-disjointness of all walks, the start-vertex conditions and the base graph; we have not done
+this, and claim only the case $m=3$.
 
 \subsection*{Far-apart ends}
 When the six ends are far apart, the base hypothesis is automatic.
@@ -656,8 +664,7 @@ in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, on three different paths.\
 \end{proposition}
 
 \begin{proof}
-Let $X=\{x_1,x_2,x_3,y_2,y_3,\ell_1\}$. Adjacency in $M$ is adjacency in $G-F$, except for the
-edge $\ell_1y_1$; so two ends of $F$ have no common neighbour in $M$ and are not adjacent in
+Let $X=\{x_1,x_2,x_3,y_2,y_3,\ell_1\}$. Since $M\subseteq(G-F)+\ell_1y_1$, two ends of $F$ have no common neighbour in $M$ and are not adjacent in
 $M$. The leaf $\ell_1$ has the single neighbour $y_1\notin X$, and $y_1$ has no neighbour among the
 other five ends in $M$ ($y_1x_1$ is deleted, and the others are at distance at least $3$ from
 $y_1$). Hence every vertex of $M$ has at most one neighbour in $X$, that is, $X$ is sparse; and
@@ -689,8 +696,17 @@ This is $\STL(J,z,y_i)$, and the first test follows from STL at every neighbour 
 \texttt{test1\_of\_stl}.
 \end{proof}
 
-At degree six this is the first deletion test, the open case T(6)-i, for every $J$ whose six
-neighbours of $z$ are pairwise far apart in $J-z$ and which has the required chains.
+\begin{remark}[the far-apart first test is known]\label{rem:known6}
+If the neighbours of $z$ are pairwise at distance at least $3$ in $B=J-z$, then $B[N(z)]$ has no
+edges and every vertex of $B$ has at most one neighbour in $N(z)$. The first test at $z$ then
+already follows from the six-even-incidence theorem of the collection: if every odd vertex has at
+most two even neighbours, every root passes~\cite[Theorem~1(2)]{INC}. (It also follows from the
+isolated-root lemma, as $B[N(z)]-r$ has no edges.) So the Test1 part of Corollary~\ref{cor:six} is
+a new, conditional proof of a known case, as at degree four (Remark~\ref{rem:known}). What it
+adds is the star-terminal decomposition with all three transitions prescribed, and the
+mechanism. The open part of T(6)-i has $B[N(z)]$ with at least $11$ of its $15$ edges, the
+opposite extreme; there the base hypothesis of Theorem~\ref{thm:chain} is not automatic.
+\end{remark}
 The Lean proofs (\texttt{TerminalMatching3.lean}) need slightly less than stated:
 \begin{itemize}
 \item the degree condition on $N(z)$ is needed only for the first test, not for STL;
@@ -722,14 +738,15 @@ at least $3$ in $H=J-z$. Then for every $r\in N(z)$ there are $x_1\in N(z)\setmi
 labelling $\{x_2,y_2\},\{x_3,y_3\}$ of the other four neighbours with edge-disjoint paths
 \[
 P_2:\ y_3\to x_2\ \text{in}\ H-N_H[x_3]-\{x_1,y_2\},\qquad
-P_1:\ y_2\to x_1\ \text{in}\ H-N_H[x_2]-N_H[x_3].
+P_1:\ y_2\to x_1\ \text{in}\ H-N_H[x_2]-N_H[x_3]-y_3.
 \]
 \end{conjecture}
 
 These are exactly the admissible chains with $y_1=r$ (the far-apart hypothesis makes the
 remaining conditions of Definition~\ref{def:chain} automatic), so by Corollary~\ref{cor:six}
-Conjecture~\ref{conj:chains} implies the first test at every $z$ of degree six with far-apart
-neighbours in a $3$-connected graph. Besides the $184$ random instances above, an adversarial
+Conjecture~\ref{conj:chains} implies the pairing-prescribed STL at every $z$ of degree six with
+far-apart neighbours in a $3$-connected graph, and a composition proof of the (known) first test
+there. Besides the $184$ random instances above, an adversarial
 search (\texttt{chain\_search.py}) supports it. It builds $400$ graphs of orders $19$--$25$ in
 which each neighbour of $z$ has two private neighbours and the rest is wired at random; it keeps
 the $3$-connected graphs with all degrees off $z$ odd, and searches chains exactly (every $P_2$,
@@ -745,7 +762,10 @@ use the freedom in choosing $x_1$ and the labelling.
 (no pair adjacent in $J-z$), all $48$ orders and orientations, and shortest admissible chains.
 It and \texttt{d6\_reach.py} above use the earlier, stricter form of Definition~\ref{def:chain},
 with $y_1$ excluded from both walks, so their counts are lower bounds; \texttt{chain\_search.py}
-uses the definition as stated.
+uses the definition as stated. All three keep $P_1$ off $y_3$. The ``no admissible chain'' row
+counts the vertex conditions only, ignoring edge-disjointness. With $y_1$ free, audit A22c finds
+at order $9$: $2{,}320$ instances with a base, $103$ without a chain, and $523/1{,}819$ graphs
+fully covered; at order $11$: $1{,}372$, $1$ and $199/200$.
 \begin{center}\footnotesize
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
@@ -759,9 +779,10 @@ $J$ with every $r\in N(z)$ covered & $509/1819$ & $199/200$ & $200/200$ & $300/3
 \end{tabular}
 \end{center}
 At order $9$, $593$ of the $1{,}819$ graphs have no simple pairing at all, and $315$ more have
-simple pairings but no base. For the others, and for all but one random graph of order at least
-$11$, Theorem~\ref{thm:chain} reduces $\STL(J,z,r)$ at every $r\in N(z)$, hence the first test at
-$z$, to the existence of a separating Lov\'asz decomposition of a base graph with one even vertex.
+simple pairings but no base. Of the remaining $911$, $509$ have every $r\in N(z)$ covered and $402$
+have three to five. For those $509$ and for all but one random graph of order at least $11$,
+Theorem~\ref{thm:chain} reduces $\STL(J,z,r)$ at every $r\in N(z)$, hence the first test at $z$,
+to the existence of a separating Lov\'asz decomposition of a base graph with one even vertex.
 Cross-check: at order $9$ the base exists for $9{,}457$ choices of pairing, order and
 orientation, and for each of them prescribing the three short ends is realisable by the oracle,
 while the $207$ failures of that prescription among the simple instances never meet a base
@@ -904,7 +925,10 @@ separable (audit~A22).
 \item \emph{Degree six: the first open rung.} At $d(z)=4$ the first test is known
 (Remark~\ref{rem:known}); at $d(z)=6$ it is the open case T(6)-i. Section~\ref{sec:six} gives the
 data (every pairing works) and the chained walk theorem, which leaves the base problem: a
-Lov\'asz decomposition of $M$ separating six pairs. A sparse form along the lines of
+Lov\'asz decomposition of $M$ separating six pairs. It is solved when the neighbours are far
+apart, but there the first test was already known (Remark~\ref{rem:known6}). To reach the open
+part of T(6)-i, where $B[N(z)]$ is nearly complete, the base problem must be solved for dense
+neighbourhoods, where most pairings have adjacent pairs and $G$ is a multigraph. A sparse form along the lines of
 Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
 girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
 new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain}, Proposition~\ref{prop:far} and
@@ -983,6 +1007,8 @@ Theory 97 (2021) 161--184.
 \texttt{manuscripts/endpoint-structure}, 2026.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
 (2005) 117--125.
+\bibitem{INC} Six-even-incidence (Nov.~2026 study of the collection), Theorem~1; summarised in
+\texttt{research/notes/reader-six-even-program.md}, audited in A6 (items I6, I7).
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
 1966), Academic Press, 1968, 231--236.
 \bibitem{MS} J.~Williams, Separating many pairs in Lov\'asz decompositions: classes, the leaf

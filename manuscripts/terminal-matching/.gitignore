@@ -8,3 +8,5 @@ scripts/out/n10/
 scripts/out/cubic_*.in
 scripts/walk3
 scripts/out/walk3_d6_r1*_all.txt
+scripts/ptm_pee
+scripts/ptm_pee.c

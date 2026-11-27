@@ -1145,7 +1145,7 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 | N(z) pairwise at distance ≥ 3 in J − z | 0 | 1 | 15 | 69 | 99 |
 | of which every r has a chain | 0 | 1 | 15 | 69 | 99 |
 
-**Chain existence (manuscript Conjecture 8.5).** `chain_search.py COUNT SEED EXTRA` (`out/chain_search.log`) is an adversarial search:
+**Chain existence (manuscript Conjecture 8.6).** `chain_search.py COUNT SEED EXTRA` (`out/chain_search.log`) is an adversarial search:
 - J: z, its six neighbours, two private neighbours each (so N(z) is far apart), EXTRA further degree-3 vertices, outer edges wired at random; 3-connected, all degrees off z odd.
 - Chains are searched exactly: every P2, then a BFS for P1 avoiding P2's edges. This uses Definition 8.1 as now stated, with y1 free.
 
@@ -1164,7 +1164,9 @@ Second family (`chain_search.py 100 SEED EXTRA 3 BRIDGES`, `out/chain_search_hal
 | 8 | 27 | 100 / 0 | 100 / 0 |
 | 12 | 31 | 100 / 0 | 100 / 0 |
 
-r = y1 always suffices, which is why Conjecture 8.5 is stated with y1 = r.
+r = y1 always suffices, which is why Conjecture 8.6 is stated with y1 = r.
+
+Audit A22c (G1): the Lean `AdmChain` takes N(x3) in G, so P1 avoids y3. `d6_reach.py` and `chain_search.py` now exclude y3 from P1, and all three tables were re-run with identical counts. The logs now record BRIDGES. The PEE cross-check is reproducible with `scripts/ptm_pee.sh` (207 failures on the order-9 simple instances).
 
 **Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.
 

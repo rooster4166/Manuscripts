@@ -62,7 +62,8 @@ def has_chain(H, X, Y):
         return False
     for P2 in simple_paths(H, y3, x2, lambda w: w not in N3 and w not in (x1, y2, x2)):
         used = {frozenset(e) for e in zip(P2, P2[1:])}
-        if bfs(H, y2, x1, lambda w: w not in N2 and w not in N3 and w != x1, used):
+        # P1 avoids N_G(x3), which contains y3 through the F-edge (Lean AdmChain.nadj1')
+        if bfs(H, y2, x1, lambda w: w not in N2 and w not in N3 and w != x1 and w != y3, used):
             return True
     return False
 
@@ -210,7 +211,7 @@ def main():
             bad += 1
             print('UNCOVERED', nx.to_graph6_bytes(G, header=False).decode().strip(),
                   'missing', sorted(set(Nz) - cov), flush=True)
-    print(f'SUMMARY extra={extra} dpriv={dpriv} graphs={made} uncovered={bad} '
+    print(f'SUMMARY extra={extra} dpriv={dpriv} bridges={halves} graphs={made} uncovered={bad} '
           f'r_needing_y2_or_y3={FALLBACK[0]} tries={tries}', flush=True)
 
 

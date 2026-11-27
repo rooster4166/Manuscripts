@@ -532,7 +532,7 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Test1 at d(z) = 4 was already known (`rooted_four'`, endpoint-structure Cor 22), so this re-derives it by composition. New: STL-P for the given pairing. First open rung: PTM_3 at d(z) = 6 (T(6)-i).
   - **d(z) = 6 (Lean, TerminalMatching3.lean):**
     - `ptm3_of_base` (chained walk theorem);
-    - `ptm3_of_far`, and `test1_of_chains3`: **Test1 J z when N(z) is pairwise at distance ≥ 3 in J − z and admissible chains exist for every r**. This is a case of T(6)-i.
+    - `ptm3_of_far`, and `test1_of_chains3`: Test1 J z when N(z) is pairwise at distance ≥ 3 in J − z and admissible chains exist for every r. **Audit A22c (E2): this Test1 case is already known.** Six-even-incidence Thm 1(2) applies, since |S(x)| ≤ 1. So this is a new, conditional proof of a known case. New: STL-P with three prescribed transitions.
     - Data: every pairing satisfies PTM_3(r) for 3-connected J (exhaustive to order 9, random to 17).
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
@@ -550,4 +550,5 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Engine: `ptm3_of_base`, the chained walk theorem, and `ptm3_of_far`, where the base is automatic by sparse separation.
   - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
   - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
+  - **Correction (audit A22c, E2; checked against `research/notes/reader-six-even-program.md`).** The far-apart case is not open: far-apart N(z) gives |S(x)| ≤ 1, and six-even-incidence Thm 1(2) (audited A6, I6/I7) already gives Test1 there. `test1_of_chains3` is a new, conditional, Lean-verified proof of a known case. The open T(6)-i residual has B[N(z)] nearly complete (D ∈ {∅, K2, P3, K3, C4}), the opposite extreme.
   - Audit A22c of the paper proofs is running.

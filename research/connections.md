@@ -1340,15 +1340,17 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
    - **Chained walk theorem (manuscript Thm 8.2; Lean `ptm3_of_base`):** leaf x1y1, walk y3 → x2 and y2 → x1. It reduces PTM(G, F; x_i terminal) to one base decomposition of M (one even vertex x3) separating {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2}, {ℓ1,y3}, {y2,y3}.
    - **Reach:** the base exists for 77% of simple instances at order 9 and 99.4–99.97% at random orders 11–17. Every r is covered for 199/200, 200/200, 300/300 and 300/300 random J. It is cross-checked against the oracle (9,457 base configurations, 0 contradictions with PEE).
    - **Far-apart form (Prop 8.3, Cor 8.4; Lean `ptm3_of_far`, `stl3_of_far`, `test1_of_chains3`):** if N(z) is pairwise at distance ≥ 3 in J − z, the base hypothesis is automatic (sparse separation, no exceptional vertex).
-     - So **Test1 at d(z) = 6 (T(6)-i) holds whenever, for every r ∈ N(z), some labelled pairing with r long has an admissible chain.**
+     - So STL-P with three prescribed transitions holds, and with it Test1 at z, whenever for every r ∈ N(z) some labelled pairing with r long has an admissible chain.
+     - **But this Test1 case is already known (audit A22c, E2).** Far-apart gives |S(x)| ≤ 1, and six-even-incidence Thm 1(2) closes it (manuscript Remark 8.5). New: STL-P with three transitions, and the mechanism. The open T(6)-i residual has B[N(z)] nearly complete, the opposite extreme.
      - Far-apart N(z) occurs in 0, 1, 15, 69 and 99 of 200 random graphs at orders 21, 31, 51, 101 and 201.
      - In all 184 such graphs chains were found for every r.
      - Chain existence is not proved.
-   - **Chain conjecture (manuscript Conj 8.5):** J 3-connected with N(z) far apart ⇒ for every r there are x1 ≠ r and a labelling of the other four with edge-disjoint P2: y3 → x2 in H − N[x3] − {x1, y2} and P1: y2 → x1 in H − N[x2] − N[x3] (H = J − z, y1 = r free).
+   - **Chain conjecture (manuscript Conj 8.6):** J 3-connected with N(z) far apart ⇒ for every r there are x1 ≠ r and a labelling of the other four with edge-disjoint P2: y3 → x2 in H − N[x3] − {x1, y2} and P1: y2 → x1 in H − N[x2] − N[x3] (H = J − z, y1 = r free).
      - Evidence: every r covered, always with r = y1, in 184 random graphs and 1,000 adversarial graphs (exact search). The adversarial set is 400 graphs with private neighbourhoods (orders 19–25) and 600 two-halves graphs with a 2- or 4-edge cut in J − z (orders 23–31).
-     - It implies Test1 at every far-apart degree-6 vertex of a 3-connected graph, via `test1_of_chains3`.
+     - It implies STL-P (three transitions) at every far-apart degree-6 vertex of a 3-connected graph, via `stl3_of_far`. It would also give a composition proof of the known Test1 there.
+     - P1 also avoids y3 (N taken in G, as in Lean `AdmChain`; audit A22c G1). The re-runs with y3 excluded are unchanged.
      - The difficulty: H is only 2-connected, and deleting N[x3] can disconnect it.
-   - **Missing:** the base hypothesis when N(z) is not far apart (local girth / exceptional-vertex forms as at d = 4), and Conjecture 8.5.
+   - **Missing, and the real target:** the base hypothesis when B[N(z)] is dense (the open T(6)-i residual), where most pairings have adjacent pairs (multigraph G). Also missing: Conjecture 8.6.
    - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
