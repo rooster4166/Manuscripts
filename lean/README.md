@@ -1,5 +1,13 @@
 # GallaiLean
 
+## Direct lift to Test1 through triangles at z (cloud session, branch `claude/triangle-base`)
+
+Manuscript `manuscripts/direct-test1`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,400 jobs).
+
+| File | Content |
+|---|---|
+| `DirectTest1.lean` | **`test1At_of_triangleBase`** (manuscript Thm 2.1, general `m`): if `z` is the only even vertex of `J`, `d(r) ≥ 3`, `(w, L)` are triangle data at `(J, z, r)` (`TriangleData`: `L` a list of pairs that are edges of `J` and partition `N(z) − {r, w}`), and the auxiliary graph `triM J z w L = J − zw − {zaᵢ, zbᵢ, aᵢbᵢ}` has a Lovász decomposition satisfying every disjunction `aᵢ ∉ V(Q₀(bᵢ)) ∨ bᵢ ∉ V(Q₀(aᵢ))` (`TriangleDisj`), then `Test1At J z r`. **`append_pairs`**: appending a matching at ends chosen by the disjunctions keeps the size (induction with `append_full`; `avoid_of_append` carries the remaining disjunctions). The leaf `z` is removed by identifying `J − zw − {zaᵢ, zbᵢ}` with `addLeaf (J − z) r` (`leafMap`, `PathDecomp.mapInj`) and `trim_ends` + `exists_two_ends`. **`triM_parity`**, `triM_size` (manuscript Lemma 1.2). **`test1_of_triangleBases`**; `TriangleBaseConj` (Conj 3.1, restricted to roots with data) and **`test1_of_triangleBaseConj`**. |
+
 ## Prescribed end edges (cloud session, branch `claude/ee`)
 
 Manuscript `manuscripts/prescribed-end`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
