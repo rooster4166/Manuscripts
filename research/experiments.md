@@ -901,7 +901,7 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 - Wheels W₄ … W₁₈.
 - J = H + universal z, with H random 4-regular of order 10, 12, 14, 16 (102 graphs, 1,232 pairs; J − z Eulerian, d(z) up to 16).
 - Random non-3-connected J with J − z connected, n = 11 and 13 (250 graphs, 780 pairs).
-- Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9.
+- Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9. At n = 13 (200 graphs, 1,087 pairs): STL holds at 1,080, fails at 3 (Test1 fails at all 3), and 4 remain undecided after budgets up to 2·10⁹ nodes; an exact run, `resolve_fam.py`, is in progress.
 
 **(F) Composition: two terminal edges at once** (`ptm_run.py`). Setup: a random connected all-odd graph G of order n and a random matching F of m edges. By the pairing proposition, PTM(G, F) is STL-P(J, F) for J = (G − F) + z(V(F)).
 - PTM(G, F): some Lovász decomposition of G has every F-edge terminal *at some end* and no path with two F-edges.
