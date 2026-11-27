@@ -805,3 +805,40 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 - `tools/emm_reduction_check.py`.
 - Lean: `lean/GallaiLean/EmmTemplate.lean` (`CutOK`, `cutCount`, `leaf_step`). No sorry.
 
+#### T.handoff-2: the forcing-gadget search for an EMM₃ counterexample (for a fresh session)
+
+**Exact gluing argument** (edge-cut restriction; proved, missing-move Remark 7.7 and Theorem 7.5).
+- Let F = δ(K) be an edge cut of G with |F| = s, and let D be any partition of G into paths with profile b. Then D restricted to E(K) ∪ F is a partition of K⁺ := K plus one new pendant leaf ℓ_f per cut edge f, with profile b on K and b(ℓ_f) = 1, into (b(K) + s)/2 segments.
+- Reason: a path meets K ∪ F in segments, and each segment ends at a vertex of K with an end of the path, or at a cut edge, which then ends at its leaf.
+- So: **G realisable ⇒ K⁺ realisable**. If K⁺ with this profile is cut-feasible but not realisable (a core), no G built on K by an edge cut realises b.
+- A vertex with b(c) = d(c) is likewise never crossed (Thm 7.5, used at d(c) = 2). Under EMM₃ (δ ≥ 3, simple profiles) such vertices do not exist, so only edge cuts remain.
+
+**The difficulty.** Every known core has degree-2 vertices: FqJBo (n = 7), the 17 order-8 failures in `gemm8_lowp.log`, and in particular **GsOeBW** with b = (0,0,1,1,2,0,0,0) and **GqGUDg** with b = (0,1,1,1,1,0,0,0), the two with a leaf. There is no δ ≥ 3 core up to order 8:
+- edge cuts and leaves: 1,146 graphs (`emm3_cores*.log`);
+- vertex 2-separators: 8,774 graphs (`emm3_sep_core.log`);
+- random orders 9–10: 4,000 graphs.
+
+**Gadget specifications.** Replace each degree-2 vertex w of a core, with neighbours x and y, by a block D attached through two edges x–x′ and y–y′. Here x′ and y′ are in D, every vertex of D has degree ≥ 3 in the result, and D has a simple profile. By the gluing argument, D⁺ is D plus temporary leaves λ_x (at x′) and λ_y (at y′), each with one end.
+- **Pass-through gadget** (for w with b(w) = 0): every partition of D⁺ with the chosen profile has **one segment with ends λ_x and λ_y**, and it must have at least one partition. The core then sees exactly "a path from x to y", as through w. Realisations correspond: a core partition with x–w–y ↔ a G-partition joining the two core segments through D. The segments must be distinct, which holds because w is interior.
+- **Double-end gadget** (for w with b(w) = 2): every partition of D⁺ has λ_x and λ_y on **different** segments, each ending inside D, and at least one partition exists. The core then sees two separate path ends, as at w.
+- **The core's own leaf** (for example vertex 3 of GsOeBW) needs no gadget: make it a bridge into the surplus block B.
+- Global constraints:
+  - the glued G must have δ ≥ 3;
+  - its profile must be a **simple half-set** (Σb = n), with the surplus coming from B, as in Thm 7.5;
+  - it must be **cut-feasible**.
+- Non-realisability then follows from the gluing argument; no oracle is needed.
+
+**Search plan.**
+1. Enumerate small δ ≥ 3 blocks D (order 4–8, graph6 from `data/conn*.g6`) with two attachment vertices x′, y′ and simple profiles. For each, determine with `realis.profile_ok` and the enumerator `all_partitions` in `tools/emm_split.py` whether every partition of D⁺ joins the leaves (pass-through) or separates them (double-end).
+2. Assemble GsOeBW (or GqGUDg) with gadgets for its degree-2 vertices and a surplus block B joined by a bridge at the core leaf. The order will be about 25–35.
+3. Verify cut-feasibility with **`tools/cutfeas.c`**. Its input is one graph per line, "n m u1 v1 … um vm" (n ≤ 20, n even), and its output is the number of cut-feasible half-sets and their bitmasks. It is O(2^n) per half-set, so it needs **n ≤ 20**. Either keep the assembly small (gadgets of order ≤ 4–5, shared or merged), or extend it to n ≤ 32 with uint64 masks and a single prescribed half-set instead of all of them.
+4. As a cheaper first step, glue just one gadget into the core and check the partial instance (degree-2 vertices remaining elsewhere) with `tools/cut_test.py` / `realis` at n ≤ 14. This verifies the gadget's forcing behaviour in context.
+
+**Logs and tools** (all in `manuscripts/missing-move/scripts/outputs/`; `emm_runs.sh` reproduces them):
+- `emm_counterexamples12.g6` and `emm_counterexamples12_cut_test.log`: the Thm 7.5 graphs;
+- `emm_glue_GsOeBW.log`, `emm_glue_GqGUDg.log`: the gluing search;
+- `gemm7.log`, `gemm8_lowp.log`: the cores below budget;
+- `emm3_*.log`: the EMM₃ searches.
+
+Tools: `tools/emm_glue_search.py`, `tools/emm3_core_search.py`, `tools/emm3_sep_core.py`, `tools/emm3_random.py`, `tools/emm3_binding.py`, `tools/emm_split.py` (`all_partitions`), `tools/gemm_test.py` (`prepare`, `feasible` for general profiles), `tools/cut_test.py`, `tools/realis.c`, `tools/cutfeas.c`.
+
