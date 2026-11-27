@@ -584,3 +584,10 @@ The project lead forwarded three claims from another agent and asked that each b
    - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.5.
 
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (18:45).**
+- **The forest lift is reversible.** For fixed (r, w, Φ, rooting), the forest base holds iff J − z has a (T1) decomposition at r in which every Φ-edge p(v)v is the end edge of its path at p(v). The proof is end counting; the lower bounds sum to exactly 2k (sent to triangle-base for the tex).
+  - So Conj 4.4 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
+  - It is still weaker than the terminal-matching form.
+- **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
+  - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
