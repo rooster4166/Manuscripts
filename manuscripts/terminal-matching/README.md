@@ -20,7 +20,10 @@ Experiment log: `research/experiments.md`, E24. Conclusions: `research/connectio
   - Test1 at d(z) = 6 for far-apart N(z) given chains (Cor 8.4, `test1_of_chains3`).
 
   The Lean is in `lean/GallaiLean/TerminalMatching3.lean`; `PTM3Axioms.lean` prints the axioms. The data scripts are `gen_d6.py`, `d6_pairings.py`, `walk3.c`, `d6_cover.py` and `d6_reach.py`.
-- **Open.** PTM₂ beyond the sparse case (the base problem alone is not enough: 832 NOBASE instances at n = 8); PTM_m for m ≥ 3; the multigraph case (Conjectures 2.3, 2.4).
+- **Open.**
+  - PTM₂ beyond the sparse case. The base problem alone is not enough: there are 832 NOBASE instances at n = 8.
+  - PTM_m for m ≥ 3 in general, and the multigraph case (Conjectures 2.3, 2.4).
+  - The chain conjecture (Conj 8.5), which would make `test1_of_chains3` unconditional for far-apart degree-6 vertices of 3-connected J. Evidence: 1,184 graphs, 0 counterexamples (`chain_search.py`, `d6_reach.py`).
 - **Counterexamples.** K₄ with a perfect matching (PTM₂); the prism with its rungs (PTM₃, G − F disconnected).
 
 ## Reproduction (`scripts/`)
