@@ -346,3 +346,23 @@ The single-vertex statements L1 and L∞ come first. They are Lovász's theorem 
 - So a leaf-tolerant MSEP would give **Gallai whenever G[Ev] has a perfect matching**, with no triangle condition; this includes every Eulerian graph with a perfect matching.
 - L1 alone gives no new realisability class, since the first pair of any Fan schedule is already free.
 - Evidence: MSEP held on all cubic graphs of order 16 (36M pairings) and on 41k random cubic graphs of order 18, with 0 failures (multi-sep). L_N for perfect matchings held in 2,332 decided cases, with 0 failures.
+
+## 19. Star-terminal Lovász decompositions and the spine (coordinator, 2026-11-27)
+
+The spine (`gallai_iff_spineTests'`) reduces Gallai to Test1 and Test2 on 3-connected graphs J with at most two even vertices. Test1 can be reached directly from Lovász decompositions of J.
+
+**Setting.** J has exactly one even vertex z, so n is odd. A Lovász decomposition D of J has (n−1)/2 paths. Every vertex except z ends exactly one path, and z is interior to d(z)/2 paths. Call D **star-terminal** if every path through z has the form x z y …, where x is an end of that path. Call x the short end and y the long side.
+
+**Observation (STL ⇒ Test1).** Suppose some star-terminal D has r on a long side, or has a path x z y of length 2 through z. Then Test1 holds at r.
+- Delete z.
+- Each path x z y B becomes y B. Here y is interior to the original path, so y's own Lovász end lies on another path, and y now has 2 ends. The vertex x has 0 ends.
+- Paths of the form x z y disappear, which only gives slack.
+- So J − z has at most (n−1)/2 paths and r has 2 ends.
+
+Example: the wheel W₆, with paths v0 z v1 v2 v3, v2 z v3 v4 v5 and v4 z v5 v0 v1.
+
+**Why it matters.** STL constrains Lovász decompositions at ONE vertex, the unique even vertex. That is the territory of the proved single-vertex results: separation, L1 and `lovasz_endEdge`. multi-sep's crux, "L1 at the even vertex" (uz terminal at a neighbour u of z), is the one-transition case of STL.
+
+A star-type analogue for Test2 (two adjacent even vertices) together with STL would give Gallai, by `gallai_iff_spineTests'`. That is a reason for maximal skepticism.
+
+**Assigned:** the STL session (connections §X). Its tasks: verify the observation, find the Test2 analogue, test both exhaustively on small graphs and 3-connected samples, then attempt proofs by Lovász's induction with z as the special vertex.
