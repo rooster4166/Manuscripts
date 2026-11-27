@@ -31,8 +31,11 @@ end-path condition per triangle $z a_i b_i$. Here $M$ is obtained from $J$ by de
 and the triangles $za_ib_i$ of a near-perfect matching of $N(z)-r$. The lift does not pass through
 star-terminal decompositions. For $d(z)=6$ it replaces the five or six end-path conditions of the
 dense-residual base conjecture by two disjunctive ones. Exact computation supports the resulting base
-conjecture on random dense $3$-connected graphs. The reduction was proposed by an external
-collaborator; the proof and data here are an independent check.
+conjecture on random dense $3$-connected graphs. Replacing the matching by a forest $T$-join of
+$J-\{z,r\}$ gives a lift (Theorem~\ref{thm:forest}) that applies at every root of every $3$-connected
+$J$. Its conditions are one forbidden vertex per forest edge and one sibling condition. The reduction
+and its forest form were proposed by an external collaborator. The proofs and data here are an
+independent check.
 \end{abstract}
 
 \maketitle
@@ -132,6 +135,125 @@ By Theorem~\ref{thm:lift}, Conjecture~\ref{conj:base} implies (T1) for every $3$
 even vertex admits the data. With the spine reduction, this covers the two-end half of Gallai's
 conjecture in that range.
 
+\section{The forest lift}
+
+The matching $M_0$ in Definition~\ref{def:data} can be replaced by any forest that is a $T$-join
+for $T=N_J(z)-\{r,w\}$. Recall that for $T\subseteq V(H)$ a \emph{$T$-join} of $H$ is a set of edges
+$\Phi\subseteq E(H)$ whose odd-degree vertices are exactly the vertices of $T$. It exists if and only if
+every component of $H$ contains an even number of vertices of $T$. Deleting the edges of a cycle from
+a $T$-join gives a $T$-join, so a $T$-join with the fewest edges is a forest.
+
+\begin{lemma}[forest stepping]\label{lem:step}
+Let $D$ be a decomposition of a graph $B$ into paths of positive length. Let $\Phi$ be a forest on
+vertices of $B$, edge-disjoint from $B$, with a root chosen in each component; write $p(v)$ for the
+parent of a non-root vertex $v$. Suppose every non-root vertex $v$ of $\Phi$ is an end of exactly one
+path $P(v)\in D$. For every non-root $v$, append the edge $p(v)v$ to $P(v)$ at its end $v$. The
+result is a decomposition of $B\cup\Phi$ into $|D|$ paths if and only if
+\begin{enumerate}[label=(\roman*)]
+\item $p(v)\notin V(P(v))$ for every non-root vertex $v$, and
+\item $P(x)\ne P(y)$ for all distinct $x,y$ with $p(x)=p(y)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The map $v\mapsto p(v)v$ is a bijection from the non-root vertices of $\Phi$ onto $E(\Phi)$, so every
+edge of $B\cup\Phi$ is used exactly once and no path is created. A path $P\in D$ with ends $x\ne y$
+receives at most one edge at each end: one at $x$ when $x$ is a non-root vertex of $\Phi$, and
+similarly at $y$. The appends at different ends do not interact, so the result does not depend on
+their order. If $P$ receives only the edge at $x$, the result $p(x)\,x\cdots y$ is a path iff
+$p(x)\notin V(P)$. If $P$ receives both, the result $p(x)\,x\cdots y\,p(y)$ is a path iff
+$p(x),p(y)\notin V(P)$ and $p(x)\ne p(y)$. Two distinct non-root vertices $x\ne y$ with $p(x)=p(y)$
+and $P(x)=P(y)$ are exactly the two ends of one path receiving the same new vertex. So all results are
+paths iff (i) and (ii) hold.
+\end{proof}
+
+\begin{theorem}[forest lift]\label{thm:forest}
+Let $r\in N_J(z)$ and suppose $H:=J-\{z,r\}$ is connected; this holds if $J$ is $3$-connected. Let
+$w\in N_J(z)-r$, put $T=N_J(z)-\{r,w\}$, and let $\Phi$ be a $T$-join of $H$ that is a forest. Put
+\[
+M \;=\; J-\bigl(\{zw\}\cup\{zv:v\in T\}\cup E(\Phi)\bigr).
+\]
+Root each component of $\Phi$, rooting the component containing $w$ (if any) at $w$. If $M$ has a
+Lov\'asz decomposition $D_0$ with
+\begin{enumerate}[label=(\roman*)]
+\item $p(v)\notin V(Q_0(v))$ for every non-root vertex $v$ of $\Phi$, and
+\item $Q_0(x)\ne Q_0(y)$ for all distinct $x,y$ with $p(x)=p(y)$,
+\end{enumerate}
+then $(J,z,r)$ passes (T1).
+\end{theorem}
+
+\begin{proof}
+Since $|T|=2m-2$ is even and $H$ is connected, $T$-joins exist and a smallest one is a forest.
+\emph{Parities in $M$.}
+\begin{itemize}[leftmargin=*]
+\item Only the edge $zr$ survives at $z$, so $d_M(z)=1$.
+\item $r\notin V(H)$, so $d_M(r)=d_J(r)$, which is odd and at least $3$.
+\item $w\notin T$, so $d_\Phi(w)$ is even and $d_M(w)=d_J(w)-1-d_\Phi(w)$ is even. It may be $0$.
+\item A vertex $v\in T$ has $d_M(v)=d_J(v)-1-d_\Phi(v)$ with $d_\Phi(v)$ odd, so $d_M(v)$ is odd.
+\item Any other vertex loses an even number $d_\Phi(v)$ of edges, so its degree stays odd.
+\end{itemize}
+So the $2k$ vertices other than $w$ are odd in $M$, $w$ is the only even vertex, and every Lov\'asz
+decomposition of $M$ has $k$ paths.
+
+\emph{Step 1} is Step~1 of Theorem~\ref{thm:lift}, word for word. It needs only that $Q_0(z)$ begins
+$z,r$ and that $d_{M-z}(r)=d_J(r)-1\ge 2$. It yields a decomposition $D_1$ of $B_0:=M-z$ into $k$
+paths in which $r$ is an end of exactly two paths. Each odd vertex $v\ne r$ of $B_0$ is an end of
+exactly one path $P_1(v)$. Every path of $D_1$ is a subpath of a unique path of $D_0$, and
+$P_1(v)\subseteq Q_0(v)$. Hence (i) gives $p(v)\notin V(P_1(v))$. If $P_1(x)=P_1(y)$, then $Q_0(x)$
+and $Q_0(y)$ share an edge and are equal, so (ii) gives $P_1(x)\ne P_1(y)$ for siblings.
+
+\emph{Step 2.} Every non-root vertex $v$ of $\Phi$ differs from $r$ (as $r\notin V(H)$) and from $w$
+(a root when present), so it is odd in $B_0$ and is an end of exactly one path of $D_1$. Lemma~\ref{lem:step}
+applies to $B=B_0$, $D=D_1$ and the forest $\Phi$. It gives a decomposition of $B_0\cup\Phi=J-z$ into
+$k$ paths. The appends happen at ends $v\ne r$ and add vertices $p(v)\ne r$, so $r$ is still an end of
+two paths. This is (T1).
+\end{proof}
+
+\begin{remark}
+\begin{itemize}[leftmargin=*]
+\item \emph{Special case.} Theorem~\ref{thm:lift} is the case where $\Phi=M_0$ is a perfect matching
+of $J[T]$. Each component is one edge $a_ib_i$, and choosing which end is the root is choosing a side
+of the disjunction~\eqref{eq:disj}; condition (ii) is vacuous.
+\item \emph{Availability.} When $J$ is $3$-connected, Theorem~\ref{thm:forest} applies at every root
+$r$ and every $w$, with no hypothesis on $J[N(z)]$. In particular it covers the regime where
+$N(z)-r$ is independent, which the triangle data miss.
+\item \emph{Lean.} Only the matching case is formalised (\texttt{test1At\_of\_triangleBase}).
+\end{itemize}
+\end{remark}
+
+\begin{conjecture}[forest base]\label{conj:forest}
+If $J$ is $3$-connected, then for every $r\in N_J(z)$ there are $w$, a forest $T$-join $\Phi$, a
+rooting as in Theorem~\ref{thm:forest}, and a Lov\'asz decomposition of $M$ satisfying (i) and (ii).
+\end{conjecture}
+
+Conjecture~\ref{conj:base} is the special case of Conjecture~\ref{conj:forest} in which $\Phi$ is
+required to be a matching inside $N(z)$, so Conjecture~\ref{conj:forest} is formally weaker. With the
+spine reduction it would give the two-end half of Gallai's conjecture for every $3$-connected $J$.
+
+\begin{remark}[a single pair is not settled by one-sided avoidance]\label{rem:onepair}
+Take $m=2$, so that $M=J-\{zw,za_1,zb_1,a_1b_1\}$. Assume $J$ is $2$-connected on at least $5$ vertices.
+Then no component of $M$ has exactly $a_1,b_1$ as its odd vertices. Such a component would lie
+in $\{a_1,b_1,w\}$ and be the path $a_1\,w\,b_1$, so in $J$ it would meet the rest only through $z$.
+
+The one-sided avoidance statement L1$^*$ (Lean \texttt{L1Star}) does not, however, settle the
+disjunction for this pair. It concerns the end path at a vertex $c$ avoiding a set $A$, and it requires
+the vertices of $A$ to be non-adjacent to $c$ and to the even vertex (Lean \texttt{Admissible}).
+Whenever $a_1w,b_1w\in E(J)$, neither direction of~\eqref{eq:disj} is admissible, because $w$ is the
+even vertex of $M$. This happens in $57$ of $246$ sampled instances, all with at least four odd
+vertices in the component. Moreover L1$^*$ itself is only known conditionally.
+
+The disjunction held in every sampled instance. In the configuration that blocks one side for
+every decomposition, it can also be obtained directly. That configuration is a tail
+$N_M(w)=\{a_1,b_1\}$ and $N_M(b_1)=\{w\}$, where every $Q_0(b_1)$ begins $b_1\,w\,a_1$.
+\begin{itemize}[leftmargin=*]
+\item By the previous paragraph $d_M(a_1)\ge 3$, so $a_1$ is the unique even vertex of
+$M':=M-\{w,b_1\}$, with $d_{M'}(a_1)\ge 2$.
+\item A Lov\'asz decomposition of $M'$ has a path through $a_1$. Split it at $a_1$ and prepend $b_1\,w$
+to one of the two pieces.
+\end{itemize}
+This gives a Lov\'asz decomposition of $M$ in which $Q(a_1)$, the other piece, avoids $b_1$.
+\end{remark}
+
 \section{A local guard}
 
 The disjunction~\eqref{eq:disj} fails at a pair $\{a,b\}$ exactly when $Q_0(a)=Q_0(b)$, or when each of
@@ -176,6 +298,24 @@ $11$, $6$ & $30$ & $180$ & $180$ & $180$ & $175$\\
 Nine individual queries exceeded the budget; in each case another data choice at the same root
 succeeded. No lift failed. The generalised script \texttt{scripts/dtl2.py} handles $d(z)=2m$ with
 $m-1$ pairs; results at $d(z)=8$ are recorded in \texttt{scripts/out/}.
+
+\smallskip
+\noindent\emph{Section~3.} The script \texttt{scripts/verify/verify3.py} checks Lemma~\ref{lem:step},
+Theorem~\ref{thm:forest} and Remark~\ref{rem:onepair} independently of the oracle. Its enumerator of
+Lov\'asz decompositions is exhaustive up to a cap, and \texttt{bf\_check.py} validates it against brute
+force on $60$ small graphs with no mismatch.
+\begin{itemize}[leftmargin=*]
+\item \emph{Lemma~\ref{lem:step}.} On $40$ random graphs of order $6$ and $8$, take $\Phi$ a minimum
+$T$-join for $T$ the set of even vertices and $B=G-E(\Phi)$. For every decomposition and rooting, the
+predicate (i)$\wedge$(ii) agreed with the outcome of the appends in all $101{,}282$ cases.
+\item \emph{Theorem~\ref{thm:forest}.} On $3$-connected $J$ of order $9$ and $11$ with $d(z)\in\{4,6\}$,
+the parity claims held in $192/192$ instances. Of these, $84$ have a component of $\Phi$ with at least
+three vertices. All $253{,}834$ lifts satisfying (i)$\wedge$(ii) produced a valid (T1) decomposition.
+A base satisfying (i)$\wedge$(ii) was found for $180/192$ instances, for the first two choices of $w$
+and one minimum $T$-join, within a cap of $1500$ decompositions.
+\item \emph{Remark~\ref{rem:onepair}.} On $2$-connected $J$ of order $7$ and $9$ with $d(z)=4$, there were
+$246$ instances. No component had odd set $\{a_1,b_1\}$, and the disjunction held in all of them.
+\end{itemize}
 
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
