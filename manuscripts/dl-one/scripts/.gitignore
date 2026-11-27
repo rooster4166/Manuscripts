@@ -4,3 +4,4 @@ enum
 dlrec
 __pycache__/
 *.tmp
+dl_sf

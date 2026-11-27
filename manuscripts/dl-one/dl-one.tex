@@ -1,0 +1,606 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\emergencystretch=3em
+
+% data cells
+\newcommand{\NELEVEN}{\emph{pending}}
+\newcommand{\NELEVENPAIRS}{\emph{pending}}
+\newcommand{\NELEVENTW}{\emph{pending}}
+
+\title[DL for one pair]{The disjunctive avoidance conjecture for one pair:\\
+the exact boundary to order eleven, four proved cases,\\ and where Lov\'asz's induction stops}
+\author{Gallai project (cloud session \texttt{claude/dl-one})}
+\date{27 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ have at most one vertex $g$ of positive even degree, and let $a,b$ be non-adjacent vertices
+of odd degree. A \emph{Lov\'asz decomposition} partitions $E(G)$ into paths so that every vertex
+$v$ is an end of exactly $d(v)\bmod 2$ of them; $Q(v)$ is the path ending at an odd vertex $v$.
+Conjecture DL(1) asks for a Lov\'asz decomposition with $a\notin V(Q(b))$ or $b\notin V(Q(a))$
+unless $a,b$ are \emph{universal twins} of their component ($N(a)=N(b)=V(C)-\{a,b\}$). By the
+direct lift of~\cite{DT}, its multi-pair form gives the two-end test (T1) at every root with
+connected triangle data, including the dense T(6)-i residual. The open core is $a,b\in N(g)$
+with a common neighbour, where both fixed orientations fall outside the avoidance conjecture
+$L_1^*$.
+
+\begin{itemize}
+\item \emph{Proved and formalised in Lean} (no \texttt{sorry}, standard axioms):
+  \begin{itemize}
+  \item the exception is needed: universal twins lie on every path of every Lov\'asz decomposition;
+  \item Lemma NP: in a graph with all degrees odd, two adjacent vertices need not be the two ends
+  of one path;
+  \item DL(1) when $a$ is a leaf at $g$;
+  \item DL(1) when $d(g)=2$ and $g$ is the only common neighbour of $a$ and $b$;
+  \item Lov\'asz's Case~I carries the disjunction across a target $u\in N(g)$ adjacent to neither
+  $a$ nor $b$ (the child is never a pair of universal twins; this part is on paper only).
+  \end{itemize}
+\item \emph{Computation} (exact solver, validated against an independent brute force).
+  Over every connected graph of order $5$, $7$, $9$ \NELEVEN{} with one even vertex and every
+  non-adjacent odd pair, DL(1) fails \emph{exactly} at the universal twins. Through order $9$ every
+  non-twin pair also has a certificate built only from proved transfers.
+\item \emph{Structure in the data.} A fixed orientation ``$Q(y)$ avoids $x$'' fails only if
+  $x\sim g$, $N(y)\setminus\{g\}\subseteq N(x)$ and $N(g)\subseteq N[x]\cup N[y]$. When $g$ is the
+  only common neighbour and $d(a),d(b)\ge3$, both orientations hold, and indeed in one
+  decomposition.
+\item \emph{Where the induction stops.} DL(1) is not an inductive hypothesis for Lov\'asz's
+  Case~I: already at order $7$, with $g$ the only common neighbour and $d(g)=4$, no target carries
+  every good child decomposition to a good one. The natural fixed-orientation strengthening
+  (Conjecture~\ref{conj:n}) would settle the blocked case of $L_1^*$ for $|A|=1$, except where
+  $N(b)\setminus\{g\}\subseteq N(a)$, so it is not an easier target. We record the minimal counterexamples to each strategy.
+\end{itemize}
+DL(1) itself is not proved here.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A vertex is \emph{even} if its degree is positive and even, and
+\emph{odd} if its degree is odd. A \emph{Lov\'asz decomposition} of a graph $G$ with at most one even
+vertex is a partition of $E(G)$ into paths of positive length in which every vertex $v$ is an end of
+exactly $d(v)\bmod2$ paths. Lov\'asz~\cite{L68} proved that one exists. For an odd vertex $v$ we
+write $Q(v)$ for the unique path ending at $v$. Throughout, $g$ denotes the even vertex when there is
+one.
+
+\begin{definition}\label{def:twins}
+Two vertices $a,b$ are \emph{universal twins} if $b$ lies in the component $C$ of $a$ and every vertex
+of $C-\{a,b\}$ is adjacent to both. If moreover $ab\notin E$, then $N(a)=N(b)=V(C)-\{a,b\}$.
+\lean{UnivTwins}
+\end{definition}
+
+\begin{conjecture}[DL(1); {\cite[Conjecture~7.3]{DT}} for one pair; Lean \texttt{DisjL1}]\label{conj:dl}
+Let $G$ have at most one even vertex, and let $a\ne b$ be odd, non-adjacent, and not universal twins.
+Then some Lov\'asz decomposition of $G$ satisfies
+\begin{equation}\label{eq:disj}
+a\notin V(Q(b))\qquad\text{or}\qquad b\notin V(Q(a)).
+\end{equation}
+\end{conjecture}
+
+We write $S_b$ for the statement ``some Lov\'asz decomposition has $a\notin V(Q(b))$'' and $S_a$ for
+the symmetric one. DL(1) says $S_a\vee S_b$ outside universal twins. The free choice of the
+disjunct is the point: one orientation alone fails often (Section~\ref{sec:comp}).
+
+\subsection*{Why it matters}
+The direct lift~\cite[Theorem~2.1]{DT} reduces the two-end test (T1) at a root $r$ of $z$ to a
+Lov\'asz decomposition of an auxiliary graph $M$, with one even vertex $w$, satisfying one
+disjunction~\eqref{eq:disj} for each pair of a perfect matching of $N(z)-\{r,w\}$. DL for several
+pairs therefore gives (T1) at every root whose data have $M$ connected~\cite[Prop.~7.4]{DT}
+(Lean: \texttt{test1At\_of\_disjL1}), including the dense residual of T(6)-i. In the data there is no
+compatibility failure between pairs~\cite[\S7.3]{DT}, so DL(1) is the core.
+
+\subsection*{What was known}
+\begin{itemize}
+\item No even vertex: $S_b$ always holds. This is $L_1$~\cite[Theorem~6.3]{RD}
+(\texttt{lovasz\_avoid\_nonadj}).
+\item No common neighbour: some Lov\'asz decomposition has no path through both $a$ and $b$, by the
+separation theorem~\cite[Theorem~6.1]{RD} (\texttt{separation}).
+\item $a\not\sim g$: $S_b$ is an instance of the avoidance conjecture $L_1^*$~\cite{L1S}, which is
+open; it reduces to its blocked case (\texttt{l1starGen\_of\_blocked}).
+\item The core: $a,b\in N(g)$ with a common neighbour. Both orientations are outside $L_1^*$, whose
+admissibility requires $A\cap N(g)=\emptyset$.
+\end{itemize}
+
+\subsection*{Results}
+\begin{enumerate}
+\item \emph{The exception} (Proposition~\ref{prop:twins}). For universal twins every path of every
+Lov\'asz decomposition of $C$ contains both $a$ and $b$. This generalises~\cite[Prop.~7.5]{DT}.
+\item \emph{Lemma NP} (Lemma~\ref{lem:np}): in a graph with no even vertex, adjacent $x,y$ with
+$d(x)\ge3$ are not paired by some Lov\'asz decomposition. The proof uses a \emph{leaf exchange}
+(Lemma~\ref{lem:exchange}).
+\item \emph{A leaf at $g$} (Theorem~\ref{thm:leaf}): if $N(a)=\{g\}$, then $S_b$ holds outside
+universal twins.
+\item \emph{Degree two at $g$} (Theorem~\ref{thm:deg2}): if $N(g)=\{a,b\}$, $N(a)\cap N(b)=\{g\}$
+and $d(a)\ge3$, then $S_a$ holds. With item~3 this gives DL(1) whenever $d(g)=2$ and $g$ is the
+only common neighbour.
+\item \emph{Reductions} (Section~\ref{sec:red}): free targets carry DL(1), with a child that is
+never twin, and the structure of a smallest counterexample.
+\item \emph{Computation} (Section~\ref{sec:comp}): the exact boundary to order \NELEVEN{}, certificates
+from proved moves to order $9$, and the structural statistics behind the conjectures of
+Section~\ref{sec:conj}.
+\item \emph{The residual} (Section~\ref{sec:residual}): minimal counterexamples to each inductive
+strategy we tried.
+\end{enumerate}
+
+\subsection*{Status}
+Proved means: proved here on paper and, for items 1--5, also in Lean (file
+\texttt{DLOne.lean} of the project library; Section~\ref{sec:lean}). Verified means: by exact computation,
+in the stated range. Conjectured means: supported by the data quoted, not proved. No proof uses a
+computation.
+
+\section{Tools}\label{sec:tools}
+
+For a path decomposition $\cD$ and a vertex $v$, $b_\cD(v)$ is the number of paths of $\cD$ with an
+end at $v$. A path through $v$ with $v$ interior uses two edges at $v$; a path ending at $v$ uses one.
+Hence the number of paths of $\cD$ containing $v$ is
+\begin{equation}\label{eq:count}
+\tfrac12\bigl(d(v)+b_\cD(v)\bigr).
+\end{equation}
+
+\begin{lemma}[Fan's lemma with end paths~{\cite{Fan05}, \cite[Lemma~2.2]{RD}, \cite[Theorem ``Fan with end paths'']{CLT}}]
+\label{lem:fan}
+Let $g$ be the even vertex of $G$, $u\in N(g)$, and $\cD'$ a Lov\'asz decomposition of $G-gu$. Then
+$G$ has a Lov\'asz decomposition $\cD$ obtained by a Fan chain $g=x_0,x_1,\dots,x_k$ (every $x_i$
+with $i\ge1$ adjacent to $u$) followed by one append. Every path of $\cD$ lies in a path of $\cD'$
+together with $u$, and the path of $\cD$ ending at a vertex $w\notin\{g,u\}\cup N(u)$ comes from the
+path of $\cD'$ ending at $w$.
+\end{lemma}
+
+\emph{Leaf graphs.} For an edge $xy$ of $H$, $H(x;y)$ denotes $H-xy$ together with a new vertex
+$\ell$ and the edge $x\ell$; the leaf $\ell$ \emph{stands for} $y$. If a decomposition of $H(x;y)$
+has no path containing both $\ell$ and $y$, identifying $\ell$ with $y$ gives a decomposition of $H$
+whose end counts are those of $H(x;y)$, with the ends at $\ell$ and $y$ added~\cite[Lemma~12]{MS}
+(Lean: \texttt{leaf\_merge}).
+
+\begin{theorem}[separation~{\cite[Theorem~6.1]{RD}}]\label{thm:sep}
+If $K$ has at most one even vertex and $X$ is a set of vertices at pairwise distance at least three,
+then $K$ has a Lov\'asz decomposition in which every path meets $X$ at most once.
+\end{theorem}
+
+\section{The exception is needed}\label{sec:twins}
+
+\begin{proposition}\label{prop:twins}
+Let $G$ have at most one even vertex, and let $a,b$ be odd, non-adjacent universal twins of their
+component $C$. Then every path of every Lov\'asz decomposition that lies in $C$ contains both $a$ and
+$b$. In particular~\eqref{eq:disj} fails for every Lov\'asz decomposition.
+\lean{univTwins\_every\_path, not\_triangleDisj\_of\_twins} (stated for connected $G$)
+\end{proposition}
+
+\begin{proof}
+Let $N=|C|$. Since $N(a)=V(C)-\{a,b\}$, $d(a)=N-2$, which is odd, so $N$ is odd. Every vertex of $C$
+has positive degree. The number of odd vertices of $C$ is even, so $C$ contains a vertex of even
+degree, and it is $g$. Hence $C$ has $N-1$ odd vertices, and the paths of a Lov\'asz decomposition
+that lie in $C$ number $(N-1)/2$. By~\eqref{eq:count}, $(d(a)+1)/2=(N-1)/2$ of them contain $a$. So
+all of them contain $a$, and likewise $b$, since $d(b)=d(a)$. Every path lies in one component, and
+$Q(a),Q(b)$ lie in $C$.
+\end{proof}
+
+\section{Lemma NP: adjacent vertices need not be paired}\label{sec:np}
+
+\begin{lemma}[leaf exchange]\label{lem:exchange}
+Let $\ell$ be a leaf of $K$ with neighbour $x$, let $d(x)\ge3$, and let $\cD$ be a path
+decomposition of $K$ with $b_\cD(x)=1$ in which the path through $\ell$ is the single edge $\ell x$.
+For every $y\notin\{x,\ell\}$ there is a decomposition $\cD'$ with $b_{\cD'}=b_\cD$ in which the path
+through $\ell$ avoids $y$ and does not end at $x$, and every path of $\cD'$ lies in a path of $\cD$
+together with $\ell$.
+\lean{leaf\_exchange}
+\end{lemma}
+
+\begin{proof}
+The end of $x$ is on $\ell x$, so no other path ends at $x$. Since $d(x)\ge3$, some edge $xz$ with
+$z\ne\ell$ lies on a path $R\ne\ell x$, and $x$ is interior to $R$. The leaf $\ell$ is not on $R$:
+its only edge is on $\ell x$. Split $R$ at $x$ into $R_1$ and $R_2$, each with an end at $x$. As $R$
+is a path and $y\ne x$, at most one of $R_1,R_2$ contains $y$; say $y\notin R_1$. Replace $\ell x$
+and $R$ by $R_1+x\ell$ and $R_2$. The first is a path since $\ell\notin R_1$. The ends are unchanged:
+before, $\ell,x$ and the two ends of $R$; after, the far end of $R_1$, $\ell$, $x$ and the far end of
+$R_2$. The new path through $\ell$ avoids $y$, and its ends are $\ell$ and an end of $R$, which is not
+$x$.
+\end{proof}
+
+\begin{lemma}[NP]\label{lem:np}
+Let $H$ have no even vertex, and let $x\sim y$ with $d(x)\ge3$. Then some Lov\'asz decomposition of
+$H$ has no path whose two ends are $x$ and $y$; that is, $Q(x)\neq Q(y)$.
+\lean{not\_paired\_adj}
+\end{lemma}
+
+\begin{proof}
+Let $K=H(x;y)$: delete $xy$ and hang a leaf $\ell$ at $x$, standing for $y$. In $K$ the vertex $x$
+keeps its odd degree, $y$ has even degree $d(y)-1$, $\ell$ is a leaf, and all other degrees are
+unchanged. So $y$ is the only possible even vertex. The only neighbour of $\ell$ is $x$, which is not
+adjacent to $y$ in $K$, so $\ell$ and $y$ are at distance at least three. By Theorem~\ref{thm:sep}
+some Lov\'asz decomposition $\cD_K$ has no path through both $\ell$ and $y$. Let $P$ be its path
+through $\ell$.
+
+If $P=\ell x$, apply Lemma~\ref{lem:exchange} (with $b(x)=1$, since $x$ is odd); the new decomposition
+has the same ends, still has no path through $\ell$ and $y$ (the only new path through $\ell$ avoids
+$y$), and its path through $\ell$ does not end at $x$. If $P\ne\ell x$, then $P$ does not end at $x$
+either: a path from $\ell$ to $x$ starts $\ell x$, so it is the edge $\ell x$.
+
+Now merge $\ell$ into $y$. The result is a decomposition of $H$; $y$ gets the end that $\ell$ had and
+no other, since $b_{\cD_K}(y)=0$; all other end counts are unchanged. So it is a Lov\'asz
+decomposition. Its path ending at $y$ is the image of $P$, whose other end is not $x$. So $Q(y)$ does
+not end at $x$, and $Q(x)\ne Q(y)$.
+\end{proof}
+
+\begin{remark}
+If $d(x)=d(y)=1$, the component is the edge $xy$ and every decomposition pairs $x$ and $y$. So the
+lemma covers every adjacent pair whose component is not a single edge (apply it at whichever of
+$x,y$ has degree at least three).
+\end{remark}
+
+\section{A leaf at the even vertex}\label{sec:leaf}
+
+\begin{theorem}\label{thm:leaf}
+Let $G$ have at most one even vertex $g$, let $N(a)=\{g\}$, and let $b\ne a$ be odd. If $a,b$ are not
+universal twins, some Lov\'asz decomposition of $G$ has $a\notin V(Q(b))$.
+\lean{avoid\_leaf, disjL1\_leaf}
+\end{theorem}
+
+\begin{proof}
+Let $H=G-ga$. Then $a$ is isolated, $g$ has odd degree $d(g)-1$, and all other degrees are as in $G$;
+so $H$ has no even vertex. Also $b\ne g$, since $b$ is odd. We find a Lov\'asz decomposition $\cD_H$
+of $H$ in which $Q_H(g)\neq Q_H(b)$.
+\begin{itemize}
+\item If $b\notin N(g)$, then $L_1$ gives $\cD_H$ with $g\notin V(Q_H(b))$.
+\item If $b\in N(g)$ and $d_H(g)\ge3$ or $d_H(b)\ge3$, Lemma~\ref{lem:np} applies.
+\item Otherwise $d_H(g)=d_H(b)=1$, so $N_G(g)=\{a,b\}$ and $N_G(b)=\{g\}$. The component of $a$ is
+then the path $a\,g\,b$, and $a,b$ are universal twins, which is excluded.
+\end{itemize}
+Append $ga$ to $Q_H(g)$; this is a path, as $a$ lies on no path of $\cD_H$. The result $\cD$ is a
+Lov\'asz decomposition of $G$: $g$ loses its end and $a$ gains one. The only path of $\cD$ through $a$
+is $Q_H(g)+ga$, whose ends are $a$ and the far end of $Q_H(g)$, which is not $b$. So $Q(b)$ is a path
+of $\cD_H$ and avoids $a$.
+\end{proof}
+
+\section{Degree two at the even vertex}\label{sec:deg2}
+
+\begin{theorem}\label{thm:deg2}
+Let $G$ have at most one even vertex $g$, with $N(g)=\{a,b\}$, $ab\notin E$, $N(a)\cap N(b)=\{g\}$ and
+$d(a)\ge3$. Then some Lov\'asz decomposition of $G$ has $b\notin V(Q(a))$.
+\lean{avoid\_deg\_two}
+\end{theorem}
+
+\begin{proof}
+\emph{Split $g$ off.} Let $H=G-ga-gb+ab$. The degrees of $a$ and $b$ are unchanged, $g$ is isolated,
+and all other degrees are as in $G$; so $H$ has no even vertex.
+
+\emph{Leaf graph.} Let $K=H(a;b)$, so $K=G-g$ plus a leaf $\ell$ at $a$. In $K$, $a$ is odd, $b$ has
+even degree $d(b)-1$, and $\ell$ is a leaf; $b$ is the only possible even vertex. The vertices $a,b$
+are non-adjacent in $K$, and a common neighbour would be a vertex $w\ne g$ in $N_G(a)\cap N_G(b)$, or
+$\ell$, which is adjacent only to $a$. Hence $a,b$ are at distance at least three. By
+Theorem~\ref{thm:sep}, $K$ has a Lov\'asz decomposition $\cD_K$ in which no path contains both $a$ and
+$b$. The path $P$ through $\ell$ contains $a$, hence avoids $b$.
+
+\emph{Make $a$ interior to $P$.} If $P=\ell a$, apply Lemma~\ref{lem:exchange} at $a$ (here
+$d_K(a)=d_G(a)\ge3$ and $b(a)=1$). Every new path lies in an old one together with $\ell$, so the new
+decomposition still separates $a$ from $b$; its path through $\ell$ does not end at $a$. If
+$P\ne\ell a$, then $P$ does not end at $a$, as in the proof of Lemma~\ref{lem:np}.
+
+\emph{Merge and subdivide.} Merge $\ell$ into $b$: no path contains both. This gives a Lov\'asz
+decomposition $\cD_H$ of $H$ ($b$ receives exactly the end of $\ell$). We claim that in $\cD_H$ no path
+with an end at $a$ contains $b$. Such a path is the image of a path $P'$ of $\cD_K$ with an end at $a$.
+If $P'$ contains $\ell$, it is the leaf path, which does not end at $a$. Otherwise its image contains
+$b$ only if $P'$ does, and $P'$ contains $a$; impossible. Finally the edge $ab$ lies on a path $R$ of
+$\cD_H$, which contains $b$ and therefore does not end at $a$. Replace $ab$ on $R$ by $a\,g\,b$; this
+is a path, as $g$ is isolated in $H$. The result is a Lov\'asz decomposition of $G$ ($g$ is interior,
+of degree two) with the same ends, in which the path ending at $a$ is a path of $\cD_H$ other than
+$R$. It avoids $b$.
+\end{proof}
+
+\begin{corollary}\label{cor:deg2}
+DL(1) holds when $d(g)=2$ and $g$ is the only common neighbour of $a$ and $b$.
+\lean{disjL1\_deg\_two}
+More generally DL(1) holds when $d(g)=2$ and $N(g)$ is an independent set other than $\{a,b\}$.
+\end{corollary}
+
+\begin{proof}
+If $N(g)=\{a,b\}$: since $d(a)$ is odd, $d(a)=1$ or $d(a)\ge3$. In the first case
+Theorem~\ref{thm:leaf} applies; in the second, Theorem~\ref{thm:deg2}. If $N(g)=\{x,y\}$ with
+$xy\notin E$ and $\{x,y\}\ne\{a,b\}$, then $G-g+xy$ has no even vertex and $a\not\sim b$ there; $L_1$
+gives $Q(b)\not\ni a$, and subdividing $xy$ by $g$ adds only $g$ to one path. (This second part is
+not formalised.)
+\end{proof}
+
+\section{Reductions and a smallest counterexample}\label{sec:red}
+
+\begin{proposition}[free targets]\label{prop:free}
+Let $g$ be the even vertex, and let $u\in N(g)$ be neither $a$, $b$ nor adjacent to either. If
+$G-gu$ has a Lov\'asz decomposition satisfying~\eqref{eq:disj}, so does $G$, with the same disjunct.
+Moreover $a,b$ are not universal twins in $G-gu$.
+\lean{disjL1\_free\_target} (the transfer)
+\end{proposition}
+
+\begin{proof}
+Apply Lemma~\ref{lem:fan}. Since $a,b\notin\{g,u\}\cup N(u)$, the new paths ending at $a$ and $b$ come
+from the old ones, with $u$ possibly added; $u\notin\{a,b\}$. For the second claim, suppose $a,b$ are
+universal twins of a component $C'$ of $G-gu$. If $u\in C'$, then $u\in N(a)$, which is excluded. So
+$u\notin C'$. Every vertex of $C'$ is odd in $G-gu$: the only even vertex of $G-gu$ is $u$. Then
+$|C'|$ is even, while $d(a)=|C'|-2$ is odd. This is a contradiction.
+\end{proof}
+
+The same argument shows that a target $u\notin N[b]\cup\{a\}$ carries $S_b$ (Fan's lemma with end
+paths; this is \texttt{csys\_caseI} of~\cite{CLT}). It need not carry $S_a$ when $u\sim a$, because
+$a$ may then be a chain vertex.
+
+\begin{corollary}\label{cor:mincex}
+Let $(G,a,b)$ be a counterexample to DL(1) with $|E(G)|$ smallest. Then $G$ is connected, $G$ has an
+even vertex $g$, $a$ and $b$ have a common neighbour, and:
+\begin{enumerate}
+\item every neighbour of $g$ other than $a,b$ is adjacent to $a$ or to $b$;
+\item if $a\in N(g)$ then $d(a)\ge3$, and if $b\in N(g)$ then $d(b)\ge3$;
+\item if $d(g)=2$, then either $N(g)=\{a,b\}$ and $a,b$ have a common neighbour other than $g$, or
+$N(g)$ is an edge.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+Restricting to the component of $a$ keeps the hypotheses, and if $b$ lies in another component then
+$Q(b)$ avoids $a$. The rest follows from $L_1$, the separation theorem, Proposition~\ref{prop:free},
+Theorem~\ref{thm:leaf} and Corollary~\ref{cor:deg2}.
+\end{proof}
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational; no proof above depends on it.} The scripts are in
+\texttt{manuscripts/dl-one/scripts}; see the README there for the commands.
+
+\subsection*{The solver and its validation}
+\texttt{dl.c} decides $S_b$ for a pair $(a,b)$ exactly. It enumerates the paths from $b$ that avoid
+$a$ and end at an odd vertex, and asks whether the rest has a Lov\'asz-type decomposition. That
+question is decided by a depth-first search over the paths at an odd vertex, memoised on the edge
+set. Two shortcuts are used. Lov\'asz's theorem: a rest with at most one even vertex is
+decomposable. Counting: by~\eqref{eq:count}, if a vertex lies on every path of its component, no
+end path avoids it. One necessary condition prunes: a component with $p$ paths and $n_C$ vertices
+has at most $p(n_C-1)$ edges.
+
+The brute force \texttt{brute.py} is independent. It enumerates every transition system (a pairing of
+the edges at each vertex, with $d(v)\bmod2$ ends), keeps those whose trails are all paths, and reads
+off $Q(a)$ and $Q(b)$. The two agree on every orientation of every pair, with $0$ mismatches:
+\begin{itemize}
+\item $942$ pairs of the connected graphs of orders $5$ and $7$ with one even vertex;
+\item $2{,}204$ pairs of all graphs (connected or not) of order $6$, and sparse graphs of orders $7$,
+$8$, with at most one even vertex.
+\end{itemize}
+The decomposition enumerator \texttt{enum.c} agrees with the brute force on the number of Lov\'asz
+decompositions of all $129$ graphs compared.
+
+\subsection*{The exact boundary}
+Every connected graph with exactly one even vertex (\texttt{nauty-geng -c}, filtered), and every pair
+of non-adjacent odd vertices:
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+order & graphs & pairs & DL(1) fails & universal twins\\
+\midrule
+$5$ & $7$ & $21$ & $3$ & $3$\\
+$7$ & $130$ & $947$ & $14$ & $14$\\
+$9$ & $11{,}936$ & $166{,}217$ & $170$ & $170$\\
+$11$ & \NELEVEN & \NELEVENPAIRS & \NELEVENTW & \NELEVENTW\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In every case the failures are \emph{exactly} the universal-twin pairs. Orders $5$--$9$ reproduce
+E29 of~\cite{DT}. A component with exactly one even vertex has odd order, and a component with none
+is covered by $L_1$. So the rows through order $9$ decide DL(1) for every graph on at most $10$
+vertices, and the order-$11$ row extends this to $12$ vertices.
+
+\subsection*{Certificates from proved moves}
+\texttt{dlrec.cpp} uses the move generator of the l1-induction session~\cite[\S3]{L1I}. Every move
+there transfers goodness of an avoidance instance $(G,c,A)$ from a smaller instance, unconditionally
+(\cite[Theorem~3.1]{L1I}). The base cases are: $A$ misses the component of $c$; no even vertex and
+$d(c)=1$; separation (Theorem~\ref{thm:sep}); and $L_1$ in set form. A DL(1) pair is
+\emph{certified} if $(G,b,\{a\})$ or $(G,a,\{b\})$ is. Through order $9$ every one of the
+$166{,}047+933+18$ non-twin pairs is certified. This is a second, independent computation; it uses
+only the proved transfers and not the exact solver. On four slices of order $11$ (\emph{pending}) every
+non-twin pair is certified.
+
+\subsection*{Structure}
+Orders $5$--$9$, all pairs (both orientations).
+\begin{itemize}
+\item One orientation fails in $6{,}221$ of the $333{,}996$ orientations of the $166{,}998$ non-twin pairs. In
+\emph{every} failure of $S_y$ (``$Q(y)$ avoids $x$''): $x\in N(g)$; $N(y)\setminus\{g\}\subseteq
+N(x)$; and $N(g)\subseteq N[x]\cup N[y]$. These three conditions also hold in $5{,}648$ orientations
+where $S_y$ holds, so they are necessary, not sufficient.
+\item When $g$ is the only common neighbour of $a,b\in N(g)$: if $d(a),d(b)\ge3$, both $S_a$ and $S_b$
+hold in all $5{,}496$ cases. At order $9$, $9{,}617$ such pairs (with any degrees) were tested for a
+\emph{single} decomposition with both $a\notin Q(b)$ and $b\notin Q(a)$; it exists except in $328$
+cases, every one of which has $d(a)=1$ or $d(b)=1$.
+\item With exactly one common neighbour (of any parity) and $d(b)\ge3$, $S_b$ held in all $85{,}139$
+cases.
+\end{itemize}
+
+\section{Conjectures}\label{sec:conj}
+
+\begin{conjecture}[N]\label{conj:n}
+Let $G$ have at most one even vertex $g$, let $x,y$ be odd and non-adjacent, and suppose $y$ has a
+neighbour $w\ne g$ with $w\notin N(x)$. Then some Lov\'asz decomposition has $x\notin V(Q(y))$.
+\end{conjecture}
+
+No counterexample among the $264{,}437$ orientations of order $\le9$ satisfying the hypothesis. A set
+form also held. If $y$ has a neighbour $w\ne g$ with $N(w)\cap A\subseteq\{g\}$, and $A$ misses
+$N[y]$ (and may contain $g$), then $Q(y)$ can avoid $A$. This held in $675{,}641$ queries with $|A|\le2$
+and in $300{,}644$ queries with $A$ maximal at order $9$. In the maximal form it says
+$V(Q(y))\subseteq N[y]\cup(N(w)\setminus\{g\})$ for every neighbour $w\ne g$ of $y$; with $w=g$ this
+would be the local form of $L_1^*$, which held in $79{,}598$ further queries.
+
+\begin{proposition}\label{prop:nreduces}
+Conjecture~\ref{conj:n} reduces DL(1) to \emph{near twins}, pairs with $N(a)\setminus\{g\}=N(b)\setminus\{g\}$.
+\end{proposition}
+
+\begin{proof}
+If both $S_a$ and $S_b$ fail, Conjecture~\ref{conj:n} gives $N(b)\setminus\{g\}\subseteq N(a)$ and
+$N(a)\setminus\{g\}\subseteq N(b)$; since $a\notin N(b)$ and $b\notin N(a)$, the two sets are equal.
+\end{proof}
+
+\begin{conjecture}[CN1]\label{conj:cn1}
+If $g$ is the only common neighbour of $a,b\in N(g)$ and $d(a),d(b)\ge3$, some Lov\'asz decomposition
+has both $a\notin V(Q(b))$ and $b\notin V(Q(a))$.
+\end{conjecture}
+
+\begin{conjecture}[SF, protected separation]\label{conj:sf}
+Let $g$ be the only common neighbour of $a,b\in N(g)$, with $d(a),d(b)\ge3$. Then $G-ga$ has a
+Lov\'asz decomposition in which no path contains both $a$ and $b$, and the path ending at $b$ does
+not end at a neighbour of $a$ in $G$.
+\end{conjecture}
+
+\begin{proposition}\label{prop:sf}
+Conjecture~\ref{conj:sf} implies $S_b$, hence DL(1) whenever $g$ is the only common neighbour.
+\end{proposition}
+
+\begin{proof}
+In $G'=G-ga$ the only even vertex is $a$, and $g$ is odd. Let $\cD'$ be as in
+Conjecture~\ref{conj:sf}, and let $\beta$ be the far end of $Q'(b)$. Restore $ga$ by
+Lemma~\ref{lem:fan} with target $a$. The chain vertices are $g$ and neighbours of $a$ in $G'$, so
+neither $b$ (not adjacent to $a$) nor $\beta$ (not in $N_G(a)=N_{G'}(a)\cup\{g\}$) is a chain vertex.
+Hence $Q'(b)$ is neither re-routed nor the path to which $a$ is appended (that path ends at a chain
+vertex), and the new $Q(b)$ is $Q'(b)$, which avoids $a$. With Corollary~\ref{cor:deg2}'s leaf
+cases (Theorem~\ref{thm:leaf}) this covers every non-twin pair with $g$ the only common neighbour.
+\end{proof}
+
+Conjecture~\ref{conj:sf} held in all $10{,}916$ ordered pairs of order $9$ and all $76$ of order
+$\le7$ (\texttt{dl.c -m sepfar}, exact). The separation theorem gives the first condition; the
+second is an end condition on one path, which its induction does not control
+(Section~\ref{sec:residual}).
+
+\begin{remark}[honest scope]
+Conjecture~\ref{conj:n} contains much of $L_1^*$ with $|A|=1$. If $x\notin N(g)$, the instance
+$(G,y,\{x\})$ is admissible for $L_1^*$, and its blocked case ($y\notin N(g)$, $N(g)\subseteq N(x)$) is
+covered by Conjecture~\ref{conj:n} unless $N(y)\setminus\{g\}\subseteq N(x)$. So a proof of
+Conjecture~\ref{conj:n} would settle most of the open blocked case of $L_1^*$ for one forbidden vertex.
+This is evidence that the route ``Conjecture~\ref{conj:n} plus near twins'' is not easier than
+$L_1^*$.
+\end{remark}
+
+\section{Where Lov\'asz's induction stops}\label{sec:residual}
+
+Each strategy below was run exhaustively on small graphs (\texttt{exp1.py}--\texttt{exp5.py},
+\texttt{closure.py}, \texttt{dl.c -m sep1}). All decompositions were enumerated by \texttt{enum.c}, and
+every Fan transfer was the forced chain, checked to give a Lov\'asz decomposition of $G$.
+
+\subsection{DL(1) is not an inductive hypothesis for Case I}
+Robustness of a target $u\in N(g)\setminus\{a,b\}$ means: every Lov\'asz decomposition of $G-gu$
+that satisfies~\eqref{eq:disj} transfers to one of $G$ that does. If some target were always robust,
+DL(1) would follow by induction on $|E|$, using Proposition~\ref{prop:free} for the twin issue. Among
+the $334$ core pairs of order at most $7$, $115$ have no robust target. Of these, $22$ have $g$ as the only
+common neighbour, $d(g)\ge4$ and $d(a),d(b)\ge3$. Yet every one of the $334$ has \emph{some} child
+decomposition, at $u=a$ or $u=b$, that transfers to a good one.
+
+\begin{example}[\texttt{FsOrg}]\label{ex:fsorg}
+Vertices $0,\dots,6$, edges $01,02,03,14,16,25,26,35,36,56$; $g=6$, $a=1$, $b=5$. Here $N(g)=\{1,2,3,5\}$,
+$N(a)=\{0,4,6\}$, $N(b)=\{2,3,6\}$, so $g$ is the only common neighbour, and the targets $2,3$ are
+adjacent to $b$ only. For $u=2$, the decomposition $\{0\,3\,5,\ 1\,0\,2\,5\,6,\ 3\,6\,1\,4\}$ of
+$G-62$ satisfies $S_b$, as $Q(5)=0\,3\,5$. The forced chain is $6\to5$: $b$ is a chain vertex, the
+new $Q(b)$ is $5\,6\,2\,0\,1$, and it contains $a$. Since $2\notin N(a)$, the transfer keeps $S_a$, but
+the child decomposition does not have $S_a$. The target $3$ behaves the same way. So any induction
+through these targets needs $S_a$ in the child: a \emph{fixed} orientation, in a child whose even
+vertex $u$ is adjacent to $b$.
+\end{example}
+
+\subsection{Separation in $G-ga$ and Fan's chain to $a$}
+If $g$ is the only common neighbour, $a,b$ are at distance at least three in $G-ga$, where $a$ is the
+even vertex, so Theorem~\ref{thm:sep} separates them. Restoring $ga$ needs Fan's lemma with target
+$a$. The result fails~\eqref{eq:disj} exactly when the chain stops at the far end $\beta$ of $Q'(b)$.
+A sufficient condition, that $\beta\notin N(a)\cup\{g\}$, exists in all $76$ such pairs of order
+$\le7$ (\texttt{exp4.py}) but is not supplied by the separation theorem. For an arbitrary separating
+decomposition the transfer is bad in $1{,}224$ of $3{,}284$ cases. A second restoration, which splits
+a path through $a$ and joins one half to $Q'(g)$, does not rescue $2{,}668$ of $7{,}442$ cases. One
+exchange at $a$ or $b$ after the transfer does not rescue $453$ of the $1{,}224$ (\texttt{FsPzw},
+$g=1$, $a=0$, $b=4$: the separating $\{1\,5\,2\,6\,4,\ 2\,0\,3\,5\,6,\ 3\,6\,1\,4\,5\}$ of $G-01$ has
+$Q'(g)=Q'(b)$).
+
+\subsection{The class of Conjecture~\ref{conj:n} does not close}
+Using the moves (a)--(d), (i) of~\cite[Theorem~3.1]{L1I}, $4$ instances of order $5$ and $594$ of order
+$7$ in the class of the set form have no move into the class or a base case. The smallest is
+\texttt{DEk}: edges $03,04,13,24,34$, $g=0$, $c=3$, $A=\{2\}$, witness $w=1$. Move (a) leads to tail
+$0$ with $A=\{2,3\}$, where the only neighbour $4$ of the tail is adjacent to $2$. Move (c) at $4$
+leads to tail $4$ adjacent to $2\in A$. The instance is good ($Q(3)=3\,4$). This mirrors the
+non-closure of $L_1^*$'s admissible class~\cite[\S5]{L1I}.
+
+\subsection{Full separation}
+Separation of $a$ and $b$ (no path through both) fails in every instance of order $\le7$ with exactly
+one common neighbour and $d(a),d(b)\ge3$ ($118$ instances; checked against full enumeration). The
+reason is local: a vertex of degree two adjacent to $a$ and $b$ (or to $b$ and the common neighbour)
+forces a path through both. So the symmetric statement of Conjecture~\ref{conj:cn1} is the right
+strengthening, not separation.
+
+\subsection{Summary of the residual}
+The open configuration is the core: $a,b\in N(g)$, a common neighbour, $d(a),d(b)\ge3$, and every
+neighbour of $g$ adjacent to $a$ or $b$ (Corollary~\ref{cor:mincex}). In it, the targets adjacent to
+one of $a,b$ carry only one orientation, and the targets $a,b$ need control of Fan's chain (a
+tight-Fan configuration: the chain must not stop at the partner of the protected end). A proof
+along these lines needs, in the child, either a fixed orientation (Conjecture~\ref{conj:n}, which
+contains most of blocked $L_1^*$ with $|A|=1$), or an end condition on $Q'(b)$. We could not obtain
+either from the separation theorem.
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/DLOne.lean} (Lean~4, Mathlib), no \texttt{sorry}; every theorem depends only
+on \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. The full library builds.
+
+\begin{center}\small
+\begin{tabular}{ll}
+\toprule
+statement & Lean\\
+\midrule
+Lemma~\ref{lem:exchange} & \texttt{leaf\_exchange} (with \texttt{exchange\_core})\\
+Lemma~\ref{lem:np} & \texttt{not\_paired\_adj}\\
+Theorem~\ref{thm:leaf} & \texttt{avoid\_leaf}; DL form \texttt{disjL1\_leaf}\\
+Theorem~\ref{thm:deg2} & \texttt{avoid\_deg\_two} (core \texttt{avoid\_deg\_two\_core}, \texttt{splitOff\_facts})\\
+Corollary~\ref{cor:deg2}, first part & \texttt{disjL1\_deg\_two}\\
+Proposition~\ref{prop:free}, transfer & \texttt{disjL1\_free\_target}\\
+Proposition~\ref{prop:twins}, connected $G$ & \texttt{univTwins\_every\_path}, \texttt{not\_triangleDisj\_of\_twins}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Supporting lemmas: \texttt{exists\_decomp\_of\_edgesM'} (rebuild a decomposition from a list of paths,
+keeping the paths), \texttt{append\_edge\_track} (append an edge at an end, tracking every path),
+\texttt{leaf\_path\_length\_one}, \texttt{PathDecomp.paths\_nodup}. The proofs use the library's
+\texttt{separation\_set}, \texttt{leaf\_merge}, \texttt{merge\_degrees}, \texttt{packed\_lift},
+\texttt{lovasz\_avoid\_nonadj}, \texttt{exists\_subst\_path} and \texttt{csys\_caseI}. Not formalised:
+the second part of Corollary~\ref{cor:deg2}, the non-twin claim of Proposition~\ref{prop:free},
+Corollary~\ref{cor:mincex}, and the component form of Proposition~\ref{prop:twins}.
+
+\section{What remains}\label{sec:open}
+\begin{enumerate}
+\item DL(1) in the core with $d(g)\ge4$, starting with $g$ the only common neighbour. There the
+single missing step is Conjecture~\ref{conj:sf}: a separating decomposition of $G-ga$ whose path at
+$b$ does not end next to $a$ (Proposition~\ref{prop:sf}).
+\item Near twins, if Conjecture~\ref{conj:n} is the route.
+\item The multi-pair form DL$(k)$; in the data there is no compatibility failure~\cite{DT}.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{CLT} Constrained Lov\'asz decompositions, \texttt{manuscripts/clt}.
+\bibitem{DT} A direct lift to the two-end test through triangles at the even vertex,
+\texttt{manuscripts/direct-test1}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
+B} 93 (2005) 117--125.
+\bibitem{L1I} Lov\'asz's induction for $L_1^*$, \texttt{manuscripts/l1-induction}.
+\bibitem{L1S} The avoidance conjecture $L_1^*$, \texttt{manuscripts/l1star}.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc. Colloq.,
+Tihany, 1966), Academic Press, 1968, 231--236.
+\bibitem{MS} Multi-pair separation, \texttt{manuscripts/multi-sep}.
+\bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
+\end{thebibliography}
+\end{document}

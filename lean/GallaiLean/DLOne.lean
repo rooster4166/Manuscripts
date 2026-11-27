@@ -6,17 +6,24 @@ import GallaiLean.ConstrainedLovasz
 /-!
 # The disjunctive avoidance conjecture for one pair: proved cases (session `claude/dl-one`)
 
-Manuscript: `manuscripts/dl-one/dl-one.tex`.
+Manuscript: `manuscripts/dl-one/dl-one.tex`. Conjecture DL(1) is `DisjL1` (TriangleBase.lean) for a
+single pair; the disjunction is `TriangleDisj D [(a, b)]`.
 
-* `exists_decomp_of_edgesM'`: `exists_decomp_of_edgesM` that also returns the paths.
-* **`leaf_exchange`**: a leaf `ℓ` at `x` whose path is the single edge `ℓx`, with `deg x ≥ 3`, can be
-  exchanged into a path through `x` avoiding a prescribed vertex.
-* **`not_paired_adj`** (Lemma NP): in a graph with no vertex of positive even degree, two adjacent
-  vertices `x, y` with `deg x ≥ 3` are not the two ends of one path of some Lovász decomposition.
-* **`disjL1_leaf`**: DL for one pair when `a` is a leaf at the even vertex.
-* **`disjL1_deg_two`**: DL for one pair when the even vertex has degree two, its neighbours are
-  `a, b`, and it is their only common neighbour.
-* **`avoid_free_target`**: Lovász's Case I carries `Q(b) ∌ a` across a target `u ∉ N[b] ∪ {a}`.
+* `exists_decomp_of_edgesM'`: `exists_decomp_of_edgesM`, also returning the paths.
+* `append_edge_track`: append an edge at an end of a path, tracking every path.
+* **`leaf_exchange`** (manuscript Lemma 4.1): a leaf `ℓ` at `x` whose path is the single edge `ℓx`,
+  with `deg x ≥ 3`, can be exchanged into a path through `x` avoiding a prescribed vertex.
+* **`not_paired_adj`** (Lemma NP, manuscript Lemma 4.2): with no vertex of positive even degree, two
+  adjacent vertices `x, y` with `deg x ≥ 3` are not the two ends of one path of some Lovász
+  decomposition.
+* **`avoid_leaf`**, **`disjL1_leaf`** (Theorem 5.1): DL for one pair when `a` is a leaf at the even
+  vertex `g` (outside universal twins), with `Q(b)` avoiding `a`.
+* **`avoid_deg_two`** (Theorem 6.1), **`disjL1_deg_two`** (Corollary 6.2): DL for one pair when
+  `N(g) = {a, b}` and `g` is the only common neighbour of `a, b`.
+* **`disjL1_free_target`** (Proposition 7.1, the transfer): Lovász's Case I across a target adjacent to
+  neither `a` nor `b` carries the disjunction (via `csys_caseI`).
+* **`univTwins_every_path`**, **`not_triangleDisj_of_twins`** (Proposition 3.1, connected form):
+  universal twins lie on every path of every Lovász decomposition, so the exception is needed.
 -/
 
 open SimpleGraph
