@@ -234,6 +234,8 @@ def main():
                 for (status, D0), kind in zip(res, kinds):
                     if status == 'UND':
                         st['und'] += 1
+                    if status == 'NONE':        # a proved absence of a base for this (labelling, kind)
+                        st['none'] = st.get('none', 0) + 1
                     if status != 'OK':
                         continue
                     st['bases'] += 1
