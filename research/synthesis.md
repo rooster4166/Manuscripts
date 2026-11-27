@@ -610,3 +610,28 @@ The project lead forwarded three claims from another agent and asked that each b
 - It also fails on the cone at r and r′ (`scripts/verify/fbr.py`, exhaustive).
 - So the terminal-structure lifts (triangle, forest, forest through r) do not cover Test1 on their own. The cone over K_{2,6}, where B = J − z is all-even and every T1 decomposition has ends at only 4 vertices, needs a different mechanism.
 - At order 9, three roots without triangle data are left uncovered (triangle-base `fb_nodata.py`: 2,435/2,438).
+
+## 26. Cones: Test1 contains rooted Gallai for Eulerian graphs (coordinator, 2026-11-27 19:50)
+
+**Observation.** Let B be any graph of even order 2k, and let J = B + z be the cone, with z joined to every vertex of B. Then:
+- z is the only even vertex of J if and only if B is Eulerian (every degree even); d_J(z) = 2k;
+- J is 3-connected if and only if B is 2-connected;
+- N(z) = V(B), so Test1(J, z, r) says exactly: *B has a decomposition into at most k = |B|/2 paths with at least two ends at r.*
+
+So **Test1 on cones is the rooted Gallai statement for 2-connected Eulerian graphs of even order.** It implies Gallai's conjecture for that class.
+
+Gallai for Eulerian graphs is open in general. Known cases:
+- Δ ≤ 4 (Favaron–Kouider 1988);
+- Δ ≤ 5 (Bonamy–Perrett);
+- some planar classes (Botler–Jiménez–Sambinelli).
+
+Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgraph has triangle-free blocks of max degree ≤ 3, i.e. the opposite extreme. (These citations are from memory and must be checked against the literature before any manuscript uses them.)
+
+**Consequences for the programme.**
+1. No local lift can settle Test1 by itself. The triangle, forest and forest-through-r lifts all have the form "remove a T-join forest of B, take a Lovász decomposition, re-append terminal edges". On a cone this is the classical heuristic for Eulerian Gallai, and it fails on the cone over K_{2,6} (§25 addendum).
+2. Cones and near-cones (d(z) close to n − 1) are where the difficulty sits. The lifts settle 2,435 of the 2,438 no-data roots at order 9, and the triangle base holds at every root that has data.
+3. The direction worth pursuing is an **inductive** argument on B, for Eulerian B with a root, rather than a single base. Possible tools:
+   - reduction at vertices of degree 2 of B, which are the degree-3 vertices of J adjacent to z, as for the y_i in K_{2,6};
+   - the Eulerian Gallai literature.
+
+   A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
