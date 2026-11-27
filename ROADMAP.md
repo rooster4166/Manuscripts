@@ -605,3 +605,19 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
   - **So Test1 J z reduces in Lean to the triangle base conjecture for every 3-connected J in which every root has data** (about 80% of the 3-connected d(z) = 6 instances at order 9, A28). This is not "the two-end half of Gallai": the spine needs Test1 and Test2 for all 3-connected J (audit A28, F4).
   - Audit A28 is next.
+- **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
+  - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.
+  - **E28 hard graphs, head to head:** the triangle base certifies 42/48 roots where Conj 5.1 / STL-P left 46 undecided. **Better target confirmed.**
+  - **Clean conjecture DL:** in a graph with ≤ 1 even vertex, any disjoint non-adjacent odd pairs, none of which are universal twins of their component, admit one Lovász decomposition satisfying all the disjunctions. Every failure to order 9 is a universal-twin pair.
+  - **Lean:**
+    - `triangleBase_of_packed` (any m);
+    - `triangleBase_of_farApart` (m = 2);
+    - `triangleBase_of_L1Star` / `_of_L1Blocked` (m = 2, needing a ≁ w or b ≁ w);
+    - **`test1At_of_disjL1`: DL ⇒ Test1 at every root with data whenever M is connected.**
+- **Forest lift (forwarded claims 1–2, verified 2026-11-27 18:20; direct-test1 §3, synthesis §25).**
+  - Lemma 3.1 (forest stepping, an iff) and Thm 3.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+  - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
+  - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
+  - Conj 3.4 (forest base) is weaker than the triangle base.
+  - **Lean: pending (only the matching case exists).**
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 3.5).
