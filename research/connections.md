@@ -738,3 +738,7 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 - Conjecture GR: every connected even-order graph has a guarded route system. This would give PS ⇒ CS.
 - Why EMM's family is a matroid on critical graphs (Question 12). Four n = 8 critical graphs are not explained by one dominant vertex or by a submodular cap: Gs`ALo, GsQcaO, GqHTTS, GqhTTS.
 - (R) ⇒ (R_s): turning a rooted partition into a simple one.
+
+**Related work (added after the coordinator's pointer).** The manuscript now has a related-work section (§6). It covers Lovász 1968, Pyber, Fan, Bonamy–Perrett, Botler–Sambinelli, Lovász–Cherkassky, Mader/Frank splitting, Gale/Hoffman, T-joins and Okamura–Seymour.
+- New **Prop 22** (proved): completely splitting off any vertex v in G_b (Mader) preserves the EMM conditions at every other vertex. What splitting loses is only the "each path passes v once" constraint: the cycles through t may use at most one split edge from v. So a splitting proof of EMM must choose Mader pairs compatibly with this, which is the same equality phenomenon as in §T.
+- Lovász–Cherkassky is recorded as an analogy of proof structure (simultaneous Menger numbers), not as a reduction. With pendant terminals, the slot-respecting packing is trivial here; the content of EMM is covering all edges.
