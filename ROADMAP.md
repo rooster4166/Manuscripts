@@ -478,3 +478,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `pee_adjEven`: PEE at xy for y ∈ N(z) with ≤ 1 common neighbour besides z, by a general mechanism (delete zy, apply EE at y, restore by Fan).
   - **Remaining for EE:** |N(u) ∩ N(z)| ≥ 2. It reduces to "in K − triangle(uzw), the path ending at w avoids u and z", which held on 88,356 triples at n = 9 and 44,892 random ones at n = 11–17.
   - EE has 0 failures exhaustively to n = 9 and about 13M tests at n = 11.
+- **ptm, first verdict (08:05).**
+  - **PTM_2 is false only at K4** with a perfect matching F (= W₄ with the diagonal pairing; F is simple).
+    - Exhaustive to n = 8 (13,240 instances), with G − F allowed to be disconnected: K4 is the only failure.
+    - PTM_3 and PTM(r) fail only when G − F is disconnected.
+    - Multigraph PTM fails only when G − F has a cut vertex, which a 3-connected J excludes.
+  - **Proposed statement:** PTM_m for G − F connected, with the K4 exception at m = 2; for STL, the multigraph form with G − F 2-connected.
+  - **Proof route** (leafify e1, walk the even vertex along a shortest e1–e2 path, restore by Fan in the two-leaf graph, two leaf merges) gives **PTM_2 and PTM_2(r) on all connected all-odd graphs of girth ≥ 5**. Write-up and Lean are in progress.
