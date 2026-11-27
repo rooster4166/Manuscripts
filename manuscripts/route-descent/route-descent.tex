@@ -23,7 +23,7 @@
 \newcommand{\cD}{\mathcal D}
 
 \title[Route descent]{Route descent: transversal realisability, minimum $T$-joins,\\ and Lov\'asz
-decompositions that separate two vertices}
+decompositions that separate vertices}
 \author{Justin Williams}
 \date{November 2026 (working draft)}
 
@@ -42,10 +42,11 @@ route is a terminal segment of a path. We show that TRC for some root-containing
 every level of the branching hypothesis of the Lean spine, hence Gallai.
 \item \emph{Minimum $T$-joins.} If the $T$-join is minimum, every segment of every route is a geodesic,
 minimality survives route deletion, and the only obstruction ever met with spanning-tree $T$-joins
-(an unmarked end of degree two whose route runs through its other neighbour) cannot occur. Then a
-realisation in which \emph{all} routes are terminal segments is equivalent to a \emph{constrained
-Lov\'asz decomposition} of the free graph, in which every vertex is the end of exactly one path and the
-paths at the unmarked ends avoid their routes.
+(an unmarked end of degree two whose route runs through its other neighbour) cannot occur. For any
+route system, a realisation in which \emph{all} routes are terminal segments is equivalent to a
+\emph{constrained Lov\'asz decomposition} of the free graph, in which every vertex is the end of exactly
+one path and the paths at the unmarked ends avoid their routes. We conjecture that such decompositions
+exist for minimum $T$-joins.
 \item \emph{Separation.} We prove a strengthening of Lov\'asz's theorem. If a graph has at most one vertex
 of positive even degree, and $X$ is a set of vertices at pairwise distance at least three, then it has a
 path decomposition with the parity-forced ends in which every path meets $X$ at most once. In
@@ -56,8 +57,10 @@ one vertex. We show by example that distance three cannot be replaced by two.
 We also prove TRC for two classes reachable by Fan's lemma, state the constrained Lov\'asz conjectures that
 would give TRC for minimum $T$-joins, and record what we know of their status. One of them would imply
 Gallai's conjecture for every graph whose even vertices induce a subgraph with a perfect matching. The
-proofs use no computation. Computations (an exact oracle, about $2\times10^5$ transversals and
-$3\times10^5$ constrained queries) are reported separately and only guided the statements.
+proofs use no computation. Computations (an exact oracle, about $1.5\times10^5$ transversals and
+$6\times10^5$ extension queries) are reported separately and only guided the statements. The
+separation theorem, the vertex-set form of Fan's lemma and the reduction of Gallai's conjecture to an
+existential TRC are formalised in Lean.
 \end{abstract}
 \maketitle
 
@@ -442,7 +445,7 @@ $a\notin V(Q_c)$.
 
 The next section proves $L_1$ when $c$ and $a$ have no common neighbour.
 
-\section{Lov\'asz decompositions that separate two vertices}\label{sec:sep}
+\section{Lov\'asz decompositions that separate vertices}\label{sec:sep}
 
 Say that a path partition \emph{separates} $c$ and $a$ if no path contains both. A set $X$ of
 vertices is \emph{packed} if its vertices are pairwise at distance at least three, that is, no two are
@@ -554,6 +557,23 @@ leaf at $z$ makes all degrees odd, and then a separating decomposition exists ag
 not used).
 \end{example}
 
+\begin{remark}[how far Lov\'asz's induction proves $L_1$]\label{rem:L1res}
+For $L_1$ itself the invariant is weaker: only the path \emph{ending} at $c$ must avoid $a$. In
+Lemma~\ref{lem:fan} with target $g\neq a$ the chain vertices other than $t$ are neighbours of $g$. If
+$c\notin N(g)\cup\{t\}$, the path ending at $c$ keeps its vertex set, or gains $g$. If $c$ is a chain
+vertex, the end at $c$ moves onto the path containing the edge $cg$. So the invariant survives whenever
+$g\ne a$ and either $c\notin N(g)\cup\{t\}$ or the path through $cg$ avoids $a$. Running the induction of
+Theorem~\ref{thm:sep} with this rule leaves two residual configurations:
+\begin{itemize}
+\item the even vertex $z$ has $N(z)\subseteq N[c]\cup\{a\}$;
+\item all degrees are odd, the non-isolated vertices are $c$, $N(c)$ and $a$, $N(a)\subseteq N(c)$, and
+every vertex of $N(c)$ has degree at least three.
+\end{itemize}
+Leaves adjacent to $c$ finish at once, with the one-edge path $Q_c$. Leaves outside $N[c]$ are deleted and
+restored. Example~\ref{ex:dist2} shows that the residual cases need an invariant strictly between $L_1$ and
+separation.
+\end{remark}
+
 \section{Classes reachable by Fan's lemma}\label{sec:classes}
 
 \begin{theorem}[Fan-isolated routes]\label{thm:isolated}
@@ -585,11 +605,14 @@ Thus each transfer is legal, and after step $t$ the ends are $b_0-\mathbf 1_c+\m
 profile of $M$ in $G$.
 \end{proof}
 
-The hypothesis forces $G[\Ev]$ to be a matching. Indeed, an even neighbour of a route end $e$ must be
-its neighbour along its own route; if that neighbour is itself a route end, it is the other end of a
-one-edge route; if it were a busy even vertex, it would be an end of another route $R_q$, and $e$ would
-have to be its neighbour on $R_q$ as well, so the edge would lie on two routes. Hence these graphs lie in
-Pyber's class, and Theorem~\ref{thm:isolated} is new only as a statement about \emph{all} transversals.
+The hypothesis forces $G[\Ev]$ to be a matching. Let $e\in\Ev$ be the end of $R_p$. If $e$ is also
+interior to a route $R_q$, then its even neighbours lie in $N_{R_p}(e)\cap N_{R_q}(e)$, which is empty
+because the two routes are edge-disjoint. Otherwise its only possible even neighbour is its neighbour
+$y$ on $R_p$. If $y$ is not the other end of $R_p$, then $y$ is interior to $R_p$ and the end of another
+route $R_q$, and the hypothesis at $y$ forces $e$ to be its neighbour on $R_q$; then the edge $ey$ lies on
+two routes, which is impossible. So every even vertex has at most one even neighbour, namely its partner
+along a one-edge route. Hence these graphs lie in Pyber's class, and Theorem~\ref{thm:isolated} is new
+only as a statement about \emph{all} transversals.
 
 \begin{corollary}\label{cor:upm}
 If $G[\Ev]$ has a unique perfect matching $N$, then every orientation of $N$ (choice of one vertex of
@@ -626,8 +649,11 @@ are re-checked by an independent partition checker.
 counterexamples to EMM ($86{,}400$ transversals) are realisable. So are the transversals of
 random graphs of orders $10$ and $12$ (about $60{,}000$ transversals), all $1{,}280$ transversals of $20$
 minimum Thm-21 pairings of the order-$18$ graph of minimum degree three~\cite[Thm~41]{EMM}, and $128$
-sampled transversals of the order-$28$ graph built from the Petersen graph in~\cite{EMM}. In these graphs
-the marks automatically fall inside the forcing gadgets, as they must for transversals.
+sampled transversals of the order-$28$ graph built from the Petersen graph in~\cite{EMM}. All
+$1{,}280$ transversals of $20$ Thm-21 pairings of the order-$16$ even-degree hardness graph built from the
+prism~\cite[Thm~45]{EMM} are realisable; on its Petersen analogue (order $28$), $115$ of $128$ sampled
+transversals were found realisable and $13$ were undecided within the search budget. In these graphs the
+marks automatically fall inside the forcing gadgets, as they must for transversals.
 \item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
 $4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
 \emph{minimum} $T$-joins it never failed, in about $220{,}000$ pairs $(M,p)$, including $8{,}896$ on
@@ -651,7 +677,8 @@ If $K$ has all degrees odd and $\{s_1,t_1\},\dots,\{s_m,t_m\}$ are pairwise disj
 least three, then some Lov\'asz decomposition of $K$ separates every pair.
 \end{conjecture}
 
-Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
+Theorem~\ref{thm:sep} is the case of Conjecture~\ref{conj:msep} in which the union of the pairs is
+packed. Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
 would give Gallai's conjecture, with every orientation realisable, for every graph whose even vertices
 induce a subgraph having a perfect matching none of whose edges lies in a triangle of $G$. This includes
 every triangle-free Eulerian graph with a perfect matching. The proof of Theorem~\ref{thm:sep} does not
