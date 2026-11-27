@@ -1,4 +1,5 @@
 import GallaiLean.Separator
+import GallaiLean.Separation
 
 /-!
 # Star-terminal decompositions and the deletion tests (session `claude/stl`)
@@ -23,6 +24,9 @@ its *long side* `y ⋯`; the neighbour `y` gains an end and `x` loses one.
   decomposition with `b(z) = 0`, `b(r) ∈ {0, 2}` and one end elsewhere, with `b(r) = 0`, or `r` long,
   or a path of length two through `z`, gives `Test2` at `(z, r)`.
 * **`gallai_of_stl`**: STL and STL2 on every three-connected `J` imply Gallai's conjecture.
+* **`stl_of_deg_two`**: STL when `d(z) = 2` and the two neighbours of `z` are not adjacent
+  (separation in `J − uz`, where `z` is a leaf, then append `zu`); `append_move_new` is
+  `append_move` with the new path made explicit.
 -/
 
 open SimpleGraph
@@ -468,6 +472,269 @@ theorem test2_of_stl2 (z : V) (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
     obtain ⟨D'', h1'', h2''⟩ := exists_three_ends (x := r') D' (k := (Fintype.card V - 2) / 2)
       (by rcases hβ with hβ | hβ <;> omega) hodd h3'
     exact ⟨D'', by rcases hβ with hβ | hβ <;> omega, h2''⟩
+
+/-! ### `d(z) = 2`: STL from the separation theorem -/
+
+section degTwo
+
+omit [Fintype V] [DecidableRel J.Adj] in
+/-- `append_move` with the new path made explicit: appending the edge `tu` at the end `t` of `P`
+(when `u ∉ P`) gives a path `P'` starting at `u` whose edges are `tu` and those of `P`. -/
+theorem append_move_new {K K' : SimpleGraph V} (D : PathDecomp K) {t u : V} (hadj : ¬ K.Adj t u)
+    (hK' : ∀ e, e ∈ K'.edgeSet ↔ e ∈ K.edgeSet ∨ e = s(t, u))
+    {P : GPath K} (hP : P ∈ D.paths) (hend : P.src = t ∨ P.tgt = t)
+    (hu : u ∉ P.walk.support) :
+    ∃ D' : PathDecomp K',
+      (∀ w, D'.ends w + (if t = w then 1 else 0) = D.ends w + (if u = w then 1 else 0)) ∧
+      ∃ P' ∈ D'.paths, P'.src = u ∧ (P'.tgt = P.src ∨ P'.tgt = P.tgt) ∧ s(t, u) ∈ P'.edges ∧
+        (∀ e ∈ P.edges, e ∈ P'.edges) ∧ (∀ e ∈ P'.edges, e = s(t, u) ∨ e ∈ P.edges) := by
+  obtain ⟨Q, hQs, hQe, hQends, hQsupp⟩ := P.exists_orient hend
+  have hQK : ∀ e ∈ Q.walk.edges, e ∈ K'.edgeSet := fun e he =>
+    (hK' e).2 (Or.inl (Q.walk.edges_subset_edgeSet he))
+  have hs : s(u, Q.src) = s(t, u) := by rw [hQs, Sym2.eq_swap]
+  have hut : K'.Adj u Q.src := by
+    rw [← mem_edgeSet, hK', hs]; exact Or.inr rfl
+  have huQ : u ∉ Q.walk.support := fun h => hu ((hQsupp u).1 h)
+  let P' : GPath K' :=
+    ⟨u, Q.tgt, Walk.cons hut (Q.walk.transfer K' hQK),
+      by
+        rw [Walk.cons_isPath_iff]
+        exact ⟨by simpa using Q.isPath, by simpa using huQ⟩,
+      by simp⟩
+  have hP'e : P'.edges = s(t, u) :: Q.edges := by
+    show (Walk.cons hut (Q.walk.transfer K' hQK)).edges = _
+    rw [Walk.edges_cons, Walk.edges_transfer, hs]
+    rfl
+  have hPK : ∀ e ∈ P.edges, e ∈ K.edgeSet := fun e he => P.walk.edges_subset_edgeSet he
+  have htuK : s(t, u) ∉ K.edgeSet := hadj
+  obtain ⟨D', -, hmem, hends, -, -⟩ := D.replace_supp hP P' (by
+      intro e
+      rw [hK' e, hP'e, List.mem_cons, hQe.mem_iff]
+      constructor
+      · rintro (h | h)
+        · by_cases heP : e ∈ P.edges
+          · exact Or.inr (Or.inr heP)
+          · exact Or.inl ⟨h, heP⟩
+        · exact Or.inr (Or.inl h)
+      · rintro (⟨h, -⟩ | h | h)
+        · exact Or.inl h
+        · exact Or.inr h
+        · exact Or.inl (hPK e h))
+    (by
+      intro e he
+      rw [hP'e, List.mem_cons, hQe.mem_iff] at he
+      rcases he with rfl | he
+      · exact Or.inr htuK
+      · exact Or.inl he)
+  have htgt : Q.tgt = P.src ∨ Q.tgt = P.tgt := by
+    have h1 : Q.endsAt Q.tgt = 1 := by
+      unfold GPath.endsAt; have := Q.src_ne_tgt; simp [this]
+    rw [hQends] at h1
+    unfold GPath.endsAt at h1
+    by_cases h : P.src = Q.tgt
+    · exact Or.inl h.symm
+    · simp only [h, ite_false, zero_add] at h1
+      split_ifs at h1 with h'
+      · exact Or.inr h'.symm
+  refine ⟨D', fun w => ?_, P', hmem, rfl, htgt, ?_, ?_, ?_⟩
+  · have h1 := hends w
+    have h2 : P'.endsAt w = (if u = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := rfl
+    have h3 : P.endsAt w = (if t = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := by
+      rw [← hQends]; simp only [GPath.endsAt, hQs]
+    omega
+  · rw [hP'e]; exact List.mem_cons_self
+  · intro e he; rw [hP'e]; exact List.mem_cons_of_mem _ (hQe.mem_iff.2 he)
+  · intro e he
+    rw [hP'e, List.mem_cons] at he
+    rcases he with rfl | he
+    · exact Or.inl rfl
+    · exact Or.inr (hQe.mem_iff.1 he)
+
+omit [Fintype V] [DecidableRel J.Adj] in
+/-- A vertex of a path lies on one of its edges. -/
+theorem GPath.exists_edge_of_mem (P : GPath J) {v : V} (hv : v ∈ P.walk.support) :
+    ∃ e ∈ P.edges, v ∈ e := by
+  have h := P.incid_add_endsAt v
+  have h2 : P.endsAt v ≤ 1 := by
+    unfold GPath.endsAt
+    have := P.src_ne_tgt
+    by_cases hs : P.src = v
+    · have : P.tgt ≠ v := fun ht => this (hs.trans ht.symm)
+      simp [hs, this]
+    · simp only [hs, ite_false, zero_add]; split_ifs <;> omega
+  simp only [hv, ite_true] at h
+  have h3 : 0 < P.incid v := by omega
+  unfold GPath.incid at h3
+  obtain ⟨e, he, hve⟩ := List.countP_pos_iff.mp h3
+  exact ⟨e, he, by simpa using hve⟩
+
+/-- **STL when `d(z) = 2` and the two neighbours of `z` are not adjacent.** If `z` is the only
+even vertex, `N(z) = {u, w}` and `u ≁ w`, then some star-terminal Lovász decomposition has `u`
+short (`uz` is the terminal edge at `u`); in particular `STL J z w`. Proof: separation in
+`J − uz`, where `z` is a leaf at `w` at distance `≥ 3` from `u`, then append `zu`. -/
+theorem stl_of_deg_two (z u w : V) (hev : ∀ v, Even (J.degree v) ↔ v = z)
+    (hzu : J.Adj z u) (hzw : J.Adj z w) (hne : u ≠ w) (hN : ∀ v, J.Adj z v → v = u ∨ v = w)
+    (huw : ¬ J.Adj u w) : STL J z w := by
+  classical
+  let K := delEdge J u z
+  have hdeg : ∀ v, K.degree v + (if v = u then 1 else 0) + (if v = z then 1 else 0) = J.degree v :=
+    delEdge_degree J hzu.symm
+  have huz : u ≠ z := hzu.ne'
+  have hwz : w ≠ z := hzw.ne'
+  have hpar : ∀ v, J.degree v % 2 = if v = z then 0 else 1 := by
+    intro v
+    split_ifs with hv
+    · exact Nat.even_iff.mp ((hev v).2 hv)
+    · have : ¬ Even (J.degree v) := fun he => hv ((hev v).1 he)
+      rw [Nat.not_even_iff] at this; exact this
+  have hdz : J.degree z = 2 := by
+    rw [← card_neighborFinset_eq_degree]
+    have : J.neighborFinset z = {u, w} := by
+      ext v
+      simp only [mem_neighborFinset, Finset.mem_insert, Finset.mem_singleton]
+      exact ⟨hN v, by rintro (rfl | rfl) <;> assumption⟩
+    rw [this, Finset.card_pair hne]
+  have hKadj : ∀ x y, K.Adj x y ↔ J.Adj x y ∧ ¬ s(x, y) = s(u, z) := fun _ _ => Iff.rfl
+  -- `z` is a leaf of `K` at `w`
+  have hKz : ∀ y, K.Adj z y → y = w := by
+    intro y hy
+    rw [hKadj] at hy
+    rcases hN y hy.1 with rfl | rfl
+    · exact absurd (Sym2.eq_swap) hy.2
+    · rfl
+  have hevK : (evenSet K).card ≤ 1 := by
+    have hsub : evenSet K ⊆ {u} := by
+      intro v hv
+      rw [mem_evenSet_iff] at hv
+      rw [Finset.mem_singleton]
+      by_contra hvu
+      have h1 := hdeg v
+      have h2 := hpar v
+      by_cases hvz : v = z
+      · subst hvz; have h5 := hdz; simp only [hvu, ite_false, ite_true] at h1 h2; omega
+      · simp only [hvu, hvz, ite_false] at h1 h2; omega
+    exact (Finset.card_le_card hsub).trans (by simp)
+  have hfar : FarApart K z u := by
+    refine ⟨huz.symm, fun h => (hKadj z u).1 h |>.2 Sym2.eq_swap, fun x ⟨h1, h2⟩ => ?_⟩
+    have := hKz x h1
+    subst this
+    exact huw ((hKadj _ _).1 h2).1.symm
+  obtain ⟨D, hD, hsep⟩ := separation K hevK hfar
+  -- the path ending at `z`
+  have hDz : D.ends z = 1 := by
+    rw [hD z]; have := hdeg z; simp only [huz.symm, ite_false, ite_true] at this; omega
+  obtain ⟨P, hP, hend⟩ : ∃ P ∈ D.paths, P.src = z ∨ P.tgt = z := by
+    by_contra hc
+    push Not at hc
+    have : D.ends z = 0 := by
+      unfold PathDecomp.ends
+      apply List.sum_eq_zero
+      intro x hx
+      obtain ⟨Q, hQ, rfl⟩ := List.mem_map.mp hx
+      obtain ⟨h1, h2⟩ := hc Q hQ
+      simp [GPath.endsAt, h1, h2]
+    omega
+  have hzP : z ∈ P.walk.support := by
+    rcases hend with h | h
+    · rw [← h]; exact P.walk.start_mem_support
+    · rw [← h]; exact P.walk.end_mem_support
+  have huP : u ∉ P.walk.support := fun h => hsep P hP ⟨hzP, h⟩
+  have hK' : ∀ e, e ∈ J.edgeSet ↔ e ∈ K.edgeSet ∨ e = s(z, u) := by
+    intro e
+    rw [delEdge_edgeSet]
+    constructor
+    · intro he
+      by_cases h : e = s(z, u)
+      · exact Or.inr h
+      · exact Or.inl ⟨he, by rw [Sym2.eq_swap]; exact h⟩
+    · rintro (⟨he, -⟩ | rfl)
+      · exact he
+      · exact hzu
+  obtain ⟨D', hends', P', hP', hsrc, htgt, hzuP', hsub, hsub'⟩ :=
+    append_move_new D (fun h => ((hKadj z u).1 h).2 Sym2.eq_swap) hK' hP hend huP
+  -- `zw` lies on `P`, hence on `P'`
+  have hzwP : s(z, w) ∈ P.edges := by
+    obtain ⟨e, he, hze⟩ := P.exists_edge_of_mem hzP
+    have heK : e ∈ K.edgeSet := P.walk.edges_subset_edgeSet he
+    obtain ⟨y, rfl⟩ := Sym2.mem_iff_exists.mp hze
+    rw [← hKz y heK]; exact he
+  have hzwP' : s(z, w) ∈ P'.edges := hsub _ hzwP
+  refine ⟨D', fun v => ?_, ?_, ?_⟩
+  · -- ends
+    have h1 := hends' v
+    have h2 := hD v
+    have h3 := hdeg v
+    have h4 := hpar v
+    by_cases hvz : v = z
+    · subst v
+      simp only [huz, huz.symm, ite_true, ite_false, hdz] at h1 h3 h4 ⊢
+      omega
+    · by_cases hvu : v = u
+      · subst v
+        simp only [hvz, ite_true, ite_false, Ne.symm hvz] at h1 h3 h4 ⊢
+        omega
+      · simp only [hvz, hvu, Ne.symm hvz, Ne.symm hvu, ite_false] at h1 h3 h4 ⊢
+        omega
+  · -- star-terminal
+    intro Q hQ hz
+    obtain ⟨e, he, hze⟩ := Q.exists_edge_of_mem hz
+    have heJ : e ∈ J.edgeSet := Q.walk.edges_subset_edgeSet he
+    obtain ⟨y, rfl⟩ := Sym2.mem_iff_exists.mp hze
+    have heP' : s(z, y) ∈ P'.edges := by
+      rcases hN y heJ with rfl | rfl
+      · exact hzuP'
+      · exact hzwP'
+    have := PathDecomp.eq_of_mem_edges D' hQ hP' he heP'
+    subst this
+    left
+    rw [hsrc, Sym2.eq_swap]
+    exact hzuP'
+  · -- `w` long, or the path is `u z w`
+    by_cases hw : P'.tgt = w
+    · right
+      refine ⟨P', hP', fun e he => ?_⟩
+      -- `P` runs from `z` to `w`, so it is the single edge `zw`
+      have hPends : (P.src = z ∧ P.tgt = w) ∨ (P.src = w ∧ P.tgt = z) := by
+        rcases hend with h | h <;> rcases htgt with h' | h'
+        · exact absurd (h.symm.trans (h'.symm.trans hw)) hwz.symm
+        · exact Or.inl ⟨h, h'.symm.trans hw⟩
+        · exact Or.inr ⟨h'.symm.trans hw, h⟩
+        · exact absurd (h.symm.trans (h'.symm.trans hw)) hwz.symm
+      have hsingle : ∀ e ∈ P.edges, e = s(z, w) := by
+        obtain ⟨Q, hQs, hQe, hQends, -⟩ := P.exists_orient hend
+        have hQt : Q.tgt = w := by
+          have h1 : Q.endsAt w = 1 := by
+            rw [hQends]
+            rcases hPends with ⟨h1, h2⟩ | ⟨h1, h2⟩
+            · simp [GPath.endsAt, h1, h2, Ne.symm hwz]
+            · simp [GPath.endsAt, h1, h2, Ne.symm hwz]
+          unfold GPath.endsAt at h1
+          rw [hQs] at h1
+          simp only [Ne.symm hwz, ite_false, zero_add] at h1
+          split_ifs at h1 with h
+          exact h
+        intro e he
+        rw [← hQe.mem_iff] at he
+        obtain ⟨qs, qt, qw, hqw, hqpos⟩ := Q
+        simp only at hQs hQt he
+        subst qs
+        subst qt
+        cases qw with
+        | nil => simp at hqpos
+        | @cons _ c _ h q =>
+          have hc : c = w := hKz c h
+          subst c
+          rw [Walk.cons_isPath_iff] at hqw
+          have hqn : q = Walk.nil := (Walk.isPath_iff_nil.mp hqw.1).eq_nil
+          subst hqn
+          simpa [GPath.edges] using he
+      rcases hsub' e he with rfl | he'
+      · exact Sym2.mem_mk_left _ _
+      · rw [hsingle e he']; exact Sym2.mem_mk_left _ _
+    · left
+      exact ⟨P', hP', hzwP', by rw [hsrc]; exact hne, hw⟩
+
+end degTwo
 
 /-! ### Gallai from STL and STL2 -/
 

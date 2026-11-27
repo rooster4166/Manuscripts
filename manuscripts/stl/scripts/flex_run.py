@@ -3,7 +3,7 @@
   STS(u)  : some star-terminal Lovasz D has u short
   HALF(S) : some star-terminal Lovasz D has short set exactly S      (every half-set S of N(z))
   PAIR(M) : some star-terminal Lovasz D has transition pairing M     (every perfect matching M of N(z))
-usage: flex_run.py graphs.g6|jsonl out.jsonl [max_graphs] [budget]
+usage: flex_run.py graphs.g6|jsonl out.jsonl [max_graphs] [budget] [3c|zc]
 """
 import sys, json, itertools, collections
 import networkx as nx
@@ -14,6 +14,7 @@ orc = Oracle()
 src = sys.argv[1]; out = open(sys.argv[2], 'w')
 maxg = int(sys.argv[3]) if len(sys.argv) > 3 else 10 ** 9
 budget = int(sys.argv[4]) if len(sys.argv) > 4 else 0
+cls = sys.argv[5] if len(sys.argv) > 5 else '3c'   # '3c': J 3-connected; 'zc': J - z connected
 if src.endswith('.jsonl'):
     g6s = [json.loads(l)['g6'].encode() for l in open(src)]
 else:
@@ -30,7 +31,11 @@ def q(*a, **k):
 for g6 in g6s:
     J = relabel(nx.from_graph6_bytes(g6))
     ev = even_vertices(J)
-    if len(ev) != 1 or nx.node_connectivity(J) < 3:
+    if len(ev) != 1:
+        continue
+    if cls == '3c' and nx.node_connectivity(J) < 3:
+        continue
+    if cls == 'zc' and not nx.is_connected(J.subgraph(set(J) - {ev[0]})):
         continue
     ng += 1
     if ng > maxg:

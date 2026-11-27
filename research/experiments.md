@@ -835,3 +835,64 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 **(G) Prescribed end edges** (`exp_twoend.py`). The question: are end edges at all vertices of a packed set (|X| ≤ 4) achievable simultaneously? The test uses the split graph with classes {x, ℓ_x}. Result: 311 + 229 instances, 0 failures (1 undecided). |X| = 1 is a theorem (manuscript Thm "prescribed end edge").
 
 **(H) Side test (`exp_elov.py`).** Lovász decompositions with b = deg mod 2 when the even vertices are pairwise at distance ≥ 3: 182 decided random instances, 0 failures. The first version of the test was degenerate: it made the even vertices by pendant leaves, which is trivially solvable.
+
+## E22. Star-terminal Lovász decompositions (STL, STL2) and the deletion tests (cloud session `claude/stl`)
+
+Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see `manuscripts/stl/README.md`); outputs in `scripts/out/`. Oracle: `tools/stl.c` (new).
+
+**Oracle.** `tools/stl.c` is the DFS of `route_ext.c` (memoised failures, so negative answers are exact), extended as follows.
+- Query `Q`, given z and a profile b with b(z) = 0, decides whether some decomposition has #LL − #SS + [r short] ≤ thr (optionally with #LL = 0, the star-terminal case). The counters are part of the memo key.
+- Flag `T` prescribes or forbids terminal edges.
+- Flag `M` restricts the allowed transitions at z.
+- Flags `W` (witness) and `B` (budget) work as in `route_ext`.
+- Profiles up to 15 ends per vertex.
+
+**Validation.** Two independent enumerators of all decompositions agree with the oracle on every one-even connected graph of order ≤ 7, with 0 disagreements:
+- `brute.py`: 1,066 queries for ST, STL and BAL;
+- `brute_flex.py`: 1,295 queries for prescribed short sets and pairings.
+
+**(A) STL on all connected graphs of odd order ≤ 9 with exactly one even vertex** (`gen_one_even.py`, then `stl_run.py`). There are 7, 130 and 11,936 graphs at n = 5, 7, 9, built from `data/conn{n-1}.g6` with isomorphism rejection.
+
+| n | graphs | pairs (J,r) | STL fails | BAL fails | Test1 fails | ST fails |
+|---|---|---|---|---|---|---|
+| ≤ 7 | 138 | 464 | 10 | 10 | 10 | 1 |
+| 9 | 11,936 | 48,850 | 48 | 48 | 48 | 2 |
+
+- Every failure has J − z disconnected, and Test1 fails at the same pairs. So on all graphs of order ≤ 9, **STL(r) ⇔ BAL(r) ⇔ Test1(r)**.
+- With J − z connected (10,996 graphs, 54,336 pairs), STL never fails.
+- 3-connected graphs at n = 9: 5,231 graphs, 25,210 pairs, 0 failures (4,699 of the graphs have J − z ∈ C).
+
+**(B) STL2 (Test2 analogue) on all connected graphs of even order ≤ 8** (`stl2_run.py`).
+- 2,828 instances, 10 failures. Every failure has J − z disconnected, and Test2 fails there too (in 4 of them d(r) = 2).
+- 3-connected: 958 instances, 0 failures.
+- A "perfect" decomposition with β = b(r) = 0 exists in only 748 of the 958; STL2 then uses β = 2.
+
+**(C) Random 3-connected samples** (`sample_run.py`, with every budget-undecided entry re-decided by `resolve.py` / `resolve2.py`). 0 failures throughout.
+- STL: n = 11 (600 graphs, 3,256 pairs), n = 13 (600, 3,470), n = 15 (350, 2,082).
+- STL2: n = 10 (1,200 instances), n = 12 (1,000), n = 14 (500).
+
+**(D) Flexibility on 3-connected graphs** (`flex_run.py`).
+
+| class | graphs | EE(u) and STS(u) | HALF(S) | PAIR(M) |
+|---|---|---|---|---|
+| n = 5 (only W₄) | 1 | 4/4 | 2/6 | 2/3 |
+| n = 7 | 28 | 126/126 | 244/266 | 168/168 |
+| n = 9 | 5,231 | 25,210/25,210 | 66,818/67,220 | 54,045/54,045 |
+| random, n = 11, d(z) ≤ 8 | see README | all | ≥ 99% | all |
+| random, n = 13, d(z) ≤ 6 | 120 | 586/586 | 1,462/1,462 | 996/996 |
+
+- STS(u): u is short in some star-terminal Lovász decomposition.
+- HALF(S): the short set is exactly S.
+- PAIR(M): the transitions at z are exactly M.
+- **The only PAIR failure is W₄ with the diagonal pairing**; a hand proof is in the manuscript, Example W4.
+- On all graphs with J − z connected at n ≤ 7 (103 graphs, 3-connected or not), PAIR again fails only on W₄.
+
+**(E) Families** (`families.py`). 0 failures throughout.
+- Wheels W₄ … W₁₈.
+- J = H + universal z, with H random 4-regular of order 10, 12, 14 (90 graphs, 1,040 pairs; J − z Eulerian, d(z) up to 14).
+- Random non-3-connected J with J − z connected, n = 11 and 13 (250 graphs, 780 pairs).
+
+**Negative results.**
+- STL-P (every pairing realisable) is false on W₄.
+- HALF (every short half-set realisable) is false in general: 402 of 67,220 half-sets fail at n = 9.
+- ST already fails when J − z is disconnected; the smallest example is two K₄ sharing z.
