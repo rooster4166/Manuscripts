@@ -157,6 +157,30 @@ static int lower_bound(em R) {
     return lb;
 }
 
+/* Lovasz modes: every component C of R with edges is decomposed by exactly o_C/2 remaining
+   paths, o_C = number of its vertices that are not yet ends (all of them odd in R, and they are
+   exactly the remaining ends).  So o_C >= 2, every degree in C is at most o_C, and
+   |E(C)| <= (o_C/2)(|C| - 1). */
+static int lovasz_feasible(em R) {
+    int deg[MAXN], vm = 0, seen = 0;
+    for (int v = 0; v < n; v++) { deg[v] = epc(R & inc[v]); if (deg[v]) vm |= 1 << v; }
+    while (vm & ~seen) {
+        int st = __builtin_ctz(vm & ~seen), comp = 1 << st, fr = comp;
+        while (fr) {
+            int v = __builtin_ctz(fr); fr &= fr - 1;
+            for (int w = 0; w < n; w++)
+                if (A[v][w] && v != r && w != r && (R >> eid[v][w] & 1) && !(comp >> w & 1)) { comp |= 1 << w; fr |= 1 << w; }
+        }
+        seen |= comp;
+        int o = popc(comp & Nmask & ~endm), sz = popc(comp), me = 0;
+        if (o < 2) return 0;
+        for (int v = 0; v < n; v++) if (comp >> v & 1) { if (deg[v] > o) return 0; me += deg[v]; }
+        me /= 2;
+        if (me > (o / 2) * (sz - 1)) return 0;
+    }
+    return 1;
+}
+
 static void solve(em R);
 
 static int curseq[MAXN + 1];
@@ -172,7 +196,10 @@ static void try_piece(em R, int len, int vmask, em pe) {
     if (modeS && (v0 == s || w == s)) return;
     /* dead piece: contains all of N(r) -> compatible with nothing */
     int dead = ((vmask & Nmask) == Nmask);
-    for (int side = 0; side < 2; side++) {
+    /* in the Lovasz modes try first the orientation whose trivial end has the smaller degree */
+    int flip = modeL && (degB[v0] > degB[w] || (degB[v0] == degB[w] && v0 > w));
+    for (int side0 = 0; side0 < 2; side0++) {
+        int side = side0 ^ flip;
         int a = side ? w : v0;
         if (modeT) {
             /* the trivial end is the lower end in (degree, label) order; attach at the other */
@@ -269,6 +296,7 @@ static void solve(em R) {
     if ((found && !countMode) || aborted) return;
     nodes++;
     if (budget && nodes > budget) { aborted = 1; return; }
+    if (modeL && R && !lovasz_feasible(R)) return;
     if (R == 0) {
         if (modeT) {
             /* bipartite matching: pieces vs trivial members (unused attachments) */

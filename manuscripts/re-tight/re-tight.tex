@@ -1,0 +1,492 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\pr}{p_r}
+\newcommand{\lean}[1]{\texttt{\hyphenchar\font=`\_ #1}}
+
+\title[RE at roots of degree $n-2$]{Rooted Eulerian decompositions at roots of degree $n-2$:\\ the Lov\'asz-plus-matching method}
+\author{Gallai project}
+\date{27 November 2026}
+
+\begin{document}
+\sloppy
+
+\begin{abstract}
+RE$(B,r)$ asks for a decomposition of a $2$-connected Eulerian graph $B$ of even order $n=2k$ into
+at most $k$ paths, at least two of which end at a prescribed vertex $r$. The spine of the project
+needs RE for every such $B$ without a matching cut. At order $10$, $99.8\%$ of the roots at which RE
+is tight have degree $n-2$, and there RE is a constrained Lov\'asz problem on $G=B-r$, a graph with
+exactly one even vertex $s$.
+
+We test and prove a method for these roots. Take a Lov\'asz decomposition of $G$. It has $k-1$
+paths, whose ends pair up $N(r)$, and every neighbour $x$ of $r$ lies on exactly $d(x)/2$ of them.
+Close each path through $r$ at one end and continue it to the other end of another path, by a
+defect-$2$ Hall matching. Let $h_t$ be the number of neighbours of $r$ of degree at least $2t$. We
+prove: if for every $3\le t\le k-1$ either $\lfloor h_t/2\rfloor\le k+1-t$ or
+$\lfloor h_{t+1}/2\rfloor\le k+1-2t$, then $B$ has a decomposition into exactly $k$ paths with exactly
+two ends at $r$. No connectivity is needed, and the degree of $s$ is free. In particular RE holds at
+$r$ when at most five neighbours of $r$ have degree at least $6$, and when $n\ge 10$ and every
+neighbour of $r$ has degree at most $6$. Both are machine-checked in Lean.
+
+We also give an exact checker for the degree-$(n-2)$ form of RE. It is validated against the
+project's solver on all $14{,}391$ such roots of order at most $10$. With it, we map where the method
+works. At order $10$ the theorem covers $95.6\%$ of these roots. The method itself, with the best
+Lov\'asz decomposition, succeeds at every root outside the dense range of
+marked-reduction Corollary~168, at all orders $\le10$. Its failures are dense: near-complete graphs
+force Hamiltonian Lov\'asz paths, which are compatible with nothing. That regime is the one covered by
+marked-reduction Corollary~168 and Theorem~170, so the two methods are complementary. The gap
+between them is the open core of this case.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+All graphs are finite and simple. A \emph{decomposition} of $G$ is a partition of $E(G)$ into paths
+of positive length; $e_D(v)$ is the number of paths of $D$ with an end at $v$. A path through $v$
+uses two edges at $v$ and a path ending at $v$ uses one, so
+\begin{equation}\label{eq:par}
+d(v)=e_D(v)+2\,\#\{P\in D:\ v\text{ interior to }P\}.
+\end{equation}
+
+\begin{definition}[eulerian-cone, Def.~1.1]
+\textbf{RE}$(B,r)$: a $2$-connected Eulerian graph $B$ of even order $n=2k$ has a decomposition into at
+most $k$ paths with at least two ends at $r$.
+\end{definition}
+
+The spine of the project needs RE for every $2$-connected Eulerian $B$ of even order without a
+matching cut (Lean \lean{rootedDecomp\_of\_spineTestsNMC}), and Gallai's conjecture implies RE
+(\lean{rootedDecomp\_of\_gallai}). RE holds exhaustively to order $10$ (eulerian-cone \S6). It is
+\emph{tight}, $\pr(B)=k$, at $14{,}156$ of the $300{,}540$ roots of order $10$, and $14{,}131$ of these
+have $d(r)=n-2$. Every root of degree $n-2$ is tight, since $r$ is an end of two paths and every other
+path meets $r$ at most once: at least $2+(n-4)/2=k$ paths.
+
+So the roots of degree $n-2$ are where RE has no slack. Synthesis \S28 lists them among the open
+core. This paper is about them. Throughout, $B$ has even order $n=2k\ge 4$ and every degree even, $r$
+has degree $n-2$, $s$ is the vertex other than $r$ not adjacent to $r$, $N=N(r)$, $G=B-r$, and
+\[
+h_t=\#\{x\in N:\ d_B(x)\ge 2t\}\qquad(t\ge1).
+\]
+
+\subsection*{Results}
+\begin{center}\small
+\begin{tabular}{@{}>{\raggedright}p{0.55\textwidth}>{\raggedright}p{0.17\textwidth}p{0.2\textwidth}@{}}
+\toprule
+Statement & Status & Where\\
+\midrule
+Reformulation on $G=B-r$ (families, Lemma~\ref{lem:fam}) & proved (eulerian-cone Rem.~7.2) & \S\ref{sec:fam}\\
+Lov\'asz paths meet $x\in N$ exactly $d(x)/2$ times (Lemma~\ref{lem:count}) & proved, Lean & \S\ref{sec:fam}\\
+Theorem~\ref{thm:main}: condition $(\ast\ast)$ $\Rightarrow$ $k$ paths, two ends at $r$ & proved, Lean & \S\ref{sec:main}\\
+Corollary~\ref{cor:main}: $\le5$ heavy neighbours; neighbours of degree $\le 6$, $n\ge10$ & proved, Lean & \S\ref{sec:main}\\
+Hamiltonian obstruction (Proposition~\ref{prop:ham}) & proved & \S\ref{sec:limits}\\
+Exact checker, validated on all degree-$(n-2)$ roots, $n\le10$ & computation & \S\ref{sec:comp}\\
+Where the method works; coverage of Theorem~\ref{thm:main} and of MR~168/170 & computation, $n\le10$ & \S\S\ref{sec:limits}--\ref{sec:comp}\\
+Conjecture~\ref{conj:mid} (the method below Thm.~170, $n\le12$) & open computation & \S\ref{sec:open}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The method is the one proposed by the coordinator (Lov\'asz decomposition, one end of each path as
+attachment, bipartite matching to the other ends). Here it is proved in a range, with a sharper
+Hall estimate than the obvious one (the \emph{own path} in Step~4 of the proof), and its limits are
+identified.
+
+\section{Families and Lov\'asz families}\label{sec:fam}
+
+\begin{lemma}[eulerian-cone, Remark~7.2]\label{lem:fam}
+RE$(B,r)$ holds if and only if there is a family $(Q_x)_{x\in N}$ such that
+\begin{itemize}[leftmargin=*]
+\item each $Q_x$ is a path of $G$ with an end at $x$ (its \emph{attachment}), or the trivial path $x$;
+\item the nontrivial $Q_x$ partition $E(G)$;
+\item $N$ splits into $k-2$ pairs $\{x,y\}$ with $Q_x,Q_y$ vertex-disjoint, and two singletons.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+A decomposition with at most $k$ paths and $e(r)\ge 2$ has exactly $k$ paths, all through $r$, two of
+them ending there (the count in the introduction). Deleting $r$ cuts each path into the pieces on the
+sides of its edges at $r$. Conversely a family gives the $k-2$ paths $Q_x\,x\,r\,y\,Q_y$ and the two
+paths $Q_x\,x\,r$.
+\end{proof}
+
+Members $Q_x,Q_y$ are \emph{compatible} if they are vertex-disjoint. Trivial members are pairwise
+compatible. Only the direction ``family $\Rightarrow$ RE'' is used below, and in a special form
+that we prove directly in Step~5 of Theorem~\ref{thm:main}.
+
+\begin{lemma}\label{lem:count}
+Every $x\in N$ has odd degree $d_B(x)-1$ in $G$, and $s$ has even degree $d_B(s)$ in $G$. Hence
+$G$ has a decomposition $D$ in which every vertex of $N$ is an end of exactly one path and no other
+vertex is an end (Lov\'asz~\cite{Lov}). Every such $D$ has exactly $k-1$ paths, its ends pair up
+$N$, and every $x\in N$ lies on exactly $d_B(x)/2$ of its paths.
+\end{lemma}
+
+\begin{proof}
+$G$ has at most one vertex of positive even degree, so Lov\'asz's theorem applies (Lean
+\lean{lovasz\_ends}: a decomposition with $e_D(v)=d_G(v)\bmod 2$ for all $v$). The $2k-2$ ends
+give $k-1$ paths, and a path has two distinct ends. By \eqref{eq:par}, $x\in N$ is interior to
+$(d_G(x)-1)/2$ paths and an end of one, so it lies on $(d_G(x)+1)/2=d_B(x)/2$ paths. (Lean
+\lean{PathDecomp.degree\_add\_ends\_eq\_card}.)
+\end{proof}
+
+We call $D$ a \emph{Lov\'asz decomposition} of $G$. Orienting each path $P_i$ from an
+\emph{attachment} $a_i$ to a \emph{trivial end} $b_i$ gives a family: $Q_{a_i}=P_i$ and $Q_{b_i}$
+trivial. Its $2k-2$ members are compatible as follows:
+\begin{itemize}[leftmargin=*]
+\item $P_i$ and the trivial member $b_j$ iff $b_j\notin V(P_i)$ (so never for $j=i$);
+\item $P_i$ and $P_l$ iff they are vertex-disjoint; trivial members always.
+\end{itemize}
+The \emph{Lov\'asz-plus-matching method} asks for a Lov\'asz decomposition and an orientation whose
+compatibility graph has a matching of size $k-2$. A matching of size at least $k-3$ between paths and
+trivial ends suffices: the at most two unmatched trivial ends are then compatible with each other.
+
+\section{The theorem}\label{sec:main}
+
+\begin{theorem}\label{thm:main}
+Let $B$ have even order $n=2k\ge4$ and all degrees even, and let $d(r)=n-2$. Suppose that for every
+integer $t$ with $3\le t\le k-1$
+\[
+(\ast\ast)_t\qquad \lfloor h_t/2\rfloor\le k+1-t\qquad\text{or}\qquad \lfloor h_{t+1}/2\rfloor\le k+1-2t .
+\]
+Then $B$ has a decomposition into exactly $k$ paths with exactly two ends at $r$. Every Lov\'asz
+decomposition of $G$, with every path oriented so that its trivial end has the smaller degree, gives
+one. In particular, if $B$ is $2$-connected, RE$(B,r)$ holds, and $p(B)\le n/2$.
+\end{theorem}
+
+Lean: \lean{exists\_decomp\_of\_degStar} and \lean{rootedDecomp\_of\_degStar} in
+\lean{RETight.lean}, with $(\ast\ast)_t$ written $\lfloor h_t/2\rfloor+t\le k+1\ \vee\ \lfloor
+h_{t+1}/2\rfloor+2t\le k+1$ and $h_t$ = \lean{heavyNbrs B r t}.
+
+\begin{proof}
+\emph{Step 1 (Lov\'asz).} By Lemma~\ref{lem:count}, $G$ has a Lov\'asz decomposition
+$D=\{P_1,\dots,P_{k-1}\}$; the ends of $P_i$ are two vertices of $N$, and every vertex of $N$ is an
+end of exactly one $P_i$. Since $k\ge2$, $D\neq\emptyset$.
+
+\emph{Step 2 (orientation).} Name the ends of $P_i$ so that $d(b_i)\le d(a_i)$; call $b_i$ the
+\emph{trivial end}. The $2k-2$ vertices $a_1,b_1,\dots,a_{k-1},b_{k-1}$ are distinct, and for every
+$u\ge 1$
+\begin{equation}\label{eq:pairs}
+\#\{j:\ d(b_j)\ge 2u\}\le\lfloor h_u/2\rfloor ,
+\end{equation}
+since for each such $j$ both $a_j$ and $b_j$ have degree at least $2u$, and these pairs are disjoint
+subsets of the $h_u$ neighbours of $r$ of degree at least $2u$.
+
+\emph{Step 3 (the bipartite graph).} Let $\Gamma$ be the bipartite graph between the paths
+$P_1,\dots,P_{k-1}$ and the trivial ends $b_1,\dots,b_{k-1}$, with $P_i\sim b_j$ iff $b_j\notin
+V(P_i)$. We show that $\Gamma$ has a matching of size at least $k-3$. By the defect form of Hall's
+theorem it suffices that $|N_\Gamma(S)|\ge|S|-2$ for every set $S$ of paths. (In Lean: Hall's theorem
+for the neighbourhoods $N_\Gamma(P_i)\cup\{\star_1,\star_2\}$ with two new vertices, Mathlib
+\lean{Finset.all\_card\_le\_biUnion\_card\_iff\_exists\_injective}.)
+
+\emph{Step 4 (Hall's condition).} Let $|S|=t$ and $J=\{j:\ b_j\in V(P_i)\text{ for all }P_i\in S\}$.
+Then $N_\Gamma(S)=\{b_j:\ j\notin J\}$, so we need $t+|J|\le k+1$. This is clear if $t\le2$, as $|J|\le
+k-1$. Let $t\ge3$; then $t\le k-1$. By Lemma~\ref{lem:count}, $b_j$ lies on exactly $d(b_j)/2$ paths.
+\begin{itemize}[leftmargin=*]
+\item If $j\in J$, then $b_j$ lies on the $t$ paths of $S$, so $d(b_j)\ge 2t$.
+\item If $j\in J$ and $P_j\notin S$, then $b_j$ lies also on its own path $P_j$, so on $t+1$ paths,
+and $d(b_j)\ge 2t+2$.
+\end{itemize}
+If the first alternative of $(\ast\ast)_t$ holds, \eqref{eq:pairs} with $u=t$ gives $|J|\le\lfloor
+h_t/2\rfloor\le k+1-t$. If the second holds, split $J$ by whether $P_j\in S$. At most $t$ indices
+have $P_j\in S$, and by \eqref{eq:pairs} with $u=t+1$ at most $\lfloor h_{t+1}/2\rfloor$ have
+$P_j\notin S$. So $|J|\le t+\lfloor h_{t+1}/2\rfloor\le k+1-t$. In both cases $t+|J|\le k+1$.
+
+\emph{Step 5 (reassembly).} Take a matching $M$ of $\Gamma$ that leaves one or two paths unmatched.
+This is possible since $\nu(\Gamma)\ge k-3$; drop edges if needed, and $k-1\ge1$. Let $U$ be the set of
+unmatched paths, and $T_U$ the set of unmatched trivial ends; $|T_U|=|U|\in\{1,2\}$. Form:
+\begin{itemize}[leftmargin=*]
+\item $b_i\,P_i\,a_i\,r\,b_j$ for every $(P_i,b_j)\in M$;
+\item $b_i\,P_i\,a_i\,r$ for every $P_i\in U$;
+\item $b\,r$ if $T_U=\{b\}$, and $b\,r\,b'$ if $T_U=\{b,b'\}$.
+\end{itemize}
+Each is a path: $P_i$ lies in $G$, so it avoids $r$; $b_j\notin V(P_i)$ for matched pairs; and $b\ne b'$.
+The edges of $G$ are covered once by the $P_i$. The edges at $r$ are $ra_i$, used once by the path of
+$P_i$, and $rb_j$, used once by the path matched to $b_j$ or by the last path. There are
+$(k-1)+1=k$ paths. The ends at $r$ number $|U|+[\,|T_U|=1\,]=2$. (Lean \lean{reassemble}; the paths are
+glued in the complete graph with \lean{joinT} and assembled with \lean{exists\_decomp\_of\_edgesM}.)
+
+The orientation was arbitrary subject to $d(b_i)\le d(a_i)$, and $D$ was an arbitrary Lov\'asz
+decomposition. If $B$ is $2$-connected this is RE$(B,r)$, and in any case $p(B)\le k$.
+\end{proof}
+
+\begin{remark}
+The second alternative of $(\ast\ast)_t$ comes from the own path in Step~4. Without it the condition
+is
+\[
+(\ast)\qquad \lfloor h_t/2\rfloor\le k+1-t\quad(3\le t\le k-1),
+\]
+which at $t=3$ needs a neighbour of $r$ of degree at most $4$. With it, graphs in which every neighbour
+of $r$ has degree $6$ pass at every $n\ge10$ (Corollary~\ref{cor:main}(b)).
+At $t=k-1$ only the first alternative can hold when $k\ge4$, since $h_k=0$: Theorem~\ref{thm:main}
+always requires $h_{k-1}\le5$, that is, at most five neighbours of $r$ of degree $n-2$.
+\end{remark}
+
+\begin{corollary}\label{cor:main}
+Let $B$, $r$ be as in Theorem~\ref{thm:main}. Each of the following gives a decomposition into $k$
+paths with exactly two ends at $r$, hence RE$(B,r)$ when $B$ is $2$-connected:
+\begin{enumerate}[label=(\alph*)]
+\item at most five neighbours of $r$ have degree at least $6$ (Lean \lean{rootedDecomp\_of\_few\_heavy});
+\item $n\ge 10$ and every neighbour of $r$ has degree at most $6$ (Lean
+\lean{rootedDecomp\_of\_deg\_le\_six});
+\item condition $(\ast)$; in particular, every neighbour of $r$ has degree at most $4$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(a) $h_t\le h_3\le5$ for $t\ge3$, so $\lfloor h_t/2\rfloor\le2\le k+1-t$. (b) $h_t=0$ for $t\ge4$; at
+$t=3$ the second alternative reads $0\le k-5$. (c) is the first alternative.
+\end{proof}
+
+\begin{remark}[what is new]
+None of the classes of eulerian-cone Theorem~2.3 contains these graphs in general. For an
+example, let $H$ be any $4$-regular graph on $2k-2\ge 8$ vertices, and join two non-adjacent new
+vertices $r,s$ to all of $V(H)$. All degrees are even ($r,s$ have degree $n-2$, the others $6$), and
+by Corollary~\ref{cor:main}(b) RE holds at $r$ and at $s$. $H$ can be an expander, so $B$ can have
+unbounded treewidth and unbounded clique minors, minimum degree $6$ and maximum degree $n-2$. It
+has only two vertices of degree $n-2$, so marked-reduction Theorem~170 (which needs $k-1$) does not
+apply once $k\ge4$. The degree of $s$ never enters Theorem~\ref{thm:main}.
+\end{remark}
+
+\section{Limits of the method}\label{sec:limits}
+
+A member is compatible with nothing if it meets every other member. Every member contains its
+attachment, which is a vertex of $G$, so a Hamiltonian path of $G$ is such a member.
+
+\begin{proposition}[Hamiltonian obstruction]\label{prop:ham}
+If $m(B)\ge 2k^2-3k+4$, then for every Lov\'asz decomposition of $G$ and every orientation, the
+compatibility graph (path--path pairs included) has no matching of size $k-2$. Such a $B$ has at
+least $k+4$ vertices of degree $n-2$.
+\end{proposition}
+
+\begin{proof}
+$G$ has $2k-1$ vertices, so a path of $G$ has length at most $2k-2$, with equality iff it is
+Hamiltonian. If at most two of the $k-1$ Lov\'asz paths were Hamiltonian, then $m(G)\le
+2(2k-2)+(k-3)(2k-3)=2k^2-5k+5$, while $m(G)=m(B)-(2k-2)\ge 2k^2-5k+6$. So at least three members are
+isolated in the compatibility graph, and a matching covers at most $2k-5$ of the $2k-2$ members: at
+most $k-3$ pairs.
+
+For the second claim, the complement $\bar B$ has $\binom{2k}{2}-m(B)\le 2k-4$ edges, and every
+degree in $\bar B$ is odd, since $2k-1-d_B(v)$ is odd. Hence $\sum_v(d_{\bar B}(v)-1)\le 2(2k-4)-2k=2k-8$,
+and at most $k-4$ vertices have $d_{\bar B}(v)\ge3$. The remaining $\ge k+4$ vertices have
+$d_{\bar B}(v)=1$, that is, $d_B(v)=n-2$.
+\end{proof}
+
+\begin{example}\label{ex:cp}
+For the cocktail party graph $K_{2k}-M$ ($M$ a perfect matching), $m(G)=2(k-1)^2$, so the $k-1$
+Lov\'asz paths of $G$, of length at most $2k-2$, are all Hamiltonian. The method fails for $k\ge4$:
+only the $k-1$ trivial members can pair, giving $\lfloor(k-1)/2\rfloor<k-2$ pairs. RE holds there by
+marked-reduction Corollary~168 (all $2k$ vertices have degree $n-2$). The family that the checker of
+\S\ref{sec:comp} finds for $K_8-M$ at $r=0$, $s=1$ is
+\[
+Q_2=2\,1\,3\,4\,6\,5\,7,\quad Q_3=3\,5\,1\,4\,2\,6,\quad Q_4=4\,7\,1\,6\,3,\quad Q_5=5\,2\,7\,3,
+\quad Q_6=6,\quad Q_7=7,
+\]
+with pairs $\{3,7\}$, $\{5,6\}$. It is not a Lov\'asz family: $3$ is an end of three members.
+Dense instances need pieces that end several times at one vertex, that is, decompositions of $B$ with
+$e(x)=2$ at attachments.
+\end{example}
+
+So the method is a sparse method. Its failures (\S\ref{sec:comp}) are near-complete graphs, and
+Proposition~\ref{prop:ham} shows that some of them are unavoidable. The dense regime is the domain of
+the marked-reduction results.
+
+\subsection*{Comparison with marked-reduction Corollary~168 and Theorem~170}
+In the project's collection (\texttt{gallai/01-original-manuscripts/marked-reduction.pdf},
+unrefereed):
+\begin{itemize}[leftmargin=*]
+\item \emph{Cor.~168.} In a connected Eulerian graph of order $2k$, any $k$ vertices $R$ of degree
+$2k-2$ are the ends, twice each, of a $k$-path decomposition. With $r\in R$ this gives RE at $r$
+whenever at least $k$ vertices, $r$ included, have degree $n-2$.
+\item \emph{Thm.~170.} If at least $k-1$ vertices have degree $n-2$, RE holds at every root. Its
+proof uses $6{,}131$ certificates for $k\le5$ that are not in the repository. Eulerian-cone checked
+both statements exactly at even order $\le10$.
+\end{itemize}
+The proofs are of a different kind: amalgamation and detachment (Bahmanian--Rodger), producing
+near-Hamiltonian paths that all visit $R$. The ranges are complementary. Theorem~\ref{thm:main}
+needs at most five neighbours of $r$ of degree $n-2$, so at most seven vertices of degree $n-2$ in
+all ($r$, $s$ and five neighbours). Theorem~170 needs at least $k-1$, so for $k\ge9$ the two ranges
+are disjoint. Proposition~\ref{prop:ham} lies inside the range of Corollary~168. At order $10$ the
+coverage is in Table~\ref{tab:cov}.
+
+\section{Computation}\label{sec:comp}
+
+\subsection{The exact checker}
+\texttt{scripts/ret.c} decides the family form of Lemma~\ref{lem:fam} directly; it shares no code
+with the solver \texttt{re.c} of eulerian-cone.
+\begin{itemize}[leftmargin=*]
+\item It chooses pieces one at a time, each with an unused attachment among its ends in $N$.
+\item If the remaining edge set has a vertex of odd degree, some remaining piece ends there; the search
+branches over all paths from it. Otherwise it branches over all paths through the lowest remaining
+edge. Both branchings are complete.
+\item At a leaf it adds the trivial members and computes a maximum matching of the compatibility
+graph exactly.
+\end{itemize}
+The pruning rules are sound:
+\begin{itemize}[leftmargin=*]
+\item a lower bound on the number of further pieces, which need distinct attachments;
+\item the current pieces, together with the singletons at the unused attachments, must already admit
+the matching (future members only grow);
+\item a vertex lies in at most $k$ members, since they lie on distinct paths of $B$;
+\item $v\ne r$ is an end of at most $\min(d(v),2k-d(v))$ paths of $B$, counted through the piece
+ends at $v$.
+\end{itemize}
+Modes:
+\begin{itemize}[leftmargin=*]
+\item \texttt{-z} asks for $k-1$ pairs and no singleton. This is a decomposition into $k-1$ paths, all
+through $r$, so it holds iff $p(B)\le k-1$.
+\item \texttt{-L} restricts to Lov\'asz families, over all Lov\'asz decompositions and orientations:
+the method of \S\ref{sec:fam}.
+\item \texttt{-T} enumerates every Lov\'asz decomposition with the orientation of
+Theorem~\ref{thm:main}, and reports the least maximum matching between paths and trivial ends.
+\end{itemize}
+\texttt{scripts/verify\_family.py} checks every witness independently. It checks the family
+conditions, reassembles the paths of $B$ and checks the decomposition from scratch.
+
+\emph{Validation.} The 2-connected Eulerian graphs of even order $\le10$ are those of eulerian-cone
+(\texttt{data/euler2c\_*.g6}).
+\begin{itemize}[leftmargin=*]
+\item \emph{Positive answers.} At all $4$, $22$, $234$ and $14{,}131$ roots of degree $n-2$ at orders
+$4,6,8,10$ the checker answers YES, as \texttt{re.c} does, and all $14{,}391$ witnesses pass
+\texttt{verify\_family.py}.
+\item \emph{Negative answers.} Mode \texttt{-z} was compared with $p(B)$ from \texttt{re.c -p}.
+At orders $6$ and $8$ the comparison is complete: $256$ roots, $51$ of them NO, $0$ disagreements.
+At order $10$, all $10{,}017$ decided roots are YES and agree with \texttt{re.c}; $234$ stayed
+undecided at a budget of $2\cdot10^7$ nodes, and the run was stopped.
+\end{itemize}
+
+\subsection{The method in the data}
+\begin{table}[h]
+\small
+\begin{tabular}{@{}rrrrrrrrr@{}}
+\toprule
+$n$ & roots & $(\ast)$ & $(\ast\ast)$ & Cor.~168 & Thm.~170 & lit. & $(\ast\ast)\cup$170$\cup$lit & method\\
+\midrule
+6 & 22 & 22 & 22 & 18 & 22 & 22 & 22 & 22\\
+8 & 234 & 218 & 218 & 87 & 129 & 43 & 234 & 218\\
+10 & 14{,}131 & 13{,}305 & 13{,}507 & 569 & 1{,}297 & 270 & 13{,}984 & 14{,}054\\
+\bottomrule
+\end{tabular}
+\caption{Roots of degree $n-2$ of the $2$-connected Eulerian graphs of even order $n$. ``lit.'': the
+classes of eulerian-cone Thm.~2.3 decided here (planar, $\Delta\le4$, $\Delta(B-r)\le3$,
+$2$-degenerate, $B-r$ a forest); treewidth $\le3$ and $K_5$-minor-free were not tested, so this
+column undercounts. ``method'': roots at which some Lov\'asz decomposition and orientation work
+(\texttt{ret -L}).}\label{tab:cov}
+\end{table}
+
+\emph{Order $10$.} The method (\texttt{ret -L}, exhaustive over Lov\'asz decompositions and
+orientations) succeeds at 14{,}054 of the $14{,}131$ roots; every witness passes
+\texttt{verify\_family.py}. The other $77$ roots lie in $10$ graphs with at least $8$ of the $10$
+vertices of degree $8$, so inside the range of marked-reduction Corollary~168. At $19$ of them
+($m\ge39=2k^2-3k+4$, among them $K_{10}-M$) the method provably fails by Proposition~\ref{prop:ham}.
+At the remaining $58$ ($m\in\{36,37,38\}$) the search stayed undecided at a budget of $2\cdot10^7$
+to $2\cdot10^8$ nodes. Theorem~\ref{thm:main} covers 13{,}507 roots
+($95.6\%$). Together with Theorem~170 and the decided literature classes it covers 13{,}984. The
+$147$ roots outside all three are dense: every neighbour of $r$ has degree at least $6$, and exactly
+three vertices (among them $r$) have degree $8$. The method succeeds at every one of them.
+
+\emph{Sharpness of $(\ast\ast)$ for ``every $D$''.}
+\begin{itemize}[leftmargin=*]
+\item Mode \texttt{-T} enumerates every Lov\'asz decomposition with the orientation of
+Theorem~\ref{thm:main}.
+\item At order $8$, at all $234$ roots: every such $D$ yields the matching if and only if $(\ast\ast)$
+holds. The $16$ failures are the three graphs with at least six vertices of degree $6$.
+\item At order $10$ the run was stopped after $9{,}905$ roots, of which $9{,}884$ were decided. On these,
+again, every $D$ yields the matching if and only if $(\ast\ast)$ holds. In particular there are no
+violations of Theorem~\ref{thm:main} (\texttt{check\_star.py}).
+\end{itemize}
+So, on this data, the degree condition is exactly what the method guarantees when $D$ is arbitrary.
+Below $(\ast\ast)$ one must choose $D$.
+
+\emph{Order $12$ (samples).} On the $711$ random $2$-connected Eulerian graphs of eulerian-cone with a
+vertex of degree $10$, the method succeeds at RAND12YES of the RAND12TOT degree-$10$ roots. Among
+them are RAND12MID roots outside both $(\ast\ast)$ and Theorem~170. All RAND12UNK undecided roots
+(budget $2\cdot10^7$) lie in the range of Theorem~170. A random sample of $400$ graphs of the dense
+order-$12$ family ($m\ge45$) with one to four vertices of degree $10$ gives 793 successes out of
+793 roots, with none undecided.
+
+\emph{Order $16$, near-regular (\texttt{near\_regular.py}).}
+\begin{itemize}[leftmargin=*]
+\item \emph{Only $r$ of degree $n-2$.} The complement is random with degree $1$ at $r$ and $3$
+elsewhere, so the other vertices have degree $n-4$. The method succeeds at once at all $40$ instances
+of orders $12$, $14$ and $16$, in at most $320$ nodes.
+\item \emph{$u$ vertices of degree $14$.} Mixing $u$ vertices of degree $14$ with degree $12$ elsewhere
+($k=8$, six graphs per $u$), the method succeeds for $u=2,3$. For $u=4$ it succeeds at one of six. For
+$u=5,6$ it stays undecided at $2\cdot10^7$ nodes, although these graphs are still outside the range
+of Theorem~170 ($u\ge7$). The general checker finds families for $22$ of the $30$ graphs, with $8$
+to $12$ nontrivial pieces, more than the $k-1=7$ of a Lov\'asz family. M16TEXT
+\end{itemize}
+The reason is visible in the counts. When every degree is $n-2$ or $n-4$, a trivial end of degree
+$n-4$ lies on $k-2$ of the $k-1$ Lov\'asz paths, so it is compatible with exactly one path. A trivial
+end of degree $n-2$ is compatible with none. Then $\Gamma$ is the graph of a partial function from
+trivial ends to paths, and the method needs this function to be nearly injective.
+
+\section{What remains}\label{sec:open}
+
+\begin{enumerate}[leftmargin=*]
+\item \emph{The dense middle.} RE at a root of degree $n-2$ is proved here when $N(r)$ has few heavy
+vertices, and by marked-reduction Theorem~170 (unrefereed) when at least $k-1$ vertices have degree
+$n-2$. The data locate the open part: dense graphs, all degrees close to $n$, with between three and
+$k-2$ vertices of degree $n-2$. There the trivial ends are almost never compatible with paths. The
+order-$16$ experiment suggests that Lov\'asz families do not suffice, and that families with more
+pieces are needed: pieces that end twice at an attachment, as in Example~\ref{ex:cp}.
+\item \emph{How far does the method reach?}
+\begin{conjecture}[the method below Theorem~170]\label{conj:mid}
+Let $B$ be a $2$-connected Eulerian graph of even order $n=2k\le 12$ and $d(r)=n-2$, with fewer than
+$k-1$ vertices of degree $n-2$. Then some Lov\'asz decomposition of $B-r$ and some orientation admit
+a matching of size $k-2$ in the compatibility graph.
+\end{conjecture}
+This is a finite statement, and we record it as an open computation rather than a theorem.
+\begin{itemize}[leftmargin=*]
+\item For $n\le10$ it is verified exhaustively. Every root left undecided by the method lies inside
+the range of Theorem~170, so none of them is a counterexample.
+\item At $n=12$ it holds on the samples above.
+\item We do not conjecture it for large $n$. At $n=16$ the method is undecided at $u=5,6$, which is
+below Theorem~170.
+\end{itemize}
+\item \emph{Choosing $D$.} Below $(\ast\ast)$ the method needs a good Lov\'asz decomposition. The
+missing ingredient is a Lov\'asz theorem with control of which pairs of $N$ are joined, or of which
+vertices a path misses. This is the terminal-matching type of statement studied in
+\texttt{manuscripts/terminal-matching} (PTM) and \texttt{manuscripts/clt}: there the constraint is on
+end edges, here on the vertex sets of the paths ending at prescribed vertices.
+\item \emph{Beyond Lov\'asz families.} In a general family a vertex of $N$ may be the end of three
+pieces. Equivalently, the decomposition of $B$ has $e(x)=2$ at a vertex whose piece is nontrivial.
+Detachment (marked-reduction Lemma~167) produces such decompositions in the dense case. A
+detachment statement with a single high-degree vertex $r$ would close the gap.
+\end{enumerate}
+
+\section*{Files}
+\begin{itemize}[leftmargin=*]
+\item Lean: \texttt{lean/GallaiLean/RETight.lean}. No \texttt{sorry}; \lean{reassemble},
+\lean{exists\_decomp\_of\_degStar}, \lean{rootedDecomp\_of\_degStar}, \lean{rootedDecomp\_of\_few\_heavy}
+and \lean{rootedDecomp\_of\_deg\_le\_six} depend only on \texttt{propext}, \texttt{Classical.choice}
+and \texttt{Quot.sound}, and the full library builds (\texttt{lake build}, $18{,}414$ jobs).
+\item Scripts (\texttt{scripts/}, see \texttt{README.md}): \texttt{ret.c} (checker; modes \texttt{-z},
+\texttt{-L}, \texttt{-T}), \texttt{verify\_family.py}, \texttt{compare\_z.py}, \texttt{check\_star.py}
+(Theorem~\ref{thm:main} against \texttt{-T}), \texttt{coverage.py} (Table~\ref{tab:cov}),
+\texttt{run\_all.sh}.
+\item Data: \texttt{data/out/}.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Lov} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.,
+Tihany, 1966), Academic Press, 1968, 231--236.
+\bibitem{BR} A.~Bahmanian, C.~A.~Rodger, Multiply balanced edge colorings of multigraphs, \emph{J.\
+Graph Theory} 70 (2012) 297--317 (cited via marked-reduction).
+\end{thebibliography}
+
+\end{document}
