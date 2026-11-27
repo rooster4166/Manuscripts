@@ -519,3 +519,49 @@ Earlier scratch runs:
 - `warnsdorff`: deterministic greedy without backtracking. It fails 1/480, 5/540 and 8/600 times at m = 8, 9, 10.
 - `segment`: segment transversals by a no-backtracking rule succeed in every case (m ≤ 11, 25 samples each). The same rule with unit segments fails up to 9/550.
 
+## E17. The inductive template for EMM (track C4; cloud session missing-move)
+
+Scripts: `tools/gemm_test.py` and `tools/emm_template.py`, with the exact oracle `tools/realis.c`. Logs are in `manuscripts/missing-move/scripts/outputs/` (`gemm*.log`, `tmpl*.log`) and are reproduced by `emm_runs.sh`. Manuscript: missing-move §7.
+
+**Cut criterion for general profiles.** A profile is any b ≤ d with b ≡ d mod 2 and Σb = 2p. It is cut-feasible if (L) b ≤ d and d + b ≤ 2p hold, and (C), ED (1) with k replaced by p. We compare this with realisability.
+
+| order, profiles | graphs | profiles | cut-feasible | not realisable |
+|---|---|---|---|---|
+| 4, all | 6 | 61 | 52 | 0 |
+| 5, all | 21 | 894 | 767 | 0 |
+| 6, all | 112 | 14,786 | 13,897 | 0 |
+| 7, all | 853 | 481,442 | 467,373 | **1** (p = 2) |
+| 8, p = 4 | 11,117 | 434,011 | 362,546 | 0 |
+| 8, p ≤ 3 | 11,117 | 175,935 | 74,435 | **17** (14 with p = 2, 3 with p = 3) |
+| 8, all p, 200 random graphs (seed 5) | 200 | 534,586 | 528,727 | 0 |
+
+- No realisable profile is cut-infeasible.
+- The n = 7 failure is FqJBo with b = (1,0,1,2,0,0,0). It is a 2-linkage obstruction, confirmed by brute force.
+- So EMM does not extend to arbitrary profiles. All failures lie below the Gallai budget. This suggests **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, cut-feasible ⇔ realisable.
+- EMM⁺ holds:
+  - for every profile at n ≤ 7;
+  - for every profile with p = 4 at n = 8;
+  - on the n = 8 sample, at every p.
+- At n = 8 the bound cannot be lowered to p = 3.
+
+**Reductions (proved; missing-move Lemma 7.4).** A minimal counterexample to EMM⁺:
+- is connected;
+- has no degree-2 vertex with b = 0 and non-adjacent neighbours;
+- has no leaf at an unsaturated neighbour (Lean `cutOK_leaf`, `ach_of_leaf`, `leaf_step`);
+- has no degree-2 vertex with two ends lying on a cycle, unless each of its neighbours is saturated or both neighbours have b = 0.
+
+Before the proof, the last reduction was checked to keep cut-feasibility on all 9,537 instances at n ≤ 6 (`tools/emm_reduction_check.py`, `reduction_d_check.log`).
+
+**Template** (stuck = no edge with a valid move; a valid move has a cut-feasible, in-class b′ and a profile-level guarantee):
+
+| instances, moves | n = 4 | n = 5 | n = 6 |
+|---|---|---|---|
+| all; NP, T, C | 2/52 | 15/767 | 56/13,897 |
+| reduced; NP, T, C | 0/35 | 9/600 | 12/10,866 |
+| reduced; with path insertion of length ≤ 3 | – | 0/600 | 4/10,866 |
+| EMM⁺ class, reduced; NP, T, C | 0/35 | 4/589 | 14/10,847 |
+| EMM⁺ class, reduced; with path insertion of length ≤ 5 | 0/35 | 2/589 | 6/10,847 (all with p = ⌈n/2⌉) |
+
+- Every stuck instance at n = 6 has a cut-feasible move that lacks only its guarantee: a transfer at Fan's equality, or a concatenation with one end at each of u and v (`tmpl6_red_diag.log`, `tmpl6_plus_diag.log`).
+- Reading: single-edge and bounded path-insertion moves do not make cut-feasibility inductive. The missing ingredient is an **equality lemma**: at Fan's equality, either the move succeeds or a tight cut appears.
+
