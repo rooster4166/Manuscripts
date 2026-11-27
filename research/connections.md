@@ -1206,8 +1206,8 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 ### X.4 Proved partial results
 - **STL for d(z) = 2**, unless the two neighbours u, w are adjacent and have a second common neighbour. Both cases are in Lean (`stl_of_deg_two`, `stl_of_deg_two_tri`).
   - If uw ∉ E: separation in J − uz, where z is a leaf. This is the d(z) = 2 instance of multi-sep's `ee_noTriangle`.
-  - If uw ∈ E with no other common neighbour: separation in J − uz − uw, then re-attach uw. This is a **new case of EE** (uz in a triangle, d(u) arbitrary); multi-sep's triangle cases have d(u) = 3.
-- The remaining d(z) = 2 configuration, two triangles z u w and t u w, is exactly EE where separation is unavailable.
+  - If uw ∈ E with no other common neighbour: separation in J − uz − uw, then re-attach uw. This is a case of EE with uz in a triangle and d(u) arbitrary; multi-sep's triangle cases have d(u) = 3. It was found independently of, and is subsumed by, claude/ee's `ee_atMostOneCommon`.
+- The remaining d(z) = 2 configuration, two triangles z u w and t u w, is now closed. `ee_atMostOneCommon` (claude/ee) gives EE whenever |N(u) ∩ N(z)| ≤ 1, hence `ee_deg_two`; and **`stl_deg_two`** turns that into STL at every degree-two z.
 - **Why d(z) ≥ 4 is out of reach of the current tools.**
   - Each tool creates at most one even vertex per prescription: L₁ attaches a leaf, the end-edge theorem detaches an edge, the d(z) = 2 proof deletes edges.
   - Two short ends at once means two even vertices, where separation and L₁ fail (E20).
@@ -1215,7 +1215,7 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 
 ### X.4a Do the single-transition lemmas compose? (coordinator question, 2026-11-27)
 Short answer: **not as black boxes with prescribed ends; possibly with free ends, but that needs a genuinely two-prescription argument.**
-- **d(z) = 2.** STL-P is ST-any, which is EE(u) ∨ EE(w). It is known except when u ~ w, u and w have a second common neighbour, and neither EE3 (multi-sep), nor `stl_of_deg_two_tri`, nor a future PEE result applies at u or at w.
+- **d(z) = 2.** STL-P is ST-any, which is EE(u) ∨ EE(w). It is now a theorem (`ee_deg_two`, `stl_deg_two`).
 - **d(z) = 4 is exactly two prescriptions.** STL-P(J, {ab, cd}) ⇔ PTM((J − z) + {ab, cd}). Each scheme we tried breaks at a specific point:
   - *Iterated EE.* Case I at z with a trivial Fan chain makes one neighbour short, but the next application produces a fresh decomposition with no memory of the first. To keep a finished transition, one must freeze it by lifting x z y to xy and carry xy as a *pending terminal edge*. The induction hypothesis then needs two prescriptions: a pending edge plus the next transition.
   - *Leaf / merge at z.* Each prescription detaches an edge into a leaf, which makes its far end even. Two prescriptions give two even vertices, where separation and L₁ fail (§V.4a).
@@ -1236,4 +1236,4 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 ### X.6 Open (in order of promise)
 1. **STL-P for 3-connected J ≠ W₄**, i.e. the terminal-matching property for matchings of virtual edges on N(z). This is the form suited to induction: lifting a pair lowers d(z) by 2, and the base case is `lovasz_endEdge`. The obstruction is carrying two pending terminal edges.
 2. Test1 ⇒ STL (manuscript Conjecture "STL = (T1)"). Supported by all graphs to order 9 and by 1,282 random pairs with J − z disconnected, where STL fails exactly when Test1 does. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
-3. The d(z) = 2 two-triangle configuration (EE at distance 2).
+3. ~~The d(z) = 2 two-triangle configuration.~~ **Closed.** `ee_deg_two` (claude/ee, `PrescribedEnd.lean`) gives EE at every d(z) = 2 vertex. **`stl_deg_two`** (StarTerminal.lean) derives STL at every d(z) = 2 vertex: STL is complete at d(z) = 2, in Lean.

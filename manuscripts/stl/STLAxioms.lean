@@ -6,3 +6,4 @@ import GallaiLean
 #print axioms Gallai.gallai_of_stl
 #print axioms Gallai.stl_of_deg_two
 #print axioms Gallai.stl_of_deg_two_tri
+#print axioms Gallai.stl_deg_two
