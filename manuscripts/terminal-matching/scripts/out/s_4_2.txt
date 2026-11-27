@@ -1,0 +1,4 @@
+PTMFAIL C~ 0-1 2-3 GFconn=1
+PTMFAIL C~ 0-2 1-3 GFconn=1
+PTMFAIL C~ 0-3 1-2 GFconn=1
+SUMMARY inst=3 ptm_fail=3 ptm_und=0 par_inst=0 par_fail=0 r_tests=0 r_fail=0 r_und=0 pee_tests=0 pee_fail=0 verified=0 badwit=0

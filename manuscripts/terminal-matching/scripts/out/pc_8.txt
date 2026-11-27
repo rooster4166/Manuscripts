@@ -1,0 +1,1955 @@
+RFAIL G?AAFw 0-1 5-7* end=0 GFconn=1
+RFAIL G?AAFw 0-7* 1-5 end=5 GFconn=1
+RFAIL G?ABFw 0-1 2-6* 5-7* end=0 GFconn=1
+RFAIL G?ABFw 0-2 1-6* 5-7* end=0 GFconn=1
+RFAIL G?ABFw 0-6 1-2 5-7* end=0 GFconn=1
+RFAIL G?ABFw 0-7* 1-2 5-6 end=5 GFconn=1
+RFAIL G?ABFw 0-7* 1-5 2-6* end=5 GFconn=1
+RFAIL G?ABFw 0-7* 1-6* 2-5 end=5 GFconn=1
+RFAIL G?ABFs 0-1 2-7* end=1 GFconn=1
+RFAIL G?ABFs 0-2 1-7* end=2 GFconn=1
+RFAIL G?ABE{ 0-1 5-7* end=0 GFconn=1
+RFAIL G?ABE{ 0-7* 1-5 end=5 GFconn=1
+RFAIL G?ABeW 0-1 5-7* end=0 GFconn=1
+RFAIL G?ABeW 0-7* 1-5 end=5 GFconn=1
+RFAIL G?ABc[ 0-6 5-7* end=0 GFconn=1
+RFAIL G?ABc[ 0-7* 5-6 end=5 GFconn=1
+RFAIL G?ABfw 0-1 2-3 5-7* end=0 GFconn=1
+RFAIL G?ABfw 0-2 1-3 5-7* end=0 GFconn=1
+RFAIL G?ABfw 0-3 1-2 5-7* end=0 GFconn=1
+RFAIL G?ABfw 0-7* 1-2 3-5 end=5 GFconn=1
+RFAIL G?ABfw 0-7* 1-3 2-5 end=5 GFconn=1
+RFAIL G?ABfw 0-7* 1-5 2-3 end=5 GFconn=1
+RFAIL G?ABfs 0-1 2-3 6-7* end=1 GFconn=1
+RFAIL G?ABfs 0-1 2-6* 3-7* end=1 GFconn=1
+RFAIL G?ABfs 0-1 2-7* 3-6* end=1 GFconn=1
+RFAIL G?ABfs 0-2 1-3 6-7* end=2 GFconn=1
+RFAIL G?ABfs 0-2 1-6* 3-7* end=2 GFconn=1
+RFAIL G?ABfs 0-2 1-7* 3-6* end=2 GFconn=1
+RFAIL G?ABfs 0-3 1-2 6-7* end=3 GFconn=1
+RFAIL G?ABfs 0-3 1-6* 2-7* end=3 GFconn=1
+RFAIL G?ABfs 0-3 1-7* 2-6* end=3 GFconn=1
+RFAIL G?ABfs 0-6 1-2 3-7* end=6 GFconn=1
+RFAIL G?ABfs 0-6 1-3 2-7* end=6 GFconn=1
+RFAIL G?ABfs 0-6 1-7* 2-3 end=6 GFconn=1
+RFAIL G?ABf[ 0-1 2-6* 5-7* end=0 GFconn=1
+RFAIL G?ABf[ 0-2 1-6* 5-7* end=0 GFconn=1
+RFAIL G?ABf[ 0-6 1-2 5-7* end=0 GFconn=1
+RFAIL G?ABf[ 0-7* 1-2 5-6 end=5 GFconn=1
+RFAIL G?ABf[ 0-7* 1-5 2-6* end=5 GFconn=1
+RFAIL G?ABf[ 0-7* 1-6* 2-5 end=5 GFconn=1
+RFAIL G?AEJs 0-1 5-6* end=0 GFconn=1
+RFAIL G?AEJs 0-6* 1-5 end=5 GFconn=1
+RFAIL G?ABvG 0-1 2-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvG 0-2 1-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvG 0-6 1-2 5-7* end=0 GFconn=1
+RFAIL G?ABvG 0-7* 1-2 5-6 end=5 GFconn=1
+RFAIL G?ABvG 0-7* 1-5 2-6* end=5 GFconn=1
+RFAIL G?ABvG 0-7* 1-6* 2-5 end=5 GFconn=1
+RFAIL G?ABvw 0-1 2-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-1 2-4 3-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-1 2-6* 3-4 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-2 1-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-2 1-4 3-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-2 1-6* 3-4 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-3 1-2 4-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-3 1-4 2-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-3 1-6* 2-4 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-4 1-2 3-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-4 1-3 2-6* 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-4 1-6* 2-3 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-6 1-2 3-4 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-6 1-3 2-4 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-6 1-4 2-3 5-7* end=0 GFconn=1
+RFAIL G?ABvw 0-7* 1-2 3-4 5-6 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-2 3-5 4-6* end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-2 3-6* 4-5 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-3 2-4 5-6 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-3 2-5 4-6* end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-3 2-6* 4-5 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-4 2-3 5-6 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-4 2-5 3-6* end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-4 2-6* 3-5 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-5 2-3 4-6* end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-5 2-4 3-6* end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-5 2-6* 3-4 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-6* 2-3 4-5 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-6* 2-4 3-5 end=5 GFconn=1
+RFAIL G?ABvw 0-7* 1-6* 2-5 3-4 end=5 GFconn=1
+RFAIL G?ABvs 0-1 2-3 4-7* end=1 GFconn=1
+RFAIL G?ABvs 0-1 2-4 3-7* end=1 GFconn=1
+RFAIL G?ABvs 0-1 2-7* 3-4 end=1 GFconn=1
+RFAIL G?ABvs 0-2 1-3 4-7* end=2 GFconn=1
+RFAIL G?ABvs 0-2 1-4 3-7* end=2 GFconn=1
+RFAIL G?ABvs 0-2 1-7* 3-4 end=2 GFconn=1
+RFAIL G?ABvs 0-3 1-2 4-7* end=3 GFconn=1
+RFAIL G?ABvs 0-3 1-4 2-7* end=3 GFconn=1
+RFAIL G?ABvs 0-3 1-7* 2-4 end=3 GFconn=1
+RFAIL G?ABvs 0-4 1-2 3-7* end=4 GFconn=1
+RFAIL G?ABvs 0-4 1-3 2-7* end=4 GFconn=1
+RFAIL G?ABvs 0-4 1-7* 2-3 end=4 GFconn=1
+RFAIL G?ABvk 0-1 2-3 5-7* end=0 GFconn=1
+RFAIL G?ABvk 0-2 1-3 5-7* end=0 GFconn=1
+RFAIL G?ABvk 0-3 1-2 5-7* end=0 GFconn=1
+RFAIL G?ABvk 0-7* 1-2 3-5 end=5 GFconn=1
+RFAIL G?ABvk 0-7* 1-3 2-5 end=5 GFconn=1
+RFAIL G?ABvk 0-7* 1-5 2-3 end=5 GFconn=1
+RFAIL G?B@fw 0-2 1-7* 3-6* end=0 GFconn=1
+RFAIL G?B@fw 0-3 1-7* 2-6* end=0 GFconn=1
+RFAIL G?B@fw 0-6 1-7* 2-3 end=0 GFconn=1
+RFAIL G?B@fw 0-7* 1-2 3-6* end=1 GFconn=1
+RFAIL G?B@fw 0-7* 1-3 2-6* end=1 GFconn=1
+RFAIL G?B@fw 0-7* 1-6 2-3 end=1 GFconn=1
+RFAIL G?B@f[ 0-2 1-7* end=0 GFconn=1
+RFAIL G?B@f[ 0-7* 1-2 end=1 GFconn=1
+RFAIL G?B@vG 0-2 1-7* end=0 GFconn=1
+RFAIL G?B@vG 0-7* 1-2 end=1 GFconn=1
+RFAIL G?B@uK 0-6 1-7* end=0 GFconn=1
+RFAIL G?B@uK 0-7* 1-6 end=1 GFconn=1
+RFAIL G?B@vw 0-2 1-7* 3-4 end=0 GFconn=1
+RFAIL G?B@vw 0-3 1-7* 2-4 end=0 GFconn=1
+RFAIL G?B@vw 0-4 1-7* 2-3 end=0 GFconn=1
+RFAIL G?B@vw 0-7* 1-2 3-4 end=1 GFconn=1
+RFAIL G?B@vw 0-7* 1-3 2-4 end=1 GFconn=1
+RFAIL G?B@vw 0-7* 1-4 2-3 end=1 GFconn=1
+RFAIL G?B@vs 0-1 2-3 4-5 6-7* end=4 GFconn=1
+RFAIL G?B@vs 0-1 2-3 4-7* 5-6 end=6 GFconn=1
+RFAIL G?B@vs 0-1 2-4 3-5 6-7* end=3 GFconn=1
+RFAIL G?B@vs 0-1 2-4 3-7* 5-6 end=6 GFconn=1
+RFAIL G?B@vs 0-1 2-5 3-4 6-7* end=2 GFconn=1
+RFAIL G?B@vs 0-1 2-5 3-6* 4-7* end=2 GFconn=1
+RFAIL G?B@vs 0-1 2-5 3-7* 4-6* end=2 GFconn=1
+RFAIL G?B@vs 0-1 2-6* 3-5 4-7* end=3 GFconn=1
+RFAIL G?B@vs 0-1 2-6* 3-7* 4-5 end=4 GFconn=1
+RFAIL G?B@vs 0-1 2-7* 3-4 5-6 end=6 GFconn=1
+RFAIL G?B@vs 0-1 2-7* 3-5 4-6* end=3 GFconn=1
+RFAIL G?B@vs 0-1 2-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL G?B@vs 0-2 1-5* 3-4 6-7* end=2 GFconn=1
+RFAIL G?B@vs 0-2 1-5* 3-6* 4-7* end=2 GFconn=1
+RFAIL G?B@vs 0-2 1-5* 3-7* 4-6* end=2 GFconn=1
+RFAIL G?B@vs 0-3 1-5* 2-4 6-7* end=3 GFconn=1
+RFAIL G?B@vs 0-3 1-5* 2-6* 4-7* end=3 GFconn=1
+RFAIL G?B@vs 0-3 1-5* 2-7* 4-6* end=3 GFconn=1
+RFAIL G?B@vs 0-4 1-5* 2-3 6-7* end=4 GFconn=1
+RFAIL G?B@vs 0-4 1-5* 2-6* 3-7* end=4 GFconn=1
+RFAIL G?B@vs 0-4 1-5* 2-7* 3-6* end=4 GFconn=1
+RFAIL G?B@vs 0-5* 1-2 3-4 6-7* end=2 GFconn=1
+RFAIL G?B@vs 0-5* 1-2 3-6* 4-7* end=2 GFconn=1
+RFAIL G?B@vs 0-5* 1-2 3-7* 4-6* end=2 GFconn=1
+RFAIL G?B@vs 0-5* 1-3 2-4 6-7* end=3 GFconn=1
+RFAIL G?B@vs 0-5* 1-3 2-6* 4-7* end=3 GFconn=1
+RFAIL G?B@vs 0-5* 1-3 2-7* 4-6* end=3 GFconn=1
+RFAIL G?B@vs 0-5* 1-4 2-3 6-7* end=4 GFconn=1
+RFAIL G?B@vs 0-5* 1-4 2-6* 3-7* end=4 GFconn=1
+RFAIL G?B@vs 0-5* 1-4 2-7* 3-6* end=4 GFconn=1
+RFAIL G?B@vs 0-5* 1-6 2-3 4-7* end=6 GFconn=1
+RFAIL G?B@vs 0-5* 1-6 2-4 3-7* end=6 GFconn=1
+RFAIL G?B@vs 0-5* 1-6 2-7* 3-4 end=6 GFconn=1
+RFAIL G?B@vs 0-6 1-5* 2-3 4-7* end=6 GFconn=1
+RFAIL G?B@vs 0-6 1-5* 2-4 3-7* end=6 GFconn=1
+RFAIL G?B@vs 0-6 1-5* 2-7* 3-4 end=6 GFconn=1
+RFAIL G?B@vk 0-2 1-7* 3-6* end=0 GFconn=1
+RFAIL G?B@vk 0-3 1-7* 2-6* end=0 GFconn=1
+RFAIL G?B@vk 0-6 1-7* 2-3 end=0 GFconn=1
+RFAIL G?B@vk 0-7* 1-2 3-6* end=1 GFconn=1
+RFAIL G?B@vk 0-7* 1-3 2-6* end=1 GFconn=1
+RFAIL G?B@vk 0-7* 1-6 2-3 end=1 GFconn=1
+RFAIL G?B@t{ 0-2 3-4 6-7* end=2 GFconn=1
+RFAIL G?B@t{ 0-2 3-6* 4-7* end=2 GFconn=1
+RFAIL G?B@t{ 0-2 3-7* 4-6* end=2 GFconn=1
+RFAIL G?B@t{ 0-3 2-4 6-7* end=3 GFconn=1
+RFAIL G?B@t{ 0-3 2-6* 4-7* end=3 GFconn=1
+RFAIL G?B@t{ 0-3 2-7* 4-6* end=3 GFconn=1
+RFAIL G?B@t{ 0-4 2-3 6-7* end=4 GFconn=1
+RFAIL G?B@t{ 0-4 2-6* 3-7* end=4 GFconn=1
+RFAIL G?B@t{ 0-4 2-7* 3-6* end=4 GFconn=1
+RFAIL G?B@t{ 0-6 2-3 4-7* end=6 GFconn=1
+RFAIL G?B@t{ 0-6 2-4 3-7* end=6 GFconn=1
+RFAIL G?B@t{ 0-6 2-7* 3-4 end=6 GFconn=1
+RFAIL G?`@Fw 0-1 2-4 5-7* end=1 GFconn=1
+RFAIL G?`@Fw 0-1 2-4 5-7* end=4 GFconn=1
+RFAIL G?`@Fw 0-1 2-5 4-7* end=0 GFconn=1
+RFAIL G?`@Fw 0-1 2-5 4-7* end=5 GFconn=1
+RFAIL G?`@Fw 0-2 1-4 5-7* end=0 GFconn=1
+RFAIL G?`@Fw 0-2 1-4 5-7* end=1 GFconn=1
+RFAIL G?`@Fw 0-2 1-5* 4-7* end=0 GFconn=1
+RFAIL G?`@Fw 0-2 1-7* 4-5 end=0 GFconn=1
+RFAIL G?`@Fw 0-2 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`@Fw 0-4* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`@Fw 0-4* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`@Fw 0-5 1-2 4-7* end=0 GFconn=1
+RFAIL G?`@Fw 0-5 1-2 4-7* end=1 GFconn=1
+RFAIL G?`@Fw 0-5 1-7* 2-4 end=5 GFconn=1
+RFAIL G?`@Fw 0-5 1-7* 2-4 end=4 GFconn=1
+RFAIL G?`@Fw 0-7* 1-2 4-5 end=1 GFconn=1
+RFAIL G?`@Fw 0-7* 1-2 4-5 end=4 GFconn=1
+RFAIL G?`@Fw 0-7* 1-4 2-5 end=4 GFconn=1
+RFAIL G?`@Fw 0-7* 1-4 2-5 end=5 GFconn=1
+RFAIL G?`@Fw 0-7* 1-5* 2-4 end=4 GFconn=1
+RFAIL G?`DEg 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DEg 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DBg 0-1 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`DBg 0-2 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DBg 0-2 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DBg 0-5 1-7* 2-6* end=5 GFconn=1
+RFAIL G?`DBg 0-6* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DBg 0-6* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`DFw 1-2 4-6 5-7* end=1 GFconn=1
+RFAIL G?`DFw 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`DFw 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`DFw 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`DFw 1-7* 2-5 4-6 end=5 GFconn=1
+RFAIL G?`DFw 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`DFs 1-2 4-7* end=2 GFconn=1
+RFAIL G?`DFs 1-4 2-7* end=4 GFconn=1
+RFAIL G?`DFk 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DFk 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`@fO 0-1 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fO 0-2 1-6 4-7* end=0 GFconn=1
+RFAIL G?`@fO 0-6 1-2 4-7* end=0 GFconn=1
+RFAIL G?`@fO 0-7* 1-2 4-6 end=4 GFconn=1
+RFAIL G?`@fO 0-7* 1-4 2-6* end=4 GFconn=1
+RFAIL G?`@fO 0-7* 1-6 2-4 end=4 GFconn=1
+RFAIL G?`@eS 0-1 4-7* end=0 GFconn=1
+RFAIL G?`@eS 0-7* 1-4 end=4 GFconn=1
+RFAIL G?`@fw 0-1 2-3 4-6 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-1 2-3 4-6 5-7* end=4 GFconn=1
+RFAIL G?`@fw 0-1 2-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`@fw 0-1 2-3 4-7* 5-6 end=5 GFconn=1
+RFAIL G?`@fw 0-1 2-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-1 2-4 3-6* 5-7* end=4 GFconn=1
+RFAIL G?`@fw 0-1 2-5 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-1 2-5 3-6* 4-7* end=5 GFconn=1
+RFAIL G?`@fw 0-1 2-6* 3-4 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-1 2-6* 3-4 5-7* end=4 GFconn=1
+RFAIL G?`@fw 0-1 2-6* 3-5 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-1 2-6* 3-5 4-7* end=5 GFconn=1
+RFAIL G?`@fw 0-2 1-3 4-6 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-2 1-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`@fw 0-2 1-4 3-6* 5-7* end=0 GFconn=1
+RFAIL G?`@fw 0-2 1-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-2 1-6 3-4 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-2 1-6 3-5 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-2 1-7* 3-4 5-6 end=5 GFconn=1
+RFAIL G?`@fw 0-2 1-7* 3-5 4-6 end=5 GFconn=1
+RFAIL G?`@fw 0-2 1-7* 3-6* 4-5 end=0 GFconn=1
+RFAIL G?`@fw 0-2 1-7* 3-6* 4-5 end=5 GFconn=1
+RFAIL G?`@fw 0-3 1-2 4-6 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-3 1-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`@fw 0-3 1-4 2-6* 5-7* end=0 GFconn=1
+RFAIL G?`@fw 0-3 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-3 1-5* 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-3 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-3 1-6 2-5 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-3 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`@fw 0-3 1-7* 2-5 4-6 end=5 GFconn=1
+RFAIL G?`@fw 0-3 1-7* 2-6* 4-5 end=0 GFconn=1
+RFAIL G?`@fw 0-3 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`@fw 0-4* 1-2 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-4* 1-3 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-4* 1-6 2-3 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-4* 1-7* 2-3 5-6 end=5 GFconn=1
+RFAIL G?`@fw 0-4* 1-7* 2-5 3-6* end=5 GFconn=1
+RFAIL G?`@fw 0-4* 1-7* 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`@fw 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-5 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL G?`@fw 0-5 1-3 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-5 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL G?`@fw 0-5 1-6 2-3 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-5 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-3 4-6 end=5 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-4 3-6* end=5 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-6* 3-4 end=5 GFconn=1
+RFAIL G?`@fw 0-5 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`@fw 0-6 1-2 3-4 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-6 1-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-6 1-3 2-4 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-6 1-3 2-5 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-6 1-4 2-3 5-7* end=0 GFconn=1
+RFAIL G?`@fw 0-6 1-4 2-3 5-7* end=1 GFconn=1
+RFAIL G?`@fw 0-6 1-5* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`@fw 0-6 1-7* 2-3 4-5 end=0 GFconn=1
+RFAIL G?`@fw 0-6 1-7* 2-3 4-5 end=5 GFconn=1
+RFAIL G?`@fw 0-6 1-7* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`@fw 0-6 1-7* 2-5 3-4 end=5 GFconn=1
+RFAIL G?`@fw 0-7* 1-2 3-4 5-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-2 3-5 4-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-2 3-6* 4-5 end=1 GFconn=1
+RFAIL G?`@fw 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-3 2-4 5-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-3 2-5 4-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-3 2-6* 4-5 end=1 GFconn=1
+RFAIL G?`@fw 0-7* 1-3 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-3 5-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-3 5-6 end=5 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-5 3-6* end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-5 3-6* end=5 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-6* 3-5 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-4 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`@fw 0-7* 1-5* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-5* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-6 2-3 4-5 end=1 GFconn=1
+RFAIL G?`@fw 0-7* 1-6 2-3 4-5 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-6 2-4 3-5 end=4 GFconn=1
+RFAIL G?`@fw 0-7* 1-6 2-5 3-4 end=4 GFconn=1
+RFAIL G?`@fs 0-1 2-3 4-7* end=0 GFconn=1
+RFAIL G?`@fs 0-1 2-4 3-7* end=0 GFconn=1
+RFAIL G?`@fs 0-1 2-4 3-7* end=2 GFconn=1
+RFAIL G?`@fs 0-1 2-7* 3-4 end=0 GFconn=1
+RFAIL G?`@fs 0-1 2-7* 3-4 end=3 GFconn=1
+RFAIL G?`@fs 0-2 1-3 4-7* end=0 GFconn=1
+RFAIL G?`@fs 0-2 1-3 4-7* end=3 GFconn=1
+RFAIL G?`@fs 0-2 1-4 3-7* end=2 GFconn=1
+RFAIL G?`@fs 0-2 1-4 3-7* end=4 GFconn=1
+RFAIL G?`@fs 0-3 1-2 4-7* end=0 GFconn=1
+RFAIL G?`@fs 0-3 1-2 4-7* end=2 GFconn=1
+RFAIL G?`@fs 0-3 1-4 2-7* end=3 GFconn=1
+RFAIL G?`@fs 0-3 1-4 2-7* end=4 GFconn=1
+RFAIL G?`@fs 0-4* 1-2 3-7* end=2 GFconn=1
+RFAIL G?`@fs 0-4* 1-3 2-7* end=3 GFconn=1
+RFAIL G?`@fs 0-7* 1-2 3-4 end=2 GFconn=1
+RFAIL G?`@fs 0-7* 1-2 3-4 end=4 GFconn=1
+RFAIL G?`@fs 0-7* 1-3 2-4 end=3 GFconn=1
+RFAIL G?`@fs 0-7* 1-3 2-4 end=4 GFconn=1
+RFAIL G?`@fs 0-7* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`@f[ 0-1 2-4 5-7* end=1 GFconn=1
+RFAIL G?`@f[ 0-1 2-4 5-7* end=4 GFconn=1
+RFAIL G?`@f[ 0-1 2-5 4-7* end=0 GFconn=1
+RFAIL G?`@f[ 0-1 2-5 4-7* end=5 GFconn=1
+RFAIL G?`@f[ 0-2 1-4 5-7* end=0 GFconn=1
+RFAIL G?`@f[ 0-2 1-4 5-7* end=1 GFconn=1
+RFAIL G?`@f[ 0-2 1-5* 4-7* end=0 GFconn=1
+RFAIL G?`@f[ 0-2 1-7* 4-5 end=0 GFconn=1
+RFAIL G?`@f[ 0-2 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`@f[ 0-4* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`@f[ 0-4* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`@f[ 0-5 1-2 4-7* end=0 GFconn=1
+RFAIL G?`@f[ 0-5 1-2 4-7* end=1 GFconn=1
+RFAIL G?`@f[ 0-5 1-7* 2-4 end=5 GFconn=1
+RFAIL G?`@f[ 0-5 1-7* 2-4 end=4 GFconn=1
+RFAIL G?`@f[ 0-7* 1-2 4-5 end=1 GFconn=1
+RFAIL G?`@f[ 0-7* 1-2 4-5 end=4 GFconn=1
+RFAIL G?`@f[ 0-7* 1-4 2-5 end=4 GFconn=1
+RFAIL G?`@f[ 0-7* 1-4 2-5 end=5 GFconn=1
+RFAIL G?`@f[ 0-7* 1-5* 2-4 end=4 GFconn=1
+RFAIL G?`CVw 1-6 5-7* end=1 GFconn=1
+RFAIL G?`CVw 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DfG 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DfG 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`Dbg 0-1 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Dbg 0-2 1-3 5-7* end=1 GFconn=1
+RFAIL G?`Dbg 0-2 1-7* 3-5 end=5 GFconn=1
+RFAIL G?`Dbg 0-3 1-2 5-7* end=1 GFconn=1
+RFAIL G?`Dbg 0-3 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`Dbg 0-5 1-7* 2-3 end=5 GFconn=1
+RFAIL G?`DeW 1-4 5-7* end=1 GFconn=1
+RFAIL G?`DeW 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`DbW 0-1 2-4 5-7* end=1 GFconn=1
+RFAIL G?`DbW 0-2 1-4 5-7* end=1 GFconn=1
+RFAIL G?`DbW 0-2 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`DbW 0-4* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DbW 0-4* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`DbW 0-5 1-7* 2-4 end=5 GFconn=1
+RFAIL G?`DeK 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DeK 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DbK 0-1 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`DbK 0-2 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DbK 0-2 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DbK 0-5 1-7* 2-6* end=5 GFconn=1
+RFAIL G?`DbK 0-6* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DbK 0-6* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`Da[ 0-1 4-6 5-7* end=1 GFconn=1
+RFAIL G?`Da[ 0-4* 1-6 5-7* end=1 GFconn=1
+RFAIL G?`Da[ 0-4* 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`Da[ 0-5 1-7* 4-6 end=5 GFconn=1
+RFAIL G?`Da[ 0-6* 1-4 5-7* end=1 GFconn=1
+RFAIL G?`Da[ 0-6* 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`Dfw 1-2 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Dfw 1-3 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Dfw 1-4 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Dfw 1-7* 2-3 4-5 end=5 GFconn=1
+RFAIL G?`Dfw 1-7* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`Dfw 1-7* 2-5 3-4 end=5 GFconn=1
+RFAIL G?`Dfs 1-2 3-4 6-7* end=2 GFconn=1
+RFAIL G?`Dfs 1-2 3-6* 4-7* end=2 GFconn=1
+RFAIL G?`Dfs 1-2 3-7* 4-6 end=2 GFconn=1
+RFAIL G?`Dfs 1-3 2-4 6-7* end=3 GFconn=1
+RFAIL G?`Dfs 1-3 2-6* 4-7* end=3 GFconn=1
+RFAIL G?`Dfs 1-3 2-7* 4-6 end=3 GFconn=1
+RFAIL G?`Dfs 1-4 2-3 6-7* end=4 GFconn=1
+RFAIL G?`Dfs 1-4 2-6* 3-7* end=4 GFconn=1
+RFAIL G?`Dfs 1-4 2-7* 3-6* end=4 GFconn=1
+RFAIL G?`Dfs 1-6 2-3 4-7* end=6 GFconn=1
+RFAIL G?`Dfs 1-6 2-4 3-7* end=6 GFconn=1
+RFAIL G?`Dfs 1-6 2-7* 3-4 end=6 GFconn=1
+RFAIL G?`Dfk 1-2 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Dfk 1-3 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Dfk 1-6 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Dfk 1-7* 2-3 5-6 end=5 GFconn=1
+RFAIL G?`Dfk 1-7* 2-5 3-6* end=5 GFconn=1
+RFAIL G?`Dfk 1-7* 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`Df[ 1-2 4-6 5-7* end=1 GFconn=1
+RFAIL G?`Df[ 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Df[ 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Df[ 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`Df[ 1-7* 2-5 4-6 end=5 GFconn=1
+RFAIL G?`Df[ 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-1 2-3 4-6 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-1 2-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-1 2-6* 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-2 1-3 4-6 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-2 1-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-2 1-6 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-2 1-7* 3-4 5-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-2 1-7* 3-5 4-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-2 1-7* 3-6* 4-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-3 1-2 4-6 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-3 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-3 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-3 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-3 1-7* 2-5 4-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-3 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-4* 1-2 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-4* 1-3 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-4* 1-6 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-4* 1-7* 2-3 5-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-4* 1-7* 2-5 3-6* end=5 GFconn=1
+RFAIL G?`Db{ 0-4* 1-7* 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-5 1-7* 2-3 4-6 end=5 GFconn=1
+RFAIL G?`Db{ 0-5 1-7* 2-4 3-6* end=5 GFconn=1
+RFAIL G?`Db{ 0-5 1-7* 2-6* 3-4 end=5 GFconn=1
+RFAIL G?`Db{ 0-6* 1-2 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-6* 1-3 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-6* 1-4 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Db{ 0-6* 1-7* 2-3 4-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-6* 1-7* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`Db{ 0-6* 1-7* 2-5 3-4 end=5 GFconn=1
+RFAIL G?`ERk 0-5 4-6* end=0 GFconn=1
+RFAIL G?`ERk 0-6* 4-5 end=4 GFconn=1
+RFAIL G?`DUg 1-4 5-7* end=1 GFconn=1
+RFAIL G?`DUg 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`DRg 0-1 2-4 5-7* end=1 GFconn=1
+RFAIL G?`DRg 0-1 2-4 5-7* end=4 GFconn=1
+RFAIL G?`DRg 0-2 1-4 5-7* end=0 GFconn=1
+RFAIL G?`DRg 0-2 1-4 5-7* end=1 GFconn=1
+RFAIL G?`DRg 0-2 1-7* 4-5 end=0 GFconn=1
+RFAIL G?`DRg 0-2 1-7* 4-5 end=5 GFconn=1
+RFAIL G?`DRg 0-4* 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DRg 0-4* 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`DRg 0-5 1-7* 2-4 end=5 GFconn=1
+RFAIL G?`DRg 0-5 1-7* 2-4 end=4 GFconn=1
+PTMFAIL G?`DQk 0-1 4-6* 5-7* GFconn=1
+RFAIL G?`DQk 0-4* 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DQk 0-4* 1-7* 5-6 end=5 GFconn=1
+PTMFAIL G?`DQk 0-5 1-7* 4-6* GFconn=1
+PTMFAIL G?`DQk 0-6* 1-4 5-7* GFconn=1
+RFAIL G?`DQk 0-6* 1-5* 4-7 end=4 GFconn=1
+PTMFAIL G?`DQk 0-6* 1-7* 4-5 GFconn=1
+RFAIL G?`DQk 0-7 1-5* 4-6* end=0 GFconn=1
+RFAIL G?`DRk 0-1 2-5 4-6* end=0 GFconn=1
+RFAIL G?`DRk 0-1 2-5 4-6* end=5 GFconn=1
+RFAIL G?`DRk 0-2 1-5* 4-6* end=0 GFconn=1
+RFAIL G?`DRk 0-5 1-2 4-6* end=0 GFconn=1
+RFAIL G?`DRk 0-5 1-2 4-6* end=1 GFconn=1
+RFAIL G?`DRk 0-6* 1-2 4-5 end=1 GFconn=1
+RFAIL G?`DRk 0-6* 1-2 4-5 end=4 GFconn=1
+RFAIL G?`DRk 0-6* 1-4 2-5 end=4 GFconn=1
+RFAIL G?`DRk 0-6* 1-4 2-5 end=5 GFconn=1
+RFAIL G?`DRk 0-6* 1-5* 2-4 end=4 GFconn=1
+RFAIL G?`DVw 1-2 5-7* end=1 GFconn=1
+RFAIL G?`DVw 1-7* 2-5 end=5 GFconn=1
+RFAIL G?`DVs 1-2 6-7* end=2 GFconn=1
+RFAIL G?`DVs 1-6 2-7* end=6 GFconn=1
+RFAIL G?`DVk 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL G?`DVk 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`DVk 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`DVk 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`DVk 1-7* 2-5 4-6* end=5 GFconn=1
+RFAIL G?`DVk 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`DU{ 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DU{ 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`DvG 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL G?`DvG 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`DvG 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`DvG 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`DvG 1-7* 2-5 4-6* end=5 GFconn=1
+RFAIL G?`DvG 1-7* 2-6* 4-5 end=5 GFconn=1
+PTMFAIL G?`Drg 0-1 2-3 4-6* 5-7* GFconn=1
+RFAIL G?`Drg 0-1 2-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-1 2-4 3-6* 5-7* end=4 GFconn=1
+RFAIL G?`Drg 0-1 2-5 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-1 2-5 3-7* 4-6* end=5 GFconn=1
+RFAIL G?`Drg 0-1 2-6* 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-1 2-6* 3-4 5-7* end=4 GFconn=1
+RFAIL G?`Drg 0-1 2-7* 3-5 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-1 2-7* 3-5 4-6* end=5 GFconn=1
+RFAIL G?`Drg 0-2 1-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`Drg 0-2 1-3 4-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-2 1-4 3-6* 5-7* end=0 GFconn=1
+RFAIL G?`Drg 0-2 1-4 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-2 1-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-2 1-6 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-2 1-7* 3-4 5-6 end=5 GFconn=1
+RFAIL G?`Drg 0-2 1-7* 3-5 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-2 1-7* 3-5 4-6* end=5 GFconn=1
+RFAIL G?`Drg 0-2 1-7* 3-6* 4-5 end=0 GFconn=1
+RFAIL G?`Drg 0-2 1-7* 3-6* 4-5 end=5 GFconn=1
+RFAIL G?`Drg 0-3 1-2 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`Drg 0-3 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-3 1-4 2-6* 5-7* end=0 GFconn=1
+RFAIL G?`Drg 0-3 1-4 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-3 1-5* 2-7* 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-3 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-3 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL G?`Drg 0-3 1-7* 2-5 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-3 1-7* 2-5 4-6* end=5 GFconn=1
+RFAIL G?`Drg 0-3 1-7* 2-6* 4-5 end=0 GFconn=1
+RFAIL G?`Drg 0-3 1-7* 2-6* 4-5 end=5 GFconn=1
+RFAIL G?`Drg 0-4* 1-2 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-4* 1-3 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-4* 1-6 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-4* 1-7* 2-3 5-6 end=5 GFconn=1
+RFAIL G?`Drg 0-4* 1-7* 2-5 3-6* end=5 GFconn=1
+RFAIL G?`Drg 0-4* 1-7* 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`Drg 0-5 1-2 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-5 1-2 3-7* 4-6* end=1 GFconn=1
+RFAIL G?`Drg 0-5 1-3 2-7* 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-5 1-3 2-7* 4-6* end=1 GFconn=1
+PTMFAIL G?`Drg 0-5 1-7* 2-3 4-6* GFconn=1
+RFAIL G?`Drg 0-5 1-7* 2-4 3-6* end=5 GFconn=1
+RFAIL G?`Drg 0-5 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`Drg 0-5 1-7* 2-6* 3-4 end=5 GFconn=1
+RFAIL G?`Drg 0-5 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-2 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-6* 1-2 3-4 5-7* end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-2 3-5 4-7 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-2 3-7* 4-5 end=1 GFconn=1
+RFAIL G?`Drg 0-6* 1-2 3-7* 4-5 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-3 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Drg 0-6* 1-3 2-4 5-7* end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-3 2-5 4-7 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-3 2-7* 4-5 end=1 GFconn=1
+RFAIL G?`Drg 0-6* 1-3 2-7* 4-5 end=4 GFconn=1
+PTMFAIL G?`Drg 0-6* 1-4 2-3 5-7* GFconn=1
+RFAIL G?`Drg 0-6* 1-4 2-5 3-7* end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-4 2-5 3-7* end=5 GFconn=1
+RFAIL G?`Drg 0-6* 1-4 2-7* 3-5 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-4 2-7* 3-5 end=5 GFconn=1
+RFAIL G?`Drg 0-6* 1-5* 2-3 4-7 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-5* 2-4 3-7* end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-5* 2-7* 3-4 end=4 GFconn=1
+PTMFAIL G?`Drg 0-6* 1-7* 2-3 4-5 GFconn=1
+RFAIL G?`Drg 0-6* 1-7* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`Drg 0-6* 1-7* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`Drg 0-6* 1-7* 2-5 3-4 end=5 GFconn=1
+RFAIL G?`Drg 0-6* 1-7* 2-5 3-4 end=4 GFconn=1
+RFAIL G?`Drg 0-7 1-2 3-5 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-7 1-3 2-5 4-6* end=0 GFconn=1
+RFAIL G?`Drg 0-7 1-5* 2-3 4-6* end=0 GFconn=1
+RFAIL G?`DuW 1-6 5-7* end=1 GFconn=1
+RFAIL G?`DuW 1-7* 5-6 end=5 GFconn=1
+RFAIL G?`Dvw 1-2 3-6* 5-7* end=1 GFconn=1
+RFAIL G?`Dvw 1-3 2-6* 5-7* end=1 GFconn=1
+RFAIL G?`Dvw 1-6 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Dvw 1-7* 2-3 5-6 end=5 GFconn=1
+RFAIL G?`Dvw 1-7* 2-5 3-6* end=5 GFconn=1
+RFAIL G?`Dvw 1-7* 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`Dvs 1-2 3-7* end=2 GFconn=1
+RFAIL G?`Dvs 1-3 2-7* end=3 GFconn=1
+RFAIL G?`Dvk 1-2 3-4 5-7* end=1 GFconn=1
+RFAIL G?`Dvk 1-3 2-4 5-7* end=1 GFconn=1
+RFAIL G?`Dvk 1-4 2-3 5-7* end=1 GFconn=1
+RFAIL G?`Dvk 1-7* 2-3 4-5 end=5 GFconn=1
+RFAIL G?`Dvk 1-7* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`Dvk 1-7* 2-5 3-4 end=5 GFconn=1
+RFAIL G?`Dv[ 1-2 5-7* end=1 GFconn=1
+RFAIL G?`Dv[ 1-7* 2-5 end=5 GFconn=1
+RFAIL G?b@dc 2-5 3-7* end=2 GFconn=1
+RFAIL G?b@dc 2-7* 3-5 end=3 GFconn=1
+RFAIL G?b@bc 0-1 2-5 3-7* end=2 GFconn=1
+RFAIL G?b@bc 0-1 2-7* 3-5 end=3 GFconn=1
+RFAIL G?b@bc 0-2 1-5* 3-7* end=2 GFconn=1
+RFAIL G?b@bc 0-3 1-5* 2-7* end=3 GFconn=1
+RFAIL G?b@bc 0-5* 1-2 3-7* end=2 GFconn=1
+RFAIL G?b@bc 0-5* 1-3 2-7* end=3 GFconn=1
+RFAIL G?b@fw 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL G?b@fw 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL G?b@fw 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL G?b@fw 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL G?b@fw 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?b@fw 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?b@fs 1-2 3-7* 4-5 end=2 GFconn=1
+RFAIL G?b@fs 1-3 2-7* 4-5 end=3 GFconn=1
+RFAIL G?b@fs 1-4 2-5 3-7* end=2 GFconn=1
+RFAIL G?b@fs 1-4 2-7* 3-5 end=3 GFconn=1
+RFAIL G?b@fs 1-5* 2-4 3-7* end=2 GFconn=1
+RFAIL G?b@fs 1-5* 2-7* 3-4 end=3 GFconn=1
+RFAIL G?b@fk 1-2 3-7* end=2 GFconn=1
+RFAIL G?b@fk 1-3 2-7* end=3 GFconn=1
+RFAIL G?b@f[ 1-2 4-7* end=1 GFconn=1
+RFAIL G?b@f[ 1-7* 2-4 end=4 GFconn=1
+RFAIL G?`bEo 0-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`bEo 0-5 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bEo 0-6 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`bEo 0-7* 2-4 5-6 end=4 GFconn=1
+RFAIL G?`bEo 0-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`bEo 0-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`bFw 0-6 4-7* end=0 GFconn=1
+RFAIL G?`bFw 0-7* 4-6 end=4 GFconn=1
+RFAIL G?`afO 0-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`afO 0-5 2-6 4-7* end=0 GFconn=1
+RFAIL G?`afO 0-6 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`afO 0-7* 2-4 5-6 end=4 GFconn=1
+RFAIL G?`afO 0-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`afO 0-7* 2-6 4-5 end=4 GFconn=1
+RFAIL G?`ado 0-1 2-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`ado 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-1 2-6 3-5 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-2 1-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`ado 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-2 1-6* 3-5 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-3 1-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`ado 0-3 1-5* 2-6 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-3 1-6* 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-5 1-3 2-6 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-5 1-6* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-6 1-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-6 1-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-6 1-5* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`ado 0-7* 1-2 3-4 5-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-2 3-5 4-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-3 2-4 5-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-3 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-3 2-6 4-5 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-4 2-3 5-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-4 2-5* 3-6* end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-4 2-6 3-5 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-5* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-5* 2-6 3-4 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-6* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-6* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`ado 0-7* 1-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`aeW 0-6 4-7* end=0 GFconn=1
+RFAIL G?`aeW 0-7* 4-6 end=4 GFconn=1
+RFAIL G?`adW 0-1 2-6 4-7* end=0 GFconn=1
+RFAIL G?`adW 0-2 1-6* 4-7* end=0 GFconn=1
+RFAIL G?`adW 0-6 1-2 4-7* end=0 GFconn=1
+RFAIL G?`adW 0-7* 1-2 4-6 end=4 GFconn=1
+RFAIL G?`adW 0-7* 1-4 2-6 end=4 GFconn=1
+RFAIL G?`adW 0-7* 1-6* 2-4 end=4 GFconn=1
+RFAIL G?`acw 0-1 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`acw 0-3 1-6* 4-7* end=0 GFconn=1
+RFAIL G?`acw 0-6 1-3 4-7* end=0 GFconn=1
+RFAIL G?`acw 0-7* 1-3 4-6 end=4 GFconn=1
+RFAIL G?`acw 0-7* 1-4 3-6* end=4 GFconn=1
+RFAIL G?`acw 0-7* 1-6* 3-4 end=4 GFconn=1
+RFAIL G?`ac[ 0-1 4-7* end=0 GFconn=1
+RFAIL G?`ac[ 0-7* 1-4 end=4 GFconn=1
+RFAIL G?`afw 0-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`afw 0-3 2-6 4-7* end=0 GFconn=1
+RFAIL G?`afw 0-6 2-3 4-7* end=0 GFconn=1
+RFAIL G?`afw 0-7* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`afw 0-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`afw 0-7* 2-6 3-4 end=4 GFconn=1
+RFAIL G?`afk 0-2 3-7* end=2 GFconn=1
+RFAIL G?`afk 0-3 2-7* end=3 GFconn=1
+RFAIL G?`af[ 0-2 4-7* end=0 GFconn=1
+RFAIL G?`af[ 0-7* 2-4 end=4 GFconn=1
+RFAIL G?`ad{ 0-1 2-3 4-7* end=0 GFconn=1
+RFAIL G?`ad{ 0-2 1-3 4-7* end=0 GFconn=1
+RFAIL G?`ad{ 0-3 1-2 4-7* end=0 GFconn=1
+RFAIL G?`ad{ 0-7* 1-2 3-4 end=4 GFconn=1
+RFAIL G?`ad{ 0-7* 1-3 2-4 end=4 GFconn=1
+RFAIL G?`ad{ 0-7* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`bfO 0-5 4-7* end=0 GFconn=1
+RFAIL G?`bfO 0-7* 4-5 end=4 GFconn=1
+RFAIL G?`beo 0-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`beo 0-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`beo 0-5 2-3 4-7* end=0 GFconn=1
+RFAIL G?`beo 0-7* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`beo 0-7* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`beo 0-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`beW 0-2 4-7* end=0 GFconn=1
+RFAIL G?`beW 0-7* 2-4 end=4 GFconn=1
+RFAIL G?`bcw 0-1 2-3 4-7* end=0 GFconn=1
+RFAIL G?`bcw 0-2 1-3 4-7* end=0 GFconn=1
+RFAIL G?`bcw 0-3 1-2 4-7* end=0 GFconn=1
+RFAIL G?`bcw 0-7* 1-2 3-4 end=4 GFconn=1
+RFAIL G?`bcw 0-7* 1-3 2-4 end=4 GFconn=1
+RFAIL G?`bcw 0-7* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`beS 0-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`beS 0-5 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`beS 0-6 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`beS 0-7* 2-4 5-6 end=4 GFconn=1
+RFAIL G?`beS 0-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`beS 0-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`bcs 0-1 2-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`bcs 0-1 2-3 4-7* 5-6 end=2 GFconn=1
+RFAIL G?`bcs 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-1 2-6* 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-1 2-6* 3-5 4-7* end=5 GFconn=1
+RFAIL G?`bcs 0-2 1-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`bcs 0-2 1-3 4-7* 5-6 end=1 GFconn=1
+RFAIL G?`bcs 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-2 1-6* 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-2 1-6* 3-5 4-7* end=5 GFconn=1
+RFAIL G?`bcs 0-3 1-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`bcs 0-3 1-5* 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-3 1-6* 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-5 1-3 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-5 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL G?`bcs 0-5 1-6* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-5 1-6* 2-3 4-7* end=2 GFconn=1
+RFAIL G?`bcs 0-6 1-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-6 1-2 3-5 4-7* end=7 GFconn=1
+RFAIL G?`bcs 0-6 1-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-6 1-5* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`bcs 0-7* 1-2 3-4 5-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-2 3-5 4-6 end=7 GFconn=1
+RFAIL G?`bcs 0-7* 1-2 3-5 4-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-3 2-4 5-6 end=1 GFconn=1
+RFAIL G?`bcs 0-7* 1-3 2-4 5-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-3 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-3 2-6* 4-5 end=1 GFconn=1
+RFAIL G?`bcs 0-7* 1-3 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-4 2-3 5-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-4 2-3 5-6 end=2 GFconn=1
+RFAIL G?`bcs 0-7* 1-4 2-5* 3-6* end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-4 2-6* 3-5 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-4 2-6* 3-5 end=5 GFconn=1
+RFAIL G?`bcs 0-7* 1-5* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-5* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-6* 2-3 4-5 end=2 GFconn=1
+RFAIL G?`bcs 0-7* 1-6* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-6* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`bcs 0-7* 1-6* 2-4 3-5 end=5 GFconn=1
+RFAIL G?`bcs 0-7* 1-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`bc[ 0-1 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bc[ 0-2 1-6* 4-7* end=0 GFconn=1
+RFAIL G?`bc[ 0-6 1-2 4-7* end=0 GFconn=1
+RFAIL G?`bc[ 0-7* 1-2 4-6 end=4 GFconn=1
+RFAIL G?`bc[ 0-7* 1-4 2-6* end=4 GFconn=1
+RFAIL G?`bc[ 0-7* 1-6* 2-4 end=4 GFconn=1
+RFAIL G?`bfw 0-3 4-7* end=0 GFconn=1
+RFAIL G?`bfw 0-7* 3-4 end=4 GFconn=1
+RFAIL G?`bfs 0-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`bfs 0-5 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bfs 0-6 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bfs 0-7* 3-4 5-6 end=4 GFconn=1
+RFAIL G?`bfs 0-7* 3-5 4-6 end=4 GFconn=1
+RFAIL G?`bfs 0-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`bfk 0-3 6-7* end=3 GFconn=1
+RFAIL G?`bfk 0-6 3-7* end=6 GFconn=1
+RFAIL G?`bf[ 0-6 4-7* end=0 GFconn=1
+RFAIL G?`bf[ 0-7* 4-6 end=4 GFconn=1
+RFAIL G?`be{ 0-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`be{ 0-3 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`be{ 0-6 2-3 4-7* end=0 GFconn=1
+RFAIL G?`be{ 0-7* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`be{ 0-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`be{ 0-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`eRk 0-2 4-6* end=0 GFconn=1
+RFAIL G?`eRk 0-6* 2-4 end=4 GFconn=1
+RFAIL G?`cvG 1-4 2-7* end=1 GFconn=1
+RFAIL G?`cvG 1-7* 2-4 end=2 GFconn=1
+RFAIL G?`crg 0-1 2-7* 3-4 end=1 GFconn=1
+RFAIL G?`crg 0-1 2-7* 3-4 end=4 GFconn=1
+RFAIL G?`crg 0-2 1-7* 3-4 end=2 GFconn=1
+RFAIL G?`crg 0-2 1-7* 3-4 end=4 GFconn=1
+RFAIL G?`crg 0-3 1-4 2-7* end=0 GFconn=1
+RFAIL G?`crg 0-3 1-4 2-7* end=1 GFconn=1
+RFAIL G?`crg 0-3 1-7* 2-4 end=0 GFconn=1
+RFAIL G?`crg 0-3 1-7* 2-4 end=2 GFconn=1
+RFAIL G?`crg 0-4* 1-3 2-7* end=1 GFconn=1
+RFAIL G?`crg 0-4* 1-7* 2-3 end=2 GFconn=1
+RFAIL G?`crk 0-1 2-3 4-6* end=0 GFconn=1
+RFAIL G?`crk 0-1 2-3 4-6* end=2 GFconn=1
+RFAIL G?`crk 0-2 1-3 4-6* end=0 GFconn=1
+RFAIL G?`crk 0-2 1-3 4-6* end=1 GFconn=1
+RFAIL G?`crk 0-3 1-2 4-6* end=0 GFconn=1
+RFAIL G?`crk 0-6* 1-2 3-4 end=4 GFconn=1
+RFAIL G?`crk 0-6* 1-3 2-4 end=1 GFconn=1
+RFAIL G?`crk 0-6* 1-3 2-4 end=4 GFconn=1
+RFAIL G?`crk 0-6* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`crk 0-6* 1-4 2-3 end=2 GFconn=1
+RFAIL G?`cvw 1-3 2-7* end=1 GFconn=1
+RFAIL G?`cvw 1-7* 2-3 end=2 GFconn=1
+RFAIL G?`cvs 1-2 3-5 6-7* end=3 GFconn=1
+RFAIL G?`cvs 1-2 3-7* 5-6 end=6 GFconn=1
+RFAIL G?`cvs 1-3 2-5* 6-7* end=3 GFconn=1
+RFAIL G?`cvs 1-5* 2-3 6-7* end=3 GFconn=1
+RFAIL G?`cvs 1-5* 2-6 3-7* end=6 GFconn=1
+RFAIL G?`cvs 1-6 2-5* 3-7* end=6 GFconn=1
+RFAIL G?`cvk 1-3 2-7* 4-6* end=1 GFconn=1
+RFAIL G?`cvk 1-4 2-7* 3-6* end=1 GFconn=1
+RFAIL G?`cvk 1-6 2-7* 3-4 end=1 GFconn=1
+RFAIL G?`cvk 1-7* 2-3 4-6* end=2 GFconn=1
+RFAIL G?`cvk 1-7* 2-4 3-6* end=2 GFconn=1
+RFAIL G?`cvk 1-7* 2-6 3-4 end=2 GFconn=1
+RFAIL G?`cv[ 1-6 2-7* end=1 GFconn=1
+RFAIL G?`cv[ 1-7* 2-6 end=2 GFconn=1
+RFAIL G?`cu{ 1-3 6-7* end=3 GFconn=1
+RFAIL G?`cu{ 1-6 3-7* end=6 GFconn=1
+RFAIL G?`bMo 0-2 4-7* end=0 GFconn=1
+RFAIL G?`bMo 0-7* 2-4 end=4 GFconn=1
+PTMFAIL G?`bKw 0-1 2-5* 4-7* GFconn=1
+PTMFAIL G?`bKw 0-2 1-5* 4-7* GFconn=1
+RFAIL G?`bKw 0-4* 1-5* 2-7 end=2 GFconn=1
+RFAIL G?`bKw 0-4* 1-7 2-5* end=1 GFconn=1
+RFAIL G?`bKw 0-5 1-2 4-7* end=0 GFconn=1
+RFAIL G?`bKw 0-7* 1-2 4-5 end=4 GFconn=1
+PTMFAIL G?`bKw 0-7* 1-4 2-5* GFconn=1
+PTMFAIL G?`bKw 0-7* 1-5* 2-4 GFconn=1
+RFAIL G?`bNw 0-5 4-7* end=0 GFconn=1
+RFAIL G?`bNw 0-7* 4-5 end=4 GFconn=1
+RFAIL G?`bNk 0-5 6-7* end=5 GFconn=1
+RFAIL G?`bNk 0-6 5-7* end=6 GFconn=1
+RFAIL G?`bM{ 0-2 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`bM{ 0-5 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bM{ 0-6 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`bM{ 0-7* 2-4 5-6* end=4 GFconn=1
+RFAIL G?`bM{ 0-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`bM{ 0-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`anO 0-2 4-7* end=0 GFconn=1
+RFAIL G?`anO 0-7* 2-4 end=4 GFconn=1
+RFAIL G?`alo 0-1 2-3 4-7* end=0 GFconn=1
+RFAIL G?`alo 0-2 1-3 4-7* end=0 GFconn=1
+RFAIL G?`alo 0-3 1-2 4-7* end=0 GFconn=1
+RFAIL G?`alo 0-7* 1-2 3-4 end=4 GFconn=1
+RFAIL G?`alo 0-7* 1-3 2-4 end=4 GFconn=1
+RFAIL G?`alo 0-7* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`amW 0-5 4-7* end=0 GFconn=1
+RFAIL G?`amW 0-7* 4-5 end=4 GFconn=1
+RFAIL G?`alW 0-1 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`alW 0-2 1-5* 4-7* end=0 GFconn=1
+RFAIL G?`alW 0-5 1-2 4-7* end=0 GFconn=1
+RFAIL G?`alW 0-7* 1-2 4-5 end=4 GFconn=1
+RFAIL G?`alW 0-7* 1-4 2-5* end=4 GFconn=1
+RFAIL G?`alW 0-7* 1-5* 2-4 end=4 GFconn=1
+RFAIL G?`akw 0-1 3-5 4-7* end=0 GFconn=1
+RFAIL G?`akw 0-3 1-5* 4-7* end=0 GFconn=1
+RFAIL G?`akw 0-5 1-3 4-7* end=0 GFconn=1
+RFAIL G?`akw 0-7* 1-3 4-5 end=4 GFconn=1
+RFAIL G?`akw 0-7* 1-4 3-5 end=4 GFconn=1
+RFAIL G?`akw 0-7* 1-5* 3-4 end=4 GFconn=1
+RFAIL G?`ak[ 0-1 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`ak[ 0-5 1-6* 4-7* end=0 GFconn=1
+RFAIL G?`ak[ 0-6 1-5* 4-7* end=0 GFconn=1
+RFAIL G?`ak[ 0-7* 1-4 5-6* end=4 GFconn=1
+RFAIL G?`ak[ 0-7* 1-5* 4-6 end=4 GFconn=1
+RFAIL G?`ak[ 0-7* 1-6* 4-5 end=4 GFconn=1
+RFAIL G?`anw 0-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`anw 0-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`anw 0-5 2-3 4-7* end=0 GFconn=1
+RFAIL G?`anw 0-7* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`anw 0-7* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`anw 0-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`ank 0-2 3-5 6-7* end=2 GFconn=1
+RFAIL G?`ank 0-2 3-6* 5-7* end=2 GFconn=1
+RFAIL G?`ank 0-2 3-7* 5-6* end=2 GFconn=1
+RFAIL G?`ank 0-3 2-5* 6-7* end=3 GFconn=1
+RFAIL G?`ank 0-3 2-6 5-7* end=3 GFconn=1
+RFAIL G?`ank 0-3 2-7* 5-6* end=3 GFconn=1
+RFAIL G?`ank 0-5 2-3 6-7* end=5 GFconn=1
+RFAIL G?`ank 0-5 2-6 3-7* end=5 GFconn=1
+RFAIL G?`ank 0-5 2-7* 3-6* end=5 GFconn=1
+RFAIL G?`ank 0-6 2-3 5-7* end=6 GFconn=1
+RFAIL G?`ank 0-6 2-5* 3-7* end=6 GFconn=1
+RFAIL G?`ank 0-6 2-7* 3-5 end=6 GFconn=1
+RFAIL G?`an[ 0-2 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`an[ 0-5 2-6 4-7* end=0 GFconn=1
+RFAIL G?`an[ 0-6 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`an[ 0-7* 2-4 5-6* end=4 GFconn=1
+RFAIL G?`an[ 0-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`an[ 0-7* 2-6 4-5 end=4 GFconn=1
+RFAIL G?`al{ 0-1 2-3 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`al{ 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-1 2-6 3-5 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-2 1-3 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`al{ 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-2 1-6* 3-5 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-3 1-2 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`al{ 0-3 1-5* 2-6 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-3 1-6* 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-5 1-3 2-6 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-5 1-6* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-6 1-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-6 1-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-6 1-5* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`al{ 0-7* 1-2 3-4 5-6* end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-2 3-5 4-6 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-3 2-4 5-6* end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-3 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-3 2-6 4-5 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-4 2-3 5-6* end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-4 2-5* 3-6* end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-4 2-6 3-5 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-5* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-5* 2-6 3-4 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-6* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-6* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`al{ 0-7* 1-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`cZk 0-1 2-5* 4-6* end=0 GFconn=1
+RFAIL G?`cZk 0-2 1-5* 4-6* end=0 GFconn=1
+RFAIL G?`cZk 0-5 1-2 4-6* end=0 GFconn=1
+RFAIL G?`cZk 0-6* 1-2 4-5 end=4 GFconn=1
+RFAIL G?`cZk 0-6* 1-4 2-5* end=4 GFconn=1
+RFAIL G?`cZk 0-6* 1-5* 2-4 end=4 GFconn=1
+RFAIL G?`bnO 0-6 4-7* end=0 GFconn=1
+RFAIL G?`bnO 0-7* 4-6 end=4 GFconn=1
+RFAIL G?`bmo 0-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bmo 0-3 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`bmo 0-6 2-3 4-7* end=0 GFconn=1
+RFAIL G?`bmo 0-7* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`bmo 0-7* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`bmo 0-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`bnw 0-3 4-7* 5-6* end=0 GFconn=1
+RFAIL G?`bnw 0-5 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`bnw 0-6 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bnw 0-7* 3-4 5-6* end=4 GFconn=1
+RFAIL G?`bnw 0-7* 3-5 4-6 end=4 GFconn=1
+RFAIL G?`bnw 0-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`bns 0-3 4-7* end=0 GFconn=1
+RFAIL G?`bns 0-7* 3-4 end=4 GFconn=1
+RFAIL G?`bnk 0-3 5-7* end=3 GFconn=1
+RFAIL G?`bnk 0-5 3-7* end=5 GFconn=1
+RFAIL G?`bn[ 0-5 4-7* end=0 GFconn=1
+RFAIL G?`bn[ 0-7* 4-5 end=4 GFconn=1
+RFAIL G?`bm{ 0-2 3-5 4-7* end=0 GFconn=1
+RFAIL G?`bm{ 0-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`bm{ 0-5 2-3 4-7* end=0 GFconn=1
+RFAIL G?`bm{ 0-7* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`bm{ 0-7* 2-4 3-5 end=4 GFconn=1
+RFAIL G?`bm{ 0-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?aJFs 1-5 2-7* end=1 GFconn=1
+RFAIL G?aJFs 1-7* 2-5 end=2 GFconn=1
+RFAIL G?aJfs 1-2 3-5 6-7* end=3 GFconn=1
+RFAIL G?aJfs 1-2 3-7* 5-6 end=6 GFconn=1
+RFAIL G?aJfs 1-3 2-5 6-7* end=2 GFconn=1
+RFAIL G?aJfs 1-3 2-7* 5-6 end=6 GFconn=1
+RFAIL G?aJfs 1-5 2-3 6-7* end=1 GFconn=1
+RFAIL G?aJfs 1-5 2-6* 3-7* end=1 GFconn=1
+RFAIL G?aJfs 1-5 2-7* 3-6* end=1 GFconn=1
+RFAIL G?aJfs 1-6* 2-5 3-7* end=2 GFconn=1
+RFAIL G?aJfs 1-6* 2-7* 3-5 end=3 GFconn=1
+RFAIL G?aJfs 1-7* 2-3 5-6 end=6 GFconn=1
+RFAIL G?aJfs 1-7* 2-5 3-6* end=2 GFconn=1
+RFAIL G?aJfs 1-7* 2-6* 3-5 end=3 GFconn=1
+RFAIL G?aNfc 0-4* 1-2 3-5 end=5 GFconn=1
+RFAIL G?aNfc 0-4* 1-3 2-5 end=5 GFconn=1
+RFAIL G?aNfc 0-4* 1-5 2-3 end=5 GFconn=1
+RFAIL G?aNfc 0-5* 1-2 3-4 end=4 GFconn=1
+RFAIL G?aNfc 0-5* 1-3 2-4 end=4 GFconn=1
+RFAIL G?aNfc 0-5* 1-4 2-3 end=4 GFconn=1
+RFAIL G?`rfO 0-3 4-7* end=0 GFconn=1
+RFAIL G?`rfO 0-7* 3-4 end=4 GFconn=1
+RFAIL G?`reW 0-2 3-5* 4-7* end=0 GFconn=1
+RFAIL G?`reW 0-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`reW 0-5 2-3 4-7* end=0 GFconn=1
+RFAIL G?`reW 0-7* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`reW 0-7* 2-4 3-5* end=4 GFconn=1
+RFAIL G?`reW 0-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`rc[ 0-1 2-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`rc[ 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-1 2-6* 3-5* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-2 1-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`rc[ 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-2 1-6* 3-5* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-3 1-2 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`rc[ 0-3 1-5* 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-3 1-6* 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-5 1-3 2-6* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-5 1-6* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-6 1-2 3-5* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-6 1-3 2-5* 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-6 1-5* 2-3 4-7* end=0 GFconn=1
+RFAIL G?`rc[ 0-7* 1-2 3-4 5-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-2 3-5* 4-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-3 2-4 5-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-3 2-5* 4-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-3 2-6* 4-5 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-4 2-3 5-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-4 2-5* 3-6* end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-4 2-6* 3-5* end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-5* 2-3 4-6 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-5* 2-6* 3-4 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-6* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-6* 2-4 3-5* end=4 GFconn=1
+RFAIL G?`rc[ 0-7* 1-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`rfw 0-5 4-7* end=0 GFconn=1
+RFAIL G?`rfw 0-7* 4-5 end=4 GFconn=1
+RFAIL G?`rfk 0-5 6-7* end=5 GFconn=1
+RFAIL G?`rfk 0-6 5-7* end=6 GFconn=1
+RFAIL G?`rf[ 0-3 4-7* 5-6 end=0 GFconn=1
+RFAIL G?`rf[ 0-5 3-6* 4-7* end=0 GFconn=1
+RFAIL G?`rf[ 0-6 3-5* 4-7* end=0 GFconn=1
+RFAIL G?`rf[ 0-7* 3-4 5-6 end=4 GFconn=1
+RFAIL G?`rf[ 0-7* 3-5* 4-6 end=4 GFconn=1
+RFAIL G?`rf[ 0-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL G?`uRK 0-2 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`uRK 0-5 2-7* 4-6* end=0 GFconn=1
+RFAIL G?`uRK 0-6* 2-4 5-7* end=4 GFconn=1
+RFAIL G?`uRK 0-6* 2-5* 4-7 end=4 GFconn=1
+RFAIL G?`uRK 0-6* 2-7* 4-5 end=4 GFconn=1
+RFAIL G?`uRK 0-7 2-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-1 2-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`uPk 0-1 2-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-1 2-7* 3-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-2 1-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`uPk 0-2 1-3 4-6* 5-7* end=3 GFconn=1
+RFAIL G?`uPk 0-2 1-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-2 1-5* 3-7* 4-6* end=5 GFconn=1
+RFAIL G?`uPk 0-2 1-7 3-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-2 1-7 3-5* 4-6* end=7 GFconn=1
+RFAIL G?`uPk 0-3 1-2 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`uPk 0-3 1-2 4-6* 5-7* end=2 GFconn=1
+RFAIL G?`uPk 0-3 1-5* 2-7* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-3 1-5* 2-7* 4-6* end=5 GFconn=1
+RFAIL G?`uPk 0-3 1-7 2-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-3 1-7 2-5* 4-6* end=7 GFconn=1
+RFAIL G?`uPk 0-5 1-2 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-5 1-2 3-7* 4-6* end=2 GFconn=1
+RFAIL G?`uPk 0-5 1-3 2-7* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-5 1-3 2-7* 4-6* end=3 GFconn=1
+RFAIL G?`uPk 0-5 1-7 2-3 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-4 5-7* end=2 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-4 5-7* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-5* 4-7 end=2 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-5* 4-7 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-7* 4-5 end=2 GFconn=1
+RFAIL G?`uPk 0-6* 1-2 3-7* 4-5 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-4 5-7* end=3 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-4 5-7* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-5* 4-7 end=3 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-5* 4-7 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-7* 4-5 end=3 GFconn=1
+RFAIL G?`uPk 0-6* 1-3 2-7* 4-5 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-4 2-3 5-7* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-4 2-5* 3-7* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-4 2-7* 3-5* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-5* 2-3 4-7 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-5* 2-4 3-7* end=5 GFconn=1
+RFAIL G?`uPk 0-6* 1-5* 2-4 3-7* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-5* 2-7* 3-4 end=5 GFconn=1
+RFAIL G?`uPk 0-6* 1-5* 2-7* 3-4 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-7 2-3 4-5 end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-7 2-4 3-5* end=7 GFconn=1
+RFAIL G?`uPk 0-6* 1-7 2-4 3-5* end=4 GFconn=1
+RFAIL G?`uPk 0-6* 1-7 2-5* 3-4 end=7 GFconn=1
+RFAIL G?`uPk 0-6* 1-7 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`uPk 0-7 1-2 3-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-7 1-2 3-5* 4-6* end=2 GFconn=1
+RFAIL G?`uPk 0-7 1-3 2-5* 4-6* end=0 GFconn=1
+RFAIL G?`uPk 0-7 1-3 2-5* 4-6* end=3 GFconn=1
+RFAIL G?`uPk 0-7 1-5* 2-3 4-6* end=0 GFconn=1
+RFAIL G?`uRk 0-2 3-5* 4-6* end=0 GFconn=1
+RFAIL G?`uRk 0-3 2-5* 4-6* end=0 GFconn=1
+RFAIL G?`uRk 0-5 2-3 4-6* end=0 GFconn=1
+RFAIL G?`uRk 0-6* 2-3 4-5 end=4 GFconn=1
+RFAIL G?`uRk 0-6* 2-4 3-5* end=4 GFconn=1
+RFAIL G?`uRk 0-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL G?`vRg 0-3 4-6* 5-7* end=0 GFconn=1
+RFAIL G?`vRg 0-5 3-7* 4-6* end=0 GFconn=1
+RFAIL G?`vRg 0-6* 3-4 5-7* end=4 GFconn=1
+RFAIL G?`vRg 0-6* 3-5* 4-7 end=4 GFconn=1
+RFAIL G?`vRg 0-6* 3-7* 4-5 end=4 GFconn=1
+RFAIL G?`vRg 0-7 3-5* 4-6* end=0 GFconn=1
+RFAIL G?`rnw 0-6 4-7* end=0 GFconn=1
+RFAIL G?`rnw 0-7* 4-6 end=4 GFconn=1
+RFAIL G?`rn[ 0-3 4-7* end=0 GFconn=1
+RFAIL G?`rn[ 0-7* 3-4 end=4 GFconn=1
+RFAIL G?r@dc 1-2 3-7* 4-5 end=2 GFconn=1
+RFAIL G?r@dc 1-3 2-7* 4-5 end=3 GFconn=1
+RFAIL G?r@dc 1-4* 2-5 3-7* end=2 GFconn=1
+RFAIL G?r@dc 1-4* 2-7* 3-5 end=3 GFconn=1
+RFAIL G?r@dc 1-5* 2-4 3-7* end=2 GFconn=1
+RFAIL G?r@dc 1-5* 2-7* 3-4 end=3 GFconn=1
+RFAIL G?r@fs 2-5 3-7* end=2 GFconn=1
+RFAIL G?r@fs 2-7* 3-5 end=3 GFconn=1
+RFAIL G?ouTg 1-2 3-7* end=2 GFconn=1
+RFAIL G?ouTg 1-3 2-7* end=3 GFconn=1
+RFAIL G?ouPw 0-1 2-4 3-7* end=2 GFconn=1
+RFAIL G?ouPw 0-1 2-7* 3-4 end=3 GFconn=1
+PTMFAIL G?ouPw 0-2 1-4* 3-7* GFconn=1
+PTMFAIL G?ouPw 0-3 1-4* 2-7* GFconn=1
+PTMFAIL G?ouPw 0-4* 1-2 3-7* GFconn=1
+PTMFAIL G?ouPw 0-4* 1-3 2-7* GFconn=1
+RFAIL G?ouPw 0-4* 1-7 2-3 end=1 GFconn=1
+RFAIL G?ouPw 0-7 1-4* 2-3 end=0 GFconn=1
+RFAIL G?ouVw 2-4 3-7* end=2 GFconn=1
+RFAIL G?ouVw 2-7* 3-4 end=3 GFconn=1
+RFAIL G?ouVs 2-3 4-5 6-7* end=4 GFconn=1
+RFAIL G?ouVs 2-3 4-7* 5-6 end=6 GFconn=1
+RFAIL G?ouVs 2-4 3-5* 6-7* end=4 GFconn=1
+RFAIL G?ouVs 2-5* 3-4 6-7* end=4 GFconn=1
+RFAIL G?ouVs 2-5* 3-6 4-7* end=6 GFconn=1
+RFAIL G?ouVs 2-6 3-5* 4-7* end=6 GFconn=1
+RFAIL G?ouV[ 2-4 6-7* end=4 GFconn=1
+RFAIL G?ouV[ 2-6 4-7* end=6 GFconn=1
+RFAIL G?ouT{ 1-2 3-7* 4-6* end=2 GFconn=1
+RFAIL G?ouT{ 1-3 2-7* 4-6* end=3 GFconn=1
+RFAIL G?ouT{ 1-4* 2-6 3-7* end=2 GFconn=1
+RFAIL G?ouT{ 1-4* 2-7* 3-6 end=3 GFconn=1
+RFAIL G?ouT{ 1-6* 2-4 3-7* end=2 GFconn=1
+RFAIL G?ouT{ 1-6* 2-7* 3-4 end=3 GFconn=1
+RFAIL GCOcfO 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL GCOcfO 1-3 2-6 4-7* end=1 GFconn=1
+RFAIL GCOcfO 1-3 2-6 4-7* end=6 GFconn=1
+RFAIL GCOcfO 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL GCOcfO 1-6 2-3 4-7* end=3 GFconn=1
+RFAIL GCOcfO 1-7* 2-3 4-6 end=3 GFconn=1
+RFAIL GCOcfO 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL GCOcfO 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL GCOcfO 1-7* 2-6 3-4 end=6 GFconn=1
+RFAIL GCOcfO 1-7* 2-6 3-4 end=4 GFconn=1
+RFAIL GCOcfw 1-2 4-6 5-7* end=2 GFconn=1
+RFAIL GCOcfw 1-2 4-6 5-7* end=4 GFconn=1
+RFAIL GCOcfw 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCOcfw 1-2 4-7* 5-6 end=5 GFconn=1
+RFAIL GCOcfw 1-4* 2-6 5-7* end=2 GFconn=1
+RFAIL GCOcfw 1-4* 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOcfw 1-5 2-6 4-7* end=1 GFconn=1
+RFAIL GCOcfw 1-5 2-6 4-7* end=2 GFconn=1
+RFAIL GCOcfw 1-5 2-7* 4-6 end=5 GFconn=1
+RFAIL GCOcfw 1-5 2-7* 4-6 end=4 GFconn=1
+RFAIL GCOcfw 1-6 2-4 5-7* end=1 GFconn=1
+RFAIL GCOcfw 1-6 2-4 5-7* end=2 GFconn=1
+RFAIL GCOcfw 1-6 2-5* 4-7* end=1 GFconn=1
+RFAIL GCOcfw 1-6 2-7* 4-5 end=1 GFconn=1
+RFAIL GCOcfw 1-6 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOcfw 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCOcfw 1-7* 2-4 5-6 end=5 GFconn=1
+RFAIL GCOcfw 1-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL GCOcfw 1-7* 2-6 4-5 end=2 GFconn=1
+RFAIL GCOcfw 1-7* 2-6 4-5 end=4 GFconn=1
+RFAIL GCOcfs 1-2 4-7* end=1 GFconn=1
+RFAIL GCOcfs 1-7* 2-4 end=4 GFconn=1
+RFAIL GCOefG 2-3 5-7* end=2 GFconn=1
+RFAIL GCOefG 2-7* 3-5 end=5 GFconn=1
+RFAIL GCOedg 1-2 5-7* end=2 GFconn=1
+RFAIL GCOedg 1-5 2-7* end=5 GFconn=1
+RFAIL GCOedW 1-2 3-4 5-7* end=2 GFconn=1
+RFAIL GCOedW 1-3 2-4 5-7* end=2 GFconn=1
+RFAIL GCOedW 1-3 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOedW 1-4* 2-3 5-7* end=2 GFconn=1
+RFAIL GCOedW 1-4* 2-7* 3-5 end=5 GFconn=1
+RFAIL GCOedW 1-5 2-7* 3-4 end=5 GFconn=1
+RFAIL GCOebW 0-2 3-4 5-7* end=2 GFconn=1
+RFAIL GCOebW 0-2 3-4 5-7* end=3 GFconn=1
+RFAIL GCOebW 0-3* 2-4 5-7* end=2 GFconn=1
+RFAIL GCOebW 0-3* 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOebW 0-4 2-3 5-7* end=0 GFconn=1
+RFAIL GCOebW 0-4 2-3 5-7* end=2 GFconn=1
+RFAIL GCOebW 0-4 2-7* 3-5 end=0 GFconn=1
+RFAIL GCOebW 0-4 2-7* 3-5 end=5 GFconn=1
+RFAIL GCOebW 0-5 2-7* 3-4 end=5 GFconn=1
+RFAIL GCOebW 0-5 2-7* 3-4 end=3 GFconn=1
+RFAIL GCOedK 1-2 3-6* 5-7* end=2 GFconn=1
+RFAIL GCOedK 1-3 2-6 5-7* end=2 GFconn=1
+RFAIL GCOedK 1-3 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOedK 1-5 2-7* 3-6* end=5 GFconn=1
+RFAIL GCOedK 1-6* 2-3 5-7* end=2 GFconn=1
+RFAIL GCOedK 1-6* 2-7* 3-5 end=5 GFconn=1
+PTMFAIL GCOebK 0-2 3-6* 5-7* GFconn=1
+RFAIL GCOebK 0-3* 2-6 5-7* end=2 GFconn=1
+RFAIL GCOebK 0-3* 2-7* 5-6 end=5 GFconn=1
+PTMFAIL GCOebK 0-5 2-7* 3-6* GFconn=1
+PTMFAIL GCOebK 0-6* 2-3 5-7* GFconn=1
+RFAIL GCOebK 0-6* 2-5* 3-7 end=3 GFconn=1
+PTMFAIL GCOebK 0-6* 2-7* 3-5 GFconn=1
+RFAIL GCOebK 0-7 2-5* 3-6* end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-3 4-6 5-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-3 4-6 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-1 2-4 3-6* 5-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-4 3-6* 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-6 3-4 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-1 2-7* 3-4 5-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-1 2-7* 3-5 4-6 end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-7* 3-5 4-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-1 2-7* 3-6* 4-5 end=0 GFconn=1
+RFAIL GCOe`[ 0-1 2-7* 3-6* 4-5 end=5 GFconn=1
+RFAIL GCOe`[ 0-2 1-3 4-6 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-2 1-3 4-6 5-7* end=3 GFconn=1
+PTMFAIL GCOe`[ 0-2 1-4* 3-6* 5-7* GFconn=1
+RFAIL GCOe`[ 0-2 1-5 3-6* 4-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-2 1-5 3-6* 4-7* end=5 GFconn=1
+RFAIL GCOe`[ 0-2 1-6* 3-4 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-2 1-6* 3-4 5-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-2 1-7 3-6* 4-5 end=0 GFconn=1
+RFAIL GCOe`[ 0-2 1-7 3-6* 4-5 end=5 GFconn=1
+RFAIL GCOe`[ 0-3* 1-2 4-6 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-3* 1-4* 2-6 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-3* 1-4* 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-3* 1-5 2-7* 4-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-3* 1-6* 2-4 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-3* 1-6* 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOe`[ 0-4 1-2 3-6* 5-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-4 1-2 3-6* 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-4 1-3 2-6 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-4 1-3 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-4 1-5 2-7* 3-6* end=0 GFconn=1
+RFAIL GCOe`[ 0-4 1-5 2-7* 3-6* end=5 GFconn=1
+RFAIL GCOe`[ 0-4 1-6* 2-3 5-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-4 1-6* 2-3 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-4 1-6* 2-7* 3-5 end=0 GFconn=1
+RFAIL GCOe`[ 0-4 1-6* 2-7* 3-5 end=5 GFconn=1
+RFAIL GCOe`[ 0-4 1-7 2-5* 3-6* end=0 GFconn=1
+RFAIL GCOe`[ 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL GCOe`[ 0-5 1-2 3-6* 4-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-5 1-3 2-7* 4-6 end=5 GFconn=1
+RFAIL GCOe`[ 0-5 1-3 2-7* 4-6 end=3 GFconn=1
+PTMFAIL GCOe`[ 0-5 1-4* 2-7* 3-6* GFconn=1
+RFAIL GCOe`[ 0-5 1-6* 2-7* 3-4 end=5 GFconn=1
+RFAIL GCOe`[ 0-5 1-6* 2-7* 3-4 end=3 GFconn=1
+RFAIL GCOe`[ 0-5 1-7 2-4 3-6* end=0 GFconn=1
+RFAIL GCOe`[ 0-5 1-7 2-4 3-6* end=2 GFconn=1
+RFAIL GCOe`[ 0-6* 1-2 3-4 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-6* 1-2 3-4 5-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-2 3-5 4-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-6* 1-2 3-5 4-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-2 3-7 4-5 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-3 2-4 5-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-3 2-4 5-7* end=2 GFconn=1
+RFAIL GCOe`[ 0-6* 1-3 2-5* 4-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-3 2-7* 4-5 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-3 2-7* 4-5 end=5 GFconn=1
+PTMFAIL GCOe`[ 0-6* 1-4* 2-3 5-7* GFconn=1
+RFAIL GCOe`[ 0-6* 1-4* 2-5* 3-7 end=3 GFconn=1
+PTMFAIL GCOe`[ 0-6* 1-4* 2-7* 3-5 GFconn=1
+RFAIL GCOe`[ 0-6* 1-5 2-3 4-7* end=5 GFconn=1
+RFAIL GCOe`[ 0-6* 1-5 2-3 4-7* end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-5 2-4 3-7 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-5 2-7* 3-4 end=5 GFconn=1
+RFAIL GCOe`[ 0-6* 1-5 2-7* 3-4 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-7 2-3 4-5 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-7 2-3 4-5 end=5 GFconn=1
+RFAIL GCOe`[ 0-6* 1-7 2-4 3-5 end=2 GFconn=1
+RFAIL GCOe`[ 0-6* 1-7 2-4 3-5 end=3 GFconn=1
+RFAIL GCOe`[ 0-6* 1-7 2-5* 3-4 end=3 GFconn=1
+RFAIL GCOe`[ 0-7 1-2 3-6* 4-5 end=0 GFconn=1
+RFAIL GCOe`[ 0-7 1-4* 2-5* 3-6* end=0 GFconn=1
+RFAIL GCOe`[ 0-7 1-5 2-4 3-6* end=0 GFconn=1
+RFAIL GCOeb[ 0-2 3-6* 4-5 end=0 GFconn=1
+RFAIL GCOeb[ 0-2 3-6* 4-5 end=5 GFconn=1
+RFAIL GCOeb[ 0-4 2-5* 3-6* end=0 GFconn=1
+RFAIL GCOeb[ 0-5 2-4 3-6* end=0 GFconn=1
+RFAIL GCOeb[ 0-5 2-4 3-6* end=2 GFconn=1
+RFAIL GCOeb[ 0-6* 2-3 4-5 end=3 GFconn=1
+RFAIL GCOeb[ 0-6* 2-3 4-5 end=5 GFconn=1
+RFAIL GCOeb[ 0-6* 2-4 3-5 end=2 GFconn=1
+RFAIL GCOeb[ 0-6* 2-4 3-5 end=3 GFconn=1
+RFAIL GCOeb[ 0-6* 2-5* 3-4 end=3 GFconn=1
+RFAIL GCOefw 2-4 5-7* end=2 GFconn=1
+RFAIL GCOefw 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOefs 2-4 6-7* end=4 GFconn=1
+RFAIL GCOefs 2-6 4-7* end=6 GFconn=1
+RFAIL GCOefk 2-6 5-7* end=2 GFconn=1
+RFAIL GCOefk 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOef[ 2-3 4-6 5-7* end=2 GFconn=1
+RFAIL GCOef[ 2-4 3-6* 5-7* end=2 GFconn=1
+RFAIL GCOef[ 2-6 3-4 5-7* end=2 GFconn=1
+RFAIL GCOef[ 2-7* 3-4 5-6 end=5 GFconn=1
+RFAIL GCOef[ 2-7* 3-5 4-6 end=5 GFconn=1
+RFAIL GCOef[ 2-7* 3-6* 4-5 end=5 GFconn=1
+RFAIL GCOed{ 1-2 4-6 5-7* end=2 GFconn=1
+RFAIL GCOed{ 1-4* 2-6 5-7* end=2 GFconn=1
+RFAIL GCOed{ 1-4* 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOed{ 1-5 2-7* 4-6 end=5 GFconn=1
+RFAIL GCOed{ 1-6* 2-4 5-7* end=2 GFconn=1
+RFAIL GCOed{ 1-6* 2-7* 4-5 end=5 GFconn=1
+RFAIL GCOfbW 0-4 3-6* 5-7* end=0 GFconn=1
+RFAIL GCOfbW 0-5 3-6* 4-7* end=0 GFconn=1
+RFAIL GCOfbW 0-6* 3-4 5-7* end=3 GFconn=1
+RFAIL GCOfbW 0-6* 3-5 4-7* end=3 GFconn=1
+RFAIL GCOfbW 0-6* 3-7 4-5 end=3 GFconn=1
+RFAIL GCOfbW 0-7 3-6* 4-5 end=0 GFconn=1
+PTMFAIL GCOetg 1-2 4-6* 5-7* GFconn=1
+RFAIL GCOetg 1-4* 2-6 5-7* end=2 GFconn=1
+RFAIL GCOetg 1-4* 2-7* 5-6 end=5 GFconn=1
+PTMFAIL GCOetg 1-5 2-7* 4-6* GFconn=1
+PTMFAIL GCOetg 1-6* 2-4 5-7* GFconn=1
+RFAIL GCOetg 1-6* 2-5* 4-7 end=4 GFconn=1
+PTMFAIL GCOetg 1-6* 2-7* 4-5 GFconn=1
+RFAIL GCOetg 1-7 2-5* 4-6* end=1 GFconn=1
+RFAIL GCOevw 2-6 5-7* end=2 GFconn=1
+RFAIL GCOevw 2-7* 5-6 end=5 GFconn=1
+RFAIL GCOevk 2-4 5-7* end=2 GFconn=1
+RFAIL GCOevk 2-7* 4-5 end=5 GFconn=1
+RFAIL GCQ`fO 1-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQ`fO 1-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQ`fO 1-6 3-5 4-7* end=1 GFconn=1
+RFAIL GCQ`fO 1-7* 3-4 5-6 end=4 GFconn=1
+RFAIL GCQ`fO 1-7* 3-5 4-6 end=4 GFconn=1
+RFAIL GCQ`fO 1-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL GCQ`eo 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQ`eo 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQ`eo 1-6 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQ`eo 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQ`eo 1-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL GCQ`eo 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQ`fw 1-6 4-7* end=1 GFconn=1
+RFAIL GCQ`fw 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQdbo 1-5 4-7* end=1 GFconn=1
+RFAIL GCQdbo 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQdbW 1-3 4-7* end=1 GFconn=1
+RFAIL GCQdbW 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQdeS 0-1 2-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQdeS 0-1 2-5* 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-1 2-6* 3-5 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-2 1-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQdeS 0-2 1-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-2 1-6 3-5 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-2 1-7* 3-4 5-6 end=4 GFconn=1
+RFAIL GCQdeS 0-2 1-7* 3-5 4-6 end=4 GFconn=1
+RFAIL GCQdeS 0-2 1-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL GCQdeS 0-3* 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQdeS 0-3* 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-3* 1-6 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-3* 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQdeS 0-3* 1-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL GCQdeS 0-3* 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQdeS 0-4 1-7* 2-3 5-6 end=4 GFconn=1
+RFAIL GCQdeS 0-4 1-7* 2-5* 3-6* end=4 GFconn=1
+RFAIL GCQdeS 0-4 1-7* 2-6* 3-5 end=4 GFconn=1
+RFAIL GCQdeS 0-5* 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-5* 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-5* 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-5* 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL GCQdeS 0-5* 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL GCQdeS 0-5* 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL GCQdeS 0-6* 1-2 3-5 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-6* 1-3 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-6* 1-5 2-3 4-7* end=1 GFconn=1
+RFAIL GCQdeS 0-6* 1-7* 2-3 4-5 end=4 GFconn=1
+RFAIL GCQdeS 0-6* 1-7* 2-4 3-5 end=4 GFconn=1
+RFAIL GCQdeS 0-6* 1-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL GCQdfw 0-1 4-7* end=1 GFconn=1
+RFAIL GCQdfw 0-4 1-7* end=4 GFconn=1
+RFAIL GCQdfs 0-1 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQdfs 0-4 1-7* 5-6 end=4 GFconn=1
+RFAIL GCQdfs 0-5* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQdfs 0-5* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQdfs 0-6* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQdfs 0-6* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQdfk 0-1 6-7* end=0 GFconn=1
+RFAIL GCQdfk 0-7* 1-6 end=6 GFconn=1
+RFAIL GCQdf[ 0-1 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQdf[ 0-3* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQdf[ 0-3* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQdf[ 0-4 1-7* 3-6* end=4 GFconn=1
+RFAIL GCQdf[ 0-6* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQdf[ 0-6* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQePk 1-2 3-7* 4-6* end=1 GFconn=1
+RFAIL GCQePk 1-3 2-7* 4-6* end=1 GFconn=1
+RFAIL GCQePk 1-6* 2-3 4-7 end=4 GFconn=1
+RFAIL GCQePk 1-6* 2-4 3-7* end=4 GFconn=1
+RFAIL GCQePk 1-6* 2-7* 3-4 end=4 GFconn=1
+RFAIL GCQePk 1-7 2-3 4-6* end=1 GFconn=1
+RFAIL GCQeTk 0-1 2-3 4-6* end=1 GFconn=1
+RFAIL GCQeTk 0-2 1-3 4-6* end=1 GFconn=1
+RFAIL GCQeTk 0-2 1-6* 3-4 end=4 GFconn=1
+RFAIL GCQeTk 0-3* 1-2 4-6* end=1 GFconn=1
+RFAIL GCQeTk 0-3* 1-6* 2-4 end=4 GFconn=1
+RFAIL GCQeTk 0-4 1-6* 2-3 end=4 GFconn=1
+RFAIL GCQbTc 1-3 4-6* 5-7 end=1 GFconn=1
+RFAIL GCQbTc 1-5 3-7* 4-6* end=1 GFconn=1
+RFAIL GCQbTc 1-6* 3-4 5-7 end=4 GFconn=1
+RFAIL GCQbTc 1-6* 3-5 4-7 end=4 GFconn=1
+RFAIL GCQbTc 1-6* 3-7* 4-5 end=4 GFconn=1
+RFAIL GCQbTc 1-7 3-5 4-6* end=1 GFconn=1
+RFAIL GCQbTK 1-6* 4-7 end=4 GFconn=1
+RFAIL GCQbTK 1-7 4-6* end=1 GFconn=1
+RFAIL GCQbSk 1-2 3-7* 4-6* end=1 GFconn=1
+RFAIL GCQbSk 1-3 2-7 4-6* end=1 GFconn=1
+RFAIL GCQbSk 1-6* 2-3 4-7 end=4 GFconn=1
+RFAIL GCQbSk 1-6* 2-4 3-7* end=4 GFconn=1
+RFAIL GCQbSk 1-6* 2-7 3-4 end=4 GFconn=1
+RFAIL GCQbSk 1-7 2-3 4-6* end=1 GFconn=1
+RFAIL GCQbPk 0-1 3-7* 4-6* end=1 GFconn=1
+RFAIL GCQbPk 0-3* 1-6* 4-7 end=4 GFconn=1
+RFAIL GCQbPk 0-3* 1-7 4-6* end=1 GFconn=1
+RFAIL GCQbPk 0-4 1-6* 3-7* end=4 GFconn=1
+RFAIL GCQbPk 0-7 1-3 4-6* end=1 GFconn=1
+RFAIL GCQbPk 0-7 1-6* 3-4 end=4 GFconn=1
+RFAIL GCQbTk 1-3 4-6* end=1 GFconn=1
+RFAIL GCQbTk 1-6* 3-4 end=4 GFconn=1
+RFAIL GCQbtg 1-6* 4-7 end=4 GFconn=1
+RFAIL GCQbtg 1-7 4-6* end=1 GFconn=1
+RFAIL GCQdnw 0-1 4-7* 5-6* end=1 GFconn=1
+RFAIL GCQdnw 0-4 1-7* 5-6* end=4 GFconn=1
+RFAIL GCQdnw 0-5* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQdnw 0-5* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQdnw 0-6* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQdnw 0-6* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQdns 0-1 4-7* end=1 GFconn=1
+RFAIL GCQdns 0-4 1-7* end=4 GFconn=1
+RFAIL GCQdnk 0-1 5-7* end=0 GFconn=1
+RFAIL GCQdnk 0-7* 1-5 end=5 GFconn=1
+RFAIL GCQdn[ 0-1 3-5 4-7* end=1 GFconn=1
+RFAIL GCQdn[ 0-3* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQdn[ 0-3* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQdn[ 0-4 1-7* 3-5 end=4 GFconn=1
+RFAIL GCQdn[ 0-5* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQdn[ 0-5* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQRFs 2-5 4-7* end=2 GFconn=1
+RFAIL GCQRFs 2-7* 4-5 end=4 GFconn=1
+RFAIL GCQTeo 0-1 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTeo 0-3* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQTeo 0-3* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQTeo 0-4 1-7* 3-5* end=4 GFconn=1
+RFAIL GCQTeo 0-5* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQTeo 0-5* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQTbW 1-2 4-7* end=1 GFconn=1
+RFAIL GCQTbW 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQTeS 0-1 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQTeS 0-4 1-7* 5-6 end=4 GFconn=1
+RFAIL GCQTeS 0-5* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQTeS 0-5* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQTeS 0-6* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQTeS 0-6* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQTbS 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQTbS 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTbS 1-6 2-5 4-7* end=1 GFconn=1
+RFAIL GCQTbS 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQTbS 1-7* 2-5 4-6 end=4 GFconn=1
+RFAIL GCQTbS 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQTa[ 1-6 4-7* end=1 GFconn=1
+RFAIL GCQTa[ 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQTfw 0-1 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTfw 0-2 1-3 4-7* end=1 GFconn=1
+RFAIL GCQTfw 0-2 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQTfw 0-3* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQTfw 0-3* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQTfw 0-4 1-7* 2-3 end=4 GFconn=1
+RFAIL GCQTfs 0-1 2-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQTfs 0-1 2-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-1 2-6* 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-2 1-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQTfs 0-2 1-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-2 1-6 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-2 1-7* 3-4 5-6 end=4 GFconn=1
+RFAIL GCQTfs 0-2 1-7* 3-5* 4-6 end=4 GFconn=1
+RFAIL GCQTfs 0-2 1-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL GCQTfs 0-3* 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQTfs 0-3* 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-3* 1-6 2-5 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-3* 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQTfs 0-3* 1-7* 2-5 4-6 end=4 GFconn=1
+RFAIL GCQTfs 0-3* 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQTfs 0-4 1-7* 2-3 5-6 end=4 GFconn=1
+RFAIL GCQTfs 0-4 1-7* 2-5 3-6* end=4 GFconn=1
+RFAIL GCQTfs 0-4 1-7* 2-6* 3-5* end=4 GFconn=1
+RFAIL GCQTfs 0-5* 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-5* 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-5* 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-5* 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL GCQTfs 0-5* 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL GCQTfs 0-5* 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL GCQTfs 0-6* 1-2 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-6* 1-3 2-5 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-6* 1-5 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTfs 0-6* 1-7* 2-3 4-5 end=4 GFconn=1
+RFAIL GCQTfs 0-6* 1-7* 2-4 3-5* end=4 GFconn=1
+RFAIL GCQTfs 0-6* 1-7* 2-5 3-4 end=4 GFconn=1
+RFAIL GCQTfk 0-1 2-3 6-7* end=0 GFconn=1
+RFAIL GCQTfk 0-1 2-6* 3-7* end=0 GFconn=1
+RFAIL GCQTfk 0-1 2-7* 3-6* end=0 GFconn=1
+RFAIL GCQTfk 0-2 1-3 6-7* end=3 GFconn=1
+RFAIL GCQTfk 0-2 1-6 3-7* end=6 GFconn=1
+RFAIL GCQTfk 0-3* 1-2 6-7* end=2 GFconn=1
+RFAIL GCQTfk 0-3* 1-6 2-7* end=6 GFconn=1
+RFAIL GCQTfk 0-6* 1-2 3-7* end=2 GFconn=1
+RFAIL GCQTfk 0-6* 1-3 2-7* end=3 GFconn=1
+RFAIL GCQTfk 0-7* 1-2 3-6* end=2 GFconn=1
+RFAIL GCQTfk 0-7* 1-3 2-6* end=3 GFconn=1
+RFAIL GCQTfk 0-7* 1-6 2-3 end=6 GFconn=1
+RFAIL GCQTf[ 0-1 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTf[ 0-2 1-6 4-7* end=1 GFconn=1
+RFAIL GCQTf[ 0-2 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQTf[ 0-4 1-7* 2-6* end=4 GFconn=1
+RFAIL GCQTf[ 0-6* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQTf[ 0-6* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQTe{ 0-1 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTe{ 0-3* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQTe{ 0-3* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQTe{ 0-4 1-7* 3-6* end=4 GFconn=1
+RFAIL GCQTe{ 0-6* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQTe{ 0-6* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQUVS 0-3* 5-6 end=5 GFconn=1
+RFAIL GCQUVS 0-5* 3-6 end=3 GFconn=1
+RFAIL GCQRTk 1-2 4-6* end=1 GFconn=1
+RFAIL GCQRTk 1-6* 2-4 end=4 GFconn=1
+RFAIL GCQRVs 2-5 6-7* end=2 GFconn=1
+RFAIL GCQRVs 2-7* 5-6 end=6 GFconn=1
+RFAIL GCQSnO 0-1 4-7* end=1 GFconn=1
+RFAIL GCQSnO 0-4 1-7* end=4 GFconn=1
+RFAIL GCQSnw 0-1 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQSnw 0-3* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQSnw 0-3* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQSnw 0-4 1-7* 3-5* end=4 GFconn=1
+RFAIL GCQSnw 0-5* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQSnw 0-5* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQSnk 0-1 3-5* 6-7* end=0 GFconn=1
+RFAIL GCQSnk 0-1 3-6* 5-7* end=0 GFconn=1
+RFAIL GCQSnk 0-1 3-7* 5-6* end=0 GFconn=1
+RFAIL GCQSnk 0-3* 1-5 6-7* end=5 GFconn=1
+RFAIL GCQSnk 0-3* 1-6 5-7* end=6 GFconn=1
+RFAIL GCQSnk 0-5* 1-3 6-7* end=3 GFconn=1
+RFAIL GCQSnk 0-5* 1-6 3-7* end=6 GFconn=1
+RFAIL GCQSnk 0-6* 1-3 5-7* end=3 GFconn=1
+RFAIL GCQSnk 0-6* 1-5 3-7* end=5 GFconn=1
+RFAIL GCQSnk 0-7* 1-3 5-6* end=3 GFconn=1
+RFAIL GCQSnk 0-7* 1-5 3-6* end=5 GFconn=1
+RFAIL GCQSnk 0-7* 1-6 3-5* end=6 GFconn=1
+RFAIL GCQVVS 0-3* 2-5 end=5 GFconn=1
+RFAIL GCQVVS 0-5* 2-3 end=3 GFconn=1
+RFAIL GCQTnw 0-1 2-3 4-7* 5-6* end=1 GFconn=1
+RFAIL GCQTnw 0-1 2-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-1 2-6* 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-2 1-3 4-7* 5-6* end=1 GFconn=1
+RFAIL GCQTnw 0-2 1-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-2 1-6 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-2 1-7* 3-4 5-6* end=4 GFconn=1
+RFAIL GCQTnw 0-2 1-7* 3-5* 4-6 end=4 GFconn=1
+RFAIL GCQTnw 0-2 1-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL GCQTnw 0-3* 1-2 4-7* 5-6* end=1 GFconn=1
+RFAIL GCQTnw 0-3* 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-3* 1-6 2-5 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-3* 1-7* 2-4 5-6* end=4 GFconn=1
+RFAIL GCQTnw 0-3* 1-7* 2-5 4-6 end=4 GFconn=1
+RFAIL GCQTnw 0-3* 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQTnw 0-4 1-7* 2-3 5-6* end=4 GFconn=1
+RFAIL GCQTnw 0-4 1-7* 2-5 3-6* end=4 GFconn=1
+RFAIL GCQTnw 0-4 1-7* 2-6* 3-5* end=4 GFconn=1
+RFAIL GCQTnw 0-5* 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-5* 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-5* 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-5* 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL GCQTnw 0-5* 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL GCQTnw 0-5* 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL GCQTnw 0-6* 1-2 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-6* 1-3 2-5 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-6* 1-5 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTnw 0-6* 1-7* 2-3 4-5 end=4 GFconn=1
+RFAIL GCQTnw 0-6* 1-7* 2-4 3-5* end=4 GFconn=1
+RFAIL GCQTnw 0-6* 1-7* 2-5 3-4 end=4 GFconn=1
+RFAIL GCQTns 0-1 2-3 4-7* end=1 GFconn=1
+RFAIL GCQTns 0-2 1-3 4-7* end=1 GFconn=1
+RFAIL GCQTns 0-2 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQTns 0-3* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQTns 0-3* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQTns 0-4 1-7* 2-3 end=4 GFconn=1
+RFAIL GCQTnk 0-1 2-3 5-7* end=0 GFconn=1
+RFAIL GCQTnk 0-1 2-5 3-7* end=0 GFconn=1
+RFAIL GCQTnk 0-1 2-7* 3-5* end=0 GFconn=1
+RFAIL GCQTnk 0-2 1-3 5-7* end=3 GFconn=1
+RFAIL GCQTnk 0-2 1-5 3-7* end=5 GFconn=1
+RFAIL GCQTnk 0-3* 1-2 5-7* end=2 GFconn=1
+RFAIL GCQTnk 0-3* 1-5 2-7* end=5 GFconn=1
+RFAIL GCQTnk 0-5* 1-2 3-7* end=2 GFconn=1
+RFAIL GCQTnk 0-5* 1-3 2-7* end=3 GFconn=1
+RFAIL GCQTnk 0-7* 1-2 3-5* end=2 GFconn=1
+RFAIL GCQTnk 0-7* 1-3 2-5 end=3 GFconn=1
+RFAIL GCQTnk 0-7* 1-5 2-3 end=5 GFconn=1
+RFAIL GCQTm{ 0-1 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQTm{ 0-3* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQTm{ 0-3* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQTm{ 0-4 1-7* 3-5* end=4 GFconn=1
+RFAIL GCQTm{ 0-5* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQTm{ 0-5* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQteo 0-1 2-3 4-7* end=1 GFconn=1
+RFAIL GCQteo 0-2 1-3 4-7* end=1 GFconn=1
+RFAIL GCQteo 0-2 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQteo 0-3* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQteo 0-3* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQteo 0-4 1-7* 2-3 end=4 GFconn=1
+RFAIL GCQteW 0-1 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQteW 0-2 1-5 4-7* end=1 GFconn=1
+RFAIL GCQteW 0-2 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQteW 0-4 1-7* 2-5* end=4 GFconn=1
+RFAIL GCQteW 0-5* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQteW 0-5* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQta[ 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQta[ 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQta[ 1-6 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQta[ 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQta[ 1-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL GCQta[ 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQtfw 0-1 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQtfw 0-3* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQtfw 0-3* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQtfw 0-4 1-7* 3-5* end=4 GFconn=1
+RFAIL GCQtfw 0-5* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQtfw 0-5* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQtfk 0-1 3-5* 6-7* end=0 GFconn=1
+RFAIL GCQtfk 0-1 3-6* 5-7* end=0 GFconn=1
+RFAIL GCQtfk 0-1 3-7* 5-6 end=0 GFconn=1
+RFAIL GCQtfk 0-3* 1-5 6-7* end=5 GFconn=1
+RFAIL GCQtfk 0-3* 1-6 5-7* end=6 GFconn=1
+RFAIL GCQtfk 0-5* 1-3 6-7* end=3 GFconn=1
+RFAIL GCQtfk 0-5* 1-6 3-7* end=6 GFconn=1
+RFAIL GCQtfk 0-6* 1-3 5-7* end=3 GFconn=1
+RFAIL GCQtfk 0-6* 1-5 3-7* end=5 GFconn=1
+RFAIL GCQtfk 0-7* 1-3 5-6 end=3 GFconn=1
+RFAIL GCQtfk 0-7* 1-5 3-6* end=5 GFconn=1
+RFAIL GCQtfk 0-7* 1-6 3-5* end=6 GFconn=1
+RFAIL GCQtf[ 0-1 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQtf[ 0-4 1-7* 5-6 end=4 GFconn=1
+RFAIL GCQtf[ 0-5* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQtf[ 0-5* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQtf[ 0-6* 1-5 4-7* end=1 GFconn=1
+RFAIL GCQtf[ 0-6* 1-7* 4-5 end=4 GFconn=1
+RFAIL GCQte{ 0-1 2-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQte{ 0-1 2-5* 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-1 2-6* 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-2 1-3 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQte{ 0-2 1-5 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-2 1-6 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-2 1-7* 3-4 5-6 end=4 GFconn=1
+RFAIL GCQte{ 0-2 1-7* 3-5* 4-6 end=4 GFconn=1
+RFAIL GCQte{ 0-2 1-7* 3-6* 4-5 end=4 GFconn=1
+RFAIL GCQte{ 0-3* 1-2 4-7* 5-6 end=1 GFconn=1
+RFAIL GCQte{ 0-3* 1-5 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-3* 1-6 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-3* 1-7* 2-4 5-6 end=4 GFconn=1
+RFAIL GCQte{ 0-3* 1-7* 2-5* 4-6 end=4 GFconn=1
+RFAIL GCQte{ 0-3* 1-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GCQte{ 0-4 1-7* 2-3 5-6 end=4 GFconn=1
+RFAIL GCQte{ 0-4 1-7* 2-5* 3-6* end=4 GFconn=1
+RFAIL GCQte{ 0-4 1-7* 2-6* 3-5* end=4 GFconn=1
+RFAIL GCQte{ 0-5* 1-2 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-5* 1-3 2-6* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-5* 1-6 2-3 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-5* 1-7* 2-3 4-6 end=4 GFconn=1
+RFAIL GCQte{ 0-5* 1-7* 2-4 3-6* end=4 GFconn=1
+RFAIL GCQte{ 0-5* 1-7* 2-6* 3-4 end=4 GFconn=1
+RFAIL GCQte{ 0-6* 1-2 3-5* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-6* 1-3 2-5* 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-6* 1-5 2-3 4-7* end=1 GFconn=1
+RFAIL GCQte{ 0-6* 1-7* 2-3 4-5 end=4 GFconn=1
+RFAIL GCQte{ 0-6* 1-7* 2-4 3-5* end=4 GFconn=1
+RFAIL GCQte{ 0-6* 1-7* 2-5* 3-4 end=4 GFconn=1
+RFAIL GCQuTK 0-1 2-3 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQuTK 0-1 2-5* 3-7 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-1 2-7* 3-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-2 1-3 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQuTK 0-2 1-5 3-7 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-2 1-6* 3-4 5-7* end=4 GFconn=1
+RFAIL GCQuTK 0-2 1-6* 3-5* 4-7 end=4 GFconn=1
+RFAIL GCQuTK 0-2 1-6* 3-7 4-5 end=4 GFconn=1
+RFAIL GCQuTK 0-2 1-7 3-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-3* 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQuTK 0-3* 1-5 2-7* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-3* 1-6* 2-4 5-7* end=4 GFconn=1
+RFAIL GCQuTK 0-3* 1-6* 2-5* 4-7 end=4 GFconn=1
+RFAIL GCQuTK 0-3* 1-6* 2-7* 4-5 end=4 GFconn=1
+RFAIL GCQuTK 0-3* 1-7 2-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-4 1-6* 2-3 5-7* end=4 GFconn=1
+RFAIL GCQuTK 0-4 1-6* 2-5* 3-7 end=4 GFconn=1
+RFAIL GCQuTK 0-4 1-6* 2-7* 3-5* end=4 GFconn=1
+RFAIL GCQuTK 0-5* 1-2 3-7 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-5* 1-3 2-7* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-5* 1-6* 2-3 4-7 end=4 GFconn=1
+RFAIL GCQuTK 0-5* 1-6* 2-4 3-7 end=4 GFconn=1
+RFAIL GCQuTK 0-5* 1-6* 2-7* 3-4 end=4 GFconn=1
+RFAIL GCQuTK 0-5* 1-7 2-3 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-7* 1-2 3-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-7* 1-3 2-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-7* 1-5 2-3 4-6* end=1 GFconn=1
+RFAIL GCQuTK 0-7* 1-6* 2-3 4-5 end=4 GFconn=1
+RFAIL GCQuTK 0-7* 1-6* 2-4 3-5* end=4 GFconn=1
+RFAIL GCQuTK 0-7* 1-6* 2-5* 3-4 end=4 GFconn=1
+RFAIL GCQuSk 0-1 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQuSk 0-4 1-6* 5-7* end=4 GFconn=1
+RFAIL GCQuSk 0-5* 1-6* 4-7 end=4 GFconn=1
+RFAIL GCQuSk 0-5* 1-7 4-6* end=1 GFconn=1
+RFAIL GCQuSk 0-7* 1-5 4-6* end=1 GFconn=1
+RFAIL GCQuSk 0-7* 1-6* 4-5 end=4 GFconn=1
+RFAIL GCQuPk 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQuPk 1-5 2-7* 4-6* end=1 GFconn=1
+RFAIL GCQuPk 1-6* 2-4 5-7* end=4 GFconn=1
+RFAIL GCQuPk 1-6* 2-5* 4-7 end=4 GFconn=1
+RFAIL GCQuPk 1-6* 2-7* 4-5 end=4 GFconn=1
+RFAIL GCQuPk 1-7 2-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTk 0-1 2-5* 4-6* end=1 GFconn=1
+RFAIL GCQuTk 0-2 1-5 4-6* end=1 GFconn=1
+RFAIL GCQuTk 0-2 1-6* 4-5 end=4 GFconn=1
+RFAIL GCQuTk 0-4 1-6* 2-5* end=4 GFconn=1
+RFAIL GCQuTk 0-5* 1-2 4-6* end=1 GFconn=1
+RFAIL GCQuTk 0-5* 1-6* 2-4 end=4 GFconn=1
+RFAIL GCQrRW 0-5* 3-7 end=3 GFconn=1
+RFAIL GCQrRW 0-7 3-5* end=0 GFconn=1
+RFAIL GCQrTK 1-3 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQrTK 1-5 3-7 4-6* end=1 GFconn=1
+RFAIL GCQrTK 1-6* 3-4 5-7* end=4 GFconn=1
+RFAIL GCQrTK 1-6* 3-5* 4-7 end=4 GFconn=1
+RFAIL GCQrTK 1-6* 3-7 4-5 end=4 GFconn=1
+RFAIL GCQrTK 1-7 3-5* 4-6* end=1 GFconn=1
+RFAIL GCQrSk 1-2 4-6* 5-7* end=1 GFconn=1
+RFAIL GCQrSk 1-5 2-7 4-6* end=1 GFconn=1
+RFAIL GCQrSk 1-6* 2-4 5-7* end=4 GFconn=1
+RFAIL GCQrSk 1-6* 2-5* 4-7 end=4 GFconn=1
+RFAIL GCQrSk 1-6* 2-7 4-5 end=4 GFconn=1
+RFAIL GCQrSk 1-7 2-5* 4-6* end=1 GFconn=1
+RFAIL GCQrTk 1-5 4-6* end=1 GFconn=1
+RFAIL GCQrTk 1-6* 4-5 end=4 GFconn=1
+RFAIL GCQtnw 0-1 3-6* 4-7* end=1 GFconn=1
+RFAIL GCQtnw 0-3* 1-6 4-7* end=1 GFconn=1
+RFAIL GCQtnw 0-3* 1-7* 4-6 end=4 GFconn=1
+RFAIL GCQtnw 0-4 1-7* 3-6* end=4 GFconn=1
+RFAIL GCQtnw 0-6* 1-3 4-7* end=1 GFconn=1
+RFAIL GCQtnw 0-6* 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQtnk 0-1 3-7* end=0 GFconn=1
+RFAIL GCQtnk 0-7* 1-3 end=3 GFconn=1
+RFAIL GCQtn[ 0-1 4-7* end=1 GFconn=1
+RFAIL GCQtn[ 0-4 1-7* end=4 GFconn=1
+RFAIL GCQtm{ 0-1 2-3 4-7* end=1 GFconn=1
+RFAIL GCQtm{ 0-2 1-3 4-7* end=1 GFconn=1
+RFAIL GCQtm{ 0-2 1-7* 3-4 end=4 GFconn=1
+RFAIL GCQtm{ 0-3* 1-2 4-7* end=1 GFconn=1
+RFAIL GCQtm{ 0-3* 1-7* 2-4 end=4 GFconn=1
+RFAIL GCQtm{ 0-4 1-7* 2-3 end=4 GFconn=1
+RFAIL GCXe`[ 0-6* 3-7 end=3 GFconn=1
+RFAIL GCXe`[ 0-7 3-6* end=0 GFconn=1
+RFAIL GCXeb[ 0-1 3-6* end=0 GFconn=1
+RFAIL GCXeb[ 0-6* 1-3 end=3 GFconn=1
+RFAIL GCXb^_ 0-1 2-6* 3-7* end=0 GFconn=1
+RFAIL GCXb^_ 0-2 1-6* 3-7* end=0 GFconn=1
+RFAIL GCXb^_ 0-6 1-2 3-7* end=0 GFconn=1
+RFAIL GCXb^_ 0-7* 1-2 3-6 end=3 GFconn=1
+RFAIL GCXb^_ 0-7* 1-3 2-6* end=3 GFconn=1
+RFAIL GCXb^_ 0-7* 1-6* 2-3 end=3 GFconn=1
+RFAIL GCXb^w 0-1 2-4* 3-7* 5-6* end=0 GFconn=1
+RFAIL GCXb^w 0-1 2-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL GCXb^w 0-1 2-6* 3-7* 4-5 end=0 GFconn=1
+RFAIL GCXb^w 0-2 1-4* 3-7* 5-6* end=0 GFconn=1
+RFAIL GCXb^w 0-2 1-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL GCXb^w 0-2 1-6* 3-7* 4-5 end=0 GFconn=1
+RFAIL GCXb^w 0-4 1-2 3-7* 5-6* end=0 GFconn=1
+RFAIL GCXb^w 0-4 1-5* 2-6* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-4 1-6* 2-5* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-5 1-2 3-7* 4-6* end=0 GFconn=1
+RFAIL GCXb^w 0-5 1-4* 2-6* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-5 1-6* 2-4* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-6 1-2 3-7* 4-5 end=0 GFconn=1
+RFAIL GCXb^w 0-6 1-4* 2-5* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-6 1-5* 2-4* 3-7* end=0 GFconn=1
+RFAIL GCXb^w 0-7* 1-2 3-4 5-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-2 3-5 4-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-2 3-6 4-5 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-3 2-4* 5-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-3 2-5* 4-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-3 2-6* 4-5 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-4* 2-3 5-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-4* 2-5* 3-6 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-4* 2-6* 3-5 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-5* 2-3 4-6* end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-5* 2-4* 3-6 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-5* 2-6* 3-4 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-6* 2-3 4-5 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-6* 2-4* 3-5 end=3 GFconn=1
+RFAIL GCXb^w 0-7* 1-6* 2-5* 3-4 end=3 GFconn=1
+RFAIL GCXb^s 0-1 2-4* 3-7* end=0 GFconn=1
+RFAIL GCXb^s 0-2 1-4* 3-7* end=0 GFconn=1
+RFAIL GCXb^s 0-4 1-2 3-7* end=0 GFconn=1
+RFAIL GCXb^s 0-7* 1-2 3-4 end=3 GFconn=1
+RFAIL GCXb^s 0-7* 1-3 2-4* end=3 GFconn=1
+RFAIL GCXb^s 0-7* 1-4* 2-3 end=3 GFconn=1
+RFAIL GCXb^[ 0-1 2-4* 5-7* end=1 GFconn=1
+RFAIL GCXb^[ 0-1 2-5* 4-7* end=1 GFconn=1
+RFAIL GCXb^[ 0-1 2-7* 4-5 end=1 GFconn=1
+RFAIL GCXb^[ 0-2 1-4* 5-7* end=2 GFconn=1
+RFAIL GCXb^[ 0-2 1-5* 4-7* end=2 GFconn=1
+RFAIL GCXb^[ 0-2 1-7* 4-5 end=2 GFconn=1
+RFAIL GCXb^[ 0-4 1-2 5-7* end=4 GFconn=1
+RFAIL GCXb^[ 0-4 1-5* 2-7* end=4 GFconn=1
+RFAIL GCXb^[ 0-4 1-7* 2-5* end=4 GFconn=1
+RFAIL GCXb^[ 0-5 1-2 4-7* end=5 GFconn=1
+RFAIL GCXb^[ 0-5 1-4* 2-7* end=5 GFconn=1
+RFAIL GCXb^[ 0-5 1-7* 2-4* end=5 GFconn=1
+RFAIL GCXmbS 0-1 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXmbS 0-4 1-7* 3-6* end=0 GFconn=1
+RFAIL GCXmbS 0-6* 1-3 4-7* end=3 GFconn=1
+RFAIL GCXmbS 0-6* 1-4* 3-7 end=3 GFconn=1
+RFAIL GCXmbS 0-6* 1-7* 3-4 end=3 GFconn=1
+RFAIL GCXmbS 0-7 1-4* 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-1 2-4* 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXma[ 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXma[ 0-1 2-7 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXma[ 0-2 1-4* 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXma[ 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXma[ 0-2 1-7* 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXma[ 0-4 1-2 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXma[ 0-4 1-5* 2-7 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-4 1-7* 2-5* 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXma[ 0-5 1-4* 2-7 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-5 1-7* 2-4* 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-6* 1-2 3-4 5-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-2 3-5 4-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-2 3-7 4-5* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-3 2-4* 5-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-3 2-5* 4-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-3 2-7 4-5* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-4* 2-3 5-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-4* 2-5* 3-7 end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-4* 2-7 3-5 end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-5* 2-3 4-7* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-5* 2-4* 3-7 end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-5* 2-7 3-4 end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-7* 2-3 4-5* end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-7* 2-4* 3-5 end=3 GFconn=1
+RFAIL GCXma[ 0-6* 1-7* 2-5* 3-4 end=3 GFconn=1
+RFAIL GCXma[ 0-7 1-2 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXma[ 0-7 1-4* 2-5* 3-6* end=0 GFconn=1
+RFAIL GCXma[ 0-7 1-5* 2-4* 3-6* end=0 GFconn=1
+RFAIL GCXm`[ 0-4 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXm`[ 0-5 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXm`[ 0-6* 3-4 5-7* end=3 GFconn=1
+RFAIL GCXm`[ 0-6* 3-5 4-7* end=3 GFconn=1
+RFAIL GCXm`[ 0-6* 3-7 4-5* end=3 GFconn=1
+RFAIL GCXm`[ 0-7 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXmb[ 0-1 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXmb[ 0-4 1-5* 3-6* end=0 GFconn=1
+RFAIL GCXmb[ 0-5 1-4* 3-6* end=0 GFconn=1
+RFAIL GCXmb[ 0-6* 1-3 4-5* end=3 GFconn=1
+RFAIL GCXmb[ 0-6* 1-4* 3-5 end=3 GFconn=1
+RFAIL GCXmb[ 0-6* 1-5* 3-4 end=3 GFconn=1
+RFAIL GCXnbW 0-1 2-4* 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXnbW 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXnbW 0-1 2-7* 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXnbW 0-2 1-4* 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXnbW 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXnbW 0-2 1-7* 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXnbW 0-4 1-2 3-6* 5-7* end=0 GFconn=1
+RFAIL GCXnbW 0-4 1-5* 2-7* 3-6* end=0 GFconn=1
+RFAIL GCXnbW 0-4 1-7* 2-5* 3-6* end=0 GFconn=1
+RFAIL GCXnbW 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL GCXnbW 0-5 1-4* 2-7* 3-6* end=0 GFconn=1
+RFAIL GCXnbW 0-5 1-7* 2-4* 3-6* end=0 GFconn=1
+RFAIL GCXnbW 0-6* 1-2 3-4 5-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-2 3-5 4-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-2 3-7 4-5* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-3 2-4* 5-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-3 2-5* 4-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-3 2-7* 4-5* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-4* 2-3 5-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-4* 2-5* 3-7 end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-4* 2-7* 3-5 end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-5* 2-3 4-7* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-5* 2-4* 3-7 end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-5* 2-7* 3-4 end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-7* 2-3 4-5* end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-7* 2-4* 3-5 end=3 GFconn=1
+RFAIL GCXnbW 0-6* 1-7* 2-5* 3-4 end=3 GFconn=1
+RFAIL GCXnbW 0-7 1-2 3-6* 4-5* end=0 GFconn=1
+RFAIL GCXnbW 0-7 1-4* 2-5* 3-6* end=0 GFconn=1
+RFAIL GCXnbW 0-7 1-5* 2-4* 3-6* end=0 GFconn=1
+RFAIL GCXj^w 0-1 2-6* 3-7* end=0 GFconn=1
+RFAIL GCXj^w 0-2 1-6* 3-7* end=0 GFconn=1
+RFAIL GCXj^w 0-6 1-2 3-7* end=0 GFconn=1
+RFAIL GCXj^w 0-7* 1-2 3-6 end=3 GFconn=1
+RFAIL GCXj^w 0-7* 1-3 2-6* end=3 GFconn=1
+RFAIL GCXj^w 0-7* 1-6* 2-3 end=3 GFconn=1
+RFAIL GCXj^[ 0-1 2-7* end=1 GFconn=1
+RFAIL GCXj^[ 0-2 1-7* end=2 GFconn=1
+RFAIL GCXj]{ 0-1 3-7* end=0 GFconn=1
+RFAIL GCXj]{ 0-7* 1-3 end=3 GFconn=1
+RFAIL GCdcvw 0-1 2-7* 3-4* end=1 GFconn=1
+RFAIL GCdcvw 0-2 1-7* 3-4* end=2 GFconn=1
+RFAIL GCdcvw 0-3* 1-4 2-7* end=1 GFconn=1
+RFAIL GCdcvw 0-3* 1-7* 2-4 end=2 GFconn=1
+RFAIL GCdcvw 0-4* 1-3 2-7* end=1 GFconn=1
+RFAIL GCdcvw 0-4* 1-7* 2-3 end=2 GFconn=1
+RFAIL GCdcvs 0-1 2-5* 3-4* 6-7* end=0 GFconn=1
+RFAIL GCdcvs 0-1 2-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCdcvs 0-1 2-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL GCdcvs 0-2 1-5* 3-4* 6-7* end=0 GFconn=1
+RFAIL GCdcvs 0-2 1-5* 3-6* 4-7* end=0 GFconn=1
+RFAIL GCdcvs 0-2 1-5* 3-7* 4-6* end=0 GFconn=1
+RFAIL GCdcvs 0-3* 1-2 4-5 6-7* end=4 GFconn=1
+RFAIL GCdcvs 0-3* 1-2 4-7* 5-6 end=6 GFconn=1
+RFAIL GCdcvs 0-3* 1-4 2-5* 6-7* end=4 GFconn=1
+RFAIL GCdcvs 0-3* 1-5* 2-4 6-7* end=4 GFconn=1
+RFAIL GCdcvs 0-3* 1-5* 2-6 4-7* end=6 GFconn=1
+RFAIL GCdcvs 0-3* 1-6 2-5* 4-7* end=6 GFconn=1
+RFAIL GCdcvs 0-4* 1-2 3-5 6-7* end=3 GFconn=1
+RFAIL GCdcvs 0-4* 1-2 3-7* 5-6 end=6 GFconn=1
+RFAIL GCdcvs 0-4* 1-3 2-5* 6-7* end=3 GFconn=1
+RFAIL GCdcvs 0-4* 1-5* 2-3 6-7* end=3 GFconn=1
+RFAIL GCdcvs 0-4* 1-5* 2-6 3-7* end=6 GFconn=1
+RFAIL GCdcvs 0-4* 1-6 2-5* 3-7* end=6 GFconn=1
+RFAIL GCdcvs 0-5 1-2 3-4* 6-7* end=0 GFconn=1
+RFAIL GCdcvs 0-5 1-2 3-6* 4-7* end=0 GFconn=1
+RFAIL GCdcvs 0-5 1-2 3-7* 4-6* end=0 GFconn=1
+RFAIL GCdcvs 0-6* 1-2 3-5 4-7* end=3 GFconn=1
+RFAIL GCdcvs 0-6* 1-2 3-7* 4-5 end=4 GFconn=1
+RFAIL GCdcvs 0-6* 1-3 2-5* 4-7* end=3 GFconn=1
+RFAIL GCdcvs 0-6* 1-4 2-5* 3-7* end=4 GFconn=1
+RFAIL GCdcvs 0-6* 1-5* 2-3 4-7* end=3 GFconn=1
+RFAIL GCdcvs 0-6* 1-5* 2-4 3-7* end=4 GFconn=1
+RFAIL GCdcvs 0-7* 1-2 3-4* 5-6 end=6 GFconn=1
+RFAIL GCdcvs 0-7* 1-2 3-5 4-6* end=3 GFconn=1
+RFAIL GCdcvs 0-7* 1-2 3-6* 4-5 end=4 GFconn=1
+RFAIL GCdcvs 0-7* 1-3 2-5* 4-6* end=3 GFconn=1
+RFAIL GCdcvs 0-7* 1-4 2-5* 3-6* end=4 GFconn=1
+RFAIL GCdcvs 0-7* 1-5* 2-3 4-6* end=3 GFconn=1
+RFAIL GCdcvs 0-7* 1-5* 2-4 3-6* end=4 GFconn=1
+RFAIL GCdcvs 0-7* 1-5* 2-6 3-4* end=6 GFconn=1
+RFAIL GCdcvs 0-7* 1-6 2-5* 3-4* end=6 GFconn=1
+RFAIL GCdcu{ 0-1 3-4* 6-7* end=0 GFconn=1
+RFAIL GCdcu{ 0-1 3-6* 4-7* end=0 GFconn=1
+RFAIL GCdcu{ 0-1 3-7* 4-6* end=0 GFconn=1
+RFAIL GCdcu{ 0-3* 1-4 6-7* end=4 GFconn=1
+RFAIL GCdcu{ 0-3* 1-6 4-7* end=6 GFconn=1
+RFAIL GCdcu{ 0-4* 1-3 6-7* end=3 GFconn=1
+RFAIL GCdcu{ 0-4* 1-6 3-7* end=6 GFconn=1
+RFAIL GCdcu{ 0-6* 1-3 4-7* end=3 GFconn=1
+RFAIL GCdcu{ 0-6* 1-4 3-7* end=4 GFconn=1
+RFAIL GCdcu{ 0-7* 1-3 4-6* end=3 GFconn=1
+RFAIL GCdcu{ 0-7* 1-4 3-6* end=4 GFconn=1
+RFAIL GCdcu{ 0-7* 1-6 3-4* end=6 GFconn=1
+RFAIL GCdbKw 1-5* 2-7 end=2 GFconn=1
+RFAIL GCdbKw 1-7 2-5* end=1 GFconn=1
+RFAIL GCdbNk 4-5 6-7* end=5 GFconn=1
+RFAIL GCdbNk 4-6 5-7* end=6 GFconn=1
+RFAIL GCdfNK 0-3* 4-5 end=4 GFconn=1
+RFAIL GCdfNK 0-4* 3-5 end=3 GFconn=1
+RFAIL GQhTVs 0-2* 4-5 6-7* end=4 GFconn=1
+RFAIL GQhTVs 0-2* 4-7* 5-6 end=6 GFconn=1
+RFAIL GQhTVs 0-4* 2-5 6-7* end=2 GFconn=1
+RFAIL GQhTVs 0-4* 2-7* 5-6 end=6 GFconn=1
+RFAIL GQhTVs 0-5 2-4* 6-7* end=0 GFconn=1
+RFAIL GQhTVs 0-5 2-6* 4-7* end=0 GFconn=1
+RFAIL GQhTVs 0-5 2-7* 4-6* end=0 GFconn=1
+RFAIL GQhTVs 0-6* 2-5 4-7* end=2 GFconn=1
+RFAIL GQhTVs 0-6* 2-7* 4-5 end=4 GFconn=1
+RFAIL GQhTVs 0-7* 2-4* 5-6 end=6 GFconn=1
+RFAIL GQhTVs 0-7* 2-5 4-6* end=2 GFconn=1
+RFAIL GQhTVs 0-7* 2-6* 4-5 end=4 GFconn=1
+RFAIL GQhVVS 0-2* 1-3* 4-5 end=5 GFconn=1
+RFAIL GQhVVS 0-2* 1-5* 3-4 end=3 GFconn=1
+RFAIL GQhVVS 0-3 1-5* 2-4* end=3 GFconn=1
+RFAIL GQhVVS 0-4* 1-3* 2-5 end=5 GFconn=1
+RFAIL GQhVVS 0-4* 1-5* 2-3 end=3 GFconn=1
+RFAIL GQhVVS 0-5 1-3* 2-4* end=5 GFconn=1
+RFAIL GQil^w 1-6 3-7* end=1 GFconn=1
+RFAIL GQil^w 1-7* 3-6 end=3 GFconn=1
+SUMMARY inst=76327 ptm_fail=28 ptm_und=0 par_inst=65712 par_fail=28 r_tests=452608 r_fail=1926 r_und=0 pee_tests=682604 pee_fail=35316 verified=893854 badwit=0
