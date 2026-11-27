@@ -1,0 +1,1 @@
+  even vertices 2: graphs=50561 decomposable=50561

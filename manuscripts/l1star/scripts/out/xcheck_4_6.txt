@@ -1,0 +1,3 @@
+SUMMARY xcheck queries=64 mismatches=0
+SUMMARY xcheck queries=448 mismatches=0
+SUMMARY xcheck queries=2496 mismatches=0

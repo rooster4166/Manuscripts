@@ -1,0 +1,17 @@
+EXTREME DTw g=3 c=1 minlen_free=3 minlen_local=3 minout=2
+EXTREME DT{ g=4 c=1 minlen_free=4 minlen_local=4 minout=3
+EXTREME D]{ g=4 c=0 minlen_free=4 minlen_local=4 minout=1
+EXTREME D]{ g=4 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME D]{ g=4 c=2 minlen_free=4 minlen_local=4 minout=1
+EXTREME D]{ g=4 c=3 minlen_free=4 minlen_local=4 minout=1
+SUMMARY stats pairs=28 Q_c-inside-N[c]-possible=13
+  0: minlen_free=0 minlen_local=0 minout=13
+  1: minlen_free=5 minlen_local=5 minout=13
+  2: minlen_free=10 minlen_local=10 minout=1
+  3: minlen_free=8 minlen_local=8 minout=1
+  4: minlen_free=5 minlen_local=5 minout=0
+  [g exists, c not in N(g)] pairs=8 inside-N[c]=5
+    0: minlen_local=0 minout=5
+    1: minlen_local=2 minout=2
+    2: minlen_local=3 minout=1
+    3: minlen_local=3 minout=0

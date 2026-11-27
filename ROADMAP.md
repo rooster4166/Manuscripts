@@ -60,7 +60,8 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`, new): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`, new): conjecture L1* (a one-sided avoidance statement with ≤ 1 even vertex). By `ee_of_L1Star` it completes EE.
+- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
 - **ee**: **finished** (463aa4c).
   - **EE has no counterexample:** exhaustive over all 11,959,367 one-even graphs at n = 11 (59.7M pairs).
   - **Lean:** `ee_atMostOneCommon`, `ee_deg_two`, `pee_adjEven`, the reductions `ee_of_triangle` / `ee_of_outside`, and `ee_of_L1Star`.
@@ -496,3 +497,11 @@ Candidate uniform mechanisms (`research/connections.md`):
   - The engine is `ptm2_of_base` (the walk theorem): leafify, then walk back by iterated Fan with vertex sets, then two leaf merges.
   - The base hypothesis held in 12,193 of 13,025 2-matchings at n = 8, so the reduction is strong beyond girth 5.
   - **Next:** the STL lift (PTM_2 ⇒ STL-P / Test1 at d(z) = 4), the manuscript, and audit A22.
+- **First end-to-end instance of the spine test from the main line (ptm 7facc07; standard axioms, verified).**
+  - `test1_of_girth5`: let z be the only even vertex with d(z) = 4, N(z) = {a, b, c, d}, and ab, cd ∉ E(J). Suppose every neighbour of z has degree ≥ 3, and liftJ = (J − z) + ab + cd has girth ≥ 5 with c reachable from a. Then **spine Test1 holds at J, z**.
+  - The chain is ptm2_girth5 ⇒ `stl_of_ptm2` ⇒ STL ⇒ `test1_of_stl`.
+  - This is the first unconditional case of a spine test obtained through the star-terminal / terminal-matching ladder.
+- **L1* reduced to blocked instances, in Lean (l1star 35e03f2, L1Star.lean; standard axioms, verified).** `l1starGen_of_blocked : L1Blocked → L1StarGen` (L1* for any finite admissible A) and `ee_of_l1Blocked : L1Blocked → EE`. Here a *blocked* instance has c ∉ N(g) and every neighbour of g adjacent to a vertex of A ∖ {g}.
+  - The proof is Lovász's induction with four reductions (Fan with vertex sets, leaf graphs).
+  - Blocked instances make up 3.4% of the |A| ≤ 2 cases at n = 9, all with d(g) ∈ {2, 4}.
+  - The exhaustive n = 11 run of the local form is about 75% done, with 0 failures.

@@ -1335,3 +1335,48 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
    - PTM₂(e@x) at d(z) = 4 contains EE at u ∈ N(z) when u lies in a pairing {uu′, cd} of N(z) with uu′, cd ∉ E(J). For other u, (J − z) + M is a multigraph.
    - The walk theorem's last step is EE-like.
    - So a full PTM₂(e@x), including the multigraph case, would close the open case of EE at d(z) = 4.
+
+## AA. The avoidance conjecture L1* (cloud session `claude/l1star`, 2026-11-27)
+
+*Experiments: E25. Manuscript: `manuscripts/l1star/l1star.tex`. Lean: `lean/GallaiLean/L1Star.lean`. Audit: `research/audit/A23-l1star.md`.*
+
+### AA.1 Verdict
+- **L1\* survives in a much stronger, local form:** some Lovász decomposition has V(Q_c) ⊆ N[c] ∪ N(g).
+  - This is L1* for every admissible A at once, with no bound on |A|. In all-odd graphs it reads V(Q_c) ⊆ N[c].
+  - Exhaustive to n = 11 (E25 A), plus 38,896 random pairs at n = 11–16. No failure.
+- **This is the natural general form.** The condition A ∩ N(g) = ∅ cannot be weakened, not even to "A separates c from g" (example `DTw`). Size does not matter: every |A| passes.
+- **A clean corollary of the local form:** if the only two even vertices are at distance ≥ 3, a Lovász decomposition exists.
+  - Exhaustive to n = 10. It fails at distance 1 or 2 in about 4% of graphs.
+  - The same holds for any packed set of even vertices (n ≤ 10).
+  - The local form itself does not extend to two even vertices.
+
+### AA.2 Proved
+- **(Lean) `l1starGen_of_blocked : L1Blocked → L1StarGen`, `ee_of_l1Blocked : L1Blocked → EE`.** A smallest counterexample to general L1* is *blocked*: g exists, c ∉ N(g), and every neighbour of g has a neighbour in A ∖ {g}.
+- The proof is Lovász's induction, with c's end protected at every step through a leaf graph and Fan's lemma with vertex sets:
+  - (a) c ∈ N(g): solve (G − gc, g, A ∪ {c}), then append gc.
+  - (b) u ∈ N(g) free of A ∖ g, u ∉ N(c): solve (G − gu, c, A); Fan towards u with a leaf hung at c.
+  - (c) The same with u ∈ N(c): solve (G − cu − gu, u, A ∪ {c}); Fan in the leaf graph; merge.
+  - (d) All-odd: the leaf graph at c, terminal ℓ, A ∪ {c}.
+- The reductions grow A by previous terminals. That is why the general form, not |A| ≤ 2, is the inductive statement.
+- **(Paper) further reductions:**
+  - boundary: A can be shrunk to ∂C;
+  - route to c, when g ∉ A and g, c are connected in G − A;
+  - Fan routes from g to a vertex with no A-neighbour;
+  - d(g) = 2: split off g, or swap the triangle;
+  - d(c) = 3: split off at c.
+- **(Paper) Corollary 5.6, the structure of a smallest counterexample.** It is blocked, A = ∂C, and either g ∈ A or A separates c from g. If d(g) = 2, then either N(g) is an independent pair inside N(c) with g ∈ A, or N(g) is an edge and A separates c from g.
+
+### AA.3 What remains, and what does not work
+- **Open: the blocked case.** At n = 9 it is 13.9% of the |A| ≤ 2 instances, and 0.59% survive all reductions one level deep.
+- The reductions alone do not decide the problem. Recursive certificates fail on 35 instances at n = 7, and on EE for CP(3) + apex: the cocktail party graph again, as in `cocktail_fan_barrier`.
+- Tried and not inductive:
+  - Lovász Case I at g with the local form as hypothesis. The region becomes N[c] ∪ N(u) for the new even vertex u.
+  - Two-terminal statements. Simultaneous locality fails already for K_{1,3}.
+  - Walks of Case I steps for two even vertices. At n = 8, the graph `G?Bvvo` has no walk of length ≤ 4.
+- **Possible routes:**
+  - prove the two-even theorem (distance ≥ 3) directly;
+  - find a vertex-set invariant, a property of all paths, that implies the local form and survives Fan transfers;
+  - a gluing argument across the separator A in the separated case.
+
+### AA.4 For ptm (§Z)
+The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w whenever w ∉ A and c ∉ N(w). Hang a leaf at c, run Fan with vertex sets, and delete the leaf (Lemma 2.4; Lean `avoid_of_apexSep` with `fan_single_supp`). If instead c ∈ N(w), it survives provided Q_c's end edge is cw (leaf graph at cw; `avoid_of_leafSep`). These are the steps a walk theorem needs to keep a prescribed end away from a set while the even vertex moves.

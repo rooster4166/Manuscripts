@@ -1,0 +1,29 @@
+EXTREME GF~~~{ g=-1 c=0 minlen_free=5 minlen_local=5 minout=0
+EXTREME GF~~~{ g=-1 c=1 minlen_free=5 minlen_local=5 minout=0
+EXTREME GF~~~{ g=-1 c=2 minlen_free=5 minlen_local=5 minout=0
+EXTREME GF~~~{ g=-1 c=3 minlen_free=4 minlen_local=4 minout=0
+EXTREME GF~~~{ g=-1 c=4 minlen_free=4 minlen_local=4 minout=0
+EXTREME GF~~~{ g=-1 c=5 minlen_free=4 minlen_local=4 minout=0
+EXTREME GF~~~{ g=-1 c=6 minlen_free=4 minlen_local=4 minout=0
+EXTREME GF~~~{ g=-1 c=7 minlen_free=4 minlen_local=4 minout=0
+EXTREME GQ~~~{ g=-1 c=0 minlen_free=4 minlen_local=4 minout=0
+EXTREME GQ~~~{ g=-1 c=1 minlen_free=4 minlen_local=4 minout=0
+EXTREME GQ~~~{ g=-1 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME GQ~~~{ g=-1 c=3 minlen_free=4 minlen_local=4 minout=0
+EXTREME G~~~~{ g=-1 c=0 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=1 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=2 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=3 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=4 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=5 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=6 minlen_free=7 minlen_local=7 minout=0
+EXTREME G~~~~{ g=-1 c=7 minlen_free=7 minlen_local=7 minout=0
+SUMMARY stats pairs=1792 Q_c-inside-N[c]-possible=1792
+  0: minlen_free=0 minlen_local=0 minout=1792
+  1: minlen_free=1682 minlen_local=1682 minout=0
+  2: minlen_free=66 minlen_local=66 minout=0
+  3: minlen_free=24 minlen_local=24 minout=0
+  4: minlen_free=9 minlen_local=9 minout=0
+  5: minlen_free=3 minlen_local=3 minout=0
+  7: minlen_free=8 minlen_local=8 minout=0
+  [g exists, c not in N(g)] pairs=0 inside-N[c]=0

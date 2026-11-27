@@ -1,0 +1,16 @@
+PARTIAL 200 {'graphs n=13': 32, 'tests': 2608, 'graphs n=15': 27, 'graphs n=11': 27, 'graphs n=16': 30, 'graphs n=14': 44, 'graphs n=12': 40, 'undecided': 6}
+PARTIAL 400 {'graphs n=13': 57, 'tests': 5192, 'graphs n=15': 60, 'graphs n=11': 68, 'graphs n=16': 63, 'graphs n=14': 78, 'graphs n=12': 74, 'undecided': 13}
+PARTIAL 600 {'graphs n=13': 96, 'tests': 7776, 'graphs n=15': 87, 'graphs n=11': 104, 'graphs n=16': 96, 'graphs n=14': 113, 'graphs n=12': 104, 'undecided': 30}
+PARTIAL 800 {'graphs n=13': 133, 'tests': 10374, 'graphs n=15': 121, 'graphs n=11': 142, 'graphs n=16': 136, 'graphs n=14': 136, 'graphs n=12': 132, 'undecided': 57}
+PARTIAL 1000 {'graphs n=13': 166, 'tests': 12940, 'graphs n=15': 145, 'graphs n=11': 181, 'graphs n=16': 168, 'graphs n=14': 170, 'graphs n=12': 170, 'undecided': 65}
+PARTIAL 1200 {'graphs n=13': 201, 'tests': 15546, 'graphs n=15': 178, 'graphs n=11': 214, 'graphs n=16': 199, 'graphs n=14': 211, 'graphs n=12': 197, 'undecided': 85}
+PARTIAL 1400 {'graphs n=13': 243, 'tests': 18140, 'graphs n=15': 211, 'graphs n=11': 243, 'graphs n=16': 229, 'graphs n=14': 244, 'graphs n=12': 230, 'undecided': 93}
+PARTIAL 1600 {'graphs n=13': 281, 'tests': 20728, 'graphs n=15': 241, 'graphs n=11': 270, 'graphs n=16': 258, 'graphs n=14': 277, 'graphs n=12': 273, 'undecided': 117}
+PARTIAL 1800 {'graphs n=13': 318, 'tests': 23292, 'graphs n=15': 270, 'graphs n=11': 309, 'graphs n=16': 283, 'graphs n=14': 319, 'graphs n=12': 301, 'undecided': 132}
+PARTIAL 2000 {'graphs n=13': 348, 'tests': 25906, 'graphs n=15': 309, 'graphs n=11': 342, 'graphs n=16': 316, 'graphs n=14': 354, 'graphs n=12': 331, 'undecided': 142}
+PARTIAL 2200 {'graphs n=13': 390, 'tests': 28494, 'graphs n=15': 351, 'graphs n=11': 373, 'graphs n=16': 343, 'graphs n=14': 383, 'graphs n=12': 360, 'undecided': 157}
+PARTIAL 2400 {'graphs n=13': 420, 'tests': 31072, 'graphs n=15': 389, 'graphs n=11': 413, 'graphs n=16': 375, 'graphs n=14': 410, 'graphs n=12': 393, 'undecided': 163}
+PARTIAL 2600 {'graphs n=13': 450, 'tests': 33664, 'graphs n=15': 421, 'graphs n=11': 451, 'graphs n=16': 411, 'graphs n=14': 440, 'graphs n=12': 427, 'undecided': 174}
+PARTIAL 2800 {'graphs n=13': 487, 'tests': 36264, 'graphs n=15': 450, 'graphs n=11': 485, 'graphs n=16': 447, 'graphs n=14': 473, 'graphs n=12': 458, 'undecided': 190}
+PARTIAL 3000 {'graphs n=13': 512, 'tests': 38896, 'graphs n=15': 492, 'graphs n=11': 521, 'graphs n=16': 485, 'graphs n=14': 507, 'graphs n=12': 483, 'undecided': 199}
+SUMMARY {'graphs n=11': 521, 'graphs n=12': 483, 'graphs n=13': 512, 'graphs n=14': 507, 'graphs n=15': 492, 'graphs n=16': 485, 'tests': 38896, 'undecided': 199}

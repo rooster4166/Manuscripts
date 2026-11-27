@@ -1,0 +1,1 @@
+SUMMARY peloc graphs=3 pairs=12 ok=12

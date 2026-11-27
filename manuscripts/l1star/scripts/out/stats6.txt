@@ -1,0 +1,13 @@
+EXTREME E~~w g=-1 c=0 minlen_free=5 minlen_local=5 minout=0
+EXTREME E~~w g=-1 c=1 minlen_free=5 minlen_local=5 minout=0
+EXTREME E~~w g=-1 c=2 minlen_free=5 minlen_local=5 minout=0
+EXTREME E~~w g=-1 c=3 minlen_free=5 minlen_local=5 minout=0
+EXTREME E~~w g=-1 c=4 minlen_free=5 minlen_local=5 minout=0
+EXTREME E~~w g=-1 c=5 minlen_free=5 minlen_local=5 minout=0
+SUMMARY stats pairs=78 Q_c-inside-N[c]-possible=78
+  0: minlen_free=0 minlen_local=0 minout=78
+  1: minlen_free=62 minlen_local=62 minout=0
+  2: minlen_free=7 minlen_local=7 minout=0
+  3: minlen_free=3 minlen_local=3 minout=0
+  5: minlen_free=6 minlen_local=6 minout=0
+  [g exists, c not in N(g)] pairs=0 inside-N[c]=0

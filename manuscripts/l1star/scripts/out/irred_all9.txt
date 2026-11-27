@@ -1,0 +1,28 @@
+M1 207458
+M13 3239
+M2 42156
+M7 1708
+M8 1263
+M9 5368
+RESIDUAL gA |A|=2 d(g)=2 d(c)=3 346
+RESIDUAL gA |A|=2 d(g)=2 d(c)=5 854
+RESIDUAL gA |A|=2 d(g)=4 d(c)=3 353
+RESIDUAL gA |A|=2 d(g)=4 d(c)=5 666
+RESIDUAL sep |A|=1 d(g)=2 d(c)=1 27
+RESIDUAL sep |A|=1 d(g)=2 d(c)=3 7
+RESIDUAL sep |A|=1 d(g)=4 d(c)=1 6
+RESIDUAL sep |A|=2 d(g)=2 d(c)=1 115
+RESIDUAL sep |A|=2 d(g)=2 d(c)=3 13
+RESIDUAL sep |A|=2 d(g)=4 d(c)=1 27
+shrink 4058
+total 267664
+EX gA |A|=2 d(g)=2 d(c)=5 [('H??EFB[', 6, 8, [6, 7]), ('H?AEF`N', 5, 7, [5, 6]), ('H?ABFBw', 6, 8, [6, 7])]
+EX sep |A|=1 d(g)=2 d(c)=1 [('H??EEE{', 1, 2, [0]), ('H??EEE{', 1, 3, [0]), ('H??EEE{', 1, 4, [0])]
+EX sep |A|=2 d(g)=2 d(c)=1 [('H??EEE{', 1, 2, [0, 3]), ('H??EEE{', 1, 2, [0, 4]), ('H??EEE{', 1, 2, [0, 5])]
+EX gA |A|=2 d(g)=2 d(c)=3 [('H??FFf}', 3, 0, [1, 3]), ('H??FFf}', 3, 0, [2, 3]), ('H??FFf}', 3, 1, [0, 3])]
+EX gA |A|=2 d(g)=4 d(c)=5 [('H??Ffrs', 6, 7, [6, 8]), ('H??Ffrs', 6, 8, [6, 7]), ('H?AFfh{', 6, 8, [6, 7])]
+EX sep |A|=2 d(g)=4 d(c)=1 [('H?ABvrw', 6, 5, [7, 8]), ('H?B@pwz', 6, 0, [1, 7]), ('H?B@pwz', 6, 1, [0, 7])]
+EX sep |A|=1 d(g)=4 d(c)=1 [('H?B@pwz', 6, 0, [7]), ('H?B@pwz', 6, 1, [7]), ('H?`@eZM', 7, 2, [8])]
+EX gA |A|=2 d(g)=4 d(c)=3 [('H?B@li{', 7, 6, [7, 8]), ('H?bFFbd', 1, 2, [0, 1]), ('H?bFFR|', 1, 2, [0, 1])]
+EX sep |A|=2 d(g)=2 d(c)=3 [('H?`alqx', 1, 0, [2, 3]), ('H?`alqx', 1, 4, [2, 3]), ('H?aJBF[', 2, 0, [1, 3])]
+EX sep |A|=1 d(g)=2 d(c)=3 [('H?aJBF[', 2, 0, [1]), ('H?aJBF[', 2, 4, [1]), ('H?aJBF[', 2, 5, [1])]
