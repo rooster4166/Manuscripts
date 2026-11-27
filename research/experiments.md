@@ -1588,28 +1588,29 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 **Method (exact).** `enum.c` enumerates *all* Lovász decompositions of each connected graph with at most one even vertex (geng `-c`, orders 4–9) and keeps the inclusion-minimal violation sets over the atoms av(c,a) (P_c ∌ a) and ne(u,v) (P_u ≠ P_v). Universe `-v 1`: av(c,a) with a ∉ N[c] ∪ N(g) (local); `-v 0`: all av atoms. A system is unsatisfiable iff it meets every violation set; `trans.c SHAPE K` finds a smallest such hitting set whose atoms have the prescribed shape (iterative deepening, branching on the unhit member with fewest admissible atoms). B-local systems have at most n − 1 atoms, so K = 8 (n = 9) and K = 10 (n ≤ 8) are exhaustive for them.
 
-**(A) Graphs with an unsatisfiable *local* system of the given shape** (number of graphs; n = 9: the 10,719 of 11,936 graphs enumerated within the time limits, the remaining 1,217 densest ones still running at the time of writing).
+**(A) Graphs with an unsatisfiable *local* system of the given shape** (number of graphs; n = 9: all 11,936 graphs, the densest 1,217 finished after the first write-up).
 
 | shape (local atoms) | n=4 | 5 | 6 | 7 | 8 | 9 |
 |---|---|---|---|---|---|---|
-| graphs | 2 | 7 | 13 | 130 | 224 | 10,719 |
+| graphs | 2 | 7 | 13 | 130 | 224 | 11,936 |
 | star (one tail; L1* local form) | 0 | 0 | 0 | 0 | 0 | – |
 | **bip1** (CLT-B1: bipartite, in-degree ≤ 1, cross-local) | 0 | 0 | 0 | 0 | 0 | **0** |
 | **bipx** (CLT-B: no cross-locality), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | **0** |
-| bipx, d(g) = 2 | – | 0 | – | 2 | – | 42 |
+| bipx, d(g) = 2 | – | 0 | – | 2 | – | 44 |
 | bipx + 2-cycles at distance ≥ 3 (`bipx2`), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | 0 |
 | match (fixed orientation; L_N with g) | 0 | 0 | 0 | 2 | 0 | – |
 | bip (in-degree unrestricted, cross-local) | 0 | 3 | 1 | 46 | 16 | – |
 | in1 (in-degree ≤ 1, chains allowed) | 1 | 2 | 10 | 34 | – | – |
 | lin (in1 + acyclic, out-degree ≤ 1) | 0 | 2 | 3 | 14 | – | – |
-| any | 1 | 4 | 12 | 105 | 221 | – |
-| bip1 + ne atoms between non-avoided vertices | 2 | 7 | 13 | 130 | 224 | – |
+| any (K = 6; at n = 8, 222 with K = 10, audit A27) | 1 | 4 | 12 | 105 | 221 | – |
 
-- All 44 bipx failures (n = 7, 9) have d(g) = 2 (40 in a triangle) and a head adjacent to another tail. With cross-locality (bip1) there are none.
+- All 46 bipx failures (n = 7, 9) have d(g) = 2 (44 with g in a triangle) and a head adjacent to another tail. With cross-locality (bip1) there are none.
+- (Adding ne atoms between arbitrary non-avoided vertices fails in every graph, trivially: the set of all ne atoms among the odd vertices is unsatisfiable because every path has two ends; audit A27 F10.)
+- Minimal orders (audit A27 F1): the in-degree and chain relaxations already fail at n = 5 with d(g) = 2 (`DEk`, `DTw`, `D]w`; `DEk` with av(1,2), av(3,2) is cross-local, bipartite, in-degree two); among graphs with d(g) ≠ 2 the first failures are at n = 6 (`EEiW`, `ECqg`, `EErw`).
 - With tails and heads of degree ≥ 3 and d(g) ≥ 4: lin fails once at n = 8 (`G?oppg`, a bridge with two leaves), func (2-cycles, longer cycles) at n = 6, 8, in1 at n = 6, 8 (52 graphs).
 - Separation atoms in graphs whose even vertices are pairwise at distance ≥ 3 (`-E -v 5`, n ≤ 8): Lovász decompositions exist in all 552 such graphs, but a single pair at distance ≥ 3 is already unseparable in 45 of them (1 at n = 6, 44 at n = 8); every one of the 45 has exactly two even vertices, at least one of degree 2.
 
-**(B) Minimal counterexamples** (manuscript §4, hand proofs): K_{2m} (locality at c), the path c g a (locality at g), `EEiW` (n = 6, all odd: in-degree two, av(1,{0,5}), av(2,0)), the net `ECqg` (n = 6: a chain 2→0→1→5 with 3→4), K_{1,3} (directed and transitive triangles; simultaneous confinement), `EErw` (two 2-cycles at distance two), `FCRV?` (n = 7, d(g) = 2: cross adjacency).
+**(B) Small counterexamples** (manuscript §4; most with hand proofs; minimal among graphs with d(g) ≠ 2): K_{2m} (locality at c), the path c g a (locality at g), `EEiW` (n = 6, all odd: in-degree two, av(1,{0,5}), av(2,0)), the net `ECqg` (n = 6: a chain 2→0→1→5 with 3→4), K_{1,3} (directed and transitive triangles; simultaneous confinement), `EErw` (two 2-cycles at distance two), `FCRV?` (n = 7, d(g) = 2: cross adjacency).
 
 **(C) Non-local atoms, compatibility** (`trans match 10 h1` on `-v 0`: atoms that are unsatisfiable alone are excluded, so any hit is a joint failure of individually satisfiable atoms). n ≤ 6: none. n = 7: 18 graphs (sizes 2–3), e.g. `FCdcw`, d(g) = 4, av(2,0), av(5,3), av(1,4) with all heads in N(g). (n = 8 did not finish in 25 min.)
 
@@ -1617,13 +1618,14 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 | form | orders | instances | failures | undecided |
 |---|---|---|---|---|
-| bip1 | 11–16 | 1,800 | 0 | 4 |
-| bip1 + tails' end paths distinct | 11–16 | 1,800 | 0 | 5 |
-| bipx (CLT-B, d(g) ≠ 2) | 11–16 | 1,800 | 0 | 0 (55 by local search) |
+| bip1 (500 with ≥ 2 nonempty avoid sets, 487 empty) | 11–16 | 1,800 | 0 | 4 |
+| bip1 + tails' end paths distinct (same systems) | 11–16 | 1,800 | 0 | 5 |
+| bip1m (bip1 redrawn until ≥ 2 avoid sets are nonempty) | 11–14 | 1,200 | 0 | 0 (3 by local search); orders 15–16 still running at the time of writing |
+| bipx (CLT-B, d(g) ≠ 2; 1,203 with ≥ 2 nonempty, 30 empty) | 11–16 | 1,800 | 0 | 0 (55 by local search) |
 | lnmatch (L_N with g, local) | 11–16 | 1,800 | 0 | 72 |
 | n = 10 controls (star, bip1, bip1ne, lnmatch) | 10 | 800 | 0 | 5 |
 
-**(E) L1* together with EE** (`t_l1ee.py`, A = V − (N[c] ∪ N(g))): for every x ∈ N(g) − c, Q_c ∩ A = ∅ and xg terminal at x. n = 5: 4/60 fail; n = 7: 39/2,210 fail, every failure with N(x) ∩ (A − g) ≠ ∅; for *some* x: 0 failures (this is L1E of l1-induction, which implies ST). n = 9: see the addendum.
+**(E) L1* together with EE** (`t_l1ee.py`, A = V − (N[c] ∪ N(g))): for every x ∈ N(g) − c, Q_c ∩ A = ∅ and xg terminal at x. n = 5: 4/60 fail; n = 7: 39/2,210 fail; n = 9 (all 11,936 graphs): 897/341,950 fail. Every failure has N(x) ∩ (A − g) ≠ ∅ and c ∉ N(g) (at n = 9: 733 with x ∈ N(c), 164 with x ∉ N(c); d(g) = 2, 4, 6 in 550, 306, 41). For *some* x: 0 failures at n ≤ 9 (this is L1E of l1-induction, which implies ST).
 
 **(F) The t6 base for every labelling** (`t6all.py`; residual graphs `gen_resid.py 6 8 2 7 SHAPE`, |O| = 8, TW = 2; exact DFS budget 2·10⁴, then local search `lsls.py`):
 

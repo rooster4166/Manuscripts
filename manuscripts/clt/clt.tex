@@ -36,22 +36,24 @@ vertex $g$ of positive even degree into paths, in which every vertex $v$ is an e
 $\deg v\bmod 2$ paths. Each statement prescribes properties of the paths $P_v$ ending at a few
 vertices. We set up a common constraint language for them (avoidance ``$P_c$ avoids $a$'',
 distinctness ``$P_u\ne P_v$'', terminal edges), and determine, by an exact search over
-\emph{all} Lov\'asz decompositions of every graph of order at most nine, which constraint systems
-are always satisfiable. The answer is sharp in the data: a system is satisfiable whenever its
-constraint digraph is \emph{bipartite} (no avoided vertex is itself constrained), has
+\emph{all} Lov\'asz decompositions of every graph of order at most nine (with at most one even
+vertex), which constraint systems are always satisfiable. The answer is sharp in the data: every
+system tested is satisfiable whenever its constraint digraph is \emph{bipartite} (no avoided vertex is itself constrained), has
 \emph{in-degree at most one} (every vertex is avoided by at most one end path), and each avoid set
-misses $N[c]\cup N(g)$ for its own tail $c$, provided $\deg g\ne2$; with $\deg g=2$ one needs in
-addition that no avoided vertex is adjacent to any constrained vertex. We call this the
-constrained Lov\'asz conjecture CLT-B. It contains the local form of $L_1^*$ (hence $L_\infty$ and
-EE) and $L_N$. Each of its conditions is necessary: we give minimal counterexamples, with hand
-proofs, to every relaxation. The dense $T(6)$ base of the t6-dense paper lies outside the
-language's local region, yet in the dense residual \emph{every} labelling has a base.
+misses $N[c]\cup N(g)$ for its own tail $c$, provided $\deg g\ne2$ (conjecture CLT-B); and for every
+$g$ when moreover no avoided vertex is adjacent to any tail (conjecture CLT-B1). They contain the
+local form of $L_1^*$ (hence $L_\infty$ and EE) and $L_N$. Each condition is necessary: we give
+small counterexamples to every relaxation, most with hand proofs. The $T(6)$ bases (the t6 base and
+the triangle base) lie outside the local region, yet in every computed residual graph \emph{every}
+labelling, resp.\ data choice and orientation, has a base.
 
-On the proof side we formalise Fan's lemma with end paths (a Fan transfer keeps every end that is
-not a chain vertex on a path with the same vertex set, plus the target), and derive that Lov\'asz's
-Case~I carries an arbitrary constraint system across a free target, with no admissibility of the
-child. We locate exactly where Lov\'asz's induction for CLT-B stops: at the multi-constraint
-version of the blocked configuration of $L_1^*$, and at adjacencies between tails.
+On the proof side we formalise Fan's lemma with end paths (after a Fan transfer with target $u$
+from $v$, every path lies in one old path plus $u$ and keeps each of its ends outside
+$\{u,v\}\cup N(u)$), and derive that Lov\'asz's Case~I carries an arbitrary constraint system across
+a free target, with no admissibility of the child; two further moves are formalised for several
+tails. When the even vertex exists we locate where Lov\'asz's induction for CLT-B1 stops: at the
+multi-constraint version of the blocked configuration of $L_1^*$, at adjacent tails, and at tails
+with a common neighbour.
 \end{abstract}
 \maketitle
 
@@ -67,8 +69,8 @@ statements of the form \emph{some Lov\'asz decomposition has prescribed properti
 paths}. The open ones at the time of writing are (synthesis \S23; connections \S\S V--AD):
 \begin{itemize}
 \item the \emph{local form of $L_1^*$}: $V(P_c)\subseteq N[c]\cup N(g)$ for a prescribed odd $c$
-\cite{L1S}; with the tight transfer conjecture TR it is equivalent to the \emph{some-target}
-conjecture ST of~\cite{L1I};
+\cite{L1S}; with the tight transfer conjecture TR it follows from the \emph{some-target}
+conjecture ST of~\cite{L1I}, and given ST it is equivalent to TR on admissible instances;
 \item $L_N$ and MSEP: in an all-odd graph, for a matching of non-adjacent pairs $(c_i,a_i)$, the
 path $P_{c_i}$ avoids $a_i$ (resp.\ no path contains both, at distance $\ge3$) \cite{RD,MS};
 \item the \emph{t6 base conjecture} \cite[Conj.~5.1]{T6}: five or six end-path conditions at six
@@ -89,19 +91,20 @@ leaf reductions between them; every open conjecture above written as a constrain
 enumerates \emph{all} Lov\'asz decompositions of every graph of order $\le9$ (with at most one even
 vertex) and computes all minimal unsatisfiable systems of a given shape. The surviving statement is
 Conjecture~\ref{conj:cltb} (CLT-B): bipartite, in-degree $\le1$, per-tail locality,
-$\deg g\ne2$; and its cross-local form CLT-B1 for all $g$. No counterexample among all graphs
-of order $\le 9$ that were enumerated (Table~\ref{tab:data}) and $5{,}400$ random maximal
-instances of order $11$--$16$. Every relaxation fails, and its minimal counterexamples
-(Section~\ref{sec:sharp}) are on $3$--$7$ vertices.
+$\deg g\ne2$; and its cross-local form CLT-B1 for all $g$. No counterexample among all
+$12{,}312$ graphs of order $\le 9$ (Table~\ref{tab:data}) and $6{,}600$ random maximal instances
+of order $11$--$16$. Every relaxation fails, on graphs of $3$--$7$ vertices
+(Section~\ref{sec:sharp}).
 \item \emph{Fan's lemma with end paths} (Theorem~\ref{thm:fanend}, Lean). This is Lemma~4.1
 of~\cite{T6}, formalised; and its consequence for constraint systems, Lov\'asz's Case~I across a
 free target (Theorem~\ref{thm:caseI}, Lean).
-\item \emph{The induction} (Section~\ref{sec:ind}). The exact list of Lov\'asz moves that carry a
-CLT-B system, with their conditions; the residual configurations; for one constraint they are the
-blocked instances of~\cite{L1S}.
-\item \emph{The t6 base} (Section~\ref{sec:t6}). In $30$ residual graphs of all five dense shapes
-every one of the $16{,}032$ admissible labellings has an (E7) append base. The exact search stalls
-on these instances; a local search finds the bases at once.
+\item \emph{The induction} (Section~\ref{sec:ind}). Lov\'asz moves that carry a CLT-B system, with
+their conditions (three of them formalised for several tails); the residual configurations when the
+even vertex exists; for one constraint they are the blocked instances of~\cite{L1S}.
+\item \emph{The $T(6)$ bases} (Section~\ref{sec:t6}). In every computed residual graph every
+admissible labelling has an (E7) append base ($26{,}256$ labellings), and every root, data choice
+and fixed orientation has a triangle base ($8{,}016$). The exact search stalls on these instances; a
+local search finds the bases at once.
 \end{enumerate}
 
 \section{The constraint language}\label{sec:lang}
@@ -119,7 +122,9 @@ An \emph{atom} is one of
 \end{itemize}
 A \emph{system} is a set of atoms; it is \emph{satisfiable} in $G$ if some decomposition satisfies
 all of them. Its \emph{constraint digraph} has an arc $c\to a$ for every $\av(c,a)$. We write
-$\av(c,A)$ for $\{\av(c,a):a\in A\}$.
+$\av(c,A)$ for $\{\av(c,a):a\in A\}$. The \emph{constrained vertices} of a system are the tails of its
+avoidance atoms and the vertices of its distinctness atoms (not the heads; Lean
+\texttt{CSys.Touched}).
 \end{definition}
 
 \subsection*{Leaf reductions} Terminal edges and avoidance interconvert through leaf graphs
@@ -199,13 +204,12 @@ $n$ & graphs & CLT-B1 & CLT-B ($\deg g\ne2$) & B-local, $\deg g=2$ & + 2-cycles 
 6 & 13 & 0 & 0 & -- & 0\\
 7 & 130 & 0 & 0 & 2 & 0\\
 8 & 224 & 0 & 0 & -- & 0\\
-9 & $10{,}719^\dagger$ & 0 & 0 & 42 & 0\\
+9 & $11{,}936$ & 0 & 0 & 44 & 0\\
 \bottomrule
 \end{tabular}
 \caption{Number of connected graphs with at most one even vertex having an unsatisfiable system
 of the given class, exact over all systems with up to $8$--$10$ atoms (larger systems in a graph of
-this order do not exist: a B-local system has at most $n-1$ atoms). $^\dagger$The $10{,}719$ of the $11{,}936$ graphs of order
-$9$ enumerated so far; the others are the densest, see E30.}\label{tab:data}
+this order do not exist: a B-local system has at most $n-1$ atoms).}\label{tab:data}
 \end{table}
 
 \subsection*{Evidence}
@@ -214,19 +218,28 @@ $9$ enumerated so far; the others are the densest, see E30.}\label{tab:data}
 decompositions and keeps the inclusion-minimal \emph{violation sets} (atoms violated by one
 decomposition); a system is unsatisfiable iff it meets every one of them, and \texttt{trans.c}
 searches for such hitting sets of the prescribed shape, smallest first.
-\item Random, order $11$--$16$: $5{,}400$ maximal systems (every admissible vertex assigned to a
-random tail; $1{,}800$ cross-local, $1{,}800$ cross-local with all tails' end paths distinct,
-$1{,}800$ CLT-B with heads next to other tails), decided by the exact DFS of~\cite{T6}, the
-undecided ones by local search (Section~\ref{sec:t6}); $0$ failures, $0$ left undecided for CLT-B,
-$9$ left undecided (budget) for the cross-local forms.
-\item The failures of B-local systems at $\deg g=2$ (2 at $n=7$, 42 at $n=9$) all have an avoided
-vertex adjacent to another tail; under cross-locality there are none.
+\item Random, order $11$--$16$: $6{,}600$ maximal systems (every admissible vertex assigned to a
+random tail), decided by the exact DFS of~\cite{T6}, the undecided ones by local search
+(Section~\ref{sec:t6}); $0$ failures. Many random cross-local systems are empty or have one
+non-empty tail (audit A27), so we count separately: $1{,}800$ CLT-B systems ($1{,}203$ with at least two
+non-empty avoid sets), $1{,}800$ cross-local ones ($500$ with two or more), the same with all tails'
+end paths distinct, and $1{,}200$ cross-local ones (orders $11$--$14$) redrawn until at least two
+avoid sets are non-empty. Left undecided by both methods: $9$ cross-local instances.
+\item The failures of B-local systems at $\deg g=2$ (2 at $n=7$, 44 at $n=9$; $44$ of the $46$ with
+$g$ on a triangle) all have an avoided vertex adjacent to another tail; under cross-locality there
+are none.
 \end{itemize}
 
 \section{The boundary: every relaxation fails}\label{sec:sharp}
 
-Each condition of Definition~\ref{def:blocal} is necessary. The examples are minimal in the data
-(no smaller graph or system fails). We write the graphs by adjacency lists.
+Each condition of Definition~\ref{def:blocal} is necessary. Examples~\ref{ex:indeg}--\ref{ex:cyc} are
+minimal among graphs with $\deg g\ne2$ for their relaxations (no smaller such graph fails), and every proper
+subsystem of it is satisfiable (except the confinement system of Example~\ref{ex:cyc});
+Example~\ref{ex:deg2} concerns $\deg g=2$ and is the smallest failure there. With
+$\deg g=2$ allowed there are smaller ones: the in-degree and chain relaxations already fail at $n=5$,
+e.g.\ \texttt{DEk} ($N(0)=\{3,4\}$, $N(1)=\{3\}$, $N(2)=\{4\}$, $N(3)=\{0,1,4\}$,
+$N(4)=\{0,2,3\}$, $g=0$) with $\av(1,2),\av(3,2)$, a cross-local bipartite system with in-degree two;
+this is the minimal witness that (B1) is needed in CLT-B1. We write the graphs by adjacency lists.
 
 \begin{example}[locality at $c$]\label{ex:Kn}
 In $K_{2m}$ every Lov\'asz decomposition has $m$ paths and $m(2m-1)$ edges, so every path is
@@ -255,7 +268,8 @@ odd, three paths). The system $\av(2,0),\av(0,1),\av(1,5),\av(3,4)$ is local, of
 acyclic; its only defect is the chain $2\to0\to1\to5$. It is unsatisfiable. The end paths of the
 three leaves are distinct: $P_1=P_3$ would be $1\,4\,0\,3$, containing $4$; $P_3=P_2$ would be
 $3\,0\,5\,2$, containing $0$; $P_2=P_1$ would contain $5$. So the leaves are paired with
-$\{0,4,5\}$, as $(1,4),(3,0),(2,5)$ or as $(1,0),(3,5),(2,4)$. The first leaves the triangle
+$\{0,4,5\}$; by $\av(1,5)$, $\av(2,0)$, $\av(3,4)$ we have $P_1\in\{14,140\}$, $P_2\in\{25,254\}$,
+$P_3\in\{30,305\}$, so the pairing is $(1,4),(3,0),(2,5)$ or $(1,0),(3,5),(2,4)$. The first leaves the triangle
 uncovered. The second forces $P_1=1\,4\,0$, $P_3=3\,0\,5$, $P_2=2\,5\,4$, and then $P_0=P_1\ni1$.
 \end{example}
 
@@ -274,15 +288,17 @@ $\av(0,1),\av(1,0),\av(3,4),\av(4,3)$ (two 2-cycles between twins at distance tw
 \begin{example}[cross-locality at $\deg g=2$]\label{ex:deg2}
 Graph \texttt{FCRV?} ($n=7$): $N(0)=\{3,5,6\}$, $N(1)=\{4,5,6\}$, $N(2)=\{6\}$, $N(3)=\{0,5\}$,
 $N(4)=\{1\}$, $N(5)=\{0,1,3\}$, $N(6)=\{0,1,2\}$; $g=3$ has degree two and lies on the triangle
-$0\,3\,5$. The system $\av(0,1),\av(4,6)$ is B-local, but the head $6$ is adjacent to the tail $0$.
-It is unsatisfiable (exhaustive). All $44$ failures of B-local systems at orders $7$ and $9$ have
+$0\,3\,5$. The system $\av(0,1),\av(4,6)$ is B-local, but the head $6$ is adjacent to the tail $0$
+(and the head $1$ to the tail $4$).
+It is unsatisfiable (exhaustive). All $46$ failures of B-local systems at orders $7$ and $9$ have
 $\deg g=2$ and such a cross adjacency.
 \end{example}
 
 \begin{remark}[distinctness and non-local atoms]
 Distinctness atoms need their own compatibility: $\nev(u,v)$ fails whenever $u,v$ are the only odd
-vertices, and adding $\nev$ between arbitrary non-avoided vertices makes every graph of order
-$\le 8$ fail. Non-local avoidance atoms fail \emph{jointly} even when each is satisfiable alone: at
+vertices, and the set of all $\nev$ atoms among the odd vertices is trivially unsatisfiable, since
+every path has two ends. (Distinctness among the tails of a cross-local system never failed in the
+random tests.) Non-local avoidance atoms fail \emph{jointly} even when each is satisfiable alone: at
 $n=7$ (exhaustive over all avoidance atoms; $n\le6$ has no such case), $18$ graphs have a matching-shaped system of individually satisfiable atoms that is
 jointly unsatisfiable, e.g.\ \texttt{FCdcw} with $\av(2,0),\av(5,3),\av(1,4)$, all three heads in
 $N(g)$, $\deg g=4$. This is the regime of ST and of DL; there the freedom (of the target $x$, of
@@ -357,73 +373,94 @@ from \texttt{separation\_sparse\_set}), with no disjointness or cross-locality n
 
 \section{Lov\'asz's induction for CLT-B}\label{sec:ind}
 
-We run Lov\'asz's induction (measure $\sum\deg+[\text{no even vertex}]$) on a B-local instance
-$(G,\{(c_i,A_i)\})$ and list every move that carries the system, with the exact condition under
-which it applies and under which its child is again an instance. Transfers never need the child to
-be an instance; only the call to the induction hypothesis does (as in~\cite{L1I}).
+We run Lov\'asz's induction (measure $\nu=\sum\deg+[\text{no even vertex}]$) on a B-local
+instance $(G,\{(c_i,A_i)\})$ and list moves that carry the system, with the condition under which
+each applies and under which its child is again an instance. Transfers never need the child to be
+an instance; only the call to the induction hypothesis does (as in~\cite{L1I}). For CLT-B the child's
+even vertex must not have degree two (unless the child is cross-local); in each move this is a
+condition $\deg\ne3$ on the vertex that becomes even. We omit Lov\'asz's trivial cases (no edges;
+all degrees $\le1$), where every local system holds.
 
-\begin{enumerate}[label=(M\arabic*)]
+\begin{enumerate}[label=(M\arabic*)]\setcounter{enumi}{-1}
+\item \emph{Leaf tail} (all odd). $c_1$ has degree one, with neighbour $y$. Take $P_{c_1}=c_1y$ and
+decompose the child $G-c_1y$, where $y$ is the even vertex, with the other constraints; the
+transfer adds the path $c_1y$ ($y\notin A_1$ by locality; if $y$ is a tail, $P_y=c_1y$ and
+$c_1\notin A_y$). The child (with the constraints of $c_1$, and of $y$ if $y$ is a tail, dropped; $y$ is even
+there) is an instance iff $A_j\cap N(y)=\emptyset$ for
+$j\ne1$ (locality at the new even vertex $y$); for CLT-B also $\deg y\ne3$. For $k=1$ it is
+always an instance.
 \item \emph{Free target} (Theorem~\ref{thm:caseI}). $u\in N(g)$, no tail in $N[u]$, $u\notin A$.
-Child $(G-gu)$ with the same system; it is an instance iff $N(u)\cap A\subseteq\{g\}$ (locality at
-the new even vertex $u$), and for CLT-B also $\deg u\ne3$ or cross-locality.
-\item \emph{Tail at $g$} (Lean: \texttt{csys\_case\_adj}). $c_1\in N(g)$. Child $G-gc_1$, where $c_1$
-is even; the tail $g$ replaces $c_1$ with avoid set $A_1\cup\{c_1\}$; append $gc_1$ to $P_g$. The transfer is unconditional (if
-$P_g$ also ends at $c_j$, the new $P_{c_j}$ gains $c_1\notin A_j$). The child is an instance iff
-$g\notin A$, $A_j\cap N(c_1)=\emptyset$ for $j\ne1$, and (cross-local form) $c_1$ is adjacent to
-no other tail.
+Child $G-gu$ with the same system; it is a CLT-B1 instance iff $N(u)\cap A\subseteq\{g\}$ (locality at
+the new even vertex $u$); for CLT-B also $\deg u\ne3$.
+\item \emph{Tail at $g$} (Lean: \texttt{csys\_case\_adj}). $c_1\in N(g)$. Child $G-gc_1$, where
+$c_1$ is even; the tail $g$ replaces $c_1$ with avoid set $A_1\cup\{c_1\}$; append $gc_1$ to $P_g$.
+The transfer is unconditional (if $P_g$ also ends at $c_j$, the new $P_{c_j}$ gains
+$c_1\notin A_j$). Under cross-locality $g\notin A$ and $A_j\cap N(c_1)=\emptyset$ hold
+automatically, and the child is a CLT-B1 instance iff $c_1$ is adjacent to no other tail. For CLT-B
+the child is an instance iff $g\notin A$, $A_j\cap N(c_1)=\emptyset$ for $j\ne1$ and
+$\deg c_1\ne3$.
 \item \emph{Tight target.} $u\in N(g)\cap N(c_1)$, $N(u)\cap A\subseteq\{g\}$, no other tail in
 $N[u]$. Child $G-gu-c_1u$ with the tail $u$ replacing $c_1$ and avoid set $A_1\cup\{c_1\}$, as in
 \texttt{avoid\_of\_target\_adj\_child}; the other tails are carried by Theorem~\ref{thm:transfer}.
-Same instance conditions as (M2) with $u$ for $g$.
-\item \emph{All odd, a tail of degree $\ge3$} (Lean: \texttt{csys\_case\_leaf}). $y\in N(c_1)$; the leaf graph $G-c_1y+y\ell$, where
-$c_1$ is even and the leaf $\ell$ replaces $c_1$ with avoid set $A_1\cup\{c_1\}$; merge. The
-transfer is unconditional; the child is an instance iff $A_j\cap N(c_1)=\emptyset$ for $j\ne1$
-(and $c_1$ adjacent to no other tail, cross-local form).
-\item \emph{All odd, a free vertex.} Lov\'asz's Case II at $x\notin N[\text{tails}]\cup A\cup N(A)$
-of degree $\ge3$, by Theorem~\ref{thm:transfer}.
+CLT-B1 child iff $c_1$ is adjacent to no other tail; CLT-B child iff $A_j\cap N(c_1)=\emptyset$ for
+$j\ne1$ and $\deg c_1\ne3$.
+\item \emph{All odd, a tail of degree $\ge3$} (Lean: the transfer is \texttt{csys\_case\_leaf}).
+$y\in N(c_1)$; the leaf graph $G-c_1y+y\ell$, where $c_1$ is even and the leaf $\ell$ replaces $c_1$
+with avoid set $A_1\cup\{c_1\}$; merge. The transfer is unconditional. CLT-B1 child iff $c_1$ has no
+tail neighbour other than $y$ (so one may take $y$ to be the unique tail neighbour, if any); CLT-B
+child iff $A_j\cap N(c_1)=\emptyset$ for $j\ne1$ and $\deg c_1\ne3$.
+\item \emph{All odd, a free vertex.} Lov\'asz's Case~II at a vertex $x$ of degree $\ge3$ with no
+tail in $N[x]$ and $x\notin A$, with a neighbour $u$: if $u$ ends no path of the child the new path
+$ux$ has no tail end, otherwise Theorem~\ref{thm:transfer} with target $x$. Instance iff
+$N(x)\cap A\subseteq\{u\}$; for CLT-B also $\deg x\ne3$.
 \end{enumerate}
 
 \begin{proposition}\label{prop:residual}
-Let $(G,\{(c_i,A_i)\})$ be a counterexample to CLT-B1 with $\sum\deg$ smallest, and
-$A=\bigcup A_i$. Then none of (M1)--(M5) applies. In particular, if $g$ exists, then
+Let $(G,\{(c_i,A_i)\})$ be a counterexample to CLT-B1 with $\nu$ smallest, and $A=\bigcup A_i$.
+Then none of (M0)--(M5) applies with a CLT-B1 child. In particular, if $g$ exists, then
 \begin{enumerate}[label=(\alph*)]
 \item every non-tail $u\in N(g)$ has a neighbour in $A\setminus\{g\}$, or two tails among its
 neighbours, or exactly one tail $c$ among its neighbours and $c$ adjacent to another tail;
-\item if some tail $c$ lies in $N(g)$, then $g\in A$ or $c$ is adjacent to another tail.
+\item every tail in $N(g)$ is adjacent to another tail.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}[Proof sketch]
-Each move produces a smaller graph, and its transfer turns a good child into a good instance.
-(M1) is Theorem~\ref{thm:caseI}. (M2) is the append of \texttt{l1\_case\_adj}~\cite{L1S}: the
-other paths are unchanged, and a path that also ends at another tail $c_j$ gains only $c_1\notin
-A_j$. (M3) is \texttt{avoid\_of\_target\_adj\_child}~\cite{L1I} (leaf graph at $u$ standing for
-$c_1$, Fan's lemma towards $u$, merge); in the leaf graph the other tails are not in $N[u]\cup\{g\}$,
-so Theorem~\ref{thm:transfer} carries their constraints, and the merge changes only the leaf path,
-which avoids $c_1$. (M4) is the leaf merge of \texttt{l1\_case\_big}, which changes only the leaf
-path. (M5) is Lov\'asz's Case~II with Theorem~\ref{thm:transfer}. The instance conditions stated in
-each move are checked directly against Definition~\ref{def:blocal} and cross-locality; for
-example in (M3) the new even vertex is $c_1$, and $A_j\cap N(c_1)=\emptyset$ by cross-locality,
-while the new head $c_1$ is adjacent to no tail other than through deleted edges unless $c_1$ is
-adjacent to another tail. If (a) failed for some $u$, (M1) or (M3) would apply at $u$; if (b)
-failed, (M2) would apply. (M1), (M2) and (M4) are formalised (\texttt{csys\_caseI}, \texttt{csys\_case\_adj},
-\texttt{csys\_case\_leaf}, for arbitrary further constraints); (M3) and (M5) for several tails are
-not.
+Each move produces a child with smaller $\nu$, and its transfer turns a good child into a good
+instance. (M0) adds a one-edge path. (M1) is Theorem~\ref{thm:caseI}. (M2) is the append of
+\texttt{l1\_case\_adj}~\cite{L1S}: the other paths are unchanged, and a path that also ends at another
+tail $c_j$ gains only $c_1\notin A_j$. (M3) is \texttt{avoid\_of\_target\_adj\_child}~\cite{L1I}
+(leaf graph at $u$ standing for $c_1$, Fan's lemma towards $u$, merge); the leaf constraint is carried
+in vertex-set form, the other tails, which are not in $N[u]\cup\{g\}$, by
+Theorem~\ref{thm:transfer}, and the merge changes only the leaf path, which avoids $c_1$. (M4) is the
+leaf merge of \texttt{l1\_case\_big}, which changes only the leaf path. (M5) is Lov\'asz's Case~II
+with Theorem~\ref{thm:transfer}. The instance conditions are checked directly against
+Definition~\ref{def:blocal} and cross-locality; for example in (M3) the new even vertex is $c_1$,
+$A_j\cap N(c_1)=\emptyset$ by cross-locality, and the new head $c_1$ is adjacent to a tail only if
+$c_1$ is adjacent to another tail. If (a) failed for some $u$, (M1) or (M3) would apply at $u$; if
+(b) failed, (M2) would apply. (M1) and (M2) are formalised (\texttt{csys\_caseI},
+\texttt{csys\_case\_adj}), and so is the transfer of (M4) (\texttt{csys\_case\_leaf}), all for
+arbitrary further constraints; (M0), (M3) and (M5) for several tails are not.
 \end{proof}
 
-For $k=1$ the residual is exactly the blocked configuration of~\cite{L1S}
-(\texttt{l1starGen\_of\_blocked}), and the analysis of~\cite{L1I} applies: the blocked case splits
-into ST and TR. For $k\ge2$ two new obstructions appear: tails adjacent to each other (which (M2),
-(M4) turn into heads adjacent to tails, leaving the cross-local class), and heads of one tail next
-to another tail (which leave the class at the new even vertex). Neither occurs when the tails are
-pairwise at distance $\ge3$: then no vertex is adjacent to two tails, and the residual is the
-blocked configuration of~\cite{L1S} for the union $A$ of the avoid sets (every non-tail neighbour of
-$g$ has a neighbour in $A\setminus\{g\}$, and $g\in A$ if a tail is adjacent to $g$).
+For $k=1$, (b) says $c\notin N(g)$ and (a) says that every neighbour of $g$ has a neighbour in
+$A\setminus\{g\}$: the residual is exactly the blocked configuration of~\cite{L1S}
+(\texttt{l1starGen\_of\_blocked}); in an all-odd graph (M0) or (M4) always applies. The analysis
+of~\cite{L1I} then applies: the blocked case splits into ST and TR. For $k\ge2$ and $g$ present, three
+obstructions appear: \emph{adjacent tails} ((b) and the last alternative of (a)), \emph{two tails
+with a common neighbour in $N(g)$} (the middle alternative of (a): Theorem~\ref{thm:transfer} cannot
+carry the second tail), and, for CLT-B only, \emph{heads of one tail next to another tail}, which
+meet the neighbourhood of the new even vertex in (M2)--(M4). When the tails are pairwise at
+distance $\ge3$ only the first alternative remains: no tail is adjacent to $g$, and every neighbour
+of $g$ has a neighbour in $A\setminus\{g\}$ --- the blocked configuration for the union $A$ of the
+avoid sets. The all-odd residual for $k\ge2$ (every tail of degree $\ge3$ has two tail neighbours or
+none of (M0), (M4), (M5) yields an instance) is not analysed here.
 
 \section{The t6 base and the other non-local systems}\label{sec:t6}
 
-The t6 base system (Table~\ref{tab:targets}) violates every condition of CLT-B: it is a chain, its
-heads are adjacent to tails in the dense regime, and two heads lie in $N(x_3)$. The analysis
+The t6 base system (Table~\ref{tab:targets}) has in-degree one, but it is a chain (it violates
+(B2)), in the dense shapes its heads lie in $N(x_3)$ and next to their tails (it violates (B3)), and
+it uses distinctness atoms. The analysis
 of~\cite[AD.4]{T6} shows the non-local conditions are binding for some labellings. Our data shows
 that they are not binding for the \emph{existence} of a base in residual graphs:
 
@@ -449,8 +486,8 @@ of the random CLT-B tests.
 
 For ST the child $(G-gx,c,A)$ is non-local at the new even vertex $x$. The universal form
 ``$L_1^*$ at $c$ together with EE at every $x\in N(g)$'' fails ($39$ of $2{,}210$ instances at
-$n=7$), always with $N(x)\cap A\ne\emptyset$; the existential form (some $x$), which implies ST,
-never fails to $n=7$. This is the L1E statement of~\cite{L1I}.
+$n=7$, $897$ of $341{,}950$ at $n=9$), always with $N(x)\cap A\ne\emptyset$; the existential form
+(some $x$), which implies ST, never fails in any graph of order $\le9$. This is the L1E statement of~\cite{L1I}.
 
 \section{Computations}\label{sec:comp}
 \emph{This section is computational; no proof above depends on it.} Scripts are in
@@ -478,8 +515,9 @@ DFS then local search.
 \texttt{csys\_caseI} (Theorem~\ref{thm:caseI}); \texttt{BLocal}, \texttt{CrossLocal},
 \texttt{CLTB}, \texttt{CLTB1}, \texttt{LN} and \texttt{l1StarGen\_of\_cltB1},
 \texttt{lInfty\_of\_cltB1}, \texttt{ee\_of\_cltB1}, \texttt{lN\_of\_cltB};
-\texttt{csys\_good\_of\_packed}, \texttt{csys\_good\_of\_sparse}. \texttt{csys\_case\_adj}, \texttt{CSys.liftLeaf}, \texttt{csys\_case\_leaf} (moves (M2), (M4) for
-several tails). Not formalised: the moves (M3), (M5) for several tails, Proposition~\ref{prop:residual}, and the examples of
+\texttt{csys\_good\_of\_packed}, \texttt{csys\_good\_of\_sparse}. \texttt{csys\_case\_adj} (move (M2) for several tails), \texttt{CSys.liftLeaf},
+\texttt{csys\_case\_leaf} (the transfer of (M4) for several tails, at the level of a given
+decomposition of the leaf graph). Not formalised: the moves (M0), (M3), (M5) for several tails, Proposition~\ref{prop:residual}, and the examples of
 Section~\ref{sec:sharp} (checked by hand or exhaustively).
 
 \begin{thebibliography}{99}

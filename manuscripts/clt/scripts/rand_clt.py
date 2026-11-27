@@ -13,6 +13,7 @@ FORMS
   star     one tail, A = V - (N[c] u N(g))   (L1* local form; control)
   lnmatch  disjoint arcs c_i -> a_i with a_i not in N[c_i] u N(g)  (L_N with an even vertex)
   bip1ne   bip1 plus: the end paths of the tails are pairwise distinct
+  bip1m    bip1, redrawn until at least two tails have nonempty avoid sets
   bipx     CLT-B: every vertex h outside N(g) u C is assigned to a random tail c with h not in N[c]
            (heads may be adjacent to other tails); graphs whose even vertex has degree 2 are
            redrawn
@@ -138,7 +139,10 @@ def main():
         adj = rand_graph(n, rng)
         while form == 'bipx' and any(len(adj[v]) == 2 for v in range(n) if len(adj[v]) % 2 == 0):
             adj = rand_graph(n, rng)
-        sysd, C = build(form, n, adj, rng, K)
+        sysd, C = build(form if form != 'bip1m' else 'bip1', n, adj, rng, K)
+        while form == 'bip1m' and sum(1 for S in sysd['ef'].values() if S) < 2:
+            adj = rand_graph(n, rng)
+            sysd, C = build('bip1', n, adj, rng, K)
         items.append((n, adj, sysd))
     ok = fail = und = lsok = 0
     CH = 200
