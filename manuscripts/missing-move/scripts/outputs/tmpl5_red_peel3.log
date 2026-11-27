@@ -1,0 +1,1 @@
+{'instances': 600, 'stuck': 0, 'reducible': 167, 'NP': 21, 'NP+NP2+T': 88, 'NP+NP2': 5, 'C+NP+NP2+NP3+T': 415, 'NP3': 3, 'NP+NP2+NP3+T': 14, 'NP2+NP3': 6, 'C+NP3+T': 2, 'NP+NP2+NP3': 25, 'C': 1, 'C+NP+NP2+NP3': 8, 'NP+NP3': 1, 'C+T': 1, 'C+NP2+NP3+T': 10}

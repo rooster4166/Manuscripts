@@ -13,6 +13,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
 \newtheorem{question}[theorem]{Question}
 \newtheorem{conjecture}[theorem]{Conjecture}
 
@@ -58,7 +59,11 @@ under a supply condition, a version with relays into the hub, and a version with
 share one new path. We test a hub-strategy conjecture: at a root with the hypotheses of the
 branching base case, the root's star, a parity repair and a bounded number of further held
 edges suffice. At order $8$ two further edges suffice at all $9268$ root orbits. A sample of order
-$10$ needs three, and there the proved theorems apply at no root. The hub lemmas of every degree,
+$10$ needs three, and there the proved theorems apply at no root. Finally we test the inductive
+template proposed for the endpoint min-max conjecture EMM. Its extension to arbitrary profiles
+fails at order $7$ through a linkage obstruction. At the Gallai budget it holds at every order up
+to $8$, and above the budget at every order up to $7$ and on a sample of order $8$. Single-edge and bounded path-insertion moves are not inductive: they fail
+exactly where Fan's count is tight. The hub lemmas of every degree,
 the degree-four theorems, the critical instance and Fan's alternative are formalised in Lean~4.
 \end{abstract}
 
@@ -185,6 +190,13 @@ non-neighbours raise the supply (Theorem~\ref{thm:relayhub}). Two hubs with one 
 share one new path (Lemma~\ref{lem:twohub}). The profile-level lemmas are formalised. The
 hub-strategy conjecture (Conjecture~\ref{conj:hub}) holds at order $8$ with $c=2$. A sample of
 order $10$ needs $c\ge3$, and the proved theorems cover none of its roots.
+\item \emph{The inductive template for EMM} (Section~\ref{sec:emm}). The cut criterion is exact for
+all profiles at order $\le6$. It fails once at order $7$ ($p=2$, a linkage obstruction) and $17$
+times at order $8$, always below the budget. This suggests EMM$^+$ (Conjecture~\ref{conj:emmplus}).
+A minimal counterexample is connected and has no reducible leaves or degree-$2$ vertices
+(Lemma~\ref{lem:reductions}; the leaf case is formalised). The profile-level moves leave a few stuck
+instances at order $6$, each at Fan's equality (Proposition~\ref{prop:template},
+Remark~\ref{rem:diag}).
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
@@ -1021,6 +1033,195 @@ $8$ win with $|X|=\mathrm{lb}(y)\le2$. Their plays must use other moves, such as
 the hub or receipt or flower, which our lemmas do not cover.
 \end{enumerate}
 
+\section{Toward EMM: the inductive template}\label{sec:emm}
+
+The endpoint min-max conjecture EMM of the project synthesis says the following. Let $G$ be connected
+of even order $n=2k$, and let $M$ be a half-set of its even vertices with simple profile $b$. Then
+$b$ is realised by $k$ paths if and only if inequality~(1) of~\cite[\S12.4]{ED} holds for every
+vertex $v$ and every $W\subseteq V-v$. The proposed proof of sufficiency (track C4) is an induction
+on $|E|$. Delete an edge $uv$ and adjust the profile at $u,v$ so that the cut conditions persist.
+Realise the new profile by minimality. Re-insert $uv$ by a transfer, a hub, a flower or a path
+insertion, and show that if every choice fails, the failures exhibit a violated cut. This section
+tests that template exhaustively at small orders and proves the reductions it allows.
+
+\subsection*{The class}
+Deleting an edge destroys simplicity and may change the number of paths, so the induction needs
+general profiles. A \emph{profile} is a map $b:V\to\mathbb N$ with $b\equiv d\pmod 2$ and
+$\sum_vb(v)=2p$. It is \emph{cut-feasible} if
+\begin{itemize}
+\item[(L)] $b(v)\le d(v)$ and $d(v)+b(v)\le2p$ for every $v$; and
+\item[(C)] $b(W)\le|\delta(W)|+2p-d(v)-b(v)$ for every $v$ and every $W\subseteq V-v$.
+\end{itemize}
+Both conditions are necessary for a partition into $p$ paths with $b$ ends at each vertex. For (L)
+this is clear. For (C) the proof of~\cite[\S12.4]{ED} applies with $k$ replaced by $p$: the
+$(d(v)+b(v))/2$ paths through $v$ give each of their ends in $W$ a private edge of $\delta(W)$, and
+the other paths have at most two ends each. In Lean, (L) and (C) are \texttt{CutOK}.
+
+\begin{proposition}[computation]\label{prop:gemm}
+Compare cut-feasibility with realisability (exact oracle \texttt{tools/realis.c}) for every profile
+$b\le d$ of every connected graph, using \texttt{tools/gemm\_test.py}.
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+order, profiles & graphs & profiles & cut-feasible & not realisable\\
+\midrule
+$4$, all & $6$ & $61$ & $52$ & $0$\\
+$5$, all & $21$ & $894$ & $767$ & $0$\\
+$6$, all & $112$ & $14{,}786$ & $13{,}897$ & $0$\\
+$7$, all & $853$ & $481{,}442$ & $467{,}373$ & $1$ ($p=2$)\\
+$8$, $p=4$ & $11{,}117$ & $434{,}011$ & $362{,}546$ & $0$\\
+$8$, $p\le3$ & $11{,}117$ & $175{,}935$ & $74{,}435$ & $17$ ($14$ with $p=2$, $3$ with $p=3$)\\
+$8$, all, $200$ random graphs & $200$ & $534{,}586$ & $528{,}727$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+No realisable profile violates (L) or (C).
+\end{proposition}
+
+\begin{example}\label{ex:linkage}
+The failure at order $7$ is \texttt{FqJBo}, with edges $01,02,05,13,15,16,24,26,36,46$ and
+$b=(1,0,1,2,0,0,0)$, so $p=2$. The ends force one path from $3$ to $0$ and one from $3$ to $2$.
+A vertex $v$ lies on $(d(v)+b(v))/2$ paths, so both paths visit $0,1,2,3,6$. Now $G-3$ is the
+$4$-cycle $0\,1\,6\,2$ whose sides $01$ and $62$ are doubled by the paths $0\,5\,1$ and $2\,4\,6$.
+The path that leaves $3$ through $1$ (or through $6$) must reach the far end through both sides of
+the square, and a short case check shows that the two paths cannot do this edge-disjointly. This
+is a $2$-linkage obstruction. The cut conditions do not see it: for $v\in\{0,1,2,3,6\}$ the slack
+$2p-d(v)-b(v)$ is $0$, and (C) reduces to $b(W)\le|\delta(W)|$, which holds.
+\end{example}
+
+So EMM does not extend to arbitrary profiles. All failures we found are below the Gallai budget.
+
+\begin{conjecture}[EMM$^+$]\label{conj:emmplus}
+Let $G$ be connected of order $n$, and let $b$ be a profile with $p\ge\lceil n/2\rceil$. Then $b$
+is realised by $p$ paths if and only if it is cut-feasible.
+\end{conjecture}
+EMM is the case of simple profiles of half-sets, where $n$ is even and $p=n/2$. By
+Proposition~\ref{prop:gemm}, EMM$^+$ holds for every profile at order at most $7$, for every profile
+with $p=4$ at order $8$, and on the order-$8$ sample with every $p$. At order $8$ the bound
+$\lceil n/2\rceil$ cannot be lowered by one, since three failures have $p=3$.
+
+For disconnected graphs the class asks that every component $C$ with an edge have
+$\sum_Cb\ge|V(C)|$. Cut-feasibility passes to components. Indeed, if $v\in C$ and $W\subseteq C-v$,
+apply (C) to $W\cup(V-C)$. This adds $b(V-C)=2p-2p_C$ to the left side and nothing to the cut, so
+it gives (C) for $C$ with $p_C$ paths. The case $W=V-C$ gives (L) for $C$.
+
+\begin{lemma}[Reductions]\label{lem:reductions}
+Let $(G,b)$ be a counterexample to Conjecture~\ref{conj:emmplus} (in the class, cut-feasible, not
+realisable) with $|E(G)|$ minimal. Then:
+\begin{enumerate}[label=(\alph*)]
+\item $G$ is connected;
+\item every vertex $w$ of degree $2$ with $b(w)=0$ has adjacent neighbours;
+\item every leaf $w$ has a saturated neighbour $x$, i.e.\ $b(x)=d(x)$;
+\item if $w$ has degree $2$, lies on a cycle and has $b(w)=2$, then every neighbour $x$ of $w$ is
+saturated, or $b(x)=b(y)=0$, where $y$ is the other neighbour.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+In each case we produce a cut-feasible profile in the class with one edge fewer, and a partition
+of $G$ from a partition of the smaller graph.
+
+(a) By the remark above, each component with an edge is a smaller cut-feasible instance in the
+class. The union of their partitions realises $b$.
+
+(b) Let $N(w)=\{x,y\}$ with $xy\notin E$. Put $G'=G-wx-wy+xy$ and keep $w$ as an isolated vertex,
+with the same $b$ and $p$. For $W\subseteq V-v$ with $v\ne w$, let $W'=W-w$, and add $w$ back if
+$x,y\in W'$. Then $|\delta_{G'}(W)|=|\delta_G(W')|$ and $b(W)=b(W')$, so (C) for $G'$ is (C) for $G$.
+For $v=w$ the slack is $2p$, and (C) is trivial. A partition of $G'$ gives one of $G$ when the path
+through $xy$ is routed through $w$. The component of $x$ loses the vertex $w$ and keeps its
+sum, so the class is preserved.
+
+(c) Let $w$ be a leaf at $x$ with $b(x)\le d(x)-2$. Put $H=G-xw$, with $b'=b+e_x-e_w$. Then
+(L) holds for $(H,b')$. For (C), compare $W$ with $W\cup\{w\}$ when $x\in W\not\ni w$, and with $W$
+itself otherwise. The cut changes by one exactly when $xw$ crosses $W$, and the left side changes
+by the same amount, so each condition for $H$ is one of $G$. By minimality $(H,b')$ is realised.
+Append $xw$ to a path ending at $x$; it avoids $w$, which is isolated in $H$. Lean:
+\texttt{cutOK\_leaf}, \texttt{ach\_of\_leaf}, \texttt{leaf\_step}.
+
+(d) Let $N(w)=\{x,y\}$, $b(w)=2$ and $b(x)\le d(x)-2$. Put $H=G-wx$, with $b'=b+e_x-e_w$, so
+$b'(w)=1$. Since $w$ lies on a cycle, $H$ is connected and in the class. (L) is clear. In (C), for $x\in W\not\ni w$ and $v\ne w$, use $W\cup\{w\}$: its cut is
+$|\delta_G(W)|-2[y\in W]$ and its sum is $b(W)+2$. In the other cases $W$ itself serves, and for
+$v=w$ the slack grows by two. So $(H,b')$ is cut-feasible and realised. Its blank neighbours of
+$w$ are at most $\{y\}$, and none if $b(y)\ge1$. So Fan's single transfer $x\to w$ applies when
+$b'(x)=b(x)+1$ exceeds that number, i.e.\ when $b(x)\ge1$ or $b(y)\ge1$.
+\end{proof}
+
+\subsection*{The template, tested}
+For an edge $uv$ of a cut-feasible $(G,b)$, put $H=G-uv$. The profile-level moves of the game are
+the following.
+\begin{itemize}
+\item NP (new path): $b'=b-e_u-e_v$ with $p-1$ paths, if $b(u),b(v)\ge1$.
+\item T (transfer towards $v$): $b'=b+e_u-e_v$, if $b(v)\ge1$ and $b'(u)>|Z(v)|$ in $(H,b')$.
+\item C (concatenation): $b'=b+e_u+e_v$ with $p+1$ paths, if $b'(u)\ge2$ or $b'(v)\ge2$.
+\item $\mathrm{NP}_L$ (path insertion): delete a path $P$ of length at most $L$ whose ends $a\ne z$
+have $b\ge1$, and take $b'=b-e_a-e_z$ on $G-E(P)$.
+\end{itemize}
+A move is \emph{valid} if $b'$ is cut-feasible on the smaller graph and, for EMM$^+$, in the class.
+A valid move succeeds for every partition of the smaller graph: by Fan's lemma for T, because the
+counts guarantee distinct paths for C, and trivially for NP and $\mathrm{NP}_L$. So if every
+cut-feasible instance with an edge had a valid move, cut-feasibility would be an inductive
+invariant and the conjecture would follow.
+
+\begin{proposition}[computation]\label{prop:template}
+In the following runs of \texttt{tools/emm\_template.py}, an instance is \emph{stuck} if no edge
+has a valid move. \emph{Reduced} means not removable by Lemma~\ref{lem:reductions}(b),(c).
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+instances, moves & $n=4$ & $n=5$ & $n=6$\\
+\midrule
+all cut-feasible; NP, T, C & $2/52$ & $15/767$ & $56/13{,}897$\\
+reduced; NP, T, C & $0/35$ & $9/600$ & $12/10{,}866$\\
+reduced; with $\mathrm{NP}_L$, $L\le3$ & -- & $0/600$ & $4/10{,}866$\\
+EMM$^+$ class, reduced; NP, T, C & $0/35$ & $4/589$ & $14/10{,}847$\\
+EMM$^+$ class, reduced; with $\mathrm{NP}_L$, $L\le5$ & $0/35$ & $2/589$ & $6/10{,}847$\\
+\bottomrule
+\end{tabular}
+\end{center}
+In the last row every stuck instance has $p=\lceil n/2\rceil$. There a path insertion would leave
+the class.
+\end{proposition}
+
+Examples of stuck instances are as follows.
+\begin{itemize}
+\item The $4$-cycle with two ends at each of two opposite vertices; Lemma~\ref{lem:reductions}(b)
+removes it.
+\item The butterfly (two triangles at a common vertex) with two ends at each of two wing tips; the
+path insertion of the two-edge path through the centre resolves it.
+\item The octahedron $K_{2,2,2}$ with four ends at each of two antipodal vertices; again a
+two-edge path insertion resolves it.
+\item \texttt{Eqzo}, with three ends at each of two adjacent saturated vertices and $p=3=n/2$.
+The natural move is the new path on the edge between them, which leaves EMM$^+$.
+\end{itemize}
+
+\begin{remark}[Diagnosis]\label{rem:diag}
+Option \texttt{diag} counts, for each stuck instance, the moves that are cut-feasible and in the
+class but lack only their guarantee. These are transfers at Fan's equality, $b'(u)=|Z(v)|$, and
+concatenations with $b'(u)=b'(v)=1$, where the two ends might lie on one path. At $n=6$ every
+stuck reduced instance has such a move. Of the $12$, one has only an equality transfer, five only
+such a concatenation, and six both. Of the $14$ in the EMM$^+$ class, the numbers are $1$, $5$ and
+$8$, and $6$ of them also have a path insertion that is valid except for leaving the class
+(\texttt{outputs/tmpl6\_red\_diag.log}, \texttt{tmpl6\_plus\_diag.log}). So the template fails
+exactly where the hypothesis of the move is tight, the situation of Section~\ref{sec:six}.
+\end{remark}
+
+\subsection*{Negative results and what the template needs}
+\begin{enumerate}[label=(\arabic*)]
+\item EMM does not extend to arbitrary profiles. It fails at order $7$ and, $17$ times, at order $8$
+below the budget, through linkage obstructions (Example~\ref{ex:linkage}). The induction must stay
+in a class such as EMM$^+$.
+\item Profile-level single-edge moves do not make cut-feasibility inductive, even after the
+reductions. Neither do path insertions of bounded length.
+\item At the budget $p=\lceil n/2\rceil$ the class EMM$^+$ forbids path insertion. There only
+transfers and concatenations remain, and they fail at equality.
+\end{enumerate}
+The inductive step therefore needs an \emph{equality lemma}. When a transfer is at Fan's equality,
+or a concatenation has one end at each of $u$ and $v$, either the move succeeds, or the partition
+of $H$ has a rigid structure that exhibits a tight cut of $G$ through $uv$. Fan's alternative
+(Lemma~\ref{lem:alt}) and the append-or-through Lemma~\ref{lem:through} are the profile-level tools
+at equality. They did not repair the game (Section~\ref{sec:posa}), and the stuck instances above
+are the smallest test cases for any such lemma. The reductions to $2$-connected $G$ through the
+gluing theorems (two-vertex-separators Thm.~7, separating-pairs \S2) are not attempted here.
+
 \section{Consequences}\label{sec:conseq}
 
 \begin{enumerate}
@@ -1075,7 +1276,11 @@ hypotheses checked by \texttt{decide}.
 Lemma~\ref{lem:twohub}. Profiles are again stated without subtraction, e.g.\ for
 \texttt{Ach.hub\_general}:
 $b'(v)+[v\in R]=b(v)+(d-2)[v=s]+[v=y]+[v=y']$.
-\item \texttt{fan\_alternative}: Lemma~\ref{lem:alt}. Its two halves are
+\item \texttt{fan\_alternative}: Lemma~\ref{lem:alt}.
+\item File \texttt{lean/GallaiLean/EmmTemplate.lean}: \texttt{cutCount}, \texttt{CutOK} (conditions
+(L), (C) of Section~\ref{sec:emm}), \texttt{cutCount\_delEdge}, \texttt{cutCount\_insert\_leaf},
+\texttt{cutOK\_leaf}, \texttt{ach\_of\_leaf} and \texttt{leaf\_step}: Lemma~\ref{lem:reductions}(c).
+No \texttt{sorry}; standard axioms. Its two halves are
 \texttt{fan\_reroute\_exec} and \texttt{fan\_alt\_count}. The first executes a partial chain; it is
 the reroute part of \texttt{fan\_exec} from \texttt{Fan.lean}, without the final append. The second
 is the counting of \texttt{fan\_exists\_chain}, stopped before the contradiction.
@@ -1117,6 +1322,9 @@ the least $|X|$ with $\mathrm{lb}(y)$, \texttt{hs\_shapes.py} classifies $X$, an
 \texttt{relay\_cover.py} checks the hypotheses of Theorem~\ref{thm:relayhub} and
 Corollary~\ref{cor:twohub} and replays their held sets. \texttt{sample10.py} samples critical
 graphs of order $10$.
+\item \texttt{tools/gemm\_test.py} (Proposition~\ref{prop:gemm}) and \texttt{tools/emm\_template.py}
+(Proposition~\ref{prop:template}, Remark~\ref{rem:diag}) of the project repository, with the exact
+oracle \texttt{tools/realis.c}; \texttt{emm\_runs.sh} reproduces their logs.
 \item \texttt{run\_all.sh}: reproduces every table. The outputs are in \texttt{scripts/outputs/}.
 The graph lists (\texttt{.g6}) and certificates (\texttt{certificate*.txt}) are committed. The
 \texttt{.log} files that \texttt{run\_all.sh} writes, such as \texttt{crit47.log},
@@ -1134,6 +1342,9 @@ B} 93 (2005) 117--125.
 \bibitem{D6} The $d=6$ frontier: transfers, relays and the terminal step, working draft,
 \texttt{manuscripts/d6-frontier}.
 \bibitem{EXP} Project experiment log, \texttt{research/experiments.md}, entry E13.
+\bibitem{ED} J.~Williams, Half-order bounds and endpoint prescriptions for path decompositions,
+working draft,
+\texttt{gallai/01-original-manuscripts/even-degrees.pdf}.
 \bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, working
 draft, 25 November 2026, \texttt{gallai/02-november-25/separating-pairs.pdf}.
 \bibitem{MR} J.~Williams, Cut vertices and cycle intersections in Gallai's path decomposition
