@@ -4,9 +4,10 @@ Construction (manuscript, section "Forcing gadgets", Theorem "EMM fails in every
 class"):
   M_r   the 2r-regular multigraph on the cycle c_0 ... c_{2r-1} (side c_i c_{i+1} has
         multiplicity r-1 for even i and r for odd i) plus a vertex w joined once to every c_i;
-  D_r   M_r - w with every odd c_i blown up into a block K_{2r}: each of the 2r edges at c_i
-        goes to its own vertex of the block.  Its 2r ports are the ends of the former w-edges.
-        Every vertex of D_r has degree 2r in the host graph, and b = 0 on D_r;
+  D_r   M_r - w with every odd c_i ("half" blow-up) or every c_i ("full" blow-up) replaced by a
+        block K_{2r}: each of the 2r edges at c_i goes to its own vertex of the block.  Its 2r
+        ports are the ends of the former w-edges.  Every vertex of D_r has degree 2r in the host
+        graph, and b = 0 on D_r;
   G_r   D_r plus a block S_r of |D_r| vertices, all of even degree and all marked (b = 2); the
         ports of c_0 and c_1 go to one vertex s of S_r, the other ports to distinct t_i.
 
@@ -117,92 +118,88 @@ def kblock_free(r):
     return out
 
 
-def build(r):
-    """D_r and its ports; vertex names: ('c', i) for even i, ('B', i, x) for odd i, 0 <= x < 2r."""
+def build(r, blown):
+    """D_r: M_r - w with each c_i, i in `blown`, replaced by a block K_{2r}.  `blown` must contain
+    an end of every side (e.g. the odd indices, or all).  Vertex names: ('c', i) for a single
+    vertex, ('B', i, x) for block vertices; block slot x in [0, m_{i-1}) is joined towards
+    c_{i-1}, x in [m_{i-1}, m_{i-1} + m_i) towards c_{i+1}, and x = 2r - 1 is the port."""
     k = 2 * r
+    assert all(i in blown or (i + 1) % k in blown for i in range(k))
     D = nx.Graph()
     port = {}
-    # block vertex roles at odd i: x in [0, r-2] -> towards c_{i-1}; [r-1, 2r-2] -> c_{i+1};
-    # 2r-1 -> port
-    for i in range(1, k, 2):
-        D.add_edges_from((("B", i, x), ("B", i, y)) for x, y in combinations(range(k), 2))
-        port[i] = ("B", i, k - 1)
-        for x in range(r - 1):
-            D.add_edge(("B", i, x), ("c", (i - 1) % k))
-        for x in range(r - 1, k - 1):
-            D.add_edge(("B", i, x), ("c", (i + 1) % k))
-    for i in range(0, k, 2):
-        port[i] = ("c", i)
+
+    def end(i, side, idx):
+        """the vertex at c_i carrying copy idx of `side` (i - 1 or i)"""
+        if i not in blown:
+            return ("c", i)
+        if side == (i - 1) % k:
+            return ("B", i, idx)
+        return ("B", i, mult(r, (i - 1) % k) + idx)
+
+    for i in range(k):
+        if i in blown:
+            D.add_edges_from((("B", i, x), ("B", i, y)) for x, y in combinations(range(k), 2))
+            port[i] = ("B", i, k - 1)
+        else:
+            D.add_node(("c", i))
+            port[i] = ("c", i)
+    for i in range(k):
+        for idx in range(mult(r, i)):
+            D.add_edge(end(i, i, idx), end((i + 1) % k, i, idx))
+    D.graph["end"] = end
     return D, port
 
 
-def realisation(r, D, port, kfree):
-    """Explicit realisation of D_r^+: r paths, leaf ('l', i) at port i."""
+def realisation(r, D, port, kfree, blown):
+    """Explicit realisation of D_r^+: r paths, leaf ('l', i) at port i (from the decomposition
+    of M_r, with copies of each side distributed among its paths, and Walecki-type paths of the
+    blocks for the induced matchings)."""
     k = 2 * r
-    decs, _ = multigraph_decompositions(r)
-    dec = decs[0]
-    # assign copies: for side i, the paths using it get distinct copies (block vertices)
-    paths = []
-    copy_of = {}  # (path index, side) -> block vertex index used
+    end = D.graph["end"]
+    dec = multigraph_decompositions(r)[0][0]
+    copy_of = {}
     for i in range(k):
         users = [t for t, (j, sides, _) in enumerate(dec) if i in sides]
         assert len(users) == mult(r, i)
-        odd = i if i % 2 == 1 else (i + 1) % k        # the blown-up endpoint of side i
-        if odd == i:   # side c_i c_{i+1} with c_i blown up: copies r-1 .. 2r-2
-            base = r - 1
-        else:          # side c_i c_{i+1} with c_{i+1} blown up: copies 0 .. r-2
-            base = 0
         for idx, t in enumerate(users):
-            copy_of[(t, i)] = base + idx
+            copy_of[(t, i)] = idx
+    skeleton = []
     for t, (j, sides, ends) in enumerate(dec):
-        # cycle order c_{j+1}, c_{j+2}, ..., c_j
-        order = [(j + 1 + s) % k for s in range(k)]
-        # block entry/exit vertices: for odd c, (in-vertex, out-vertex)
+        order = [(j + 1 + s) % k for s in range(k)]          # c_{j+1}, ..., c_j
         seq = [("l", order[0])]
         for pos, c in enumerate(order):
-            prev_side = None if pos == 0 else (order[pos - 1] if (order[pos - 1] + 1) % k == c else c)
-            next_side = None if pos == k - 1 else c
-            if c % 2 == 0:
-                seq.append(("c", c))
-            else:
-                x_in = (k - 1) if pos == 0 else copy_of[(t, (c - 1) % k)]
-                x_out = (k - 1) if pos == k - 1 else copy_of[(t, c)]
-                seq.append(("Bin", c, x_in, x_out))
+            x_in = port[c] if pos == 0 else end(c, (c - 1) % k, copy_of[(t, (c - 1) % k)])
+            x_out = port[c] if pos == k - 1 else end(c, c, copy_of[(t, c)])
+            seq.append((c, x_in, x_out))
         seq.append(("l", order[-1]))
-        paths.append(seq)
-    # expand blocks: for each block, the matching of (x_in, x_out) over the r paths
+        skeleton.append(seq)
     block_paths = {}
-    for i in range(1, k, 2):
-        mt = []
-        for seq in paths:
-            for it in seq:
-                if it[0] == "Bin" and it[1] == i:
-                    mt.append(frozenset({it[2], it[3]}))
-        sol = kfree[frozenset(mt)]
+    for i in blown:
+        mt = frozenset(frozenset({it[1][2], it[2][2]}) for seq in skeleton for it in seq
+                       if it[0] == i)
         block_paths[i] = {}
-        for P in sol:
-            ends = [v for v in range(k) if sum(1 for e in P if v in e) == 1]
-            block_paths[i][frozenset(ends)] = P
+        for P in kfree[mt]:
+            ends = frozenset(v for v in range(k) if sum(1 for e in P if v in e) == 1)
+            block_paths[i][ends] = P
     out = []
-    for seq in paths:
+    for seq in skeleton:
         Q = []
         for it in seq:
             if it[0] == "l":
-                Q.append(("l", it[1]))
-            elif it[0] == "c":
                 Q.append(it)
+            elif it[0] not in blown:
+                Q.append(("c", it[0]))
             else:
-                _, i, x_in, x_out = it
-                P = block_paths[i][frozenset({x_in, x_out})]
+                i, x_in, x_out = it
+                P = block_paths[i][frozenset({x_in[2], x_out[2]})]
                 adj = {}
                 for e in P:
-                    a, b = tuple(e)
-                    adj.setdefault(a, []).append(b)
-                    adj.setdefault(b, []).append(a)
-                walk = [x_in]
-                while walk[-1] != x_out:
-                    nxt = [y for y in adj[walk[-1]] if y not in walk]
-                    walk.append(nxt[0])
+                    u, v = tuple(e)
+                    adj.setdefault(u, []).append(v)
+                    adj.setdefault(v, []).append(u)
+                walk = [x_in[2]]
+                while walk[-1] != x_out[2]:
+                    walk.append([y for y in adj[walk[-1]] if y not in walk][0])
                 Q.extend(("B", i, x) for x in walk)
         out.append(Q)
     return out
@@ -283,13 +280,20 @@ def main(rs):
         assert len(decs) == 1 and rep == 0
         kfree = kblock_free(r)
         print(f"K_{k} free: all {len(kfree)} perfect matchings are end pairings of Hamiltonian path decompositions")
-        D, port = build(r)
+        for variant in ("half", "full"):
+            blown = set(range(1, k, 2)) if variant == "half" else set(range(k))
+            check_variant(r, k, variant, blown, kfree)
+    print("OK")
+
+
+def check_variant(r, k, variant, blown, kfree):
+        D, port = build(r, blown)
         assert all(D.degree(v) + (v in port.values()) == k for v in D)
-        paths = realisation(r, D, port, kfree)
+        paths = realisation(r, D, port, kfree, blown)
         pairs = check_realisation(D, port, paths, r)
-        print(f"D_{r}: {D.number_of_nodes()} vertices, {D.number_of_edges()} edges; explicit realisation of D^+ valid,"
-              f" leaf pairs {pairs}")
-        if r == 2:
+        print(f"[{variant} blow-up] D_{r}: {D.number_of_nodes()} vertices, {D.number_of_edges()} edges;"
+              f" explicit realisation of D^+ valid, leaf pairs {pairs}")
+        if r == 2 and variant == "half":
             import realis
             Dl = D.copy()
             b = {v: 0 for v in D}
@@ -337,7 +341,6 @@ def main(rs):
             assert ok1 and ok2
             print("graph6:", nx.to_graph6_bytes(H, header=False).decode().strip(),
                   "M mask", sum(1 << v for v in H if H.nodes[v]["old"] in M))
-    print("OK")
 
 
 if __name__ == "__main__":
