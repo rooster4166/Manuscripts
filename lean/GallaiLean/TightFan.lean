@@ -1,6 +1,9 @@
 import GallaiLean.FanSupport
 import GallaiLean.Flower
 import GallaiLean.L1Star
+import GallaiLean.EMCFour
+import GallaiLean.ThreeConnected
+import GallaiLean.Lovasz
 
 /-!
 # Fan's lemma at equality: protected blanks
@@ -417,5 +420,201 @@ theorem l1_tight_transfer (G : SimpleGraph W) [DecidableRel G.Adj] (hev : (evenS
   · rw [hDHrest (some c) (by simp [hxc.symm]) (by simp [hcg]), hD₃c]
 
 end l1tight
+
+/-! ### Flowers do not produce Lovász decompositions -/
+
+section flowers
+
+variable {V : Type v} [DecidableEq V]
+
+/-- **The hub hypothesis is trivial for decompositions with at most one end everywhere.** If `D`
+satisfies the hypothesis of `hub_cycles` (`|T|` ends at the hub `s`, one at each vertex of `T`,
+none elsewhere) and has at most one end at every vertex, then `|T| ≤ 1`: the flower has at most
+one petal. -/
+theorem hub_cycles_card_le_one {H : SimpleGraph V} (D : PathDecomp H) (s : V) (T : Finset V)
+    (hends : ∀ v, D.ends v = if v = s then T.card else if v ∈ T then 1 else 0)
+    (hle : ∀ v, D.ends v ≤ 1) : T.card ≤ 1 := by
+  have := hends s
+  simp only [ite_true] at this
+  rw [← this]
+  exact hle s
+
+/-- **The flower recombination has two ends on the transversal.** Any decomposition with the end
+counts produced by `flower_decomp` (two ends at every vertex of the transversal `L`, none elsewhere)
+has a vertex with two ends; so it is never a decomposition with at most one end at each vertex,
+in particular never a Lovász decomposition. -/
+theorem flower_decomp_not_le_one {G : SimpleGraph V} (L : TPath V) (D : PathDecomp G)
+    (hD : ∀ v, D.ends v = if v ∈ L.walk.support then 2 else 0) : ¬ ∀ v, D.ends v ≤ 1 := by
+  intro h
+  have := h L.src
+  rw [hD] at this
+  simp only [L.walk.start_mem_support, ite_true] at this
+  omega
+
+/-- The same for `flower_decomp_rest` (receipt-or-flower, with untouched paths): the recombined
+decomposition has at least two ends at every vertex of `L`. -/
+theorem flower_decomp_rest_not_le_one {G : SimpleGraph V} (L : TPath V) (rest : List (TPath V))
+    (D : PathDecomp G)
+    (hD : ∀ v, D.ends v = (if v ∈ L.walk.support then 2 else 0) + endsL rest v) :
+    ¬ ∀ v, D.ends v ≤ 1 := by
+  intro h
+  have := h L.src
+  rw [hD] at this
+  simp only [L.walk.start_mem_support, ite_true] at this
+  omega
+
+end flowers
+
+/-! ### L∞ from the blocked case of `L₁*` -/
+
+section linfty
+
+universe w
+
+/-- **Conjecture L∞** (route descent, §V.4c; l1star Proposition 3.1): in a graph with no vertex
+of positive even degree, every odd `c` has a Lovász decomposition whose path ending at `c` lies in
+the closed neighbourhood `N[c]`. -/
+def LInfty : Prop :=
+  ∀ (V : Type w) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card = 0 → ∀ c : V, G.degree c % 2 = 1 →
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+      ∀ P ∈ D.paths, (P.src = c ∨ P.tgt = c) → ∀ x ∈ P.walk.support, x = c ∨ G.Adj c x
+
+/-- `L₁*` (general form) implies L∞: take `A = V ∖ N[c]`, which is admissible when there is no
+even vertex. -/
+theorem lInfty_of_l1StarGen (h : L1StarGen.{w}) : LInfty.{w} := by
+  intro V _ _ G _ hev c hc
+  classical
+  let A : Finset V := Finset.univ.filter (fun a => a ≠ c ∧ ¬ G.Adj c a)
+  have hA : Admissible G c A := by
+    intro a ha
+    simp only [A, Finset.mem_filter, Finset.mem_univ, true_and] at ha
+    refine ⟨ha.1, ha.2, fun g hg => ?_⟩
+    rw [Finset.card_eq_zero] at hev
+    rw [hev] at hg
+    exact absurd hg (Finset.notMem_empty g)
+  obtain ⟨D, hD, hav⟩ := h V G (by rw [hev]; omega) c hc A hA
+  refine ⟨D, hD, fun P hP hend x hx => ?_⟩
+  by_contra hne
+  rw [not_or] at hne
+  exact hav P hP hend x (by simp [A, hne.1, hne.2]) hx
+
+/-- **The three Lovász-side residuals are one statement.** The blocked case of `L₁*` implies
+L∞ (here) and EE (`ee_of_l1Blocked`). -/
+theorem lInfty_of_l1Blocked (hB : L1Blocked.{w}) : LInfty.{w} :=
+  lInfty_of_l1StarGen (l1starGen_of_blocked hB)
+
+end linfty
+
+/-! ### Spine Test 1 at `d(z) = 4` without PTM -/
+
+section test1four
+
+variable {V : Type v} [Fintype V] [DecidableEq V]
+
+/-- **Spine Test 1 at a vertex of degree four.** If `z` is the only even vertex of `J`, `d(z) = 4`,
+and `J − z` is connected, then `Test1 J z` holds: for every `r ∈ N(z)`, `J − z` has a partition
+into `(|J| − 1)/2` paths with two ends at `r`.
+
+`J − z` has exactly four even vertices, the neighbours of `z`, and by `emc_four` (two-step
+faithful descent, from Lovász and Fan alone) some pair `{r, x}` of them is realisable. This does
+not use the terminal-matching property PTM₂, so PTM's base failures do not obstruct Test 1 at
+`d(z) = 4`. -/
+theorem test1_deg_four (J : SimpleGraph V) [DecidableRel J.Adj] (z : V) (h4 : J.degree z = 4)
+    (hconn : (delVert J z).Connected) : Test1 J z := by
+  classical
+  intro hz r hr
+  let H := delVert J z
+  let r' : {v | v ≠ z} := ⟨r, hr.ne'⟩
+  -- degrees in `J − z`
+  have hdeg : ∀ v : {v | v ≠ z}, H.degree v + (if J.Adj v z then 1 else 0) = J.degree v :=
+    fun v => delVert_degree z v
+  have hoddJ : ∀ v : V, v ≠ z → Odd (J.degree v) := fun v hv =>
+    Nat.not_even_iff_odd.mp (fun he => hv ((hz v).1 he))
+  -- the even vertices of `J − z` are the neighbours of `z`
+  have hevJ : ∀ v : {v | v ≠ z}, (Even (H.degree v) ↔ J.Adj v z) := by
+    intro v
+    have h := hdeg v
+    have ho := hoddJ v.1 v.2
+    by_cases hv : J.Adj v z
+    · simp only [hv, ite_true] at h
+      constructor
+      · intro; exact hv
+      · intro
+        rw [← h] at ho
+        exact (Nat.even_add_one.mpr (Nat.not_even_iff_odd.mpr ho |> fun h' => h') |> fun h' => by
+          rcases Nat.even_or_odd (H.degree v) with he | he
+          · exact he
+          · exact absurd (Nat.even_add_one.mpr (Nat.not_even_iff_odd.mpr he)) (Nat.not_even_iff_odd.mpr ho))
+    · simp only [hv, ite_false, add_zero] at h
+      rw [h]
+      exact ⟨fun he => absurd he (Nat.not_even_iff_odd.mpr ho), fun h' => absurd h' hv⟩
+  -- the neighbours of `z` in `J − z`
+  let N : Finset {v | v ≠ z} := Finset.univ.filter (fun v => J.Adj v z)
+  have hNcard : N.card = 4 := by
+    rw [← h4, ← card_neighborFinset_eq_degree]
+    have : N.map (Function.Embedding.subtype _) = J.neighborFinset z := by
+      ext w
+      simp only [N, Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and,
+        Function.Embedding.subtype_apply, mem_neighborFinset]
+      constructor
+      · rintro ⟨v, hv, rfl⟩; exact hv.symm
+      · intro hw; exact ⟨⟨w, hw.ne'⟩, hw.symm, rfl⟩
+    rw [← this, Finset.card_map]
+  have hrN : r' ∈ N := by simp [N, r', hr.symm]
+  -- a second vertex of `J − z`, so degrees are positive
+  obtain ⟨x₀, hx₀, hx₀r⟩ : ∃ x ∈ N, x ≠ r' := by
+    by_contra hcon
+    push Not at hcon
+    have : N ⊆ {r'} := fun x hx => Finset.mem_singleton.mpr (hcon x hx)
+    have := Finset.card_le_card this
+    rw [hNcard, Finset.card_singleton] at this
+    omega
+  have hpos : ∀ v, 0 < H.degree v := degree_pos_of_connected hconn hx₀r
+  have hevSet : evenSet H = N := by
+    ext v
+    simp only [evenSet, N, Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [← hevJ v]
+    exact ⟨fun h => h.2, fun h => ⟨hpos v, h⟩⟩
+  have hev4 : (evenSet H).card = 4 := by rw [hevSet, hNcard]
+  -- three further even vertices
+  have h3 : (N.erase r').card = 3 := by rw [Finset.card_erase_of_mem hrN, hNcard]
+  obtain ⟨x, y, w, hxy, hxw, hyw, hEq⟩ := Finset.card_eq_three.mp h3
+  have hx : x ∈ N.erase r' := by rw [hEq]; simp
+  have hy : y ∈ N.erase r' := by rw [hEq]; simp
+  have hxr : x ≠ r' := (Finset.mem_erase.mp hx).1
+  have hyr : y ≠ r' := (Finset.mem_erase.mp hy).1
+  -- even order of `J − z`
+  have hcardS : Fintype.card {v | v ≠ z} + 1 = Fintype.card V := by
+    have h1 := card_delVert (W := V) z
+    have : 1 ≤ Fintype.card V := Fintype.card_pos_iff.mpr ⟨z⟩
+    omega
+  have hoddSet : (oddSet H).card + 4 = Fintype.card {v | v ≠ z} := by
+    rw [← hev4]; exact card_oddSet_add_card_evenSet hpos
+  have hn : Even (Fintype.card {v | v ≠ z}) := by
+    obtain ⟨k, hk⟩ := H.even_card_odd_degree_vertices
+    have : (oddSet H).card = Finset.card (Finset.univ.filter (fun v => Odd (H.degree v))) := rfl
+    refine ⟨k + 2, ?_⟩
+    have h' : (oddSet H).card = k + k := hk ▸ this
+    omega
+  have hrE : r' ∈ evenSet H := hevSet ▸ hrN
+  have hxE : x ∈ evenSet H := hevSet ▸ (Finset.mem_erase.mp hx).2
+  have hyE : y ∈ evenSet H := hevSet ▸ (Finset.mem_erase.mp hy).2
+  have key : ∀ S : Finset {v | v ≠ z}, S.card = 2 → r' ∈ S → Realisable H S →
+      ∃ D : PathDecomp H, D.size ≤ (Fintype.card V - 1) / 2 ∧ 2 ≤ D.ends r' := by
+    intro S hS2 hrS hreal
+    obtain ⟨hSsub, D, hD⟩ := hreal
+    refine ⟨D, ?_, ?_⟩
+    · rw [hD.size_eq hSsub, hS2]
+      omega
+    · rw [hD r']
+      unfold profile
+      have : ¬ Odd (H.degree r') := not_odd_of_mem_evenSet hrE
+      simp [this, hrS]
+  rcases emc_four lovaszStatement hconn hn hev4 hrE hxE hyE hxr.symm hyr.symm hxy with h | h
+  · exact key _ (Finset.card_pair hxr.symm) (by simp) h
+  · exact key _ (Finset.card_pair hyr.symm) (by simp) h
+
+end test1four
 
 end Gallai
