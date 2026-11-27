@@ -1,0 +1,1 @@
+basics: {'systems': 300, 'routes': 688, 'geodesic_checks': 483, 'matching_tjoins': 93} - Lemmas 5, 7, 11(1)-(4), Corollary 12: no violation

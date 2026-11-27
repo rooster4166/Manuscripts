@@ -1,0 +1,3 @@
+mode dist2: 1272 instances run (outcomes below); case counts {}
+dist2 outcomes: {'Case I: even z has all neighbours in X': 1272}
+Lemma 3 calls: 0 chain lengths {}

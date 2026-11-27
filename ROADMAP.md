@@ -37,7 +37,7 @@ EMM sufficiency work is **stopped**.
     - L_N for 2+ pairs (owned by multi-sep);
     - S1 at distance 2;
     - RR for star forests.
-  - Its paper proofs are under audit A16.
+  - **Audit A16: every result correct as stated** (Fan's lemma with vertex sets was executed on 115k transfers, and separation was run as an algorithm). Wording and evidence fixes were sent to the author.
   - Original brief: the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
 - **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): **finished** at 413233e.
   - **Unconditional:** Thm 1.1 (balanced return), Cors 1.2/1.3, and Prop 8.3 = A19 Prop P (the counting half of Problem 7.1 under (B1)).

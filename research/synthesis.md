@@ -366,3 +366,11 @@ Example: the wheel W₆, with paths v0 z v1 v2 v3, v2 z v3 v4 v5 and v4 z v5 v0 
 A star-type analogue for Test2 (two adjacent even vertices) together with STL would give Gallai, by `gallai_iff_spineTests'`. That is a reason for maximal skepticism.
 
 **Assigned:** the STL session (connections §X). Its tasks: verify the observation, find the Test2 analogue, test both exhaustively on small graphs and 3-connected samples, then attempt proofs by Lovász's induction with z as the special vertex.
+
+**First verdict (STL session, 2026-11-27 05:48).**
+- **Surgery criterion, general form.** For a decomposition D of J with b_D(z) = 0, deleting z gives |D′| = |D| + #LL − #SS, where LL and SS count the long-long and short-short transitions at z. Test1 at r holds if #LL − #SS + [r short] ≤ 0.
+- **The Test2 analogue, STL2.** D has b(z) = 0, b(r) ∈ {0, 2} and b = 1 elsewhere, and is star-terminal (#LL = 0).
+- **Exhaustive, order ≤ 9.** Over all connected graphs with one even vertex, STL(r) ⇔ Test1(r). The 48 failures all have connectivity 1, and Test1 also fails there.
+- **3-connected instances.** STL holds on all 25,210 (J, r) pairs. STL2 holds on all 948 3-connected instances of even order ≤ 8. Random 3-connected samples at n = 11–15 gave 0 failures.
+- **Flexibility (n = 7, 3-connected).** **Every** perfect matching of N(z) is the transition pairing of some star-terminal Lovász decomposition (168 of 168). Not every short half-set works (244 of 266). This suggests a stronger, induction-friendly form, STL-P: prescribe the pairing at z.
+- **Skeptic's note.** "Some star-terminal D exists" is already Gallai-strength: take the cone over Ev(H). So STL reformulates Gallai with all the difficulty concentrated at one vertex in Lovász's setting; it is not a shortcut. For d(z) = 2, STL is multi-sep's EE.

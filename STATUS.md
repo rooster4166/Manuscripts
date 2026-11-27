@@ -236,6 +236,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | Lean proof of MR Thm 59 (A14) | **no gap in MR**; formal deviations listed |
 | near-dirac balanced return theorem (A17) | **Theorem 1.1 correct**; CKLOT hypotheses verified exactly; wording gaps and one false heuristic sentence (R2) are being fixed |
 | near-dirac §§8–9 (A19 + §R) | **Prop 8.3 (A19 Prop P) and Thm 9.3 (conditional on SH) sound**; Problem 8.5 solved by the auditor |
+| route-descent: Fan's lemma with vertex sets, separation theorem, L1, route-descent lemmas (A16) | **every result correct as stated**; two wording ERRORs (a remark after Cor 23, and the abstract's "only obstruction" claim) and several evidence/documentation GAPs, all sent for fixing |
 | spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 

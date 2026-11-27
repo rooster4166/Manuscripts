@@ -1,0 +1,8 @@
+Example 24: 36 Lovasz decompositions, 0 separate c and a
+  displayed decomposition: valid Lovasz decomposition, Q_c = ['c', 'u1']
+  decompositions with a not in Q_c: 18
+  with a leaf at z: 168 Lovasz decompositions, 60 separate c and a; e.g. [['a', 'la'], ['c', 'lc'], ['lz', 'z', 'u2', 'a', 'u1'], ['u2', 'c', 'u1', 'z']]
+K4 - e with leaves at c, a (all odd, dist 2): 36 Lovasz decompositions, 0 separate c and a; 18 have a not in Q_c; 10 have both a not in Q_c and c not in Q_a
+path c z a: Lovasz decompositions [[['a', 'z', 'c']]]
+star K13 with hung leaves: 3 Lovasz decompositions, 0 meet {l1,l2,l3} at most once per path; packed: True
+oracle S query agrees with the enumerator on 226 random instances

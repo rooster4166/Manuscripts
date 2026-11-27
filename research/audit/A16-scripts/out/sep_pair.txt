@@ -1,0 +1,2 @@
+mode pair: 1357 instances, all outputs checked; case counts {'I': 14615, 'II-b0': 1220, 'II-b2': 1204, 'II-single': 1220, 'III': 5756, 'IV': 1357}
+Lemma 3 calls: 15819 chain lengths {0: 13975, 1: 1409, 2: 321, 3: 69, 4: 30, 5: 11, 6: 4}
