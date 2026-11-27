@@ -60,7 +60,8 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`, new): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
+- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`, new): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
 - **multi-sep**: **finished** (04207b3). MSEP is open, with 36M+ cubic pairings and 0 failures. EE3 is proved in Lean. Audit A18 is sound.
 - (original entry) **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
@@ -477,3 +478,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `pee_adjEven`: PEE at xy for y ∈ N(z) with ≤ 1 common neighbour besides z, by a general mechanism (delete zy, apply EE at y, restore by Fan).
   - **Remaining for EE:** |N(u) ∩ N(z)| ≥ 2. It reduces to "in K − triangle(uzw), the path ending at w avoids u and z", which held on 88,356 triples at n = 9 and 44,892 random ones at n = 11–17.
   - EE has 0 failures exhaustively to n = 9 and about 13M tests at n = 11.
+- **ptm, first verdict (08:05).**
+  - **PTM_2 is false only at K4** with a perfect matching F (= W₄ with the diagonal pairing; F is simple).
+    - Exhaustive to n = 8 (13,240 instances), with G − F allowed to be disconnected: K4 is the only failure.
+    - PTM_3 and PTM(r) fail only when G − F is disconnected.
+    - Multigraph PTM fails only when G − F has a cut vertex, which a 3-connected J excludes.
+  - **Proposed statement:** PTM_m for G − F connected, with the K4 exception at m = 2; for STL, the multigraph form with G − F 2-connected.
+  - **Proof route** (leafify e1, walk the even vertex along a shortest e1–e2 path, restore by Fan in the two-leaf graph, two leaf merges) gives **PTM_2 and PTM_2(r) on all connected all-odd graphs of girth ≥ 5**. Write-up and Lean are in progress.

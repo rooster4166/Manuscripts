@@ -374,3 +374,22 @@ A star-type analogue for Test2 (two adjacent even vertices) together with STL wo
 - **3-connected instances.** STL holds on all 25,210 (J, r) pairs. STL2 holds on all 948 3-connected instances of even order ≤ 8. Random 3-connected samples at n = 11–15 gave 0 failures.
 - **Flexibility (n = 7, 3-connected).** **Every** perfect matching of N(z) is the transition pairing of some star-terminal Lovász decomposition (168 of 168). Not every short half-set works (244 of 266). This suggests a stronger, induction-friendly form, STL-P: prescribe the pairing at z.
 - **Skeptic's note.** "Some star-terminal D exists" is already Gallai-strength: take the cone over Ev(H). So STL reformulates Gallai with all the difficulty concentrated at one vertex in Lovász's setting; it is not a shortcut. For d(z) = 2, STL is multi-sep's EE.
+
+## 20. The main line in its current form: terminal matchings (2026-11-27, 07:30)
+
+**Chain of reductions; the arrows marked "Lean" are machine-checked.**
+1. Gallai ⇐(Lean, `gallai_of_stl`) STL + STL2 on 3-connected J with J − z free of matching cuts.
+2. STL ⇐ STL-P for some pairing F of N(z) into non-edges.
+3. STL-P ⇔ PTM for the matching F in the all-odd graph G = (J − z) + F. Here PTM_m asks that every F-edge be terminal, at a freely chosen end, on its own path of a Lovász decomposition. For STL(r), r's edge must be terminal at r's partner.
+
+**Status of the rungs.**
+- PTM_1 = `lovasz_endEdge` (Lean).
+- STL at d(z) = 2: `stl_deg_two` (Lean, via `ee_deg_two`).
+- PTM_2 and PTM_3: 1,199/1,199 random tests hold. Prescribed ends fail for m ≥ 2 (17 counterexamples), so the free choice of end is essential.
+- STL-P: every 3-connected graph of order 7 and 9 holds (54,213 pairings). The only failure is W₄ with the diagonal pairing, where F is parallel to edges of J.
+
+**Sessions.**
+- **ptm** (connections §Z): PTM_2, then PTM_m, by carrying pending terminal edges. Candidate tool: the Fan mechanism of `pee_adjEven`.
+- **ee** (connections §Y): the last EE case, the manuscript, and audit A21.
+
+**Skeptic's note.** STL, and hence PTM_m for the relevant matchings, is Gallai-strength (STL session, §19). The ladder concentrates the difficulty; it does not remove it.
