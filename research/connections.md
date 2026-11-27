@@ -1702,13 +1702,14 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - All 59 failures have a cut vertex, and Test1 itself fails at 35 of them.
   - First data choice: 36,779 of the 36,781 roots with a base at n = 9 have one at the first data choice tried.
 - **Every failure, single-pair or not, is a pair of universal twins** (N(a) = N(b) = C − {a, b}) in a component C of M missing z. This holds for all 243 failing data choices at n = 9, and for the 4 failing data choices among the 88,526 of the 3-connected order-9 graphs.
-- **Multi-pair compatibility: none needed in the data.** There are 0 instances where each pair is satisfiable alone but not jointly. This covers 3-connected TB at n = 9, arbitrary one-even graphs at n = 7, all-odd graphs at n = 8, and random graphs at n = 11 with k ≤ 3 pairs.
-- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. 322 of 324 roots are certified; 2 are still running, and none is proved absent.
+- **Multi-pair compatibility: none needed in the data.** There are 0 instances where each pair is satisfiable alone but not jointly. This covers 3-connected TB at n = 9, arbitrary one-even graphs at n = 7, all-odd graphs at n = 8, and random graphs at n = 11–15 with k ≤ 3 pairs (4,420 instances, 0 failures).
+- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. **All 324 roots are certified**, and so are the coordinator's K2-residual run (36/36) and its d(z) = 8 budget root. The last three hard roots were found by clt's local search and independently verified here.
 - **Head-to-head with t6-dense.** On the 8 E28 graphs where Conj 5.1 / STL-P was undecided at 46 roots, the triangle base certifies **all 48 roots**. 42 are certified at budget 2·10⁶, the last 6 at 2·10⁷ with five seeds. Every lift was verified. So the triangle base is weaker in form and much easier for the search.
 
 ### AF.4 Conjecture DL, and where it sits
 - **DL** (manuscript Conj 7.3). Let G have ≤ 1 even vertex, and let (a_i, b_i) be disjoint pairs of non-adjacent odd vertices, none of them universal twins of its component. Then some Lovász decomposition has a_i ∉ Q(b_i) or b_i ∉ Q(a_i) for every i.
 - **The exception is necessary** (Prop 7.5). In K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition is Hamiltonian. It never applies to M when M is connected, because a_i ≁ z.
+- **It is the only obstruction for one pair, up to order 9.** Over all connected one-even-vertex graphs of order 5, 7 and 9 (166,217 pairs at n = 9), the disjunction fails exactly at the universal-twin pairs: 3, 14 and 170 of them, all of which fail.
 - **Versus L1\*.** With a fixed orientation, one pair is L1\* with |A| = 1, which is admissible iff a ≁ g. For a, b ∈ N(g), the fixed orientation is false in general (`DTw`). In random instances one orientation alone fails in 6% (p = 0.4) to 58% (p = 0.8) of cases, but the disjunction held in every decided instance. In the dense T(6)-i regime every pair lies in N(w): this is the new territory.
 - **Skeptic's note.** DL ⇒ Test1 wherever data exist with M connected, which includes the dense T(6)-i residual. So DL is at least as hard as that frontier. It concentrates the difficulty into one free-orientation single-vertex statement; it does not remove it.
 - **Not proved.** DL(1) when a, b ∈ N(g) and a, b have a common neighbour. The natural attack is the L1\* induction (`l1_strong`) with the disjunction as invariant: a minimal counterexample would have to be blocked for both orientations at once.
@@ -1719,6 +1720,27 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - The cleanest instance is the cone over K_{2,6} at a degree-7 root (manuscript Example 4.7). There H = J − {z, r} is a star, so the T-join is unique and its leaves are siblings. The 7 branches at r force two siblings onto one path, which violates (ii).
 - Elsewhere the forest lift is very effective: 2,435 of the 2,438 roots have a forest base, and all 12 at order 7 do.
 - A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
+
+### AF.4″ DL versus clt's CLT-B1 (coordinator's question)
+*CLT-B1, as clt stated it to this session (Lean `CLTB1`, `ConstrainedLovasz.lean`):*
+- *G has ≤ 1 even vertex g and distinct odd tails c_i;*
+- *the avoid-sets A_i are pairwise disjoint and contain no tail;*
+- *A_i ∩ (N[c_i] ∪ N(g)) = ∅, and cross-locality A_i ∩ N(c_j) = ∅ for all i, j.*
+
+*Conclusion: some Lovász decomposition has Q(c_i) ∩ A_i = ∅ for every i.*
+- **Resolving the disjunctions.** Choosing an orientation turns a DL instance into constraints "Q(v_i) avoids {u_i}". The avoid-sets are pairwise disjoint, because M0 is a matching.
+- **When DL is a special case of CLT-B1.** Exactly when some orientation satisfies cross-locality: every u_i ≁ g (= w) and u_i ∉ N[v_j] for all j. That is the sparse, L1\*-admissible regime of Props 7.1–7.2.
+- **The dense T(6)-i regime.** Every pair lies in N(w), so **every orientation violates cross-locality**, and DL there is outside CLT-B1.
+  - This is DL's content: the free choice of end replaces cross-locality. In random graphs one fixed orientation fails in 6–58% of instances, but the disjunction held in every decided instance.
+  - So CLT-B1 alone does not give the triangle base in the dense regime. DL does not follow from it there unless CLT-B1 is extended by a per-constraint disjunction.
+- **The failures are of different kinds.**
+  - DL's only failures are universal twins: N(a) = N(b) = C − {a, b}, so a, b ∈ N(g) and d(a) = |C| − 2, and *both* orientations fail.
+  - clt's boundary examples (in-degree 2, chains/cycles, or dropped cross-locality with d(g) = 2 in a triangle) are fixed-orientation failures. Universal twins with d(g) = 2 force |C| ≤ 4, so on the face of it the two lists do not overlap.
+  - **clt's reply** (18:53):
+    - With an orientation fixed, DL is a matching constraint system (in-degree 1), but a non-local one when the heads lie in N(g). That is exactly where clt's data show fixed-orientation joint failures (18 graphs at n = 7, e.g. `FCdcw`), and the free orientation removes them.
+    - Universal twins violate locality at the tail, so they never arise inside CLT-B.
+    - **The forest-base counterexample (Example 4.7) is clt's in-degree-2 obstruction**: a parent avoided by the end paths of two children (the minimal all-odd example is `EEiW`, n = 6).
+    - clt also reports that on its 30 residual graphs a triangle base exists for *every* root, data choice and orientation (8,016 instances, E30(G)).
 
 ### AF.5 For the clt session (§AE)
 - DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.

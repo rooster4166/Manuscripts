@@ -1525,13 +1525,28 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - One pair, exhaustive (`disj_general.py … 1`):
   - n = 5: 21 pairs, 3 failures.
   - n = 7: 947 pairs, 14 failures.
-  - n = 9: see the final count below.
+  - n = 9: 166,217 pairs in 11,936 graphs, 170 failures.
   - **Every failure is a pair of universal twins** (a, b adjacent to every other vertex, hence to g).
-  - At n = 7 every universal-twin pair fails. At n = 9 a minority does.
+  - **The failures are exactly the universal-twin pairs**: 3, 14 and 170 of them at n = 5, 7, 9. Every universal-twin pair fails, and nothing else does.
 - Two pairs, exhaustive:
   - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
   - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
-- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds. See the table below.
+- Two pairs, order 9 sample (every 20th graph of `one_even_9.g6`): 597 graphs, 31,701 instances, **0 compatibility failures**. The 45 failures each contain a failing single pair.
+- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds.
+
+  | n | p | k | instances | decided OK | budget-undecided | failures | one orientation fails (k = 1) |
+  |---|---|---|---|---|---|---|---|
+  | 11 | 0.4 | 1 / 2 / 3 | 268 / 148 / 46 | 266 / 148 / 46 | 2 / 0 / 0 | 0 | 17 |
+  | 11 | 0.6 | 1 / 2 / 3 | 296 / 243 / 111 | 286 / 230 / 98 | 10 / 13 / 13 | 0 | 99 |
+  | 11 | 0.8 | 1 / 2 / 3 | 292 / 231 / 137 | 292 / 229 / 134 | 0 / 2 / 3 | 0 | 168 |
+  | 13 | 0.4 | 1 / 2 / 3 | 283 / 196 / 76 | 283 / 190 / 75 | 0 / 6 / 1 | 0 | 58 |
+  | 13 | 0.6 | 1 / 2 / 3 | 296 / 269 / 169 | 288 / 259 / 152 | 8 / 10 / 17 | 0 | 99 |
+  | 13 | 0.8 | 1 / 2 / 3 | 299 / 282 / 240 | 296 / 276 / 229 | 3 / 6 / 11 | 0 | 156 |
+  | 15 | 0.5 | 1 / 2 / 3 | 99 / 94 / 57 | 99 / 87 / 55 | 0 / 7 / 2 | 0 | 23 |
+  | 15 | 0.7 | 1 / 2 / 3 | 100 / 99 / 89 | 97 / 94 / 82 | 3 / 5 / 7 | 0 | 35 |
+
+  - Totals: 4,420 instances, **0 failures**, 129 budget-undecided.
+  - Exact rechecks (`dl_recheck.py`, no budget, 300 s per query) of the first 24 undecided instances: 23 have a base, 1 timed out, none is absent.
 - **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
 - **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
 
@@ -1550,6 +1565,15 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | \|O\| = 8, 6 per shape (∅, K2, P3, K3, C4 TW=2) | 30 | 180 | 178 | 2 (one ∅ graph) | 0 |
 | \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
 
+- The 2 undecided roots, `M~~zRz{~m~~lX|j~_` at r = 1 and 4 (J-numbering), stayed undecided at budget 2·10⁷ with five seeds. clt's local search then found witnesses (`manuscripts/clt/data/triangle_base_witnesses.txt`), which `tb.py`'s `check_base` + `lift` + `verify_test1` confirm. So the family is **180/180**.
+
+**(D′) Random 3-connected J** (`tb.py rand`, the dtl.py generator, budget 2·10⁶, three seeds).
+- n = 11, d(z) = 4: 25 graphs, 100 roots, 100 bases.
+- n = 11, d(z) = 6: 25 graphs, 150 roots, 150 bases.
+- Every lift was verified.
+- n = 11, d(z) = 8: stopped after a few graphs. The only roots it left undecided, 7 roots of `Jev}~nZ\u~_` (κ = 3), all have a base by exact search with no budget, at the first data choice, with the lift verified. The budgeted search's random vertex order was unlucky there.
+- n = 13, d(z) = 8 (the coordinator's run, `scripts/out/d8/`): all 71 roots of 9 graphs have a base. 28 were budget-undecided; they were settled by clt's local search (`tb_ls.py`), each witness checked and its lift executed (`verify13.log`, 28/28).
+
 **(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
 - **The triangle base certifies all 48 of their roots.**
   - 42 roots are certified at budget 2·10⁶ with seed 7. This covers every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs.
@@ -1561,7 +1585,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
 - n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
 - n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
-- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28) and at 2·10⁸. An exact run with no budget is pending; see the final status below.
+- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28), at 2·10⁸ (coordinator) and at 2·10⁷ with seeds 7–29, and the exact run did not finish in 2 hours. clt's local-search witness (w = 2, pairs (3,4), (5,6)) is confirmed here by `tb.py`'s checks: the base is verified and the lift is a valid Test1 decomposition. So the K2-residual run is **36/36**.
 
 **(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
 - **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.
@@ -1576,6 +1600,10 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - **The counterexamples.**
   - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
   - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
+- **Classification of the three roots** (coordinator's question): both graphs are cones or near-cones of K_{2,t} type at the root.
+  - `HsaCB~~`: a cone (d(z) = 8 = n − 1) over the Eulerian B = K_{2,6}, at either hub.
+  - `HsaAD~}`: a near-cone (d(z) = 6; z misses 2 of the 8 vertices of B). B has hubs r (degree 6) and a second hub of odd degree 7. The even subgraph of B is a star with four leaves at r, plus an isolated vertex.
+  - In all three, many degree-2 vertices of B hang between r and a second hub, and they become siblings at r.
 - **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
 
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
@@ -1654,3 +1682,45 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 - So on residual graphs even the fixed-orientation, every-data form holds; the free orientation of DL is needed only in smaller graphs (E29(C)).
 - **The three budget-undecided instances of the triangle-base session** (E29(F) n = 15 K2 root r = 1, and the ∅ graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3) have bases at the first data choice and orientation tried (`tb_ls.py`; witnesses in `manuscripts/clt/data/triangle_base_witnesses.txt`, checked).
+## E30. Rooted Gallai for Eulerian graphs: the two-end test on cones (cloud session `claude/eulerian-cone`)
+
+Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/eulerian-cone/{scripts,data}`; `scripts/run_all.sh` regenerates everything.
+
+**Question.** On a cone J = B + z, Test1 at the apex is RE: a 2-connected Eulerian B of even order n has, at every root r, a decomposition into at most n/2 paths with an end at r (Lean `test1_fullCone_iff`). RE* is the parity-free form p_r(B) ≤ ⌈n/2⌉ for connected Eulerian B.
+
+**Solver and validation.**
+- `re.c`: DFS over paths (the first path starts at r; then paths from an odd vertex of the rest, else through its lowest edge), memoised failures, per-component lower bounds.
+- Brute force `bf.py` (all exact covers): agrees on all 473 connected graphs of order 3–7 with ≤ 10 edges, 3,622 values (p_r at every root, and p), 0 mismatches.
+- Every positive answer is witness-verified (`verify_witness.py`). Every lower bound is either the counting bound CB (a proof, manuscript Prop. 4.1) or was re-decided by CP-SAT (`tools/pathnum2.py`). CP-SAT agrees on all 219 roots with p_r > CB.
+
+**(A) Exhaustive, 2-connected Eulerian, even order ≤ 10: RE holds at every root.**
+
+| n | graphs | roots | RE | tight (p_r = n/2) | p_r = CB | p_r > CB |
+| 4 | 1 | 4 | 4 | 4 | 4 | 0 |
+| 6 | 7 | 42 | 42 | 23 | 42 | 0 |
+| 8 | 162 | 1,296 | 1,296 | 242 | 1,289 | 7 |
+| 10 | 30,054 | 300,540 | 300,540 | 14,156 | 300,328 | 212 |
+
+- **Every tight root has CB = n/2.** At n = 10: 14,131 have d(r) = n − 2, 20 meet the edge bound ⌈m/9⌉, and 5 need the full counting bound. At n = 8, two (K8 minus a double star, `GTm~vs`) need the full bound.
+- 8 order-10 minima were budget-undecided (RE witnessed). 7 have CB = 5 = n/2. `ITzvn^nzw` at r = 4 has p_r = CB = 4 (unbudgeted re.c and CP-SAT).
+- RE* holds for all connected Eulerian graphs of order 3–9 (17,844 roots) and for the 972 non-2-connected ones of order 10 (9,720 roots).
+
+**(B) Families of order 12–16** (RE decided at every root, witnesses verified):
+- all 124,004 2-connected Eulerian graphs of order 12 with ≥ 46 edges (complement ≤ 20 edges, all degrees odd): 1,488,048 roots;
+- all 2-connected 4/6/8/10-regular graphs of order 12: 1,542 / 7,849 / 94 / 1 graphs, 113,832 roots;
+- all 88,126 4-regular graphs of order 14 (1,233,764 roots) and all 540 10-regular graphs of order 14 (7,560 roots);
+- all 58 complete multipartite graphs with even parts, n ≤ 16 (760 roots);
+- 2,100 random 2-connected Eulerian graphs each of orders 12, 14, 16 (88,200 roots).
+
+**(C) Conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected Eulerian B.**
+- It holds at every root of order 3–10, both parities.
+- It holds on the whole dense order-12 family. 29 critical roots (CB = 5) were undecided at budget 2·10⁶ and CP-SAT found 5 paths at each (`out/uc12_unk_cpsat.txt`, verified).
+- **False without 2-connectivity:** 1 root at order 8 (`GCXnbW`, a triangle at a cut vertex, rooted there) and 5 at order 10.
+
+**(D) Reduction constructions executed** (`reductions_check.py`). Every connected Eulerian graph of order 4–9, every root, every applicable vertex:
+- 15,776 suppressions, 13,827 ear insertions, 2,537 ears at a cut, 3,559 twin insertions, 2,024 root suppressions and 1,763 root-ear insertions;
+- every output was verified, with 0 failures.
+
+In 56 of the 1,225 even-order ear instances the +1 of the insertion exceeds n/2. These are the hard case (manuscript Remark 5.8).
+
+**(E) Matching cuts.** 2-connected Eulerian graphs of orders 4/6/8/10 without a matching cut number 0/5/130/27,933 (of 1/7/162/30,054). Only these cones are needed by `SpineTestsNMC`.

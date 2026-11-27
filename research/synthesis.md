@@ -587,7 +587,7 @@ The project lead forwarded three claims from another agent and asked that each b
    - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
    - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
    - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
-   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.7.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.9.
 
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 3.1 these are single-vertex avoidances plus a sibling condition.
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
@@ -635,3 +635,75 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
    - the Eulerian Gallai literature.
 
    A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
+
+**Addendum (20:10): the n = 15 K2 budget root is settled.**
+- clt found a triangle base at the last budget-undecided K2-residual root (n = 15, m = 77, r = 1) by local search: w = 2, M0 = {34, 56} (`manuscripts/clt/data/triangle_base_witnesses.txt`).
+- The coordinator re-checked it independently (`direct-test1/scripts/verify/verify_clt_witness.py`):
+  - D0 is a Lovász decomposition of M;
+  - both disjunctions hold;
+  - the executed lift is a valid (T1) decomposition at r = 1.
+- So every K2-residual root tested so far has a triangle base.
+- clt's two further witnesses are for the ∅ residual graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3. The coordinator also re-checked these (`verify_clt_witness_resid.py`): both are Lovász, satisfy the disjunctions and lift to (T1).
+- clt's E30(G) further reports that on the 30 residual graphs a base exists for *every* root, data choice and orientation: 8,016 instances, all found, none proved absent and none undecided.
+- **No budget-undecided triangle-base instance remains among the d(z) = 6 runs.** The d(z) = 8, n = 13 run is also settled: every one of its 28 budget-undecided roots has a triangle base, found with clt's local search and independently verified with the lift executed (`direct-test1/scripts/out/d8/`). That makes 71 of 71 roots at d(z) = 8.
+
+**§26 addendum (eulerian-cone milestone 1, 7081f70; coordinator checked the build and the axioms).**
+
+*Lean (`EulerianCone.lean`):*
+- `test1_fullCone_iff`: Test1 on the full cone ⇔ RE(B) at every root.
+- `kConnected_three_fullCone_iff`: the cone is 3-connected ⇔ B is 2-connected.
+- `fullConeTests_iff`.
+- `rootedDecomp_of_spineTestsNMC`: the spine needs exactly RE for 2-connected Eulerian B of even order *with no matching cut*.
+- `rootedDecomp_of_gallai`: Gallai ⇒ RE for every connected Eulerian B of even order.
+- `rootedDecomp_iff_addLeaf`: RE(B, r) ⇔ p(B + a leaf at r) ≤ |B|/2.
+
+So, in Lean, Gallai ⇒ RE ⇒ Gallai(2-connected Eulerian, even order), and RE is a necessary part of the spine.
+
+*Literature (`research/notes/eulerian-gallai-literature.md`, key quotes spot-checked on arXiv).* This replaces my from-memory list in §26:
+- No paper proves a rooted Eulerian statement as strong as RE.
+- Through the leaf lemma, published floor theorems give RE for planar B (Blanché–Bonamy–Bonichon), treewidth ≤ 3, 2-degenerate, K5-minor-free (not refereed) and Δ(B − r) ≤ 3 (Botler–Sambinelli).
+- Through the double, Bonamy–Perrett gives RE whenever Δ(B) ≤ 4.
+- K_{2,6} is planar, so the cone over K_{2,6} is covered by the literature.
+
+*Data (validated C solver; every positive answer is witness-checked):*
+- RE holds at all 300,540 roots of the 30,054 2-connected Eulerian graphs of even order ≤ 10.
+- It also holds on large order-12 to order-16 families.
+
+*Open (stated):*
+- New conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1), where CB is the end-counting bound.
+- The minimal-counterexample structure is: degree-2 vertices are triangle ears with no twins, and the open case is ears at even order.
+## 27. Cones, worked out: rooted Gallai for Eulerian graphs (eulerian-cone session, 2026-11-27)
+
+Manuscript `manuscripts/eulerian-cone` (10 pp.), Lean `EulerianCone.lean`, data E30, literature `research/notes/eulerian-gallai-literature.md`. Audit A30 pending.
+
+**What the spine needs of cones.** All of the following is in Lean with standard axioms.
+- At the apex: Test1 ⇔ RE(B) (`test1_fullCone_iff`), and the cone is 3-connected ⇔ B is 2-connected.
+- Every other test at a cone over an even-order B is vacuous (`fullConeTests_iff`).
+- With the matching-cut restriction (`rootedDecomp_of_spineTestsNMC`), the spine needs RE exactly for 2-connected Eulerian B of even order without a matching cut. At order 10 that is 27,933 of 30,054 graphs.
+- Gallai ⇒ RE (`rootedDecomp_of_gallai`), so RE sits between Gallai and Gallai-for-Eulerian.
+
+**What is already known.**
+- Via the leaf (RE ⇔ p(B + leaf) ≤ n/2), the floor theorems give RE for planar, treewidth ≤ 3, 2-degenerate and K5-minor-free B.
+- Via the double (Lean `rootedDecomp_of_dbl`; the double has even order, so a ceiling bound suffices), Bonamy–Perrett gives RE for Δ(B) ≤ 4.
+- The cone over K_{2,6} is planar, so it is already covered.
+- No rooted Eulerian theorem of RE's strength was found.
+- Chu–Wang 2025, "Path decompositions of Eulerian graphs", proves only 3n/5.
+
+**What the data say.**
+- RE holds exhaustively to even order 10, and on all dense order-12 graphs (m ≥ 46).
+- **Every tight root is tight by end-counting.** The bound is CB(B, r) = least p with 2p − d_r ≥ 2 and Σ_v min(d_v, 2p − d_v) ≥ 2p. p_r = CB at 99.9% of roots.
+- Almost all tight roots have d(r) = n − 2.
+- **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) on 2-connected B. One path is to spare unless counting forbids it.
+
+**Reductions.** In a smallest counterexample to RE* (p_r ≤ ⌈n/2⌉, connected Eulerian):
+- every degree-2 vertex v ≠ r is an ear avb with B − v − ab connected;
+- no two such vertices are twins;
+- there are none at odd order.
+
+Suppression, cycle insertion and ear gluing are proved, and the constructions were executed and verified on all graphs of order ≤ 9 and on samples at order 10.
+
+**Where the difficulty sits.** Two places, both of the project's familiar kind:
+1. **The even-order ear.** Inserting the triangle into an optimal decomposition of B − v − ab is free only under an avoidance or disjointness condition at a or b (manuscript Rem. 5.8). This is L1*/DL-type.
+2. **Roots of degree n − 2**, where RE is tight. Then B − r has exactly one even vertex, and RE becomes a constrained Lovász decomposition of B − r: one piece attached at each neighbour of r, grouped into n/2 − 2 vertex-disjoint pairs and 2 singletons (Rem. 7.2). This is terminal-matching type.
+
+So the cone case does not escape the open core. It lands on the same constrained-Lovász targets, and the n − 2 formulation is a clean new instance of them.
