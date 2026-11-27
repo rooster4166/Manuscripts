@@ -37,7 +37,13 @@ Exceptional vertices enter the slots only through prebuilt partner blocks u x u'
 
 ## What remains for full Target D
 
-- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores. Only heuristics are sketched (§7.2). In a one-apex scheme the counting window is |2(e_R(A) − e_R(B)) + ρD| ≤ D, of width D, not O(q). No side-choice bound is proved, and the scheduling of pairs on the bin shore is open.
+- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores.
+  - **Counting half: proved in §8** for the route in which exceptional vertices are kept in J.
+    - Lemma 8.1 (exact balancing) uses a mirror symmetry (S, Γ) ↦ (−S, −Γ) between the two namings of the bin shore.
+    - Lemma 8.2 is the robust form.
+    - Proposition 8.3: the one-apex window e_R(I) − e_R(K) ∈ [D(t−1)/2, D(t+1)/2] with |W| ≥ 0 can always be met if the healthy shores differ by more than |X| (any |X|), or if |X| ≤ √D/6.
+    - Open counting case: nearly equal healthy shores with |X| ≳ √n.
+  - **Scheduling half: open.** It needs SP 14.31/14.33 re-derived with weak exceptional sites.
 - **Problem 7.2.** Exceptional vertices of degree at least (1/2 + β)n. NH handles at most two, under exact regularity.
 
 ## Lean
