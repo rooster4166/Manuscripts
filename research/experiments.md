@@ -1676,3 +1676,53 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 - So on residual graphs even the fixed-orientation, every-data form holds; the free orientation of DL is needed only in smaller graphs (E29(C)).
 - **The three budget-undecided instances of the triangle-base session** (E29(F) n = 15 K2 root r = 1, and the ∅ graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3) have bases at the first data choice and orientation tried (`tb_ls.py`; witnesses in `manuscripts/clt/data/triangle_base_witnesses.txt`, checked).
+
+## E31. DL(1): exact boundary to order 11, certificates, and the induction residual (cloud session `claude/dl-one`)
+
+*Manuscript: `manuscripts/dl-one/dl-one.tex`. Scripts: `manuscripts/dl-one/scripts/` (`dl.c`, `brute.py`, `enum.c`, `dllib.py`, `dlrec.cpp`, `exp1.py`–`exp5.py`, `closure.py`, `run11.sh`; commands in the README). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/DLOne.lean`.*
+
+**Tooling and validation.**
+- `dl.c` decides each orientation ("Q(b) avoids a") exactly. It uses a DFS over end paths, memoised on edge sets, with two shortcuts: Lovász's theorem (≤ 1 even vertex ⇒ decomposable) and counting (a vertex on every path of its component cannot be avoided). Order-11 mode `-m sum -q` interleaves the two orientations with doubling node budgets; positives are found decompositions, negatives are exhaustive.
+- `brute.py` (transition systems; independent) agrees on every orientation of 942 pairs of orders 5, 7 and 2,204 pairs of all small graphs (orders 6–8, disconnected and all-odd included): 0 mismatches. `enum.c` agrees with it on decomposition counts (129 graphs).
+
+**(A) The exact boundary** (every connected graph with one even vertex, every non-adjacent odd pair).
+
+| n | graphs | pairs | DL(1) fails | universal twins |
+|---|---|---|---|---|
+| 5 | 7 | 21 | 3 | 3 |
+| 7 | 130 | 947 | 14 | 14 |
+| 9 | 11,936 | 166,217 | 170 | 170 |
+| 11 | (see the update line below) | | | |
+
+- Failures are exactly the universal-twin pairs.
+- A one-even component has odd order and an all-odd one is covered by L1. So order ≤ 9 decides DL(1) for all graphs on ≤ 10 vertices, and order 11 does so for ≤ 12.
+
+**(B) Certificates** (`dlrec BMS`: moves of l1-induction Thm 3.1, every one an unconditional proved transfer, plus base cases separation, L1 in set form, d(c)=1 all-odd, A off the component).
+- Every non-twin pair of order 5, 7, 9 is certified via one orientation: 18 + 933 + 166,047.
+- This is independent of the exact solver.
+
+**(C) Structure** (orders 5–9, both orientations of all 166,998 non-twin pairs, 333,996 orientations).
+- A fixed orientation S_y fails 6,221 times. Every failure has x ∈ N(g), N(y) − g ⊆ N(x) and N(g) ⊆ N[x] ∪ N[y]. These conditions also hold in 5,648 successes.
+- Conjecture N (y has a neighbour w ≠ g with w ∉ N(x) ⇒ S_y): 264,437 orientations, 0 failures.
+- Set form N2 (a neighbour w ≠ g of c with N(w) ∩ A ⊆ {g} ⇒ Q(c) avoids A), order 9:
+  - 675,641 queries with |A| ≤ 2, 0 failures;
+  - 300,644 maximal queries, 0 failures;
+  - plus 79,598 L1* local-form queries, 0 failures.
+- g the only common neighbour (CN1):
+  - with d(a), d(b) ≥ 3, both orientations hold in all 5,496 cases;
+  - at order 9, a single decomposition with both orientations exists in 9,617 − 328 pairs, and all 328 exceptions have a leaf.
+- Exactly one common neighbour (any parity) and d(b) ≥ 3: S_b held in all 85,139 cases.
+
+**(D) Strategies and their minimal failures** (full enumeration, forced Fan chains checked).
+- Case I robustness (`exp1.py`, n ≤ 7): 334 core pairs.
+  - 115 have no target u ∉ {a, b} carrying every DL-good child decomposition to a good one.
+  - 22 of them are CN1 with d(g) ≥ 4 and d(a), d(b) ≥ 3. Smallest: `FsOrg`.
+  - All 334 have some good child at u = a or u = b.
+- Separation in G − ga, then Fan to a (`exp3`–`exp5`, CN1):
+  - the transfer is bad iff the chain stops at the far end of Q'(b);
+  - bad for 1,224 of 3,284 separating decompositions; 453 are not repaired by one exchange (`FsPzw`);
+  - the split-and-join restoration fails 2,668 of 7,442;
+  - "Q'(b) avoids a, far end ∉ N(a) ∪ {g}" exists in all 76 CN1 pairs and is sufficient.
+- Conjecture SF (`dl.c -m sepfar`, exact): with separation of a, b in G − ga *and* Q'(b) not ending in N_G(a), it held in all 10,916 ordered CN1 pairs with d(a), d(b) ≥ 3 at order 9. SF ⇒ DL(1) on CN1 (manuscript Prop. 9.5).
+- N2 class closure under moves (a)–(d), (i) (`closure.py`): 4 stuck at n = 5 (`DEk`), 594 at n = 7.
+- Full separation with one common neighbour and d(a), d(b) ≥ 3 fails in all 118 instances of order ≤ 7, for local degree-two reasons (checked against enumeration).

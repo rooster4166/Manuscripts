@@ -39,6 +39,7 @@ static u128 inc[MAXN];
 static uint32_t adj0[MAXN];
 static int noshort = 0, verbose = 0, longfirst = 1, summ = 0;
 static uint32_t sepmask = 0;
+static uint32_t pendforb = 0; /* forbidden far ends of the top path (sepfar mode) */
 static int quick = 0, setk = 2, allsets = 0;
 static long long tot_okb, tot_graphs, tot_pairs, tot_core, tot_core_cn, tot_both, tot_one, tot_one_core, tot_fail, tot_tw;
 static long long nodes = 0;
@@ -127,6 +128,7 @@ static u128 pE;          /* the graph in which the path is chosen */
 static uint32_t podd;    /* odd vertices of pE (ends allowed) */
 static uint32_t pforb;   /* forbidden vertices (only for the constrained top path) */
 static int pstart;
+static int pdepth0 = 0;
 
 static int extend(int x, uint32_t vis, u128 used) {
   /* x current end; try every continuation */
@@ -142,11 +144,12 @@ static int extend(int x, uint32_t vis, u128 used) {
     if (sepmask && (((vis | (1u << y)) & sepmask) == sepmask)) continue;
     u128 u2 = used | ((u128)1 << e);
     if (longfirst && extend(y, vis | (1u << y), u2)) return 1;
-    if ((podd >> y) & 1) {
+    if (((podd >> y) & 1) && !(pdepth0 && ((pendforb >> y) & 1))) {
       /* end here */
-      u128 savE = pE; uint32_t savO = podd, savF = pforb; int savS = pstart;
+      u128 savE = pE; uint32_t savO = podd, savF = pforb; int savS = pstart, savD = pdepth0;
+      pdepth0 = 0;
       int ok = decomposable(pE & ~u2);
-      pE = savE; podd = savO; pforb = savF; pstart = savS;
+      pE = savE; podd = savO; pforb = savF; pstart = savS; pdepth0 = savD;
       if (ok) return 1;
     }
     if (!longfirst && extend(y, vis | (1u << y), u2)) return 1;
@@ -491,6 +494,28 @@ int main(int argc, char **argv) {
       fflush(stdout);
       continue;
     }
+    if (!strcmp(mode, "sepfar")) {
+      /* CN1 pairs (a,b in N(g), N(a)&N(b)={g}), d(a),d(b)>=3, ordered: in G - ga, is there a
+         Lovasz decomposition with no path through a and b whose path at b does not end in N_G(a)? */
+      for (int a = 0; a < n; a++) for (int b = 0; b < n; b++) {
+        if (a == b || g < 0) continue;
+        if (!(deg(E, a) & 1) || !(deg(E, b) & 1) || ((adj0[a] >> b) & 1)) continue;
+        if (!(((adj0[g] >> a) & 1) && ((adj0[g] >> b) & 1))) continue;
+        if ((adj0[a] & adj0[b]) != (1u << g)) continue;
+        if (deg(E, a) < 3 || deg(E, b) < 3) continue;
+        u128 E2 = E & ~((u128)1 << eid[g][a]);
+        hreset(); sepmask = (1u << a) | (1u << b); pendforb = adj0[a];
+        for (int i = 0; i < n; i++) ord_[i] = i;
+        uint32_t odd = 0; for (int v = 0; v < n; v++) if (deg(E2, v) & 1) odd |= 1u << v;
+        pE = E2; podd = odd & ~(1u << b); pforb = 0; pstart = b; pdepth0 = 1;
+        int r = extend(b, 1u << b, 0);
+        pdepth0 = 0; sepmask = 0; pendforb = 0; hreset();
+        tot_pairs++;
+        if (!r) { tot_fail++; printf("NOSEPFAR %s g=%d a=%d b=%d\n", line, g, a, b); }
+      }
+      fflush(stdout);
+      continue;
+    }
     int core = !strcmp(mode, "core");
     if (core && g < 0) { printf("%s skip\n", line); continue; }
     printf("%s ; %d ;", line, g);
@@ -508,6 +533,7 @@ int main(int argc, char **argv) {
     printf("\n");
     fflush(stdout);
   }
+  if (!strcmp(mode, "sepfar")) printf("SEPFAR ordered_pairs=%lld none=%lld\n", tot_pairs, tot_fail);
   if (!strcmp(mode, "both")) printf("BOTH corepairs=%lld cn1=%lld cn1_noboth=%lld other=%lld other_noboth=%lld\n", tot_pairs, tot_core, tot_fail, tot_core_cn, tot_tw);
   if (!strcmp(mode, "nmax")) printf("NMAX queries=%lld local=%lld local_viol=%lld nmax=%lld nmax_viol=%lld\n", tot_pairs, tot_core, tot_fail, tot_core_cn, tot_tw);
   if (!strcmp(mode, "sets")) printf("SETS queries=%lld hyp1=%lld hyp1_viol=%lld hyp2=%lld hyp2_viol=%lld avoid_fail=%lld\n", tot_pairs, tot_core, tot_fail, tot_core_cn, tot_tw, tot_one);
