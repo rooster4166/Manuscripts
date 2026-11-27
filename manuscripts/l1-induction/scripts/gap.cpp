@@ -28,7 +28,7 @@ static void pc(const Gr& G0, int c0, uint32_t A0, int r, int K, int depth) {
   printf(" ???\n");
 }
 int main(int argc, char** argv) {
-  KMAX = argc > 1 ? atoi(argv[1]) : 4;
+  KMAX = argc > 1 ? atoi(argv[1]) : 4; MV_TR = getenv("TR") != nullptr;
   char line[256]; long long hist[10] = {0}, bhist[10] = {0}, inst = 0;
   while (fgets(line, sizeof line, stdin)) {
     Gr G; if (!parse_g6(line, G)) continue; char* nl = strchr(line, '\n'); if (nl) *nl = 0;

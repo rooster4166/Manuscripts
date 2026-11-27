@@ -1495,3 +1495,48 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - A chained walk splits at each protected step: `walk_back` on the segment before it, `walk_step_protected` at the step, `walk_back` after it.
   - The condition to check at the step is the predecessor condition. With at most one end per vertex, it says that the path through x_i y_i does not end, on x_i's side, in {b} ∪ N(y_i).
   - The sharper condition (the forced chain does not reach x_i, Corollary 2.3(2) of the manuscript) is not formalised. In PTM's no-walk data, it closes 68/68 where the static form closes 47/68.
+
+## AC. Lovász's induction for L1*: the two sides, and why no candidate class closes (cloud session `claude/l1-induction`, 2026-11-27)
+
+*Experiments: E27. Manuscript: `manuscripts/l1-induction/l1-induction.tex`. Lean: `lean/GallaiLean/L1Induction.lean`. Audit: `research/audit/A25-l1-induction.md`.*
+
+### AC.1 Verdict
+- **`L1Blocked` is not proved.** No candidate inductive class closes. It is reduced, formally, to two conjectures, each with exhaustive support to order 9:
+  - **TR** (transfer side): tight target x ∈ N(g) ∩ N(c), A ∩ (N[c] ∪ {x}) = ∅ (A may meet N(g), contain g): if (G − gx, c, A) is good, so is (G, c, A).
+    - 1,735,156 exhaustive tests to n = 9; random n = 11, 13, 15: 42,727 tests. 0 violations.
+    - Sharp: it fails at n = 7 when A may meet N(c) (`FCZ~o`).
+  - **ST** (hypothesis side): every blocked instance has a target x ∈ N(g) with (G − gx, c, A) good.
+    - All 135,188 blocked instances to n = 9, for every admissible A; random n = 11–15: 11,874 decided, 0 failures.
+- **`l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`** (Lean), hence L1StarGen, L1Star, EE and L∞ (`*_of_ST_TR`).
+- **The transfer conjecture cannot be dropped.** The instance-level ST′ uses the l1star move (c) at tight targets and would give `L1Blocked` outright (`l1Blocked_of_someTargetLocal`). It is **false**: smallest counterexample `FEhv?`, n = 7.
+  - This is the d(g) = 2 minimal shape. Every target u is tight, and N(u) ∖ {g, c} ⊆ A.
+  - All 1,262 ST′ failures at n = 9 have N(g) ⊆ N(c).
+- **The precise remaining obstruction is ST.** For a blocked instance, certify a good but inadmissible (G − gx, c, A). Its hard core:
+  - N(g) ⊆ N(c), where all targets are tight;
+  - d(c) = 1, where it contains the two-even conjecture of §AA (`G?Bvvo`).
+
+### AC.2 Proved
+- **Transfers are unconditional** (manuscript Thm 3.1; Lean for (b), (c): `avoid_of_target_child`, `avoid_of_target_adj_child`).
+  - Every reduction of l1star (Thm 4.2, Lemma 5.1, Props 5.2, 5.4, 5.5) transfers goodness from the smaller instance to the larger one with no admissibility.
+  - Admissibility is used only to call the induction hypothesis.
+  - The certificate class Rec (intermediate instances may be inadmissible) certifies every admissible instance to n = 8, for every A. With |A| ≤ 2 at n = 7 it certifies all 1,868; `cert.py`, which demanded admissible intermediates, failed 35 of these.
+- **New reduction (paper): walk to a degree-two vertex** (Prop 3.3).
+  - A trail from g through V ∖ (A ∪ N[c]) whose end has remaining degree 2 with non-adjacent neighbours reduces the instance to an admissible all-odd one. The end may have A-neighbours.
+  - At n = 9 (Amax, blocked) it applies to 3,969 of 15,277 instances; the l1star Fan route applies to 0. With TR it applies to 87%.
+  - New item for l1star Cor 5.6.
+- **Exchange lemma (paper, Lemma 4.2).** Suppose the forced chain first meets c at step i, Q′_c avoids x, and the path of x_{i−1} meets Q′_c only in c. Then some Lovász decomposition of G has Q_c = cx. It covers only 375 of the ~10k chain-through-c decompositions at n = 7, so TR needs re-choice of D′. Re-choice holds in all 82,079 tight pairs at n = 9.
+
+### AC.3 The three candidates, and where each stops
+- **(i) Joint "L1* ∧ some target" / certificate classes.**
+  - Instance-level moves are insufficient: 6 admissible instances at n = 9 are stuck for every move. They form one mechanism: d(g) = 4, N(g) ⊆ N(c), each target of degree 3 with its third neighbour in A. One of them is `G?Bvvo` + leaf.
+  - All 6 are closed by the D-level tight transfer.
+  - Certificates leave admissibility for 5 consecutive steps at n = 8 (K8 − K3), with or without TR. So no "within k steps of admissible" class with k ≤ 4 closes.
+- **(ii) Non-local admissibility.** "c-admissible" (A ∩ N[c] = ∅) is preserved by Case I for every target, and under TR goodness propagates upward along it. But:
+  - it contains bad instances: 496 bad (blocked instance, target) pairs at n = 9, 96% with d(c) = 1, the rest with d(g) = 2;
+  - its good part has dead ends from n = 5 (`DEk`);
+  - with all moves + TR, 57 of 574,566 instances at n = 9 remain uncertified. Their stuck states mostly admit no move at all.
+- **(iii) Controlling D′.** L1E (a good D with gu terminal at u, i.e. a trivial chain) holds in every instance to n = 9 and in every decided random instance. Re-choice holds. But this is TR at the level of instances; the hypothesis side, ST, is untouched.
+
+### AC.4 For other sessions
+- **Ptm (§Z, T(6)-i).** The unconditional-transfer observation applies to any Lovász-type induction. A walk step's correctness never needs the intermediate instance to satisfy the induction's admissibility; only the call to the hypothesis does. Certificate classes with inadmissible intermediates (Rec) are far stronger than admissible-only ones: 0 vs 35 failures at n = 7 here.
+- **The tight case.** "The forced chain avoids p" (tight-fan) is always achievable by re-choosing D′ in the L1* data (82,079/82,079), but not by repairing a given D′. A lemma of the form "some decomposition of K − tw has its chain avoiding p" is the shared missing tool. In ptm's language it is the forced-chain hypothesis of the tight walk theorem.

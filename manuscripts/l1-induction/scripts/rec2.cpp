@@ -80,6 +80,18 @@ int main(int argc, char** argv) {
     for (int c = 0; c < G.N; c++) {
       if (!(G.deg(c) & 1)) continue;
       uint32_t A = amax_of(G, c);
+      if (mode == "subsets") {   // every admissible A subset of Amax with 1 <= |A| <= KS
+        int KS = getenv("KS") ? atoi(getenv("KS")) : 32;
+        int idx[32], kk = 0; for (int v = 0; v < G.N; v++) if (A >> v & 1) idx[kk++] = v;
+        for (uint32_t s = 1; s < (1u << kk); s++) { if (__builtin_popcount(s) > KS) continue;
+          uint32_t B = 0; for (int i = 0; i < kk; i++) if (s >> i & 1) B |= 1u << idx[i];
+          inst++; bool isb2 = false;
+          if (g >= 0 && !G.has(g, c)) { isb2 = true; for (int u = 0; u < G.N; u++) if (G.has(g, u) && !(G.adj[u] & B & ~(1u << g))) isb2 = false; }
+          blocked += isb2;
+          if (!rec(G, c, B)) { norec++; norec_blocked += isb2; printf("NOREC %s g=%d c=%d A=", line, g, c); print_set(stdout, B); printf(" blocked=%d\n", (int)isb2); }
+        }
+        continue;
+      }
       inst++;
       bool isb = false;
       if (g >= 0 && !G.has(g, c)) { isb = true; for (int u = 0; u < G.N; u++) if (G.has(g, u) && !(G.adj[u] & A & ~(1u << g))) isb = false; }

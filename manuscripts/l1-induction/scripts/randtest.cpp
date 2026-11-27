@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
       for (int u = 0; u < G.N; u++) if (G.has(g, u)) {
         Gr H = G; H.del(g, u);
         int r = orc::avoid(H, c, A);
-        if (r == 2) { stu = true; if (G.has(c, u)) trund++; continue; }
+        if (r == 2) { stu = true; leu = true; if (G.has(c, u)) trund++; continue; }
         if (r == 1) st = true;
         if (r == 1 && G.has(c, u)) { trt++; if (whole < 0) whole = orc::avoid(G, c, A);
           if (whole == 2) trund++; else if (whole != 1) { trv++; printf("TRVIOL %s c=%d g=%d u=%d\n", line, c, g, u); } }
