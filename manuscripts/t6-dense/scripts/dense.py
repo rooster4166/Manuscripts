@@ -20,7 +20,10 @@ and (E6) and runs the first walk as a Fan transfer (forced chain) and the protec
 the forced chain (Theorem 3.3 / Remark).  Mode `endZ` is the form proved in Lean, with every
 leaf identified with z: in (E6) the end e must moreover not be l1 (= z) or y3.  Mode `endT`
 replaces (E6) by (E7) the path ending at x1 avoids y2, so that the protected step is an append
-as well (Theorem 2.1, Lean `stl_of_appendBase`).  Roots are tried in all labellings in a fixed random
+as well (Theorem 2.1, Lean `star_of_appendBase`).  Mode `lean` is exactly the Lean hypothesis
+`AppendBase`: per labelling it tries (E1)-(E5)+(E7), and otherwise (E1)-(E5)+(E6) in the Lean form
+(mask N(y2) - x2, plus x2 if y2y3 is an edge; distinct leaves), and checks that the static
+predecessor condition then holds at the protected step.  Roots are tried in all labellings in a fixed random
 order; per root the search stops at the first labelling whose base executes.
 
 usage: dense.py MODE SEEDS BUDGET [MAXLAB] < graphs.g6
@@ -90,6 +93,11 @@ def base_query(B, L, mode, seed, budget):
         mask = (Ny2 - {y3, x2}) | ({x2} if y3 in Ny2 else set())
         if mode == 'endZ':      # all leaves are z: z (= l1) and y3 (-> z) are neighbours of y2
             mask |= {l1, y3}
+        q['es'] = [(p, y2, sorted(mask)) for p in (x2, x3) if p in Ny2]
+    if mode == 'leanE6':        # (E6) exactly as in Lean `AppendBase` (distinct leaves l2, l3)
+        ef.setdefault(x2, []).append(y3)
+        Ny2 = set(B.neighbors(y2))
+        mask = (Ny2 - {x2}) | ({x2} if y3 in Ny2 else set())
         q['es'] = [(p, y2, sorted(mask)) for p in (x2, x3) if p in Ny2]
     if mode == 'endT':          # all seven steps are appends: (E1)-(E5) and (E7) P_x1 avoids y2
         ef.setdefault(x2, []).append(y3)
@@ -207,28 +215,41 @@ def main():
             ok = False
             for L in labs[:maxlab]:
                 st['labs_tried'] += 1
-                res = ENG.run([base_query(B, L, mode, s, budget) for s in range(seeds)])
-                for status, D0 in res:
+                if mode == 'lean':
+                    res = ENG.run([base_query(B, L, 'endT', s, budget) for s in range(seeds)])
+                    kinds = ['endT'] * len(res)
+                    if not any(r[0] == 'OK' for r in res):
+                        res2 = ENG.run([base_query(B, L, 'leanE6', s, budget) for s in range(seeds)])
+                        res += res2
+                        kinds += ['leanE6'] * len(res2)
+                else:
+                    res = ENG.run([base_query(B, L, mode, s, budget) for s in range(seeds)])
+                    kinds = [mode] * len(res)
+                for (status, D0), kind in zip(res, kinds):
                     if status == 'UND':
                         st['und'] += 1
                     if status != 'OK':
                         continue
                     st['bases'] += 1
-                    out, info = run_walk(B, L, D0, mode)
-                    if mode in ('endZ', 'endT'):
-                        outz = run_walk_z(B, L, D0, mode)
+                    out, info = run_walk(B, L, D0, kind)
+                    if kind == 'leanE6' and not info.get('static'):
+                        out = 'STATIC_EXPECTED'
+                        print('LEAN-E6-STATIC-FAIL', line, L, file=sys.stderr)
+                    if kind in ('endZ', 'endT'):
+                        outz = run_walk_z(B, L, D0, kind)
                         if outz != 'OK':
                             st['zfail'] = st.get('zfail', 0) + 1
                             print('Z-NOT-OK', line, L, outz, file=sys.stderr)
                             out = 'Z:' + outz
                     if out == 'OK':
                         st['base_ok'] += 1
+                        st['via_' + kind] = st.get('via_' + kind, 0) + 1
                         ok = True
                         break
                     if out.startswith('BAD'):
                         st['bad'] += 1
                         print('BAD', line, L, out, file=sys.stderr)
-                    if mode in ('endA', 'endZ', 'endT'):
+                    if mode in ('endA', 'endZ', 'endT', 'lean'):
                         st['notok'] += 1
                         print('ENDA-NOT-OK', line, L, out, info, file=sys.stderr)
                 if ok:
