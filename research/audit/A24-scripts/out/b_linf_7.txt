@@ -1,0 +1,10 @@
+order 7 instances 3 selected 3
+key = (y in N(u), chain reaches y, result in B)
+some u: every D' succeeds 3
+GL holds 3
+instance closes 3
+(False, False, True) 54
+(True, False, True) 14
+I FCZUO 2 4 3 True
+I FCdcg 1 5 4 True
+I FCdcg 2 5 4 True

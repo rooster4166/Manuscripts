@@ -14,6 +14,7 @@ for line, G, g, c, A, irr in resid.residuals(n, K, amax=(mode == 'max')):
         for D1 in tf.decomps(G1, b1, c, A):
             tot += 1
             outs = tf.fan_results(G, D1, g, u)
+            assert len({tf.canon(o[0]) for o in outs}) == 1, 'Fan image not unique'
             D2, chain, P = outs[0]
             ok = not (set(tf.Qc(D2, c)) & A)
             thru = c in chain

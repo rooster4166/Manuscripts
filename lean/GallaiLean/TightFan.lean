@@ -26,10 +26,13 @@ Fan's counting that handles such blanks, and the negative facts about the flower
   with vertex sets (every new path lies in an old path together with `u`).
 * **`fanPred_unique`**: in a decomposition with at most one end at `x`, the predecessor of `u`
   read from `x` is unique. So on Lovász decompositions Fan's chain is *forced*.
-* **Flowers do not produce Lovász decompositions**: `hub_cycles_card_le_one`
+* **A flower cannot be the last move of a Lovász-type argument**: `hub_cycles_card_le_one`
   (with at most one end everywhere, the hypothesis of `hub_cycles` forces `|T| ≤ 1`),
-  `flower_decomp_two_ends`, `flower_decomp_rest_two_ends` (the recombined decomposition has two
-  ends at the first vertex of the transversal), `flower_not_lovasz`.
+  `flower_decomp_not_le_one`, `flower_decomp_rest_not_le_one` (the recombined decomposition has
+  two ends on the transversal).
+* `l1_tight_transfer` (the tight case of `L₁*`), `lInfty_of_l1Blocked` (L∞ from the blocked case),
+  `test1_deg_four` (spine Test 1 at degree four, a Lean packaging via `emc_four` of the known case,
+  terminal-matching Remark 7.3).
 -/
 
 open SimpleGraph
@@ -245,7 +248,7 @@ theorem fan_exists_chain_protected (D : PathDecomp K) (u : U) (T B : Finset U) (
 
 /-- **Fan's grouped transfer with protected blanks**, recording supports. As `fan_grouped_supp`,
 with the blanks in `B` discounted under the reachability hypothesis `hB`. The ends change only at
-`t` and `u`; in particular the vertices of `B` keep their end counts. -/
+`t` and `u`; in particular the vertices of `B ∖ {u}` keep their end counts. -/
 theorem fan_grouped_protected_supp (D : PathDecomp K) (u : U) (T B : Finset U) (huT : u ∉ T)
     (hT : ∀ t ∈ T, ¬ K.Adj t u) (hBT : ∀ t ∈ T, t ∉ B)
     (hB : ∀ x z, (x ∈ T ∨ K.Adj x u) → FanPred D u x z → z ∉ B)
@@ -265,8 +268,10 @@ vertex of `{v} ∪ N_{G'}(u)` has a vertex of `B` as its predecessor of `u`. If
 `ends v > #{w ∈ N_{G'}(u) : ends w = 0, w ∉ B}`, the conclusion of `fan_single_supp` holds.
 
 The typical use: `ends v = 1`, and the only blank of `u` is the protected vertex `p`, so Fan's
-inequality is an equality (`1 = |Z(u)|`). The transfer still goes through, provided the end of
-the path through `pu` on `p`'s side is not reached by the chain. -/
+inequality is an equality (`1 = |Z(u)|`). The transfer still goes through provided no vertex of
+`{v} ∪ N(u)` has `p` as its predecessor of `u` (when every vertex has at most one end: the end of
+the path through `pu` on `p`'s side is not in `{v} ∪ N(u)`). The sharper condition "the forced
+chain does not reach `p`" is manuscript Corollary 2.3(2), not formalised. -/
 theorem fan_single_protected_supp {G G' : SimpleGraph U} [DecidableRel G'.Adj] {u v : U}
     (huv : G.Adj u v) (hG' : ∀ e, e ∈ G'.edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(u, v))
     (D' : PathDecomp G') (B : Finset U) (hvB : v ∉ B)
@@ -324,9 +329,10 @@ section l1tight
 
 variable {W : Type v} [Fintype W] [DecidableEq W]
 
-/-- **The tight transfer for `L₁*`** (manuscript Theorem 4.2). Let `g` be the even vertex of `G`,
-`c ∉ N(g)` odd, and `x ∈ N(g)` with `x ∉ A`; typically `x ∈ N(c)`, which is the blocked residual
-of `L₁*` where Lemma 2.4 of the l1star manuscript (protected transfer) does not apply. Let `D₃` be
+/-- **The tight transfer for `L₁*`** (manuscript Theorem 3.3). Let `g` be the even vertex of `G`,
+`c` odd, and `x ∈ N(g)` with `x ≠ c` and `x ∉ A` (no hypothesis `c ∉ N(g)` is needed); typically
+`x ∈ N(c)`, which is the blocked residual of `L₁*` where Lemma 2.4 of the l1star manuscript
+(protected transfer) does not apply. Let `D₃` be
 a decomposition of the leaf graph `apex (G − gx) {c}` (a leaf `none` hung at `c`, so that `c` has
 no end) with the Lovász end counts of `G − gx` elsewhere, in which the leaf path avoids `A`.
 
