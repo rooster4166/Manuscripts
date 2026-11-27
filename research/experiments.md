@@ -1548,3 +1548,60 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
 - n = 13, d(z) = 8, r = 1: base found (184 s);
 - n = 15, r = 1, 2: see below.
+
+## E30. Constrained Lovász decompositions: the compatibility boundary (cloud session `claude/clt`)
+
+*Manuscript: `manuscripts/clt/clt.tex`. Scripts: `manuscripts/clt/scripts/` (`enum.c`, `trans.c`, `clt_lib.py`, `rand_clt.py`, `t_l1ee.py`, `lsls.py`, `t6probe.py`, `t6all.py`; regeneration commands in `manuscripts/clt/README.md`). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/ConstrainedLovasz.lean`. Audit: `research/audit/A27-clt.md`.*
+
+**Method (exact).** `enum.c` enumerates *all* Lovász decompositions of each connected graph with at most one even vertex (geng `-c`, orders 4–9) and keeps the inclusion-minimal violation sets over the atoms av(c,a) (P_c ∌ a) and ne(u,v) (P_u ≠ P_v). Universe `-v 1`: av(c,a) with a ∉ N[c] ∪ N(g) (local); `-v 0`: all av atoms. A system is unsatisfiable iff it meets every violation set; `trans.c SHAPE K` finds a smallest such hitting set whose atoms have the prescribed shape (iterative deepening, branching on the unhit member with fewest admissible atoms). B-local systems have at most n − 1 atoms, so K = 8 (n = 9) and K = 10 (n ≤ 8) are exhaustive for them.
+
+**(A) Graphs with an unsatisfiable *local* system of the given shape** (number of graphs; n = 9: the 10,719 of 11,936 graphs enumerated within the time limits, the remaining 1,217 densest ones still running at the time of writing).
+
+| shape (local atoms) | n=4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|
+| graphs | 2 | 7 | 13 | 130 | 224 | 10,719 |
+| star (one tail; L1* local form) | 0 | 0 | 0 | 0 | 0 | – |
+| **bip1** (CLT-B1: bipartite, in-degree ≤ 1, cross-local) | 0 | 0 | 0 | 0 | 0 | **0** |
+| **bipx** (CLT-B: no cross-locality), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | **0** |
+| bipx, d(g) = 2 | – | 0 | – | 2 | – | 42 |
+| bipx + 2-cycles at distance ≥ 3 (`bipx2`), d(g) ≠ 2 | 0 | 0 | 0 | 0 | 0 | 0 |
+| match (fixed orientation; L_N with g) | 0 | 0 | 0 | 2 | 0 | – |
+| bip (in-degree unrestricted, cross-local) | 0 | 3 | 1 | 46 | 16 | – |
+| in1 (in-degree ≤ 1, chains allowed) | 1 | 2 | 10 | 34 | – | – |
+| lin (in1 + acyclic, out-degree ≤ 1) | 0 | 2 | 3 | 14 | – | – |
+| any | 1 | 4 | 12 | 105 | 221 | – |
+| bip1 + ne atoms between non-avoided vertices | 2 | 7 | 13 | 130 | 224 | – |
+
+- All 44 bipx failures (n = 7, 9) have d(g) = 2 (40 in a triangle) and a head adjacent to another tail. With cross-locality (bip1) there are none.
+- With tails and heads of degree ≥ 3 and d(g) ≥ 4: lin fails once at n = 8 (`G?oppg`, a bridge with two leaves), func (2-cycles, longer cycles) at n = 6, 8, in1 at n = 6, 8 (52 graphs).
+- Separation atoms in graphs whose even vertices are pairwise at distance ≥ 3 (`-E -v 5`, n ≤ 8): Lovász decompositions exist in all 552 such graphs, but a single pair at distance ≥ 3 is already unseparable in 45 of them (1 at n = 6, 44 at n = 8); every one of the 45 has exactly two even vertices, at least one of degree 2.
+
+**(B) Minimal counterexamples** (manuscript §4, hand proofs): K_{2m} (locality at c), the path c g a (locality at g), `EEiW` (n = 6, all odd: in-degree two, av(1,{0,5}), av(2,0)), the net `ECqg` (n = 6: a chain 2→0→1→5 with 3→4), K_{1,3} (directed and transitive triangles; simultaneous confinement), `EErw` (two 2-cycles at distance two), `FCRV?` (n = 7, d(g) = 2: cross adjacency).
+
+**(C) Non-local atoms, compatibility** (`trans match 10 h1` on `-v 0`: atoms that are unsatisfiable alone are excluded, so any hit is a joint failure of individually satisfiable atoms). n ≤ 6: none. n = 7: 18 graphs (sizes 2–3), e.g. `FCdcw`, d(g) = 4, av(2,0), av(5,3), av(1,4) with all heads in N(g). (n = 8 did not finish in 25 min.)
+
+**(D) Random, maximal systems** (`rand_clt.py`; random connected graphs, parity repaired; every admissible vertex assigned to a random tail; up to 4 tails; exact DFS, budget 2·10⁶, then local search on undecided instances):
+
+| form | orders | instances | failures | undecided |
+|---|---|---|---|---|
+| bip1 | 11–16 | 1,800 | 0 | 4 |
+| bip1 + tails' end paths distinct | 11–16 | 1,800 | 0 | 5 |
+| bipx (CLT-B, d(g) ≠ 2) | 11–16 | 1,800 | 0 | 0 (55 by local search) |
+| lnmatch (L_N with g, local) | 11–16 | 1,800 | 0 | 72 |
+| n = 10 controls (star, bip1, bip1ne, lnmatch) | 10 | 800 | 0 | 5 |
+
+**(E) L1* together with EE** (`t_l1ee.py`, A = V − (N[c] ∪ N(g))): for every x ∈ N(g) − c, Q_c ∩ A = ∅ and xg terminal at x. n = 5: 4/60 fail; n = 7: 39/2,210 fail, every failure with N(x) ∩ (A − g) ≠ ∅; for *some* x: 0 failures (this is L1E of l1-induction, which implies ST). n = 9: see the addendum.
+
+**(F) The t6 base for every labelling** (`t6all.py`; residual graphs `gen_resid.py 6 8 2 7 SHAPE`, |O| = 8, TW = 2; exact DFS budget 2·10⁴, then local search `lsls.py`):
+
+| shape | graphs | labellings | (E7) base found | proved absent | unknown |
+|---|---|---|---|---|---|
+| C4 | 6 | 2,208 | 2,208 | 0 | 0 |
+| K3 | 6 | 2,592 | 2,592 | 0 | 0 |
+| P3 | 6 | 3,168 | 3,168 | 0 | 0 |
+| K2 | 6 | 3,744 | 3,744 | 0 | 0 |
+| ∅ | 6 | 4,320 | 4,320 | 0 | 0 |
+
+- Every witness is checked independently (`clt_lib.check`: edge partition, Lovász ends, every condition).
+- With budget 3·10⁵ and five vertex orders the exact DFS decides 9,188 of the 16,032 (all positively); on whole graphs it stalls, e.g. `M^~~zMn]n|zqjV~Z_` (K2): 0/624 decided even at 10⁷ nodes, while the unconstrained decomposition is instant and the local search finds every base in well under a second. Dropping any single condition does not help the DFS.
+- So in the dense residual the t6 base holds for *every* admissible labelling, not only for one per root.

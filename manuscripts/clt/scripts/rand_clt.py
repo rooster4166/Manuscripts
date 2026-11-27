@@ -140,7 +140,7 @@ def main():
             adj = rand_graph(n, rng)
         sysd, C = build(form, n, adj, rng, K)
         items.append((n, adj, sysd))
-    ok = fail = und = 0
+    ok = fail = und = lsok = 0
     CH = 200
     for s in range(0, len(items), CH):
         chunk = items[s:s + CH]
@@ -153,8 +153,14 @@ def main():
                 print('FAIL', to_g6(nn, adj), {v: sorted(S) for v, S in sysd['ef'].items()}, sysd.get('ep', []))
                 sys.stdout.flush()
             else:
-                und += 1
-    print(f'SUMMARY form={form} n={n} trials={T} ok={ok} fail={fail} undecided={und}')
+                from lsls import search          # positive answers only
+                Pl = search(nn, adj, sysd, steps=2000, k=3, seed=1)
+                if Pl is not None:
+                    ok += 1
+                    lsok += 1
+                else:
+                    und += 1
+    print(f'SUMMARY form={form} n={n} trials={T} ok={ok} (local search {lsok}) fail={fail} undecided={und}')
 
 
 if __name__ == '__main__':

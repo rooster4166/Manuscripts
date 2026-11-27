@@ -36,6 +36,8 @@ static int na; static int at_t[MAXA], at_x[MAXA], at_y[MAXA];
 static int nf; static int *fam_atoms[MAXF]; static int fam_len[MAXF];
 static int shape, K, allow_ne, tdeg = 0, hdeg = 0, gdeg = 0;
 static int degv[16]; static int distv[16][16];
+static int helly = 0;            /* h1: forbid atoms that are unsatisfiable on their own */
+static uint8_t alone_bad[MAXA];
 static int indeg[16], outdeg[16], touched[16], netouch[16];
 static int ne_tails = 0;  /* ne atoms only between vertices that are not heads */
 static int X[64], nx;
@@ -58,6 +60,7 @@ static int reach(int s, int t) {
 }
 
 static int ok_add(int a) {
+  if (helly && alone_bad[a]) return 0;
   if (at_t[a] == 1) { if (!allow_ne) return 0; if (ne_tails && (indeg[at_x[a]] || indeg[at_y[a]])) return 0; return 1; }
   if (ne_tails && netouch[at_y[a]]) return 0;
   int c = at_x[a], y = at_y[a];
@@ -136,6 +139,7 @@ int main(int argc, char **argv) {
   for (int i = 3; i < argc; i++) {
     if (!strcmp(argv[i], "ne")) allow_ne = 1;
     else if (!strcmp(argv[i], "net")) allow_ne = 1, ne_tails = 1;
+    else if (!strcmp(argv[i], "h1")) helly = 1;
     else if (!strncmp(argv[i], "tdeg=", 5)) tdeg = atoi(argv[i] + 5);   /* tails of degree >= tdeg */
     else if (!strncmp(argv[i], "hdeg=", 5)) hdeg = atoi(argv[i] + 5);   /* heads of degree >= hdeg */
     else if (!strncmp(argv[i], "gdeg=", 5)) gdeg = atoi(argv[i] + 5);   /* skip graphs whose even vertex has degree < gdeg */
@@ -152,6 +156,11 @@ int main(int argc, char **argv) {
         memset(indeg, 0, sizeof indeg); memset(outdeg, 0, sizeof outdeg); memset(touched, 0, sizeof touched); memset(netouch, 0, sizeof netouch);
         memset(inX, 0, sizeof inX); nx = 0;
         int found = 0;
+        if (helly) {   /* an atom is unsatisfiable alone iff it lies in every member of the family */
+          for (int a = 0; a < na; a++) { int all = 1; for (int f = 0; f < nf && all; f++) { int in = 0;
+            for (int j = 0; j < fam_len[f]; j++) if (fam_atoms[f][j] == a) { in = 1; break; } if (!in) all = 0; }
+            alone_bad[a] = (uint8_t)(all && nf > 0); }
+        }
         if (nf == 0) { printf("H %s NODECOMP\n", g6); found = 1; }
         else for (int k = 1; k <= K && !found; k++) {
           if (dfs(k)) {
