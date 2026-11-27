@@ -485,3 +485,7 @@ Candidate uniform mechanisms (`research/connections.md`):
     - Multigraph PTM fails only when G − F has a cut vertex, which a 3-connected J excludes.
   - **Proposed statement:** PTM_m for G − F connected, with the K4 exception at m = 2; for STL, the multigraph form with G − F 2-connected.
   - **Proof route** (leafify e1, walk the even vertex along a shortest e1–e2 path, restore by Fan in the two-leaf graph, two leaf merges) gives **PTM_2 and PTM_2(r) on all connected all-odd graphs of girth ≥ 5**. Write-up and Lean are in progress.
+- **PTM_2 at girth ≥ 5, in Lean (ptm d5d4db2; standard axioms, verified).** `ptm2_girth5`: let G be connected and all-odd with no triangle and no 4-cycle, and let ab, cd be disjoint edges. Then some Lovász decomposition has ab terminal at the PRESCRIBED end a and cd terminal at an end of cd, on different paths.
+  - The engine is `ptm2_of_base` (the walk theorem): leafify, then walk back by iterated Fan with vertex sets, then two leaf merges.
+  - The base hypothesis held in 12,193 of 13,025 2-matchings at n = 8, so the reduction is strong beyond girth 5.
+  - **Next:** the STL lift (PTM_2 ⇒ STL-P / Test1 at d(z) = 4), the manuscript, and audit A22.
