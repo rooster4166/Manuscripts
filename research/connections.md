@@ -818,3 +818,5 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 3. Hence the pairing of Odd(B) from step 1 is a good pairing of Ev (Lemma 13). **So Thm 21 = the pairing lemma applied to B.**
 
 This is the Lean route: the T-join (paths + symmetric difference), the pairing lemma (edge deletion), B with its parity and cut identity, and the CutOK algebra. It will also go into the manuscript as the main proof after A13's edits land; the transition proof becomes a remark.
+
+**Lean: `cs_all` is done** (`lean/GallaiLean/CutSelection.lean`, `PairingLemma.lean`; standard axioms; full build OK). The statement matches §U: `CutOK G (profile G M) (card V / 2)` for every transversal M of a pairing P of `evenSet G`, for connected G of even order. The proof is the auxiliary-graph proof, so Thm 21 now has a machine-checked proof independent of audit A13.
