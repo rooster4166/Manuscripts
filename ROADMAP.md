@@ -545,7 +545,9 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Negative lemmas: flower outputs are never Lovász decompositions.
   - **Data:** in the tight case, the forced chain avoiding the protected end is necessary and sufficient. Every L∞ residual at n = 9 closes for some (u, D′). All 68 PTM no-walk instances close.
   - **Open:** L1Blocked, specifically its hypothesis side: an induction class containing the good-but-inadmissible instances.
-- **First proved case at d(z) = 6, the T(6)-i frontier (ptm 31eadcb, TerminalMatching3.lean; standard axioms, verified).**
+- **CORRECTED (audit A22c, E2): a new proof of a KNOWN case at d(z) = 6, not a new case of T(6)-i (ptm 31eadcb, TerminalMatching3.lean; standard axioms, verified).** Far-apart N(z) gives |S(x)| ≤ 1 for every odd x. Six-even-incidence Thm 1(2) (every |S(x)| ≤ 2 ⇒ every root passes; audited A6 I6/I7) already closes this case.
+  - What is new: STL-P with three prescribed transitions, and the chained-walk mechanism.
+  - The open T(6)-i residual is the *dense* regime: B[U] nearly complete, D ∈ {∅, K2, P3, K3, C4}. That is the opposite extreme from far-apart.
   - `test1_of_chains3`: Test1 J z holds when N(z) is pairwise at distance ≥ 3 in J − z (`FarNbrs`) and, for every r ∈ N(z), some labelled pairing with r long has an admissible chain (`AdmChain`).
   - Engine: `ptm3_of_base`, the chained walk theorem, and `ptm3_of_far`, where the base is automatic by sparse separation.
   - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
