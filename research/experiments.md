@@ -1483,7 +1483,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 ## E29. The triangle base conjecture and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`)
 
-*Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§§5–6). Scripts: `manuscripts/direct-test1/scripts/` (`tb.py`, `tb_compat.py`, `disj_general.py`, `dl_rand.py`, `dl_recheck.py`; oracle `gcc -O3 -o route_ext tools/route_ext.c`; Python 3 + networkx). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
+*Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§§6–7). Scripts: `manuscripts/direct-test1/scripts/` (`tb.py`, `tb_compat.py`, `disj_general.py`, `dl_rand.py`, `dl_recheck.py`; oracle `gcc -O3 -o route_ext tools/route_ext.c`; Python 3 + networkx). Raw outputs are regenerable and not committed. Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
 
 **Tooling.**
 - `tb.py` handles every J, every root r ∈ N(z) with d(r) ≥ 3, and every data choice (w, M0).
@@ -1532,7 +1532,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
 - Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds. See the table below.
 - **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
-- **Proposition 6.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
+- **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
 
 **(D) Residual families of T(6)-i** (`t6-dense/scripts/gen_resid.py`, budget 2·10⁶, seeds 7, 11, 13).
 

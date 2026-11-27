@@ -3,7 +3,7 @@ import GallaiLean.DirectTest1
 /-!
 # Triangle bases from the single-vertex tools (session `claude/triangle-base`)
 
-Manuscript: `manuscripts/direct-test1/direct-test1.tex`, §6.
+Manuscript: `manuscripts/direct-test1/direct-test1.tex`, §7.
 
 The triangle base conjecture (`TriangleBaseConj`, manuscript Conjecture 3.1) asks for a Lovász
 decomposition of `M = J − zw − {zaᵢ, zbᵢ, aᵢbᵢ}` in which, for every pair, the path ending at `bᵢ`
@@ -185,7 +185,7 @@ other vertex of that component is adjacent to both. -/
 def UnivTwins (G : SimpleGraph V) (a b : V) : Prop :=
   G.Reachable a b ∧ ∀ x, x ≠ a → x ≠ b → G.Reachable a x → G.Adj a x ∧ G.Adj b x
 
-/-- **Conjecture DL (disjunctive avoidance)** (manuscript Conjecture 6.3). If `G` has at most one
+/-- **Conjecture DL (disjunctive avoidance)** (manuscript Conjecture 7.3). If `G` has at most one
 vertex of positive even degree and `L` lists disjoint pairs of non-adjacent odd vertices, none of
 them universal twins of its component, then some Lovász decomposition of `G` has, for every pair
 `(a, b)`, the path ending at `b` avoiding `a` or the path ending at `a` avoiding `b`. -/
