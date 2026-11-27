@@ -723,7 +723,9 @@ Manuscript: `manuscripts/route-descent/route-descent.tex`. Scripts: `manuscripts
 | G₁₈ (n = 18, δ = 3) | min | 20 | 1,280 (all route-respecting) | 0 |
 | G₁₈ | tree | 6 | 144 (131 decided) | 0 |
 | G_bad (n = 28, Petersen) | min | 4 | 128 sampled (all route-respecting) | 0 |
-| G₂ half (n = 20) | min | 4 | 256 sampled: 37 route-respecting, rest undecided within budget | 0 |
+| G₂ half (n = 20) | min | 4 + 3 | 256 + 96 sampled: 37 + 64 route-respecting, the rest undecided within budget (6 of the second 96 undecided for plain realisability) | 0 |
+| G′(prism), Kotzig even-degree graph (n = 16, degrees 4–8) | min / tree | 10 / 10 | 640 / 640 (all realisable; 419 / 553 route-respecting found) | 0 |
+| G′(Petersen) (n = 28, m = 116) | min | 4 | 128 sampled: 115 realisable, 13 undecided | 0 |
 
 Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were tested (sampled where 2^{e/2} > 256).
 
@@ -741,5 +743,6 @@ Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were
 - **L_N** (single-edge routes: a matching of forbidden pairs (c_i, a_i), one orientation): 3,732 instances, n ≤ 14, up to 7 pairs, **0 failures** (135 undecided within budget).
 - **SEP** (no path contains both c and a): **proved for dist(c, a) ≥ 3** (manuscript Thm "separation"). It can fail at distance 2 when there is an even vertex: z adjacent to u₁, u₂, each u_i adjacent to z, c, a, plus a leaf at each of c, a (n = 7). There L1 still holds, and adding a leaf at z restores SEP.
 - Counting: among all Lovász decompositions of 2,417 small graphs, the fraction with a ∉ Q_c is ≥ 0.217 (no half-and-half involution).
+- **Separation at distance 2** (`sep2.py`): fails for 446 / 2,945 pairs in all-odd graphs and 961 / 2,438 with one even vertex (budget-undecided excluded). So separation is a distance-3 phenomenon; L1 at distance 2 is strictly weaker, and had no failure.
 - **Multi-pair separation** (`msep3.py`, query S; `outputs/msep3.log`). F all-odd, a random maximal matching of pairs at F-distance ≥ 3. **2,892 instances, n = 8–16, 0 failures**, of which 925 are perfect matchings; 102 undecided within budget. With some pair at distance 2: 500 / 2,191 fail. So symmetric separation needs distance 3.
 - **n = 14, minimum T-joins** (80 graphs, 160 constructions): 2,232 transversals, 0 not realisable, 8,896 / 8,896 extension queries succeed, RR true for 2,020, undecided for 212, never false.
