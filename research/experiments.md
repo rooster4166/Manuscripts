@@ -901,6 +901,22 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 - Random non-3-connected J with J − z connected, n = 11 and 13 (250 graphs, 780 pairs).
 - Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9.
 
+**(F) Composition: two terminal edges at once** (`ptm_run.py`). Setup: a random connected all-odd graph G of order n and a random matching F of m edges. By the pairing proposition, PTM(G, F) is STL-P(J, F) for J = (G − F) + z(V(F)).
+- PTM(G, F): some Lovász decomposition of G has every F-edge terminal *at some end* and no path with two F-edges.
+- PEE_m: the same, with every F-edge terminal at a *prescribed* end.
+
+| n, m | instances | PTM fails | PEE_m fails |
+|---|---|---|---|
+| 8, 2 | 299 | 0 | 8 |
+| 10, 2 | 300 | 0 | 2 |
+| 12, 2 | 300 | 0 | 0 |
+| 10, 3 | 300 | 0 | 7 |
+
+- PTM held in every instance, including the 317 with G − F disconnected. Its known exceptions are K₄ with a perfect matching (= W₄) and the prism with its rungs; neither arises at these orders.
+- **Every PEE_m failure has two adjacent prescribed ends**; in 16 of the 17, both ends have degree 3. With pairwise non-adjacent prescribed ends, PEE_m held in all 612 instances.
+- Independence of the ends is not the whole story, though. In (D), HALF(S) fails for 10 of 13,666 *independent* short half-sets at n = 9. All 10 are dense configurations whose short ends have degree 3.
+- **Conclusion:** single-transition lemmas with prescribed ends (EE, PEE, prescribed end edge) cannot be composed transition by transition. A composition step must keep the choice of the short end free.
+
 **Negative results.**
 - STL-P (every pairing realisable) is false on W₄.
 - HALF (every short half-set realisable) is false in general: 402 of 67,220 half-sets fail at n = 9.

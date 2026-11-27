@@ -441,6 +441,27 @@ vertex-disjointness of the two end-paths at $a$ and~$c$. This is the multi-presc
 of~\cite[\S5]{MS}, now with the freedom to choose the pairing and the short end of each pair.
 \end{remark}
 
+\subsection*{Composition}
+Can the single-transition results (EE~\cite{MS}, the prescribed end edge, Theorem~\ref{thm:dz2}) be
+applied one transition at a time? Each application produces a fresh decomposition with no memory of
+the previous transitions. To keep a finished transition $x\,z\,y$ one must lift it to an edge $xy$
+and carry $xy$ as a pending terminal edge; for $d(z)=4$ this is exactly
+Proposition~\ref{prop:PTM} with two edges. Two facts limit what a composition lemma can look like.
+\begin{itemize}
+\item \emph{Prescribed ends do not compose.} Ask for two or three disjoint edges of an all-odd
+graph to be terminal at prescribed ends, on distinct paths. This fails in $17$ of $1{,}199$ random
+instances (Section~\ref{sec:comp}). In every failure two prescribed ends are adjacent, and in $16$
+of them both have degree~$3$: the edge between them must then lie in a single transition at both
+ends.
+\item \emph{Free ends survive.} Leave the end of each edge free, as in
+Proposition~\ref{prop:PTM}. The property then held in all $1{,}199$ instances, including the $317$
+in which $G-F$ is disconnected.
+\end{itemize}
+So the natural interface statement is the free-end form for two edges (``PTM$_2$''); it would give
+$\STL\text{-}P$ at $d(z)=4$ whenever the pairs are not edges of $J$. In the parity-neutral
+construction of Remark~\ref{rem:limit}, the single missing ingredient is the vertex-disjointness of
+the end-paths at the two adjacent short ends.
+
 \section{Computations}\label{sec:comp}
 
 \subsection{The oracle}

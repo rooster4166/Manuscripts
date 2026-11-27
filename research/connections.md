@@ -1213,6 +1213,21 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
   - Two short ends at once means two even vertices, where separation and L₁ fail (E20).
   - The one parity-neutral construction we found works when the two short ends a, c are adjacent: delete ac and attach leaves at both long sides. It additionally needs the two end-paths at a and c to be vertex-disjoint, which separation does not give.
 
+### X.4a Do the single-transition lemmas compose? (coordinator question, 2026-11-27)
+Short answer: **not as black boxes with prescribed ends; possibly with free ends, but that needs a genuinely two-prescription argument.**
+- **d(z) = 2.** STL-P is ST-any, which is EE(u) ∨ EE(w). It is known except when u ~ w, u and w have a second common neighbour, and neither EE3 (multi-sep), nor `stl_of_deg_two_tri`, nor a future PEE result applies at u or at w.
+- **d(z) = 4 is exactly two prescriptions.** STL-P(J, {ab, cd}) ⇔ PTM((J − z) + {ab, cd}). Each scheme we tried breaks at a specific point:
+  - *Iterated EE.* Case I at z with a trivial Fan chain makes one neighbour short, but the next application produces a fresh decomposition with no memory of the first. To keep a finished transition, one must freeze it by lifting x z y to xy and carry xy as a *pending terminal edge*. The induction hypothesis then needs two prescriptions: a pending edge plus the next transition.
+  - *Leaf / merge at z.* Each prescription detaches an edge into a leaf, which makes its far end even. Two prescriptions give two even vertices, where separation and L₁ fail (§V.4a).
+  - *Parity-neutral variant.* This needs adjacent short ends a ~ c: delete ac and attach leaves at both long sides, so every degree stays odd.
+    - Separation of the packed set {a, c, ℓ_b, ℓ_d} then gives every condition except one: the end-paths Q_a and Q_c must be vertex-disjoint, so that Q_a + ac + Q_c is a path.
+    - That disjointness is the precise missing ingredient.
+    - The same obstacle appears when cd is lifted first and Case I is applied at a.
+- **PEE as a black box cannot compose.** E22(F) found 17 counterexamples to PEE_m (m = 2, 3: terminal edges at prescribed ends). Every one has two adjacent prescribed ends, typically both of degree 3: the edge between them is forced into a single transition at both ends.
+  - With the end left free (PTM), all 1,199 random instances held, for m = 2 and 3.
+  - So the interface statement to ask of §Y is the free-end form. **PTM₂**: in an all-odd graph (or one with a single even vertex), any two disjoint edges are simultaneously terminal at some ends, on distinct paths. PTM₂ gives STL-P at d(z) = 4 whenever the pairs are not edges of J. PEE₂ with prescribed ends is false.
+- **Partial prescription** (the pairing fixed on all but one or two pairs) is implied by full STL-P wherever STL-P holds. On W₄, fixing one pair fixes both, so it adds nothing.
+
 ### X.5 Coordination with multi-sep (§W)
 - **STL vs EE.** STL at d(z) = 2 *is* EE, so any proof of EE gives STL there. Conversely, STL in general needs the multi-prescription version: W.5.2 with free choice of ends and pairing.
 - **A sharper target for multi-sep.** E22 shows STS (EE inside star-terminal decompositions) holding at every neighbour of every 3-connected graph of order 9.

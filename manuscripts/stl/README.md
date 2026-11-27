@@ -33,7 +33,8 @@ python3 stl2_run.py ../../../data/conn8.g6 out/fail2_8.jsonl   # (B) STL2, n = 8
 python3 sample_run.py 1 13 300 1302 gnp 4000000 out/s1_13_gnp.jsonl   # (C) mode 1 = STL, 2 = STL2
 python3 resolve.py out/s1_13_gnp.jsonl out/s1_13_gnp.res.jsonl       # re-decide budget-undecided
 python3 flex_run.py one_even_9.g6 out/flex_9.jsonl                    # (D) EE/STS/HALF/PAIR
-python3 families.py univ 12 30 8 out/fam_univ12.jsonl                  # (E) families
+python3 families.py univ 12 30 8 out/fam_univ12.jsonl                  # (E) families (also wheel, zconn, zdisc)
+python3 ptm_run.py 10 2 300 102 2000000 out/ptm_10_2.jsonl           # (F) PTM / PEE_m: composition
 ```
 Outputs: `scripts/out/` (`fail_*.jsonl`: every failure with its Test1 verdict; `run_*.txt`, `*.log`:
 summaries; `s1_*`, `s2_*`: samples; `flex_*`: flexibility; `fam_*`: families).
