@@ -1136,9 +1136,11 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 - **Certified Case I** (`classSep_caseI`): if z joins u's classes in K − uz (and {u, z} is a class), the transfer is a plain append. The manuscript also has a **rotation lemma**: remove a cycle, let c_i join c_{i+1}'s class, then extend each end path by one cycle edge; no even vertex is ever created (not formalised).
 - **Sparse classes** (`separation_sparse`): CSEP holds for *overlapping* packed classes whose union X has at most one neighbour at every vertex. This generalises `separation_set`. Its Gallai corollary (every orientation realisable) lies inside Fan's class for p(G) alone.
 
+- **The reduction, formally** (`realisable_of_separating`, `realisable_of_lovasz_separating`): a separating Lovász decomposition of G − N realises every transversal of N (single-edge routes appended by `append_routes`).
+
 ### W.4 The obstruction, exactly
 - **Equivalence** (manuscript Prop. "EE"): Lovász's Case I with a trivial Fan chain at the even vertex z and target u is equivalent to "uz is the terminal edge at u of a rainbow Lovász decomposition of K". This is **L1 at the even vertex**: the end path of z in K − uz must avoid u and u's class.
-- **Conjecture EE** (for every u). Tested on 869 + 788 random pairs and 1,652 cubic-derived Case I configurations: 0 failures.
+- **Conjecture EE** (for every u). Tested on 869 + 788 random pairs and 2,272 cubic-derived Case I configurations (orders 12–22): 0 failures.
 - **Why L1's leaf trick does not reach it.** The trick would attach a leaf at z, which already has the even vertex u at distance 2, giving two even vertices. L1 with an extra even vertex is false (V.4a).
 - **What the data rule out:**
   - the plain hypothesis (for ~half of the configurations, no u works for every D′);

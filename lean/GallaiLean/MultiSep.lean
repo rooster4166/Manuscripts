@@ -1,5 +1,6 @@
 import GallaiLean.Separation
 import GallaiLean.BP3
+import GallaiLean.RouteSystem
 
 /-!
 # Multi-pair separation: the leaf merge, prescribed end edges, and class separation
@@ -19,6 +20,11 @@ Manuscript `manuscripts/multi-sep/multi-sep.tex`.
 * `ClassSep`, `classSep_allOdd`: class separation for every graph with exactly one vertex of
   positive even degree implies it for every graph with none (Lovász's Case II costs nothing:
   the new leaf joins every class of `x`).
+* `realisable_of_separating` (the reduction to a Gallai class): if the even vertices of `G` are
+  paired by edges (`σ`), and `F = G` minus these edges has a decomposition with at most one end at
+  every vertex, exactly one at every even vertex of `G`, and no path containing both vertices of a
+  pair, then every transversal of the pairing is realisable (each pairing edge is appended at its
+  tail).
 * `classSep_caseI`: the certified Case I step. If `z` is the even vertex, `u` a neighbour, and
   `G − uz` has a Lovász decomposition that is rainbow for the family in which `z` joins every
   class of `u` and `{u, z}` is a class, then appending `zu` gives a rainbow Lovász decomposition
@@ -1326,4 +1332,255 @@ theorem separation_sparse {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGr
     ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ ∀ A ∈ 𝒜, MeetsOnce D A :=
   sp_strong _ W G X 𝒜 hev h rfl
 
+
+/-! ### The reduction to a Gallai class -/
+
+section reduction
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **The reduction** (manuscript, Proposition "reduction"(c)). Let `σ` pair the even vertices of
+`G` by edges of `G`, and let `F` be `G` minus all the pairing edges. Suppose `D` decomposes `F` with
+at most one end at every vertex and at least one at every even vertex of `G` (a Lovász
+decomposition of `F` has this), and no path of `D` contains both `v` and `σ v`. Then every
+transversal `M` of the pairing is realisable: appending each pairing edge at its tail gives a
+decomposition of `G` with two ends at every vertex of `M`, none at the other even vertices and one at
+every odd vertex. -/
+theorem realisable_of_separating {G : SimpleGraph V} [DecidableRel G.Adj] {σ : V → V}
+    (hσ : IsEvenPairing G σ) (hadj : ∀ v ∈ evenSet G, G.Adj v (σ v))
+    (F : SimpleGraph V) [DecidableRel F.Adj]
+    (hF : ∀ e, e ∈ F.edgeSet ↔ e ∈ G.edgeSet ∧ ∀ v ∈ evenSet G, e ≠ s(v, σ v))
+    (D : PathDecomp F) (hD1 : ∀ w, D.ends w ≤ 1) (hDev : ∀ v ∈ evenSet G, 1 ≤ D.ends v)
+    (hsep : ∀ v ∈ evenSet G, Separates D v (σ v))
+    {M : Finset V} (hM : IsTransversal G σ M) : Realisable G M := by
+  classical
+  set T := evenSet G \ M with hTdef
+  have hTE : ∀ c ∈ T, c ∈ evenSet G := fun c hc => (Finset.mem_sdiff.mp hc).1
+  have hTM : ∀ c ∈ T, c ∉ M := fun c hc => (Finset.mem_sdiff.mp hc).2
+  have hσM : ∀ c ∈ T, σ c ∈ M := fun c hc => by
+    by_contra h
+    exact hTM c hc ((hM.2 c (hTE c hc)).2 h)
+  -- the single-edge routes of the tails
+  let L : List (GPath G) :=
+    T.toList.pmap (fun c hc => GPath.ofAdj (hadj c (hTE c hc))) (fun c hc => Finset.mem_toList.mp hc)
+  have hmemL : ∀ R ∈ L, ∃ c, ∃ hc : c ∈ T, R = GPath.ofAdj (hadj c (hTE c hc)) := by
+    intro R hR
+    obtain ⟨c, hc, rfl⟩ := List.mem_pmap.mp hR
+    exact ⟨c, Finset.mem_toList.mp hc, rfl⟩
+  have hsupp : ∀ (c : V) (h : G.Adj c (σ c)) (x : V),
+      x ∈ (GPath.ofAdj h).walk.support ↔ x = c ∨ x = σ c := by
+    intro c h x
+    simp [GPath.ofAdj]
+  -- tails and heads
+  have htail_head : ∀ c ∈ T, ∀ c' ∈ T, σ c ≠ c' := fun c hc c' hc' h =>
+    hTM c' hc' (h ▸ hσM c hc)
+  -- `F` is `G` minus the edges of `L`
+  have hK : ∀ e, e ∈ F.edgeSet ↔ e ∈ G.edgeSet ∧ ∀ R ∈ L, e ∉ R.edges := by
+    intro e
+    rw [hF e]
+    constructor
+    · rintro ⟨he, hne⟩
+      refine ⟨he, fun R hR heR => ?_⟩
+      obtain ⟨c, hc, rfl⟩ := hmemL R hR
+      rw [GPath.ofAdj_edges, List.mem_singleton] at heR
+      exact hne c (hTE c hc) heR
+    · rintro ⟨he, hnot⟩
+      refine ⟨he, fun v hv hev => ?_⟩
+      by_cases hvM : v ∈ M
+      · -- the tail of the pair is `σ v`
+        have hσvT : σ v ∈ T := by
+          rw [Finset.mem_sdiff]
+          refine ⟨hσ.mem v hv, ?_⟩
+          exact (hM.2 v hv).mp hvM
+        apply hnot _ (List.mem_pmap.mpr ⟨σ v, Finset.mem_toList.mpr hσvT, rfl⟩)
+        rw [GPath.ofAdj_edges, List.mem_singleton, hev, hσ.invol v hv, Sym2.eq_swap]
+      · have hvT : v ∈ T := Finset.mem_sdiff.mpr ⟨hv, hvM⟩
+        apply hnot _ (List.mem_pmap.mpr ⟨v, Finset.mem_toList.mpr hvT, rfl⟩)
+        rw [GPath.ofAdj_edges, List.mem_singleton, hev]
+  have hsrc : ∀ (c : V) (h : G.Adj c (σ c)), (GPath.ofAdj h).src = c := fun _ _ => rfl
+  have htgt : ∀ (c : V) (h : G.Adj c (σ c)), (GPath.ofAdj h).tgt = σ c := fun _ _ => rfl
+  have hpw : L.Pairwise (fun R R' => ∀ e ∈ R.edges, e ∉ R'.edges) := by
+    refine List.Pairwise.pmap (Finset.nodup_toList T) _ ?_
+    intro c hc c' hc' hne e he he'
+    rw [GPath.ofAdj_edges, List.mem_singleton] at he he'
+    rw [he] at he'
+    rcases Sym2.eq_iff.mp he' with ⟨h1, -⟩ | ⟨h1, -⟩
+    · exact hne h1
+    · exact htail_head c' hc' c hc h1.symm
+  have hLsrc : L.map GPath.src = T.toList := by
+    simp only [L, List.map_pmap, hsrc]
+    exact List.pmap_eq_self.mpr (fun _ _ => rfl)
+  have hLtgt : L.map GPath.tgt = T.toList.map σ := by
+    simp only [L, List.map_pmap, htgt]
+    exact List.pmap_eq_map _
+  have hnd : (L.map GPath.src).Nodup := by
+    rw [hLsrc]; exact Finset.nodup_toList T
+  have hht : ∀ R ∈ L, ∀ R' ∈ L, R.tgt ≠ R'.src := by
+    intro R hR R' hR'
+    obtain ⟨c, hc, rfl⟩ := hmemL R hR
+    obtain ⟨c', hc', rfl⟩ := hmemL R' hR'
+    exact htail_head c hc c' hc'
+  have hcomp : Compatible L D := by
+    refine ⟨fun Q hQ R hR hend x hxQ hxR => ?_, fun Q hQ R₁ hR₁ R₂ hR₂ h1 h2 x hx1 hx2 => ?_⟩
+    · obtain ⟨c, hc, rfl⟩ := hmemL R hR
+      rw [hsupp] at hxR
+      rcases hxR with rfl | rfl
+      · rfl
+      · exfalso
+        have hcQ : c ∈ Q.walk.support := by
+          have key : ∀ y, Q.src = y ∨ Q.tgt = y → y ∈ Q.walk.support := by
+            rintro y (rfl | rfl)
+            · exact Q.walk.start_mem_support
+            · exact Q.walk.end_mem_support
+          exact key c hend
+        exact hsep c (hTE c hc) Q hQ ⟨hcQ, hxQ⟩
+    · obtain ⟨c₁, hc₁, rfl⟩ := hmemL R₁ hR₁
+      obtain ⟨c₂, hc₂, rfl⟩ := hmemL R₂ hR₂
+      rw [hsrc] at h1 h2
+      have hne : c₁ ≠ c₂ := fun h => Q.src_ne_tgt (h1.trans (h.trans h2.symm))
+      rw [hsupp] at hx1 hx2
+      rcases hx1 with h1' | h1' <;> rcases hx2 with h2' | h2'
+      · exact hne (h1'.symm.trans h2')
+      · exact htail_head c₂ hc₂ c₁ hc₁ (h2'.symm.trans h1')
+      · exact htail_head c₁ hc₁ c₂ hc₂ (h1'.symm.trans h2')
+      · exact hne (by rw [← hσ.invol c₁ (hTE c₁ hc₁), ← hσ.invol c₂ (hTE c₂ hc₂),
+          ← h1', ← h2'])
+  have hends : ∀ R ∈ L, 1 ≤ D.ends R.src := by
+    intro R hR
+    obtain ⟨c, hc, rfl⟩ := hmemL R hR
+    exact hDev c (hTE c hc)
+  obtain ⟨D', hD'⟩ := append_routes L F hK hpw hnd hht D hcomp hends
+  -- counting
+  have hcs : ∀ w, L.countP (fun R => decide (R.src = w)) = if w ∈ T then 1 else 0 := by
+    intro w
+    have h := List.countP_map (p := fun c => decide (c = w)) (f := GPath.src) (l := L)
+    rw [hLsrc] at h
+    rw [show L.countP (fun R => decide (R.src = w)) = L.countP ((fun c => decide (c = w)) ∘ GPath.src)
+      from rfl, ← h]
+    exact countP_toList_eq_ite T _ w (fun x _ => by simp)
+  have hct : ∀ w, L.countP (fun R => decide (R.tgt = w)) = if w ∈ M then 1 else 0 := by
+    intro w
+    have h := List.countP_map (p := fun c => decide (c = w)) (f := GPath.tgt) (l := L)
+    rw [hLtgt, List.countP_map] at h
+    rw [show L.countP (fun R => decide (R.tgt = w)) = L.countP ((fun c => decide (c = w)) ∘ GPath.tgt)
+      from rfl, ← h]
+    by_cases hwE : w ∈ evenSet G
+    · rw [countP_toList_eq_ite T _ (σ w) (fun x hx => by
+        simp only [Function.comp_apply, decide_eq_true_eq]
+        constructor
+        · rintro rfl; exact (hσ.invol x (hTE x hx)).symm
+        · rintro rfl; exact hσ.invol w hwE)]
+      have : σ w ∈ T ↔ w ∈ M := by
+        rw [Finset.mem_sdiff]
+        constructor
+        · rintro ⟨-, h⟩
+          by_contra hw
+          exact h ((hM.2 (σ w) (hσ.mem w hwE)).2 (by rwa [hσ.invol w hwE]))
+        · intro hw
+          exact ⟨hσ.mem w hwE, (hM.2 w hwE).mp hw⟩
+      simp only [this]
+    · have hwM : w ∉ M := fun h => hwE (hM.1 h)
+      rw [if_neg hwM, List.countP_eq_zero]
+      intro x hx
+      simp only [Function.comp_apply, decide_eq_true_eq]
+      intro h
+      exact hwE (h ▸ hσ.mem x (hTE x (Finset.mem_toList.mp hx)))
+  -- degrees of `F` at vertices outside the pairing
+  have hFdeg : ∀ w, w ∉ evenSet G → F.degree w = G.degree w := by
+    intro w hw
+    have hiff : ∀ y, F.Adj w y ↔ G.Adj w y := by
+      intro y
+      have := hF s(w, y)
+      rw [mem_edgeSet, mem_edgeSet] at this
+      rw [this]
+      constructor
+      · exact fun h => h.1
+      · intro h
+        refine ⟨h, fun v hv hwv => ?_⟩
+        rcases Sym2.eq_iff.mp hwv with ⟨rfl, -⟩ | ⟨rfl, -⟩
+        · exact hw hv
+        · exact hw (hσ.mem v hv)
+    rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree]
+    congr 1
+    ext y
+    simp [hiff y]
+  refine ⟨hM.1, D', fun w => ?_⟩
+  have h1 := hD' w
+  rw [hcs w, hct w] at h1
+  unfold profile
+  by_cases hwE : w ∈ evenSet G
+  · have hnodd := not_odd_of_mem_evenSet hwE
+    have hDw : D.ends w = 1 := le_antisymm (hD1 w) (hDev w hwE)
+    rw [if_neg hnodd]
+    by_cases hwM : w ∈ M
+    · have hwT : w ∉ T := fun h => hTM w h hwM
+      rw [if_neg hwT, if_pos hwM] at h1
+      rw [if_pos hwM]; omega
+    · have hwT : w ∈ T := Finset.mem_sdiff.mpr ⟨hwE, hwM⟩
+      rw [if_pos hwT, if_neg hwM] at h1
+      rw [if_neg hwM]; omega
+  · have hwT : w ∉ T := fun h => hwE (hTE w h)
+    have hwM : w ∉ M := fun h => hwE (hM.1 h)
+    rw [if_neg hwT, if_neg hwM] at h1
+    have hpar := D.ends_mod_two w
+    rw [hFdeg w hwE] at hpar
+    have := hD1 w
+    split_ifs with hodd
+    · rw [Nat.odd_iff] at hodd; omega
+    · have hdeg0 : G.degree w = 0 := by
+        by_contra h0
+        exact hwE (Finset.mem_filter.mpr ⟨Finset.mem_univ _, Nat.pos_of_ne_zero h0,
+          Nat.not_odd_iff_even.mp hodd⟩)
+      omega
+
+
+/-- **The reduction, Lovász form.** If `F = G` minus the pairing edges has a Lovász decomposition
+in which no path contains both vertices of a pair, then every transversal of the pairing is
+realisable. (Every vertex of `F` then has one end, or none if it is isolated.) -/
+theorem realisable_of_lovasz_separating {G : SimpleGraph V} [DecidableRel G.Adj] {σ : V → V}
+    (hσ : IsEvenPairing G σ) (hadj : ∀ v ∈ evenSet G, G.Adj v (σ v))
+    (F : SimpleGraph V) [DecidableRel F.Adj]
+    (hF : ∀ e, e ∈ F.edgeSet ↔ e ∈ G.edgeSet ∧ ∀ v ∈ evenSet G, e ≠ s(v, σ v))
+    (D : PathDecomp F) (hD : ∀ w, D.ends w = F.degree w % 2)
+    (hsep : ∀ v ∈ evenSet G, Separates D v (σ v))
+    {M : Finset V} (hM : IsTransversal G σ M) : Realisable G M := by
+  classical
+  refine realisable_of_separating hσ hadj F hF D (fun w => by rw [hD w]; omega) (fun v hv => ?_)
+    hsep hM
+  -- the pairing edge at `v` is its only pairing edge
+  have hiff : ∀ y, F.Adj v y ↔ G.Adj v y ∧ y ≠ σ v := by
+    intro y
+    have := hF s(v, y)
+    rw [mem_edgeSet, mem_edgeSet] at this
+    rw [this]
+    constructor
+    · rintro ⟨h, hne⟩
+      exact ⟨h, fun hy => hne v hv (by rw [hy])⟩
+    · rintro ⟨h, hy⟩
+      refine ⟨h, fun w hw hvw => ?_⟩
+      rcases Sym2.eq_iff.mp hvw with ⟨rfl, h2⟩ | ⟨rfl, h2⟩
+      · exact hy h2
+      · exact hy (by rw [h2, hσ.invol _ hw])
+  have hcard : F.degree v + 1 = G.degree v := by
+    rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree]
+    have hsplit : G.neighborFinset v = insert (σ v) (F.neighborFinset v) := by
+      ext y
+      rw [Finset.mem_insert, mem_neighborFinset, mem_neighborFinset, hiff]
+      constructor
+      · intro h
+        by_cases hy : y = σ v
+        · exact Or.inl hy
+        · exact Or.inr ⟨h, hy⟩
+      · rintro (rfl | ⟨h, -⟩)
+        · exact hadj v hv
+        · exact h
+    have hnot : σ v ∉ F.neighborFinset v := by
+      rw [mem_neighborFinset, hiff]; exact fun h => h.2 rfl
+    rw [hsplit, Finset.card_insert_of_notMem hnot]
+  have hev := Finset.mem_filter.mp hv
+  obtain ⟨k, hk⟩ := hev.2.2
+  rw [hD v]
+  omega
+
+end reduction
 end Gallai
