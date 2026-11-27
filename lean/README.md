@@ -1,5 +1,13 @@
 # GallaiLean
 
+## Multi-pair separation (cloud session, branch `claude/multi-sep`)
+
+Manuscript `manuscripts/multi-sep`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
+
+| File | Content |
+|---|---|
+| `MultiSep.lean` | `PathDecomp.pushOn` (push a decomposition along a map injective on each path and on edges). **`leaf_merge`**: a decomposition of `(G − ux) + leaf at u` with no path through both `x` and the leaf becomes one of `G` (leaf ↦ `x`), ends at `x` adding up. **`lovasz_endEdge_set`**, **`lovasz_endEdge`**: if all degrees are odd, every edge `xu` is the terminal edge at `x` of some Lovász decomposition, which can also meet a given packed set `∋ x` at most once per path. `ClassFam`, `ClassSep`, **`caseII_lift`**, **`classSep_allOdd`**: class separation for graphs with one positive even vertex implies it for all-odd graphs (the leaf joins the class of `x`). **`classSep_caseI`**: the certified Case I step (`z` joins the classes of `u`, then append `zu`). `SparseFam`, **`separation_sparse`**: overlapping packed classes whose union has at most one neighbour at every vertex can all be separated (generalises `separation_set`). **`realisable_of_separating`**, **`realisable_of_lovasz_separating`**: if the even vertices of `G` are paired by edges and `G` minus the pairing edges has a Lovász decomposition separating every pair, every transversal is realisable (via `append_routes`). |
+
 ## Route descent and separation (cloud session, branch `claude/route-descent`)
 
 Manuscript `manuscripts/route-descent`. Three files, no `sorry`; every main theorem depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
