@@ -931,8 +931,8 @@ Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 
 - **Lean (task item 3) not applicable.** Gadgets exist, so the positive structural lemma it would formalise is false. A Lean proof of Thm 41 would need path-partition infrastructure for the closing lemma (Lemmas 29, 31), plus the Hamiltonian-decomposition argument for D₂ (Lemmas 33, 34, 36). The cut-feasibility half is a finite check, too large for `decide` at n = 18. Not attempted.
 
 **Manuscript sync (emc-four, 2026-11-27).** I merged `claude/emm3-gadgets` (§6, `sec:gadgets`) into `claude/emc-four-even`, keeping both texts in this section. I kept its fix of Remark 28 and open problem 1, which settles EMM₃ and points to §6. Added on top:
-- §4.4 "A second proof: one auxiliary graph" (`sec:aux`, unnumbered). It is the B-graph proof, valid for any T-join. For a forest J, the pairings obtained from B are exactly the Thm-21 (constructible) pairings.
-- §4.5 "Transversals of the constructed pairings" (`sec:trc`). It contains A13's remark on good pairings, the A13 evidence on the twelve order-12 graphs, the starving argument, and **Conjecture TRC** (unnumbered, so the numbering of §6, Lemmas 29–40 and Thms 41–45, is unchanged). It also gives TRC ⇒ Gallai (odd order via a pendant edge) and TRC ⇒ (R_s) at every even r.
+- **Thm 21 now has the B-graph proof as its main proof** (valid for any T-join; it also proves the explicit construction by lifting each route to a path of B). For a forest J, the pairings obtained from B are exactly the Thm-21 (constructible) pairings. The linked-transitions argument (Lemma 20) is kept as the second proof of the construction.
+- §4.4 "Transversals of the constructed pairings" (`sec:trc`). It contains A13's remark on good pairings, the A13 evidence on the twelve order-12 graphs, the starving argument, and **Conjecture TRC** (unnumbered, so the numbering of §6, Lemmas 29–40 and Thms 41–45, is unchanged). It also gives TRC ⇒ Gallai (odd order via a pendant edge) and TRC ⇒ (R_s) at every even r.
 - Rem 9 (`rem:converse`) points to TRC.
 - The abstract mentions TRC.
 - Formalisation (`sec:lean`) records `cs_all`.
