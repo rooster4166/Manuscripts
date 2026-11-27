@@ -430,3 +430,18 @@ Recursive certificates fail at CP(3) + apex and at double-K₄. The same cocktai
   - (A) Transfer-side, "Fan at equality with one protected blank". The chain is forced, and the invariant survives iff the forced chain avoids the protected end. This covers L∞, the minimal L1\* blocked shape, and PTM's no-walk instances. A refined Fan lemma (a blank never reached as a predecessor does not count against the supply) closes all 68/68 PTM no-walk instances at n = 8.
   - (B) Hypothesis-side admissibility. In the blocked case some u always gives a good but inadmissible instance.
   - (C) PTM's K₄ / W₄ base failures are a third, base-side configuration.
+
+## 22. The T(6)-i residual and the composition method (ptm, 2026-11-27 13:43)
+
+**The residual.** A failure of T(6)-i has B = J − z and U = N(z), with |U| = 6. Its core is D = K6 − B[U] ∈ {∅, K2, P3, K3, C4}: 5 shapes and 66 rooted patterns. On top of that, a long list of degree, root and odd-vertex conditions apply (MR Thm 144, L133, 4EX, INC, 6CL, d6-frontier). The core is finite, but the exterior is unbounded: every even-order graph occurs as B[O], and |B| ≥ 12. So exhaustive treatment is data only, at |B| ≤ 12–14.
+
+**Why the chained walk does not apply directly.** ν(D) ≤ 2, so every pairing of U has at least 3 − ν(D) pairs adjacent in B. No pairing is "simple".
+- A parallel pair in role e1 is harmless if the merge goes through z. This is a J-form of Thm 8.2, easy on paper, not yet in Lean.
+- In roles e2/e3, the B-edge makes the endless end a blank neighbour of the first walk target. That is exactly the shape of tight-fan's `fan_single_protected_supp`, with u = y_i and the protected blank p = x_i.
+
+**Plan by shape.**
+- **C4:** the J-form chained walk alone, with no new Fan lemma.
+- **K2, P3, K3:** one protected step.
+- **∅:** two protected steps.
+
+ptm is testing these on random J with B[U] = K6 − D. tight-fan's protected-blank lemma is the shared tool.
