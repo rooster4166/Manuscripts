@@ -45,10 +45,11 @@ $d(z)$ and does not pass through star-terminal decompositions. For $d(z)=6$ it k
 graph $M$, only two of the conditions of the dense-residual base conjecture, each weakened to a
 disjunction.
 
-The lift is machine-checked for every $d(z)$. Exhaustive computation to order~$9$ and the dense
-residual families of T(6)-i support the base conjecture; it holds at every root of every
-$2$-connected graph that admits the data. All failures, single-pair and multi-pair, are explained by
-one obstruction, universal twins. This leads to a single-vertex conjecture, DL, that implies the
+The lift is machine-checked for every $d(z)$. Up to order~$9$ the base exists at every root with
+data of every $2$-connected graph. It also exists at every decided root of the dense residual
+families of T(6)-i, including all $48$ roots of the eight graphs on which the dense-residual base was
+undecided. Every failure found, single-pair or multi-pair, is explained by one obstruction:
+universal twins. This leads to a single-vertex conjecture, DL, that implies the
 base conjecture whenever $M$ is connected.
 
 Replacing the matching by a forest $T$-join of $J-\{z,r\}$ gives a lift (Theorem~\ref{thm:forest})
@@ -595,6 +596,8 @@ order $8$ ($10{,}850$ instances). In all-odd graphs a single pair always succeed
 \item Each of the $4$ data choices without a base contains a pair of universal twins of a component of
 $M$ that misses $z$.
 \item For $m=2$, both orientations hold in all $20{,}052$ data choices.
+\item So in these graphs \emph{every} data choice with $M$ connected has a base, as
+Proposition~\ref{prop:dl} predicts from Conjecture~\ref{conj:dl}.
 \end{itemize}
 \item \emph{Random graphs} (\texttt{dl\_rand.py}, pairs inside $N(g)$, universal twins skipped).
 \DLRANDOM

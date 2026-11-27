@@ -1514,6 +1514,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - 88,522 data choices have a base.
   - The other 4 (d(z) = 8, two graphs) each contain a universal-twin pair in a component of M not containing z.
 - **0 compatibility failures**: whenever each pair's disjunction is satisfiable alone, all of them are jointly.
+- Hence **every data choice with M connected has a base**, which is the strong form predicted by DL (Prop 7.4).
 - Orientations:
   - m = 2: both orientations hold in all 20,052 data choices.
   - m = 3: all four in 45,576 of 45,644.
