@@ -87,8 +87,8 @@ def main():
         # ends: parity-consistent random choice: odd vertices plus random even pairs
         ends = {v for v in range(n) if d[v] % 2}
         ev = [v for v in range(n) if d[v] % 2 == 0 and d[v] > 0]
-        if ev and rng.random() < 0.3:
-            pass
+        if len(ev) >= 2 and rng.random() < 0.4:
+            ends |= set(rng.sample(ev, 2))
         seps = []
         for _ in range(rng.randint(0, 2)):
             a, b = rng.sample(range(n), 2); seps.append((a, b))
