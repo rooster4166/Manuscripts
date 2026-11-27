@@ -127,7 +127,12 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
-- **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`, new): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
+- **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
+  - **Milestone 1 (82a43a7, merged; build green; axioms checked).** Lean `conjN_of_TR_neighbourAvoid`: **Conjecture N ⇐ TR (l1-induction Conj 4.1) + TR for tails adjacent to g + NA**.
+  - NA is neighbour avoidance in all-odd graphs: if x ~ y and y has a neighbour w ≠ x with w ≁ x, then Q(y) can avoid x.
+  - Also in Lean: the protected Fan move and the target-in-A move.
+  - **Data:** NA has 0 failures at order ≤ 10 (1.3M instances), and TR\* has 0 violations at order 9.
+  - **Status:** the open core for DL(1) is now TR plus NA.
 - **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): Test1 on cones is rooted Gallai RE for Eulerian graphs (synthesis §§26–27, E30, `manuscripts/eulerian-cone`, Lean `EulerianCone.lean`).
   - **Lean** (standard axioms; full build): `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `hasMatchingCut_delVert_fullCone_iff`, the vacuous tests, and **`rootedDecomp_of_spineTestsNMC`**. The spine needs RE exactly for 2-connected Eulerian B of even order **without a matching cut**. Also `rootedDecomp_of_gallai` (Gallai ⇒ RE), `rootedDecomp_iff_addLeaf` and `rootedDecomp_of_dbl`.
