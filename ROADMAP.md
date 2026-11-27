@@ -531,3 +531,11 @@ Candidate uniform mechanisms (`research/connections.md`):
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.
+- **tight-fan, Lean (839d753; standard axioms, verified).**
+  - `fan_single_protected_supp`: Fan's lemma at equality with protected blanks.
+  - `l1_tight_transfer`: the L1* tight case, in which the leaf path avoids A and c is not the predecessor of x.
+  - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞. Together with `ee_of_l1Blocked`, the residuals L∞, L1* and EE become **one statement, L1Blocked**.
+  - `test1_deg_four`: Test1 when d(z) = 4 and J − z is connected. It repackages the known d = 4 case via emc_four.
+  - Negative lemmas: flower outputs are never Lovász decompositions.
+  - **Data:** in the tight case, the forced chain avoiding the protected end is necessary and sufficient. Every L∞ residual at n = 9 closes for some (u, D′). All 68 PTM no-walk instances close.
+  - **Open:** L1Blocked, specifically its hypothesis side: an induction class containing the good-but-inadmissible instances.
