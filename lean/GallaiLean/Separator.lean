@@ -1,6 +1,7 @@
 import GallaiLean.SeparatorEvenOdd
 import GallaiLean.SeparatorEvenEven
 import GallaiLean.Lovasz
+import GallaiLean.Thm59
 
 /-!
 # The separator theorem and Theorem 114 (marked-reduction)
@@ -14,6 +15,8 @@ import GallaiLean.Lovasz
 * **`gallai_iff_spineTests`** (Theorem 114): under Theorem 59 (explicit hypothesis
   `Thm59Statement`), Gallai's conjecture is equivalent to the two deletion tests on
   three-connected graphs, with or without the restriction that `J − z` has no matching cut.
+* **`gallai_iff_spineTests'`**: the same equivalences with no hypothesis, using Theorem 59 as
+  proved in `GallaiLean/Thm59.lean` (`thm59`).
 -/
 
 open SimpleGraph
@@ -69,5 +72,13 @@ theorem gallai_iff_spineTests (h59 : Thm59Statement.{u}) :
   have hback := gallai_of_spineTestsNMC lovaszStatement h59 separatorStatement
   exact ⟨⟨spineTests_of_gallai, fun h => hback h.nmc⟩,
     ⟨fun h => (spineTests_of_gallai h).nmc, hback⟩⟩
+
+/-- **Theorem 114** (marked-reduction), unconditionally: Gallai's conjecture is equivalent to the
+two deletion tests on three-connected graphs, and also to the tests restricted to `J − z` without a
+matching cut. Theorem 59 (`thm59`), Theorem 113 (`separatorStatement`) and Lovász's theorem
+(`lovaszStatement`) are all proved in this library. -/
+theorem gallai_iff_spineTests' :
+    (GallaiConjecture.{u} ↔ SpineTests.{u}) ∧ (GallaiConjecture.{u} ↔ SpineTestsNMC.{u}) :=
+  gallai_iff_spineTests thm59
 
 end Gallai

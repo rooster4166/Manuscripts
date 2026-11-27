@@ -1,5 +1,8 @@
 # Theorem 59 in Lean: plan
 
+**Status: done.** `thm59 : Thm59Statement` and `gallai_iff_spineTests'` are proved, with no
+`sorry` and only the standard axioms. The tree below is what was formalised.
+
 Target: `thm59 : Thm59Statement` (`ThreeConnected.lean`), then the unconditional
 `gallai_iff_spineTests'` in `Separator.lean`.
 

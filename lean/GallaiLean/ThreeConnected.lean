@@ -656,8 +656,8 @@ def MarkedBoundUpTo (m : ℕ) : Prop :=
 /-- **Theorem 59** (marked-reduction, p. 84), in the finite-order form recommended by the A2 audit
 (finding F1): if both rooted assertions hold on every member of the class `C` (two-connected, no
 matching cut) with at most `m + 1` vertices, then the marked bound holds on every connected graph
-whose two-connected blocks have order at most `m`. This is an explicit hypothesis here; it is not
-proved in this library. -/
+whose two-connected blocks have order at most `m`. It is proved as `thm59` in
+`GallaiLean/Thm59.lean`. -/
 def Thm59Statement : Prop :=
   ∀ m : ℕ, (∀ (W : Type u) [Fintype W] [DecidableEq W] (B : SimpleGraph W) [DecidableRel B.Adj],
     InClassC B → Fintype.card W ≤ m + 1 → ∀ x, RootedAt B x) → MarkedBoundUpTo.{u} m

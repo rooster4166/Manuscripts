@@ -1,5 +1,24 @@
 # GallaiLean
 
+## Theorem 59 (cloud session, branch `claude/lean-thm59`)
+
+**`thm59 : Thm59Statement`** is proved, so Theorem 114 now holds with no hypothesis:
+**`gallai_iff_spineTests' : (Gallai ↔ SpineTests) ∧ (Gallai ↔ SpineTestsNMC)`** (`Separator.lean`).
+`#print axioms` on both shows only `propext`, `Classical.choice`, `Quot.sound`. No `sorry`.
+The dependency tree is in `GallaiLean/THM59_PLAN.md`; the audit note is
+`research/audit/A14-thm59-lean.md`.
+
+| File | Content |
+|---|---|
+| `MarkedBlocks.lean` (edited) | `SmallerMB G U` ranges over restrictions of `G`; order-bounded tests `MarkedTwoConnTestUpTo`, `ThreeEndsTestUpTo`; `SmallOn`; **`mbOn_of_testsUpTo`** (block transfer inside graphs with blocks of order `≤ m`). `mbOn_of_tests` and all Theorem 1 statements are unchanged. |
+| `Thm59Transfer.lean` | `TwoConnOn (restrict F U) U → KConnected 2 (F.induce U)`, `TwoConnected.kConnected`; **`markedBoundUpTo_of_tests`** |
+| `Thm59Hall.lean` | **`markedNumber_add_card_le`**: if every mark has an end of `D` and marks outside `O` have two, `q(F,T) + \|T\| ≤ \|D\| + ⌊\|O\|/2⌋` (Hall's theorem with `⌊\|O\|/2⌋` dummy slots). Replaces both the private-leaf identity and the odd-mark rank inequality of §2.1. |
+| `Thm59ClassC.lean` | step [C]: the cone over `≥ 2` marks of `B ∈ C` is in `C` (`apex_inClassC`); cone identity `\|S\| + 2q + b_D(z) ≤ 2\|D\|`; **`markedBound_of_classC`**, **`threeEnds_of_classC`** |
+| `Thm59Lemma6.lean` | **`lemma6`**: Lemma 6 for a matching cut, by PMP surgery (one replacement per crossing edge) |
+| `Thm59Leaves.lean` | `leafGraph B A` on `V ⊕ V` (private leaves at `A`); **`leafGraph_trim`**: `\|D'\| + #{a ∈ A : b_{D'}(a) = 0} ≤ \|D\|` |
+| `Thm59MatchingCut.lean` | matching cuts with connected shores; shores with leaves are connected with blocks `≤ n − 1`; **`matchingCut_markedBound`** (Theorem 7, matching-cut case: connected `B` with a matching cut and `MarkedBoundUpTo (n−1)` ⇒ `q(B,S) ≤ ⌊(n−\|S\|)/2⌋` for all `S`, including `S = ∅`) |
+| `Thm59.lean` | **`thm59`**: strong induction on the block order |
+
 ## Spine 113/114 (cloud session)
 
 Branch `claude/lean-spine-113-114`. Marked-reduction Theorems 113 and 114 (ROADMAP node N4).
@@ -11,7 +30,8 @@ Every file below is sorry-free. `#print axioms` on `separatorStatement`, `gallai
 
 * **Theorem 113 (separator theorem) is proved outright:** `separatorStatement : SeparatorStatement`.
   It uses Lovász's theorem as proved in `GallaiLean/Lovasz.lean` (`lovaszStatement`).
-* **Theorem 114 is proved modulo Theorem 59 alone:**
+* **Theorem 114 is proved modulo Theorem 59 alone** (and Theorem 59 is now proved, see the
+  section above, giving `gallai_iff_spineTests'`):
   `gallai_iff_spineTests (h59 : Thm59Statement) : (Gallai ↔ SpineTests) ∧ (Gallai ↔ SpineTestsNMC)`.
   * The forward direction, `spineTests_of_gallai`, uses no hypothesis.
   * The converse needs the single explicit hypothesis `Thm59Statement`.
