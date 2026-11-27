@@ -489,7 +489,7 @@ This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruc
 - d(z) = 4: Test1 is known (`emc_four` / two-step descent). There is also a new composition proof (`test1_of_localgirth`) and the d = 4 packaging `test1_deg_four`.
 - d(z) = 6 (T(6)-i):
   - the sparse / far-apart case is known (six-even-incidence Thm 1(2)), with a new composition proof (`test1_of_chains3`, conditional on chains);
-  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. It holds on every root tested.
+  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. *Correction (A26):* by Prop 2.6 its main branch is EQUIVALENT to STL-P plus two prescribed terminal edges, so it is a strengthening of STL, not a weaker target. In lean mode 536 residual roots are certified and 46 are budget-undecided; none was shown to lack a base.
 
 **Proved strengthenings of Lovász (single-vertex constraints).**
 - separation (pair and set forms);
@@ -502,7 +502,7 @@ This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruc
 
 **Open core conjectures.** No counterexample to any of these.
 - **ST** (some target): implies L1Blocked, hence L1*, EE and L∞ (with TR, needed only when N(g) ⊆ N(c)).
-- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual, hence all of T(6)-i.
+- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual. Together with MR Thm 144, which excludes roots isolated in the core (there D ⊇ K_{1,5}, outside the five shapes; audit A26 F1), it implies all of T(6)-i. **Superseded as a target by the triangle base conjecture of §24**, which is a weaker sufficient condition.
 - **MSEP / L_N:** implies Gallai for graphs whose even subgraph has a perfect matching.
 - **PTM_m** and the **chain conjecture:** composition at higher d(z).
 
@@ -543,3 +543,7 @@ In M, z is a leaf at r and w is the only even vertex.
 - Lean formalisation of the lift.
 - An independent audit (A28).
 - Attack the triangle base conjecture, which is now the cleanest target for T(6)-i and for Test1 at every even d(z) with a near-perfect matching in N(z) − r.
+
+**Correction to §§22–23 (audit A26, F1).**
+- Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
+- t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.
