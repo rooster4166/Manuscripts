@@ -672,3 +672,20 @@ On K8 minus a perfect matching (n = 8, 6-regular) the 4th receipt *always* fails
 **Reconciliation (n = 8).** The six critical graphs that lose with \|F\| ≤ 6 are closed as follows. Five win with \|F\| = 7–8 (missing-move E14, orbit runs; Guv]}{ root 0 independently confirmed at \|F\| = 7). K8 − perfect matching is settled by the flower lemma (missing-move Prop 5.5): when the fourth Fan receipt at a degree-6 hub fails at equality, the three paths close into Hamiltonian cycles through the hub, and cutting them along a transversal path gives the two ends. So at n = 8 the rooted test follows from Lovász + Fan + path insertion + the flower move. The open question is a *profile-level* version of the equality move (missing-move Question 5.6), which would make the game self-contained at n = 10.
 
 **Barrier theorem (Lean, FanBarrier.lean).** For CP(m) = K_{2m} − perfect matching (m ≥ 4), every decomposition of CP(m) − ut has ≥ m paths, and > m when Fan's condition holds. So *no* argument whose final step re-inserts one edge by a Fan transfer or as a one-edge path can prove the bound for CP(m), whatever came before: Lovász seed, induction hypothesis, or oracle. The cocktail party graphs are therefore a certified test family for any proposed missing move. The flower recombination (missing-move Prop 5.5) passes this test at m = 4. A uniform flower argument for all CP(m), and then a profile-level form of it, is the natural next target.
+
+## T. EMM sufficiency: the inductive template (track C4; coordination with emc-four)
+
+Contribution from the missing-move session, 2026-11-27. Details: E17, missing-move §7.
+
+- **Class.** The induction needs general profiles. The general-profile cut criterion is **false**: n = 7, p = 2 (FqJBo, a 2-linkage obstruction), and 17 failures at n = 8 with p ≤ 3. Proposed class: **EMM⁺**, p ≥ ⌈n/2⌉ per component.
+  - EMM⁺ holds for all profiles at n ≤ 7, for all profiles with p = 4 at n = 8, and on the n = 8 sample at every p.
+  - EMM is the special case of half-sets.
+- **Minimal counterexample (proved).** It is connected, and has no reducible leaf or degree-2 vertex (Lemma 7.4).
+  - The leaf case is in Lean, `EmmTemplate.lean`.
+  - Names used there: `cutCount`, `CutOK` (conditions (L), (C) for general profiles), `cutOK_leaf`, `ach_of_leaf`, `leaf_step`. C1 may want to reuse or rename `CutOK`.
+- **Template test.** Moves are new path, Fan transfer, concatenation and path insertion.
+  - Stuck instances remain at n = 6 (12 among reduced instances; 6 in the EMM⁺ class even with path insertion of any length).
+  - Each one is at **Fan's equality**, or is a concatenation with one end at each endpoint.
+  - So step (2) of the template needs an equality lemma producing a tight cut. The stuck instances, which include the butterfly, the octahedron and `Eqzo`, are the test cases.
+- Not done here: 2-connectivity of a minimal counterexample through TVS Thm 7 / SP §2 gluing.
+

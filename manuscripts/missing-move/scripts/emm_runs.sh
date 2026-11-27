@@ -1,5 +1,5 @@
 #!/bin/sh
-# Section 7 (the inductive template for EMM): every log of Proposition 7.2 and Proposition 7.6.
+# Section 7 (the inductive template for EMM): every log of Proposition 7.1 and Proposition 7.5.
 # Run from the repository root.
 O=manuscripts/missing-move/scripts/outputs
 for n in 4 5 6 7; do python3 tools/gemm_test.py data/conn$n.g6 20 > $O/gemm$n.log; done
@@ -13,4 +13,9 @@ for n in 4 5 6; do
   python3 tools/emm_template.py data/conn$n.g6 100 reduced atleasthalf > $O/tmpl${n}_plus.log
   python3 tools/emm_template.py data/conn$n.g6 100 reduced atleasthalf peel5 > $O/tmpl${n}_plus_peel5.log
 done
+
+# diagnostics of the stuck instances (Remark 7.6)
+python3 tools/emm_template.py data/conn6.g6 100 reduced diag > $O/tmpl6_red_diag.log
+python3 tools/emm_template.py data/conn6.g6 100 reduced atleasthalf diag > $O/tmpl6_plus_diag.log
+python3 tools/emm_reduction_check.py data/conn4.g6 data/conn5.g6 data/conn6.g6 > $O/reduction_d_check.log
 echo DONE
