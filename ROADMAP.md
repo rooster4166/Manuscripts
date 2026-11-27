@@ -36,6 +36,7 @@ EMM sufficiency work is **stopped**.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). Status CLAIMED, pending audit A17.
 - **audit-a17** (session_01FxXpVf5vzK7baQDaysaQ1o, branch `claude/audit-a17`, new): independent audit of the balanced return theorem.
+- **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
 - **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
