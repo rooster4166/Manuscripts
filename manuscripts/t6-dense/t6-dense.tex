@@ -572,15 +572,18 @@ residual $P_3$, $|O|=8$ & endZ & 20 & 120 & 114 & 0\\
 residual $C_4$ (twins), $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $K_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $P_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $\emptyset$, $|O|=8$ & lean${}^*$ & 8 & 48 & 42 & 0\\
+residual $C_4$ (twins), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
+residual $P_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 44 & 0\\
 \bottomrule
 \end{tabular}
 \end{center}
 ``Failures'' counts bases satisfying the theorem's conditions whose executed construction did not
 verify; there were none, in any mode. In mode \texttt{lean} almost every certificate uses (E7),
-that is, all seven steps are appends; (E6) was needed for $2$ of the $144$ roots. The six
-uncertified roots of the endZ $P_3$ row belong to a single graph, in which every search hit the
-budget. They are not counterexamples. Further cells ($K_2$, $\emptyset$, $|O|=10$) are logged
-in E28.
+that is, all seven steps are appends; (E6) was needed for $2$ of the $144$ roots. (${}^*$: at most $60$ labellings per
+root.) The uncertified roots lie in three graphs, one per incomplete row. In each of them every
+search hit the node budget or the labelling cap; no search proved that a base is absent. They are
+undecided, not counterexamples. Further cells are logged in E28.
 
 For comparison, the six-separation base of \cite[Thm~8.2]{TM}, with the same chains, was tried on
 five residual $C_4$ graphs ($|O|=8$; all $160$ labellings with a root on the cycle; two seeds;

@@ -1410,8 +1410,16 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | residual, \|O\| = 8 (K2, P3, C4 subset) | lean | 8 | 48 | 48 | 0 |
 | residual C4, \|O\| = 8 (TW = 2) | lean | 8 | 48 | 48 (all via E7) | 0 |
 | residual K3, \|O\| = 8 | lean | 8 | 48 | 48 (46 E7, 2 E6) | 0 |
+| residual P3, \|O\| = 8 | lean | 8 | 48 | 48 (all E7) | 0 |
+| residual ∅ (full exterior vertex), \|O\| = 8 | lean, ≤ 60 labellings | 8 | 48 | 42 | 0 |
+| residual C4 (TW = 2), \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (all E7) | 0 |
+| residual P3, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 44 (41 E7, 3 E6) | 0 |
 
-- The 6 uncertified roots of the endZ P3 row belong to one graph, `MV~~Nv{f~|q|~\lj_`, where every search hit the budget (see (C)).
+- Uncertified roots all lie in three graphs. In each of them every search of every tried labelling hit the node budget (or the 60-labelling cap was reached); no search returned NONE for them:
+  - endZ P3, \|O\| = 8: `MV~~Nv{f~|q|~\lj_`, 6 roots;
+  - lean P3, \|O\| = 10: `OV~~N}}~nyqz|Ef[~RFzF`, roots 1–4;
+  - lean ∅, \|O\| = 8: `M~~zwFn~}~hi~z~z?`, all 6 roots.
+  - Reruns with larger budgets are in `out/hard2.log`; see (C).
 - "failures" counts bases whose executed construction did not verify. There were none in any mode: every base satisfying the theorem's conditions gave a verified star-terminal Lovász decomposition of J.
 
 **(B′) Exhaustive, order 9** (`relabel.py` on `terminal-matching/scripts/out/d6_9.g6`; exact search, no budget).
