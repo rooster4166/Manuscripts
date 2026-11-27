@@ -48,9 +48,10 @@ We also give an exact checker for the degree-$(n-2)$ form of RE. It is validated
 project's solver on all $14{,}391$ such roots of order at most $10$. With it, we map where the method
 works. At order $10$ the theorem covers $95.6\%$ of these roots. The method itself, with the best
 Lov\'asz decomposition, succeeds at every root outside the dense range of
-marked-reduction Corollary~168 (unrefereed), at all orders $\le10$. Its known failures are dense:
-near-complete graphs force Hamiltonian Lov\'asz paths, which are compatible with nothing. At order
-$10$, $58$ dense roots inside the range of Corollary~168 remain undecided. The dense regime is the one
+marked-reduction Corollary~168 (unrefereed), at all orders $\le10$. Its known failures are dense. In
+near-complete graphs they are forced: Hamiltonian Lov\'asz paths are compatible with nothing. At order
+$10$ one further failure, outside that range, was decided exhaustively, and $57$ dense roots inside
+the range of Corollary~168 remain undecided. The dense regime is the one
 covered by marked-reduction Corollary~168 and Theorem~170, so the two methods are complementary. At
 order $16$ the method is undecided below Theorem~170, when $5$ or $6$ vertices have degree $n-2$.
 What lies between the two methods is the open core of this case.
@@ -415,8 +416,15 @@ orientations) succeeds at 14{,}054 of the $14{,}131$ roots; every witness passes
 \texttt{verify\_family.py -L}. The other $77$ roots lie in $10$ graphs with at least $8$ of the $10$
 vertices of degree $8$, so inside the range of marked-reduction Corollary~168. At $19$ of them
 ($m\ge39=2k^2-3k+4$, among them $K_{10}-M$) the method provably fails by Proposition~\ref{prop:ham}.
-At the remaining $58$ ($m\in\{36,37,38\}$) the search stayed undecided at a budget of $2\cdot10^7$
-to $2\cdot10^8$ nodes. Theorem~\ref{thm:main} covers 13{,}507 roots
+The remaining $58$ have $m\in\{36,37,38\}$, below the range of Proposition~\ref{prop:ham}.
+\begin{itemize}[leftmargin=*]
+\item Audit A31 decided one of them exhaustively, $r=0$ in \texttt{ITm\~{}vvz\}w} ($m=36$). It
+tried all $22{,}764{,}672$ Lov\'asz decompositions with all $16$ orientations and an exact general
+matching. The method fails there.
+\item $15\%$ of those decompositions contain no Hamiltonian path of $G$ and still fail, so
+Proposition~\ref{prop:ham} is not the whole mechanism.
+\item The other $57$ stayed undecided at a budget of $2\cdot10^7$ to $2\cdot10^8$ nodes.
+\end{itemize} Theorem~\ref{thm:main} covers 13{,}507 roots
 ($95.6\%$). Together with Theorem~170 and the decided literature classes it covers 13{,}984. The
 $147$ roots outside all three are dense: every neighbour of $r$ has degree at least $6$, and exactly
 three vertices (among them $r$) have degree $8$. The method succeeds at every one of them.

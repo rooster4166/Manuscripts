@@ -771,7 +771,7 @@ Example: two non-adjacent apexes joined to a 4-regular expander. This lies outsi
 
 **Data** (validated exact checker; scope in E32).
 - Order 10: Theorem 3.1 covers 13,507 of the 14,131 degree-(n − 2) roots (95.6%). With Thm 170 and the literature it covers 13,984.
-- The method with the best D succeeds at 14,054. The rest lie in 10 near-complete graphs inside Cor 168; 19 of those roots are provable failures.
+- The method with the best D succeeds at 14,054. The rest lie in 10 near-complete graphs inside Cor 168: 19 provable failures (Prop 4.1), 1 more failure decided exhaustively by audit A31 (`ITm~vvz}w` r = 0, below the Prop 4.1 range), 57 undecided.
 - Order 12 samples: the method succeeds at every root run outside Thm 170 (1,912 roots).
 - Order 16, k = 8, with u vertices of degree 14 and the rest of degree 12: the method is undecided for u = 5, 6, still below Thm 170.
 
