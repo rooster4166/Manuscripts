@@ -619,5 +619,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
   - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
   - Conj 4.5 (forest base) is weaker than the triangle base.
-  - **Lean: pending (only the matching case exists).**
+  - **Lean: DONE.** `ForestLift.lean` provides `test1At_of_forestBase` and `test1_of_forestBases` (triangle-base 6da125b), with standard axioms only, checked by the coordinator.
+    - The data use (child, parent) pairs in parent-first order with distinct children. That ordering forces Φ to be a rooted forest, and w is never a child.
+    - Conditions (i) and (ii) are stated exactly as in Thm 4.2.
+    - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, with no data-existence hypothesis needed when J − {z, r} is connected.
 - **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).
