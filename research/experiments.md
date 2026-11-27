@@ -810,7 +810,7 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 - `exp2.py`: of the failing transfers, 25,047 have a trivial chain (the end path Q_z contains the partner u′) and 3,838 have chain length 1. Chains of length ≥ 2 almost never fail.
 - **(EE) / CL holds in every test.** (EE) says: z is the only positive even vertex, u ∈ N(z), and uz is the terminal edge at u of some rainbow decomposition.
   - `exp_ee.py`: 869 decided pairs (z, u) without classes, and 788 with pairings, 0 failures (51 undecided).
-  - `exp_cl.py`: Case I configurations obtained from cubic graphs with perfect pairings by one Case II step (the leaf joins the class of x). Every neighbour w was tested: 456 (n = 12), 796 (n = 14) and 400 (n = 16), 0 failures.
+  - `exp_cl.py`: Case I configurations obtained from cubic graphs with perfect pairings by one Case II step (the leaf joins the class of x). Every neighbour w was tested: 456 (n = 12), 796 (n = 14) and 400 (n = 16), 0 failures. `exp_cl_big.py` (random cubic graphs): 300 (n = 18), 200 (n = 20) and 120 (n = 22), 0 failures, 0 undecided.
 - `exp_extremal.py`, `exp_min2.py`: among separating D′ of K − uz, those minimising |V(Q_z)| always avoid u's class (228/228, and all cubic-derived configurations). But the minimum is usually a single edge, so this is weak evidence.
 
 **(E) Natural strengthenings that are false.**

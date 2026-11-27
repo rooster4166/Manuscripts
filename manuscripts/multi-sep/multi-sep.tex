@@ -55,8 +55,9 @@ removes a cycle without creating an even vertex.
 CSEP holds, even for overlapping classes. This contains the separation theorem for packed sets.
 \item \emph{Covers.} CSEP holds for the fibres of a covering map onto a graph with all degrees odd.
 \end{itemize}
-The proofs are computation-free. The Lean library formalises the leaf merge, the prescribed end edge,
-the Case~II reduction, the certified Case~I step and the sparse-class theorem. Separately labelled
+The proofs are computation-free. The Lean library formalises the reduction to the Gallai class, the leaf
+merge, the prescribed end edge, the Case~II reduction, the certified Case~I step and the sparse-class
+theorem. Separately labelled
 computations give the evidence: no counterexample to MSEP among all $36{,}024{,}731$ distance-three
 perfect pairings of the $4{,}060$ connected cubic graphs of order $16$, $8.26$ million sampled
 pairings at order $18$, and random graphs to order $20$; and no counterexample to CSEP for minimum
@@ -507,8 +508,8 @@ of three can fail (2 of 228 at order $12$), so Remark~\ref{rem:overlap} is sharp
 
 \subsection*{The Case~I lemma}
 Conjecture~\ref{conj:EE} held in every decided instance: $869$ pairs $(z,u)$ without classes and $788$
-with pairings (random graphs, orders $8$--$15$; $51$ undecided within the search budget), and $1{,}652$ Case~I configurations obtained from cubic graphs with
-perfect pairings by one Case~II step (orders $12$, $14$, $16$), each for every neighbour $u$.
+with pairings (random graphs, orders $8$--$15$; $51$ undecided within the search budget), and $2{,}272$ Case~I configurations obtained from cubic graphs with
+perfect pairings by one Case~II step (orders $12$--$22$), each for every neighbour $u$.
 
 \subsection*{What does not work}
 \begin{itemize}
@@ -548,10 +549,15 @@ Theorem~\ref{thm:caseII}.
 \item \texttt{classSep\_caseI}: Lemma~\ref{lem:caseI}.
 \item \texttt{SparseFam}, \texttt{separation\_sparse}: Theorem~\ref{thm:sparse}, by the same case structure as
 \texttt{separation\_set}, with a new Case~IV.
+\item \texttt{realisable\_of\_separating}, \texttt{realisable\_of\_lovasz\_separating}:
+Proposition~\ref{prop:reduction}(c). If $\sigma$ pairs the even vertices of $G$ by edges of $G$
+(\texttt{IsEvenPairing}), $F$ is $G$ minus the pairing edges, and $F$ has a Lov\'asz decomposition in
+which no path contains both $v$ and $\sigma(v)$, then every transversal of the pairing is realisable
+(\texttt{Realisable}). The proof appends single-edge routes with \texttt{append\_routes} of
+\texttt{RouteSystem.lean} (route-descent).
 \end{itemize}
-Not formalised: Propositions~\ref{prop:reduction}, \ref{prop:cover} and~\ref{prop:EE}, and
-Lemma~\ref{lem:rotation}. Proposition~\ref{prop:reduction}(c) is an instance of the route-appending lemma
-\texttt{RouteSystem.append\_routes} of the route-descent formalisation, with single-edge routes.
+Not formalised: Propositions~\ref{prop:reduction}(a),(b), \ref{prop:cover} and~\ref{prop:EE}, and
+Lemma~\ref{lem:rotation}.
 
 \section{Open problems}\label{sec:open}
 
