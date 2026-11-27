@@ -118,3 +118,11 @@ Every local engine of the archive is a candidate move, and the cut conditions ar
 | ≤ 10, bottleneck families (cliques joined by 1–3 edges, theta graphs, cones over path unions, 2-sums) | 86 | 2,340 (206 non-realisable) | **0** | 0 |
 
 "Unsound" counts realisable half-sets that violate (1); it must be 0, since (1) is necessary. The order-12 bottleneck instances were skipped because the exact oracle enumerates whole families and is too slow there.
+
+## 7. Literature check (2026-11-27)
+
+Two web searches for characterisations of path decompositions with prescribed end counts, by cut conditions or otherwise, found nothing of this kind. EMM appears to be new, but a careful literature section is still needed in the manuscript. Related classical results:
+
+- Lovász's path partition theorem (one end at each odd vertex, at most two at each even vertex).
+- **The Lovász–Cherkassky theorem.** In an inner-Eulerian graph, the maximum number of edge-disjoint T-paths equals ½ Σ_t λ(t, T − t). This is the closest min-max theorem with a cut-condition structure, and a natural model for proving EMM's sufficiency.
+- Multiflow cut-condition theorems ("when the cut condition is enough", for example for series-parallel networks), as models for the gluing and uncrossing steps.
