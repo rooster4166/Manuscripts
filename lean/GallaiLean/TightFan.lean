@@ -704,4 +704,63 @@ theorem fanPred_unique (D : PathDecomp K) {u x z z' : U} (hx : D.ends x ≤ 1)
 
 end forced
 
+/-! ### A protected walk step, in the form `walk_back` uses -/
+
+section walkstep
+
+variable [DecidableEq U] [Fintype U]
+
+/-- **A protected walking-back step.** One step of `walk_back` (terminal-matching Lemma 3.4) whose
+target `w` may have blank neighbours, provided they lie in a protected set `B` that no vertex of
+`{b} ∪ N(w)` has as its predecessor of `w`. Restore the edge `wb` of `K`: from a decomposition `D`
+of `K₀ = K − wb` in which every neighbour of `w` other than `b` and outside `B` has an end, and `b`
+has an end, get a decomposition of `K` with one end moved from `b` to `w` (so the vertices of
+`B ∖ {w}` keep their end counts) and every path inside an old path together with `w`.
+
+This is the step that a chained walk can call at a target with a protected blank neighbour (the
+endless short end `x` of a pair adjacent to the target). Split the walk there: `walk_back` on the
+segment before the step, this lemma at the step, then `walk_back` on the rest. -/
+theorem walk_step_protected (K : SimpleGraph U) [DecidableRel K.Adj] {w b : U} (hwb : K.Adj w b)
+    (K₀ : SimpleGraph U) [DecidableRel K₀.Adj]
+    (hK₀ : ∀ e, e ∈ K₀.edgeSet ↔ e ∈ K.edgeSet ∧ e ≠ s(w, b)) (D : PathDecomp K₀)
+    (B : Finset U) (hbB : b ∉ B)
+    (hB : ∀ x z, (x = b ∨ K₀.Adj x w) → FanPred D w x z → z ∉ B)
+    (hZ : ∀ v, K.Adj w v → v ≠ b → v ∉ B → 1 ≤ D.ends v) (hb : 1 ≤ D.ends b) :
+    ∃ D' : PathDecomp K,
+      (∀ v, D'.ends v + (if v = b then 1 else 0) = D.ends v + (if v = w then 1 else 0)) ∧
+      ∀ Q ∈ D'.paths, ∃ Q' ∈ D.paths, ∀ z ∈ Q.walk.support, z ∈ Q'.walk.support ∨ z = w := by
+  classical
+  have hwb' : w ≠ b := hwb.ne
+  have hcount : (Finset.univ.filter (fun v => K₀.Adj w v ∧ D.ends v = 0 ∧ v ∉ B)).card <
+      D.ends b := by
+    have hempty : Finset.univ.filter (fun v => K₀.Adj w v ∧ D.ends v = 0 ∧ v ∉ B) = ∅ := by
+      refine Finset.eq_empty_of_forall_notMem fun v hv => ?_
+      rw [Finset.mem_filter] at hv
+      obtain ⟨-, hadj, h0, hvB⟩ := hv
+      have hadjK : K.Adj w v := by
+        have := (hK₀ s(w, v)).1 hadj
+        exact this.1
+      have hvb : v ≠ b := by
+        rintro rfl
+        exact ((hK₀ s(w, v)).1 hadj).2 rfl
+      have := hZ v hadjK hvb hvB
+      omega
+    rw [hempty, Finset.card_empty]
+    omega
+  obtain ⟨D', -, hw, hbe, hrest, hcov⟩ :=
+    fan_single_protected_supp (G := K) (G' := K₀) hwb hK₀ D B hbB hB hcount
+  refine ⟨D', fun v => ?_, hcov⟩
+  by_cases hvw : v = w
+  · subst hvw
+    simp only [hwb', ite_false, ite_true, add_zero]
+    exact hw
+  · by_cases hvb : v = b
+    · subst hvb
+      simp only [hvw, ite_true, ite_false, add_zero]
+      exact hbe
+    · simp only [hvw, hvb, ite_false, add_zero]
+      exact hrest v hvw hvb
+
+end walkstep
+
 end Gallai

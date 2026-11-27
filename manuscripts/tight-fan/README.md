@@ -19,6 +19,7 @@ Audit: `research/audit/A24-tight-fan.md`.
   - `l1_tight_transfer`: the tight case of L1*, conditional on the decomposition.
   - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞. With `ee_of_l1Blocked`, residuals 1–3 are implied by one statement (the general form of L1* on blocked instances); neither implication reverses.
   - Flower negatives.
+  - `walk_step_protected`: one walking-back step whose target has a protected blank neighbour, in the hypothesis form of `walk_back` (for chained walks, e.g. ptm's T(6)-i dense residual). Added after audit A24; not audited.
   - `test1_deg_four`: spine Test1 at d(z) = 4 whenever J − z is connected, via `emc_four`. This is a Lean packaging of a known case (terminal-matching Remark 7.3, `rooted_four'`).
 - **Paper only:** Lemma 3.2 (a chain avoiding c suffices, L1*), and the tight walk theorem for PTM (walks through N(x), under the hypothesis that the forced chain does not reach x). The tight walk closes all 68 no-walk instances at n = 8; the static sufficient condition alone closes 47 (audit A24, F1).
 - **Precise obstruction.** In 59 of the 133 L∞ residual instances of order 9, every target u admits an induction decomposition whose forced chain reaches the protected end. So a proof by this Case I step must control the decomposition the hypothesis supplies; the choice of target alone does not suffice. The naive strengthening GL⁺ (far end not adjacent to the even vertex) fails in general (`DTw`), though it holds in every residual step of order 9.
@@ -35,7 +36,7 @@ Requirements: gcc, Python 3 with networkx, nauty (`nauty-geng`). `./regen.sh` re
 | `resid.py` | blocked L1* instances, irreducible one level deep (as `l1star/scripts/irred_all.py`) |
 | `exp1c.py` | E26(A): is (G − gu, c, A) good for some target u (via `l1s ed`)? |
 | `exp1d.py` | E26(A): forced chain through c vs result, over every good D' |
-| `exp1e.py`, `exp1f.py` | E26(A): the sufficient condition of Theorem 3.3 (all D' at order 7; existence with early stop at order 9) |
+| `exp1e.py`, `exp1f.py` | E26(A): the sufficient condition of Theorem 3.3 (all D' at order 7; existence with early stop; the order-9 run was not completed) |
 | `linf_far.py`, `glplus.py` | E26(B): far ends outside N(u); the strengthening GL⁺ |
 | `exp2.py`, `exp3.py` | E26(E): weakenings of admissibility; the one-step derived class |
 | `linf.py` | E26(B): the L∞ residual configuration, exhaustive |

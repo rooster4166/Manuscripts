@@ -1,0 +1,2 @@
+('gA', 'd(g)=2', 'tight', "condition met by some good D'") 14
+('sep', 'd(g)=2', 'has good u outside N(c)') 5

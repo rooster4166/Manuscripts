@@ -1483,3 +1483,12 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 
   Overclaims were toned down: flowers, Test1, "one statement", "any proof".
 - **For T(6)-i.** `fan_exists_chain_protected` is stated for arbitrary decompositions and grouped transfers. In realisability problems, the even vertices outside the realised set are blanks. The protected form discounts the blanks that no chain can reach, which may be the relevant refinement for the transfer steps at six even vertices. Untested.
+- **Protected walk step for ptm (Lean, `walk_step_protected`; added after A24, not audited).** This is one walking-back step (TM Lemma 3.4) whose target w may have blank neighbours in a protected set B. Its hypotheses:
+  - no vertex of {b} ∪ N(w) has a vertex of B as its predecessor of w;
+  - every other neighbour of w has an end, and b has an end.
+
+  Its conclusion is the walk_back step: the end moves b → w, and every path lies in an old path plus w.
+  - In ptm's T(6)-i dense residual (synthesis §22), a pair adjacent in B in role e2/e3 makes the endless end x_i a blank neighbour of the first walk target y_i. That is exactly this shape, with w = y_i and B = {x_i}.
+  - A chained walk splits at each protected step: `walk_back` on the segment before it, `walk_step_protected` at the step, `walk_back` after it.
+  - The condition to check at the step is the predecessor condition. With at most one end per vertex, it says that the path through x_i y_i does not end, on x_i's side, in {b} ∪ N(y_i).
+  - The sharper condition (the forced chain does not reach x_i, Corollary 2.3(2) of the manuscript) is not formalised. In PTM's no-walk data, it closes 68/68 where the static form closes 47/68.

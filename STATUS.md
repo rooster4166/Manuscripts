@@ -245,6 +245,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | tight-fan: protected-blank Fan lemma, forced chain, tight L1* transfer, L∞ ⇐ L1Blocked, flower negatives, Test1 at d=4 packaging (A24) | **proofs sound; Lean faithful (15 theorems, standard axioms); all committed numbers reproduced**. Three ERRORs fixed: the tight-walk count 47 (static condition) vs 68 (forced-chain hypothesis); the false L1* converse "through c ⇒ fails" (counterexample `H??FFf}`); citation numbers. Overclaims (flowers, Test1, "one statement") toned down |
 | terminal-matching: local-girth strengthening (A22b) | **sound, no error**; 2.47M proof cases plus 248k brute-force checks, 0 failures; NoShortCycleAt equivalent to Mathlib's form |
 | terminal-matching d = 6: chained walk theorem, far-apart form (A22c) | **mathematics sound** (Thm 8.2 executed about 100k times); claim ERROR E2: the far-apart case of T(6)-i is already known (six-even-incidence Thm 1(2)), so test1_of_chains3 is a new proof of a known case; fixes applied |
+| tight-fan: refined Fan with protected blanks, tight L1* transfer, L1Blocked ⇒ L∞, flower negatives (A24) | **proofs sound; Lean faithful (15 theorems)**; errors F1–F3 and overclaims fixed; `walk_step_protected` was added after the audit and is not covered by it |
 | spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 

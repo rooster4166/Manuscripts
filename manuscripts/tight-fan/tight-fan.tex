@@ -405,7 +405,11 @@ same vertex-set conclusion, so the three separations survive as before. Steps~1 
 \cite{TM} are unchanged.
 \end{proof}
 
-This is not formalised. Its value is shown by the data (E26(C)):
+The theorem itself is not formalised, because its hypothesis concerns intermediate
+decompositions. Its single protected step is formalised in the form of the walking-back lemma
+(\texttt{walk\_step\_protected}). A chained walk can split at a protected step: walking back on
+the segment before it, the protected step, then walking back on the rest. Its value is shown by the
+data (E26(C)):
 \begin{itemize}
 \item with the forced-chain hypothesis, it closes all $68$ instances of order $8$ that have no
 admissible walk;
@@ -541,8 +545,8 @@ enumeration).
   \end{itemize}
 \item The condition of Theorem~\ref{thm:l1tight} is met by some good $\cD'$ in every tight instance
 of order $7$ ($14$ with $|A|\le2$, $49$ with $A$ maximal; \texttt{exp1e.py}). It is also met in all
-$83$ tight instances of the order-$9$ sample (A24). The full order-$9$ existence run is
-\texttt{exp1f.py}.
+$83$ tight instances of the order-$9$ sample (A24). A full order-$9$ existence run
+(\texttt{exp1f.py}) was started but not completed.
 \end{itemize}
 
 \textbf{E26(B), the $L_\infty$ residual} (\texttt{linf.py}, \texttt{linf\_far.py}, \texttt{glplus.py}).
@@ -560,7 +564,7 @@ $\cD'$; in the other $74$, some $u$ succeeds for every $\cD'$.
 \item For every instance and every target $u$, some $\cD'$ has its far end outside $N(u)$
 (\texttt{out/linf\_far9.txt}). Such a $\cD'$ makes the step safe.
 \item $\mathrm{GL}^+$ in general (exhaustive, \texttt{out/glplus*.txt}): it holds at order~$7$ when
-$d(c,g)\ge3$. It fails at distance $1$ and $2$ already at order $5$. The smallest distance-$2$
+$d(c,g)\ge3$ (an order-$9$ run was not completed). It fails at distance $1$ and $2$ already at order $5$. The smallest distance-$2$
 failure is \texttt{DTw}, the graph of \cite[Example~3.5]{L1S}: there both GL decompositions have their
 far end in $N(g)$.
 \end{itemize}
@@ -647,6 +651,8 @@ Theorem~\ref{thm:linfty}.
 \item \texttt{flower\_decomp\_not\_le\_one} and
 \texttt{flower\_decomp\_rest\_not\_le\_one}: Proposition~\ref{prop:noflower}(2).
 \item \texttt{test1\_deg\_four}: Theorem~\ref{thm:test1}.
+\item \texttt{walk\_step\_protected}: one step of the walk back with a protected blank at the
+target (Theorem~\ref{thm:protected} in the hypothesis form of \cite[Lemma~3.4]{TM}).
 \end{itemize}
 Not formalised:
 \begin{itemize}
