@@ -100,6 +100,14 @@ EMM sufficiency work is **stopped**.
   - **Data:** the triangle base holds at every root with data, with no undecided root left.
   - **Forest base:** refuted (cone over K_{2,6}). The open target is DL.
 - **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`, new): Test1 on cones is rooted Gallai for 2-connected even-order Eulerian graphs (synthesis §26). Tasks: the Lean correspondence, the literature (including MR Thm 166 and separating-pairs Cor 13.12), exhaustive RE data, and reductions.
+- **eulerian-cone milestone 1 (7081f70, merged; build green; axioms checked):**
+  - Lean, `EulerianCone.lean`:
+    - `test1_fullCone_iff` and `fullConeTests_iff` (Test1 on cones ⇔ RE);
+    - `rootedDecomp_of_spineTestsNMC` (the spine needs RE exactly on 2-connected even Eulerian B with no matching cut);
+    - `rootedDecomp_of_gallai`.
+  - Data: RE holds on all 300,540 roots of order ≤ 10.
+  - Literature, verified: RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free and Δ ≤ 4.
+  - Open: RE in general, the ear case at even order, and conjecture UC.
 - **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`, new): prove DL(1), single-pair disjunctive avoidance. The open core is a, b ∈ N(g) with a common neighbour, the tight-Fan obstruction.
 - **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
 - **t6-dense**: **finished** (ec9fcc4).

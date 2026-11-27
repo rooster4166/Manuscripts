@@ -646,3 +646,29 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
 - clt's two further witnesses are for the ∅ residual graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3. The coordinator also re-checked these (`verify_clt_witness_resid.py`): both are Lovász, satisfy the disjunctions and lift to (T1).
 - clt's E30(G) further reports that on the 30 residual graphs a base exists for *every* root, data choice and orientation: 8,016 instances, all found, none proved absent and none undecided.
 - **No budget-undecided triangle-base instance remains among the d(z) = 6 runs.** The d(z) = 8, n = 13 run is also settled: every one of its 28 budget-undecided roots has a triangle base, found with clt's local search and independently verified with the lift executed (`direct-test1/scripts/out/d8/`). That makes 71 of 71 roots at d(z) = 8.
+
+**§26 addendum (eulerian-cone milestone 1, 7081f70; coordinator checked the build and the axioms).**
+
+*Lean (`EulerianCone.lean`):*
+- `test1_fullCone_iff`: Test1 on the full cone ⇔ RE(B) at every root.
+- `kConnected_three_fullCone_iff`: the cone is 3-connected ⇔ B is 2-connected.
+- `fullConeTests_iff`.
+- `rootedDecomp_of_spineTestsNMC`: the spine needs exactly RE for 2-connected Eulerian B of even order *with no matching cut*.
+- `rootedDecomp_of_gallai`: Gallai ⇒ RE for every connected Eulerian B of even order.
+- `rootedDecomp_iff_addLeaf`: RE(B, r) ⇔ p(B + a leaf at r) ≤ |B|/2.
+
+So, in Lean, Gallai ⇒ RE ⇒ Gallai(2-connected Eulerian, even order), and RE is a necessary part of the spine.
+
+*Literature (`research/notes/eulerian-gallai-literature.md`, key quotes spot-checked on arXiv).* This replaces my from-memory list in §26:
+- No paper proves a rooted Eulerian statement as strong as RE.
+- Through the leaf lemma, published floor theorems give RE for planar B (Blanché–Bonamy–Bonichon), treewidth ≤ 3, 2-degenerate, K5-minor-free (not refereed) and Δ(B − r) ≤ 3 (Botler–Sambinelli).
+- Through the double, Bonamy–Perrett gives RE whenever Δ(B) ≤ 4.
+- K_{2,6} is planar, so the cone over K_{2,6} is covered by the literature.
+
+*Data (validated C solver; every positive answer is witness-checked):*
+- RE holds at all 300,540 roots of the 30,054 2-connected Eulerian graphs of even order ≤ 10.
+- It also holds on large order-12 to order-16 families.
+
+*Open (stated):*
+- New conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1), where CB is the end-counting bound.
+- The minimal-counterexample structure is: degree-2 vertices are triangle ears with no twins, and the open case is ears at even order.
