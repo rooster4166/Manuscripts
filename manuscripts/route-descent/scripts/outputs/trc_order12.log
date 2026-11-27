@@ -1,0 +1,2 @@
+  ... 10 graphs, 42s
+order12 {"graphs": 12, "constructions": 2400, "transversals": 57600, "trc_fail": 0, "ext_queries": 268800, "ext_true": 244100, "close": 57600, "stuck": 0, "all_p": 36560, "hist_num_good_p": {"1": 80, "2": 1164, "3": 8108, "4": 23872, "5": 24376}, "seconds": 55}

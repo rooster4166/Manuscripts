@@ -1,0 +1,9 @@
+  ... 10 graphs, 24s
+  ... 20 graphs, 81s
+  ... 30 graphs, 227s
+  ... 40 graphs, 247s
+  ... 50 graphs, 284s
+  ... 60 graphs, 334s
+  ... 70 graphs, 365s
+  ... 80 graphs, 436s
+rand14_min_rr {"graphs": 80, "constructions": 160, "transversals": 2232, "trc_fail": 0, "ext_queries": 8896, "ext_true": 8896, "close": 2232, "stuck": 0, "all_p": 2232, "rr_true": 2020, "rr_unknown": 212, "hist_num_good_p": {"2": 40, "3": 464, "4": 1216, "5": 512}, "seconds": 436}

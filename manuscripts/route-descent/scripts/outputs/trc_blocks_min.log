@@ -1,0 +1,13 @@
+  ... 10 graphs, 53s
+  ... 20 graphs, 72s
+  ... 30 graphs, 135s
+  ... 40 graphs, 171s
+  ... 50 graphs, 383s
+  ... 60 graphs, 398s
+  ... 70 graphs, 408s
+  ... 80 graphs, 564s
+  ... 90 graphs, 582s
+  ... 100 graphs, 629s
+  ... 110 graphs, 642s
+  ... 120 graphs, 672s
+blocks_min_rr {"graphs": 120, "constructions": 240, "transversals": 4512, "trc_fail": 0, "ext_queries": 21912, "ext_true": 21896, "close": 4512, "stuck": 0, "all_p": 4496, "rr_true": 4512, "unknown_ext": 16, "hist_num_good_p": {"1": 24, "2": 88, "3": 448, "4": 880, "5": 1920, "6": 896, "7": 192, "8": 64}, "seconds": 672}

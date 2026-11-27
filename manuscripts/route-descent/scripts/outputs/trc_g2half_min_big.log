@@ -1,0 +1,4 @@
+  construction 1 {"graphs": 1, "constructions": 1, "transversals": 32, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 29, "unknown_real": 2, "rr_unknown": 1}
+  construction 2 {"graphs": 1, "constructions": 2, "transversals": 64, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 33, "unknown_real": 5, "rr_unknown": 26}
+  construction 3 {"graphs": 1, "constructions": 3, "transversals": 96, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 64, "unknown_real": 6, "rr_unknown": 26}
+g2half_min_rr {"graphs": 1, "constructions": 3, "transversals": 96, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 64, "unknown_real": 6, "rr_unknown": 26, "hist_num_good_p": {}, "seconds": 957}

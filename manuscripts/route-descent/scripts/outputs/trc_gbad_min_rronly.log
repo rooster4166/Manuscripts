@@ -1,0 +1,5 @@
+  construction 1 {"graphs": 1, "constructions": 1, "transversals": 32, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 32}
+  construction 2 {"graphs": 1, "constructions": 2, "transversals": 64, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 64}
+  construction 3 {"graphs": 1, "constructions": 3, "transversals": 96, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 96}
+  construction 4 {"graphs": 1, "constructions": 4, "transversals": 128, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 128}
+gbad_min_rr {"graphs": 1, "constructions": 4, "transversals": 128, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 128, "hist_num_good_p": {}, "seconds": 1}
