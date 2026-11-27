@@ -402,4 +402,6 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Separation theorem in Lean (2026-11-27, route-descent).** `Gallai.separation`: if G has at most one vertex of positive even degree and c, a are at distance ≥ 3, then some decomposition with ends ≡ degrees mod 2 has no path containing both c and a. `Gallai.lovasz_avoid` is the corresponding L1 at distance three.
   - **Lean:** Separation.lean and FanSupport.lean (Fan's lemma with vertex sets); sorry-free, standard axioms (verified).
   - **Status:** new strengthening of Lovász's theorem. Paper proof in route-descent.tex, with audit A16 requested. The manuscript's bibliography and build are still being fixed.
-- **Spine paper draft (2026-11-27).** `manuscripts/spine/spine.tex`, 26 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof (`SpineCheck.lean`). Audit A15 is pending, run by the spine-paper session.
+- **Spine paper (2026-11-27).** `manuscripts/spine/spine.tex`, 27 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof.
+  - **Audit A15:** two independent referees found no mathematical error. One expository error and one GAP (the paper claimed to be self-contained while quoting Lovász and Hall) were fixed, along with the Lean-pointer mismatches.
+  - **Lean names:** all 141 Lean names cited resolve (`SpineCheck.lean`), and 14 main declarations use standard axioms (`SpineAxioms.lean`).

@@ -1,6 +1,6 @@
 # The Gallai reduction spine
 
-`spine.tex` (`spine.pdf`, 26 pages) is a standalone proof that Gallai's path decomposition
+`spine.tex` (`spine.pdf`, 27 pages) is a standalone proof that Gallai's path decomposition
 conjecture is equivalent to two deletion tests on 3-connected graphs (marked-reduction
 Theorem 114). It follows the Lean proof `Gallai.gallai_iff_spineTests'` in `lean/GallaiLean/`.
 
