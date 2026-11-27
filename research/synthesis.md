@@ -126,3 +126,16 @@ Two web searches for characterisations of path decompositions with prescribed en
 - Lovász's path partition theorem (one end at each odd vertex, at most two at each even vertex).
 - **The Lovász–Cherkassky theorem.** In an inner-Eulerian graph, the maximum number of edge-disjoint T-paths equals ½ Σ_t λ(t, T − t). This is the closest min-max theorem with a cut-condition structure, and a natural model for proving EMM's sufficiency.
 - Multiflow cut-condition theorems ("when the cut condition is enough", for example for series-parallel networks), as models for the gluing and uncrossing steps.
+
+## 8. Refinement: EMM⁺ for general profiles (missing-move session, E17)
+
+The cut criterion was extended to every profile b with b ≤ d, b ≡ d (mod 2) and Σb = 2p, with k replaced by p.
+
+- **It fails below the Gallai budget.** At n = 7 there is one failure, at p = 2: FqJBo, a 2-linkage obstruction. At n = 8 there are 17 failures with p ≤ 3.
+- **It holds at and above the budget.** That is every profile at n ≤ 7, every p = 4 profile at n = 8, and all p on a random n = 8 sample.
+
+The refined conjecture is **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, a profile is realisable iff it is cut-feasible. The half-set EMM is the case p = n/2.
+
+**Reductions proved** (missing-move Lemma 7.4; Lean `leaf_step`). Leaves at unsaturated neighbours and some degree-2 configurations can be removed from a minimal counterexample to EMM⁺.
+
+**The inductive template.** It closes most small instances. The stuck instances at n = 6 all have a cut-feasible move that lacks only its guarantee: a transfer at Fan's equality, or a two-end concatenation. **The missing ingredient is an equality lemma: at Fan's equality, either the move succeeds or a tight cut appears.** This is the same equality phenomenon as the flower move (§3), now located inside the min-max framework.
