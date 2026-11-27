@@ -66,7 +66,11 @@ EMM sufficiency work is **stopped**.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
 - **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
-- **stl** (session_01FxXpVdsDUXK6XVuG52iCDL, branch `claude/stl`, new): star-terminal Lovász decompositions ⇒ spine Test1 (synthesis §19). It looks for a Test2 analogue, runs exhaustive tests, and attempts a proof via Lovász's induction at the even vertex.
+- **stl** (session_01FxXpVdsDUXK6XVuG52iCDL): **finished** (ac34940).
+  - **Lean:** `gallai_of_stl` (STL + STL2 on 3-connected J ⇒ Gallai), `stl_deg_two` (STL at every degree-2 z).
+  - **Data:** STL never fails with J − z connected (all 44,336 pairs to n = 9, and samples to n = 17). STL-P holds on 54,213 pairings; its only failure is W₄ with the diagonal pairing.
+  - **Audit A20:** sound, and its fixes are applied.
+  - **Open, in order:** PTM₂ (free-end, two edges) ⇒ STL-P at d(z) = 4; Test1 ⇒ STL; STL-P on 3-connected J ≠ W₄.
 - **Queued, not assigned:** Lean for MR Thms 38/175 and Cor 39 (flowers). This is a banking task, not on the critical path.
 - **Finished:** two-even, spine (113/114), missing-move, bs-prescribed, jm-repair, six-clique, lean-d6-frontier.
 
