@@ -37,6 +37,7 @@ for n in 4 6 8; do for m in 2 3 4; do nauty-geng -cq $n | ./ptm s $m > out/s_${n
 for n in 4 6 8; do nauty-geng -cq $n | ./ptm p 0 > out/pc_$n.txt; done; python3 analyze.py out/pc_8.txt # E24(C)
 for n in 6 8 10 12; do nauty-geng -ctfq -d1 $n | ./ptm s 2 0 0 > out/g5_${n}_2.txt; done              # E24(D)
 nauty-geng -cq -d1 10 | <filter all-odd> > out/odd10.g6; ./run_n10.sh 2                              # E24(B)
+# (if interrupted: concatenate the unfinished chunks into out/n10/rest.txt, split -n l/40 into out/n10/rp/p_??, ./run_rest.sh; re-run UND lines exactly with ./ptm f 2 0 0)
 ./run_random.sh                                                                                        # E24(E)
 nauty-geng -cq 8 | python3 gen_pairs.py > out/pairs_8.txt; ./walk 0 < out/pairs_8.txt; ./walk 0 1 < out/pairs_8.txt  # E24(F)
 python3 und_rerun.py out/rnd_*.out > out/rnd_und.in                                                  # E24(E), re-run:

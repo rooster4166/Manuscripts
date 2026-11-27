@@ -41,8 +41,8 @@ of the spine of Gallai's conjecture at a vertex of degree four, which is how the
 \emph{Statements.} The property fails for two edges in $K_4$ with a perfect matching (this is the
 wheel $W_4$ with its diagonal pairing), and for three edges in the prism with its rungs. By
 exhaustive computation these are essentially the only obstructions on simple graphs: for two
-edges, $K_4$ is the only failure among all instances on at most $8$ vertices (order $10$: see
-Section~\ref{sec:comp}); for three edges and for a prescribed end, every failure other than $K_4$
+edges, $K_4$ is the only failure among all instances on at most $10$ vertices (at order $10$ up to
+isomorphism; Section~\ref{sec:comp}); for three edges and for a prescribed end, every failure other than $K_4$
 has $G-F$ disconnected. When the edges of $F$ may be parallel to edges of $G$, every failure
 other than $K_4$ has a cut vertex in $G-F$.
 
@@ -822,7 +822,7 @@ class & instances & PTM fails & PTM$(e@x)$ tests & fails\\
 simple, $m=2$, $n\le8$ & 13{,}234 & 3 ($K_4$) & 52{,}924 & 0\\
 simple, $m=3$, $n\le8$ & 14{,}124 & 2 & 84{,}732 & 15 \\
 simple, $m=4$, $n=8$ & 1{,}955 & 0 & 15{,}640 & 14 \\
-simple, $m=2$, $n=10$ (iso., $18/24$ chunks) & 2{,}605{,}950 & 0 & 10{,}423{,}800 & 0\\
+simple, $m=2$, $n=10$ (up to isomorphism) & 3{,}474{,}599 & 0 & 13{,}898{,}396 & 0\\
 cubic, $m=2$, $n=12$ (up to isomorphism) & 3{,}745 & 0 & 14{,}980 & 0\\
 cubic, $m=2$, $n=14$ (up to isomorphism) & 46{,}407 & 0 & 185{,}628 & 0\\
 girth $\ge5$, $m=2$, $n\le12$ & 1{,}497 & 0 & 5{,}988 & 0\\
@@ -830,7 +830,10 @@ multigraph, $G-F$ connected, $n\le8$ & 76{,}632 & 29 & 453{,}964 & 1{,}942\\
 \bottomrule
 \end{tabular}
 \caption{Exhaustive tests. ``Simple'': all connected all-odd $G$ and all matchings $F$ of $m$
-edges (all instances, not up to isomorphism, except at $n=10$). PTM$(e@x)$ is tested only on
+edges (all instances, not up to isomorphism, except at $n=10$). At $n=10$ the classes $(G,F)$
+come from \texttt{encode}, \texttt{nauty-labelg} and \texttt{sort -u}. The densest quarter was
+run with a node budget, and the $140$ instances it left undecided were re-run exactly; all are
+positive (\texttt{out/n10\_m2.log}). PTM$(e@x)$ is tested only on
 the instances where PTM holds, so $K_4$ is not counted in that column. Every PTM failure with
 $m=3$ and every PTM$(e@x)$ failure in the simple rows has $G-F$ disconnected; the $m=3$ failures are the
 prism (order $6$) and one graph of order $8$. ``Multigraph'': all connected $G'$ of order $\le8$

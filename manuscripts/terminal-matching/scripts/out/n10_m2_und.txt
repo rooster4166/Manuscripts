@@ -1,0 +1,140 @@
+RUND I`GY@{~no 1-8 0-6 end=1 GFconn=1
+RUND I_Kxx}nrg 3-9 1-7 end=1 GFconn=1
+RUND I`Kxx|~nw 0-8 1-9 end=9 GFconn=1
+UND I?\zrk~nw 1-9 2-3 GFconn=1
+UND IIT|P{~Nw 1-6 2-3 GFconn=1
+RUND ISXZzw~nw 1-9 2-3 end=3 GFconn=1
+UND IBWxz~]nw 1-9 0-2 GFconn=1
+UND IJxXx{~dw 1-9 0-2 GFconn=1
+UND I@LX}^f^w 0-9 1-4 GFconn=1
+RUND I?urzw~^w 0-9 1-3 end=3 GFconn=1
+UND I?vrH{~]w 0-1 4-6 GFconn=1
+UND ICtbzw~Nw 0-1 3-5 GFconn=1
+UND IC|bh{~Vw 0-1 3-5 GFconn=1
+UND ICoxz|}\w 0-1 3-4 GFconn=1
+UND IEdhx|n]w 0-1 3-5 GFconn=1
+UND IKsyp{~\w 0-1 5-6 GFconn=1
+UND IMhHx{~Vw 0-1 3-5 GFconn=1
+UND IMpHx{~Nw 0-1 3-5 GFconn=1
+RUND IJZWx{~mw 0-1 2-6 end=6 GFconn=1
+RUND IJ\W|mnNw 0-1 2-6 end=6 GFconn=1
+UND IIVlp{~Nw 0-1 2-3 GFconn=1
+UND IIzPx{~Nw 0-1 2-3 GFconn=1
+UND IZXXxw~fw 0-1 6-7 GFconn=1
+UND IYTXx{~jw 0-1 2-3 GFconn=1
+UND I@LZzx}fo 1-9 7-8 GFconn=1
+UND IHKyyx~fo 1-9 6-7 GFconn=1
+UND IRWxy{~~o 8-9 0-1 GFconn=1
+UND I?wxy|u~w 0-1 7-8 GFconn=1
+UND Ia`Xx{~Zw 0-2 1-4 GFconn=1
+UND I@K~~~{~? 8-9 0-1 GFconn=1
+RUND I@M~~xz~? 8-9 0-1 end=8 GFconn=1
+UND I@N~vs~~? 8-9 0-1 GFconn=1
+RUND I@\v~y}nO 8-9 0-1 end=8 GFconn=1
+RUND I@\~f}}n_ 8-9 0-1 end=9 GFconn=1
+UND I@\~vyvn_ 8-9 0-1 GFconn=1
+UND I@]|~tv~? 8-9 0-1 GFconn=1
+RUND I@]~h~w~w 7-8 0-1 end=8 GFconn=1
+RUND I@]~vxvn_ 8-9 0-1 end=9 GFconn=1
+RUND I@^vvw~n_ 8-9 0-1 end=9 GFconn=1
+UND I@^~vo~lo 8-9 0-1 GFconn=1
+UND I@l|~l}}O 8-9 0-1 GFconn=1
+UND I@l~`~~~g 7-9 0-1 GFconn=1
+UND I@l~nu|^_ 8-9 0-1 GFconn=1
+RUND I@l~nw~}_ 8-9 0-1 end=8 GFconn=1
+UND IB]r~ynn_ 8-9 0-1 GFconn=1
+RUND IBl~^g~mo 8-9 0-1 end=9 GFconn=1
+RUND IDlz~K~}O 8-9 0-1 end=9 GFconn=1
+UND II]|~c~nO 8-9 0-1 GFconn=1
+RUND IImz~c~nO 8-9 0-1 end=9 GFconn=1
+UND IJm|tlnVo 8-9 0-1 GFconn=1
+RUND IL]|tlnVo 8-9 0-1 end=9 GFconn=1
+RUND IRl~Ms~No 8-9 0-1 end=8 GFconn=1
+RUND IRmzrm^Zo 8-9 0-1 end=8 GFconn=1
+RUND IRmzrmnVo 8-9 0-1 end=8 GFconn=1
+RUND ITX\z{~~? 8-9 0-1 end=9 GFconn=1
+UND IT\v]w~No 8-9 0-1 GFconn=1
+UND I@K}~z^v_ 2-9 0-1 GFconn=1
+RUND I@L]~z}fo 2-9 0-1 end=9 GFconn=1
+RUND I@L~uz^fo 2-9 0-1 end=9 GFconn=1
+UND I@MY~~}v_ 2-9 0-1 GFconn=1
+UND I@My~v^v_ 2-9 0-1 GFconn=1
+RUND I@M}r~^v_ 2-9 0-1 end=9 GFconn=1
+RUND I@NY~u~v_ 2-9 0-1 end=9 GFconn=1
+RUND I@N]r~}fo 2-9 0-1 end=9 GFconn=1
+RUND I@N]t|~v_ 2-9 0-1 end=9 GFconn=1
+RUND I@\s|~^v_ 2-9 0-1 end=9 GFconn=1
+UND I@dZ~z}fo 2-9 0-1 GFconn=1
+UND I@l~e~]Fw 2-9 0-1 GFconn=1
+RUND I@~vc|^Fw 2-9 0-1 end=9 GFconn=1
+RUND IBW{}~}fo 2-9 0-1 end=9 GFconn=1
+UND IBhY|}~v_ 2-9 0-1 GFconn=1
+RUND IB}tm\^Fw 2-9 0-1 end=9 GFconn=1
+UND IDLi}~}fo 2-9 0-1 GFconn=1
+RUND IDLm}x~fo 2-9 0-1 end=9 GFconn=1
+RUND IDYYz~}fo 2-9 0-1 end=9 GFconn=1
+RUND ID[}]l~fo 2-9 0-1 end=9 GFconn=1
+RUND ID]zu^VFw 2-9 0-1 end=9 GFconn=1
+RUND ID^nc|^Fw 2-9 0-1 end=9 GFconn=1
+RUND IDhYz}~v_ 2-9 0-1 end=9 GFconn=1
+UND IDhYz~}fo 2-9 0-1 GFconn=1
+RUND IDh[z|~v_ 2-9 0-1 end=9 GFconn=1
+RUND IDhzu~]Fw 2-9 0-1 end=9 GFconn=1
+UND IDlq}\~fo 2-9 0-1 GFconn=1
+RUND IDlrY~^fo 2-9 0-1 end=9 GFconn=1
+UND IDlr]~]Fw 2-9 0-1 GFconn=1
+UND IFK}]\~fo 2-9 0-1 GFconn=1
+RUND IFMi}\~fo 2-9 0-1 end=9 GFconn=1
+RUND IF]lm\^Fw 2-9 0-1 end=9 GFconn=1
+UND IFhhy~^fo 2-9 0-1 GFconn=1
+UND IFiiy|~fo 2-9 0-1 GFconn=1
+UND IFwx}nNFw 2-9 0-1 GFconn=1
+UND IFytY|^Fw 2-9 0-1 GFconn=1
+UND IHMY}~}fo 2-9 0-1 GFconn=1
+UND IH^S{|~fo 2-9 0-1 GFconn=1
+RUND IHeYz~}fo 2-9 0-1 end=9 GFconn=1
+RUND IJK{}^^fo 2-9 0-1 end=9 GFconn=1
+RUND ILKy}^^fo 2-9 0-1 end=9 GFconn=1
+UND ILY[y|~fo 2-9 0-1 GFconn=1
+RUND ILgyy~^fo 2-9 0-1 end=2 GFconn=1
+RUND IPMYz~^v_ 2-9 0-1 end=9 GFconn=1
+UND IP^Sy|~fo 2-9 0-1 GFconn=1
+RUND IPdY||~v_ 2-9 0-1 end=9 GFconn=1
+RUND IPeYz|~v_ 2-9 0-1 end=9 GFconn=1
+RUND IRMm}x^Fw 2-9 0-1 end=9 GFconn=1
+RUND IRW{y~^fo 2-9 0-1 end=9 GFconn=1
+RUND IRY}q}^Fw 2-9 0-1 end=9 GFconn=1
+RUND ITLiy~^fo 2-9 0-1 end=9 GFconn=1
+RUND IVKy}^NFw 2-9 0-1 end=9 GFconn=1
+RUND IVMiy~NFw 2-9 0-1 end=9 GFconn=1
+RUND IViiy|^Fw 2-9 0-1 end=9 GFconn=1
+RUND IXMY}~]Fw 2-9 0-1 end=9 GFconn=1
+UND IZNI{}^Fw 2-9 0-1 GFconn=1
+RUND I\Y[y|^Fw 2-9 0-1 end=9 GFconn=1
+RUND IDYz~q~^w 0-9 1-8 end=0 GFconn=1
+UND IC~vb|}^w 0-9 1-2 GFconn=1
+RUND IDvnrxv^w 0-9 1-2 end=1 GFconn=1
+UND IEn~Jtz^w 0-9 1-2 GFconn=1
+UND Id~RX|v^w 0-9 1-2 GFconn=1
+UND IfjZX|z^w 0-9 1-2 GFconn=1
+UND IfyrX|^^w 0-9 1-2 GFconn=1
+UND IfzRX{~^w 0-9 1-2 GFconn=1
+UND Isdzzxz^w 0-9 1-2 GFconn=1
+RUND Isszzxv^w 0-9 1-2 end=2 GFconn=1
+UND IthYz|}^w 0-9 1-2 GFconn=1
+UND IuhXz|}^w 0-9 1-2 GFconn=1
+RUND IulXz\v^w 0-9 1-2 end=1 GFconn=1
+UND IIK~~z~~w 0-1 6-7 GFconn=1
+UND I?K~^^]vW 0-1 2-3 GFconn=1
+UND IZX\|y\nw 1-9 6-8 GFconn=1
+UND IZ^c{{nnw 1-9 3-8 GFconn=1
+UND IZZ`{}^nw 1-9 3-4 GFconn=1
+UND IM\s|ynnw 1-9 2-6 GFconn=1
+UND I]Tl|w^nw 1-9 2-8 GFconn=1
+UND I]Tsx}nnw 1-9 2-4 GFconn=1
+UND I^rHx{^nw 1-9 2-8 GFconn=1
+RUND I@l~vg~~o 8-9 0-1 end=9 GFconn=1
+RUND IFzdz~{~o 8-9 0-1 end=9 GFconn=1
+RUND I`\|tl~nw 0-8 1-9 end=0 GFconn=1
+UND I?~~~~~~w 0-1 2-3 GFconn=1
+RUND IQqlY|^Nw 0-1 2-3 end=2 GFconn=1
