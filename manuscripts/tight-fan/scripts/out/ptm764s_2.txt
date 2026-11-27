@@ -1,2 +1,5 @@
 INST GCfz~s 0 6 5 7 ('NONE', {'nobase': 8})
 INST GEp|~{ 0 5 1 6 ('NONE', {'nobase': 8})
+INST GEr|~s 1 6 5 7 ('NONE', {'nobase': 8})
+INST GEzVl{ 1 7 4 6 ('NONE', {'nobase': 8})
+INST GFzfm{ 2 7 4 6 ('NONE', {'nobase': 8})

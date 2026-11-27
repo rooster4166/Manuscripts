@@ -1,0 +1,7 @@
+('d(c,g)=1', 'GL holds') 4
+('d(c,g)=1', 'GL+ FAILS') 2
+('d(c,g)=1', 'GL+ holds') 2
+('d(c,g)=2', 'GL holds') 1
+('d(c,g)=2', 'GL+ FAILS') 1
+EX ('d(c,g)=1',) [('DEk', 1, 3, 0), ('DEk', 2, 4, 0)]
+EX ('d(c,g)=2',) [('DTw', 1, 4, 3)]
