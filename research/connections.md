@@ -126,6 +126,27 @@ It does **not** reach full Gallai. OSB Cor 44 shows that the linear-deletion den
 
 ---
 
+### D.1 Status after the near-dirac session (2026-11-27)
+
+Manuscript: `manuscripts/near-dirac`.
+
+- **Proved: balanced return theorem (Thm 1.1).** Exceptional sets of linear size with arbitrary two-sided neighbourhoods and moderate degree are returned exactly, at both parities. The condition is the *balance condition*: the internal edges at exceptional vertices on each side are matched by the internal edges of the other side, up to cm and the correction ρm/2. This contains SP 14.27.
+- **Corollary 1.2.** The floor and the rooted bound hold for near-regular graphs near K_{n/2,n/2} whose degree excess balances across a bisection.
+- **Corollary 1.3.** Every failure sequence violates the balance condition on every admissible (partition, X).
+- **Counting identity (Lemma 4.1).** In any two-apex Hamilton finish, b'(B) − b'(A) = 2(e_R(A) − e_R(B)) + ρD. This is why imbalanced configurations, and unequal shores near K_{m,m+d}, need SP's one-apex removal scheme.
+
+Open:
+
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores.
+- (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
+
+Two ideas tried this session do not work:
+
+- Bounded |X| is *not* easier than |X| = o(n). Each exceptional vertex individually needs about n/4 integrated visits, and the healthy shores can be unbalanced regardless of |X|.
+- An "X-in-J with one-sided labels" scheme cannot balance more than about two two-sided vertices.
+
+---
+
 ## E. The core object: tight odd graphs
 
 **Grade: Observed.**
