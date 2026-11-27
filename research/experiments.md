@@ -558,7 +558,7 @@ Before the proof, the last reduction was checked to keep cut-feasibility on all 
 |---|---|---|---|
 | all; NP, T, C | 2/52 | 15/767 | 56/13,897 |
 | reduced; NP, T, C | 0/35 | 9/600 | 12/10,866 |
-| reduced; with path insertion of length ≤ 3 | – | 0/600 | 4/10,866 |
+| reduced; with path insertion of length ≤ 3 | 0/35 | 0/600 | 4/10,866 |
 | EMM⁺ class, reduced; NP, T, C | 0/35 | 4/589 | 14/10,847 |
 | EMM⁺ class, reduced; with path insertion of length ≤ 5 | 0/35 | 2/589 | 6/10,847 (all with p = ⌈n/2⌉) |
 
