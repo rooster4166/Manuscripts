@@ -140,8 +140,8 @@ Open:
 - (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is now **proved in §8** for the "keep X in J" route.
   - Mirror-symmetry balancing lemma (Lemma 8.1), with a robust form (Lemma 8.2).
   - Prop 8.3: the window can be met if the healthy shores differ by more than |X|, or if |X| ≤ √D/6.
-  - Open: nearly equal shores with |X| ≳ √n (Problem 8.4), and the whole scheduling half. The latter is stated as the Scheduling Hypothesis SH (§9).
-  - Thm 9.2 (proved, conditional on SH): near-regular failures must contain "intermediate" vertices (Problem 9.3) or lie in the Problem 8.4 regime.
+  - Open: nearly equal shores with |X| ≳ √n (Problem 8.5), and the whole scheduling half. The latter is stated as the Scheduling Hypothesis SH (§9).
+  - Thm 9.3 (proved, conditional on SH): near-regular failures must contain "intermediate" vertices (Problem 9.4) or lie in the Problem 8.5 regime.
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
 Two observations from this session (heuristic, not proved in the manuscript):
