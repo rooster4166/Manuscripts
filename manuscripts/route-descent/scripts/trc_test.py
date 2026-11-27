@@ -187,6 +187,9 @@ def main():
         graphs = [("G2half", families.g2(True)[0])]
     elif fam == "g2full":
         graphs = [("G2full", families.g2(False)[0])]
+    elif fam == "blocks":
+        cnt = int(os.environ.get("COUNT", "60"))
+        graphs = [(f"blocks_{i}", G) for i, G in enumerate(families.block_graphs(cnt, seed))]
     elif fam in ("kprism", "kpetersen"):
         graphs = [(fam, families.kotzig_even("prism" if fam == "kprism" else "petersen"))]
     elif fam == "gbad":
