@@ -29,7 +29,7 @@ This is the single source of truth for the proof architecture. Every node is a s
 EMM sufficiency work is **stopped**.
 
 **Sessions, re-assigned 2026-11-27 02:25.** Sessions that finished their task do not take large follow-ups from a peer session, so new tasks go to fresh sessions.
-- **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy, branch `claude/lean-thm59`, new): prove `Thm59Statement` in Lean. This makes `gallai_iff_spineTests` unconditional. The old spine session finished Thms 113/114 and did not start Thm 59.
+- **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy): **DONE** at 81dbc63. `thm59 : Thm59Statement` and `gallai_iff_spineTests'` are proved, with standard axioms (audit A14: no gap in MR).
 - **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9, branch `claude/route-descent`, new): the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
 - **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
@@ -104,8 +104,8 @@ GALLAI (every connected G: p(G) ≤ ⌈n/2⌉)
 |---|---|---|---|---|
 | N1 | Gallai ⇔ R (doubling identity p(double) = 2p(H^r) − 1) | REC §1, SP §1 | **AUDITED** (A3) | **lean** (`gallai_iff_rootedTest`) |
 | N2 | MR Thm 1 | MR §1–2 | **AUDITED** (A1); wording gaps G1–G4 | **lean** (`gallai_iff_tests`: Gallai ⇔ MarkedTwoConnTest ∧ ThreeEndsTest; MarkedSurgery/MarkedBlocks.lean). The bridge formula is not formalized and is not needed |
-| N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording) | comp (bridge/diamond doubles: 210) |
-| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean**: Thm 113 proved (`separatorStatement`); Thm 114 proved modulo Thm 59 (`gallai_iff_spineTests`, hypothesis `Thm59Statement`); comp (n ≤ 8) |
+| N3 | MR Thms 7, 57, 59 | MR | **AUDITED** (A1); gaps G6–G9 (wording); A14: no gap | **lean**: `thm59 : Thm59Statement` (Thm59*.lean, 1,933 lines); comp (bridge/diamond doubles: 210) |
+| N4 | MR Thms 113, 114 | MR §18–19 | **AUDITED** (A2): no errors | **lean**: Thm 113 proved (`separatorStatement`); **Thm 114 proved unconditionally** (`gallai_iff_spineTests'`); comp (n ≤ 8) |
 | T(4) | both tests at d = 4 | MR p.129 | **AUDITED** (A8); Botler–Sambinelli Thm 13 suffices | comp (exhaustive \|J\| ≤ 9) |
 | T(6)-ii | three-end test, d = 6 | MR Thm 123 | **AUDITED** (A8) | comp (exhaustive \|J\| ≤ 10) |
 | T(8)-ii | three-end test, d = 8 | MR Thm 128 (computer: Thm 124) | **AUDITED** (A8): **Thm 124 certificate independently replayed**. Conditional on Fan–Hou–Zhou (two seven-site shapes) and Chu–Fan–Zhou Lemma 2.1 (star lemma, unquoted) | comp |
@@ -386,3 +386,10 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Audit A13: cut selection (endpoint-min-max Thm 21) SOUND**, as is the hardness section. **New conjecture TRC**: every transversal of a Thm-21 pairing is realisable. TRC implies Gallai and holds on all known EMM counterexamples (synthesis §15). Next step: try to refute it.
 - **Cut selection in Lean: `cs_all`** (CutSelection.lean and PairingLemma.lean, 1,237 lines; standard axioms; definitions checked). For every connected even-order G there is a pairing of Ev all of whose transversals satisfy the cut inequality: `CutOK` is exactly b(W) + d(v) + b(v) ≤ |δ(W)| + 2p. The proof goes through the auxiliary graph B and is machine-checked independently of audit A13.
 - **endpoint-min-max synced** (emc-four). Merged emm3-gadgets §6, which already fixes A13's ERROR (Remark 28 and open problem 1: EMM₃ is false, see §6). Added: the auxiliary-graph proof as the main proof of Thm 21, with the linked-transitions proof kept second; §4.4 with Conjecture TRC (constructible pairings; TRC ⇒ Gallai; Thm 21 is its necessary half); TRC as the main open problem; and Lean `cs_all` in Formalisation. 26 pp.
+- **The spine is fully machine-checked (2026-11-27, 03:10).** `Gallai.gallai_iff_spineTests' : (GallaiConjecture ↔ SpineTests) ∧ (GallaiConjecture ↔ SpineTestsNMC)`, with no hypothesis and standard axioms; I verified it with `#print axioms` after the merge and a full build of 18,364 jobs.
+  - **What it says.** Gallai's conjecture is equivalent to two rooted tests on **3-connected** graphs J at a vertex z with J − z free of matching cuts:
+    - (Test1) if z is the only even vertex, every neighbour r of z is the end of ≥ 2 paths in some decomposition into ≤ (n−1)/2 paths;
+    - (Test2) if z and its neighbour r are the only even vertices, r is the end of ≥ 3 paths in some decomposition into ≤ n/2 paths.
+  - **Proof route.** Lovász's theorem, then MR Thm 113 (separators), then MR Thm 59 (blocks without matching cuts; cones; Lemma 6 by PMP surgery; private leaves; one Hall-defect lemma for §2.1), then MR Thm 114.
+  - **Files.** Thm59Transfer, Thm59Hall, Thm59ClassC, Thm59Lemma6, Thm59Leaves, Thm59MatchingCut, Thm59; 1,933 lines.
+  - **Audit.** A14 found no gap in MR and lists the formal deviations.
