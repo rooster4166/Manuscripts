@@ -62,5 +62,6 @@ import GallaiLean.RouteSystem
 import GallaiLean.MultiSep
 import GallaiLean.MultiSepEE
 import GallaiLean.PrescribedEnd
+import GallaiLean.PrescribedEndOutside
 import GallaiLean.NearDirac
 import GallaiLean.StarTerminal
