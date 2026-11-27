@@ -65,3 +65,4 @@ import GallaiLean.PrescribedEnd
 import GallaiLean.PrescribedEndOutside
 import GallaiLean.NearDirac
 import GallaiLean.StarTerminal
+import GallaiLean.TerminalMatching
