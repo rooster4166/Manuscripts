@@ -1,0 +1,2 @@
+B-root 0 w 1 pairs [(2, 3), (4, 5)] Lovasz ok, disjunctions True lift+Test1 True
+B-root 3 w 0 pairs [(1, 2), (4, 5)] Lovasz ok, disjunctions True lift+Test1 True
