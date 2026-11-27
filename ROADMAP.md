@@ -196,6 +196,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhzpjnfPb4S9qT66Vk | `claude/bs-prescribed` | **remove Shaik**: Botler–Sambinelli Thm 13 with a prescribed end, then the corrected MR Cor 106 one-exception case (connections §L) |
 | session_01FxXpViByhUwk1GmmqirzRR | `claude/lean-d6-frontier` | Lean for d6-frontier: relay/carry, root hub, full hub, and the all-d versions (Thm 6.1) |
 | session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
+| session_01FxXpViBXRQG6c4V7bSYHsM | `claude/emm3-gadgets` | **forcing gadgets**: δ ≥ 3 blocks that simulate degree-2 behaviour (pass-through or double end). They either refute EMM₃ by gluing a below-budget core, or show by a structural lemma that no such gadget exists |
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
