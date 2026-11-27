@@ -37,7 +37,9 @@ Under the balance condition we realise every bounded endpoint profile of the rig
 \item an exact Gallai theorem, with the floor at both parities and the rooted private-leaf bound at even order, for near-regular graphs near $K_{n/2,n/2}$ whose degree excess is balanced across a bisection (Corollary~\ref{cor:class});
 \item a structural restriction on any counterexample sequence to the full ``Target~D'' (Corollary~\ref{cor:failures}).
 \end{itemize}
-An exact counting identity (Lemma~\ref{lem:identity}), whose bipartite case is SP's counting obstruction at unequal shores (SP \S14.18), explains why some balance condition of this kind is needed by the Hamilton-decomposition finish of SP~14.27. It also isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$. Two finite lemmas used in the proof are formalised in Lean.
+An exact counting identity (Lemma~\ref{lem:identity}), whose bipartite case is SP's counting obstruction at unequal shores (SP \S14.18), explains why some balance condition of this kind is needed by the Hamilton-decomposition finish of SP~14.27. It also isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$.
+
+For the one-apex route we prove the counting half: a balancing lemma, based on a mirror symmetry between the two choices of bin shore (Lemmas~\ref{lem:bal-exact} and~\ref{lem:bal-robust}, Proposition~\ref{prop:bal-app}). We then reduce the near-regular case of Target~D, conditionally on one explicitly stated scheduling hypothesis, to two named open configurations (Theorem~\ref{thm:conditional}). Two finite lemmas used in the proof are formalised in Lean.
 \end{abstract}
 
 \tableofcontents
@@ -124,8 +126,17 @@ Theorem~\ref{thm:main} leaves two kinds of configuration that a failure sequence
 
 Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
 
+\subsection{The one-apex route: what \S\S\ref{sec:balance}--\ref{sec:conditional} add}
+These sections work on (R1) with every exceptional vertex kept in the Hamilton graph and a single apex.
+\begin{itemize}[nosep]
+\item \textbf{Counting (proved).} Lemma~\ref{lem:bal-exact} is an exact balancing lemma; its proof rests on a mirror symmetry $(S,\Gamma)\mapsto(-S,-\Gamma)$ between the two choices of bin shore. Lemma~\ref{lem:bal-robust} is its robust form. Proposition~\ref{prop:bal-app} uses them to meet the one-apex counting window exactly, either when the healthy shores differ in size by more than $|X|$, or when $|X|\le\sqrt D/6$.
+\item \textbf{Open counting case.} Problem~\ref{prob:counting} covers nearly equal healthy shores with $|X|>\sqrt D/6$. There the error term, of order $|X|^2$, can exceed the tolerance.
+\item \textbf{Scheduling (not proved).} The scheduling half is isolated as the Scheduling Hypothesis~SH (Definition~\ref{def:SH}). With $X=\emptyset$ it lies in the regime of the last sentence of SP's proof of 14.37.
+\item \textbf{Conditional reduction (proved).} Theorem~\ref{thm:conditional}: assuming SH, a failure sequence with $\Delta\le(1/2+o(1))n$ must, at all large orders, contain intermediate vertices (Problem~\ref{prob:intermediate}) or lie in the regime of Problem~\ref{prob:counting}. Failures with larger maximum degree fall under Problem~\ref{prob:high}.
+\end{itemize}
+
 \subsection{Organisation}
-\S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:lean} describes the Lean formalisation.
+\S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:balance} proves the balancing step of the one-apex route, and \S\ref{sec:conditional} states the scheduling hypothesis and the conditional reduction. \S\ref{sec:lean} describes the Lean formalisation.
 
 \section{Cited results and the hypotheses used}\label{sec:cited}
 
