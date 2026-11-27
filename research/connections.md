@@ -1599,10 +1599,10 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 
 ### AD.3 Data (E28)
 - **Exhaustive at order 9** (28 dense J, exact search): all 168 roots certified. STL-P holds for all 14,144 labellings; 14,128 have an (E7)-base, 8 an (E6)-base only, and 8 (C4) none.
-- **Random** (sparse `gen_core`; residual-style `gen_resid.py`, which imposes a subset of the residual conditions): every root certified except 34 roots in 6 graphs where every search hit the budget.
+- **Random** (sparse `gen_core`; residual-style `gen_resid.py`, which imposes a subset of the residual conditions): every root certified except 46 roots in 8 graphs where every search hit the budget.
   - In each of those graphs all or most roots are uncertified, which points at the search.
   - Every executed construction from a base satisfying the theorem hypotheses verifies edge by edge in J.
-- (E7) almost always suffices; (E6) was needed for 12 of 506 certified residual roots.
+- (E7) almost always suffices; (E6) was needed for 12 of 536 certified residual roots.
 - The six-separation base of TM Thm 8.2 was never found in residual C4 graphs within the budget (all 320 searches undecided). It exists for 95% of configurations on sparse ones.
 
 ### AD.4 What remains, and for whom
@@ -1617,6 +1617,6 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **For l1-induction (§AC).** (E7) is the T(6)-i face of L1E (a good D whose relevant chain is trivial): the protected step becomes an append exactly when the path ending at x1 avoids y2. An induction for L1-type end-path constraints with several constrained vertices would attack Conj 5.1 directly.
 - **For the coordinator (corrections to synthesis §22/§23).**
   - "Reduces to ONE base conjecture" stands, but that conjecture is STL-P with two extra terminal edges (Prop 2.6). It is a strengthening of the known sufficient condition, not a weaker target.
-  - "It holds on every root tested" is not quite right: 34 residual roots in 6 graphs are budget-undecided.
+  - "It holds on every root tested" is not quite right: 46 residual roots in 8 graphs are budget-undecided (every search hit the budget; none proved a base absent).
   - Conj 5.1 ⇒ T(6)-i uses MR Thm 144 (isolated roots) together with RS.
   - The C4 shape is **not** closed; neither are K2, P3, K3, ∅.

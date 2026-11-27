@@ -1423,7 +1423,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | residual K2, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 42 (40 E7, 2 E6) | 0 |
 | residual ∅, \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (45 E7, 3 E6) | 0 |
 | residual C4 (TW = 1), \|O\| = 10 | lean, ≤ 60 labellings | 8 | 48 | 48 (all E7) | 0 |
-| residual K2, \|O\| = 8 | lean (uncapped, stopped after 1 graph) | 1 | 6 | 0 (all 240 labellings undecided) | 0 |
+| residual K2, \|O\| = 8 | lean, ≤ 60 labellings | 8 | 48 | 30 (all E7) | 0 |
 
 - Uncertified roots: every search of every tried labelling hit the node budget (or the 60-labelling cap was reached); no search returned NONE for them. Each such graph has all or most of its roots uncertified, which points at the search, not at the graph:
   - endZ P3, \|O\| = 8: `MV~~Nv{f~|q|~\lj_`, 6 roots;
@@ -1431,8 +1431,11 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - lean ∅, \|O\| = 8: `M~~zwFn~}~hi~z~z?`, all 6 roots;
   - lean K3, \|O\| = 10: `OF~~~U|^ay^v^hvayjnzw`, all 6 roots;
   - lean K2, \|O\| = 10: `O^~zn~{|nt}]vxXR}{FsL`, all 6 roots;
-  - lean K2, \|O\| = 8: `M^~~Zxv^N~RJZujl_`, all 6 roots (uncapped: all 240 labellings undecided). A capped rerun of this cell (`dense.py lean 2 2000000 60`) is in progress.
-  - Reruns of `OV~~N}}…` and `M~~zwF…` with budget 10⁷ and 3 seeds: `out/hard2.log` (in progress).
+  - lean K2, \|O\| = 8: `M^~~Zxv^N~RJZujl_`, `M^~|x|vvhrnMnLy~_`, `M^~yn|{~mv^zJ\F]?`, all 6 roots each (the first also uncapped: all 240 labellings undecided).
+  - Total: 46 roots in 8 graphs.
+  - **Recheck with a count of proved absences** (`dense.py` now prints `none=` when a search returns NONE). For the five graphs found last (`out/hard3`–`hard5`), every one of the 4 searches per labelling was undecided (und = 4 · labs_tried), and none = 0.
+  - **The search, not the base.** On `M^~~Zxv^N~RJZujl_`, STL-P for the labelled pairing (weaker than the base) is undecided for 20/20 labellings at the same budget 2·10⁶ (scratch check with `equiv.jsharp_query`). Dense residual graphs of this size are at the limit of `lsearch`.
+  - Reruns of `OV~~N}}…` and `M~~zwF…` with budget 10⁷ and 3 seeds: `out/hard2.log`.
 - "failures" counts bases whose executed construction did not verify. In the six-separation and `end` modes the protected step fails for 216/1,050 and 288/1,280 bases (A); those modes are not theorem hypotheses. No base satisfying (E1)–(E5) with (E6) or (E7), in any mode, failed to verify.
 
 **(B′) Exhaustive, order 9** (`relabel.py` on `terminal-matching/scripts/out/d6_9.g6`; exact search, no budget).
@@ -1467,7 +1470,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 
 **Verdict** (revised after audit A26).
 - The (E7) form of the base is **equivalent** to STL-P with two further prescribed terminal edges (Prop 2.6). So Conj 5.1 is a uniform *strengthening* of STL-P, not a reduction to a weaker statement. It is strictly stronger on single labellings ((B′): 8 labellings with STL-P and no base).
-- In the computed instances, for all five dense shapes, every root has a labelling with an append base, except 34 roots in 6 graphs that are budget-undecided. No search proved a base absent for a needed labelling, so the data show no counterexample to Conj 5.1.
+- In the computed instances, for all five dense shapes, every root has a labelling with an append base, except 46 roots in 8 graphs that are budget-undecided. No search proved a base absent for a needed labelling, so the data show no counterexample to Conj 5.1.
 - By the Lean theorems this gives STL at y1, y2, y3, and Test1 on every fully certified instance.
 - The six-separation base of TM Thm 8.2 is the wrong hypothesis in the dense regime. It is impossible for D ≠ C4 (TM §9(1)), and in residual-style C4 graphs it was never found within the budget.
 

@@ -58,7 +58,7 @@ terminal at $y_3$. So the base conjecture~\ref{conj:base} is a \emph{strengtheni
 by two prescribed terminal edges, relaxed at $y_2$ by the protected step. It is a uniform
 re-encoding of the dense residual, not a reduction to a weaker statement.
 
-In the computed instances a base exists for every root except $34$ roots in six graphs, where
+In the computed instances a base exists for every root except $46$ roots in eight graphs, where
 the search hit its budget. This holds for all five shapes, including random $3$-connected graphs
 carrying a subset of the residual conditions of a smallest failure: minimum degree six,
 odd-neighbour counts, contact sizes, closed twins for $C_4$ and a full exterior vertex for
@@ -157,7 +157,7 @@ $x_1\to y_2$, transported back to the base decomposition through the three appen
 $r\in U$ admits a labelling with $r\in\{y_1,y_2,y_3\}$ and a base.
 \lean{test1\_of\_appendBases}
 \item \textbf{Data} (E28). For all five shapes, in the computed instances, every root has a
-labelling with a base, except $34$ roots in six graphs where every search hit the node budget
+labelling with a base, except $46$ roots in eight graphs where every search hit the node budget
 (Section~\ref{sec:comp}). The instances include $3$-connected graphs carrying a subset of the
 residual conditions above. In those graphs the six-separation base of \cite[Thm~8.2]{TM} was
 never found within the search budget.
@@ -773,7 +773,7 @@ residual $C_4$ (twins), $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $K_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $P_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 residual $\emptyset$, $|O|=8$ & lean${}^*$ & 8 & 48 & 42 & 0\\
-residual $K_2$, $|O|=8$ & lean${}^{\dagger}$ & 1 & 6 & 0 & 0\\
+residual $K_2$, $|O|=8$ & lean${}^*$ & 8 & 48 & 30 & 0\\
 residual $C_4$ (twins), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
 residual $K_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 42 & 0\\
 residual $P_3$, $|O|=10$ & lean${}^*$ & 8 & 48 & 44 & 0\\
@@ -786,16 +786,17 @@ residual $C_4$ (one twin pair), $|O|=10$ & lean${}^*$ & 8 & 48 & 48 & 0\\
 hypotheses of a theorem here. Their failures are protected steps that hit a blank, which is the
 obstruction of \cite[\S9(1)]{TM}. No base satisfying (E1)--(E5) with (E6) or (E7), in any mode,
 failed to verify. In mode \texttt{lean} almost every certificate uses (E7), so that all seven
-steps are appends. (E6) was needed for $12$ of the $506$ certified roots in mode \texttt{lean}.
+steps are appends. (E6) was needed for $12$ of the $536$ certified roots in mode \texttt{lean}.
 
-\emph{Uncertified roots.} They lie in six graphs, $34$ roots in all: $6$ in the
-\texttt{endZ} $P_3$ row; $4$, $6$, $6$ and $6$ in the \texttt{lean} rows $P_3$, $K_3$, $K_2$
-($|O|=10$) and $\emptyset$ ($|O|=8$); and $6$ in the first $K_2$ graph with $|O|=8$, where all
-$240$ labellings were tried without a cap. In each such graph all or most roots are uncertified,
-which points at the search rather than at the graph. In each of these graphs every search of every tried labelling
-hit the node budget, or the labelling cap was reached. No search proved that a base is absent, so
-they are undecided, not counterexamples. (${}^\dagger$: the uncapped run was stopped after one graph; a run with the cap of $60$
-labellings is in progress, see E28.)
+\emph{Uncertified roots.} They lie in eight graphs, $46$ roots in all: $6$ in the
+\texttt{endZ} $P_3$ row; $4$, $6$ and $6$ in the \texttt{lean} rows $P_3$, $K_3$ and $K_2$ with
+$|O|=10$; $6$ in the $\emptyset$ row and $18$ (three graphs) in the $K_2$ row with $|O|=8$. In
+each of these graphs every search of every tried labelling hit the node budget. For the five
+graphs found last this was rechecked with a count of proved absences, and it is zero. In each
+such graph all or most roots are uncertified, which points at the search rather than at the
+graph. On the first of the hard $K_2$ graphs, the weaker statement STL-P for the labelled pairing
+is also undecided at the same budget for $20$ of $20$ labellings. So these roots are undecided,
+not counterexamples.
 
 For comparison, the six-separation base of \cite[Thm~8.2]{TM}, with the same chains, was tried on
 five residual $C_4$ graphs ($|O|=8$; all $160$ labellings with a root on the cycle; two seeds;
