@@ -1,0 +1,2 @@
+SUMMARY Rec-certified (G,c,A) with c notin A, any A: 22133; not good by a25 oracle: 0
+SUMMARY Rec-certified (G,c,A) with c notin A, any A: 22133; not good by a25 oracle: 0

@@ -1,0 +1,82 @@
+=== Proposition 4.7: FEhv?
+edges: 03 04 06 13 15 16 24 25 26 35 
+even set {4}, degrees: 3 3 3 3 2 3 3
+A={3,5} admissible=1 blocked=1 c notin N(g)=1 good(G)=1
+  target 0 tight=1  (G-gx,c,A) good=1  (c)-child (G-xc-gx,x,A+c) good=0  N_K(x)={3}
+  target 2 tight=1  (G-gx,c,A) good=1  (c)-child (G-xc-gx,x,A+c) good=0  N_K(x)={5}
+  instance-level children: g:1 g:1 g:1 g:1 g:1 g:1 c:0 c:0 e:1 h:1 h:1
+A={3,4,5} admissible=1 blocked=1 c notin N(g)=1 good(G)=1
+  target 0 tight=1  (G-gx,c,A) good=1  (c)-child (G-xc-gx,x,A+c) good=0  N_K(x)={3}
+  target 2 tight=1  (G-gx,c,A) good=1  (c)-child (G-xc-gx,x,A+c) good=0  N_K(x)={5}
+  instance-level children: g:1 g:1 g:1 g:1 g:1 g:1 c:0 c:0 e:1 e:1
+D'={61,260315,3524} valid for G-40: 1, Q_6={1,6}
+  chain: 4  image {61, 260315, 04253} valid=1 Q_6={1,6}
+D''={61,2513,426035} valid: 1
+  chain: 4 6  image {061, 2513, 624035} valid=1 Q_6=624035
+  A={3,5} target 0: good D'=12, chain avoids c 9 (transfer ok 9), chain through c 3 (ok 0)
+  A={3,5} target 2: good D'=12, chain avoids c 9 (transfer ok 9), chain through c 3 (ok 0)
+  A={3,4,5} target 0: good D'=8, chain avoids c 5 (transfer ok 5), chain through c 3 (ok 0)
+  A={3,4,5} target 2: good D'=8, chain avoids c 5 (transfer ok 5), chain through c 3 (ok 0)
+
+=== Example 4.3: FCZ~o
+edges: 03 05 06 14 15 16 24 25 26 35 36 45 46 
+even set {4}
+x in N(g) cap N(c): 1, c notin N(g): 1, A cap N(c)={3}
+(G-46,0,A) good=1  (G,0,A) good=0
+D' valid=1 chain: 4 1 0 image valid=1 Q_0=0354162
+all good D' of G-46: 8; chain avoids c in 0; chain through c in 8 (good image 0)
+
+=== Section 5 dead end: DEk
+edges: 03 04 13 24 34 
+even set {0}
+(G,1,A): admissible=1 c-admissible=1 blocked=0 good=1
+  Case I child G-03 (target 3, tight=1): good=1 admissible=1
+  Case I child G-04 (target 4, tight=0): good=1 admissible=0
+  {13, 0342} valid for G-04: 1
+  G-04: even set {4}, N(4)={2,3}
+  (G-04-43,1,A) good=0   (G-04-42,1,A) good=1 (target 2 in A)
+  all instance-level children of (G-04,1,A): c:0 e:1 h:0
+
+=== Example 5.1: the stuck instances (out/stuck0_9.txt)
+H?ABfbw c=8 g=7 A={5,6,7} adm=1 blocked=1 good=1 mechanism=1 edges: 05 07 08 16 17 18 26 27 28 36 37 38 48 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=0: good D'=324, chain avoids c 246 (75.9%, transfer ok 246), through c 78 (ok 0)
+  u=1: good D'=284, chain avoids c 260 (91.5%, transfer ok 260), through c 24 (ok 0)
+  u=2: good D'=284, chain avoids c 260 (91.5%, transfer ok 260), through c 24 (ok 0)
+  u=3: good D'=284, chain avoids c 260 (91.5%, transfer ok 260), through c 24 (ok 0)
+H?ABvrw c=7 g=6 A={5,6,8} adm=1 blocked=1 good=1 mechanism=1 edges: 05 07 08 16 17 18 26 27 28 36 37 38 46 47 48 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=1: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=2: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=3: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=4: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+H?ABvrw c=8 g=6 A={5,6,7} adm=1 blocked=1 good=1 mechanism=1 edges: 05 07 08 16 17 18 26 27 28 36 37 38 46 47 48 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=1: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=2: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=3: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+  u=4: good D'=732, chain avoids c 612 (83.6%, transfer ok 612), through c 120 (ok 0)
+H?B@nbw c=8 g=7 A={5,6,7} adm=1 blocked=1 good=1 mechanism=1 edges: 05 07 08 15 17 18 26 27 28 36 37 38 48 56 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=0: good D'=586, chain avoids c 502 (85.7%, transfer ok 502), through c 84 (ok 0)
+  u=1: good D'=586, chain avoids c 502 (85.7%, transfer ok 502), through c 84 (ok 0)
+  u=2: good D'=586, chain avoids c 502 (85.7%, transfer ok 502), through c 84 (ok 0)
+  u=3: good D'=586, chain avoids c 502 (85.7%, transfer ok 502), through c 84 (ok 0)
+H?BDvp{ c=7 g=6 A={5,6,8} adm=1 blocked=1 good=1 mechanism=1 edges: 05 06 07 15 17 18 26 27 28 36 37 38 46 47 48 58 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=0: good D'=1284, chain avoids c 1020 (79.4%, transfer ok 1020), through c 264 (ok 0)
+  u=2: good D'=1256, chain avoids c 1048 (83.4%, transfer ok 1048), through c 208 (ok 0)
+  u=3: good D'=1256, chain avoids c 1048 (83.4%, transfer ok 1048), through c 208 (ok 0)
+  u=4: good D'=1256, chain avoids c 1048 (83.4%, transfer ok 1048), through c 208 (ok 0)
+H?Bcrrw c=8 g=7 A={5,6,7} adm=1 blocked=1 good=1 mechanism=1 edges: 05 06 08 15 17 18 25 27 28 36 37 38 46 47 48 
+  children: c:0 c:0 c:0 c:0  -> stuck
+  Q_c = cx possible for x in {0 1 2 3 4 }
+  u=1: good D'=776, chain avoids c 634 (81.7%, transfer ok 634), through c 142 (ok 0)
+  u=2: good D'=776, chain avoids c 634 (81.7%, transfer ok 634), through c 142 (ok 0)
+  u=3: good D'=776, chain avoids c 634 (81.7%, transfer ok 634), through c 142 (ok 0)
+  u=4: good D'=776, chain avoids c 634 (81.7%, transfer ok 634), through c 142 (ok 0)
