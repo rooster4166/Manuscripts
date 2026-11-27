@@ -61,6 +61,14 @@ EMM sufficiency work is **stopped**.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
 - **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`): the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21). Connections §AB, E26, `manuscripts/tight-fan`, Lean `TightFan.lean`.
+  - **Finished** (de71567).
+  - **Lean, verified:** refined Fan with protected blanks, `fanPred_unique`, `l1_tight_transfer`, `lInfty_of_l1Blocked`, the flower negatives, and `walk_step_protected` (a protected walk-back step; unaudited), which is the tool for the T(6)-i dense residual.
+  - **Findings:**
+    - flowers can never be the last move;
+    - the tight-transfer converse is false at order 9;
+    - the mechanism-(B) "some target" form holds in all 267,664 admissible order-9 instances;
+    - the PTM K4/W4 base is untouched.
+  - **Audit A24:** proofs sound, Lean faithful; its fixes are applied.
   - **Verdict:** not literally one configuration. The transfer-side residual is *Fan at equality with one protected vertex p* adjacent to the Fan target. On decompositions with b ≤ 1 the chain is forced (`fanPred_unique`), and **the transfer can fail only if the forced chain passes through p**. The converse holds for L∞ and PTM but not for L1* (`H??FFf}`, A24 F2). This mechanism covers the L∞ residual (p = far end of the leaf path), the minimal blocked L1* shape (p = c), and the PTM no-walk instances (p = short end).
     - L1* blocked also has a hypothesis-side part: (G − gu, c, A) is good but inadmissible.
     - The K4/W4 base failures are base-side.
