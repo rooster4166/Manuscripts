@@ -215,7 +215,7 @@ static int solve(void) {
 }
 
 /* ===================== walk.c driver ===================== */
-static unsigned long long sep_budget; static long long n_sep_und;   /* walk3p: node budget per base search */
+static unsigned long long sep_budget; static long long n_sep_und; static long long adj_pruned;   /* walk3p: node budget per base search */
 static u128 fullmask(void) { return m == 128 ? ~(u128)0 : (((u128)1 << m) - 1); }
 static int GA[MAXN][MAXN], gn;
 /* Lovasz decomposition of graph A (order N, profile = degree parity) with separated pairs */
@@ -271,6 +271,8 @@ static int try_base(void) {
   for (int v = 0; v <= gn; v++) { int d = 0; for (int w = 0; w <= gn; w++) d += MA[v][w];
     if (d > 0 && d % 2 == 0 && v != X[2]) { parity_bad++; return 0; } }
   int pu[6] = {X[0], X[1], X[2], l1, l1, Y[1]}, pv[6] = {l1, Y[1], Y[2], Y[1], Y[2], Y[2]};
+  /* a separated pair adjacent in M can never be separated (its edge lies on some path) */
+  for (int i = 0; i < 6; i++) if (MA[pu[i]][pv[i]]) { adj_pruned++; return 0; }
   tried++;
   return sepq(gn + 1, MA, 6, pu, pv);
 }
@@ -361,6 +363,6 @@ int main(int argc, char **argv) {
     if (found) okc++; else printf("NOBASE %s %d %d %d %d %d %d anypath=%d\n", g6, fa_[0], fb_[0], fa_[1], fb_[1], fa_[2], fb_[2], anypath);
     fflush(stdout);
   }
-  printf("SUMMARY inst=%lld base_ok=%lld nopath=%lld tried=%lld parity_bad=%lld sep_und=%lld\n", inst, okc, nopath, tried, parity_bad, n_sep_und);
+  printf("SUMMARY inst=%lld base_ok=%lld nopath=%lld tried=%lld parity_bad=%lld sep_und=%lld adj_pruned=%lld\n", inst, okc, nopath, tried, parity_bad, n_sep_und, adj_pruned);
   return 0;
 }

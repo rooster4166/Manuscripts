@@ -934,14 +934,31 @@ $D=\emptyset$, at least $2$ for $K_2,P_3,K_3$, exactly $1$ for the two matchings
 
 A parallel pair is harmless in the role of the leafed edge $x_1y_1$. Then $x_1$ loses its end
 only at the last step of the last walk, and the edge $x_1y_1$ of $J-z$ simply stays in $M$; the
-leaves are merged through $z$ rather than into the $x_i$, which avoids the multigraph. In the
-roles $x_2y_2$, $x_3y_3$ the edge $x_iy_i$ of $J-z$ makes the endless vertex $x_i$ a blank
-neighbour of the first Fan target $y_i$ of a walk, so Lemma~\ref{lem:walkback} fails at its first
-step. That is the configuration of the protected-blank form of Fan's lemma
-(\texttt{fan\_single\_protected\_supp}). So $D=C_4$ is within reach of this J-form of
-Theorem~\ref{thm:chain}, while $D\in\{K_2,P_3,K_3\}$ needs one protected step and $D=\emptyset$
-needs two. On random $3$-connected $J$ with $B[N(z)]=K_6-C_4$ (\texttt{gen\_core.py},
-\texttt{walk3p.c}) the base search is far harder than in the sparse case, and data are pending. A sparse form along the lines of
+leaves are merged through $z$ rather than into the $x_i$, which avoids the multigraph.
+
+The other roles are blocked by the base hypothesis itself. Every edge of $M$ lies on a path of
+any decomposition, so two vertices that must be separated cannot be adjacent in $M$. The walks
+cannot use the edges $x_2y_2$, $x_3y_3$, $y_2y_3$: we have $y_2\notin V(P_2)$, $x_2,x_3\notin V(P_1)$,
+$x_3\notin V(P_2)$ and $y_3\notin V(P_1)$. So the separations $\{x_2,y_2\}$, $\{x_3,y_3\}$,
+$\{y_2,y_3\}$ force the path $x_2\,y_2\,y_3\,x_3$ to lie in $D$. Among the residual shapes only
+$C_4$ contains such a path. So $D\in\{\emptyset,K_2,P_3,K_3\}$ is out of reach of
+Theorem~\ref{thm:chain} as stated, however the Fan steps are refined. The proof uses
+$y_2\notin V(P_2)$ (Step~3), but audit A22c found no counterexample to the theorem without that
+condition. A version without it would let $P_2$ end with the edge $y_2x_2$ or begin with $y_3y_2$,
+which removes two of these obstructions.
+
+For $D=C_4$, the path $x_2y_2y_3x_3$ runs along the cycle and the parallel pair is $x_1y_1$. Then
+$y_2x_3$ is a diagonal, an edge of $J-z$, so condition~(ii) $y_2\notin N(x_3)$ fails: at the first
+step of the second walk, the endless vertex $x_3$ is a blank neighbour of the target $y_2$. This is
+the configuration of the protected-blank form of Fan's lemma (\texttt{fan\_single\_protected\_supp},
+\texttt{walk\_step\_protected}), with $u=y_2$ and $p=x_3$. Indeed \texttt{walk3p.c} finds no
+configuration satisfying Definition~\ref{def:chain} together with the necessary non-adjacencies
+on $20$ random $3$-connected $J$ with $B[N(z)]=K_6-C_4$ (\texttt{gen\_core.py}).
+
+So the composition route at the open part of T(6)-i needs two things. For $C_4$ it needs one
+protected step. For the other shapes it needs a finer tracking than vertex sets: what must avoid
+$x_i$ is only the path \emph{ending} at $y_i$, not every path through $y_i$. Alternatively, a chain
+design whose walks use the edges $x_iy_i$ and $y_2y_3$ of $J-z$ would do. A sparse form along the lines of
 Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
 girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
 new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain}, Proposition~\ref{prop:far} and

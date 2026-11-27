@@ -1354,8 +1354,11 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
      - **Residual (sent to the coordinator):** D = K6 − B[U] ∈ {∅, K2, P3, K3, C4}, with 66 rooted patterns, plus the degree, incidence and hub conditions of research/notes/reader-six-even-program.md. The core is finite, but the exterior is unbounded (4EX Prop 16), so the residual is not finite; |B| ≥ 12 for a failure.
      - **ν(D) ≤ 2, so no pairing of U is simple.** At least 3 − ν(D) pairs are adjacent in B: 3 for ∅, ≥ 2 for K2/P3/K3, exactly 1 for the C4-matchings.
      - **Role analysis.** A parallel pair is harmless as e1: x1 loses its end only at the very last walk step, its B-edge stays in M, and the merge goes through z (J-form). As e2 or e3, its B-edge makes x_i a blank neighbour of y_i = the first Fan target, which is the shape of `fan_single_protected_supp`.
-     - So C4 is reachable by the J-form of Thm 8.2; K2/P3/K3 need one protected step; ∅ needs two.
-     - Test: `gen_core.py` and `walk3p.c` (parallel e1 allowed). The base search is far harder here: with a 2·10⁶-node budget, 769 of the 1,324 order-15 C4 searches are cut off and none succeeds. A 50·10⁶-node run on 20 graphs is pending.
+     - **Correction: the base hypothesis itself blocks e2/e3 parallel.** Every edge of M lies on some path, so separated pairs must be non-adjacent in M, and the walks cannot use x2y2, x3y3 or y2y3. So D ⊇ the path x2 y2 y3 x3.
+       - Only C4 contains such a path, so K2/P3/K3/∅ are out of reach of Thm 8.2 *as stated*. The obstruction uses y2 ∉ V(P2). The proof needs it (Step 3), but A22c found no counterexample without it. A proof without it would let P2 end with y2x2 or begin with y3y2, which removes two obstructions. That is a concrete lemma to try.
+       - C4 (path along the cycle, parallel e1) violates condition (ii) y2 ∉ N(x3), since y2x3 is a diagonal. It therefore needs exactly one protected step: blank x3 at the target y2, at the start of P1 (`walk_step_protected`).
+     - Test: `walk3p.c` now prunes configurations with an adjacent separated pair. On 20 random C4 graphs (order 15), no configuration satisfies Def 8.1 plus the necessary non-adjacencies: 246 pruned, 0 tried.
+     - **Needed:** for C4, the chained walk with one protected step (to be tested by executing the walk-backs). For the rest, end-path tracking (only the path ending at y_i must avoid x_i), or chains that use the edges x_iy_i and y2y3 of B.
    - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
