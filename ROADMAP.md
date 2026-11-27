@@ -94,6 +94,7 @@ EMM sufficiency work is **stopped**.
   - **Paper (`manuscripts/l1star`):** five more reductions narrow down a smallest counterexample.
   - **Audit A23:** applied.
   - **Open:** the blocked case. It is the same tight Fan configuration as route-descent's L∞ residual (§V.4c). In the original statement L1* (|A| ≤ 2) is still open, so EE is still open.
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
 - **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`, new): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
 - **ptm**: **finished**.
