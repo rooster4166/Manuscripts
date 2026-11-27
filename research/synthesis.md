@@ -635,3 +635,12 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
    - the Eulerian Gallai literature.
 
    A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
+
+**Addendum (20:10): the n = 15 K2 budget root is settled.**
+- clt found a triangle base at the last budget-undecided K2-residual root (n = 15, m = 77, r = 1) by local search: w = 2, M0 = {34, 56} (`manuscripts/clt/data/triangle_base_witnesses.txt`).
+- The coordinator re-checked it independently (`direct-test1/scripts/verify/verify_clt_witness.py`):
+  - D0 is a Lovász decomposition of M;
+  - both disjunctions hold;
+  - the executed lift is a valid (T1) decomposition at r = 1.
+- So every K2-residual root tested so far has a triangle base.
+- clt's two further witnesses (n = 15, z = 14, residual graphs given in graph6 by clt) still await an independent re-check by triangle-base.
