@@ -95,7 +95,7 @@ There are $\gamma>0$ and $n_0$ with the following property. Let $G$ have order $
 Then $p(G)\le\lfloor n/2\rfloor$. If $n$ is even, then also $p(G^t)\le n/2$ for every vertex $t$.
 \end{corollary}
 
-No connectivity assumption is needed. For example, every $D$-regular graph with $|D-n/2|\le\gamma n$ that is $\gamma$-close to $K_{n/2,n/2}$ in this sense satisfies the third condition, at both parities, as soon as $\gamma\le 1/4$. Corollary~\ref{cor:class} contains graphs with linearly many vertices of own-shore degree up to about $n/4$. That is the regime of SP Corollary~14.39 that SP leaves open.
+No connectivity assumption is needed. For a $D$-regular graph, the left-hand side of the third condition equals $\rho\,|D-\lfloor n/2\rfloor|$, where $\rho=n-2\lfloor n/2\rfloor$. So the third condition holds at both parities whenever $|D-n/2|\le\gamma n/2$ and $n\ge1/\gamma$. Corollary~\ref{cor:class} contains graphs with linearly many vertices of own-shore degree up to about $n/4$. That is the regime of SP Corollary~14.39 that SP leaves open.
 
 \begin{corollary}[Restriction on counterexamples to Target D]\label{cor:failures}
 Let $(G_n)$ be a failure sequence as in SP Corollary~14.24. For all sufficiently large $n$ the following holds. Take any partition of $V(G_n)$ with $|A|=\lfloor n/2\rfloor$ and any set $X$ satisfying hypotheses \ref{h:healthy} and \ref{h:exc} of Theorem~\ref{thm:main}, with $m=\lfloor n/2\rfloor$ and the constant $c$ of that theorem. Then the balance condition \ref{h:bal} fails.
@@ -126,3 +126,403 @@ Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
 
 \subsection{Organisation}
 \S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:lean} describes the Lean formalisation.
+
+\section{Cited results and the hypotheses used}\label{sec:cited}
+
+\subsection{Csaba, K\"uhn, Lo, Osthus and Treglown}
+The following is quoted from the LaTeX source of \cite{CKLOT} (arXiv:1401.4159v2, \S1.3).
+
+\begin{quote}
+We say that $G$ is \emph{$\eps$-bipartite} if there exists $A\subseteq V(G)$ with $|A|=\lfloor n/2\rfloor$ such that $e(A), e(V(G)\setminus A) \le \eps n^{2}$.
+
+Here, a \emph{Hamilton decomposition} of a graph~$G$ consists of a set of edge-disjoint Hamilton cycles covering all edges of~$G$.
+
+\textbf{Theorem 1.3.5.} There are $\eps_{\rm ex} >0$ and $n_0\in\mathbb{N}$ such that the following holds. Let $n\ge n_0$ and suppose that $D \ge (1/2-\eps_{\rm ex})n$ is even. Suppose that $G$ is a $D$-regular graph on $n$ vertices which is $\eps_{\rm ex}$-bipartite. Then $G$ has a Hamilton decomposition.
+\end{quote}
+
+\noindent\emph{Hypotheses used.} We apply Theorem~1.3.5 once, to the auxiliary graph $J$ of \S\ref{sec:identity}, and we check each hypothesis explicitly:
+\begin{itemize}[nosep]
+\item $J$ is simple and $D$-regular;
+\item $D$ is even and $D\ge(1/2-\epsex)|J|$;
+\item there is a part of size exactly $\lfloor|J|/2\rfloor$;
+\item both parts span at most $\epsex|J|^2$ edges.
+\end{itemize}
+No upper bound on $D$ is required, and there is no condition on individual vertices. Throughout, $\epsex$ denotes the constant of this theorem.
+
+\subsection{Gir\~ao, Granet, K\"uhn and Osthus}
+From the LaTeX source of \cite{GGKO} (arXiv:1911.05501v2, \S1):
+\begin{quote}
+we say an~$n$-vertex graph~$G$ is \emph{weakly-$(\varepsilon, p)$-quasirandom} if for any partition~$A\cup B$ of~$V(G)$ with $|A|, |B|\geq \varepsilon n$ we have $e_G(A, B)\geq p|A||B|$.
+
+\textbf{Theorem 1.11.} For any~$\alpha,\delta, p>0$, there exists~$n_0$ such that if~$G$ is a weakly-$(\frac{\alpha}{2},p)$-quasirandom graph on~$n\geq n_0$ vertices with $\delta(G)\geq \alpha n$, then the following hold. (i) $G$ can be decomposed into at most~$\max\{ \frac{\mathrm{odd}(G)}{2},\frac{\Delta(G)}{2}\} +\delta n$ paths. (ii) If~$G$ is Eulerian, then it can be decomposed into at most~$\frac{\Delta(G)}{2} +\delta n$ cycles.
+\end{quote}
+SP uses Theorem~1.11(i) in its Corollaries~14.26, 14.32, 14.35 and Theorem~14.37, whenever a positive proportion of the vertices have even degree. The proofs in the present paper do not use it. It enters only through the SP results quoted in \S\ref{sec:sp}.
+
+\subsection{Statements from SP \S14}
+The following are copied from the archive PDF \texttt{gallai/02-november-25/separating-pairs.pdf}, pp.~158--172.
+
+\begin{quote}
+\textbf{SP Corollary 14.24.} Let $G$ range through a sequence of connected graphs of orders $n\to\infty$ with $\delta(G)\ge n/2-o(n)$. Suppose each fails the even-order private-leaf bound at some root, or fails the odd-order floor bound while missing at least $\lfloor n/2\rfloor$ edges. There are sets $S$ of size $n/2+o(n)$ such that $e(G[S])=o(n^2)$ and $|S|(n-|S|)-e(S,V(G)\setminus S)=o(n^2)$.
+
+\textbf{SP Corollary 14.26.} Every sequence in Corollary 14.24 has a partition $A,B$, with $|A|,|B|=n/2+o(n)$, for which the total number of edge additions and deletions needed to obtain $K_{|A|,|B|}$ is $o(n^2)$. Moreover $\max\{\Delta(G),\odd(G)\}=n-o(n)$.
+
+\textbf{SP Theorem 14.27.} There are constants $c>0$ and $m_0$ with the following property. Let $m\ge m_0$ and let $A,B$ partition $V(G)$ with $|A|=|B|=m$. At every site suppose there are at most $cm$ missing neighbors across the partition and at most $cm$ neighbors within its own part. Then $p(G^t)\le m$ for every $t$. More precisely, let $b:V(G)\to\{0,1,2\}$ have the parity of the degree at each site, with $b(A)+b(B)=2m$ and $|b(A)-b(B)|\le 2$. There is a partition into $m$ paths with these exact endpoint multiplicities.
+
+\textbf{SP Corollary 14.39.} Consider a failure sequence as in Corollary 14.24 and any maximum cut of each graph. Write $d_{\rm in}(v)$ and $d_{\rm out}(v)$ for the two degrees relative to that cut, and put $X=\{v:d_{\rm in}(v)\ge\kappa n\}$ for the constant above. For sufficiently large $n$, $X$ is nonempty, $|X|=o(n)$, and each $v\in X$ has $d_{\rm out}(v)\ge n/4-o(n)$. The induced graph $G-X$ obeys the floor bound at its own order and the private-leaf bound at each of its vertices when that order is even.
+\end{quote}
+Here $\kappa$ is the constant of SP Corollary~14.38.
+
+SP Theorem~14.27 is quoted only for comparison: Theorem~\ref{thm:main} reproves and extends it. Corollaries~14.24, 14.26 and 14.39 are quoted to place the results. Corollary~\ref{cor:failures} uses only the \emph{definition} of a failure sequence from Corollary~14.24. The proofs below use, from outside this paper, only CKLOT Theorem~1.3.5, Hall's theorem and the max-flow min-cut theorem.
+
+\section{Two lemmas: membership and weaving}\label{sec:tools}
+
+The first lemma is SP Lemma~14.28, stated for an arbitrary number of rows; we include its proof for completeness. The second is a form of SP Lemma~14.29 in which blocks may be arbitrary short paths.
+
+\begin{lemma}[Membership matrix]\label{lem:matrix}
+Let $r,q\ge1$. Consider an $r\times q$ array in which some entries are \emph{forbidden}: at most $0.03q$ in each row and at most $0.03r$ in each column. Let row sums $\alpha_1,\dots,\alpha_r\in[0.4q,0.6q]$ and column sums $\beta_1,\dots,\beta_q\in[0.4r,0.6r]$ be integers with $\sum\alpha_i=\sum\beta_j$. Then there is a $0/1$ matrix with these margins whose support avoids the forbidden entries.
+\end{lemma}
+
+\begin{proof}
+Take the network with a source joined to each row $i$ with capacity $\alpha_i$, each row joined to each column $j$ with capacity $1$ whenever $(i,j)$ is allowed, and each column $j$ joined to a sink with capacity $\beta_j$. Put $T=\sum\alpha_i$. An integral flow of value $T$ is the required matrix.
+
+By max-flow min-cut it suffices to check every cut. A cut is described by a set $R'$ of rows and a set $C'$ of columns on the source side. Put $Y=[q]\setminus C'$. The cut has capacity
+\[
+\alpha([r]\setminus R')+e(R',Y)+\beta(C'),
+\]
+where $e(R',Y)$ counts allowed entries in $R'\times Y$. Since $\alpha([r]\setminus R')=T-\alpha(R')$ and $\beta(C')=T-\beta(Y)$, we must show
+\begin{equation}\label{eq:cutcond}
+\alpha(R')+\beta(Y)-T\le e(R',Y)\qquad\text{for all }R'\subseteq[r],\ Y\subseteq[q].
+\end{equation}
+If $|R'|\ge0.65r$, each column has at least $0.62r$ allowed entries in $R'$. Then $e(R',Y)\ge0.62r|Y|\ge\beta(Y)$, and \eqref{eq:cutcond} follows from $\alpha(R')\le T$. The case $|Y|\ge0.65q$ is symmetric.
+
+Otherwise put $x=|R'|/r$ and $y=|Y|/q$, both in $[0,0.65]$. Then $\alpha(R')\le0.6qxr$, $\beta(Y)\le0.6ryq$ and $T\ge0.4qr$. Also $e(R',Y)\ge|R'||Y|-\min(0.03q|R'|,0.03r|Y|)=qr\bigl(xy-0.03\min(x,y)\bigr)$. Dividing by $qr$, it suffices that
+\[
+f(x,y)=0.6x+0.6y-0.4-xy+0.03\min(x,y)<0\qquad(0\le x,y\le0.65).
+\]
+By symmetry assume $y\le x$. On the triangle $0\le y\le x\le0.65$ the function $g(x,y)=0.6x+0.63y-0.4-xy$ equals $f$. Its only critical point is a saddle, so its maximum is attained on the boundary.
+\begin{itemize}[nosep]
+\item On $y=0$: $g=0.6x-0.4\le-0.01$.
+\item On $x=0.65$: $g$ is linear in $y$, with $g(0.65,0)=-0.01$ and $g(0.65,0.65)=-0.023$.
+\item On $y=x$: $g=1.23x-0.4-x^2$, whose maximum on $[0,0.65]$ is $1.23^2/4-0.4<-0.021$.
+\end{itemize}
+Hence $f<0$, and the lemma follows. (The inequality $f<0$ is formally verified in Lean; see \S\ref{sec:lean}.)
+\end{proof}
+
+A \emph{block} on a shore $U$ is a path $\beta$ with two designated vertices in $U$, its \emph{entry} $\iota(\beta)$ and \emph{exit} $\omega(\beta)$. Either $\beta$ is a single vertex with $\iota=\omega$, or $\iota\neq\omega$ are the two ends of $\beta$. Interior vertices of a block are arbitrary.
+
+\begin{lemma}[Weaving]\label{lem:weave}
+Let $F$ be a graph and $U_1,U_2\subseteq V(F)$ disjoint. Let $\mathcal B_1$ and $\mathcal B_2$ be families of blocks on $U_1$ and $U_2$ such that all blocks in $\mathcal B_1\cup\mathcal B_2$ are pairwise vertex-disjoint paths of $F$. Write $E_s$ for the set of entries and exits of the blocks of $\mathcal B_s$. Let $M\ge0$ and suppose that every vertex of $E_1$ is non-adjacent in $F$ to at most $M$ vertices of $E_2$, and vice versa.
+\begin{enumerate}[label=\textup{(\roman*)},nosep]
+\item If $|\mathcal B_1|=|\mathcal B_2|=k\ge4M+2$ and $s_1\in\mathcal B_1$, $s_2\in\mathcal B_2$ are single-vertex blocks, then $F$ contains a path that starts at $s_1$, ends at $s_2$, traverses every block from entry to exit along its own edges, and joins consecutive blocks by edges of $F$ between $E_1$ and $E_2$.
+\item If $|\mathcal B_1|=k+1$, $|\mathcal B_2|=k\ge4M+1$ and $s,s'\in\mathcal B_1$ are distinct single-vertex blocks, then the same holds with a path from $s$ to $s'$.
+\end{enumerate}
+In both cases the path is simple. Its edges are the edges of the blocks together with $|\mathcal B_1|+|\mathcal B_2|-1$ joining edges.
+\end{lemma}
+
+\begin{proof}
+(ii) List $\mathcal B_1$ as $\beta_0=s,\beta_1,\dots,\beta_k=s'$ in any order with the prescribed first and last blocks. For $1\le j\le k$ the \emph{gap} $g_j$ accepts $\gamma\in\mathcal B_2$ if $\omega(\beta_{j-1})\iota(\gamma)$ and $\omega(\gamma)\iota(\beta_j)$ are edges of $F$.
+\begin{itemize}[nosep]
+\item Distinct blocks of $\mathcal B_2$ have distinct entries and distinct exits. So $\omega(\beta_{j-1})$ excludes at most $M$ blocks and $\iota(\beta_j)$ excludes at most $M$, and each gap accepts at least $k-2M$ blocks.
+\item Distinct gaps have distinct left exits and distinct right entries. So each block of $\mathcal B_2$ is accepted by at least $k-2M$ gaps.
+\end{itemize}
+In the bipartite acceptance graph between the $k$ gaps and the $k$ blocks of $\mathcal B_2$, every vertex therefore has degree at least $k-2M\ge k/2$. Such a graph has a perfect matching. Indeed, let $S$ be a set of gaps. If $|S|\le k-2M$, any member of $S$ already has $k-2M\ge|S|$ accepted blocks. If $|S|>k-2M\ge2M$, every block is rejected by at most $2M<|S|$ gaps and so is accepted by some member of $S$. Hall's condition holds in both cases. (This step is formally verified in Lean; see \S\ref{sec:lean}.)
+
+Insert each block of $\mathcal B_2$ into its matched gap, traversing every block from entry to exit. The blocks are vertex-disjoint, so the result is a simple path from $s$ to $s'$.
+
+(i) List $\mathcal B_1$ as $\beta_0=s_1,\beta_1,\dots,\beta_{k-1}$, where $\beta_{k-1}\neq s_1$ is chosen with $\omega(\beta_{k-1})s_2\in E(F)$. This is possible because $s_2$ is non-adjacent to at most $M<k-1$ exits. Match the $k-1$ blocks of $\mathcal B_2\setminus\{s_2\}$ to the $k-1$ gaps $g_1,\dots,g_{k-1}$ as above. The minimum degree is at least $k-1-2M\ge(k-1)/2$. Append $s_2$ after $\beta_{k-1}$.
+\end{proof}
+
+\section{The counting identity and the apex finish}\label{sec:identity}
+
+\begin{lemma}[Counting identity]\label{lem:identity}
+Let $R$ be a graph with $V(R)=A\cup B$, $|A|=m$ and $|B|=m+\rho$. Let $D$ be an integer and $b':V(R)\to\mathbb Z$ with $d_R(v)=D-b'(v)$ for all $v$. Then
+\[
+b'(B)-b'(A)=2\bigl(e_R(A)-e_R(B)\bigr)+\rho D .
+\]
+\end{lemma}
+
+\begin{proof}
+Both $\sum_{v\in A}d_R(v)$ and $\sum_{v\in B}d_R(v)$ count each edge between $A$ and $B$ once, and each edge inside the respective part twice. So their difference is $2e_R(A)-2e_R(B)$. It also equals $mD-b'(A)-(m+\rho)D+b'(B)$.
+\end{proof}
+
+\begin{lemma}[Apex finish]\label{lem:apex}
+There is $m_1$ such that the following holds for $m\ge m_1$ and $\rho\in\{0,1\}$. Let $R$ be a graph with $V(R)=A\cup B$, $|A|=m$, $|B|=m+\rho$, and put $N=2m+2+\rho$. Let $D$ be even with $D\ge(1/2-\epsex)N$. Let $b':V(R)\to\{0,1,2\}$ satisfy $d_R(v)=D-b'(v)$ for every $v$ and $b'(V)=2D$. Suppose $e_R(A)+D\le\epsex N^2$ and $e_R(B)+D\le\epsex N^2$. Then $E(R)$ decomposes into exactly $D$ paths, with exactly $b'(v)$ path-ends at each vertex $v$.
+\end{lemma}
+
+\begin{proof}
+Let $Z_s=\{v:b'(v)=s\}$. Then $2|Z_2|+|Z_1|=2D$, so $|Z_1|$ is even and $|Z_2|\le D$. Split $Z_1=Z_1'\cup Z_1''$ into halves.
+
+Let $J$ be $R$ together with two new non-adjacent vertices: $a_1$, joined to $Z_2\cup Z_1'$, and $a_2$, joined to $Z_2\cup Z_1''$. Then $d_J(a_1)=d_J(a_2)=|Z_2|+|Z_1|/2=D$, and every old vertex has $d_J(v)=d_R(v)+b'(v)=D$. So $J$ is a simple $D$-regular graph on $N$ vertices.
+
+Put $A'=A\cup\{a_1\}$. Then $|A'|=m+1=\lfloor N/2\rfloor$, $e_J(A')\le e_R(A)+D\le\epsex N^2$ and $e_J(V(J)\setminus A')\le e_R(B)+D\le\epsex N^2$. So $J$ is $\epsex$-bipartite. Since $D$ is even and $D\ge(1/2-\epsex)N$, CKLOT Theorem~1.3.5 gives Hamilton cycles $C_1,\dots,C_{D/2}$ partitioning $E(J)$, provided $N\ge n_0$, which holds for $m\ge m_1$.
+
+Since $a_1a_2\notin E(J)$, each $C_j$ minus $\{a_1,a_2\}$ is the union of two non-empty vertex-disjoint paths of $R$, the \emph{pieces} of $C_j$. The ends of a piece with at least two vertices are the $C_j$-neighbours of $a_1$ and $a_2$. A piece with a single vertex $v$ arises exactly when $C_j$ contains $a_1va_2$. This uses both apex edges at $v$, so $b'(v)=2$; call such $v$ \emph{singular}, and note that it is singular for exactly one index $j(v)$. The edge sets of the pieces partition $E(R)$. A non-singular $v$ is an end of exactly $b'(v)$ non-trivial pieces, one for each apex edge at $v$. A singular $v$ is an end of none.
+
+For each singular $v$ choose $j'\neq j(v)$, which is possible since $D/2\ge2$. Both apex edges at $v$ lie in $C_{j(v)}$, so $v$ is an interior vertex of a non-trivial piece of $C_{j'}$. Split that piece at $v$ into two non-empty paths ending at $v$. Do this for each singular vertex in turn. Splitting at $w$ makes only $w$ an end, so every other vertex that was interior stays interior.
+
+We start with $D$ pieces. Discarding the single-vertex pieces and making the splits changes the number of paths by $-1+1$ for each singular vertex. So the result is exactly $D$ paths, with $b'(v)$ ends at every $v$.
+\end{proof}
+
+\begin{remark}[What the identity forces]\label{rem:forces}
+Suppose a decomposition of $G$ realising $b$ is built as in SP Theorem~14.27: $q$ preliminary paths with $l(v)$ ends at $v$, followed by Lemma~\ref{lem:apex} applied to the residual $R$ with $b'=b-l$. Then Lemma~\ref{lem:identity} and $l=b-b'$ give
+\begin{equation}\label{eq:forced}
+l(A)-l(B)=2\bigl(e_R(A)-e_R(B)\bigr)+\rho D+b(A)-b(B),
+\end{equation}
+while $|l(A)-l(B)|\le 2q$.
+
+When $\rho=0$ and the profile is nearly balanced, the internal edges kept for the Hamilton phase must therefore balance to within about $q$. When $\rho=1$, $B$ must keep about $D/2$ more internal edges than $A$. Near $K_{m,m+1}$ with few internal edges this is impossible. That is why SP switches to a one-apex scheme with vertex removal at unequal shores (SP Theorems~14.31 and 14.33), and why Theorem~\ref{thm:main} at $\rho=1$ needs hypothesis~\ref{h:bal}.
+
+In the proof below, hypothesis~\ref{h:bal} is exactly what allows the kept internal edges to be chosen so that the right-hand side of \eqref{eq:forced} lies in $[-1.2q,1.2q]$.
+\end{remark}
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+
+\paragraph{Constants.} Let $\epsex$ be the constant of CKLOT Theorem~1.3.5. Put $\theta=\min\{\epsex/2,1/100\}$ and $c=\theta/1000$. Let $m_0\ge m_1$ be large enough for all inequalities below.
+
+Given $m\ge m_0$, let $q$ be the least integer with $q\ge\theta m$ and $q\equiv m\pmod2$, and put $D=m-q$. Then $D$ is even and $\theta m\le q\le\theta m+2$. Also $cm\le q/1000$ and $q\le m/100+2$.
+
+Write $H=V(G)\setminus X$ (\emph{healthy} vertices), $H_A=H\cap A$, $H_B=H\cap B$, $X_A=X\cap A$, $X_B=X\cap B$. Let $e_H(S)$ be the number of edges inside $S$ with both ends in $H$. Then $e(S)=e_H(S)+I_X(S)$.
+
+\paragraph{Step 0: visit numbers.} For every vertex $v$ put
+\[
+p_v=\tfrac12\bigl(d(v)+b(v)-D\bigr).
+\]
+This is an integer, since $b(v)\equiv d(v)$ and $D$ is even. By \ref{h:healthy} and \ref{h:exc} every degree lies in $[m-cm,\,m+1+cm]$, so
+\begin{equation}\label{eq:pv}
+0.49q\le p_v\le0.51q\qquad\text{for all }v.
+\end{equation}
+The plan is to build $q$ edge-disjoint \emph{preliminary} paths $P_1,\dots,P_q$ such that:
+\begin{itemize}[nosep]
+\item every vertex $v$ lies on exactly $p_v$ of them;
+\item exceptional vertices are never path-ends;
+\item each healthy $v$ is an end of $l_v\in\{0,1\}$ of them, with $l_v\le b(v)$.
+\end{itemize}
+Then the residual $R=G-\bigcup_iE(P_i)$ has $d_R(v)=d(v)-2p_v+l_v=D-b'(v)$, where $b'=b-l$. Lemma~\ref{lem:apex} finishes the proof.
+
+\paragraph{Step 1: internal edges to keep.} Put $\beta'=\tfrac12\bigl(b(A)-b(B)+\rho D\bigr)$. This is an integer because $b(A)+b(B)=2m$ and $D$ is even. Put $\Lambda_0=I_X(A)-I_X(B)+\beta'$. For $R_A\subseteq E(G[H_A])$ and $R_B\subseteq E(G[H_B])$ write
+\[
+\Lambda=\Lambda_0+|R_A|-|R_B| .
+\]
+As $R_A,R_B$ vary, $\Lambda$ takes every integer value in $[\Lambda_0-e_H(B),\,\Lambda_0+e_H(A)]$. By \ref{h:bal} and $|b(A)-b(B)|\le cm$,
+\begin{align*}
+\Lambda_0-e_H(B)&=I_X(A)-e(B)+\beta'\le cm-\tfrac{\rho m}2+\tfrac{b(A)-b(B)}2+\tfrac{\rho(m-q)}2\le\tfrac32cm\le0.6q,\\
+\Lambda_0+e_H(A)&=e(A)-I_X(B)+\beta'\ge-\tfrac{\rho m}2-cm+\tfrac{b(A)-b(B)}2+\tfrac{\rho(m-q)}2\ge-\tfrac q2-\tfrac32cm\ge-0.6q .
+\end{align*}
+Hence we may fix $R_A,R_B$ with $|\Lambda|\le0.6q$. These are the healthy internal edges kept for the Hamilton phase. Put $F_A=E(G[H_A])\setminus R_A$ and $F_B=E(G[H_B])\setminus R_B$. These will be consumed by the preliminary paths. Edges inside a part with an end in $X$ are never used in the preliminary paths.
+
+\paragraph{Step 2: ends and end patterns.} Put $l_A=q+\Lambda$ and $l_B=q-\Lambda$; both lie in $[0.4q,1.6q]$. Since $b(A)\ge m-cm/2$, at least $\tfrac12(b(A)-2|X|)\ge0.45m\ge2q$ vertices of $H_A$ have $b\ge1$, and likewise in $H_B$. Choose $L_A\subseteq\{v\in H_A:b(v)\ge1\}$ of size $l_A$ and $L_B\subseteq\{v\in H_B:b(v)\ge1\}$ of size $l_B$. Put $l_v=1$ on $L_A\cup L_B$ and $l_v=0$ elsewhere, so $b'=b-l$ takes values in $\{0,1,2\}$ and $b'(V)=2m-2q=2D$.
+
+Give each slot $i\in[q]$ a type:
+\begin{itemize}[nosep]
+\item if $\Lambda\ge0$, slots $1,\dots,\Lambda$ have type $AA$ and the rest type $AB$;
+\item if $\Lambda<0$, slots $1,\dots,|\Lambda|$ have type $BB$ and the rest type $AB$.
+\end{itemize}
+Put $\tau_i=1,0,-1$ for types $AA,AB,BB$, so that $\sum_i\tau_i=\Lambda$. A slot of type $AA$ has two $A$-end positions, type $AB$ one of each, and type $BB$ two $B$-end positions. There are $2\Lambda^++(q-|\Lambda|)=l_A$ positions of the first kind and $l_B$ of the second. Assign $L_A$ and $L_B$ bijectively to these positions. These vertices are the \emph{end-sites} of their slots. Each healthy vertex is an end-site of at most one slot.
+
+\paragraph{Step 3: internal matchings.} Assign each edge of $F_A\cup F_B$ to a slot so that:
+\begin{itemize}[nosep]
+\item the edges in each slot form a matching;
+\item each slot receives at most $m/100$ edges;
+\item no edge meets an end-site of its slot.
+\end{itemize}
+Do this greedily. We have $|F_A|+|F_B|\le(2m+1)cm/2\le1.01cm^2$, so at most $101cm$ slots are ever full. When an edge $uv$ is processed, at most $2cm$ slots already hold an edge at $u$ or $v$ (as $\own\le cm$ on $H$), and at most $2$ slots have $u$ or $v$ as an end-site. Since $103cm+2<q$, a slot is available. Orient each assigned edge arbitrarily, from entry to exit. Let $k^A_i$ and $k^B_i$ be the numbers of edges of $F_A$ and $F_B$ in slot $i$.
+
+\paragraph{Step 4: exceptional vertices and their partners.} For each $x\in X$ fix any set $T_x\subseteq[q]$ of size $p_x$. Then, for the pairs $(x,i)$ with $i\in T_x$ in some order, choose two distinct \emph{partners} $u_{x,i},u'_{x,i}$ such that:
+\begin{enumerate}[label=(P\arabic*),nosep]
+\item they are healthy, lie in the part not containing $x$, and are adjacent to $x$;
+\item the edges $xu_{x,i}$ and $xu'_{x,i}$ were not chosen for an earlier pair $(x,i')$;
+\item they are not end-sites of slot $i$, not covered by the matching of slot $i$, and not partners of another exceptional vertex in slot $i$;
+\item every healthy vertex is a partner at most $q/100$ times in total.
+\end{enumerate}
+This is possible. By \ref{h:exc}, $x$ has at least $m/4-cm$ healthy neighbours across. Rule (P2) excludes at most $2p_x\le1.02q$ of them, and rule (P3) at most $2+m/50+2cm$. The total number of partner choices is at most $1.02q|X|$, so at most $102|X|\le102cm$ vertices ever reach the cap in (P4). The excluded total is at most $0.032m+2<m/4-cm$.
+
+For $x\in X_B$ and $i\in T_x$, the \emph{$x$-block} of slot $i$ is the path $u_{x,i}\,x\,u'_{x,i}$, a block on $A$ with entry $u_{x,i}$ and exit $u'_{x,i}$. For $x\in X_A$ it is a block on $B$. Put $x^A_i=|\{x\in X_A:i\in T_x\}|$ and $x^B_i=|\{x\in X_B:i\in T_x\}|$.
+
+\paragraph{Step 5: forced memberships.} Call a healthy $v$ \emph{forced} in slot $i$ if it is an end-site of slot $i$, an end of an $F$-edge assigned to slot $i$, or a partner in slot $i$. By Step~3 and (P3), a forced vertex has exactly one of these roles in that slot.
+
+In each healthy row $v$ the number of forced slots is at most $1+\own(v)+q/100\le0.02q$. In each slot $i$ the number of forced vertices of $H_A$ is at most $2+2k^A_i+2x^B_i\le0.021m\le0.03|H_A|$, and likewise for $H_B$.
+
+\paragraph{Step 6: slot sizes and memberships.} Put $P_A=\sum_{v\in H_A}p_v$ and $P_B=\sum_{v\in H_B}p_v$. Choose integers $h^A_i\in\{\lfloor P_A/q\rfloor,\lceil P_A/q\rceil\}$ with $\sum_ih^A_i=P_A$, and define
+\begin{equation}\label{eq:hB}
+h^B_i=h^A_i-k^A_i-x^B_i+k^B_i+x^A_i-\tau_i .
+\end{equation}
+\emph{Claim:} $\sum_ih^B_i=P_B$. Indeed $\sum_ik^S_i=|F_S|$, $\sum_ix^A_i=\sum_{x\in X_A}p_x$, $\sum_ix^B_i=\sum_{x\in X_B}p_x$ and $\sum_i\tau_i=\Lambda$. So the claim is equivalent to
+\[
+\Lambda=\sum_{v\in A}p_v-\sum_{v\in B}p_v-|F_A|+|F_B| .
+\]
+Now $\sum_{v\in A}p_v-\sum_{v\in B}p_v=\tfrac12\bigl(\sum_Ad-\sum_Bd+b(A)-b(B)+\rho D\bigr)=e(A)-e(B)+\beta'$, using $\sum_Ad-\sum_Bd=2e(A)-2e(B)$. Moreover $e(S)=|F_S|+|R_S|+I_X(S)$. So the right-hand side is $|R_A|+I_X(A)-|R_B|-I_X(B)+\beta'=\Lambda$, as defined in Step~1.
+
+By \eqref{eq:pv} we have $h^A_i\in[0.49|H_A|-1,0.51|H_A|+1]$. Also $|h^B_i-h^A_i|\le m/100+|X|+1$, so $h^B_i\in[0.47|H_B|,0.53|H_B|]$.
+
+Apply Lemma~\ref{lem:matrix} to the rows $H_A$ and the columns $[q]$, with these data:
+\begin{itemize}[nosep]
+\item the forced positions are forbidden;
+\item the row sums are $p_v$ minus the number of forced slots of $v$, which lie in $[0.47q,0.51q]$;
+\item the column sums are $h^A_i$ minus the number of forced vertices in slot $i$, which lie in $[0.4|H_A|,0.6|H_A|]$.
+\end{itemize}
+The two totals agree because both equal $P_A$ minus the number of forced pairs. The lemma gives a $0/1$ matrix. Let $S^A_i$ be the set of vertices of $H_A$ that are forced in slot $i$ or selected by the matrix in column $i$. Then $|S^A_i|=h^A_i$, and every $v\in H_A$ lies in exactly $p_v$ of the sets $S^A_i$. Do the same for $H_B$ with the numbers $h^B_i$.
+
+\paragraph{Step 7: blocks.} In slot $i$ the blocks on $A$ are:
+\begin{itemize}[nosep]
+\item the end-sites of slot $i$ in $A$, as single-vertex blocks;
+\item the edges of $F_A$ assigned to slot $i$, as two-vertex blocks;
+\item the $x$-blocks for $x\in X_B$ with $i\in T_x$;
+\item every other vertex of $S^A_i$, as a single-vertex block.
+\end{itemize}
+The blocks on $B$ are defined symmetrically. All these blocks are pairwise vertex-disjoint, by the exclusivity in Step~5 and because each exceptional vertex lies in at most one block of a slot. Their entries and exits are healthy.
+
+Each two-vertex block and each $x$-block of slot $i$ uses two members of $S^A_i$ and counts as one block. The number of blocks on $A$ is therefore $a_i=h^A_i-k^A_i-x^B_i$, and on $B$ it is $b_i=h^B_i-k^B_i-x^A_i$. By \eqref{eq:hB}, $a_i-b_i=\tau_i$. This is what Lemma~\ref{lem:weave} requires for a slot of type $AA$ (case~(ii), ends in $A$), $AB$ (case~(i)) or $BB$ (case~(ii) with the parts exchanged).
+
+\paragraph{Step 8: weaving.} For $i=1,\dots,q$ in turn, let $F_i$ consist of:
+\begin{itemize}[nosep]
+\item the edges between $H_A$ and $H_B$ not used by $P_1,\dots,P_{i-1}$;
+\item the edges of the blocks of slot $i$.
+\end{itemize}
+A block edge is an $F$-edge assigned only to slot $i$ or a partner spoke chosen only for slot $i$ (P2), so it is unused.
+
+Take a healthy entry or exit $w$ of slot $i$, say in $A$. It fails to be adjacent in $F_i$ to a healthy vertex $z$ of $B$ only if $wz\notin E(G)$, which happens for at most $\mis(w)\le cm$ vertices $z$, or if $wz$ was a joining edge of an earlier slot. In each slot containing it, $w$ meets at most two joining edges, so the second case covers at most $2p_w\le1.02q$ vertices. Hence Lemma~\ref{lem:weave} applies with $M=cm+1.02q\le1.03q$.
+
+The block numbers satisfy $\min(a_i,b_i)\ge0.47(m-cm)-m/100-cm-1\ge0.45m\ge4M+2$, since $q\le m/100+2$. The lemma gives a path $P_i$. Its vertex set is $S^A_i\cup S^B_i\cup\{x:i\in T_x\}$, and its ends are the two end-sites of slot $i$. Joining edges are edges between healthy vertices of different parts. So $P_i$ uses no edge of $R_A\cup R_B$ and no internal edge at $X$.
+
+\paragraph{Step 9: the residual.} The paths $P_1,\dots,P_q$ are edge-disjoint. Every healthy $v$ lies on exactly $p_v$ of them and is an end of exactly $l_v$; every $x\in X$ lies on exactly $p_x$ of them, always as an interior vertex. They use every edge of $F_A\cup F_B$, and no edge of $R_A\cup R_B$ or inside a part at $X$.
+
+Let $R=G-\bigcup_iE(P_i)$. Then $d_R(v)=d(v)-2p_v+l_v=D-b'(v)$ for every $v$, and $e_R(S)=|R_S|+I_X(S)$ for $S\in\{A,B\}$. To bound the internal edges, note:
+\begin{itemize}[nosep]
+\item $e_H(A)+e_H(B)\le1.01cm^2$;
+\item $I_X(A)+I_X(B)\le\sum_{x\in X}\own(x)\le|X|\,(1+c-1/4)m\le0.76cm^2$.
+\end{itemize}
+So $e_R(A),e_R(B)\le1.8cm^2\le\epsex N^2-D$ for $N=2m+2+\rho$.
+
+Moreover $D=m-q\ge m-\theta m-2\ge(1/2-\epsex)(2m+3)$, because $\theta\le\epsex/2$ and $m$ is large. By Lemma~\ref{lem:apex}, $E(R)$ decomposes into $D$ paths with $b'(v)$ ends at every $v$. Together with $P_1,\dots,P_q$ this gives $q+D=m$ paths partitioning $E(G)$, with $l(v)+b'(v)=b(v)$ ends at every $v$.\qed
+
+\section{Proofs of the corollaries}\label{sec:cor}
+
+\begin{lemma}[Standard profiles]\label{lem:profiles}
+Let $V(G)=A\cup B$ with $|A|=m$ and $|B|=m+\rho$, $\rho\in\{0,1\}$, and $n=2m+\rho$.
+\begin{enumerate}[label=\textup{(\roman*)},nosep]
+\item If $\rho=0$ and $t\in V(G)$, there is a profile $b$ with $b(V)=2m$, $|b(A)-b(B)|\le2$ and $b(t)\ge1$.
+\item If $\rho=1$, there is a profile $b$ with $b(V)=2m$ and $|b(A)-b(B)|\le2$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Put $b=1$ on odd-degree vertices. Let $e_A$ and $e_B$ be the numbers of even-degree vertices in $A$ and $B$, and $e=e_A+e_B$.
+
+(i) $\sum_Ad-\sum_Bd=2e(A)-2e(B)$ is even, so $A$ and $B$ contain the same number of odd vertices modulo~$2$. As $|A|=|B|$, this gives $e_A\equiv e_B\pmod2$.
+\begin{itemize}[nosep]
+\item If both are even, give two ends to $e_A/2$ even vertices of $A$ and to $e_B/2$ of $B$.
+\item If both are odd, give two ends to $\lceil e_S/2\rceil$ even vertices of the part $S$ containing $t$, and to $\lfloor e_{S'}/2\rfloor$ of the other part $S'$.
+\end{itemize}
+Choose $t$ among the doubled vertices if $t$ has even degree; if $t$ has odd degree then $b(t)=1$ already. Give zero ends to the remaining even vertices. Then $b(V)=2m$ and $b(A),b(B)\in[m-1,m+1]$.
+
+(ii) The number of odd vertices is even and $n$ is odd, so $e$ is odd.
+\begin{itemize}[nosep]
+\item If $e_A$ is even, double $e_A/2$ even vertices of $A$ and $(e_B-1)/2$ of $B$. Then $b(A)-b(B)=0$.
+\item If $e_A$ is odd, double $(e_A-1)/2$ of $A$ and $e_B/2$ of $B$. Then $b(A)-b(B)=-2$.
+\end{itemize}
+In both cases $b(V)=n-1=2m$.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:class}]
+Let $c,m_0$ be as in Theorem~\ref{thm:main}, put $\gamma=c^2/20$, and let $n\ge n_0:=2m_0+2$ be large. Put $m=\lfloor n/2\rfloor$ and $\rho=n-2m$, so $|A|=m$ and $|B|=m+\rho$.
+
+Let $X=\{v:\own(v)>cm/2\}$. Since $\sum_v\own(v)=2(e(A)+e(B))\le2\gamma n^2$, we get $|X|\le4\gamma n^2/(cm)\le17\gamma m/c\le cm$.
+
+For $v\notin X$ we have $\own(v)\le cm$, and
+\[
+\mis(v)\le m+1-\cro(v)\le m+1-\delta(G)+\own(v)\le1+\gamma n+cm/2\le cm.
+\]
+For $x\in X$ we have $d(x)\in[(1/2-\gamma)n,(1/2+\gamma)n]\subseteq[(1-c)m,(1+c)m]$, and $\cro(x)\ge n/8\ge m/4$. Thus \ref{h:healthy} and \ref{h:exc} hold.
+
+For \ref{h:bal}, note $\sum_A(d-m)-\sum_B(d-m)=2(e(A)-e(B))+\rho m$, so the third hypothesis gives $|e(A)-e(B)+\rho m/2|\le\gamma n/2\le cm$. Since $I_X(S)\le e(S)$,
+\[
+I_X(A)+\rho m/2\le e(A)+\rho m/2\le e(B)+cm,\qquad I_X(B)\le e(B)\le e(A)+\rho m/2+cm.
+\]
+
+Take the profile $b$ of Lemma~\ref{lem:profiles}, with $|b(A)-b(B)|\le2\le cm$. Theorem~\ref{thm:main} gives $m=\lfloor n/2\rfloor$ paths realising $b$. In case~(i) some path ends at $t$; extending it by the new pendant edge gives $p(G^t)\le n/2$.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:failures}]
+Suppose the conclusion fails for infinitely many $n$. For such $n$, take the partition and the set $X$ provided, and let $t$ be a failing root if $n$ is even. Then $G_n$ satisfies \ref{h:healthy}--\ref{h:bal} with $m=\lfloor n/2\rfloor\ge m_0$. With the profile of Lemma~\ref{lem:profiles}, Theorem~\ref{thm:main} gives $p(G_n)\le\lfloor n/2\rfloor$, and $p(G_n^t)\le n/2$ when $n$ is even. This contradicts the defining failure of $G_n$: the even-order private-leaf bound at $t$, or the odd-order floor.
+\end{proof}
+
+\begin{remark}[The maximum-cut exceptional set]\label{rem:maxcut}
+Let $(A,B)$ be a maximum cut of a member $G$ of a failure sequence. Fix $\kappa'\in(0,c/3]$ and put $X=\{v:\own(v)\ge\kappa'n\}$. SP Corollary~14.26 gives $\sum_v\own(v)=o(n^2)$ and $|A|,|B|=n/2+o(n)$, as in the proof of SP Corollary~14.39. Hence:
+\begin{itemize}[nosep]
+\item $|X|=o(n)$;
+\item every $v\notin X$ has $\own(v)<\kappa'n\le cm$ and $\mis(v)\le\max(|A|,|B|)-\delta(G)+\own(v)\le cm$ for large $n$;
+\item every $x\in X$ has $\cro(x)\ge d(x)/2\ge n/4-o(n)\ge m/4$, since the cut is maximum.
+\end{itemize}
+So hypotheses \ref{h:healthy} and \ref{h:exc} hold as soon as two further things hold: the cut is balanced, $|A|=\lfloor n/2\rfloor$, and the exceptional vertices have degree at most $(1+c)m$. Corollary~\ref{cor:failures} then says that every such failure violates the balance condition~\ref{h:bal}.
+
+In particular, take a failure of Target~D that has a balanced maximum cut and $\Delta\le(1/2+c/3)n$. Then the internal edges at exceptional vertices on one side exceed all internal edges on the other side by more than $cm$, after the correction $\rho m/2$.
+\end{remark}
+
+\section{Relation to SP \S14 and what remains}\label{sec:sp}
+
+\subsection{Precise relation}
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{SP Theorem 14.27} is the case $X=\emptyset$, $\rho=0$, $|b(A)-b(B)|\le2$ of Theorem~\ref{thm:main}. Hypothesis~\ref{h:bal} is then vacuous.
+
+The proof of Theorem~\ref{thm:main} follows SP's proof: preliminary slots, Lemma~\ref{lem:matrix}, which is SP Lemma~14.28, Lemma~\ref{lem:weave}, which generalises SP Lemma~14.29, and the two-apex Hamilton finish through CKLOT Theorem~1.3.5. It departs from SP's proof in four places:
+\begin{enumerate}[label=(\alph*),nosep]
+\item exceptional vertices are threaded through prebuilt partner blocks, never woven directly;
+\item internal edges at $X$, and a chosen set $R_A\cup R_B$ of healthy internal edges, are left for the Hamilton phase instead of being consumed;
+\item the slot end patterns are chosen to absorb the imbalance $\Lambda$ (Step~2);
+\item odd order $\rho=1$ is allowed, which SP's two-apex scheme excludes. SP handles odd order near $K_{m,m+1}$ by a different, one-apex argument (Theorem~14.31).
+\end{enumerate}
+\item \textbf{SP Theorems 14.31, 14.33 and 14.37 and Corollary 14.38} treat unequal shores (sizes $m$ and $m+d$ with $1\le d\le cm$) with \emph{no} exceptional set. They are not implied by Theorem~\ref{thm:main}. By Remark~\ref{rem:forces}, a two-apex construction for $d\ge1$ needs the larger shore to keep about $dD/2$ more internal edges, which a graph near $K_{m,m+d}$ need not have. Conversely, Theorem~\ref{thm:main} is not implied by those results. It allows $|X|$ linear and $\own(x)$ up to $3m/4$, where SP~14.37 requires $\own\le cm$ at every vertex with $c\le10^{-6}$.
+\item \textbf{SP Corollary 14.39.} Theorem~\ref{thm:main} returns the exceptional set of Corollary~14.39 whenever the configuration is balanced (Remark~\ref{rem:maxcut}). What remains open is described next.
+\item \textbf{NH} returns one or two mixed vertices of degree $2D$ when all healthy degrees equal $D$. Those vertices have degree about $n$, so they lie outside hypothesis~\ref{h:exc}. Theorem~\ref{thm:main} and NH cover disjoint regimes.
+\end{enumerate}
+
+\subsection{What a proof of Target D still needs}
+SP Corollaries~14.24 and 14.26 reduce Target~D to failure sequences. Corollary~\ref{cor:failures} and Remark~\ref{rem:maxcut} then leave the following situations.
+
+\begin{problem}[Two-sided removal]\label{prob:twosided}
+Extend SP Theorem~14.33 as follows. Allow the removed set $W$ to contain vertices with linear degree into \emph{both} shores, and allow up to $o(m)$ further exceptional vertices that remain in the graph. Each removed vertex $w$ is then converted into labelled pairs of its neighbours on both shores, each label used at most once per slot, and these must be scheduled in SP's one-apex scheme.
+\end{problem}
+
+SP's one-apex scheme places the sites of one shore $A$ in cyclic intervals of consecutive slots, and the sites of the other shore $B$ in rapidly moving ``bins''. Labelled pairs on $A$ are scheduled by SP's queue lemma (Lemma~14.34), using tips that are consecutive in the interval order. Two difficulties arise for labelled pairs on $B$:
+\begin{itemize}[nosep]
+\item their tips must share a slot, whose $B$-membership is determined only after the slot sizes are fixed;
+\item the slot sizes must already account for the pairs.
+\end{itemize}
+
+Two pieces of the solution are in place:
+\begin{itemize}[nosep]
+\item By Lemma~\ref{lem:identity}, in a one-apex scheme the imbalance $e_R(A)-e_R(B)$ is absorbed by the apex's split between the shores. That split can be anything in $[0,D]$. So the counting obstruction of Remark~\ref{rem:forces} disappears.
+\item A greedy choice of the side of each exceptional vertex keeps the accumulated imbalance within $\pm D$. Each vertex changes it by at most $D$, and the sign can be chosen at each step.
+\end{itemize}
+What is missing is only the scheduling of the two-sided pairs.
+
+\begin{problem}[High-degree exceptional vertices]\label{prob:high}
+Return exceptional vertices of degree at least $(1/2+\beta)n$ for a fixed $\beta>0$. Such a vertex lies on more than $n/4+\beta n/2$ of the at most $n/2$ paths. In a Hamilton-decomposition finish it must therefore lie on both arcs of a positive proportion of the Hamilton cycles.
+
+NH achieves this for at most two vertices by splitting each into two copies of degree $D$, when the healthy degrees all equal $D$. With three or more split pairs, the cyclic order of the copies on a Hamilton cycle would have to admit two arcs that each contain exactly one copy of every split vertex. CKLOT Theorem~1.3.5, used as a black box, does not control this order.
+\end{problem}
+
+By SP Corollary~14.26, a failure has $\max\{\Delta,\odd\}=n-o(n)$. So Problem~\ref{prob:high} cannot be avoided when the failure has a near-universal vertex. When instead $\odd(G)=n-o(n)$ and $\Delta\le(1/2+o(1))n$, only Problem~\ref{prob:twosided} remains, and only in the unbalanced case.
+
+\section{Lean formalisation}\label{sec:lean}
+
+Two finite lemmas used above are cleanly separable from the asymptotic argument. They are formalised in \texttt{lean/GallaiLean/NearDirac.lean} against the project's Mathlib pin. Both are sorry-free, and \texttt{\#print axioms} reports only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+\begin{enumerate}[label=(\arabic*)]
+\item \texttt{matrix\_cut\_ineq}: for real $0\le x,y\le0.65$,
+\[
+0.6x+0.6y-0.4-xy+0.03\min(x,y)<0 .
+\]
+This is the inequality closing the proof of Lemma~\ref{lem:matrix}.
+\item \texttt{dense\_bipartite\_hall}: let $L,R$ be finite types with $|L|=|R|=k$ and $r$ a relation, with $4M\le k$. Suppose every $\ell\in L$ is related to at least $k-2M$ elements of $R$, and every $\rho\in R$ to at least $k-2M$ elements of $L$. Then there is an injection $f:L\to R$ with $r(\ell,f(\ell))$ for all $\ell$. This is the Hall step of Lemma~\ref{lem:weave}, derived from Mathlib's form of Hall's theorem.
+\end{enumerate}
+The asymptotic parts (CKLOT Theorem~1.3.5, the slot construction and the Hamilton finish) are not formalised.
+
+\begin{thebibliography}{9}
+\bibitem{CKLOT} B.~Csaba, D.~K\"uhn, A.~Lo, D.~Osthus and A.~Treglown, \emph{Proof of the 1-factorization and Hamilton decomposition conjectures}, Mem.\ Amer.\ Math.\ Soc.\ \textbf{244} (2016), no.~1154; arXiv:1401.4159v2.
+\bibitem{GGKO} A.~Gir\~ao, B.~Granet, D.~K\"uhn and D.~Osthus, \emph{Path and cycle decompositions of dense graphs}, J.\ London Math.\ Soc.\ \textbf{104} (2021), 1085--1134; arXiv:1911.05501v2.
+\bibitem{SP} J.~Williams, \emph{Separators and endpoint exchange in the rooted Gallai problem}, manuscript, 25 November 2026 (archive file \texttt{gallai/02-november-25/separating-pairs.pdf}), \S14.
+\bibitem{NH} \emph{Restoring one or two mixed vertices by splitting their incidences}, technical note, 26 November 2026 (archive file \texttt{gallai/05-technical-notes/near-half-mixed-vertices.pdf}).
+\bibitem{DEC} \emph{Exact path counts above the Dirac threshold}, reading packet, 26 November 2026 (archive file \texttt{gallai/05-technical-notes/dense-exact-counts.pdf}).
+\end{thebibliography}
+
+\end{document}
