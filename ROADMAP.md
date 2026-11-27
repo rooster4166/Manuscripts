@@ -120,7 +120,7 @@ EMM sufficiency work is **stopped**.
     - n ≥ 10 and every neighbour of r has degree ≤ 6.
   - **Method:** a Lovász decomposition of B − r, followed by Hall's condition with defect 2.
   - **Data:** all 14,131 degree-(n − 2) roots at order 10 satisfy RE. The method fails only in the dense range, which is inside MR Thm 170, starting from m ≥ 2k² − 3k + 4.
-  - **Next:** a coverage table, the manuscript and the audit.
+  - **Finished** (b144a22; audit A31 applied; synthesis §29). Lean also has a Test1 corollary on cones. Order 10: 13,507/14,131 by Thm 3.1; 13,984 with Thm 170 and the literature; the method works at all but the MR Cor 168 range.
 - **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`): **finished** (98d805e). Manuscript `manuscripts/dl-one`; audit A29 applied.
   - **DL(1) is NOT proved.**
   - **Lean (`DLOne.lean`):** the twin exception is needed, Lemma NP (leaf exchange), DL(1) for a leaf at g, DL(1) for d(g) = 2 with a single common neighbour, and the free-target transfer.
