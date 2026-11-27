@@ -927,8 +927,21 @@ separable (audit~A22).
 data (every pairing works) and the chained walk theorem, which leaves the base problem: a
 Lov\'asz decomposition of $M$ separating six pairs. It is solved when the neighbours are far
 apart, but there the first test was already known (Remark~\ref{rem:known6}). To reach the open
-part of T(6)-i, where $B[N(z)]$ is nearly complete, the base problem must be solved for dense
-neighbourhoods, where most pairings have adjacent pairs and $G$ is a multigraph. A sparse form along the lines of
+part of T(6)-i, the base problem must be solved for dense neighbourhoods. There
+$D=K_6-B[N(z)]\in\{\emptyset,K_2,P_3,K_3,C_4\}$ has matching number at most $2$, so \emph{no}
+pairing of $N(z)$ is simple: every pairing has at least $3-\nu(D)$ pairs adjacent in $J-z$ ($3$ for
+$D=\emptyset$, at least $2$ for $K_2,P_3,K_3$, exactly $1$ for the two matchings of $C_4$).
+
+A parallel pair is harmless in the role of the leafed edge $x_1y_1$. Then $x_1$ loses its end
+only at the last step of the last walk, and the edge $x_1y_1$ of $J-z$ simply stays in $M$; the
+leaves are merged through $z$ rather than into the $x_i$, which avoids the multigraph. In the
+roles $x_2y_2$, $x_3y_3$ the edge $x_iy_i$ of $J-z$ makes the endless vertex $x_i$ a blank
+neighbour of the first Fan target $y_i$ of a walk, so Lemma~\ref{lem:walkback} fails at its first
+step. That is the configuration of the protected-blank form of Fan's lemma
+(\texttt{fan\_single\_protected\_supp}). So $D=C_4$ is within reach of this J-form of
+Theorem~\ref{thm:chain}, while $D\in\{K_2,P_3,K_3\}$ needs one protected step and $D=\emptyset$
+needs two. On random $3$-connected $J$ with $B[N(z)]=K_6-C_4$ (\texttt{gen\_core.py},
+\texttt{walk3p.c}) the base search is far harder than in the sparse case, and data are pending. A sparse form along the lines of
 Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
 girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
 new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain}, Proposition~\ref{prop:far} and

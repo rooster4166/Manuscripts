@@ -1350,7 +1350,12 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
      - It implies STL-P (three transitions) at every far-apart degree-6 vertex of a 3-connected graph, via `stl3_of_far`. It would also give a composition proof of the known Test1 there.
      - P1 also avoids y3 (N taken in G, as in Lean `AdmChain`; audit A22c G1). The re-runs with y3 excluded are unchanged.
      - The difficulty: H is only 2-connected, and deleting N[x3] can disconnect it.
-   - **Missing, and the real target:** the base hypothesis when B[N(z)] is dense (the open T(6)-i residual), where most pairings have adjacent pairs (multigraph G). Also missing: Conjecture 8.6.
+   - **Missing, and the real target:** the base hypothesis when B[N(z)] is dense (the open T(6)-i residual). Also missing: Conjecture 8.6.
+     - **Residual (sent to the coordinator):** D = K6 − B[U] ∈ {∅, K2, P3, K3, C4}, with 66 rooted patterns, plus the degree, incidence and hub conditions of research/notes/reader-six-even-program.md. The core is finite, but the exterior is unbounded (4EX Prop 16), so the residual is not finite; |B| ≥ 12 for a failure.
+     - **ν(D) ≤ 2, so no pairing of U is simple.** At least 3 − ν(D) pairs are adjacent in B: 3 for ∅, ≥ 2 for K2/P3/K3, exactly 1 for the C4-matchings.
+     - **Role analysis.** A parallel pair is harmless as e1: x1 loses its end only at the very last walk step, its B-edge stays in M, and the merge goes through z (J-form). As e2 or e3, its B-edge makes x_i a blank neighbour of y_i = the first Fan target, which is the shape of `fan_single_protected_supp`.
+     - So C4 is reachable by the J-form of Thm 8.2; K2/P3/K3 need one protected step; ∅ needs two.
+     - Test: `gen_core.py` and `walk3p.c` (parallel e1 allowed). The base search is far harder here: with a 2·10⁶-node budget, 769 of the 1,324 order-15 C4 searches are cut off and none succeeds. A 50·10⁶-node run on 20 graphs is pending.
    - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
