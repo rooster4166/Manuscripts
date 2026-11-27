@@ -71,9 +71,11 @@ endpoint matroid is uniform, so the obstruction lies in the moves, not in the hy
 \end{itemize}
 The positive counterpart is the \emph{flower move}. When the receipts at a hub stop at Fan's
 equality, the paths close into cycles through the hub. A path that takes one edge from each cycle
-then recombines them into one more path, with two ends at the hub. This proves the rooted test for
-$K_{2m}$ minus a perfect matching for $m\le5$. For all $m$ it follows from a rainbow-path question
-about Hamiltonian decompositions, which we checked for $m\le10$.
+then recombines them into one more path, with two ends at the hub. For $K_{2m}$ minus a perfect
+matching, both the failure of Fan's test and the rooted test at every vertex are already Theorem~10.21
+of~\cite{SP}, which opens Walecki's Hamilton cycles along a path. Our contributions are the move in
+general: equality forces a flower, and the dichotomy ``receipt or flower''. As an application, the
+order-$10$ graph $B'$ of~\cite{MM} satisfies the rooted test at every vertex.
 The endpoint matroid conjecture holds for all $1{,}082$ connected critical graphs of order eight.
 \end{abstract}
 \maketitle
@@ -1373,6 +1375,11 @@ $|F|\ge 2m(m-1)-(m-2)(2m-1)=3m-2$, more than the $2m-1$ edges of a path in $\mat
 hypotheses, and depend only on the standard axioms. Part~(1) of the theorem is general: for any
 even-regular graph with $d>(3n-2)/4$, no Fan transfer can finish at the budget $n/2$.\par}
 
+\emph{Credit.} For $K_{2m}$ minus a perfect matching, the failure of Fan's numerical test is due
+to~\cite[Theorem~10.21]{SP}. It is proved there in the rooted form $(F-e)^t$, for both orientations
+of every edge and every partition within budget. Corollary~\ref{cor:cp}(1) re-derives it in the
+leafless form. Theorem~\ref{thm:barrier}(1) is the general counting behind it.
+
 \begin{remark}[Consequence for stronger hypotheses]\label{rem:Hverdict}
 An induction hypothesis about realisable sets or end profiles of proper spanning subgraphs enters a
 Lov\'asz--Fan reduction only through the seed. In the reduction of Theorem~\ref{thm:branching}, every
@@ -1385,7 +1392,8 @@ uniform. The obstruction lies in the moves, not in the hypothesis.
 A proof must spend a spare path: a new path of at least $m-1$ edges, added to a partition of
 $\mathrm{CP}(m)-F$ into $m-1$ paths. For $m=4$ and a new path of exactly $m-1=3$ edges, the remaining $21$
 edges form three Hamiltonian paths. This is exactly the flower configuration by which the companion manuscript~\cite{MM}
-(Proposition~5.5) proves (R) on $M_8$. Its last move adds the transversal path $L$ of three edges to
+(Proposition~5.5) proves (R) on $M_8$. For every $m$ it is the explicit construction
+of~\cite[Theorem~10.21]{SP}. Its last move adds the transversal path $L$ of three edges to
 the three paths $C_i-e_i$, so the bound $|F|\ge m-1$ is attained. The two results together locate the
 missing ingredient. It is not a stronger hypothesis; it is a move that spends a spare path at
 Fan's equality.
@@ -1394,11 +1402,19 @@ Fan's equality.
 \subsection*{The flower move}
 
 Corollary~\ref{cor:cp} says how a certificate for $\mathrm{CP}(m)$ must end: with a new path of at
-least $m-1$ edges, added to a partition of the rest into $m-1$ paths. We now show that this ending
-exists. It comes from the state in which Fan's receipts at a hub stop at equality. Throughout, a
+least $m-1$ edges, added to a partition of the rest into $m-1$ paths. For $\mathrm{CP}(m)$ this ending
+is known to exist~\cite[Theorem~10.21]{SP}. Our contributions here are the following:
+\begin{itemize}
+\item the flower lemma in the generality and formalisation of Lemma~\ref{lem:flower} (the lemma itself
+appears in~\cite{MM} and in the proof of~\cite[Theorem~38]{MR});
+\item the fact that Fan's equality forces a flower (Proposition~\ref{prop:equality});
+\item the receipt-or-flower dichotomy (Theorem~\ref{thm:receiptflower});
+\item its application to $B'$ (Proposition~\ref{prop:Bprime}).
+\end{itemize}
+We now show that the ending arises from Fan's receipts. It comes from the state in which Fan's receipts at a hub stop at equality. Throughout, a
 path $P$ from $a$ to $b$ with $ab\notin E(P)$ is \emph{closed} into the cycle $C(P)=P+ab$.
 
-\begin{lemma}[Flowers; {\cite[Lemma~5.4]{MM}}]\label{lem:flower}
+\begin{lemma}[Flowers; {\cite[Lemma~5.4]{MM}}, {\cite[proof of Theorem~38]{MR}}]\label{lem:flower}
 Let $P_1,\dots,P_k$ be paths, and let $L$ be a path whose edges are $e_1,\dots,e_k$ with $e_i\in
 E(C(P_i))$. Then the paths $C(P_i)-e_i$ ($i\le k$) and $L$ have, together, exactly the edges of the
 cycles $C(P_i)$, there are $k+1$ of them, and they have two ends at every vertex of $L$ and none
@@ -1506,13 +1522,35 @@ $a_2a_3\in C_3$, $a_3s\in C_4$, $sa_1\in C_1$ and $a_1x\in C_2$.
 $\mathrm{CP}(4)=M_8$ and $\mathrm{CP}(5)$ satisfy the rooted test at every vertex.
 \end{corollary}
 
-For $\mathrm{CP}(4)$ this is Proposition~5.5 of~\cite{MM}. For $m\ge6$ Theorem~\ref{thm:cpm} needs
-the following.
+\emph{Credit and status.} The rooted test for $\mathrm{CP}(m)$ at every vertex and every $m\ge4$
+is Theorem~10.21 of~\cite{SP}. Its proof is a flower with an explicit transversal:
+\begin{itemize}
+\item take Walecki's Hamilton cycles on $\{t\}\cup\mathbb Z_{2h}$;
+\item detour each antipodal missing edge through the mate of $t$, which gives $h=m-1$ Hamilton cycles;
+\item open all of them along the path $Q=(t,1,\dots,h)$, which meets them in turn, and adjoin $Q$.
+\end{itemize}
+So Theorem~\ref{thm:cpm} and Corollary~\ref{cor:cp45} are not new results about $\mathrm{CP}(m)$.
+They show only that the same ending is reached from an \emph{arbitrary} Lov\'asz seed through Fan's
+receipts. That route needs a transversal of whatever Hamilton cycles the receipts produce.
+\begin{itemize}
+\item Proposition~\ref{prop:rt4} provides one for at most four cycles.
+\item Marked-reduction Theorem~38~\cite{MR} gives more without any transversal: $j\le7$
+edge-disjoint cycles through a vertex $x$, Hamiltonian or not, partition into at most $j+1$ paths
+with at least two ends at $x$. The path count is Chu, Fan and Zhou's Lemma~2.5. So the receipt route
+already closes $\mathrm{CP}(m)$ for $m\le8$.
+\item Theorem~13.18 of~\cite{SP} gives neighbour-exchange conditions for opening any number of
+cycles through a vertex.
+\end{itemize}
+For $\mathrm{CP}(4)$ the receipt route is Proposition~5.5 of~\cite{MM}.
 
 \begin{question}[Rainbow transversals]\label{qu:rt}
 Let $C_1,\dots,C_k$ be edge-disjoint Hamiltonian cycles on $2k+2$ vertices. Does every vertex $s$
 lie on (or even start) a path with exactly one edge from each $C_i$?
 \end{question}
+
+For $\mathrm{CP}(m)$ the question is moot: \cite[Theorem~10.21]{SP} settles the graphs directly. We
+keep it only as an independent combinatorial question about arbitrary Hamilton decompositions, and
+about the receipt route of Theorem~\ref{thm:cpm}.
 
 \emph{What is known.} Question~\ref{qu:rt} asks for a rainbow path of a given length in an
 edge-colouring. Here every vertex meets each of the $k$ colours exactly twice, the path must have
@@ -1558,6 +1596,11 @@ no-backtracking rule found a segment transversal starting at $s$ in every test (
 
 The hub flower applies beyond $\mathrm{CP}(m)$. The rigid alternative of~\cite[Lemma~5.1]{MM} is
 exactly its hypothesis.
+
+Marked-reduction Corollary~39~\cite{MR} has the same structure in a different setting. A new
+vertex is joined to ends of old paths, and the doubly assigned paths close through it into cycles,
+which Theorem~38 of~\cite{MR} then opens. The next theorem is the version at Fan's equality in the
+receipt process.
 
 \begin{theorem}[Receipt or flower]\label{thm:receiptflower}
 Let $D$ be a partition of $H$, and let $s$ be a vertex with $b_D(s)=d_H(s)$. Let $T$ be a set of

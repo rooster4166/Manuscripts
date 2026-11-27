@@ -49,6 +49,8 @@ The dense track D (close Cor 14.39) is deprioritised. The formal targets below (
 **Everything now hinges on proving `BranchBase3 k`.** Lovász + Fan certificates cannot do it in general: Gqz~vw at y = 3 is an instance of `BStmt 3` with no certificate using ≤ 8 held edges (E13). So the missing-move lemma is the decisive target.
 **Three even neighbours (FanBarrier.lean): `gallai_of_branchBase3 : (∀ k ≥ 3, BranchBase3 k) → GallaiConjecture`.** The case of exactly two even neighbours reduces by a rooted transfer (`branchBase_of_three`), so `BranchBase3` asks for descent keeping y only when y has ≥ 3 even neighbours.
 
+**Credit: CP(m) rooted test and the failure of Fan's test there are separating-pairs Thm 10.21** (explicit Walecki construction opened along Q = (t, 1, …, h)). The flower work below re-derives it by the receipt route. Question 66 is moot for CP(m). MR Thm 38 closes ≤ 7 cycles through a vertex without transversals.
+
 **The flower move (Flower.lean; endpoint-structure §7).**
 - `flower_decomp` and `hub_cycles`: at Fan's equality the hub's paths close into cycles, and a transversal path recombines them into one more path with b(s) = 2.
 - `cocktail_passes_of_rt`: CP(m) passes the rooted test for every m ≥ 4, given `RainbowTransversal (m − 1)` (open; E16 finds no failure for m ≤ 10).
@@ -280,6 +282,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Receipt or flower** (endpoint-structure Thm 67; Lean `flower_decomp_rest`).
   - **B′ (n = 10, Q2) closes by hand**, by receipt or flower (Prop 68), giving (R) at every vertex.
   - A_{6,2}: the core roots follow from missing-move Prop 5.2 by symmetry.
+- 2026-11-26 (cloud session `claude/emc-four-even`, follow-up 7): **credit correction.**
+  - CP(m) (all m) and the failure of Fan's test there are SP Thm 10.21. MR Thm 38 / Cor 39 already give ≤ 7-cycle openings with two ends at the hub.
+  - Endpoint-structure §7, connections §N and this file now credit them. Our part is equality-forces-flower, receipt-or-flower, B′ (Prop 68) and the Lean files.
+  - Rainbow-transversal work is stopped (pause requested).
 - 2026-11-26 (cloud, `claude/two-even-lovasz`): second descent step. Descent = Lemma 4 on G − uw + Fan's lemma restoring uw. Non-realisable pairs are E-twins (Lean). Pair step via Fan's grouped lemma (Lean). Goal (b) proved except e = 4, G[Ev] = K_3 + r. Fan certificates (sound, Lean) give a d-uniform sufficient condition for (R) (semi-induced matchings in G[Ev]). Obstructions (O1)–(O3) and a cut-vertex gluing rule for two-even graphs. Prop 13's e = 4 proof shows (R) only, not a realisable 2-set; Thm 28 supplies the latter except K_3 + r.
 - **Fan game (E13, connections §R):** Lovász seeds + Fan transfers win every root at n = 6. At n = 8, every losing graph has Δ(EV) ≥ 4, and all losers but one are non-critical, where splitting at the root suffices. **The critical loser is Gqz~vw** (K8 minus {03,12,23,34,56,67}, 4-connected) at root 3. This is the test case for the missing-move session.
 - **JM repair delivered** (16 pp.); audits A9 (d6-frontier and the new descent sections) and A10 (JM repair) are running.
