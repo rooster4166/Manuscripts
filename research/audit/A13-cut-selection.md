@@ -22,7 +22,7 @@ Sources audited:
 - The parent session checkpointed my work (5c68000, f910027) and pushed a recompiled PDF (b9dd270).
 - **First merge**, at the coordinator's request: the author's revision 8e7346e (EMM₃, Prop 9 / Cor 22 via SP 10.16). The merge commit 328eb52 was committed by the main session while the merge was still in progress, and it contained unresolved conflict markers in the .tex. I resolved all six hunks as an ordinary edit (fdfaddd), keeping both sides, and recorded that EMM₃ is false (4765feb).
 - **Second merge** (1c24c59): the author's rewrite ef78acc. Where its text conflicted with my corrections, I kept the corrections (§6). Its other text is the author's.
-- Not audited: b7923d3 on `claude/emc-four-even`, which added a second proof of cut selection via an auxiliary graph on V × V (`scripts/auxgraph.py`, connections §U). It arrived after the rewrite, does not touch the .tex, and was not merged by me.
+- b7923d3 on `claude/emc-four-even` added a second proof of cut selection via an auxiliary graph on V × V (`scripts/auxgraph.py`, connections §U). It does not touch the .tex. At the coordinator's request I audited it as well (§5.5); the "transition lemma" in the same note is not audited.
 - In both merges, `research/experiments.md` (not my file) conflicted only over a duplicated E18 block. First I kept both sides; then I took the rewrite's de-duplicated version.
 
 **Independence.** I wrote `research/audit/A13-scripts/a13_check.py` (the construction and a brute-force check of (1)) from the text alone, before opening the authors' `scripts/construction.py`. It shares no code with `manuscripts/endpoint-min-max/scripts/`, `tools/cutfeas.c` or `tools/realis.c`. The same holds for:
@@ -78,6 +78,9 @@ Verdicts: **SOUND**; **GAP** (fixable; the fix is stated); **ERROR** (false; a c
 | H6 | **Theorem 27 (NP-completeness)** | **SOUND** | Cut-feasibility comes from Prop 24, and realisability from Prop 25 + Thm 26. NP membership: the partition is a certificate. The reduction is from Hamiltonicity of 3-connected cubic planar graphs (Garey–Johnson–Tarjan 1976, correctly cited), which are bridgeless; \|V(G(H))\| = 3\|V(H)\| − 2. Cut-feasibility is polynomial by n max-flows. So the "no polynomial characterisation unless P = NP" claim is correct. Nothing here needs the sufficiency of (1). |
 | H7 | Example (order 28) and `scripts/kotzig.py` (non-independent) | **Reproduced** | n = 28, m = 42, slack 24 everywhere. 160 Hamiltonian cycles of L(P). The author's script: 12 test graphs, all consistent (`out/author_kotzig.txt`). |
 | H8 | **Remark 28 ("EMM₃ is open")** | **Out of date — flagged** | See C28. The rest of the remark is correct (L starves R: 14 vertices, 4 boundary edges). |
+| A1 | **Cut-form pairing lemma** (connections §U): Odd(Γ) has a pairing π with σ_π(S) ≤ \|δ_Γ(S)\| ∀ S | **SOUND** | Edge-deletion induction. All five cases are covered: both ends odd in Γ − xy and paired together, or paired with a ≠ b; exactly one end odd (twice); both even. Each step uses \|δ_Γ(S)\| = \|δ_{Γ−xy}(S)\| + [xy] and the triangle inequality of [ab] = \|1_S(a) − 1_S(b)\|. It is also implied by Lemma 14. Brute-force check over all S on 300 random graphs of order ≤ 12. §5.5. |
+| A2 | **Auxiliary graph B on V × V**: Odd(B) = {(v,v): v ∈ Ev}; \|δ_B(S)\| = \|δ_{G^v}(Y)\| | **SOUND** | deg_B(v,w) = deg_{F^v}(w) + [vw ∈ J], which is even for w ≠ v by Lemma 19, and deg_B(v,v) = n − 1 − d(v). For S: copies u ≠ v lie wholly in S or out of it; copy v gives δ_{F^v}(Y); a J-edge ux with u, x ≠ v crosses iff it lies in δ_{J−v}(Y); J-edges at v never cross. Then (eq:split). Also σ_π(S) = σ_P(Y). §5.5. |
+| A3 | **Second proof of Thm 21** (pairing lemma on B, then Lemma 13) | **SOUND**, and stronger | It works for **any** T-join, not only forests, but gives no route system. Independent check: all connected graphs of order ≤ 8, 22,906 constructions, of which 4,592 used a non-forest J. Odd(B) was asserted every time; the cut identity was checked exhaustively at n = 6 and on every 50th graph at n = 8; goodness by brute force on (1). No failure. The author's `auxgraph.py` (non-independent): 0 of 10,992 not good. |
 
 **Overall.** **Theorem 21 is correct**, in the original and the merged wording. Every step I was asked to check is SOUND:
 - the forms of (1) and the G^v reduction, including parity;
@@ -95,6 +98,8 @@ Two independent implementations find no failure: the authors', and mine with arb
 - The original Corollary 22 ("EMM ⇒ Gallai") was a correct but vacuous implication.
 - Proposition 9 / Corollary 22 of 8e7346e were correct implications from EMM₃ at minimum degree ≥ 5, granting SP Theorem 10.16.
 - The rewrite removes both. Its Remark 9 correctly makes no Gallai claim.
+
+**The auxiliary-graph proof** of Theorem 21 (connections §U, planned as the main proof) is SOUND: the cut-form pairing lemma, Odd(B) and the cut identity all check, and it does not even need J to be a forest (§5.5).
 
 **The one outstanding problem.** Remark 28 and open problem 1 of the final text still call EMM₃ (minimum degree 3) open. It is false: the order-18 example of synthesis §14, which I confirmed independently, including by a direct oracle run. Per the coordinator I flag this and do not fix it.
 
@@ -410,6 +415,37 @@ So n = 18, m = 36, δ = 3, e = 16, and the half-set is M = V(K_{4,4}).
 - **Example.** m = |E(L(P))| − 4 + (N − 3) + 1 + 4 = 30 − 4 + 11 + 1 + 4 = 42. The slack is 28 − 4 − 0 = 28 − 2 − 2 = 24 everywhere. **Correct.**
 - **`scripts/kotzig.py`** (non-independent; `out/author_kotzig.txt`). It reports all 12 test graphs consistent: bridgeless ⟺ λ ≥ 4 ⟺ cut-feasible, and Hamiltonian ⟺ Hamiltonian-decomposable, with the oracle for n ≤ 16. This matches the text.
 - **Remark 28** calls EMM₃ open. It is **out of date** (§4.4). The rest of the remark is correct: "L starves R: fourteen even vertices and four boundary edges", and the observation that marks inside R remove the Hamiltonicity requirement.
+
+### 5.5 The auxiliary-graph proof of Theorem 21 (connections §U, b7923d3; not yet in the .tex)
+
+- **Pairing lemma, cut form.** Induct on |E(Γ)|; the empty graph has no odd vertices. Delete an edge xy, and let π′ pair Odd(Γ − xy). Write [ab] = |1_S(a) − 1_S(b)|. The cases are:
+  1. *x and y odd in Γ − xy and paired together.* Drop the pair: σ decreases.
+  2. *x and y odd in Γ − xy, paired with a and b.* Here a ≠ y, b ≠ x and a ≠ b. Replace {x, a}, {y, b} by {a, b}. Since [ab] ≤ [ax] + [xy] + [yb], σ rises by at most [xy].
+  3. *Only x odd in Γ − xy.* Then y is not paired in π′, so a = π′(x) ≠ y. Replace {x, a} by {y, a}, using [ya] ≤ [yx] + [xa].
+  4. *Only y odd.* Symmetric to case 3.
+  5. *Both even in Γ − xy.* Add {x, y}.
+
+  In every case σ_π(S) ≤ σ_{π′}(S) + [xy] ≤ |δ_{Γ−xy}(S)| + [xy] = |δ_Γ(S)|. **SOUND.** No paths, components or handshake lemma are needed, as the note says.
+- **B.** The vertex set is V × V. Copy v ({v} × V) carries F^v, and each J-edge vx gives the edge (v,x)–(x,v).
+  - *Parity.* deg_B(v,w) = deg_{F^v}(w) + [vw ∈ J]. For w ≠ v this is even by Lemma 19, and deg_B(v,v) = n − 1 − d(v). So Odd(B) = {(v,v) : v ∈ Ev}.
+  - *Cut identity.* For v and Y ⊆ V − v, put S = (Y × V) ∪ ({v} × Y). Count the edges of B leaving S:
+    - copies u ≠ v are wholly inside S or wholly outside, so their edges contribute nothing;
+    - edges of copy v cross exactly when they lie in δ_{F^v}(Y);
+    - a J-edge (u,x)–(x,u) with u, x ≠ v crosses exactly when ux ∈ δ_{J−v}(Y);
+    - a J-edge (v,x)–(x,v) has both ends in S iff x ∈ Y, so it never crosses.
+
+    So |δ_B(S)| = |δ_{F^v}(Y)| + |δ_{J−v}(Y)| = |δ_{G^v}(Y)| by (eq:split).
+  - *Pairs.* (u,u) ∈ S ⟺ u ∈ Y, so σ_π(S) = σ_P(Y).
+  - **SOUND.**
+- **Conclusion.** σ_P(Y) ≤ |δ_{G^v}(Y)| for every v and every Y ∌ v. By Lemma 13, P is good.
+  - The forest hypothesis is not used, since Lemma 19 and (eq:split) hold for any T-join.
+  - This proof yields a good pairing but no route system in G, so the polynomial-time *route* construction of Thm 21(1)–(3) still needs the first proof. As a proof of the existence statement it is shorter, and it is correct.
+- **Computation** (`a13_auxgraph.py`, independent; `out/auxgraph.txt`).
+  - The pairing lemma was checked by brute force over all S on 300 random graphs of order 2–12.
+  - For every connected graph of order 6 and 8, I took J both as a spanning-tree T-join and as that T-join plus random cycles of G. The non-forest J occurred in 4,592 of the 22,906 constructions.
+  - Odd(B) was asserted every time. The cut identity and σ_π(S) = σ_P(Y) were checked on every (v, Y), for all graphs at n = 6 and every 50th graph at n = 8.
+  - Goodness was checked by brute force on (1). No failure.
+  - The author's `scripts/auxgraph.py` (non-independent; run from a copy of b7923d3) reports 0 bad pairings among 99 + 10,893 graphs (`out/author_auxgraph.txt`).
 
 ## 6. Changes made to the .tex (recompiled twice with pdflatex each time; numbering unchanged)
 
