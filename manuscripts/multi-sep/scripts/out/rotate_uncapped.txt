@@ -1,0 +1,4 @@
+n=10 : rotation strategy fails 1/24, budget-out 0
+n=12 : rotation strategy fails 4/152, budget-out 0
+n=12 : rotation strategy fails 14/152, budget-out 0
+n=12 -t: rotation strategy fails 1/63, budget-out 0

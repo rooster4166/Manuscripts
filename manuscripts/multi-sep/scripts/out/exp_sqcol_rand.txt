@@ -1,0 +1,2 @@
+rand n=10: total 100 fail 0 unknown 0 colours {4: 35, 6: 32, 7: 10, 8: 12, 9: 4, 5: 4, 10: 1, 2: 2}
+rand n=12: total 100 fail 0 unknown 3 colours {7: 13, 6: 29, 8: 23, 11: 4, 9: 12, 5: 5, 4: 9, 10: 5}

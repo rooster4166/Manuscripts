@@ -30,7 +30,7 @@ def colour(S, k, rng):
 
 def min_colouring(K, rng):
     S = square(K)
-    k = max(len(S[v]) for v in S) // 2 + 1
+    k = max(len(K[v]) for v in K) + 1   # closed neighbourhoods are cliques of K^2: a valid lower bound
     while True:
         c = colour(S, k, rng)
         if c: return k, c
@@ -61,7 +61,9 @@ def main(n, ngraphs, per, seed, budget, mode):
             if res == 0:
                 fail += 1
                 if fail <= 5: print("FAIL k=%d" % k, {v: sorted(K[v]) for v in K}, sorted(cls.values()), flush=True)
-            elif res == 2: unk += 1
+            elif res == 2:
+                unk += 1
+                print("UNDECIDED k=%d" % k, {v: sorted(K[v]) for v in K}, pairs, flush=True)
     print(f"{mode} n={n}: total {tot} fail {fail} unknown {unk} colours {dict(kc)}")
 
 if __name__ == '__main__':
