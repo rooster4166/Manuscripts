@@ -1048,3 +1048,48 @@ Every failure other than K4 has a cut vertex in G' = G − F, and J of connectiv
 | 8 | 13,025 | 68 | 12,193 | 2,288 (3,093 with walks up to 3 longer) |
 
 The base hypothesis is decided exactly (the stl.c engine with a separation constraint).
+
+## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
+
+Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l1star/scripts/` (README there). Conclusions: connections §AA.
+
+**Oracle.** `l1s.c` decides whether some Lovász decomposition has Q_c ∩ A = ∅. Its search core is the `pee.c` oracle of E23: Q_c is grown first and never enters A, then the remaining edges get an exact search with prescribed ends.
+- Validation against an independent brute force over transition systems (`brute.py`, `xcheck_brute.py`): every connected graph of order ≤ 7 with ≤ 1 even vertex, every odd c, and *every* subset A ⊆ V ∖ {c}, admissible or not.
+  - 64 + 448 + 2,496 queries at n = 4, 5, 6, 0 mismatches.
+  - n = 7: `out/xcheck_7.txt`.
+
+**(A) Local form, exhaustive** (`l1s max`): A_max = V ∖ (N[c] ∪ N(g)) for every connected graph with ≤ 1 even vertex and every odd c. A pass implies L1* for every admissible A, of any size.
+
+| n | graphs | pairs (G, c) | failures |
+|---|---|---|---|
+| 5 | 7 | 28 | 0 |
+| 6 | 13 | 78 | 0 |
+| 7 | 130 | 780 | 0 |
+| 8 | 224 | 1,792 | 0 |
+| 9 | 11,936 | 95,488 | 0 |
+| 10 | 32,851 | 328,510 | 0 |
+| 11 | see `out/max11_*.txt` | | |
+
+**(B) Random** (`rand_max.py 3000 7 5000000 11 … 16`): 3,000 connected graphs at n = 11–16, 38,896 pairs (G, c), 0 failures, 199 undecided (budget 5·10⁶).
+
+**(C) Necessity and shape.**
+- Dropping A ∩ N(g) = ∅ gives failures (`maxn5–7`); every minimal failing set meets N(g).
+- "A separates c from g" does not replace the condition: at n = 9, 3,162 of 47,526 such instances with A ∩ N(g) ≠ ∅ fail (`gen9.txt`). The smallest is `DTw`.
+- Admissible instances with |A| ≤ 4 at n = 9: 565,746, 0 failures.
+- Q_c can be forced to be long (Hamiltonian at n = 8) and to use up to five vertices of N(g) ∖ N[c] (n = 7; `stats*.txt`).
+
+**(D) Two even vertices** (`l1s two`, `packedev`, `peloc`). Is there a decomposition with b = d mod 2?
+- Two even vertices at distance ≥ 3: always (n = 6: 3, n = 8: 173, n = 10: 50,561 graphs).
+- Distance 1 fails in 22,100 of 562,856 graphs at n = 10; distance 2 fails in 21,258 of 501,456.
+- Packed even vertices (pairwise distance ≥ 3): always, n ≤ 10 (including 52 graphs with three at n = 9).
+- The local form with two packed even vertices fails in 61 of 404,488 pairs at n = 10 (the smallest is `GCQbVg`, c = 1, n = 8).
+
+**(E) Census of reductions** (`blocked_count.py`, `irred_all.py`; |A| ≤ 2, one even vertex).
+- n = 9: 411,948 instances.
+  - 144,284 have c ∈ N(g); 68,678 have a free u ∉ N(c); 141,772 have a free u ∈ N(c).
+  - **57,214 are blocked** (13.9%; 13,672 with g ∈ A).
+- After every reduction of the manuscript, one level deep, 2,414 remain (0.59%). All have d(g) ∈ {2, 4}; 2,219 have g ∈ A, and in the rest A separates c from g.
+- Recursive certificate search from the reductions (`cert.py`, `cert_ee.py`):
+  - n = 6: every instance is certified.
+  - n = 7: 35 of 1,868 instances are not.
+  - EE at n = 7: every pair is certified except the six pairs of CP(3) + apex (`F]~vw`, |T| = 4).

@@ -2,7 +2,7 @@
 import sys, collections
 import networkx as nx
 import cert
-cert.MOVES = set(sys.argv[1].split(",")) if len(sys.argv) > 1 else {"M1", "M2", "M2p", "M3", "M7", "M8", "M9"}
+cert.MOVES = set(sys.argv[1].split(",")) if len(sys.argv) > 1 else {"M1", "M2", "M2p", "M3", "M7", "M8", "M9", "M13", "B"}
 C = collections.Counter(); ex = []
 for line in sys.stdin:
     line = line.strip()

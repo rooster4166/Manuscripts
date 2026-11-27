@@ -1,0 +1,3 @@
+PELOCFAIL G?`eVg c=0
+PELOCFAIL GCQbVg c=1
+SUMMARY peloc graphs=173 pairs=1038 ok=1036

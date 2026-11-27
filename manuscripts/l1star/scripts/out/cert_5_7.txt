@@ -1,0 +1,13 @@
+n=5
+('one-even', 1, True) 18
+('one-even', 2, True) 5
+n=6
+('all-odd', 1, True) 162
+('all-odd', 2, True) 153
+n=7
+('one-even', 1, False) 9
+('one-even', 1, True) 1121
+('one-even', 2, False) 26
+('one-even', 2, True) 712
+UNCERT 2 [('F?~vW', 3, 0, [1, 3]), ('F?~vW', 3, 0, [2, 3]), ('F?~vW', 3, 1, [0, 3]), ('F?~vW', 3, 1, [2, 3]), ('F?~vW', 3, 2, [0, 3]), ('F?~vW', 3, 2, [1, 3])]
+UNCERT 1 [('FCdcg', 4, 1, [6]), ('FCdcg', 4, 2, [6]), ('FCdew', 1, 6, [2]), ('FC~vW', 0, 3, [1]), ('FC~vW', 0, 3, [2]), ('FQjR_', 4, 5, [6])]

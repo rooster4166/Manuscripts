@@ -1,0 +1,20 @@
+TWOFAIL E?bw x=0 y=4 dist=1 dx=2 dy=2
+TWOFAIL E?rw x=0 y=1 dist=2 dx=2 dy=2
+TWOFAIL ECrw x=1 y=3 dist=2 dx=2 dy=2
+TWOFAIL ECYW x=0 y=3 dist=1 dx=2 dy=2
+TWOFAIL ECvw x=1 y=4 dist=1 dx=2 dy=4
+TWOFAIL EC~w x=1 y=2 dist=2 dx=2 dy=2
+TWOFAIL EEjw x=1 y=2 dist=2 dx=2 dy=2
+TWOFAIL EEzw x=2 y=4 dist=1 dx=2 dy=4
+TWOFAIL EEvw x=3 y=4 dist=1 dx=4 dy=4
+TWOFAIL EE~w x=2 y=3 dist=2 dx=2 dy=4
+TWOFAIL EFzw x=3 y=4 dist=2 dx=4 dy=4
+TWOFAIL EQjw x=1 y=3 dist=1 dx=2 dy=2
+TWOFAIL EQzw x=3 y=4 dist=2 dx=2 dy=4
+TWOFAIL EUzw x=0 y=4 dist=1 dx=4 dy=4
+TWOFAIL EU~w x=0 y=3 dist=1 dx=4 dy=4
+TWOFAIL EV~w x=0 y=2 dist=1 dx=4 dy=4
+TWOFAIL E^~w x=0 y=1 dist=2 dx=4 dy=4
+  dist 1: graphs=26 decomposable=17
+  dist 2: graphs=18 decomposable=10
+  dist >=3: graphs=3 decomposable=3

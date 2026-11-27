@@ -1,0 +1,6 @@
+(1) c in N(g) 144284
+(2) free u not in N(c) 68678
+(3) free u in N(c) 141772
+BLOCKED g in A 13672
+BLOCKED g not in A 43542
+instances 411948

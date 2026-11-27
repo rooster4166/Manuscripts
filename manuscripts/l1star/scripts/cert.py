@@ -79,6 +79,17 @@ def _cert(G, c, A, depth):
                     return True
         return False
     Ng = set(G[g])
+    # boundary (Lemma 5.1): shrink A to the neighbourhood of the component of c in G - A
+    if "B" in MOVES:
+        compA = nx.node_connected_component(G.subgraph(set(G) - A), c)
+        bd = frozenset(a for a in A if set(G[a]) & compA)
+        if bd != A:
+            return cert(G, c, bd, depth + 1)
+    # M13: d(g) = 2 in a triangle, g in A: drop g from A
+    if "M13" in MOVES and G.degree(g) == 2 and g in A:
+        u0, v0 = sorted(Ng)
+        if G.has_edge(u0, v0) and c not in Ng:
+            return cert(G, c, A - {g}, depth + 1)
     # M1
     if "M1" in MOVES:
         for u in sorted(Ng):
@@ -156,7 +167,7 @@ def _cert(G, c, A, depth):
 
 if __name__ == "__main__":
     K = int(sys.argv[1])
-    MOVES = set(sys.argv[2].split(",")) if len(sys.argv) > 2 else {"M1", "M2", "M2p", "M3", "M7", "M8", "M9"}
+    MOVES = set(sys.argv[2].split(",")) if len(sys.argv) > 2 else {"M1", "M2", "M2p", "M3", "M7", "M8", "M9", "M13", "B"}
     C = collections.Counter(); ex = collections.defaultdict(list)
     for line in sys.stdin:
         line = line.strip()

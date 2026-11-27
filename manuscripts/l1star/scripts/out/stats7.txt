@@ -1,0 +1,98 @@
+EXTREME F?zvg g=3 c=4 minlen_free=3 minlen_local=3 minout=2
+EXTREME F?zmw g=2 c=3 minlen_free=3 minlen_local=3 minout=2
+EXTREME F?znw g=6 c=3 minlen_free=3 minlen_local=3 minout=2
+EXTREME FCRvg g=2 c=4 minlen_free=3 minlen_local=3 minout=2
+EXTREME FCZnW g=4 c=3 minlen_free=3 minlen_local=3 minout=2
+EXTREME FCZ]w g=4 c=2 minlen_free=3 minlen_local=3 minout=2
+EXTREME FCzvg g=0 c=4 minlen_free=3 minlen_local=3 minout=2
+EXTREME FCznW g=0 c=3 minlen_free=4 minlen_local=4 minout=3
+EXTREME FCz]w g=0 c=2 minlen_free=3 minlen_local=3 minout=2
+EXTREME FEv\w g=0 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME FEv\w g=0 c=2 minlen_free=4 minlen_local=4 minout=3
+EXTREME FEnvg g=0 c=4 minlen_free=3 minlen_local=3 minout=2
+EXTREME FEl}w g=2 c=0 minlen_free=4 minlen_local=4 minout=1
+EXTREME FEl}w g=2 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME FEl~w g=6 c=0 minlen_free=4 minlen_local=4 minout=1
+EXTREME FEl~w g=6 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME FEl~w g=6 c=2 minlen_free=4 minlen_local=4 minout=1
+EXTREME FE~tw g=0 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME FE~tw g=0 c=2 minlen_free=4 minlen_local=4 minout=1
+EXTREME FTzvg g=3 c=1 minlen_free=4 minlen_local=4 minout=2
+EXTREME FTzvg g=3 c=4 minlen_free=4 minlen_local=4 minout=2
+EXTREME FTzvW g=4 c=1 minlen_free=4 minlen_local=4 minout=2
+EXTREME FTzvW g=4 c=3 minlen_free=4 minlen_local=4 minout=1
+EXTREME FTznw g=6 c=0 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTznw g=6 c=1 minlen_free=5 minlen_local=5 minout=2
+EXTREME FTznw g=6 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTznw g=6 c=3 minlen_free=5 minlen_local=5 minout=2
+EXTREME FTznw g=6 c=4 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTznw g=6 c=5 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTnvg g=1 c=0 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTnvg g=1 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTnvg g=1 c=3 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTnvg g=1 c=4 minlen_free=5 minlen_local=5 minout=2
+EXTREME FTnvg g=1 c=5 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTnvg g=1 c=6 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~o g=5 c=0 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~o g=5 c=1 minlen_free=5 minlen_local=5 minout=4
+EXTREME FTm~o g=5 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~o g=5 c=3 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~o g=5 c=4 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~o g=5 c=6 minlen_free=4 minlen_local=4 minout=0
+EXTREME FTm~w g=6 c=0 minlen_free=5 minlen_local=5 minout=0
+EXTREME FTm~w g=6 c=1 minlen_free=6 minlen_local=6 minout=5
+EXTREME FTm~w g=6 c=2 minlen_free=5 minlen_local=5 minout=0
+EXTREME FTm~w g=6 c=3 minlen_free=5 minlen_local=5 minout=0
+EXTREME FTm~w g=6 c=4 minlen_free=5 minlen_local=5 minout=0
+EXTREME FTm~w g=6 c=5 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]zno g=5 c=0 minlen_free=4 minlen_local=4 minout=1
+EXTREME F]zno g=5 c=1 minlen_free=4 minlen_local=4 minout=1
+EXTREME F]zno g=5 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zno g=5 c=3 minlen_free=5 minlen_local=5 minout=2
+EXTREME F]zno g=5 c=4 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zno g=5 c=6 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]znW g=3 c=0 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]znW g=3 c=1 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]znW g=3 c=2 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]znW g=3 c=4 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]znW g=3 c=5 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]znW g=3 c=6 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]zlw g=1 c=0 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zlw g=1 c=2 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zlw g=1 c=3 minlen_free=5 minlen_local=5 minout=3
+EXTREME F]zlw g=1 c=4 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zlw g=1 c=5 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]zlw g=1 c=6 minlen_free=4 minlen_local=4 minout=0
+EXTREME F]znw g=6 c=0 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]znw g=6 c=1 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]znw g=6 c=2 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]znw g=6 c=3 minlen_free=6 minlen_local=6 minout=3
+EXTREME F]znw g=6 c=4 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]znw g=6 c=5 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]~vo g=5 c=0 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]~vo g=5 c=1 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]~vo g=5 c=2 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]~vo g=5 c=3 minlen_free=5 minlen_local=5 minout=1
+EXTREME F]~vo g=5 c=4 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]~vo g=5 c=6 minlen_free=5 minlen_local=5 minout=0
+EXTREME F]~vw g=6 c=0 minlen_free=6 minlen_local=6 minout=1
+EXTREME F]~vw g=6 c=1 minlen_free=6 minlen_local=6 minout=1
+EXTREME F]~vw g=6 c=2 minlen_free=6 minlen_local=6 minout=1
+EXTREME F]~vw g=6 c=3 minlen_free=6 minlen_local=6 minout=1
+EXTREME F]~vw g=6 c=4 minlen_free=6 minlen_local=6 minout=1
+EXTREME F]~vw g=6 c=5 minlen_free=6 minlen_local=6 minout=1
+SUMMARY stats pairs=780 Q_c-inside-N[c]-possible=627
+  0: minlen_free=0 minlen_local=0 minout=627
+  1: minlen_free=410 minlen_local=410 minout=131
+  2: minlen_free=214 minlen_local=214 minout=16
+  3: minlen_free=82 minlen_local=82 minout=4
+  4: minlen_free=38 minlen_local=38 minout=1
+  5: minlen_free=28 minlen_local=28 minout=1
+  6: minlen_free=8 minlen_local=8 minout=0
+  [g exists, c not in N(g)] pairs=338 inside-N[c]=289
+    0: minlen_local=0 minout=289
+    1: minlen_local=212 minout=38
+    2: minlen_local=66 minout=9
+    3: minlen_local=35 minout=1
+    4: minlen_local=16 minout=1
+    5: minlen_local=9 minout=0

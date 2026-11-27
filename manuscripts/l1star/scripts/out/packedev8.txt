@@ -1,0 +1,1 @@
+  even vertices 2: graphs=173 decomposable=173

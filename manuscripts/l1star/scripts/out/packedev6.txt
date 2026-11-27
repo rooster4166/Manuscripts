@@ -1,0 +1,1 @@
+  even vertices 2: graphs=3 decomposable=3
