@@ -489,3 +489,117 @@ They need Python 3 only. `a19_balance.py` runs in about 3.5 minutes.
 - The SP descriptions are accurate (P22).
 
 No finding affects §§1–7.
+
+---
+
+## R. Re-audit of the revision 8535af5 (merged into `claude/audit-a19`)
+
+**What changed.** `git diff cb67ee6 8535af5`:
+- `near-dirac.tex`: +116/−88 lines, in §§1.5, 7.2, 8 and 9, plus the abstract;
+- `README.md` and `research/connections.md` §D.1;
+- a rebuilt PDF (22 pp., created 05:13:12 UTC, 13 s before the commit).
+
+The PDF matches the .tex: the numbering is Lemma 8.1, 8.2, Prop 8.3, Remark 8.4, Def 9.1, Remark 9.2, Thm 9.3, Problem 9.4, and there are no unresolved references. §§1–7 are unchanged apart from the abstract and a new §1.5 summarising §§8–9.
+
+### R.1 Proposition 8.3 (= A19 Proposition P), lines 602–656
+
+| Check | Verdict |
+|---|---|
+| **Statement.** The bin shore keeps its internal edges except those to W. Hypotheses: healthy α, β; (B1); D + \|Δ\| + 2s + 2 ≤ d_x ≤ 5D/4; \|Δ\| + 5s + 1 < D; \|A_H\|, \|B_H\| ≥ \|Δ\| + s + 1. Conclusion: an *exact* window, \|W\| ≤ \|Δ\| + s + 1, and d(x) − \|N(x) ∩ W\| ≥ D for **every** x. | **SOUND.** Identical to §4.2, including F4. The bound \|Δ\| + 5s + 1 < D is in fact implied by the degree window when s ≥ 1, since \|Δ\| + 2s + 2 ≤ D/4 and s ≤ D/8. |
+| **(★)** (eq. `exactvalue`): S + e(G[X_I]) − e(G[X_K]) + e(X_K, W), with S from healthy degrees | **SOUND.** The signs are corrected, and the derivation (each internal edge at X is x–healthy or X–X on one shore) is stated. |
+| **Stages.** C_0 ≤ 0 ≤ C_s; C_r − C_{r−1} = d_{x_r} + d_X(x_r) ∈ [D, 5D/4 + s − 1], < 2D | SOUND |
+| **Both namings at stage r.** Exact values C_r + e(X_B, W) and −C_r + e(X_A, W′) | SOUND |
+| **Sweep with bin B.** Nested W_r of size Γ_r − 1; F_0 ≤ 0; F-steps ≤ C-steps; least r gives F_r < D/4 + s − 1; t = −1, or t = 1 with two added vertices, value < D/4 + 3s < D | SOUND |
+| **Sweep with bin A.** Downwards; \|W′_r\| = −Γ_r − 1, nested; F′_s ≤ 0; F′_{r−1} − F′_r ≤ C_r − C_{r−1} | SOUND |
+| **Both sweeps fail.** (a) R_B = ∅ ⇒ R_A = all and F′_0 = −C_0 ≥ 0, a contradiction. (b) Both non-empty and Γ ≠ 0 ⇒ a jump > 2D. (c) Γ_{r₀} = 0 ⇒ \|C_{r₀}\| < D/4 + s < D/2, and (B, M_{r₀}, 0, ∅) is valid | SOUND. The cases are exhaustive. |
+| **Cross-edge bound.** \|W\| ≤ \|Δ\| + s + 1 ⇒ d(x) − \|N(x) ∩ W\| ≥ D + s + 1 | SOUND |
+| **Credit.** Title "audit A19, Proposition P"; proof "is that of audit A19 (§4.2). It replaces an earlier, one-sided argument…"; abstract "The two-sided form of this lemma is due to audit A19"; §1.5 and Remark 8.4 | **Correct.** Lemmas 8.1 and 8.2 and the mirror idea remain the author's. Remark 8.4 accurately reports what A19 observed of the robust lemma (misses the window for an adversarial W). |
+
+The proof as printed is step for step the procedure `two_sided_sweep` in `a19_balance.py`: sweep B, sweep A, then the zero stage with t = 0 and W = ∅. So the §4.3 verification applies unchanged: 1,500/1,500 in the old Problem 8.5 regime, 800/800 in regime (ii), and 150/150 against exhaustive search.
+
+**Remark 8.4** now:
+- lists the three standing hypotheses;
+- says the first excludes intermediate vertices;
+- has F9's wording ("as few as about own(x) ≈ q neighbours on the other shore").
+
+**SOUND.**
+
+**Nit (new).** The abstract-problem paragraph (l. 563) still says the two omissions of S "are treated as errors below". Since the rewrite, only Lemma 8.2 treats them as errors; Prop 8.3 treats them exactly through (★).
+
+### R.2 Theorem 9.3, lines 710–773
+
+| Check | Verdict |
+|---|---|
+| **Statement.** For all large n and every maximum cut, some v has λ_n ≤ own(v) < d(v) − D_n + σ_n, with q_n = o(n) and σ_n = o(q_n). Alternative (b) is dropped. | SOUND |
+| **ξ_n ≥ 1/log n** (by replacing ξ_n with max(ξ_n, 1/log n)) | SOUND: every bound stays true, and ξ_n → 0 still. |
+| **ω_n = ξ_n^{−1/100}, \|q_n − ξ_n^{1/5}n\| ≤ 1** with parity | SOUND. A closed interval of length 2 contains integers of both parities. q_n ≥ n/(log n)^{1/5} − 1. The bound q_n ≥ ω_n(ξ^{1/3} + ξ^{1/4})n holds once ξ_n ≤ 8.2·10⁻⁵ (`a19_params.py`), i.e. for large n. |
+| **σ_n = ⌈4ξ_n n²/q_n⌉ + 1** = O(ξ^{4/5}n) = o(q_n); λ_n ≥ ω_n ξ_n^{1/2} n/2 ≫ ξ_n n | SOUND |
+| **Subsequence.** "Suppose the conclusion fails for infinitely many n. Along that subsequence…"; every bound is an explicit function of ξ_n, q_n, ω_n; SH is applied to the subsequence | **SOUND** (fixes P19) |
+| **X with the σ_n shift.** own ≥ q − 2ξn ≥ q/2, so \|X\| ≤ 4ξn²/q < σ_n; \|Δ_H\| = o(q) | SOUND |
+| **Healthy vertices.** Not intermediate ⇒ own < λ_n; mis ≤ 2ξn + λ_n | SOUND (1.5ξn suffices) |
+| **(H2), full neighbourhoods.** cr(x) ≤ D_n − σ_n; in every placement, \|N(x) ∩ S\| ≤ cr(x) + \|X\| − 1 < D_n | **SOUND** (fixes P16). \|N(x) ∩ S_H\| ≤ d_S(x) ≤ cr(x), and \|N(x) ∩ X_S\| ≤ \|X\| − 1 < σ_n − 1. |
+| **Hypotheses of Prop 8.3.** d_x ≥ D_n + \|Δ_H\| + 2\|X\| + 2; d(x) ≤ 5D_n/4; \|Δ_H\| + 5\|X\| + 1 < D_n; \|A_H\|, \|B_H\| ≥ n/3 | SOUND |
+| **(H3), (H4), (H2).** From Prop 8.3: the exact value, plus the cross-edge bound for every x | SOUND |
+| **(H1).** h = 2λ + 2ξn + \|X\| = o(q); nh ≤ 2q²/ω + 2ξn² + 4ξn³/q = o(q²); n\|W\| ≤ n(ξn + 2\|X\| + 1) = o(q²) because n = o(q²); e ≤ ξn | **SOUND** (fixes P14) |
+| **Profile and conclusion** | SOUND (unchanged) |
+| **Inputs.** Prop 8.3 (= P), SH, SP 14.24 (definition), SP 14.26, the proof of SP 14.39. Theorem 1.1 is not used. | **Confirmed** |
+
+**Theorem 9.3 is SOUND as revised.**
+
+### R.3 SH nits and Remark 9.2
+
+- **(H1) and the profile.** b(V) = 2⌊n/2⌋ is now stated (F8 applied). (H1) now carries a parenthetical on SP's "+1". It is correct: for large members, (H1) and (H3) give \|I_H\|, \|K_H\| > D, so h = 0 forces X = ∅ through (H2). Stylistic nit: explanatory text sits inside a hypothesis item.
+- **Remark 9.2.**
+  - "penultimate sentence": fixed.
+  - "For X = ∅ the conclusion of SH does not involve W": correct; it replaces the moot sentence about W.
+  - The equal-shores sentence is new, and its parenthetical is imprecise: **GAP (wording, minor)**.
+    - It reads "At equal shores (|K∖W| = |I|) … covered instead by Theorem 1.1 with X = ∅ and ρ = 0."
+    - For X = ∅, SH's conclusion concerns G with the partition (I, K), so the equal-shore case is **|K| = |I|, i.e. |W| = t ∈ {0, 1}**.
+    - |K∖W| = |I| with W ≠ ∅ is an *unequal*-shore case. There Theorem 1.1 does not apply, but SP's sentence does.
+    - Conversely, |W| = t = 1 is an equal-shore case that the parenthetical omits.
+
+    Replace "(|K∖W| = |I|)" by "(|K| = |I|, i.e. |W| = t)". The conclusion that SH(X = ∅) is known (SP's unequal-shore construction plus Theorem 1.1) is unaffected.
+- **§1.5, line 133.** It still says "the regime of the **last** sentence of SP's proof of 14.37". It should say "penultimate", as Remark 9.2 and the README now do. Nit.
+- **Not applied, harmless.** F10's t = ±2 nit (§8, l. 547).
+
+### R.4 What the summaries claim
+
+**The conditional reduction.**
+
+| Place | Text | Verdict |
+|---|---|---|
+| Abstract l. 42 | "reduce the near-regular case of Target D, conditionally on one explicitly stated scheduling hypothesis, to a single named open configuration, intermediate vertices (Theorem 9.3)" | Exact: equivalent to Thm 9.3 |
+| §1.5 l. 134 | "assuming SH, a failure sequence with Δ ≤ (1/2+o(1))n must, at all large orders, and for every maximum cut, contain an intermediate vertex" | Exact |
+| §9 summary l. 783 | same, with "for every maximum cut" | Exact |
+| README l. 45 | "Assume SH. Then every failure sequence with Δ ≤ (1/2 + o(1))n must, at all large n and for every maximum cut, contain an intermediate vertex: λ_n ≤ own(v) < d(v) − D_n + σ_n" | Exact |
+| connections l. 144 | "Thm 9.3 (proved, conditional on SH): near-regular failures must contain an intermediate vertex" | Exact (informal) |
+
+None claims anything stronger. None says SH is proved, and every one labels it "not proved" or "conditional".
+
+**The counting half.** These claims are slightly stronger than §8. **GAP (wording, minor).**
+- §1.5 l. 132 says "meets the one-apex counting window exactly, for every size of X, under the degree window …".
+- README l. 41 and connections l. 140 say "proved in full".
+- All three omit hypothesis **(B1)**: at most D healthy neighbours in each shore. It is what excludes intermediate vertices, and by Problem 9.4 those still carry a counting difficulty.
+- The README also omits |A_H|, |B_H| ≥ |Δ| + s + 1, which is harmless.
+
+Remark 8.4 has the precise form ("completely, under its standing hypotheses"). Suggested wording: "proved for exceptional vertices with at most D healthy neighbours in each shore, under the degree window; intermediate vertices (Problem 9.4) are not covered".
+
+### R.5 Verdict at 8535af5
+
+**Every A19 finding that affects a result is fixed correctly:**
+- P7 and P10: Prop 8.3 is replaced, and (★) has the right signs;
+- P11: Problem 8.5 is removed, and Prop P is in place with correct credit;
+- P14, P16, P19 and P20: Theorem 9.3 now has the σ_n shift, ξ_n ≥ 1/log n, the subsequence argument, and no alternative (b);
+- P12 and P13: the SH and Remark 9.2 nits;
+- P6: the cross-edge bound for every x and the bound on \|A_H\|, \|B_H\|;
+- P9 and P21: the wording of Remark 8.4 and Problem 9.4;
+- P22 and F10: the Lemma 8.1 "≤" and the attribution of the bounds on the cut.
+
+**Proposition 8.3 (P) and Theorem 9.3 are SOUND as stated.** The abstract, §1.5, the §9 summary, the README and `connections.md` state the conditional result exactly: under SH, near-regular failures contain an intermediate vertex.
+
+Remaining items, none affecting a result:
+- Remark 9.2's equal-shore parenthetical should be |K| = |I| (i.e. |W| = t), not |K∖W| = |I| (R.3);
+- §1.5 says "last sentence" (R.3);
+- "counting half proved in full / for every size of X" omits (B1) (R.4);
+- "treated as errors below" (R.1);
+- the t = ±2 nit.
