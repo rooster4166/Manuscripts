@@ -1295,11 +1295,14 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ### Z.1 Verdict on the statement
 - **PTM₂ as stated is false**: K₄ with a perfect matching. This is W₄ with its diagonal pairing. The pairs are *not* adjacent in J, so this is a simple-graph failure, not a parallel-edge one.
-- **Simple G.** Exhaustive to n = 8 (and n = 10 up to isomorphism, see E24(B)):
+- **Simple G.** Exhaustive to n = 8; n = 10 up to isomorphism, see E24(B):
   - PTM₂ fails only at K₄;
   - PTM₃ fails twice (the prism with its rungs, one graph of order 8), both with G − F disconnected;
-  - PTM(e@x) never fails when G − F is connected.
-- **Multigraph** (F-edges parallel to G'-edges): every failure except K₄ has a cut vertex in G − F. 2-connected G − F, i.e. 3-connected J, never fails at n ≤ 8.
+  - other than K₄, PTM(e@x) never fails when G − F is connected. (e@x is only tested where PTM holds, so K₄ is not counted there.)
+  - Also: cubic graphs of order 12 and 14 up to isomorphism (3,745 + 46,407 classes), and 4,050 random instances of order 12–16 with F random, adjacent or neighbourhood-sharing. No failure.
+- **Multigraph** (F-edges parallel to G'-edges): every failure except K₄ has a cut vertex in G − F. 2-connected G − F (implied by 3-connected J, not equivalent to it) never fails:
+  - exhaustive at n ≤ 8;
+  - 6,480 random instances at n = 10, 12, 14 (E24(G)).
 - **Clean conjectures** (manuscript Conj. 2.3 and 2.4):
   - PTM_m(e@x) for simple G with G − F connected, except K₄;
   - in the multigraph case, PTM_m(e@x) whenever G − F is 2-connected and G ≠ K₄. The latter implies STL-P, hence STL and Test1, on 3-connected J ≠ W₄.
@@ -1310,6 +1313,8 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 - So the pending-edge problem of §X.4a disappears. The pending edge is frozen as the separation {x, ℓ₂}, which Fan transfers preserve automatically.
 - **Base hypothesis.** In M = (G − ab + ℓ₁b) − xy − E(P), whose only even vertex is x, a Lovász decomposition separating {x, y}, {a, ℓ₁} and {ℓ₁, y}. These three pairs form a path of constraints, a two-matching class family as in §W.
   - It holds in 12,193/13,025 instances at n = 8 with shortest walks only (E24(F)).
+  - It is **not always solvable**: in the other 832 instances it fails for every orientation and every shortest walk. 68 of them have no admissible walk at all. Walks up to two longer cover no further instance.
+  - With the three pairs packed in M, it is a case of the MS class-separation questions. All 11,810 packed base graphs of order 8 are separable (audit A22).
 - **Sparse form.** The base hypothesis follows from separation_sparse, possibly after one Fan transfer for an exceptional vertex v adjacent to x (sep_sparse_fix, the mechanism of ee_atMostOneCommon isolated as a lemma).
 - **Girth five** (ptm2_girth5): every connected all-odd graph without triangles and 4-cycles satisfies PTM₂, with one end prescribed. The sparse hypotheses hold along a shortest e1–e2 path; the only exception is a 5-cycle, handled by the fix.
 
@@ -1321,11 +1326,12 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 ### Z.4 Open (in order of promise)
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
-   - The data say the base hypothesis almost always holds for *some* orientation and walk.
-   - A proof would be a "separation for a path of three pairs with one even vertex" theorem, close to CSEP for the union of two matchings (§W.2).
+   - With shortest walks the base hypothesis holds for some orientation in 93.6% of the instances at n = 8, but not in all of them (832 NOBASE).
+   - So a complete proof of PTM₂ needs more than one walk: a choice of walk adapted to the graph, or a second mechanism for the NOBASE instances.
+   - Within packed configurations, a proof would be a "separation for a path of three pairs with one even vertex" theorem, close to CSEP for the union of two matchings (§W.2).
 2. **PTM_m by chaining walks** (manuscript §8). It is routine under large girth and mutual distance, but not yet written or formalised.
 3. **The multigraph case**, needed when every pairing of N(z) contains adjacent pairs.
 4. **Relation to EE (§Y).**
-   - PTM₂(e@x) at d(z) = 4 contains EE for neighbours that can be paired with a non-neighbour.
+   - PTM₂(e@x) at d(z) = 4 contains EE at u ∈ N(z) when u lies in a pairing {uu′, cd} of N(z) with uu′, cd ∉ E(J). For other u, (J − z) + M is a multigraph.
    - The walk theorem's last step is EE-like.
-   - So a full PTM₂(e@x) would close the open case of EE at d(z) = 4.
+   - So a full PTM₂(e@x), including the multigraph case, would close the open case of EE at d(z) = 4.
