@@ -11,12 +11,15 @@ x2 y2 y3 x3 along the cycle, r in {y2, y3}, and {x1, y1} the two universal verti
           x_i z y_i, verified edge by edge (so STL(J, z, y_i) for i = 1, 2, 3).
 
 Base modes (constraints on the Lovasz decomposition D0 of M):
-  sep   : the six separations of the chained walk theorem (Thm 8.2);
+  sep   : the six separations of the chained walk theorem (TM Thm 8.2), with chains that
+          violate TM Def 8.1(ii) for C4 (y2x3 in B), so the protected step is only executed;
   end   : end-path form: path ending at l1 avoids x1 and does not end at y2, y3; the path ending
           at y2 avoids x2, the one at y3 avoids x3; y2, y3 not the two ends of one path;
   endA  : end + the path ending at x2 avoids y3 (the first walk is a plain append) + the static
           predecessor condition at the protected step, read on D0: the x3y2-path's end on x3's
-          side is not a B-neighbour of y2.  (Theorem C4-walk, Lean `c4_walk`.)
+          side is not a B-neighbour of y2.  For these labellings x2y2, y2y3 are not edges of B,
+          so this is exactly (E1)-(E6) of manuscripts/t6-dense (Theorem 2.3, Lean
+          `star_of_protectedBase`).
 For every (root, labelling) up to SEEDS random search orders are tried; for each base found the
 whole construction is executed and the final decomposition of J checked.
 
