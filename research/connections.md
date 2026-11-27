@@ -967,3 +967,7 @@ This answers the coordinator's TRC messages. The route-descent session owns the 
    - A natural adversarial next step: hardness reductions whose half-sets are balanced.
 
 4. **Hardness and connectivity.** G′(H) (Thm 45) is 4-connected and 4-edge-connected on the prism, K₃,₃, the cube and Petersen, by computation only. So prescribed-half-set realisability is NP-hard on graphs with δ ≥ 4 and λ ≥ 4, and very likely on 4-connected graphs too, but there is no proof of κ ≥ 4 in general.
+5. **Balance as linkage** (Gale/Hoffman; added). With x = χ_M − χ_U, the balance condition is |x(X)| ≤ |δ(X)| for every X. Since x(V) = 0, this is the cut condition for a single-commodity flow with unit supplies on M, unit demands on U and unit edge capacities.
+   - So **M is balanced iff M and U can be paired by edge-disjoint paths of G, each pair consisting of one marked and one unmarked vertex.** This is checkable by one max-flow.
+   - BEMM thus reads: *a cut-feasible half-set that admits an edge-disjoint M–U linkage is realisable.*
+   - This parallels the cone theorem (manuscript Thm 15). In a cone, the cut-feasible half-sets are exactly the transversals of pairings of Ev by edge-disjoint paths avoiding the apex.
