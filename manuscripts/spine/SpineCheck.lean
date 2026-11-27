@@ -2,13 +2,17 @@ import GallaiLean
 
 /-! `#check` of every Lean declaration cited in `manuscripts/spine/spine.tex`.
 Run from `lean/`:  `lake env lean ../manuscripts/spine/SpineCheck.lean` -/
-open Gallai
+
 #check @Gallai.GPath
+#check @Gallai.GPath.edges
+#check @Gallai.GPath.endsAt
+#check @Gallai.GPath.exists_join
 #check @Gallai.GallaiConjecture
 #check @Gallai.HasMatchingCut
 #check @Gallai.InClassC
 #check @Gallai.IsSepComponent
 #check @Gallai.KConnected
+#check @Gallai.KConnected.connected
 #check @Gallai.KConnected.delVert_connected
 #check @Gallai.KConnected.le_degree
 #check @Gallai.LovaszStatement
@@ -16,13 +20,16 @@ open Gallai
 #check @Gallai.MarkedPartition
 #check @Gallai.MarkedTwoConnTestUpTo
 #check @Gallai.PMP
-#check @Gallai.PMP.exists_join
 #check @Gallai.PMP.exists_trim
 #check @Gallai.PathDecomp
 #check @Gallai.PathDecomp.ends
+#check @Gallai.PathDecomp.ends_le_degree
 #check @Gallai.PathDecomp.ends_mod_two
 #check @Gallai.PathDecomp.exists_internal_of_ends_lt
 #check @Gallai.PathDecomp.exists_split
+#check @Gallai.PathDecomp.map_injective_ends
+#check @Gallai.PathDecomp.project_full
+#check @Gallai.PathDecomp.size
 #check @Gallai.PathDecomp.sum_ends
 #check @Gallai.PathDecomp.trim_ends
 #check @Gallai.R2_on
@@ -31,6 +38,8 @@ open Gallai
 #check @Gallai.RootedTestsUpTo
 #check @Gallai.SeparatorStatement
 #check @Gallai.SmallBlocks
+#check @Gallai.SmallOn
+#check @Gallai.SmallerMB
 #check @Gallai.SpineTests
 #check @Gallai.SpineTestsNMC
 #check @Gallai.TPath
@@ -38,6 +47,9 @@ open Gallai
 #check @Gallai.Test2
 #check @Gallai.Thm59Statement
 #check @Gallai.ThreeEndsTestUpTo
+#check @Gallai.TwoConnOn
+#check @Gallai.TwoConnected
+#check @Gallai.TwoConnected.kConnected
 #check @Gallai.addLeaf
 #check @Gallai.apex
 #check @Gallai.apex_inClassC
@@ -54,6 +66,8 @@ open Gallai
 #check @Gallai.delVert
 #check @Gallai.delVert_degree
 #check @Gallai.doubleLeafStep
+#check @Gallai.edgesM
+#check @Gallai.endsL
 #check @Gallai.exists_connected_matchingCut
 #check @Gallai.exists_cut_edge
 #check @Gallai.exists_decomp_of_edgesM
@@ -105,6 +119,7 @@ open Gallai
 #check @Gallai.pathNumber_le_markedNumber_add
 #check @Gallai.pendantStep
 #check @Gallai.residue_sep
+#check @Gallai.restrict
 #check @Gallai.rootedAt_evenComp_evenPorts
 #check @Gallai.rootedAt_evenComp_oddPorts
 #check @Gallai.rootedAt_oddComp
