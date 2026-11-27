@@ -64,7 +64,7 @@ There every pairing of the neighbourhood has the three-edge property in all comp
 chained walk theorem reduces it to a separation problem with one even vertex, which has a
 solution in nearly every random sparse instance and always when the six neighbours are pairwise
 far apart; this gives the first deletion test at degree six for such neighbourhoods whenever two
-suitable walks exist. The theorems up to degree four are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
+suitable walks exist. All theorems are formalised in Lean~4 with Mathlib, without \texttt{sorry} and with only the
 standard axioms.
 \end{abstract}
 \maketitle
@@ -160,10 +160,11 @@ pairs; its hypothesis holds for every $r\in N(z)$ in $999$ of $1000$ random grap
 $11$--$17$. The base problem is open in general, but automatic when the six neighbours of $z$ are
 pairwise at distance at least $3$ in $J-z$ (Proposition~\ref{prop:far}): then the first deletion
 test at $z$, the open case T(6)-i, holds as soon as suitable chains exist
-(Corollary~\ref{cor:six}; paper proof, not yet formalised).
+(Corollary~\ref{cor:six}, formalised in Lean).
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
-\texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
-connected to \texttt{test1\_of\_stl}.
+\texttt{lean/GallaiLean/TerminalMatching.lean}, and the theorems of item (6) (Theorem~\ref{thm:chain},
+Proposition~\ref{prop:far}, Corollary~\ref{cor:six}) in \texttt{TerminalMatching3.lean}; both are
+sorry-free with only the standard axioms, and connected to \texttt{test1\_of\_stl}.
 \end{enumerate}
 
 \subsection*{Honest status}
@@ -549,7 +550,8 @@ $163{,}710$ tests). Prescribing all three short ends fails in $1{,}156$ of $218{
 order $9$, so one prescribed end is the right strength. Random $3$-connected $J$ with degrees
 $6,3,\dots$ (the other degrees $3$ or $5$, configuration model, simple graphs kept): orders $11$,
 $13$ ($200$ graphs each, $3000$ instances), $15$ and $17$ ($300$ graphs each, $4500$ instances,
-node budget $2\cdot10^6$; order $17$ still running): no failure and nothing undecided; see Section~\ref{sec:comp} and
+node budget $2\cdot10^6$, and $10^8$ for the three end tests left undecided at order $17$): no
+failure and nothing undecided; see Section~\ref{sec:comp} and
 E24(J). In short: \emph{for $3$-connected $J$ with $d(z)=6$, every pairing of $N(z)$ satisfies
 $\PTM_3(r)$}, the multigraph pairings included.
 
@@ -584,7 +586,7 @@ which no path contains both vertices of any of the six pairs
 \{x_1,\ell_1\},\ \{x_2,y_2\},\ \{x_3,y_3\},\ \{\ell_1,y_2\},\ \{\ell_1,y_3\},\ \{y_2,y_3\},
 \]
 then $G$ has a Lov\'asz decomposition in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, and
-the three paths are different.
+the three paths are different.\lean{ptm3\_of\_base}
 \end{theorem}
 
 \begin{proof}
@@ -648,7 +650,7 @@ Let $G$ have no vertex of positive even degree, and let $F=\{x_1y_1,x_2y_2,x_3y_
 of $G$ whose six ends are pairwise at distance at least $3$ in $G-F$. Then for every admissible
 chain the base graph $M$ has a Lov\'asz decomposition separating the six pairs of
 Theorem~\ref{thm:chain}. Hence, if an admissible chain exists, $G$ has a Lov\'asz decomposition
-in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, on three different paths.
+in which $x_iy_i$ is terminal at $x_i$ for $i=1,2,3$, on three different paths.\lean{base3\_of\_far, ptm3\_of\_far}
 \end{proposition}
 
 \begin{proof}
@@ -671,7 +673,7 @@ three, and suppose the neighbours of $z$ are pairwise at distance at least $3$ i
 $F=\{x_1y_1,x_2y_2,x_3y_3\}$ is a pairing of $N(z)$ such that $(J-z)+F$ has an admissible chain
 for this labelling, then $\STL(J,z,y_i)$ holds for $i=1,2,3$. If for every $r\in N(z)$ some
 pairing and labelling with $r\in\{y_1,y_2,y_3\}$ has an admissible chain, then the first deletion
-test holds at $z$.
+test holds at $z$.\lean{stl\_of\_ptm3, stl3\_of\_far, test1\_of\_chains3}
 \end{corollary}
 
 \begin{proof}
@@ -687,7 +689,13 @@ This is $\STL(J,z,y_i)$, and the first test follows from STL at every neighbour 
 
 At degree six this is the first deletion test, the open case T(6)-i, for every $J$ whose six
 neighbours of $z$ are pairwise far apart in $J-z$ and which has the required chains.
-Corollary~\ref{cor:six} is proved on paper only; it is not yet formalised. How often it applies:
+The Lean proofs (\texttt{TerminalMatching3.lean}) need slightly less than stated:
+\begin{itemize}
+\item $y_1\notin V(P_2)$ is never used, and $y_1\notin V(P_1)$ only to keep $x_1y_1$ off $P_1$;
+\item the degree condition on $N(z)$ is needed only for the first test, not for STL;
+\item $d(z)=6$ and the non-adjacency of the pairs follow from the other hypotheses.
+\end{itemize}
+How often it applies:
 random $3$-connected $J$ with degrees $6,3,\dots$ (the others $3$ or $5$; \texttt{d6\_reach.py},
 $200$ graphs per order, chains searched greedily: a shortest $P_2$, then a shortest $P_1$
 edge-disjoint from it):
@@ -869,7 +877,8 @@ data (every pairing works) and the chained walk theorem, which leaves the base p
 Lov\'asz decomposition of $M$ separating six pairs. A sparse form along the lines of
 Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
 girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
-new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain} is not yet formalised.
+new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain}, Proposition~\ref{prop:far} and
+Corollary~\ref{cor:six} are formalised (Section~\ref{sec:lean}).
 \item \emph{$\PTM_2$ beyond local girth five.} The walk theorem reduces it to the base separation
 problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
 alone does not suffice (Section~\ref{sec:comp}). At order eight its failures are local copies of
@@ -920,6 +929,20 @@ Theorem~\ref{thm:sparse}, from \texttt{separation\_sparse}.
 \item \texttt{stl\_of\_localgirth}, \texttt{test1\_of\_localgirth} (and the girth-five forms
 \texttt{stl\_of\_girth5}, \texttt{test1\_of\_girth5}): Corollary~\ref{cor:test1}, through
 \texttt{test1\_of\_stl}.
+\item In \texttt{lean/GallaiLean/TerminalMatching3.lean}:
+  \begin{itemize}
+  \item \texttt{AdmChain} (with \texttt{AdmChain.of\_paper}), \texttt{base3G},
+  \texttt{base3G\_parity}, \texttt{leaf\_walk}, \texttt{merge3}, \texttt{ptm3\_of\_base}:
+  Definition~\ref{def:chain} and Theorem~\ref{thm:chain}; the conclusion is \texttt{PTM3At}. The
+  three leaves live in \texttt{Option (Option (Option W))}.
+  \item \texttt{FarEnds}, \texttt{base3\_of\_far}, \texttt{ptm3\_of\_far}:
+  Proposition~\ref{prop:far}, from \texttt{separation\_sparse}.
+  \item \texttt{lift3}, \texttt{FarNbrs}, \texttt{stl\_of\_ptm3}, \texttt{stl3\_of\_base},
+  \texttt{stl3\_of\_far}, \texttt{test1\_of\_chains3}, \texttt{test1\_of\_bases3}:
+  Corollary~\ref{cor:six}.
+  \end{itemize}
+  \texttt{manuscripts/terminal-matching/PTM3Axioms.lean} prints only the standard axioms for these
+  theorems.
 \end{itemize}
 
 \begin{thebibliography}{9}

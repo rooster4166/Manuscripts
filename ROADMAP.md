@@ -530,6 +530,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `ptm2_localgirth`: PTM2 with a prescribed end holds whenever no triangle or 4-cycle passes through an end of the two edges.
   - `test1_of_localgirth`: spine Test1 at d(z) = 4 (z the only even vertex, every neighbour of degree ≥ 3) holds for a pairing ab, cd of N(z) into pairs non-adjacent in J whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
   - Test1 at d(z) = 4 was already known (`rooted_four'`, endpoint-structure Cor 22), so this re-derives it by composition. New: STL-P for the given pairing. First open rung: PTM_3 at d(z) = 6 (T(6)-i).
+  - **d(z) = 6 (Lean, TerminalMatching3.lean):**
+    - `ptm3_of_base` (chained walk theorem);
+    - `ptm3_of_far`, and `test1_of_chains3`: **Test1 J z when N(z) is pairwise at distance ≥ 3 in J − z and admissible chains exist for every r**. This is a case of T(6)-i.
+    - Data: every pairing satisfies PTM_3(r) for 3-connected J (exhaustive to order 9, random to 17).
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.

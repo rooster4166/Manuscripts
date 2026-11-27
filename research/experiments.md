@@ -1120,7 +1120,7 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 | order 11, random (degrees 6 and 3/5, seed 611) | 200 | 3,000 (1,625) | 0 | 18,000 / 0 |
 | order 13, random (seed 613) | 200 | 3,000 (1,327) | 0 | 18,000 / 0 |
 | order 15, random (seed 615, first 300; budget 2·10⁶) | 300 | 4,500 (1,886) | 0 (0 UND) | 27,000 / 0 |
-| order 17, random (seed 617, first 300; budget 2·10⁶) | 300 | pending | pending | pending |
+| order 17, random (seed 617, first 300; budget 2·10⁶) | 300 | 4,500 (1,619) | 0 (0 UND) | 27,000 / 0 (3 UND at 2·10⁶, all positive at 10⁸: `out/d6_r17_und.out`) |
 
 - **Every pairing works at d(z) = 6 when J is 3-connected**, parallel pairs included, with any one prescribed end.
 - The prism-with-rungs failure of PTM_3 has J − z disconnected, so it does not occur here.
