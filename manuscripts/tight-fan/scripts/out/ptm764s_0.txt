@@ -1,0 +1,5 @@
+INST G?o~ns 4 6 5 7 ('NONE', {'nobase': 8})
+INST GCf~^k 3 6 4 7 ('NONE', {'nobase': 8})
+INST GErz~[ 0 6 3 7 ('NONE', {'nobase': 8})
+INST GEr~^k 3 6 4 7 ('NONE', {'nobase': 8})
+INST GFzb~[ 0 6 3 7 ('NONE', {'nobase': 8})

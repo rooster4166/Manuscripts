@@ -1,0 +1,9 @@
+order 9 instances 133
+key = (far end y in N(u), chain reaches y, result in B)
+ADVERSARIAL: every u has a failing D' 59
+some u: every D' succeeds 74
+instance closes 133
+('all-ok u has |N(u)&N(c)|', 1) 74
+(False, False, True) 202636
+(True, False, True) 152816
+(True, True, False) 53964

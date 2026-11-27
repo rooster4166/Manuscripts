@@ -1,0 +1,6 @@
+key = (type, d(g), u in N(c), chain passes c, result good)
+('gA', 'd(g)=2', 'instance-some-ok') 14
+('gA', 'd(g)=2', True, False, True) 896
+('gA', 'd(g)=2', True, True, False) 696
+('sep', 'd(g)=2', 'instance-some-ok') 5
+('sep', 'd(g)=2', False, False, True) 56

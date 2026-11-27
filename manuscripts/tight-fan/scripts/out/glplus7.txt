@@ -1,0 +1,10 @@
+('d(c,g)=1', 'GL holds') 58
+('d(c,g)=1', 'GL+ FAILS') 17
+('d(c,g)=1', 'GL+ holds') 41
+('d(c,g)=2', 'GL holds') 33
+('d(c,g)=2', 'GL+ FAILS') 6
+('d(c,g)=2', 'GL+ holds') 27
+('d(c,g)=>=3', 'GL holds') 5
+('d(c,g)=>=3', 'GL+ holds') 5
+EX ('d(c,g)=1',) [('F?BDw', 1, 5, 0), ('F?bDg', 1, 5, 6), ('F?bDg', 4, 0, 6), ('F?qcw', 1, 4, 6)]
+EX ('d(c,g)=2',) [('F?bFg', 4, 0, 1), ('F?zno', 3, 6, 5), ('FCRvg', 4, 1, 2), ('FCZUw', 2, 4, 5)]

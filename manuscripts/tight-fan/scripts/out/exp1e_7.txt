@@ -1,0 +1,4 @@
+('gA', 'd(g)=2', 'SC', 'avoid', True) 648
+('gA', 'd(g)=2', 'instance', "SC-some-D'") 14
+('gA', 'd(g)=2', 'noSC', 'avoid', True) 248
+('gA', 'd(g)=2', 'noSC', 'hit', False) 696

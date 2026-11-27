@@ -60,7 +60,18 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`, new): applies the flower / receipt-or-flower moves (Flower.lean) to the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21).
+- **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`): the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21). Connections §AB, E26, `manuscripts/tight-fan`, Lean `TightFan.lean`.
+  - **Verdict:** not literally one configuration. The transfer-side residual is *Fan at equality with one protected blank p*: the protected path has an end p adjacent to the Fan target. On Lovász decompositions the chain is forced (`fanPred_unique`), and the invariant survives iff the forced chain avoids p. This is exactly the L∞ residual (p = far end of the leaf path), the minimal blocked L1* shape (p = c), and the PTM no-walk instances (p = short end).
+    - L1* blocked also has a hypothesis-side part: (G − gu, c, A) is good but inadmissible.
+    - The K4/W4 base failures are base-side.
+  - **Flowers: negative, proved.** `hub_cycles_card_le_one` and `flower_decomp(_rest)_not_le_one`: no flower move ends in a Lovász decomposition, so none of the four residuals can be closed by one.
+  - **Lean (sorry-free, standard axioms):**
+    - `fan_exists_chain_protected` / `fan_single_protected_supp`: Fan with protected blanks.
+    - `l1_tight_transfer`: the tight L1* case, conditional on the decomposition.
+    - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞; with `ee_of_l1Blocked`, residuals 1–3 are one statement.
+    - `test1_deg_four`: spine `Test1` at d(z) = 4 for connected J − z, via `emc_four`. This is a packaging of the known T(4) / `rooted_four'`, independent of PTM.
+  - **Obstruction:** in 59/133 L∞ residual instances of order 9, every target admits a failing induction decomposition. A proof must strengthen the hypothesis, not choose the target.
+  - **Audit A24:** see research/audit/A24-tight-fan.md.
 - **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`): **finished**.
   - **Lean:** `l1starGen_of_blocked`, `ee_of_l1Blocked`. So EE ⇐ L1* on *blocked* instances: g even, c ∉ N(g), every neighbour of g adjacent to A ∖ {g}.
   - **Data:** the local form V(Q_c) ⊆ N[c] ∪ N(g) (L1* for every A at once) holds exhaustively to n = 11, with 0 failures.
@@ -520,3 +531,11 @@ Candidate uniform mechanisms (`research/connections.md`):
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.
+- **tight-fan, Lean (839d753; standard axioms, verified).**
+  - `fan_single_protected_supp`: Fan's lemma at equality with protected blanks.
+  - `l1_tight_transfer`: the L1* tight case, in which the leaf path avoids A and c is not the predecessor of x.
+  - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞. Together with `ee_of_l1Blocked`, the residuals L∞, L1* and EE become **one statement, L1Blocked**.
+  - `test1_deg_four`: Test1 when d(z) = 4 and J − z is connected. It repackages the known d = 4 case via emc_four.
+  - Negative lemmas: flower outputs are never Lovász decompositions.
+  - **Data:** in the tight case, the forced chain avoiding the protected end is necessary and sufficient. Every L∞ residual at n = 9 closes for some (u, D′). All 68 PTM no-walk instances close.
+  - **Open:** L1Blocked, specifically its hypothesis side: an induction class containing the good-but-inadmissible instances.
