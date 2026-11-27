@@ -95,7 +95,7 @@ $\mathrm{dist}_K(c_i,a_i)\ge3$. Then $K$ has a Lov\'asz decomposition in which n
 $c_i$ and $a_i$, for any $i$.
 \end{conjecture}
 
-Conjecture~\ref{conj:msep} is stated in~\cite{RD}, with evidence. Its interest is
+Conjecture~\ref{conj:msep} is stated in~\cite[Conjecture~8.1]{RD}, with evidence. Its interest is
 Proposition~\ref{prop:reduction}: it would prove Gallai's conjecture for a class of graphs in which the
 even vertices may induce a dense subgraph.
 
@@ -130,9 +130,9 @@ failure of the natural strengthenings of the inductive invariant.
 
 For a path decomposition $\cD$ and a vertex $v$ with $b_\cD(v)=1$, $Q_v$ is the path of $\cD$ ending at
 $v$. If $v$ is an end of a path $P$, the \emph{terminal edge of $P$ at $v$} is the edge of $P$ at $v$.
-We use Fan's lemma in the form proved in~\cite[Lemma~3]{RD}.
+We use Fan's lemma in the form proved in~\cite[Lemma~2.2]{RD}.
 
-\begin{lemma}[Fan's lemma with vertex sets~\cite{Fan05},~\cite[Lemma~3]{RD}]\label{lem:fan}
+\begin{lemma}[Fan's lemma with vertex sets~\cite{Fan05},~\cite[Lemma~2.2]{RD}]\label{lem:fan}
 Let $\cD$ be a path decomposition of $K$, let $t\ne u$ be non-adjacent, and write
 $Z(u)=\{w\in N(u): b_\cD(w)=0\}$. If $b_\cD(t)>|Z(u)|$, then $K+tu$ has a path decomposition $\cD^+$
 with $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$ and a bijection $\varphi:\cD\to\cD^+$ such that
@@ -143,12 +143,12 @@ The path $Q_0$ of Lemma~\ref{lem:fan} is the path to which the last edge of the 
 It ends at a neighbour of $u$ or at $t$. In the \emph{trivial chain} case, $u\notin V(Q_t)$ for a path
 $Q_t$ ending at $t$; then $\cD^+$ is obtained by appending $tu$ to $Q_t$.
 
-\begin{theorem}[separation theorem for packed sets~{\cite[Theorem~19]{RD}}]\label{thm:sep}
+\begin{theorem}[separation theorem for packed sets~{\cite[Theorem~6.1]{RD}}]\label{thm:sep}
 If $K$ has at most one vertex of positive even degree and $X$ is packed, then $K$ has a Lov\'asz
 decomposition in which every path meets $X$ in at most one vertex.
 \end{theorem}
 
-\begin{theorem}[$L_1$~{\cite[Theorem~21]{RD}}]\label{thm:L1}
+\begin{theorem}[$L_1$~{\cite[Theorem~6.3]{RD}}]\label{thm:L1}
 Let $K$ have no vertex of positive even degree, let $c$ have odd degree, and let $Y$ be a packed set
 containing neither $c$ nor a neighbour of $c$. Then $K$ has a Lov\'asz decomposition in which every path
 meets $Y$ at most once and the path $Q_c$ ending at $c$ is disjoint from $Y$. In particular, if $a\ne c$ is
@@ -322,7 +322,7 @@ path $P_\ell$ of $\cD_H$ ending at the leaf contains its only edge $u\ell$. So $
 contains $ux$, which is its terminal edge at $x$ because $x$ occurs on it once.
 \end{proof}
 
-Theorem~\ref{thm:endedge} is the counterpart of the leaf trick by which~\cite[Theorem~21]{RD} proves
+Theorem~\ref{thm:endedge} is the counterpart of the leaf trick by which~\cite[Theorem~6.3]{RD} proves
 $L_1$ (Theorem~\ref{thm:L1}). There a
 leaf is attached at $c$ and separated from $a$. Here an edge is detached into a leaf, which is separated
 from its old end and merged back. We did not find Theorem~\ref{thm:endedge} in the literature.
@@ -395,8 +395,8 @@ through the proof of Theorem~\ref{thm:caseII}, to Conjecture~\ref{conj:csep} for
 open. Condition (ii) is an $L_1$-type statement (compare Theorem~\ref{thm:L1}): the end path of $z$ must
 avoid a set at distance at least two from $z$ in $K'$ (as $z\sim u$ in $K$ and the other vertices of
 $\cA(u)$ are at distance at least three from $u$). The leaf trick that proves $L_1$
-in~\cite[Theorem~21]{RD} attaches a leaf at $z$, which here would create a second even vertex; and $L_1$
-fails in graphs with an extra even vertex adjacent to the avoided vertex~\cite[Remark~25]{RD}. In (ii)
+in~\cite[Theorem~6.3]{RD} attaches a leaf at $z$, which here would create a second even vertex; and $L_1$
+fails in graphs with an extra even vertex adjacent to the avoided vertex~\cite[Remark~6.7]{RD}. In (ii)
 the avoided set contains the even vertex $u$ itself. By computation we found no failure
 (Section~\ref{sec:limits}); without classes, Proposition~\ref{prop:EE3} proves (ii) in most configurations
 with $d(u)\le3$.
