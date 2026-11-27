@@ -32,4 +32,4 @@ Theorem 1.10 (`\label{thm:n/2}`)(i): for any α, δ > 0 there is n_0 such that e
 
 ## SP: `separating-pairs.pdf` §14 (archive; statements copied from pdftotext)
 
-The full statements of Cor 14.24, Cor 14.26, Thm 14.27, Thm 14.33, Cor 14.35, Thm 14.37, Cor 14.38, Cor 14.39 and Prop 14.40 are reproduced in §2 of `near-dirac.tex`. SP cites CKLOT as [17] and GGKO as [22].
+The statements of Cor 14.24, Cor 14.26, Thm 14.27, Thm 14.37, Cor 14.38 and Cor 14.39 are reproduced verbatim in §2 of `near-dirac.tex`. Thm 14.30, Thm 14.31, Thm 14.33 and the counting obstruction in §14.18 ("The two auxiliary vertices and unequal shores") are described in §§1 and 7 of the manuscript and credited there. SP cites CKLOT as [17] and GGKO as [22].
