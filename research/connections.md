@@ -1237,6 +1237,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 1. **STL-P for 3-connected J ≠ W₄**, i.e. the terminal-matching property for matchings of virtual edges on N(z). This is the form suited to induction: lifting a pair lowers d(z) by 2, and the base case is `lovasz_endEdge`. The obstruction is carrying two pending terminal edges.
 2. Test1 ⇒ STL (manuscript Conjecture "STL = (T1)"). Supported by all graphs to order 9 and by 1,282 random pairs with J − z disconnected, where STL fails exactly when Test1 does. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
 3. ~~The d(z) = 2 two-triangle configuration.~~ **Closed.** `ee_deg_two` (claude/ee, `PrescribedEnd.lean`) gives EE at every d(z) = 2 vertex. **`stl_deg_two`** (StarTerminal.lean) derives STL at every d(z) = 2 vertex: STL is complete at d(z) = 2, in Lean.
+3. The d(z) = 2 two-triangle configuration (EE at distance 2).
 
 ## Y. Prescribed end edges with one even vertex (cloud session `claude/ee`, 2026-11-27)
 
