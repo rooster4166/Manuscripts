@@ -414,3 +414,19 @@ Recursive certificates fail at CP(3) + apex and at double-K₄. The same cocktai
 - EE is proved when the two vertices share at most one common neighbour.
 - L1\* and EE reduce to the blocked case.
 - No counterexample to any conjecture on the ladder: STL, STL2, PTM₂ (except K₄), EE, L1\* local form. The exhaustive ranges are n ≤ 9 to 11, with millions of instances.
+
+**Orientation correction (2026-11-27 12:00; tight-fan side finding, checked against ROADMAP).**
+- Spine Test1 at d(z) = 4 was already known: by two-step faithful descent and `emc_four` (EMCFour.lean), the two-end test at d = 4 holds by Lovász + Fan alone (ROADMAP, Nov 26). So `test1_of_girth5` / `test1_of_localgirth` re-derive a known case by a new mechanism. They are valuable as a *composition* method, not as new coverage.
+- **The first open rung of the STL / PTM ladder is d(z) = 6**, i.e. PTM_3 or STL-P with three transitions. That is exactly **T(6)-i**, the two-end test at d = 6, which has been the project's frontier since Nov 26 (`rooted_six_of_bstmt3`, the BranchBase / BStmt 3 line, the d6-frontier certificates).
+- Every line converges there. The next decisive target is T(6)-i with the new tools:
+  - the separation theorems;
+  - the PTM₂ walk theorem;
+  - the tight-transfer (forced-chain) lemma;
+  - the leaf-graph protections.
+
+**tight-fan unification (step 1).**
+- **Flowers are structurally inapplicable.** They produce b = 2 decompositions, while all residuals ask for Lovász decompositions with b ≤ 1. This is being recorded as negative lemmas.
+- **Two mechanisms, not one.**
+  - (A) Transfer-side, "Fan at equality with one protected blank". The chain is forced, and the invariant survives iff the forced chain avoids the protected end. This covers L∞, the minimal L1\* blocked shape, and PTM's no-walk instances. A refined Fan lemma (a blank never reached as a predecessor does not count against the supply) closes all 68/68 PTM no-walk instances at n = 8.
+  - (B) Hypothesis-side admissibility. In the blocked case some u always gives a good but inadmissible instance.
+  - (C) PTM's K₄ / W₄ base failures are a third, base-side configuration.
