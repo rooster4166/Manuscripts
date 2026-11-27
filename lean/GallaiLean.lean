@@ -48,3 +48,5 @@ import GallaiLean.EmmTemplate
 import GallaiLean.PairingLemma
 import GallaiLean.CutSelection
 import GallaiLean.Thm59Transfer
+import GallaiLean.Thm59Hall
+import GallaiLean.Thm59ClassC
