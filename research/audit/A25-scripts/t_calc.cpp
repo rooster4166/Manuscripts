@@ -23,7 +23,7 @@ static bool isgood(const Graph& G, int c, uint32_t A) {
 }
 static long long nu(const Graph& G) { long long s = 0; for (int v = 0; v < G.n; v++) s += G.deg(v); return s + (G.evenset() ? 0 : 1); }
 
-struct Stat { long long app = 0, tests = 0, viol = 0, viol_cnotA = 0, measure = 0; int shown = 0; };
+struct Stat { long long app = 0, tests = 0, tests_cnotA = 0, viol = 0, viol_cnotA = 0, measure = 0; int shown = 0; };
 static std::map<std::string, Stat> st;
 static void report(const std::string& mv, const std::string& g6, const Graph& G, int c, uint32_t A, const Graph& H, int c2, uint32_t A2) {
   Stat& s = st[mv]; s.app++;
@@ -31,7 +31,7 @@ static void report(const std::string& mv, const std::string& g6, const Graph& G,
   bool dec = n2 < n1 || (n2 == n1 && __builtin_popcount(A2) < __builtin_popcount(A));
   if (!dec) s.measure++;
   if (!isgood(H, c2, A2)) return;
-  s.tests++;
+  s.tests++; if (!(A >> c & 1u)) s.tests_cnotA++;
   if (!isgood(G, c, A)) {
     s.viol++; if (!(A >> c & 1u)) s.viol_cnotA++;
     if (s.shown++ < 3) printf("VIOL %s %s c=%d A=%s  child c=%d A=%s (cInA=%d adm=%d)\n", mv.c_str(), g6.c_str(), c, sstr(A).c_str(), c2, sstr(A2).c_str(), (int)(A >> c & 1u), (int)admissible(G, c, A));
@@ -111,6 +111,6 @@ int main() {
       }
     }
   }
-  printf("move  applications  tests(child good)  violations  violations-with-c-notin-A  measure-not-decreasing\n");
-  for (auto& kv : st) printf("%-24s %10lld %10lld %8lld %8lld %8lld\n", kv.first.c_str(), kv.second.app, kv.second.tests, kv.second.viol, kv.second.viol_cnotA, kv.second.measure);
+  printf("move  applications  tests(child good)  tests-with-c-notin-A  violations  violations-with-c-notin-A  measure-not-decreasing\n");
+  for (auto& kv : st) printf("%-24s %10lld %10lld %10lld %8lld %8lld %8lld\n", kv.first.c_str(), kv.second.app, kv.second.tests, kv.second.tests_cnotA, kv.second.viol, kv.second.viol_cnotA, kv.second.measure);
 }

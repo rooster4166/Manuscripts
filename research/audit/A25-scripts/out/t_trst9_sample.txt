@@ -1,0 +1,8 @@
+# t_trst9.cpp on the 1-in-10 sample of order 9 (graphs with exactly one even vertex whose index is 0 mod 10; 3 shards: t_trst9 30 0|10|20 20000000)
+shard 0: SUMMARY graphs=398 | TR tests=58732 (A admissible for G 20698, A meets N(g) 38034) violations=0 undecided=591 | ST blocked=4062 ok=4062 undecided=0 | ST' ok=4012 undecided=0 | oracle queries=97775 inferred=39893 undecided=595
+shard 1: SUMMARY graphs=398 | TR tests=58012 (A admissible for G 21630, A meets N(g) 36382) violations=0 undecided=829 | ST blocked=4654 ok=4654 undecided=0 | ST' ok=4596 undecided=0 | oracle queries=96699 inferred=41085 undecided=837
+shard 2: SUMMARY graphs=398 | TR tests=58691 (A admissible for G 20432, A meets N(g) 38259) violations=0 undecided=1010 | ST blocked=3950 ok=3950 undecided=0 | ST' ok=3908 undecided=0 | oracle queries=98402 inferred=38563 undecided=1014
+# the authors' tools on the same 1,194 graphs (sample9.g6):
+tr2: SUMMARY TR (A cap N[c] empty, tight u): tests 175568 violations 0
+stprime: SUMMARY blocked instances (all admissible A)=12666  ST'=12516  ST=12666
+t_trsplit: SUMMARY TR tests 175568 violations 0; A admissible for G 62822 (of which A empty 8226); A meets N(g) 112746

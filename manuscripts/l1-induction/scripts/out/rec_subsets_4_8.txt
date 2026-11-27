@@ -1,0 +1,5 @@
+SUMMARY instances=9 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+SUMMARY instances=23 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+SUMMARY instances=405 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+SUMMARY instances=2150 blocked=406 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+SUMMARY instances=27837 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
