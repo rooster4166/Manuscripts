@@ -36,6 +36,12 @@ EMM sufficiency work is **stopped**.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). **AUDITED (A17): Theorem 1.1 correct.** All CKLOT hypotheses are verified and the constants are consistent; there are wording gaps (N10, N29, N30, N26, N36, N24, N32, N33) and one statement gap (N25, already fixed). The author is fixing the wording.
 - **audit-a17**: DONE (7593f1a). Theorem 1.1 is sound; wording fixes were sent to near-dirac.
+- **near-dirac §§8–9** (Problem 7.1 attempt):
+  - Proved: the balancing lemma (Lemmas 8.1–8.2, Prop 8.3, in regimes (i) and (ii)).
+  - Open regime: Problem 8.5, with |X| ≳ √D and an explicit |X|² error.
+  - Theorem 9.3, assuming the explicit Scheduling Hypothesis SH: a failure sequence must contain intermediate vertices (new obstruction, Problem 9.4) or lie in the 8.5 regime.
+  - What remains for Target D on this route: SH, 7.2, 8.5 and 9.4.
+- **audit-a19** (session_01FxXpVeJfgH2Kk1YfHLu4K7, branch `claude/audit-a19`): audit of near-dirac §§8–9.
 - **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
