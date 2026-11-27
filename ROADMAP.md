@@ -398,3 +398,7 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Proof route.** Lovász's theorem, then MR Thm 113 (separators), then MR Thm 59 (blocks without matching cuts; cones; Lemma 6 by PMP surgery; private leaves; one Hall-defect lemma for §2.1), then MR Thm 114.
   - **Files.** Thm59Transfer, Thm59Hall, Thm59ClassC, Thm59Lemma6, Thm59Leaves, Thm59MatchingCut, Thm59; 1,933 lines.
   - **Audit.** A14 found no gap in MR and lists the formal deviations.
+- **Separation theorem in Lean (2026-11-27, route-descent).** `Gallai.separation`: if G has at most one vertex of positive even degree and c, a are at distance ≥ 3, then some decomposition with ends ≡ degrees mod 2 has no path containing both c and a. `Gallai.lovasz_avoid` is the corresponding L1 at distance three.
+  - **Lean:** Separation.lean and FanSupport.lean (Fan's lemma with vertex sets); sorry-free, standard axioms (verified).
+  - **Status:** new strengthening of Lovász's theorem. Paper proof in route-descent.tex, with audit A16 requested. The manuscript's bibliography and build are still being fixed.
+- **Spine paper draft (2026-11-27).** `manuscripts/spine/spine.tex`, 26 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof (`SpineCheck.lean`). Audit A15 is pending, run by the spine-paper session.

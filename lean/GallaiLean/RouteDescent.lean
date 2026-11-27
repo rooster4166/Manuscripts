@@ -20,6 +20,9 @@ spine" and Lemma "minimum T-joins".
   cut-selection pairing, if TRC holds), then Gallai's conjecture holds.
   `gallai_of_pairingTRCExists` needs, for each even `y`, only one realisable transversal
   containing `y` (the existential form).
+* `IsEvenPairing.of_isPairing`: the cut-selection pairings of `cs_all` are even pairings, with the
+  same transversals; so `cs_all` supplies the cut-feasibility half of TRC, and `gallai_of_pairingTRC`
+  needs only the realisability half.
 * T-joins: `IsTJoin G T J`, `IsMinTJoin G T J`.
   **`isMinTJoin_sdiff`**: deleting a sub-edge-set `R` of a minimum `T`-join leaves a minimum join
   of `G − R` (for the parity set it induces); this is the heredity of minimality under route
@@ -80,6 +83,12 @@ structure IsEvenPairing (H : SimpleGraph V) [DecidableRel H.Adj] (σ : V → V) 
   mem : ∀ v ∈ evenSet H, σ v ∈ evenSet H
   ne : ∀ v ∈ evenSet H, σ v ≠ v
   invol : ∀ v ∈ evenSet H, σ (σ v) = v
+
+/-- The pairings of `cs_all` (`IsPairing (evenSet H) π`, `PairingLemma.lean`) are even pairings in
+the present sense, and `cs_all`'s transversal condition is `IsTransversal`. -/
+theorem IsEvenPairing.of_isPairing {H : SimpleGraph V} [DecidableRel H.Adj] {π : V → V}
+    (h : IsPairing (evenSet H) π) : IsEvenPairing H π :=
+  ⟨fun v hv => (h v hv).1, fun v hv => (h v hv).2.1, fun v hv => (h v hv).2.2⟩
 
 /-- `M` is a transversal of the pairing `σ`: it contains exactly one vertex of every pair. -/
 def IsTransversal (H : SimpleGraph V) [DecidableRel H.Adj] (σ : V → V) (M : Finset V) : Prop :=
