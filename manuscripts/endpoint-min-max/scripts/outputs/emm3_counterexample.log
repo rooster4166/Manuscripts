@@ -1,0 +1,9 @@
+D^+ realisable: True | separated realisation (D + w, b(w) = 2): False
+Hamiltonian decompositions of D': 16 | w p and w b0 always in one cycle: True
+explicit realisation of D^+ valid; ends ['0', '9', 'l1', 'l2']
+G: n = 18 m = 36 min degree 3 connected True edge connectivity 2
+half-set M = V(S), |Ev| = 16 ; odd vertices: ['a0', 'q']
+cut-feasible: gemm_test.feasible True | cut_test.cut_ok True | cutfeas.c True (12609 cut-feasible half-sets in all) | arm form (max-flow) True
+outer side (K_{4,4} + two leaves at s) realisable: True
+graph6 of G: Q~?GW\cCoP?@?A?A?@??N?@w?F_ M mask 261120
+OK: EMM_3 counterexample verified (non-realisability: gluing argument of the manuscript)
