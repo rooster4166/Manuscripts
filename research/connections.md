@@ -1540,3 +1540,55 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 ### AC.4 For other sessions
 - **Ptm (§Z, T(6)-i).** The unconditional-transfer observation applies to any Lovász-type induction. A walk step's correctness never needs the intermediate instance to satisfy the induction's admissibility; only the call to the hypothesis does. Certificate classes with inadmissible intermediates (Rec) are far stronger than admissible-only ones: 0 vs 35 failures at n = 7 here.
 - **The tight case.** "The forced chain avoids p" (tight-fan) is always achievable by re-choosing D′ in the L1* data (82,079/82,079), but not by repairing a given D′. A lemma of the form "some decomposition of K − tw has its chain avoiding p" is the shared missing tool. In ptm's language it is the forced-chain hypothesis of the tight walk theorem.
+
+## AD. The dense T(6)-i residual: the append chain (cloud session `claude/t6-dense`, 2026-11-27)
+
+*Experiments: E28. Manuscript: `manuscripts/t6-dense/t6-dense.tex`. Lean: `lean/GallaiLean/T6Dense.lean`. Audit: `research/audit/A26-t6-dense.md`. Origin: synthesis §22, §Z.4, §AB.5.*
+
+### AD.1 Verdict
+- **The dense residual of T(6)-i is reduced, not closed.** All five shapes D ∈ {∅, K2, P3, K3, C4}, C4 included, reduce uniformly to one statement in Lovász's setting, the base conjecture (manuscript Conj. 5.1). It has no counterexample in the data.
+- **Chains are free.** If x1y2 and x2y3 are edges of B = J − z, take P2 = y3x2 and P1 = y2x1, both single edges. Such a labelling exists for every root whenever D has maximum degree ≤ 2 (Lemma 2.5), so in every residual shape.
+  - So the chain conjecture (TM Conj 8.6) and `AdmChain` play no role in the dense regime.
+  - For C4 the canonical labelling is x2 y2 y3 x3 along the cycle, with x1, y1 universal.
+- **End-path tracking is exact for single-edge walks.** Every step is an explicit append, except possibly one protected Fan step. So the six separations of TM Thm 8.2 can be replaced by **end-path conditions** on one Lovász decomposition of
+  M = J − {zx1, zx2, zx3, zy2, zy3, x1y2, x2y3},
+  in which z is a leaf at y1 and x3 is the only even vertex:
+  - (E1) the path through z avoids x1 and does not end at y2, y3;
+  - (E2) P_{y2} ∌ x2;
+  - (E3) P_{y3} ∌ x3;
+  - (E4) P_{y2} ≠ P_{y3};
+  - (E5) P_{x2} ∌ y3;
+  - and either (E7) P_{x1} ∌ y2 (all seven steps are appends), or (E6) the static predecessor condition of `walk_step_protected` at y2, read on the base.
+- **The obstruction of §Z.4 is an artefact of vertex-set tracking.** Separated pairs had to be non-adjacent because the walk only told us that a new path lies in some old path through y_i. With appends, the path ending at y_i is known, so adjacency is irrelevant.
+
+### AD.2 Proved (Lean, sorry-free, standard axioms; full build green)
+- **`star_of_appendBase`** (Thm 2.2) and **`star_of_protectedBase`** (Thm 2.3). An append base gives a star-terminal Lovász decomposition of J with transitions x_i z y_i, hence **`stl_of_appendBase`**: STL(J, z, y_i) for i = 1, 2, 3 (STL-P with three transitions).
+- **`test1_of_appendBases`** (Cor 2.4): Test1 J z if every r ∈ N(z) has a labelling with r ∈ {y_i} and an append base.
+- Mechanism: the **split graph** (`splitG`, on V ⊕ Fin 2), where z is split into three degree-2 vertices z ~ x1, y1; ℓ2 ~ x2, y2; ℓ3 ~ x3, y3.
+  - Seven appends, or six appends and `walk_step_protected`, along the list L = (ℓ3y3, x2y3, ℓ2y2, x1y2, zx1, ℓ2x2, ℓ3x3).
+  - Then `PathDecomp.pushOn` collapses the split vertices onto z.
+  - x1y1 ∈ B (the C4 parallel pair) is no problem: no edge of F is ever needed in a simple graph.
+- Reusable pieces:
+  - `append_full`: the append with an explicit vertex sequence;
+  - `SameP` / `ExtP` bookkeeping;
+  - **`fanPred_append`**: predecessors through an append; this is how the static condition is read back on D₀;
+  - `fanPred_self`, `delList`, `collapse_*`.
+- Paper only:
+  - Lemma 4.1, Fan with end paths: an end at v ∉ N(u) ∪ {u} stays on a path with the same vertex set plus u;
+  - Prop 4.2, Thm 8.2 with end-path conditions, at the cost of y2 ∉ N(targets of P2). It removes the {x2,y2} obstruction but not y2 ∉ V(P2). A walk ending y2x2 cannot be repaired by tracking alone: an appended last step puts x2 on P_{y2}.
+
+### AD.3 Data (E28)
+- In every computed instance, every root of every shape has an append base, and every executed construction verifies edge by edge in J.
+  - Sparse `gen_core` graphs.
+  - Residual-style 3-connected graphs (`gen_resid.py`): δ(B) ≥ 6, δ(B[O]) ≥ 4, odd-neighbour counts, contact sizes in {0,3,4,5,6}, C4 closed twins, full exterior vertex for ∅.
+- Mostly (E7) suffices; (E6) is needed for a few roots.
+- The six-separation base of TM Thm 8.2 was never found in residual C4 graphs (all 320 searches hit the budget), but exists for 95% of configurations on sparse ones.
+
+### AD.4 What remains, and for whom
+- **The base conjecture** (Conj 5.1): six end-path conditions at six vertices of a nearly complete K6, in a graph with one even vertex.
+  - It is the dense-regime analogue of L1* (§AA) and of class separation (§W), now with several end-path constraints at once.
+  - The single-vertex tools (`lovasz_avoid_set`, `separation_sparse`) need packed or sparse special vertices, the opposite of the dense regime.
+- **For l1-induction (§AC).** (E7) is the T(6)-i face of L1E (a good D whose relevant chain is trivial): the protected step becomes an append exactly when the path ending at x1 avoids y2. An induction for L1-type end-path constraints with several constrained vertices would attack Conj 5.1 directly.
+- **For the coordinator.**
+  - T(6)-i now follows from Conj 5.1, because every failure has a dense shape by the root-shape theorem.
+  - The C4 shape is **not** closed; neither are K2, P3, K3, ∅.

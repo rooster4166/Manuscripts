@@ -203,15 +203,17 @@ predecessor condition);
 \end{enumerate}
 \end{definition}
 
-In Lean (\texttt{AppendBase}) the base graph is taken in the split form of
-Section~\ref{sec:proof}. That form is $M$ together with two isolated vertices $\ell_2,\ell_3$,
-and the decomposition is required to have one end at every vertex of $M$ other than $x_3$.
+In Lean, \texttt{LovaszBase} is Definition~\ref{def:base} verbatim: a decomposition
+$\cD_0$ of $M$ (\texttt{baseM}) with ends equal to degrees modulo two, and (E1)--(E7) on $V$. The
+degree parities of $M$ are \texttt{baseM\_parity}. \texttt{AppendBase} is the same in the split
+form of Section~\ref{sec:proof}: $M$ together with two isolated vertices $\ell_2,\ell_3$, with
+the explicit end profile. \texttt{appendBase\_of\_lovaszBase} pushes the first into the second.
 
 \begin{theorem}[the append chain]\label{thm:append}
 If $M$ has a Lov\'asz decomposition satisfying \textup{(E1)}--\textup{(E5)} and
 \textup{(E7)}, then $J$ has a star-terminal Lov\'asz decomposition in which the three paths
 through $z$ are $x_i\,z\,y_i\cdots$ with $x_i$ an end ($i=1,2,3$). In particular
-$\STL(J,z,y_i)$ holds for $i=1,2,3$.\lean{star\_of\_appendBase, stl\_of\_appendBase}
+$\STL(J,z,y_i)$ holds for $i=1,2,3$.\lean{star\_of\_appendBase, stl\_of\_lovaszBase}
 \end{theorem}
 
 \begin{theorem}[one protected step]\label{thm:protected}
@@ -223,7 +225,7 @@ The conclusion of Theorem~\ref{thm:append} also holds if \textup{(E7)} is replac
 Let $z$ be the only even vertex of $J$, $d(z)=6$, and let every neighbour of $z$ have degree at
 least three. If for every $r\in N(z)$ some labelling $(x_1,y_1,x_2,y_2,x_3,y_3)$ of $N(z)$ with
 $r\in\{y_1,y_2,y_3\}$ has an append base, then $\mathrm{Test1}(J,z)$ holds.
-\lean{test1\_of\_appendBases}
+\lean{test1\_of\_lovaszBases}
 \end{corollary}
 
 \begin{proof}
@@ -457,8 +459,10 @@ $D=K_6-(J-z)[N(z)]\in\{\emptyset,K_2,P_3,K_3,C_4\}$. Then for every $r\in N(z)$ 
 $r\in\{y_1,y_2,y_3\}$ and $x_1y_2,x_2y_3\in E(J)$ has an append base.
 \end{conjecture}
 
-By Corollary~\ref{cor:test1}, Conjecture~\ref{conj:base} implies T(6)-i in the dense regime,
-hence (with the known sparse closures of the residual) T(6)-i. It is a statement in Lov\'asz's
+By Corollary~\ref{cor:test1}, Conjecture~\ref{conj:base} implies T(6)-i. By the root-shape
+theorem~\cite{RS} every failure has $D$ among the five shapes: if the root has a core neighbour,
+directly, and if it is isolated in $D$, then $D-r\in\{\emptyset,K_2,P_3\}$. Only the roots not
+already closed by the known reductions need a base. It is a statement in Lov\'asz's
 setting (one even vertex), in the family of the separation and avoidance statements of
 \cite{MS,L1S}. Each condition (E1)--(E5), (E7) says that the path ending at a prescribed vertex
 avoids one or two prescribed vertices. The difficulty is that there are six such conditions, at
@@ -587,6 +591,10 @@ construction; \texttt{collapse} with \texttt{collapse\_hE}, \texttt{collapse\_hE
 (Theorem~\ref{thm:protected}, from \texttt{walk\_step\_protected} of \texttt{TightFan.lean}),
 \texttt{AppendBase}, \texttt{stl\_of\_appendBase}, \texttt{test1\_of\_appendBases}
 (Corollary~\ref{cor:test1}, from \texttt{test1\_of\_stl}).
+\item \texttt{baseM}, \texttt{baseM\_parity}, \texttt{LovaszBase},
+\texttt{appendBase\_of\_lovaszBase}, \texttt{stl\_of\_lovaszBase},
+\texttt{test1\_of\_lovaszBases}: the same with the hypothesis stated on $M$ itself, as in
+Definition~\ref{def:base}.
 \end{itemize}
 Lemmas~\ref{lem:labelling}, \ref{lem:fanend} and Proposition~\ref{prop:ep} are not formalised.
 

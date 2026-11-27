@@ -1343,3 +1343,63 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - TR: 32,267 tight tests, 0 violations, 150 undecided.
   - The first run, `out/rand_11_13.txt`, reported 2 L1E "failures". They were tester artefacts: a target whose ST query hit the budget was skipped for L1E without being marked undecided. The tester is fixed; both were rechecked with no budget (`out/l1e_check13.txt`) and hold.
 - n = 15, 600 graphs, 2,816 blocked instances (`out/rand_15.txt`): ST 2,805 hold, 11 undecided; L1E 2,803 hold, 13 undecided; TR 10,460 tight tests, 0 violations, 146 undecided.
+
+## E28. The dense T(6)-i residual: the append chain and end-path bases (cloud session `claude/t6-dense`)
+
+*Manuscript: `manuscripts/t6-dense/t6-dense.tex`. Scripts: `manuscripts/t6-dense/scripts/` (`gcc -O2 -o lsearch lsearch.c`; Python 3 + networkx). Raw outputs in `scripts/out/` (git-ignored, regenerable by `run_big.sh` and `run_lean.sh`). Lean: `lean/GallaiLean/T6Dense.lean`.*
+
+**Tooling.**
+- `lsearch.c`: the depth-first decomposition search of `tools/stl.c` / `walk3p.c`, with memoised failures. Its constraints depend only on the path being closed, so the memo stays exact:
+  - `sep` (no path contains both);
+  - `ef` (the path with an end at v avoids S);
+  - `ep` (no path has ends exactly a, b);
+  - `es` (the path through the edge pq has its end on p's side outside S).
+  - Constrained vertices are expanded first. A node budget gives "undecided".
+- `walksim.py`: leaves, Fan transfers with the **forced chain** (it fails exactly when a blank is reached), the static predecessor check, and the J-form un-lift (every leaf → z, append x_i). It **verifies every final decomposition of J edge by edge**: paths simple, every edge once, end counts, star condition.
+- `c4.py`: the C4 shape. Labelling x2 y2 y3 x3 along the cycle, {x1,y1} universal; chains P2 = y3x2, P1 = y2x1.
+- `dense.py`: all shapes, all labellings with r ∈ {y1,y2,y3} and x1y2, x2y3 ∈ B.
+  - Modes `end` (E1–E4, Fan walks), `endA` (E1–E6, distinct leaves), `endZ` (E6 with every leaf = z: stronger), `endT` (E1–E5, E7: all seven steps appends).
+  - Mode **`lean`** is exactly the Lean hypothesis `AppendBase`: E7 first, else the Lean-form E6, checking that the static condition then holds in D3.
+- `gen_resid.py`: random 3-connected J with B[U] = K6 − D and the residual conditions of a smallest failure:
+  - δ(B) ≥ 6, δ(B[O]) ≥ 4;
+  - ≥ 3 odd neighbours per site, ≥ 5 for a universal site;
+  - |S(x)| ∈ {0,3,4,5,6};
+  - C4: closed twins (both opposite pairs; TW = 1: one pair);
+  - ∅: a full exterior vertex.
+  - With |O| = 8: |B| = 14, 64–82 edges.
+
+**(A) C4, the chained walk with one protected step** (`c4.py`, 10 `gen_core` graphs, |B| = 14, 4 seeds, budget 2·10⁶; 40 roots, 320 configurations).
+- Mode `sep` (the six separations of TM Thm 8.2, protected step executed with the forced chain):
+  - base found in 304/320 configurations (230 searches undecided);
+  - the protected step succeeds for 834 of 1,050 distinct bases;
+  - every root certified (40/40); the static condition held for 726 bases.
+- Mode `end` (E1–E4): 320/320 configurations have a base; 992 of 1,280 bases execute; 40/40 roots.
+- Mode `endA` (E1–E6): 320/320 configurations; **all 1,280 bases execute** (as the theorem predicts; 0 W2 failures); 40/40 roots.
+- Residual C4 graphs (`gen_resid.py`, |O| = 8, 5 graphs):
+  - `endA`: 160/160 configurations, 290/290 bases execute; |O| = 10: 160/160, 282/282.
+  - `sep`: **0/160 configurations have a base found**: every one of the 320 searches hit the 5·10⁶ budget.
+
+**(B) All shapes, the append chain** (`dense.py`; a root is certified if some labelling has a base and the executed construction verifies).
+
+| graphs | mode | J | roots | certified | failures of executed bases |
+|---|---|---|---|---|---|
+| `gen_core` ∅, K3, C4, \|B\| = 14 | endA | 18 | 108 | 108 | 0 |
+| residual, 3 per shape, \|O\| = 8 | endA | 15 | 90 | 90 | 0 |
+| same | endZ | 15 | 90 | 90 | 0 |
+| same (K2, P3, C4 subset) | endT | 8 | 48 | 48 | 0 |
+| residual C4, \|O\| = 8 (TW = 2) | endZ | 20 | 120 | 120 | 0 |
+| residual K3, \|O\| = 8 | endZ | 20 | 120 | 120 | 0 |
+| residual P3, \|O\| = 8 | endZ | 20 | 120 | 114 | 0 |
+| residual, \|O\| = 8 (K2, P3, C4 subset) | lean | 8 | 48 | 48 | 0 |
+| residual C4, \|O\| = 8 (TW = 2) | lean | 8 | 48 | 48 (all via E7) | 0 |
+| residual K3, \|O\| = 8 | lean | 8 | 48 | 48 (46 E7, 2 E6) | 0 |
+
+- The 6 uncertified roots of the endZ P3 row belong to one graph, `MV~~Nv{f~|q|~\lj_`, where every search hit the budget (see (C)).
+- "failures" counts bases whose executed construction did not verify. There were none in any mode: every base satisfying the theorem's conditions gave a verified star-terminal Lovász decomposition of J.
+
+**(C) Undecided searches.** Dense residual graphs make many searches hit the budget. On average a root needs 3–25 labellings, depending on shape; ∅ and P3 are the hardest. No search returned NONE (a proved absence of a base) for a labelling that was later needed.
+
+**Verdict.**
+- In all computed instances, for all five dense shapes, every root has a labelling with an append base. So Conjecture 5.1 of the manuscript has no counterexample in the data.
+- By the Lean theorems this gives STL-P with three transitions, and Test1, on every computed instance.
+- The six-separation base of TM Thm 8.2 is the wrong hypothesis in the dense regime. It was never found in residual-style C4 graphs, and is impossible for D ≠ C4.

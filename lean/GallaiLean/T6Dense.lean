@@ -1711,6 +1711,271 @@ theorem test1_of_appendBases (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
   · exact s₂
   · exact s₃
 
+/-! ### The base graph on `V` -/
+
+/-- **The base graph** `M = J − {zx₁, zx₂, zx₃, zy₂, zy₃, x₁y₂, x₂y₃}` on `V` (manuscript
+Definition 2.1): `z` is a leaf at `y₁`. -/
+abbrev baseM (J : SimpleGraph V) (z x₁ x₂ y₂ x₃ y₃ : V) : SimpleGraph V :=
+  delList J [s(z, x₁), s(z, x₂), s(z, x₃), s(z, y₂), s(z, y₃), s(x₁, y₂), s(x₂, y₃)]
+
+omit [Fintype V] [DecidableEq V] in
+theorem degree_congr {K K' : SimpleGraph V} [Fintype V] [DecidableRel K.Adj] [DecidableRel K'.Adj]
+    {v : V} (h : ∀ w, K.Adj v w ↔ K'.Adj v w) : K.degree v = K'.degree v := by
+  classical
+  rw [← card_neighborFinset_eq_degree, ← card_neighborFinset_eq_degree, neighborFinset_eq_filter,
+    neighborFinset_eq_filter]
+  exact congrArg Finset.card (Finset.filter_congr (fun w _ => h w))
+
+/-- Removing the head of the list removes one more edge. -/
+theorem delList_cons_degree (K : SimpleGraph V) [DecidableRel K.Adj] {a b : V}
+    {L : List (Sym2 V)} (hab : (delList K L).Adj a b) (v : V) :
+    (delList K (s(a, b) :: L)).degree v + (if v = a then 1 else 0) + (if v = b then 1 else 0) =
+      (delList K L).degree v := by
+  have h := delEdge_degree (delList K L) hab v
+  rw [← h, degree_congr (K' := delEdge (delList K L) a b)]
+  intro w
+  show (K.Adj v w ∧ s(v, w) ∉ s(a, b) :: L) ↔ ((K.Adj v w ∧ s(v, w) ∉ L) ∧ ¬ s(v, w) = s(a, b))
+  rw [List.mem_cons]
+  tauto
+
+omit [DecidableEq V] in
+theorem delList_nil_degree (K : SimpleGraph V) [DecidableEq V] [DecidableRel K.Adj] (v : V) :
+    (delList K []).degree v = K.degree v :=
+  degree_congr (fun w => ⟨fun h => h.1, fun h => ⟨h, List.not_mem_nil⟩⟩)
+
+/-- **Degrees in the base graph**: when `z` is the only even vertex of `J` and
+`N(z) = {x₁, y₁, x₂, y₂, x₃, y₃}`, every vertex of `M` has odd degree except `x₃`, whose degree is
+even (and positive or not, it has no end in a Lovász decomposition). -/
+theorem baseM_parity (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y₂ x₃ y₃ : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃)
+    (h₁₂ : J.Adj x₁ y₂) (h₂₃ : J.Adj x₂ y₃) (hdz : J.degree z = 6) :
+    ∀ v, (baseM J z x₁ x₂ y₂ x₃ y₃).degree v % 2 = if v = x₃ then 0 else 1 := by
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  have hpar : ∀ v, J.degree v % 2 = if v = z then 0 else 1 := by
+    intro v
+    split_ifs with hv
+    · exact Nat.even_iff.mp ((hz v).2 hv)
+    · have : ¬ Even (J.degree v) := fun he => hv ((hz v).1 he)
+      rw [Nat.not_even_iff] at this; exact this
+  have nz : ∀ a b : V, a ≠ z → b ≠ z → ¬ (s(a, b) = s(z, x₁) ∨ s(a, b) = s(z, x₂) ∨
+      s(a, b) = s(z, x₃) ∨ s(a, b) = s(z, y₂) ∨ s(a, b) = s(z, y₃)) := by
+    intro a b ha hb h
+    rcases h with h | h | h | h | h <;> rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨-, h1⟩ <;>
+      first | exact ha h1 | exact hb h1
+  -- peel the seven edges
+  have a7 : (delList J []).Adj x₂ y₃ := ⟨h₂₃, List.not_mem_nil⟩
+  have a6 : (delList J [s(x₂, y₃)]).Adj x₁ y₂ := ⟨h₁₂, by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  have a5 : (delList J [s(x₁, y₂), s(x₂, y₃)]).Adj z y₃ :=
+    ⟨(hN y₃).2 (by simp), by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  have a4 : (delList J [s(z, y₃), s(x₁, y₂), s(x₂, y₃)]).Adj z y₂ :=
+    ⟨(hN y₂).2 (by simp), by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  have a3 : (delList J [s(z, y₂), s(z, y₃), s(x₁, y₂), s(x₂, y₃)]).Adj z x₃ :=
+    ⟨(hN x₃).2 (by simp), by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  have a2 : (delList J [s(z, x₃), s(z, y₂), s(z, y₃), s(x₁, y₂), s(x₂, y₃)]).Adj z x₂ :=
+    ⟨(hN x₂).2 (by simp), by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  have a1 : (delList J [s(z, x₂), s(z, x₃), s(z, y₂), s(z, y₃), s(x₁, y₂), s(x₂, y₃)]).Adj
+      z x₁ :=
+    ⟨(hN x₁).2 (by simp), by simp [Sym2.eq_iff, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm]⟩
+  intro v
+  have e1 := delList_cons_degree J a1 v
+  have e2 := delList_cons_degree J a2 v
+  have e3 := delList_cons_degree J a3 v
+  have e4 := delList_cons_degree J a4 v
+  have e5 := delList_cons_degree J a5 v
+  have e6 := delList_cons_degree J a6 v
+  have e7 := delList_cons_degree J a7 v
+  have e8 := delList_nil_degree J v
+  have hJ := hpar v
+  show (delList J (s(z, x₁) :: [s(z, x₂), s(z, x₃), s(z, y₂), s(z, y₃), s(x₁, y₂),
+    s(x₂, y₃)])).degree v % 2 = _
+  by_cases a : v = z
+  · rw [a] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+    simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+    omega
+  · by_cases b : v = x₃
+    · rw [b] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+      simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+      omega
+    · by_cases c : v = x₁
+      · rw [c] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+        simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+        omega
+      · by_cases d : v = x₂
+        · rw [d] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+          simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+          omega
+        · by_cases f : v = y₂
+          · rw [f] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+            simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+            omega
+          · by_cases g : v = y₃
+            · rw [g] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+              simp only [ite_true, ite_false, add_zero, zero_add, hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂, hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃, hzx₁.symm, hzy₁.symm, hzx₂.symm, hzy₂.symm, hzx₃.symm, hzy₃.symm, hx₁y₁.symm, hx₁x₂.symm, hx₁y₂.symm, hx₁x₃.symm, hx₁y₃.symm, hy₁x₂.symm, hy₁y₂.symm, hy₁x₃.symm, hy₁y₃.symm, hx₂y₂.symm, hx₂x₃.symm, hx₂y₃.symm, hy₂x₃.symm, hy₂y₃.symm, hx₃y₃.symm] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+              omega
+            · simp only [a, b, c, d, f, g, ite_false, add_zero] at e1 e2 e3 e4 e5 e6 e7 e8 hJ ⊢
+              omega
+
+omit [Fintype V] [DecidableEq V] in
+theorem inl_mem_map {l : List V} {a : V} : (Sum.inl a : V ⊕ Fin 2) ∈ l.map Sum.inl ↔ a ∈ l :=
+  List.mem_map_of_injective Sum.inl_injective
+
+omit [Fintype V] [DecidableEq V] in
+theorem inl_infix_map {l : List V} {a b : V} :
+    [(Sum.inl a : V ⊕ Fin 2), Sum.inl b] <:+: l.map Sum.inl → [a, b] <:+: l := by
+  intro h
+  obtain ⟨l', hl', he⟩ := List.infix_map_iff.mp h
+  have : l' = [a, b] := by
+    apply List.map_injective_iff.mpr Sum.inl_injective
+    rw [← he]; rfl
+  rw [← this]; exact hl'
+
+/-- **The append base on `V`** (manuscript Definition 2.1): a Lovász decomposition of the base
+graph `M` itself satisfying (E1)–(E5) and (E6) or (E7). -/
+def LovaszBase (J : SimpleGraph V) [DecidableRel J.Adj] (z x₁ y₁ x₂ y₂ x₃ y₃ : V) : Prop :=
+  [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup ∧
+  (∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃) ∧
+  J.Adj x₁ y₂ ∧ J.Adj x₂ y₃ ∧
+  ∃ D₀ : PathDecomp (baseM J z x₁ x₂ y₂ x₃ y₃),
+    (∀ v, D₀.ends v = (baseM J z x₁ x₂ y₂ x₃ y₃).degree v % 2) ∧
+    (∀ P ∈ D₀.paths, z ∈ P.walk.support → x₁ ∉ P.walk.support ∧
+      P.src ≠ y₂ ∧ P.tgt ≠ y₂ ∧ P.src ≠ y₃ ∧ P.tgt ≠ y₃) ∧
+    (∀ P ∈ D₀.paths, (P.src = y₂ ∨ P.tgt = y₂) → x₂ ∉ P.walk.support) ∧
+    (∀ P ∈ D₀.paths, (P.src = y₃ ∨ P.tgt = y₃) → x₃ ∉ P.walk.support) ∧
+    (∀ P ∈ D₀.paths, ¬ ((P.src = y₂ ∧ P.tgt = y₃) ∨ (P.src = y₃ ∧ P.tgt = y₂))) ∧
+    (∀ P ∈ D₀.paths, (P.src = x₂ ∨ P.tgt = x₂) → y₃ ∉ P.walk.support) ∧
+    ((∀ P ∈ D₀.paths, (P.src = x₁ ∨ P.tgt = x₁) → y₂ ∉ P.walk.support) ∨
+      (∀ p, (p = x₂ ∨ p = x₃) →
+        (∀ w, J.Adj y₂ w → w ≠ z → w ≠ x₂ → ¬ FanPred D₀ y₂ w p) ∧
+        (J.Adj y₂ y₃ → ¬ FanPred D₀ y₂ x₂ p)))
+
+/-- A Lovász decomposition of `M` gives an append base in the split form. -/
+theorem appendBase_of_lovaszBase (J : SimpleGraph V) [DecidableRel J.Adj]
+    {z x₁ y₁ x₂ y₂ x₃ y₃ : V} (hz : ∀ v, Even (J.degree v) ↔ v = z)
+    (h : LovaszBase J z x₁ y₁ x₂ y₂ x₃ y₃) : AppendBase J z x₁ y₁ x₂ y₂ x₃ y₃ := by
+  obtain ⟨hne, hN, h₁₂, h₂₃, D₀, hD₀, E1, E2, E3, E4, E5, E67⟩ := h
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  have hdz : J.degree z = 6 := degree_eq_six J hN (List.Nodup.of_cons hne)
+  have hpar := baseM_parity J hz hne hN h₁₂ h₂₃ hdz
+  have inl_eq : ∀ a b c d : V, (s(Sum.inl a, Sum.inl b) : Sym2 (V ⊕ Fin 2)) =
+      s(Sum.inl c, Sum.inl d) ↔ s(a, b) = s(c, d) := by
+    intro a b c d
+    constructor
+    · intro h'
+      have := congrArg (Sym2.map (Sum.elim id (fun _ => a))) h'
+      simpa [Sym2.map_mk] using this
+    · intro h'
+      have := congrArg (Sym2.map (Sum.inl : V → V ⊕ Fin 2)) h'
+      simpa [Sym2.map_mk] using this
+  -- edges of `M` correspond to edges of the split base on the `inl` side
+  have hEdge : ∀ a b : V, (baseM J z x₁ x₂ y₂ x₃ y₃).Adj a b ↔
+      (splBase J z x₁ x₂ y₂ x₃ y₃).Adj (Sum.inl a) (Sum.inl b) := by
+    intro a b
+    show (J.Adj a b ∧ s(a, b) ∉ [s(z, x₁), s(z, x₂), s(z, x₃), s(z, y₂), s(z, y₃), s(x₁, y₂),
+      s(x₂, y₃)]) ↔ ((J.Adj a b ∧ s(a, b) ∉ [s(z, x₂), s(z, y₂), s(z, x₃), s(z, y₃)]) ∧
+        s(Sum.inl a, Sum.inl b) ∉ ([s(Sum.inl y₃, Sum.inr 1), s(Sum.inl x₂, Sum.inl y₃),
+          s(Sum.inl y₂, Sum.inr 0), s(Sum.inl x₁, Sum.inl y₂)] ++
+          [s(Sum.inl z, Sum.inl x₁), s(Sum.inr 0, Sum.inl x₂), s(Sum.inr 1, Sum.inl x₃)]))
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil, or_false,
+      inl_eq, sym2_inl_ne_inr.symm, Ne.eq_def, sym2_inl_ne_inr, false_or, or_false,
+      show ∀ i : Fin 2, ∀ c, (s(Sum.inl a, Sum.inl b) : Sym2 (V ⊕ Fin 2)) ≠ s(c, Sum.inr i) from
+        fun i c h => sym2_inl_ne_inr (c := c) (i := i) (h.trans Sym2.eq_swap)]
+    tauto
+  have hE : ∀ e ∈ (baseM J z x₁ x₂ y₂ x₃ y₃).edgeSet,
+      e.map Sum.inl ∈ (splBase J z x₁ x₂ y₂ x₃ y₃).edgeSet := by
+    intro e he
+    induction e using Sym2.inductionOn with
+    | hf a b => exact (hEdge a b).mp he
+  have hEinj : ∀ e₁ ∈ (baseM J z x₁ x₂ y₂ x₃ y₃).edgeSet, ∀ e₂ ∈ (baseM J z x₁ x₂ y₂ x₃ y₃).edgeSet,
+      e₁.map (Sum.inl : V → V ⊕ Fin 2) = e₂.map Sum.inl → e₁ = e₂ :=
+    fun e₁ _ e₂ _ h' => Sym2.map.injective Sum.inl_injective h'
+  have hcov : ∀ e' ∈ (splBase J z x₁ x₂ y₂ x₃ y₃).edgeSet, ∃ e ∈ (baseM J z x₁ x₂ y₂ x₃ y₃).edgeSet,
+      e.map Sum.inl = e' := by
+    intro e' he'
+    induction e' using Sym2.inductionOn with
+    | hf p q =>
+      cases p with
+      | inl a =>
+        cases q with
+        | inl b => exact ⟨s(a, b), (hEdge a b).mpr he', rfl⟩
+        | inr i => exact absurd ((SimpleGraph.mem_edgeSet _).mp he').symm (splBase_iso J i _)
+      | inr i => exact absurd he' (splBase_iso J i _)
+  have hinj : ∀ P ∈ D₀.paths, ∀ x ∈ P.walk.support, ∀ y ∈ P.walk.support,
+      (Sum.inl x : V ⊕ Fin 2) = Sum.inl y → x = y := fun _ _ _ _ _ _ h' => Sum.inl_injective h'
+  let D := D₀.pushOn Sum.inl hE hEinj hcov hinj
+  have memD : ∀ Q ∈ D.paths, ∃ P ∈ D₀.paths, Q.src = Sum.inl P.src ∧ Q.tgt = Sum.inl P.tgt ∧
+      Q.walk.support = P.walk.support.map Sum.inl := by
+    intro Q hQ
+    obtain ⟨P, hP, rfl⟩ := PathDecomp.pushOn_mem.mp hQ
+    exact ⟨P, hP, rfl, rfl, GPath.pushOn_support _ _ _ _⟩
+  have endsI : ∀ {P : GPath (baseM J z x₁ x₂ y₂ x₃ y₃)} {Q : GPath (splBase J z x₁ x₂ y₂ x₃ y₃)}
+      {v : V}, Q.src = Sum.inl P.src → Q.tgt = Sum.inl P.tgt →
+      ((Q.src = Sum.inl v ∨ Q.tgt = Sum.inl v) ↔ (P.src = v ∨ P.tgt = v)) := by
+    intro P Q v h1 h2
+    rw [h1, h2]; simp only [Sum.inl.injEq]
+  refine ⟨hne, hN, h₁₂, h₂₃, D, fun v => ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [PathDecomp.pushOn_ends D₀ Sum.inl hE hEinj hcov hinj (Sum.inl v) (fun P => P.endsAt v)
+      (fun P _ => by simp only [GPath.endsAt, Sum.inl.injEq])]
+    show D₀.ends v = _
+    rw [hD₀, hpar]
+  · intro Q hQ hz'
+    obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+    rw [h3, inl_mem_map] at hz'
+    obtain ⟨a, b, c, d, e⟩ := E1 P hP hz'
+    refine ⟨by rw [h3, inl_mem_map]; exact a, ?_, ?_, ?_, ?_⟩ <;>
+      simp only [h1, h2, ne_eq, Sum.inl.injEq] <;> assumption
+  · intro Q hQ he
+    obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+    rw [h3, inl_mem_map]; exact E2 P hP ((endsI h1 h2).mp he)
+  · intro Q hQ he
+    obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+    rw [h3, inl_mem_map]; exact E3 P hP ((endsI h1 h2).mp he)
+  · intro Q hQ he
+    obtain ⟨P, hP, h1, h2, -⟩ := memD Q hQ
+    rw [h1, h2] at he
+    simp only [Sum.inl.injEq] at he
+    exact E4 P hP he
+  · intro Q hQ he
+    obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+    rw [h3, inl_mem_map]; exact E5 P hP ((endsI h1 h2).mp he)
+  · rcases E67 with E7 | E6
+    · left
+      intro Q hQ he
+      obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+      rw [h3, inl_mem_map]; exact E7 P hP ((endsI h1 h2).mp he)
+    · right
+      have back : ∀ w y p : V, FanPred D (Sum.inl w) (Sum.inl y) (Sum.inl p) → FanPred D₀ w y p := by
+        intro w y p ⟨Q, hQ, hocc⟩
+        obtain ⟨P, hP, h1, h2, h3⟩ := memD Q hQ
+        refine ⟨P, hP, ?_⟩
+        rw [h3] at hocc
+        rcases hocc with ⟨hs, hi⟩ | ⟨ht, hi⟩
+        · exact Or.inl ⟨Sum.inl_injective (h1 ▸ hs).symm |>.symm, inl_infix_map hi⟩
+        · exact Or.inr ⟨Sum.inl_injective (h2 ▸ ht).symm |>.symm, inl_infix_map hi⟩
+      intro p hp
+      obtain ⟨k1, k2⟩ := E6 p hp
+      exact ⟨fun w hw hwz hwx h' => k1 w hw hwz hwx (back _ _ _ h'),
+        fun hy h' => k2 hy (back _ _ _ h')⟩
+
+/-- **STL from a Lovász decomposition of the base graph** (manuscript Theorems 2.2, 2.3 and
+Corollary 2.4 in the form stated there). -/
+theorem stl_of_lovaszBase (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y₂ x₃ y₃ : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (h : LovaszBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
+    STL J z y₁ ∧ STL J z y₂ ∧ STL J z y₃ :=
+  stl_of_appendBase J hz (appendBase_of_lovaszBase J hz h)
+
+/-- **The first deletion test from Lovász bases.** -/
+theorem test1_of_lovaszBases (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
+    (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
+    (h : (∀ v, Even (J.degree v) ↔ v = z) → ∀ r, J.Adj z r → ∃ x₁ y₁ x₂ y₂ x₃ y₃ : V,
+      (r = y₁ ∨ r = y₂ ∨ r = y₃) ∧ LovaszBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
+    Test1 J z :=
+  test1_of_appendBases J z hdeg fun hz r hr => by
+    obtain ⟨x₁, y₁, x₂, y₂, x₃, y₃, hr', hB⟩ := h hz r hr
+    exact ⟨x₁, y₁, x₂, y₂, x₃, y₃, hr', appendBase_of_lovaszBase J hz hB⟩
+
 end stl
 
 end Gallai
