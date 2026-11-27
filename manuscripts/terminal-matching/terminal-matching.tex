@@ -566,17 +566,19 @@ An \emph{admissible chain} is a pair of edge-disjoint paths of $G-\{x_1y_1,x_2y_
 $P_2=q_0\cdots q_s$ from $q_0=y_3$ to $q_s=x_2$ and $P_1=p_0\cdots p_k$ from $p_0=y_2$ to
 $p_k=x_1$ ($s,k\ge1$), such that
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item $x_1,y_1,y_2,x_3\notin V(P_2)$, and $q_i\notin N(x_3)$ for $0<i<s$;
-\item $y_1,x_2,x_3\notin V(P_1)$, $y_2\notin N(x_3)$, and $p_i\notin N(x_2)\cup N(x_3)$ for
+\item $x_1,y_2,x_3\notin V(P_2)$, and $q_i\notin N(x_3)$ for $0<i<s$;
+\item $x_2,x_3\notin V(P_1)$, $y_2\notin N(x_3)$, and $p_i\notin N(x_2)\cup N(x_3)$ for
 $0<i<k$.
 \end{enumerate}
 Its \emph{base graph} is
 $M=\bigl((G-x_1y_1)+\ell_1y_1\bigr)-x_2y_2-x_3y_3-E(P_1)-E(P_2)$, with a new leaf $\ell_1$ at $y_1$.
 \end{definition}
 
-$P_1$ may pass through $y_3$ and through inner vertices of $P_2$. In $M$ the degrees of $x_1$,
-$x_2$, $y_2$, $y_3$ and of the inner vertices of the walks drop by an even number, $y_1$ keeps its
-degree, and $x_3$ loses one; so $x_3$ is the only vertex of $M$ that can have positive even
+$P_1$ may pass through $y_3$ and through inner vertices of $P_2$, and both walks may pass
+through $y_1$ (an earlier version of this definition excluded $y_1$; the proof never uses that,
+as the Lean proof confirms). In $M$ the degrees of $x_1$, $x_2$, $y_2$, $y_3$ and of the inner
+vertices of the walks drop by an even number, $y_1$ loses an even number (the edge $x_1y_1$ is
+replaced by $\ell_1y_1$), and $x_3$ loses one; so $x_3$ is the only vertex of $M$ that can have positive even
 degree.
 
 \begin{theorem}[chained walk theorem]\label{thm:chain}
@@ -691,7 +693,6 @@ At degree six this is the first deletion test, the open case T(6)-i, for every $
 neighbours of $z$ are pairwise far apart in $J-z$ and which has the required chains.
 The Lean proofs (\texttt{TerminalMatching3.lean}) need slightly less than stated:
 \begin{itemize}
-\item $y_1\notin V(P_2)$ is never used, and $y_1\notin V(P_1)$ only to keep $x_1y_1$ off $P_1$;
 \item the degree condition on $N(z)$ is needed only for the first test, not for STL;
 \item $d(z)=6$ and the non-adjacency of the pairs follow from the other hypotheses.
 \end{itemize}
@@ -711,11 +712,37 @@ neighbours of $z$ pairwise at distance $\ge3$ in $J-z$ & $0$ & $1$ & $15$ & $69$
 \end{center}
 Whenever the neighbours were far apart, chains were found for every $r$. The existence of
 chains is not proved in general; the far-apart hypothesis is the restrictive one, and it holds
-for half of the graphs of order $201$.
+for half of the graphs of order $201$. So Corollary~\ref{cor:six} is \emph{conditional on
+chains}. Since $y_1$ carries no condition, the chain hypothesis for a given $r$ can be put as
+follows.
+
+\begin{conjecture}[chains]\label{conj:chains}
+Let $J$ be $3$-connected with $z$ its only even vertex, $d(z)=6$, and $N(z)$ pairwise at distance
+at least $3$ in $H=J-z$. Then for every $r\in N(z)$ there are $x_1\in N(z)\setminus\{r\}$ and a
+labelling $\{x_2,y_2\},\{x_3,y_3\}$ of the other four neighbours with edge-disjoint paths
+\[
+P_2:\ y_3\to x_2\ \text{in}\ H-N_H[x_3]-\{x_1,y_2\},\qquad
+P_1:\ y_2\to x_1\ \text{in}\ H-N_H[x_2]-N_H[x_3].
+\]
+\end{conjecture}
+
+These are exactly the admissible chains with $y_1=r$ (the far-apart hypothesis makes the
+remaining conditions of Definition~\ref{def:chain} automatic), so by Corollary~\ref{cor:six}
+Conjecture~\ref{conj:chains} implies the first test at every $z$ of degree six with far-apart
+neighbours in a $3$-connected graph. Besides the $184$ random instances above, an adversarial
+search (\texttt{chain\_search.py}) supports it. It builds $400$ graphs of orders $19$--$25$ in
+which each neighbour of $z$ has two private neighbours and the rest is wired at random; it keeps
+the $3$-connected graphs with all degrees off $z$ odd, and searches chains exactly (every $P_2$,
+then a breadth-first $P_1$). Every $r$ was covered, always with $r=y_1$. The difficulty is that
+$H$ is only $2$-connected, and deleting a closed neighbourhood can disconnect it; a proof has to
+use the freedom in choosing $x_1$ and the labelling.
 
 \subsection*{How far it reaches at degree six}
 \texttt{walk3.c} tests the base hypothesis of Theorem~\ref{thm:chain} for every simple pairing
 (no pair adjacent in $J-z$), all $48$ orders and orientations, and shortest admissible chains.
+It and \texttt{d6\_reach.py} above use the earlier, stricter form of Definition~\ref{def:chain},
+with $y_1$ excluded from both walks, so their counts are lower bounds; \texttt{chain\_search.py}
+uses the definition as stated.
 \begin{center}\footnotesize
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule

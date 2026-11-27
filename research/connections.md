@@ -1344,7 +1344,11 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
      - Far-apart N(z) occurs in 0, 1, 15, 69 and 99 of 200 random graphs at orders 21, 31, 51, 101 and 201.
      - In all 184 such graphs chains were found for every r.
      - Chain existence is not proved.
-   - **Missing:** the base hypothesis when N(z) is not far apart (local girth / exceptional-vertex forms as at d = 4), and a proof that chains exist.
+   - **Chain conjecture (manuscript Conj 8.5):** J 3-connected with N(z) far apart ⇒ for every r there are x1 ≠ r and a labelling of the other four with edge-disjoint P2: y3 → x2 in H − N[x3] − {x1, y2} and P1: y2 → x1 in H − N[x2] − N[x3] (H = J − z, y1 = r free).
+     - Evidence: 184 random graphs plus 400 adversarial graphs (orders 19–25, exact search), every r covered, always with r = y1.
+     - It implies Test1 at every far-apart degree-6 vertex of a 3-connected graph, via `test1_of_chains3`.
+     - The difficulty: H is only 2-connected, and deleting N[x3] can disconnect it.
+   - **Missing:** the base hypothesis when N(z) is not far apart (local girth / exceptional-vertex forms as at d = 4), and Conjecture 8.5.
    - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.

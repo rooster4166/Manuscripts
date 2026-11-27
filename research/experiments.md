@@ -1145,6 +1145,19 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 | N(z) pairwise at distance ≥ 3 in J − z | 0 | 1 | 15 | 69 | 99 |
 | of which every r has a chain | 0 | 1 | 15 | 69 | 99 |
 
+**Chain existence (manuscript Conjecture 8.5).** `chain_search.py COUNT SEED EXTRA` (`out/chain_search.log`) is an adversarial search:
+- J: z, its six neighbours, two private neighbours each (so N(z) is far apart), EXTRA further degree-3 vertices, outer edges wired at random; 3-connected, all degrees off z odd.
+- Chains are searched exactly: every P2, then a BFS for P1 avoiding P2's edges. This uses Definition 8.1 as now stated, with y1 free.
+
+| EXTRA | order | graphs | some r uncovered | r needing r ∈ {y2, y3} |
+|---|---|---|---|---|
+| 0 | 19 | 100 | 0 | 0 |
+| 2 | 21 | 100 | 0 | 0 |
+| 4 | 23 | 100 | 0 | 0 |
+| 6 | 25 | 100 | 0 | 0 |
+
+r = y1 always suffices, which is why Conjecture 8.5 is stated with y1 = r.
+
 **Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.
 
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
