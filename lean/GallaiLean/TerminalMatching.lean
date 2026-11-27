@@ -20,8 +20,16 @@ Fan's lemma (`walk_back`) inside the two-leaf graph, where both prescriptions ar
 separations, and merge the two leaves (`leaf_merge` twice). Every Fan target lies on `p`, away
 from `x`, `a` and the leaves, so the separations survive.
 
-`base_of_fix`: the hypothesis on `M` follows from `separation_sparse` when the four vertices
-`x, y, a, ℓ₁` are sparse in `M` except for at most one vertex adjacent to `x`.
+**Sparse form** (`sep_sparse_fix`, `ptm2_of_sparse`): the hypothesis on `M` follows from
+`separation_sparse` when the four vertices `x, y, a, ℓ₁` are sparse and the three pairs packed,
+in `M` or in `M − xv` for one neighbour `v` of `x` (one more Fan transfer restores `xv`).
+
+**Girth five** (`ptm2_girth5`): with no triangle and no 4-cycle, a shortest path between the two
+edges is an admissible walk satisfying the sparse hypotheses.
+
+**STL** (`swapG`, `liftJ`, `unlift`, `stl_of_ptm2`, `stl_of_girth5`, `test1_of_girth5`): for `z`
+of degree four with `N(z) = {a, b, c, d}` and `ab, cd ∉ E(J)`, PTM₂ in `(J − z) + ab + cd` gives
+`STL J z b` and `STL J z d`; at girth five every neighbour, and `Test1 J z` by `test1_of_stl`.
 -/
 
 open SimpleGraph
@@ -315,7 +323,7 @@ theorem delChain_degree_of_not_mem (K : SimpleGraph U) [DecidableRel K.Adj] :
       rw [delChain_degree_of_not_mem (delEdge K c d) (d :: t) v hch'' (List.nodup_cons.mp hnd).2
         (fun h => hv (List.mem_cons_of_mem _ h))]
       have := delEdge_degree K hcd v
-      rw [if_neg h1, if_neg h2] at this
+      rw [ite_eq_right h1, ite_eq_right h2] at this
       omega
   | [], _, _, _, _ => rfl
   | [_], _, _, _, _ => rfl
@@ -724,7 +732,7 @@ theorem ptm2_of_base (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
     hoddv v ((G.degree_pos_iff_exists_adj v).mpr ⟨w, h⟩)
   -- Step 1: the second leaf `ℓ₂ = none` at `y`
   have hD₀y : D₀.ends (some y) = 1 := by
-    rw [hD₀some, if_neg (Ne.symm hxy'), add_zero]; exact hdpos y x hxy.symm
+    rw [hD₀some, ite_eq_right (Ne.symm hxy'), add_zero]; exact hdpos y x hxy.symm
   obtain ⟨Py, hPy, hPyend⟩ := D₀.exists_end_of_pos (by rw [hD₀y]; omega)
   have hyPy : some y ∈ Py.walk.support := by
     rcases hPyend with h | h
@@ -841,8 +849,8 @@ theorem ptm2_of_base (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
           · subst hty; exact hne rfl
           · exact hZ t' ht' hty hGtv
         have h1 := hD₃some (some v)
-        rw [if_neg (fun h => hvy' (Option.some_injective _ h)), add_zero, hD₀some,
-          if_neg hvx, add_zero, hdpos v t' hGtv.symm] at h1
+        rw [ite_eq_right (fun h => hvy' (Option.some_injective _ h)), add_zero, hD₀some,
+          ite_eq_right hvx, add_zero, hdpos v t' hGtv.symm] at h1
         omega
   obtain ⟨D₄, hD₄e, hcov₄⟩ := walk_back (apex (midG G a b x y) {some y}) ((q.map some).map some)
     (some (some y)) (apex (baseG G a b x y q) {some y}) D₃ hchH hndH hK₀ hZH
@@ -1072,12 +1080,12 @@ theorem ptm2_of_sparse (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v
           · exact hoddv v a hab.symm
           · exact hoddv v w h
         have := hMsome v
-        rw [if_neg hvx, add_zero, hGv] at this
+        rw [ite_eq_right hvx, add_zero, hGv] at this
         omega
   have hcard : (evenSet (baseG G a b x y q)).card ≤ 1 :=
     Finset.card_le_one.mpr fun w₁ h₁ w₂ h₂ => (hev w₁ h₁).trans (hev w₂ h₂).symm
   have hgx : (baseG G a b x y q).degree (some x) % 2 = 0 := by
-    rw [hMsome, if_pos rfl]; have := hoddv x y hxy; omega
+    rw [hMsome, ite_eq_left rfl]; have := hoddv x y hxy; omega
   obtain ⟨D₀, hD₀, hmeet⟩ : ∃ D₀ : PathDecomp (baseG G a b x y q),
       (∀ v, D₀.ends v = (baseG G a b x y q).degree v % 2) ∧
         ∀ A ∈ baseFam a x y, MeetsOnce D₀ A := by
@@ -1367,7 +1375,7 @@ theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
     Nat.find_min' hex ⟨u, w, hu, hw, r, rfl⟩
   obtain ⟨p, hp, hplen⟩ : ∃ p : G.Walk w₀ u₀, p.IsPath ∧ p.length = Nat.find hex := by
     refine ⟨r₀.bypass, r₀.bypass_isPath, ?_⟩
-    have h1 := r₀.length_bypass_le
+    have h1 := r₀.length_bypass_le_length
     have h2 := hmin u₀ w₀ hu₀ hw₀ r₀.bypass
     omega
   rcases hu₀ with h | h <;> rcases hw₀ with h' | h' <;> subst u₀ <;> subst w₀
@@ -1552,38 +1560,11 @@ theorem GPath.subdivide_start {G J : SimpleGraph U} (P : GPath G) {a b z : U} (h
       tauto
     · simp only at htgt
       subst htgt
-      have := Walk.isPath_iff_eq_nil.mp hpath.1
+      have := (Walk.isPath_iff_nil.mp hpath.1).eq_nil
       subst this
       rfl
 
 end stlLift
-
-section liftGraph
-
-variable {V : Type u} [Fintype V] [DecidableEq V]
-
-/-- The graph `(J − z) + ab + cd` on the same vertex type; `z` becomes isolated. -/
-def liftG (J : SimpleGraph V) (z a b c d : V) : SimpleGraph V where
-  Adj u v := u ≠ v ∧ ((J.Adj u v ∧ u ≠ z ∧ v ≠ z) ∨ s(u, v) = s(a, b) ∨ s(u, v) = s(c, d))
-  symm := ⟨fun u v h => ⟨h.1.symm, by
-    rcases h.2 with h | h | h
-    · exact Or.inl ⟨h.1.symm, h.2.2, h.2.1⟩
-    · exact Or.inr (Or.inl (by rw [Sym2.eq_swap]; exact h))
-    · exact Or.inr (Or.inr (by rw [Sym2.eq_swap]; exact h))⟩⟩
-  loopless := ⟨fun u h => h.1 rfl⟩
-
-instance liftG.decRel (J : SimpleGraph V) [DecidableRel J.Adj] (z a b c d : V) :
-    DecidableRel (liftG J z a b c d).Adj := fun u v =>
-  inferInstanceAs (Decidable (u ≠ v ∧ ((J.Adj u v ∧ u ≠ z ∧ v ≠ z) ∨ s(u, v) = s(a, b) ∨
-    s(u, v) = s(c, d))))
-
-theorem liftG_comm (J : SimpleGraph V) (z a b c d : V) : liftG J z a b c d = liftG J z c d a b := by
-  ext u v; simp only [liftG]; tauto
-
-theorem liftG_swap (J : SimpleGraph V) (z a b c d : V) : liftG J z a b c d = liftG J z b a c d := by
-  ext u v; simp only [liftG, Sym2.eq_swap (a := a)]
-
-end liftGraph
 
 section swapGraph
 
@@ -1666,7 +1647,7 @@ theorem swapG_degree (K : SimpleGraph V) [DecidableRel K.Adj] {z c d : V} (hzc :
   have hzd' : z ≠ d := hzd.ne
   by_cases hvz : v = z
   · subst hvz
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hset : (swapG K v c d).neighborFinset v = ((K.neighborFinset v).erase c).erase d := by
       ext w
       rw [Finset.mem_erase, Finset.mem_erase, mem_neighborFinset, mem_neighborFinset, swapG_adj]
@@ -1690,7 +1671,7 @@ theorem swapG_degree (K : SimpleGraph V) [DecidableRel K.Adj] {z c d : V} (hzc :
     have : 1 < (K.neighborFinset v).card := by
       rw [Finset.one_lt_card]; exact ⟨c, by simpa using hzc, d, by simpa using hzd, hcd'⟩
     omega
-  · rw [if_neg hvz, add_zero]
+  · rw [ite_eq_right hvz, add_zero]
     by_cases hvc : v = c
     · subst hvc
       refine degree_trade _ _ hzc.symm hcd (fun w => ?_)
@@ -1906,7 +1887,7 @@ theorem stl_of_ptm2 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
   have hiso : ∀ w, ¬ (liftJ J z a b c d).Adj z w := by
     intro w hw
     have h0 := hdeg z
-    rw [if_pos rfl, hJz] at h0
+    rw [ite_eq_left rfl, hJz] at h0
     have : (liftJ J z a b c d).degree z = 0 := by omega
     rw [← card_neighborFinset_eq_degree, Finset.card_eq_zero] at this
     have : w ∈ (liftJ J z a b c d).neighborFinset z := (mem_neighborFinset _ _ _).2 hw
@@ -1976,10 +1957,10 @@ theorem stl_of_girth5 (J : SimpleGraph V) [DecidableRel J.Adj] {z a b c d : V}
     rw [mem_evenSet_iff] at hv
     have h0 := hdeg v
     by_cases hvz : v = z
-    · rw [hvz, if_pos rfl, hJz] at h0
+    · rw [hvz, ite_eq_left rfl, hJz] at h0
       rw [hvz] at hv
       omega
-    · rw [if_neg hvz, add_zero] at h0
+    · rw [ite_eq_right hvz, add_zero] at h0
       have : ¬ Even (J.degree v) := fun h => hvz ((hev v).1 h)
       rw [Nat.not_even_iff] at this
       have : (liftJ J z a b c d).degree v % 2 = 0 := hv.2

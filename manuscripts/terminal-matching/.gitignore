@@ -5,3 +5,4 @@ scripts/out/pairs_*.txt
 scripts/out/odd10_part*
 scripts/encode
 scripts/out/n10/
+scripts/out/cubic_*.in

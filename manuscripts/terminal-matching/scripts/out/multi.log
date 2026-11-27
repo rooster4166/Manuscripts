@@ -1,0 +1,6 @@
+10 2 SUMMARY inst=360 ptm_fail=0 ptm_und=0 par_inst=239 par_fail=0 r_tests=1440 r_fail=0 r_und=1 pee_tests=0 pee_fail=0 verified=906 badwit=0
+10 3 SUMMARY inst=1800 ptm_fail=0 ptm_und=1 par_inst=1471 par_fail=0 r_tests=10794 r_fail=0 r_und=2 pee_tests=0 pee_fail=0 verified=5292 badwit=0
+12 2 SUMMARY inst=360 ptm_fail=0 ptm_und=1 par_inst=238 par_fail=0 r_tests=1436 r_fail=0 r_und=1 pee_tests=0 pee_fail=0 verified=876 badwit=0
+12 3 SUMMARY inst=1800 ptm_fail=0 ptm_und=12 par_inst=1378 par_fail=0 r_tests=10728 r_fail=0 r_und=16 pee_tests=0 pee_fail=0 verified=5227 badwit=0
+14 2 SUMMARY inst=360 ptm_fail=0 ptm_und=4 par_inst=227 par_fail=0 r_tests=1424 r_fail=0 r_und=0 pee_tests=0 pee_fail=0 verified=885 badwit=0
+14 3 SUMMARY inst=1800 ptm_fail=0 ptm_und=30 par_inst=1425 par_fail=0 r_tests=10620 r_fail=0 r_und=66 pee_tests=0 pee_fail=0 verified=5073 badwit=0

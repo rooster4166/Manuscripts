@@ -41,9 +41,10 @@ of the spine of Gallai's conjecture at a vertex of degree four, which is how the
 \emph{Statements.} The property fails for two edges in $K_4$ with a perfect matching (this is the
 wheel $W_4$ with its diagonal pairing), and for three edges in the prism with its rungs. By
 exhaustive computation these are essentially the only obstructions on simple graphs: for two
-edges, $K_4$ is the only failure among all instances on at most $10$ vertices; for three edges
-and for a prescribed end, every failure has $G-F$ disconnected. When the edges of $F$ may be
-parallel to edges of $G$, every failure has a cut vertex in $G-F$.
+edges, $K_4$ is the only failure among all instances on at most $8$ vertices (order $10$: see
+Section~\ref{sec:comp}); for three edges and for a prescribed end, every failure other than $K_4$
+has $G-F$ disconnected. When the edges of $F$ may be parallel to edges of $G$, every failure
+other than $K_4$ has a cut vertex in $G-F$.
 
 \emph{Theorems.} We prove a \emph{walk theorem}: attach a leaf in place of the first edge, walk
 the resulting even vertex along a path to the second edge, and restore the path edge by edge with
@@ -86,8 +87,10 @@ with one end prescribed.
 \end{definition}
 
 For $m=1$ this is Theorem~\ref{thm:endedge}. Prescribing all ends (``PEE$_m$'') is false for
-$m\ge2$: two adjacent prescribed ends of degree three force the edge between them into a single
-transition at both ends~\cite[E22(F)]{STL}. The free choice of ends is therefore essential.
+$m\ge2$: it fails for $36$ of the $824$ end assignments of order six and $420$ of the $52{,}100$ of
+order eight (Section~\ref{sec:comp}). In the data of~\cite[Table~3]{STL} every failure has two
+adjacent prescribed ends; if these also have a common neighbour, the transitions close a
+triangle. The free choice of ends is therefore essential.
 
 \subsection*{Motivation: the spine}
 The spine of the project~\cite{SP} reduces Gallai's conjecture to two deletion tests on
@@ -102,7 +105,7 @@ implies the first test at $r$ (formalised as \texttt{test1\_of\_stl}).
 Fix a perfect matching $M$ of $N(z)$ whose pairs are not adjacent in $J$, and let
 $G=(J-z)+M$. Replacing each edge $xy\in M$ by the path $x\,z\,y$ turns a Lov\'asz decomposition
 of $G$ in which every edge of $M$ is terminal and no path has two of them into a star-terminal
-Lov\'asz decomposition of $J$ with transitions $M$ at $z$, and conversely~\cite[Proposition~3.4]{STL}.
+Lov\'asz decomposition of $J$ with transitions $M$ at $z$, and conversely~\cite[Proposition~4.4]{STL}.
 An edge $xy\in M$ terminal at $x$ lifts to $x\,z\,y\cdots$, so $x$ is short and $y$ is long. Hence
 \[
 \PTM(G,M;e@s)\ \Longrightarrow\ \STL(J,z,r)\qquad(e=rs\in M).
@@ -116,11 +119,12 @@ even vertices are beyond them.
 \begin{enumerate}[label=(\arabic*)]
 \item \emph{The right statements} (Section~\ref{sec:statements}). $K_4$ with a perfect matching
 violates $\PTM_2$ (Example~\ref{ex:K4}); it is the wheel $W_4$ with its diagonal pairing, the only
-known failure of the pairing-prescribed form of STL. The prism with its rungs violates $\PTM_3$.
-Exhaustive computation (Section~\ref{sec:comp}) supports Conjecture~\ref{conj:ptm}: $\PTM_2$ holds
-for every simple $G$ except $K_4$, and $\PTM_m(r)$ holds whenever $G-F$ is connected. When edges
-of $F$ are allowed to be parallel to edges of $G$ (pairs of $M$ adjacent in $J$), every failure
-found has a cut vertex in $G-F$ (Conjecture~\ref{conj:multi}).
+known failure of the pairing-prescribed form of STL with $J$ $3$-connected. The prism with its
+rungs violates $\PTM_3$. Exhaustive computation (Section~\ref{sec:comp}) supports
+Conjecture~\ref{conj:ptm}: $\PTM_2$ holds for every simple $G$ except $K_4$, and $\PTM_m(r)$ holds
+whenever $G-F$ is connected and $G\ne K_4$. When edges of $F$ are allowed to be parallel to edges
+of $G$ (pairs of $M$ adjacent in $J$), every failure found other than $K_4$ has a cut vertex in
+$G-F$ (Conjecture~\ref{conj:multi}).
 \item \emph{The walk theorem} (Theorem~\ref{thm:walk}). Two terminal edges reduce to a
 separation problem in a graph with one even vertex: three pairs of vertices must be separated in
 a Lov\'asz decomposition of a base graph obtained by deleting a path.
@@ -156,7 +160,7 @@ edges each, so both are Hamiltonian paths. A Hamiltonian path in which $ac$ is t
 reads $a\,c\,u\,v$ with $\{u,v\}=\{b,d\}$, so its last edge is $bd$; the same holds with the roles
 of $a$ and $c$ exchanged. So $ac$ and $bd$ lie on one path, and $\PTM(K_4,F)$ fails. Here
 $J=(G-F)+z(V(F))$ is the wheel $W_4$ and $F$ its diagonal pairing, the exception
-in~\cite[Example~3.7]{STL}. The pairs of $F$ are not adjacent in $J$; this is a simple-graph
+in~\cite[Example~4.5]{STL}. The pairs of $F$ are not adjacent in $J$; this is a simple-graph
 failure.
 \end{example}
 
@@ -192,7 +196,7 @@ then $\PTM(G,F;e@x)$ holds for every $e$ and $x$.
 \end{conjecture}
 
 If $J$ is $3$-connected then $J-z$ is $2$-connected, so Conjecture~\ref{conj:multi} implies the
-pairing-prescribed STL for $3$-connected $J\ne W_4$~\cite[Conjecture~6.4]{STL}, and with it STL
+pairing-prescribed STL for $3$-connected $J\ne W_4$~\cite[Conjecture~7.4]{STL}, and with it STL
 and the first deletion test.
 
 \section{Tools}\label{sec:tools}
@@ -293,7 +297,9 @@ no path of $\cD_1$ contains $\{x,\ell_2\}$, $\{\ell_1,\ell_2\}$ or $\{a,\ell_1\}
 
 \emph{Step 2: walking back.} Let $H$ be the two-leaf graph $\bigl((G-ab)+\ell_1b-xy\bigr)+\ell_2y$.
 Then $M+\ell_2y=H-E(P)$. Apply Lemma~\ref{lem:walkback} in $H$ to the path $y=p_0,\dots,p_k=a$. A
-vertex with no end in $\cD_1$ is $x$, $y=p_0$, or isolated. No vertex $p_i$ with $0\le i<k$ is
+vertex with no end in $\cD_1$ is $x$, $y=p_0$, or isolated in $G$ (every other vertex of $G$ has
+odd degree in $M$, by the parity computation above, and the leaves have one end each). A vertex
+isolated in $G$ is adjacent to no $p_i$. No vertex $p_i$ with $0\le i<k$ is
 adjacent to $x$ in $H$: for $i=0$ the edge $xy$ has been removed, and for $0<i<k$ this is
 admissibility. So the hypothesis of Lemma~\ref{lem:walkback} holds. It gives a decomposition
 $\cD_2$ of $H$ with $b_{\cD_2}(a)=0$, $b_{\cD_2}(y)=1$, $b_{\cD_2}(x)=0$, one end at each leaf, and
@@ -375,7 +381,9 @@ different paths.\lean{ptm2\_girth5}
 The end of $ab$ is prescribed, so for every $r\in\{a,b,c,d\}$ there is such a decomposition in
 which $r$ is the long end of its edge: apply the theorem to $(b,a)$ or to $(a,b)$, with the roles
 of the two edges exchanged if $r\in\{c,d\}$. In the language of Definition~\ref{def:ptm}:
-\emph{$\PTM_2$ and $\PTM_2(r)$ hold for all graphs of girth at least five with all degrees odd.}
+\emph{$\PTM_2$ and $\PTM_2(r)$ hold for all graphs of girth at least five with all degrees odd},
+when the two edges lie in one component; otherwise apply Theorem~\ref{thm:endedge} in each
+component.
 
 \begin{proof}
 Choose $u\in\{a,b\}$, $w\in\{c,d\}$ and a walk from $w$ to $u$ of least possible length $k$ over
@@ -408,7 +416,8 @@ two vertices of $X\setminus\{\ell_1\}=\{x,y,a\}$.
 \item $v\sim y,a$ by edges of $M$ (not of $P$): the walk $y\,v\,a$ gives $k\le2$. If $k=1$ then
 $v\,y\,a$ is a triangle. If $k=2$, then $P=y\,p_1\,a$ with $v\ne p_1$, since the edges $yp_1$ and
 $p_1a$ are not in $M$, and $y\,v\,a\,p_1$ is a $4$-cycle.
-\item $v\sim x,a$: the walk $x\,v\,a$ gives $k\le2$. If $k=1$ then $a\,v\,x\,y$ is a $4$-cycle.
+\item $v\sim x,a$: the walk $x\,v\,a$ gives $k\le2$. If $k=1$ then $a\,v\,x\,y$ is a $4$-cycle;
+here $v\ne y$ because $ya\in E(P)$ is not an edge of $M$.
 If $k=2$ this can happen (a $5$-cycle $a\,v\,x\,y\,p_1$). Such a $v$ is unique: two of them, $v$
 and $v'$, would give the $4$-cycle $x\,v\,a\,v'$. And $v\notin X$: $v\ne y$, because $ya\in E(G)$
 forces $k=1$ with $ya\in E(P)$.
@@ -500,18 +509,33 @@ simple, $m=2$, $n\le8$ & 13{,}234 & 3 ($K_4$) & 52{,}924 & 0\\
 simple, $m=3$, $n\le8$ & 14{,}124 & 2 & 84{,}732 & 15 \\
 simple, $m=4$, $n=8$ & 1{,}955 & 0 & 15{,}640 & 14 \\
 simple, $m=2$, $n=10$ (up to isomorphism) & 3{,}474{,}599 & \textit{pending} & & \\
+cubic, $m=2$, $n=12$ (up to isomorphism) & 3{,}745 & 0 & 14{,}980 & 0\\
+cubic, $m=2$, $n=14$ (up to isomorphism) & 46{,}407 & 0 & 185{,}628 & 0\\
 girth $\ge5$, $m=2$, $n\le12$ & 1{,}497 & 0 & 5{,}988 & 0\\
 multigraph, $G-F$ connected, $n\le8$ & 76{,}632 & 29 & 453{,}964 & 1{,}942\\
 \bottomrule
 \end{tabular}
 \caption{Exhaustive tests. ``Simple'': all connected all-odd $G$ and all matchings $F$ of $m$
-edges (all instances, not up to isomorphism, except at $n=10$). Every PTM failure with $m=3$ and
-every PTM$(e@x)$ failure in the simple rows has $G-F$ disconnected; the $m=3$ failures are the
+edges (all instances, not up to isomorphism, except at $n=10$). PTM$(e@x)$ is tested only on
+the instances where PTM holds, so $K_4$ is not counted in that column. Every PTM failure with
+$m=3$ and every PTM$(e@x)$ failure in the simple rows has $G-F$ disconnected; the $m=3$ failures are the
 prism (order $6$) and one graph of order $8$. ``Multigraph'': all connected $G'$ of order $\le8$
 and all perfect matchings $F$ of the even vertices of $G'$ with $G'+F$ connected; every failure
 except $K_4$ has a cut vertex in $G'=G-F$ (and $J$ of connectivity at most $2$).}
 \label{tab:exh}
 \end{table}
+
+\subsection*{Random tests}
+Simple instances of orders $12$, $14$ and $16$ ($G(n,p)$ with $p\in[0.15,0.5]$ and parities
+repaired; $m=2,3,4$; $F$ random, or each new edge of $F$ adjacent to an earlier one, or at
+distance exactly two from it so that the edges share neighbourhoods; $150$ instances per cell):
+$4{,}050$ instances and $23{,}950$ end-prescribed queries, no failure. With a node budget,
+$56$ PTM and $75$ PTM$(e@x)$ queries were undecided; a re-run of the $120$ instances concerned
+with budget $5\cdot10^6$ decided all but $8$ and $23$ of them, every one positively. Multigraph
+instances with $G-F$ $2$-connected (Conjecture~\ref{conj:multi}): $120$ random graphs $G'$ for
+each order $10$, $12$, $14$ and each $m=2,3$, with $2m$ even vertices and every pairing $F$ of
+them; $6{,}480$ instances, $4{,}978$ with an $F$-edge parallel to an edge of $G'$, no failure
+($48$ PTM and $86$ PTM$(e@x)$ queries undecided within the budget).
 
 \subsection*{How far the walk theorem reaches}
 \texttt{walk.c} tests, for every instance with $|F|=2$, all eight choices of which edge is $ab$
@@ -533,9 +557,14 @@ $n=8$, walks up to $3$ longer than shortest & 13{,}025 & 68 & & 3{,}093\\
 \end{center}
 
 So the reduction to a separation problem is strong, much stronger than the part of it that is
-proved. The separation problem in the base graph (three pairs forming a path $x-y-\ell_1-a$ of
-constraints, one even vertex) is a case of the class-separation questions of~\cite{MS} for the
-union of two matchings, where no counterexample is known.
+proved. But it is lossy: in $832$ instances of order eight the base hypothesis fails for every
+orientation and every shortest admissible walk ($764$ of them have such a walk, $68$ have none),
+although $\PTM_2$ holds in all of them; allowing walks up to two longer than shortest covers no
+further instance. So the base separation problem (three pairs forming a path $x-y-\ell_1-a$ of
+constraints, one even vertex) is not always solvable. When the three pairs are packed in $M$, it
+is a case of the class-separation questions of~\cite{MS} for the union of two matchings, where no
+counterexample is known; all $11{,}810$ base graphs of order eight with packed pairs are
+separable (audit~A22).
 
 \section{What remains}\label{sec:open}
 
@@ -554,8 +583,11 @@ formalised.
 \item \emph{The multigraph case.} Theorem~\ref{thm:walk} assumes $G$ simple. For STL at a vertex
 whose neighbourhood is dense, every pairing may contain adjacent pairs.
 \item \emph{Relation to EE.} $\PTM_2(r)$ at $d(z)=4$ contains the end-edge conjecture EE of~\cite{PE}
-for those $u\in N(z)$ that can be paired with a non-neighbour, so a full proof of $\PTM_2(r)$
-would settle the open case of EE ($|N(u)\cap N(z)|\ge2$) at $d(z)=4$. The walk theorem's final
+at those $u\in N(z)$ that lie in a pairing $\{uu',cd\}$ of $N(z)$ with $uu',cd\notin E(J)$: the
+decomposition given by $\PTM(G,M;uu'@u)$ lifts to one in which $uz$ is terminal at $u$. For the
+other $u$ the graph $(J-z)+M$ is a multigraph, outside Definition~\ref{def:ptm}. So a full proof
+of $\PTM_2(r)$ including the multigraph case would settle the open case of EE
+($|N(u)\cap N(z)|\ge2$) at $d(z)=4$. The walk theorem's final
 step is EE-like (the Fan transfers end at the long end $y$); the girth hypothesis plays the role
 of ``at most one common neighbour'' in~\cite[Theorem~5.1]{PE}.
 \end{enumerate}

@@ -1,0 +1,3 @@
+m=2 SUMMARY inst=23 ptm_fail=0 ptm_und=2 par_inst=0 par_fail=0 r_tests=84 r_fail=0 r_und=1 pee_tests=0 pee_fail=0 verified=45 badwit=0
+m=3 SUMMARY inst=40 ptm_fail=0 ptm_und=5 par_inst=0 par_fail=0 r_tests=210 r_fail=0 r_und=7 pee_tests=0 pee_fail=0 verified=91 badwit=0
+m=4 SUMMARY inst=57 ptm_fail=0 ptm_und=1 par_inst=0 par_fail=0 r_tests=448 r_fail=0 r_und=15 pee_tests=0 pee_fail=0 verified=175 badwit=0

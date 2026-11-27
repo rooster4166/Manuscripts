@@ -1022,7 +1022,7 @@ Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Scripts and o
 | 8 | 3 | 14,077 | 1 | 84,456 / 13 | 112,608 / 3,259 |
 | 8 | 4 | 1,955 | 0 | 15,640 / 14 | 31,280 / 2,787 |
 
-Every PTM failure with m ≥ 3 and every PTM(e@x) failure has G − F disconnected. PTM_2 fails only at K4 (even with G − F disconnected allowed).
+Every PTM failure with m ≥ 3 and every PTM(e@x) failure has G − F disconnected. PTM_2 fails only at K4 (even with G − F disconnected allowed). Caveat: e@x is tested only on PTM-positive instances (52,100 = 13,025 × 4), so K4, where every e@x fails with G − F = C4 connected, is not counted in the e@x column. The PTM(e@x) conjecture excepts it. An independent brute force (audit A22, `research/audit/A22-scripts/bf.py`) reproduces every row and the exact failure sets.
 
 **(B) Exhaustive, n = 10, up to isomorphism.** `encode.c` (each F-edge subdivided by a vertex with two pendant leaves, the only even vertices) → `nauty-labelg` → `sort -u` → `decode.py` → `ptm f`. The 32,851 connected all-odd graphs of order 10 give 3,474,599 classes (G, F) with |F| = 2 (validated at n = 8: 13,025 instances → 3,913 classes, all pass). Run `run_n10.sh 2`; result: **pending** (see the update below).
 
@@ -1034,11 +1034,14 @@ Every PTM failure with m ≥ 3 and every PTM(e@x) failure has G − F disconnect
 | 6 | 299 | 236 | 0 | 16 |
 | 8 | 76,327 | 65,712 | 28 | 1,926 |
 
-Every failure other than K4 has a cut vertex in G' = G − F, and J of connectivity ≤ 2 (`analyze.py`). So 2-connected G − F (3-connected J) never fails.
+Every failure other than K4 has a cut vertex in G' = G − F, and J of connectivity ≤ 2 (`analyze.py`; confirmed independently by audit A22). So 2-connected G − F never fails. 3-connected J implies 2-connected G − F, but not conversely.
 
 **(D) Girth ≥ 5** (`nauty-geng -ctf`, all-odd): n = 6, 8, 10, 12: 4 + 20 + 221 + 1,252 instances (m = 2), 5,988 PTM(e@x) tests, 0 failures, as Theorem 6.1 of the manuscript requires.
 
-**(E) Random, n = 12, 14, 16** (`gen_random.py`, `run_random.sh`; G(n,p), p ∈ [0.15, 0.5], parities repaired; m = 2, 3, 4; F chosen at random, or "close" (each new F-edge adjacent to an earlier one), or "share" (each new F-edge at distance exactly two, sharing neighbourhoods); 150 instances per cell, budget 2·10⁵ nodes per attempt). 0 PTM failures, 0 PTM(e@x) failures; undecided counts in `out/random.log` (re-run with larger budgets below).
+**(E) Random, n = 12, 14, 16** (`gen_random.py`, `run_random.sh`; G(n,p), p ∈ [0.15, 0.5], parities repaired; m = 2, 3, 4; F chosen at random, or "close" (each new F-edge adjacent to an earlier one), or "share" (each new F-edge at distance exactly two, sharing neighbourhoods); 150 instances per cell, budget 2·10⁵ nodes per attempt). 0 PTM failures, 0 PTM(e@x) failures (4,050 instances, 23,950 e@x queries); undecided counts in `out/random.log`.
+- 56 PTM and 75 e@x queries were undecided.
+- Re-run of the 120 instances concerned (`und_rerun.py` → `ptm f`, budget 5·10⁶; `out/rnd_und.log`): all but 8 PTM and 23 e@x queries decided, every one positively.
+- The audit's brute force does not decide the remaining ones either.
 
 **(F) Reach of the walk theorem** (`walk.c`, all 2-matchings of all connected all-odd graphs; all 8 orientations; all admissible walks of least length):
 
@@ -1047,7 +1050,30 @@ Every failure other than K4 has a cut vertex in G' = G − F, and J of connectiv
 | 6 | 206 | 1 | 160 | 31 |
 | 8 | 13,025 | 68 | 12,193 | 2,288 (3,093 with walks up to 3 longer) |
 
-The base hypothesis is decided exactly (the stl.c engine with a separation constraint).
+The base hypothesis is decided exactly (the stl.c engine with a separation constraint). Outputs: `out/walk_{6,8}_0.txt`, `out/walk_8_2.txt` (walks up to 2 longer), `out/walk_{6,8}_0_sparse.txt`, `out/walk_8_3_sparse.txt` (sparse mode, `walk EXTRA 1`).
+
+- **Longer walks do not help the base hypothesis.** With walks up to 2 longer than shortest, the count stays at 12,193 (the same 832 NOBASE lines). They do help the sparse form (2,288 → 3,093).
+- **So the base problem has genuine failures.** In the 832 NOBASE instances (764 with an admissible walk) the base separation fails for every orientation, although PTM₂ holds.
+- **The packed case has none.** With the three pairs packed in M, every base graph is separable: n = 6: 200 of 1,298 base graphs packed; n = 8: 11,810 of 85,608 (audit A22, `packedbase.py`).
+
+**(G) Random multigraph case, G − F 2-connected** (`run_multi.sh`, `gen_multi.py n M 120 seed 2conn` → `ptm p M`, budget 2·10⁵; `out/multi.log`). For each n = 10, 12, 14 and M = 2, 3: 120 random 2-connected G' with exactly 2M even vertices, and every pairing F of them.
+
+| | total |
+|---|---|
+| instances | 6,480 |
+| with a pair adjacent in G' (parallel F-edge) | 4,978 |
+| PTM failures | 0 |
+| PTM(e@x) failures | 0 |
+| undecided within the budget | 48 PTM, 86 e@x (not re-run) |
+
+Supports Conjecture 2.4.
+
+**(H) Cubic graphs, |F| = 2, up to isomorphism** (`run_extra.sh`: `geng -d3 -D3` → `encode 2 | labelg | decode` → `ptm f`, budget 2·10⁶; `out/extra.log`):
+
+| order | classes (G, F) | e@x tests | failures | undecided |
+|---|---|---|---|---|
+| 12 | 3,745 | 14,980 | 0 | 0 |
+| 14 | 46,407 | 185,628 | 0 | 0 |
 
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
 
