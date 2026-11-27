@@ -49,14 +49,15 @@ and STL2 on all $3$-connected graphs imply Gallai's conjecture.
 
 We do not prove STL. We show that it is exactly as strong as one should fear: already the
 existence of \emph{some} star-terminal Lov\'asz decomposition, for all $J$ with $J-z$ connected,
-implies Gallai's conjecture; for $d(z)=2$, STL is the end-edge conjecture EE of~\cite{MS} at the
-other neighbour; and the pairing-prescribed form is equivalent to prescribing a matching of
+implies Gallai's conjecture; for $d(z)=2$, STL is the end-edge conjecture EE of~\cite{MS} (without classes) at
+the other neighbour; and the pairing-prescribed form is equivalent to prescribing a matching of
 terminal edges in an all-odd graph. STL holds at every vertex of degree two: we prove two
 cases directly, and the general case follows from the end-edge theorem \texttt{ee\_deg\_two}
 of~\cite{PE}; all of this is formalised.
 
-Computationally, STL never fails when $J-z$ is connected. We checked all $54{,}336$ such pairs
-$(J,r)$ with $|J|\le9$, and on these graphs STL is \emph{equivalent} to the first test. We also
+Computationally, STL never fails when $J-z$ is connected. We checked all $44{,}336$ such pairs
+$(J,r)$ with $|J|\le9$; on all graphs of order $\le9$, STL is \emph{equivalent} to the first test at
+every $r$ with $d(r)\ge3$. We also
 checked all $25{,}210$ pairs from $3$-connected graphs of order~$9$, $9{,}146$ random
 $3$-connected pairs of orders $11$--$17$, and structured families (wheels; a universal vertex over
 random $4$-regular graphs). The Test~2 analogue holds in every $3$-connected instance, exhaustively
@@ -110,15 +111,17 @@ decompositions with $b(z)=0$, $b(r)\in\{0,2\}$ and one end elsewhere.
 \item \emph{Lean.} The star-terminal case is formalised in \texttt{StarTerminal.lean}:
 \texttt{star\_delete}, \texttt{test1\_of\_stl}, \texttt{test2\_of\_stl2} and
 \texttt{gallai\_of\_stl}. The last says that STL and STL2 on all $3$-connected graphs whose
-$J-z$ has no matching cut imply Gallai's conjecture. No \texttt{sorry}; only the standard axioms
-(Section~\ref{sec:lean}).
+$J-z$ has no matching cut imply Gallai's conjecture. The case $d(z)=2$ is formalised as
+\texttt{stl\_of\_deg\_two}, \texttt{stl\_of\_deg\_two\_tri} and \texttt{stl\_deg\_two}. No
+\texttt{sorry}; only the standard axioms (Section~\ref{sec:lean}).
 \item \emph{Strength} (Section~\ref{sec:strength}).
   \begin{itemize}
   \item STL is equivalent to a tight decomposition of $J-z$ together with a system of distinct
   avoiding end-paths (Proposition~\ref{prop:J-z}).
   \item The mere existence of a star-terminal Lov\'asz decomposition, for every $J$ with $J-z$
   connected, implies Gallai's conjecture (Proposition~\ref{prop:cone}).
-  \item For $d(z)=2$, STL is the conjecture EE of~\cite{MS} (Proposition~\ref{prop:EE}).
+  \item For $d(z)=2$, STL is the conjecture EE of~\cite{MS}, without classes
+  (Proposition~\ref{prop:EE}).
   \item Prescribing the pairing at $z$ is equivalent to prescribing a matching of terminal edges
   in an all-odd graph (Proposition~\ref{prop:PTM}). It fails on the wheel $W_4$.
   \end{itemize}
@@ -155,8 +158,8 @@ Let $z\in V(J)$ and let $D$ be a decomposition of $J$ with $b_D(z)=0$. Each path
 $z$ has $z$ as an interior vertex, so $P=A\,z\,B$ with both sides $A$, $B$ nonempty. The
 \emph{side} of $P$ at its neighbour $w$ of $z$ is \emph{short} if $w$ is an end of $P$, that is,
 $wz$ is the terminal edge of $P$ at $w$; otherwise it is \emph{long}. The \emph{transition} of $P$
-at $z$ is $SS$, $SL$ or $LL$ according to its two sides. Every $w\in N(z)$ lies on exactly one
-path through the edge $wz$, and we call $w$ \emph{short} or \emph{long in $D$} accordingly. We write
+at $z$ is $SS$, $SL$ or $LL$ according to its two sides. For every $w\in N(z)$ the edge $wz$ lies
+on exactly one path, and we call $w$ \emph{short} or \emph{long in $D$} accordingly. We write
 $\#SS$ and $\#LL$ for the numbers of transitions of the two pure types. $D$ is
 \emph{star-terminal at $z$} if $\#LL=0$, that is, if every path through $z$ has $z$ as its second
 vertex, read from a suitable end.
@@ -213,7 +216,8 @@ decomposition of $J$ with $\#LL-\#SS+\ind{r\text{ short}}\le0$. Then \textup{(T1
 be a decomposition with $b_D(z)=0$, $b_D(r)=\beta\in\{0,2\}$, $b_D(v)=1$ for $v\ne z,r$, and
 $\#LL-\#SS+\ind{r\text{ short}}\le0$. Then \textup{(T2)} holds at $r$.
 \end{enumerate}
-In particular $\STL(J,z,r)\Rightarrow\textup{(T1)}$ at $r$, and
+In particular, under the degree hypotheses of \textup{(a)} and \textup{(b)},
+$\STL(J,z,r)\Rightarrow\textup{(T1)}$ at $r$, and
 $\STL2(J,z,r)\Rightarrow\textup{(T2)}$.
 \lean{test1\_of\_stl, test2\_of\_stl2}
 \end{theorem}
@@ -287,7 +291,7 @@ distinct paths $B_y\in D'$ $(y\in T)$ with $B_y$ ending at $y$ and $\sigma(y)\no
 ($\Rightarrow$) Take $D'$ from Lemma~\ref{lem:surgery}. Let $T$ be the set of long sides whose
 remainder is nonempty, $\sigma$ the transitions, and $B_y$ the remainder $y\cdots$ of the path
 through $yz$. Then (i)--(iii) are read off the lemma; $r\in T$ unless $r$ is short or lies on an
-$SS$ path, in which case $|T|<k$.
+$SS$ path; in either case STL provides $\#SS\ge1$, and then $|T|<k$.
 
 ($\Leftarrow$) Extend each $B_y$ by $y\,z\,\sigma(y)$, and add the paths $x\,z\,x'$ for the pairs of
 $\sigma$ inside $N(z)\setminus T$. Each of these is a path, since $\sigma(y)\notin B_y$ and
@@ -321,7 +325,7 @@ For odd order $N$, attach a leaf: $p(G)\le p(G+\text{leaf})\le(N+1)/2$.
 
 \begin{proposition}[$d(z)=2$ is EE]\label{prop:EE}
 If $N(z)=\{u,r\}$, then $\STL(J,z,r)$ holds if and only if $J$ has a Lov\'asz decomposition in which
-$uz$ is the terminal edge at $u$. That is the conjecture EE of~\cite[Conj.~EE]{MS} at $u$.
+$uz$ is the terminal edge at $u$. That is the conjecture EE of~\cite[Conj.~17]{MS} at $u$, without classes.
 \end{proposition}
 
 \begin{proof}
@@ -329,9 +333,9 @@ There is one transition, $u\,z\,r$. It is star-terminal with $r$ long, or $SS$, 
 is short.
 \end{proof}
 
-By~\cite[Prop.~EE]{MS}, EE at $u$ is the step of Lov\'asz's induction at $z$ with a trivial Fan
+By~\cite[Prop.~16]{MS}, EE at $u$ is the step of Lov\'asz's induction at $z$ with a trivial Fan
 chain, i.e.\ ``$L_1$ at the even vertex''. It is proved when $uz$ lies in no triangle and in most
-configurations with $d(u)\le3$~\cite[Prop.~EE3]{MS}, and whenever $u$ and $z$ have at most one common
+configurations with $d(u)\le3$~\cite[Prop.~18]{MS}, and whenever $u$ and $z$ have at most one common
 neighbour~\cite{PE}; it is open in general. So STL contains multi-sep's crux as its one-transition
 case, and for $d(z)\ge4$ it asks for $k$ such transitions at once.
 
@@ -355,8 +359,8 @@ has even degree $2|F|$.
 \end{proof}
 
 For $|F|=1$ the terminal-matching property is the prescribed end edge theorem
-(\cite[Thm.~prescribed end edge]{MS}, \texttt{lovasz\_endEdge}). For several edges it is open; the
-case of a packed set of vertices with prescribed end edges is~\cite[Question~5.2]{MS}.
+(\cite[Thm.~14]{MS}, \texttt{lovasz\_endEdge}). For several edges it is open; the
+case of a packed set of vertices with prescribed end edges is~\cite[Question~25]{MS}.
 
 \begin{example}[$W_4$]\label{ex:W4}
 Let $J=W_4$, with hub $z$ and rim $a\,b\,c\,d$, and let $M=\{ac,bd\}$ (the diagonals). Then
@@ -418,7 +422,7 @@ $w$), avoids $u$. In particular $Q_u\ne P_z$.
 All ends are now $d_J\bmod2$.
 \end{proof}
 
-Case $uw\notin E$ is the instance $d(z)=2$ of~\cite[Prop.~EE3(a)]{MS} (\texttt{ee\_noTriangle}:
+Case $uw\notin E$ is the instance $d(z)=2$ of~\cite[Prop.~18(a)]{MS} (\texttt{ee\_noTriangle}:
 EE holds whenever $uz$ lies in no triangle, for any $d(z)$), obtained there by the same method. Case
 $uw\in E$ is, by Proposition~\ref{prop:EE}, a case of EE with $uz$ in the triangle $u\,z\,w$ and
 $d(u)$ arbitrary (the triangle cases of~\cite{MS} have $d(u)=3$); it is also covered by
@@ -447,11 +451,11 @@ and then invokes Lov\'asz's induction:
 A star-terminal decomposition with $d(z)=2k$ needs $k$ short ends at once. By
 Proposition~\ref{prop:PTM}, these are $k$ prescribed terminal edges in an all-odd graph, on
 distinct paths. Every reduction of two such prescriptions to the separation theorem that we tried
-creates two even vertices, where separation (and $L_1$) fail~\cite[E20]{RD}. One parity-neutral
+creates two even vertices, where separation (and $L_1$) fail~\cite[Remark~6.7]{RD}. For $d(z)=4$, one parity-neutral
 construction exists: when the short ends $a$ and $c$ are adjacent, delete $ac$ and attach leaves at
 both long sides; all degrees stay odd. But it needs, besides the separation of a packed set, the
 vertex-disjointness of the two end-paths at $a$ and~$c$. This is the multi-prescription problem
-of~\cite[\S5]{MS}, now with the freedom to choose the pairing and the short end of each pair.
+of~\cite[Question~25]{MS}, now with the freedom to choose the pairing and the short end of each pair.
 \end{remark}
 
 \subsection*{Composition}
@@ -463,7 +467,7 @@ Proposition~\ref{prop:PTM} with two edges. Two facts limit what a composition le
 \begin{itemize}
 \item \emph{Prescribed ends do not compose.} Ask for two or three disjoint edges of an all-odd
 graph to be terminal at prescribed ends, on distinct paths. This fails in $17$ of $1{,}199$ random
-instances (Section~\ref{sec:comp}). In every failure two prescribed ends are adjacent, and in $16$
+instances (Table~\ref{tab:ptm}). In every failure two prescribed ends are adjacent, and in $16$
 of them both have degree~$3$: the edge between them must then lie in a single transition at both
 ends.
 \item \emph{Free ends survive.} Leave the end of each edge free, as in
@@ -483,8 +487,11 @@ threshold $t$, whether some decomposition with profile $b$ has $\#LL-\#SS+\ind{r
 optionally with $\#LL=0$. It also handles prescribed or forbidden terminal edges and allowed
 transitions at~$z$. It is the depth-first search with memoised failures of
 \texttt{tools/route\_ext.c}~\cite{RD}, with the transition counters added to the memo key, so a
-negative answer is exact. Node budgets give a third answer, ``undecided''; every undecided instance
-reported below was re-run with fresh seeds and larger budgets until decided.
+negative answer is exact. Node budgets give a third answer, ``undecided''. Every undecided STL or STL2 instance reported
+below was re-run with fresh seeds and larger budgets until decided; the only undecided entries left
+are $200$ HALF queries in Table~\ref{tab:flex}, marked there. The tests (T1) and (T2) themselves
+(exact, by enumerating end profiles of $J-z$ up to the budget, with upward closure) were evaluated
+only at the pairs where STL or STL2 fails.
 
 \emph{Validation.} An independent Python enumerator of all decompositions (\texttt{brute.py},
 \texttt{brute\_flex.py}) agrees with the oracle on all connected graphs of order $\le7$ with one
@@ -508,21 +515,23 @@ class & graphs & pairs $(J,r)$ & STL fails\\
 \midrule
 all connected, $n\le7$ & 138 & 464 & 10\\
 all connected, $n=9$ & 11{,}936 & 48{,}850 & 48\\
-\quad among these: $J-z$ connected, $n\le9$ & 10{,}996 & 54{,}336 & 0\\
-\quad among these: $3$-connected, $n=9$ & 5{,}231 & 25{,}210 & 0\\
+\quad rows 1--2 with $J-z$ connected ($n\le9$) & 10{,}996 & 44{,}336 & 0\\
+\quad row 2 with $J$ $3$-connected ($n=9$) & 5{,}231 & 25{,}210 & 0\\
 random $3$-connected, $n=11$ & 600 & 3{,}256 & 0\\
 random $3$-connected, $n=13$ & 600 & 3{,}470 & 0\\
 random $3$-connected, $n=15$ & 350 & 2{,}082 & 0\\
 random $3$-connected (sparse), $n=17$ & 60 & 338 & 0\\
 random, $J-z$ connected, not $3$-connected, $n=11,13$ & 250 & 780 & 0\\
 random, $J-z$ disconnected, $n=11$ & 300 & 1{,}282 & 4$^\dagger$\\
-wheels $W_{2k}$, $2\le k\le 9$ & 8 & 8 & 0\\
+wheels $W_{2k}$, $2\le k\le 9$ (one $r$ each, by symmetry) & 8 & 8 & 0\\
 $J=H+$ universal $z$, $H$ random $4$-regular, $|H|=10,\dots,16$ & 102 & 1{,}232 & 0\\
 \bottomrule
 \end{tabular}
-\caption{STL. Every failure has $J-z$ disconnected, and (T1) fails there too. BAL fails exactly
-where STL fails. So on all graphs of order $\le9$,
-$\STL(J,z,r)\Leftrightarrow\mathrm{BAL}(J,z,r)\Leftrightarrow\text{(T1) at }r$. Among the
+\caption{STL. Every failure has $J-z$ disconnected, and (T1) fails there too; BAL fails exactly
+where STL fails. With Theorem~\ref{thm:criterion}, on all graphs of order $\le9$ and at every $r$
+with $d(r)\ge3$: $\STL(J,z,r)\Leftrightarrow\mathrm{BAL}(J,z,r)\Leftrightarrow\text{(T1) at }r$.
+(For $d(r)=1$ the equivalence fails: STL can hold through an $SS$ path while $r$ is isolated in
+$J-z$.) Conversely, most pairs with $J-z$ disconnected satisfy both STL and (T1). Among the
 $3$-connected graphs of order~$9$, $4{,}699$ have $J-z\in\mathcal C$ (no matching cut). In the last
 row $J-z$ is Eulerian and $d(z)=|H|$. ``ST'' (some star-terminal Lov\'asz decomposition exists)
 fails on $0$, $1$ and $2$ graphs for $n=5,7,9$. $^\dagger$(T1) fails at the same four pairs.}
@@ -546,6 +555,29 @@ random $3$-connected, $n=14$ & 500 & 0\\
 Every failure has $J-z$ disconnected, and (T2) fails there too. A decomposition with $\beta=0$
 exists in only $748$ of the $958$ $3$-connected instances of order $\le8$.}
 \label{tab:stl2}
+\end{table}
+
+\subsection{Composition data}
+\texttt{ptm\_run.py} (E22(F)) draws a connected all-odd graph $G$ of order $n$ and a random matching
+$F$ of $m$ edges, and tests the terminal-matching property of Proposition~\ref{prop:PTM} (through
+$J=(G-F)+z(V(F))$), with free ends and with randomly prescribed ends.
+
+\begin{table}[!ht]
+\centering\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+$n$, $m$ & instances & free ends fail & prescribed ends fail\\
+\midrule
+$8$, $2$ & 299 & 0 & 8\\
+$10$, $2$ & 300 & 0 & 2\\
+$12$, $2$ & 300 & 0 & 0\\
+$10$, $3$ & 300 & 0 & 7\\
+\bottomrule
+\end{tabular}
+\caption{Two or three terminal edges at once. $317$ instances have $G-F$ disconnected. Every failure
+with prescribed ends has two adjacent prescribed ends ($16$ of the $17$: both of degree~$3$); with
+pairwise non-adjacent prescribed ends there is no failure in $612$ instances.}
+\label{tab:ptm}
 \end{table}
 
 \subsection{Flexibility}
@@ -591,7 +623,8 @@ then $\STL2(J,z,r)$ holds.
 By Proposition~\ref{prop:cone}, Conjecture~\ref{conj:stl} implies Gallai's conjecture without the
 spine; with the spine, its $3$-connected case and that of Conjecture~\ref{conj:stl2} suffice
 (Corollary~\ref{cor:gallai}). The data do not separate STL from (T1). Up to order~$9$ the two are
-equivalent, and both fail exactly when $J-z$ is disconnected. Proving the implication
+equivalent at every $r$ with $d(r)\ge3$, and every failure of either has $J-z$ disconnected
+(but most pairs with $J-z$ disconnected satisfy both). Proving the implication
 (T1)$\Rightarrow$STL would make STL an equivalent form of the spine tests; by
 Proposition~\ref{prop:J-z} it amounts to tightening a (T1) decomposition and solving the avoidance
 system.
@@ -607,9 +640,10 @@ disconnected, where (T1) can fail and STL fails exactly when it does.
 
 \begin{conjecture}[STL-P]\label{conj:stlp}
 If $J$ is $3$-connected with unique even vertex $z$ and $J\ne W_4$, then every perfect matching of
-$N(z)$ is the transition pairing of some star-terminal Lov\'asz decomposition. Equivalently
-(Proposition~\ref{prop:PTM}): in the corresponding all-odd graphs, every matching of virtual edges
-on $N(z)$ can be made terminal, one per path.
+$N(z)$ is the transition pairing of some star-terminal Lov\'asz decomposition. For a pairing
+with no pair adjacent in $J$ this is, by Proposition~\ref{prop:PTM}, the statement that in the
+all-odd graph $(J-z)+M$ every edge of $M$ can be made terminal, one per path (for adjacent pairs,
+the same with $M$ added as parallel edges).
 \end{conjecture}
 
 STL-P is the form suited to induction. Lifting a pair $x\,z\,y$ to an edge $xy$ lowers $d(z)$ by
@@ -618,24 +652,27 @@ prescribed end edge theorem. The obstruction is Remark~\ref{rem:limit}: after tw
 inductive hypothesis must carry two terminal edges.
 
 \begin{question}
-Is EE (multi-sep's crux) implied by, or equivalent to, STS: some \emph{star-terminal} Lov\'asz
-decomposition with $u$ short? In all $25{,}210$ $3$-connected instances of order $9$ both hold at
+STS($u$), a \emph{star-terminal} Lov\'asz decomposition with $u$ short, trivially implies EE($u$).
+Does EE($u$) imply STS($u$)? In all $25{,}210$ $3$-connected instances of order $9$ both hold at
 every neighbour.
 \end{question}
 
 \section{The formalisation}\label{sec:lean}
-\texttt{lean/GallaiLean/StarTerminal.lean} (imports \texttt{Separator.lean}) contains:
+\texttt{lean/GallaiLean/StarTerminal.lean} (imports \texttt{Separator}, \texttt{Separation} and
+\texttt{PrescribedEnd}) contains:
 \begin{itemize}
 \item \texttt{delVertRetract}: $J-z$ as a retract of $J$, for the projection lemma
 \texttt{PathDecomp.project\_full};
 \item \texttt{StarAt}, \texttt{LongAt}, \texttt{HasShortShort}, \texttt{STL}, \texttt{STL2}:
 the definitions of Section~\ref{sec:prelim};
-\item \texttt{star\_delete}: Lemma~\ref{lem:surgery} in the star-terminal case. Each path has at
+\item \texttt{star\_delete}: Lemma~\ref{lem:surgery} in the star-terminal case (with ``$\le$'' for
+the number of paths, which is all that is used). Each path has at
 most one piece, and the end count is the identity
 $b_{D'}(v)+\sum_Pc_P\ind{i_P=1}=b_D(v)+\sum_Pc_P\ind{i_P=2}$, where $c_P$ counts the edge $vz$ on
 $P$ and $i_P$ is the number of edges of $P$ at $v$;
 \item \texttt{test1\_of\_stl}, \texttt{test2\_of\_stl2}: Theorem~\ref{thm:criterion} with
-$\#LL=0$;
+$\#LL=0$, stated as \texttt{Test1 J z} / \texttt{Test2 J z} (for all $r$ at once), assuming that
+every neighbour of $z$ has degree $\ge3$ and STL (resp.\ STL2) holds at every neighbour;
 \item \texttt{gallai\_of\_stl}: Corollary~\ref{cor:gallai}, via
 \texttt{gallai\_iff\_spineTests'};
 \item \texttt{stl\_of\_deg\_two}, \texttt{stl\_of\_deg\_two\_tri}: Theorem~\ref{thm:dz2}, both

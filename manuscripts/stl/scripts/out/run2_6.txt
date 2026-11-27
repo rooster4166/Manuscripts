@@ -1,0 +1,3 @@
+[../../../data/conn6.g6] all: instances 52, P0 34, S0 33, STL2 51, BAL2 51, T2fail 1, STL2fail-but-T2 0
+[../../../data/conn6.g6] 3c: instances 10, P0 4, S0 4, STL2 10, BAL2 10, T2fail 0, STL2fail-but-T2 0
+[../../../data/conn6.g6] 3c_nomc: instances 8, P0 2, S0 2, STL2 8, BAL2 8, T2fail 0, STL2fail-but-T2 0

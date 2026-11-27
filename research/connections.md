@@ -1190,13 +1190,13 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 
 ### X.3 Data (E22)
 - **No failure when J − z is connected.** This covers:
-  - all 54,336 pairs (J, r) up to order 9;
+  - all 44,336 pairs (J, r) up to order 9;
   - all 25,210 pairs from 3-connected graphs of order 9;
   - 9,146 random 3-connected pairs, n = 11–17;
   - 780 pairs with J − z connected but J not 3-connected;
   - wheels;
   - universal z over 4-regular H (J − z Eulerian).
-- **STL is equivalent to Test1 to order 9 and in the random disconnected samples.** On all graphs of order ≤ 9, STL(r) ⇔ BAL(r) ⇔ Test1(r): all 58 failures have J − z disconnected, and Test1 fails there too. So the data cannot separate STL from Test1.
+- **STL is equivalent to Test1 at every r with d(r) ≥ 3, to order 9 and in the random disconnected samples.** Every one of the 58 STL failures has J − z disconnected, and Test1 fails there too; the converse direction is the criterion theorem. At d(r) = 1 the equivalence fails trivially: r is isolated in J − z. Most pairs with J − z disconnected satisfy both. So the data cannot separate STL from Test1.
 - **STL2** holds in every 3-connected instance: exhaustive to n = 8; random samples at n = 10–14.
 - **Flexibility (3-connected).**
   - EE and STS hold at every neighbour; STS means "u short in a *star-terminal* decomposition".

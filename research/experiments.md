@@ -861,13 +861,15 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 
 **(A) STL on all connected graphs of odd order ≤ 9 with exactly one even vertex** (`gen_one_even.py`, then `stl_run.py`). There are 7, 130 and 11,936 graphs at n = 5, 7, 9, built from `data/conn{n-1}.g6` with isomorphism rejection.
 
-| n | graphs | pairs (J,r) | STL fails | BAL fails | Test1 fails | ST fails |
+| n | graphs | pairs (J,r) | STL fails | BAL fails | Test1 fails among these | ST fails |
 |---|---|---|---|---|---|---|
 | ≤ 7 | 138 | 464 | 10 | 10 | 10 | 1 |
 | 9 | 11,936 | 48,850 | 48 | 48 | 48 | 2 |
 
-- Every failure has J − z disconnected, and Test1 fails at the same pairs. So on all graphs of order ≤ 9, **STL(r) ⇔ BAL(r) ⇔ Test1(r)**.
-- With J − z connected (10,996 graphs, 54,336 pairs), STL never fails.
+- Test1 was evaluated only at STL failures. Every failure has J − z disconnected, and Test1 fails at each of them. With the criterion theorem, on all graphs of order ≤ 9 and at every r with d(r) ≥ 3: **STL(r) ⇔ BAL(r) ⇔ Test1(r)**.
+- The equivalence fails at d(r) = 1. There STL can hold through an SS path while r is isolated in J − z; the audit counted 1,192 such pairs, e.g. the spider r–z–a–{b,c}.
+- Most pairs with J − z disconnected satisfy both STL and Test1. At n = 7, 76 of the 83 such pairs with d(r) ≥ 3 do.
+- With J − z connected (10,996 graphs, 44,336 pairs), STL never fails. The earlier figure 54,336 was an arithmetic slip, found by audit A20.
 - 3-connected graphs at n = 9: 5,231 graphs, 25,210 pairs, 0 failures (4,699 of the graphs have J − z ∈ C).
 
 **(B) STL2 (Test2 analogue) on all connected graphs of even order ≤ 8** (`stl2_run.py`).
