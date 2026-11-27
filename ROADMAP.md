@@ -60,7 +60,8 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`, new): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`, new): conjecture L1* (a one-sided avoidance statement with ≤ 1 even vertex). By `ee_of_L1Star` it completes EE.
+- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
 - **ee**: **finished** (463aa4c).
   - **EE has no counterexample:** exhaustive over all 11,959,367 one-even graphs at n = 11 (59.7M pairs).
   - **Lean:** `ee_atMostOneCommon`, `ee_deg_two`, `pee_adjEven`, the reductions `ee_of_triangle` / `ee_of_outside`, and `ee_of_L1Star`.
