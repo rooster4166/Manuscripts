@@ -232,3 +232,21 @@ The gadget D is two K4 blocks plus vertices p and q, with ports p and b₀. It i
 - G₃: n = 42, δ = λ = 6.
 
 No hypothesis of the form "δ ≥ c" or "λ ≥ c" rescues the cut characterisation. In particular, it cannot rescue it at the least counterexample of (R), where δ ≥ 6 and λ ≥ 6.
+
+## 15. Audit A13, and the transversal conjecture TRC (2026-11-27)
+
+**A13 verdict: Theorem 21 (cut selection) is SOUND**, in both versions and in the auxiliary-graph proof. The hardness section (§5: Lemma 23, Props 24–25, Thm 27) is sound. One ERROR is flagged: Remark 28 still calls EMM₃ open, and the emc-four session is fixing it. A13 reproduced every count independently, with about 113k constructions and no failure.
+
+**The key finding (A13).** Not every *good* pairing has only realisable transversals. In KsOeBW??G`?A, the good pairing {03, 18, 45, 69, 7 10} has the counterexample as a transversal. But on all 12 order-12 counterexamples, **every transversal of every pairing the Thm 21 construction can produce is realisable**, and the order-28 starving half-set L is never such a transversal.
+
+**Why.** Thm 21 pairings run along *edge-disjoint routes* (paths of a T-join), so a cut of size c is crossed by at most c routes. A transversal therefore cannot starve a region behind a small cut. For S = L in G_bad to be a transversal, 14 routes would have to cross a 4-edge cut.
+
+**Conjecture TRC (transversal realisability).** For every connected graph G of even order, every pairing P produced by the Thm 21 construction (forest T-join J, edge-disjoint pairings of the odd vertices of each F^v), and every transversal M of P, the half-set M is realisable in n/2 paths.
+
+- **TRC ⇒ Gallai**: take the transversal containing r.
+- Its necessary half (cut-feasibility of every transversal) is Thm 21.
+- It is not refuted by the NP-hardness constructions, which use starving half-sets.
+
+TRC is trivially true at n ≤ 8, where every cut-feasible half-set is realisable. Informative tests are the counterexample families (orders 12, 18, 20, 28, and G_r) and larger random graphs.
+
+**Next.** First try to refute TRC (the emm3-gadgets session, the natural adversary). If it survives, attack its single descent step: removing one vertex of a pair, guided by the route structure.

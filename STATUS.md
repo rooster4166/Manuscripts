@@ -232,6 +232,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | JM repair: new proof of JM Thm 8, transfer lemma, Thm 7 (A10) | **sound**: no error, no substantive gap; independent brute-force checks agree |
 | bs-prescribed: five-even floor bound, Shaik removal (A11) | **sound**: scope verified against every Cor 106 use; certificates independently checked |
 | missing-move; endpoint-structure §7 (flower, barriers, receipt-or-flower) (A12) | **sound**: no mathematical error; key computations independently reproduced |
+| endpoint-min-max: cut selection Thm 21; hardness §5 (A13) | **sound**; Remark 28 (EMM₃ open) is out of date, since EMM₃ is false |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
