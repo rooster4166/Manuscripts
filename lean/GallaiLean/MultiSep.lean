@@ -861,7 +861,7 @@ theorem classSep_caseI (G : SimpleGraph W) [DecidableRel G.Adj] (hev : (evenSet 
   · intro R hR a ha b hb haR hbR
     have hzA : u ∈ A → z ∉ A := fun huA hzA =>
       (h𝒜 A hA u huA z hzA hne).1 huz'
-    rcases hcovr R hR with rfl | ⟨S, hS, hRS⟩
+    rcases hcovr R hR with rfl | ⟨S, hS, -, -, hRS⟩
     · rw [hP'supp] at haR hbR
       by_cases huA : u ∈ A
       · have hP1 := hin A hA huA P hP
@@ -1113,7 +1113,7 @@ theorem sp_case_big {n : ℕ} (ih : ∀ m < n, SpStrong.{u} m)
     | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
   have hsep' : MeetsAll D' 𝒜 := by
     intro A hA Q hQ p hp q hq hpQ hqQ
-    obtain ⟨P, hP, hPs⟩ := hcovD' Q hQ
+    obtain ⟨P, hP, hPs, -⟩ := hcovD' Q hQ
     exact Option.some.inj (hsepH _ (Finset.mem_image_of_mem _ hA) P hP (some p)
       (Finset.mem_image_of_mem _ hp) (some q)
       (Finset.mem_image_of_mem _ hq) (hPs p hpQ) (hPs q hqQ))
