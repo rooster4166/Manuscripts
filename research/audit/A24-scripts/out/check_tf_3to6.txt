@@ -1,0 +1,4 @@
+n 3 {'enum-cases': 4, 'enum-decomps': 2, 'prune-cases': 4, 'fan-cases': 2}
+n 4 {'enum-cases': 16, 'enum-decomps': 25, 'prune-cases': 32, 'fan-cases': 2}
+n 5 {'enum-cases': 58, 'enum-decomps': 165, 'prune-cases': 128, 'fan-cases': 82}
+n 6 {'enum-cases': 282, 'enum-decomps': 20114, 'prune-cases': 836, 'fan-cases': 82}

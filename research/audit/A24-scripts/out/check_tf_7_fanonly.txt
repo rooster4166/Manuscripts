@@ -1,0 +1,2 @@
+n 7 {'enum-cases': 853, 'enum-decomps': 41661, 'fan-cases': 108870}
+SUMMARY {'enum-cases': 853, 'enum-decomps': 41661, 'fan-cases': 108870}

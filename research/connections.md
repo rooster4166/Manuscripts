@@ -1413,36 +1413,52 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 ### AB.1 Verdict on "one tight configuration"
 - **Not literally one configuration.** There are two mechanisms, and a third kind of failure.
   - *Transfer side, literally Fan at equality with one protected blank.* A Case I step t → w on a Lovász decomposition D' of K − tw; the protected path P* has an end p ∈ N(w). In the leaf graph that freezes P*, p is a blank of w, so b(t) = 1 = |Z(w)|.
-    - On decompositions with b ≤ 1, Fan's chain is **forced** (`fanPred_unique`). The invariant survives **iff the forced chain avoids p**. E26 confirms this with no exception.
+    - On decompositions with b ≤ 1, Fan's chain is **forced** (`fanPred_unique`). **The transfer can fail only if the forced chain passes through p.**
+    - For L∞ the converse holds too (manuscript Prop. 3.1), and for PTM trivially.
+    - For L1* the converse is **false**: order-9 counterexample `H??FFf}`. A chain through c hands c's end to the re-routed path of the previous step, which may avoid A (audit A24, F2).
     - It occurs in three places: the L∞ residual (§V.4c; p = far end of the leaf path); the minimal blocked shape of L1* (§AA; g ∈ A, d(g) = 2; p = c); and the PTM instances with no admissible walk (§Z; p = the short end x).
   - *Hypothesis side.* In a blocked L1* instance, (G − gu, c, A) is inadmissible for every u ∈ N(g). That is the definition of blocked. Yet at order 9 every irreducible blocked instance has a u with (G − gu, c, A) good.
     - When such u ∉ N(c), Lemma 2.4 of l1star finishes the instance; the only failure is admissibility.
     - When every good u lies in N(c), we are back in the transfer-side case with p = c.
   - *Base side.* PTM's K4/W4 failures: the three-pair base separation fails for every walk, including non-admissible ones (E26(C) sample).
-- **Residuals 1–3 are one statement.** `lInfty_of_l1Blocked` (new) and `ee_of_l1Blocked` (§AA): L1Blocked ⇒ L∞ and EE.
-- The lemma-shaped common form (manuscript Conjecture 4.6): in a tight transfer arising from Lovász's induction, some decomposition the induction can supply leaves the end of the path through pw on p's side unreached by the forced chain.
+- **Residuals 1–3 are implied by one statement.** `lInfty_of_l1Blocked` (new Lean, via l1star Prop. 3.1) and `ee_of_l1Blocked` (§AA): L1Blocked (general form) ⇒ L∞ and EE. Neither implication reverses.
+- The lemma-shaped common form is manuscript Question 3.6, stated for GL, where the hypothesis is available: an inductive strengthening of GL that supplies a decomposition whose forced chain avoids p.
+  - The naive candidate GL⁺ (far end not adjacent to the even vertex) is false in general (`DTw`), though true in every residual step at order 9.
+  - For L1* the question first needs an inductive class containing the inadmissible but good (G − gu, c, A).
 
 ### AB.2 Flowers do not apply (proved, Lean)
 - `hub_cycles_card_le_one`: with b ≤ 1 everywhere, the hypothesis of `hub_cycles` forces |T| ≤ 1.
 - `flower_decomp_not_le_one`, `flower_decomp_rest_not_le_one`: every flower or receipt-or-flower output has two ends at the first vertex of L.
-- So no flower move ends in a Lovász decomposition. All four residuals ask for one, so the flower move closes none of them, at any order.
-- The flower move spends a spare path. It is a tool for rooted tests (§Q follow-ups 5–7), not for Lovász-type invariants.
+- So a flower move cannot be the **last** move of a proof of any of the four statements. A flower followed by further moves is not excluded (endpoint-structure Prop. 68 does such work), but none was found (audit A24, F5).
+- The flower move spends a spare path. Our reading (not a theorem) is that it is a tool for rooted tests (§Q follow-ups 5–7), not for Lovász-type invariants.
 - The tight case here is equality at a **target with no ends**, not at a **hub carrying |T| ends**.
 
 ### AB.3 Proved (Lean, sorry-free, standard axioms)
 - **`fan_exists_chain_protected`**, `fan_grouped_protected_supp`, `fan_single_protected_supp`: Fan's lemma with protected blanks. A blank that no vertex of T ∪ N(w) has as its predecessor of w does not count against the supply, and the chain avoids it. Consequently, at equality with Z(w) = {p}, the transfer works when the end of the pw-path on p's side lies outside {t} ∪ N(w).
 - **`l1_tight_transfer`**: the tight case of L1* (x ∈ N(g) ∩ N(c), where Lemma 2.4 fails), conditional on the decomposition of the leaf graph.
-  - It certifies CP(3) + apex steps: 168 of 456 decompositions per target qualify.
-  - Order 7: every tight instance has a qualifying good D'.
+  - For CP(3) + apex, 168 of 456 decompositions per target qualify (l1star Thm 4.2(c) also applies there).
+  - Order 7: every tight instance has a qualifying good D'. Order 9: all 83 tight instances of A24's sample.
+- Paper only: Lemma 3.2. If the forced chain g → x avoids c, the L1* invariant survives (the "if" half; the converse is false).
 - **`fanPred_unique`**: Fan's chain is forced when b ≤ 1.
-- **`test1_deg_four`**: spine Test1 J z at d(z) = 4 whenever J − z is connected, via `emc_four` (two-step descent: Lovász + Fan only). **PTM₂ is not needed for Test1 at d(z) = 4.** The PTM route (`test1_of_localgirth`) is subsumed for Test1, though not for STL.
-- Paper only: the tight walk theorem for PTM (walks through N(x), using the protected-blank lemma at tight steps). In the data it closes all 68 no-walk instances at n = 8.
+- `test1_deg_four`: spine Test1 J z at d(z) = 4 whenever J − z is connected, via `emc_four`. This is a Lean packaging of a known case (terminal-matching Remark 7.3 / `rooted_four'`).
+- Paper only: the tight walk theorem for PTM. It allows walks through N(x), under the hypothesis that the forced chain does not reach x at tight steps.
+  - It closes all 68 no-walk instances at n = 8.
+  - The static sufficient condition alone closes 47 (A24, F1).
 
 ### AB.4 The precise obstruction (what a proof must do)
 - **L∞.** In 59 of the 133 residual instances of order 9, every target u ∈ N(z) admits an induction decomposition of K − zu whose forced chain reaches the far end y.
-  - So no rule that only chooses the target closes the residual.
-  - The induction hypothesis must also control the decomposition, e.g. by keeping the y-side end of the path through yu away from N(u) ∪ {z}.
+  - So in this Case I step the choice of target alone does not suffice; the hypothesis must control the decomposition. (Every (instance, u) pair has some good D', and some D' with far end outside N(u).)
+  - Other moves are not excluded by this.
 - **L1\*.** Two ingredients are needed:
-  - an inductive class containing the good but inadmissible instances (G − gu, c, A);
+  - an inductive class containing the good but inadmissible instances (G − gu, c, A). Local weakenings of admissibility all fail (2.5–3.1% at order 9). The "some target" form holds in all 267,664 admissible instances at order 9 (E26(E));
   - in the tight case, a decomposition meeting the condition of `l1_tight_transfer`.
 - **PTM.** The no-walk part is the tight configuration, and the tight walk handles it in the data. The K4/W4 part is a base-separation obstruction that Fan equality does not touch. Test1 at d(z) = 4 no longer depends on it.
+
+### AB.5 Audit A24 and the T(6)-i orientation
+- **Audit A24.** The proofs are sound, the Lean is faithful, and every committed number reproduces. Three errors were corrected:
+  - F1: Theorem 3.4 as first stated closes 47/68, and the forced-chain form closes 68/68;
+  - F2: the converse of "chain avoids p ⇒ survives" is false for L1*;
+  - F3: the citation numbers of TM (Theorem 4.2, Lemma 3.4).
+
+  Overclaims were toned down: flowers, Test1, "one statement", "any proof".
+- **For T(6)-i.** `fan_exists_chain_protected` is stated for arbitrary decompositions and grouped transfers. In realisability problems, the even vertices outside the realised set are blanks. The protected form discounts the blanks that no chain can reach, which may be the relevant refinement for the transfer steps at six even vertices. Untested.

@@ -1,0 +1,7 @@
+key = (u, u in N(c), chain passes c, result good, #Fan images)
+(7, True, False, True, 1) 1284
+(7, True, True, False, 1) 312
+(7, True, True, True, 1) 6
+(8, True, False, True, 1) 1696
+(8, True, True, False, 1) 822
+(8, True, True, True, 1) 108

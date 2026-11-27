@@ -61,17 +61,19 @@ EMM sufficiency work is **stopped**.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
 - **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`): the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21). Connections §AB, E26, `manuscripts/tight-fan`, Lean `TightFan.lean`.
-  - **Verdict:** not literally one configuration. The transfer-side residual is *Fan at equality with one protected blank p*: the protected path has an end p adjacent to the Fan target. On Lovász decompositions the chain is forced (`fanPred_unique`), and the invariant survives iff the forced chain avoids p. This is exactly the L∞ residual (p = far end of the leaf path), the minimal blocked L1* shape (p = c), and the PTM no-walk instances (p = short end).
+  - **Verdict:** not literally one configuration. The transfer-side residual is *Fan at equality with one protected vertex p* adjacent to the Fan target. On decompositions with b ≤ 1 the chain is forced (`fanPred_unique`), and **the transfer can fail only if the forced chain passes through p**. The converse holds for L∞ and PTM but not for L1* (`H??FFf}`, A24 F2). This mechanism covers the L∞ residual (p = far end of the leaf path), the minimal blocked L1* shape (p = c), and the PTM no-walk instances (p = short end).
     - L1* blocked also has a hypothesis-side part: (G − gu, c, A) is good but inadmissible.
     - The K4/W4 base failures are base-side.
-  - **Flowers: negative, proved.** `hub_cycles_card_le_one` and `flower_decomp(_rest)_not_le_one`: no flower move ends in a Lovász decomposition, so none of the four residuals can be closed by one.
+  - **Flowers: negative.** `hub_cycles_card_le_one` and `flower_decomp(_rest)_not_le_one`: a flower cannot be the last move of a proof of any of the four statements, and no flower-based sequence was found.
   - **Lean (sorry-free, standard axioms):**
     - `fan_exists_chain_protected` / `fan_single_protected_supp`: Fan with protected blanks.
     - `l1_tight_transfer`: the tight L1* case, conditional on the decomposition.
-    - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞; with `ee_of_l1Blocked`, residuals 1–3 are one statement.
+    - `lInfty_of_l1Blocked`: L1Blocked ⇒ L∞; with `ee_of_l1Blocked`, residuals 1–3 are implied by one statement.
     - `test1_deg_four`: spine `Test1` at d(z) = 4 for connected J − z, via `emc_four`. This is a packaging of the known T(4) / `rooted_four'`, independent of PTM.
-  - **Obstruction:** in 59/133 L∞ residual instances of order 9, every target admits a failing induction decomposition. A proof must strengthen the hypothesis, not choose the target.
-  - **Audit A24:** see research/audit/A24-tight-fan.md.
+  - **Paper:** the tight walk theorem (PTM, 68/68 no-walk instances under the forced-chain hypothesis; 47/68 under the static condition).
+  - **Obstruction:** in 59/133 L∞ residual instances of order 9, every target admits a failing induction decomposition, so this Case I step needs a hypothesis that controls the decomposition. GL⁺ is not it (`DTw`).
+    - Admissibility (mechanism B): every local weakening fails. The "some target" form holds at order 9.
+  - **Audit A24:** proofs sound, Lean faithful, data reproduced. F1–F3 and the overclaims are fixed.
 - **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`): **finished**.
   - **Lean:** `l1starGen_of_blocked`, `ee_of_l1Blocked`. So EE ⇐ L1* on *blocked* instances: g even, c ∉ N(g), every neighbour of g adjacent to A ∖ {g}.
   - **Data:** the local form V(Q_c) ⊆ N[c] ∪ N(g) (L1* for every A at once) holds exhaustively to n = 11, with 0 failures.

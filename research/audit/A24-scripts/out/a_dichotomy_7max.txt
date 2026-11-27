@@ -1,0 +1,17 @@
+progress 50
+order 7 mode max irreducible blocked instances processed 61
+key = (type, d(g), u in N(c), chain passes c, result good)
+('gA', 'd(g)=2', 'good-u', 'only-in-N(c)') 28
+('gA', 'd(g)=2', 'good-u', 'outside-N(c)') 33
+('gA', 'd(g)=2', 'instances') 61
+('gA', 'd(g)=2', 'tight', 'SC', 'leafchain-ok', 'plainavoid', True) 772
+('gA', 'd(g)=2', 'tight', 'noSC', 'leafchain-ok', 'plainavoid', True) 158
+('gA', 'd(g)=2', 'tight', 'noSC', 'leafchain-stuck', 'plainthru', False) 515
+('gA', 'd(g)=2', 'tight-instance', "SC-some-D'") 49
+('gA', 'd(g)=2', False, False, True) 618
+('gA', 'd(g)=2', True, False, True) 930
+('gA', 'd(g)=2', True, True, False) 515
+('thru-c', 'step', 1, 'Q_{i-1} contains g', True, 'Q_{i-1} meets A', True) 257
+('thru-c', 'step', 2, 'Q_{i-1} contains g', False, 'Q_{i-1} meets A', True) 167
+('thru-c', 'step', 3, 'Q_{i-1} contains g', True, 'Q_{i-1} meets A', True) 68
+('thru-c', 'step', 4, 'Q_{i-1} contains g', False, 'Q_{i-1} meets A', True) 23

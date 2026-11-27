@@ -1174,22 +1174,31 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - u ∈ N(c), chain passes c: 696 transfers, all bad.
   - u ∉ N(c): 56 transfers, all good.
   - With A maximal: 930 / 515 / 618, the same pattern.
-  - **The result is good iff the forced chain avoids c**, without exception.
+  - At order 7 the result is good iff the forced chain avoids c. **The "if" direction is a lemma** (manuscript Lemma 3.2). **The "only if" direction fails at order 9** (audit A24, F2):
+    - counterexample `H??FFf}`, g = 3, c = 0, A = {1, 3}, u = 7;
+    - in A24's sample of 101 order-9 instances, 34,577 of 487,872 through-c transfers are good, and all 1,243,484 avoiding transfers are good.
 - The sufficient condition of `l1_tight_transfer`: the c-side end of the cx-path lies outside N(x) ∪ {g}, or cx is terminal on Q_c.
   - Order 7: it holds for some good D' in every tight instance (14 with |A| ≤ 2; 49 with A maximal). It never failed to deliver (`out/exp1e_7*.txt`).
-  - Order 9: see `out/exp1e_9.txt`.
+  - Order 9: met in all 83 tight instances of A24's sample. The full existence run is `exp1f.py` (`out/exp1f_9.txt`).
 
 **(B) The L∞ residual** (`linf.py`, `out/linf7.txt`, `out/linf9b.txt`). K connected, a leaf ℓ at c, exactly one even vertex z, d(c, z) = 3, N(z) at distance 2, and d(z) ≥ 4 or z on a triangle; B = {ℓ} ∪ N[c].
 - Orders 7 and 9: 3 and 133 instances. GL holds in all.
 - Order 9, all 409,416 pairs (u, D'), with D' a decomposition of K − zu whose ℓ-path lies in B:
   - the far end y of the ℓ-path is in N(u) in 206,780 of them;
-  - the forced chain reaches y in 53,964, and **exactly these fail**.
+  - the forced chain reaches y in 53,964, and exactly these fail. This is a consequence of manuscript Proposition 3.1, which proves both directions, so it confirms the implementation rather than giving independent evidence.
 - Every instance closes for some (u, D').
-- **In 59 of the 133 instances every target u admits a failing D'.** In the other 74, some u succeeds for every D'. So choosing the target alone cannot prove L∞ by this induction.
+- **In 59 of the 133 instances every target u admits a failing D'.** In the other 74, some u succeeds for every D'. Every pair (instance, u) has some successful D' (A24). So in this Case I step the choice of target alone does not suffice; the hypothesis must control D'.
+- For every instance and every target u, some D' has its far end outside N(u), which makes the step safe (`linf_far.py`, `out/linf_far9.txt`: 106 instances with 2 of 2 targets, 27 with 4 of 4).
+- The strengthening GL⁺ (some GL decomposition has its far end not adjacent to the even vertex) is false in general (`glplus.py`):
+  - it fails at d(c, g) = 1, 2 already at order 5; the smallest distance-2 failure is `DTw`;
+  - it holds at order 7 when d(c, g) ≥ 3 (`out/glplus5.txt`, `out/glplus7.txt`; order 9: `out/glplus9.txt`).
 
 **(C) PTM NOBASE instances, order 8** (`ptmwalk.py`). Walks of any length are allowed, admissible or not. Base decompositions with the three separations are enumerated exactly. The walk back uses exact Fan chains, and every success is checked as a Lovász decomposition of G with ab terminal at a and xy terminal at x on different paths.
-- The 68 instances with no admissible walk: **all 68 are closed by a tight walk** (through N(x)). Trying walks in order of length, the shortest successful walk has length 2 in 63 of them and 3 in 5 (`out/ptm_nowalk68.txt`).
-- The 764 K4/W4-type instances (a systematic 1-in-10 sample of 77, walks ≤ 6): see `out/ptm764s_*.txt`.
+- The 68 instances with no admissible walk: **all 68 are closed by a tight walk** (through N(x)), under the forced-chain hypothesis ("the forced chain does not reach x"). The shortest successful walk, minimised over orientations, has length 2 in 63 of them and 3 in 5 (`out/ptm_nowalk68.txt`; minimum over orientations confirmed by A24).
+- Under the static sufficient condition alone (no vertex of {p_{i+1}} ∪ N(p_i) has x as predecessor), 47 of the 68 are closed (A24, F1).
+- The 764 K4/W4-type instances: a systematic 1-in-10 sample of 77, with walks of length ≤ 6. The first 15 were completed (`out/ptm764s_*.txt`); the rest were stopped (too slow):
+  - 14 have no walk, admissible or not, in any orientation, with a separated base decomposition;
+  - 1 (`GCdbF_`) is closed by a tight walk of length 2.
 
 **(D) The named instances** (`ee_inst.py`, `out/ee_inst.txt`). For each EE pair (z, u): the instance (K − uz, z, {u}) and the triangle instances. None is blocked at the first level.
 - CP(3) + apex (`F]~vw`): every Case I target of (K − uz, z, {u}) is adjacent to c. Per target: 456 good D'; 320 successful transfers; 168 meet the sufficient condition.
@@ -1197,4 +1206,11 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - (K − uz, z, {u}): every target is tight, and all 108 good D' per target meet the condition.
   - Triangle instances: the tight targets have no good D' at all (hypothesis side); the other targets have 4 good D', all successful.
 
-**(E) Flowers.** No computation is needed. Every flower or receipt-or-flower output has two ends on the transversal (`flower_decomp_not_le_one`), so none is a Lovász decomposition. Lovász decompositions never meet the hypothesis of `hub_cycles` with |T| ≥ 2 (`hub_cycles_card_le_one`).
+**(E) Weakening admissibility** (`exp2.py`, `exp3.py`). All A ⊆ V ∖ N[c] with |A| ≤ 2, order 9: 1,046,152 instances.
+- Admissible instances (411,948) never fail.
+- Every local weakening tested fails on 2.5–3.1% of the instances it covers (`out/exp2_9.txt`). The weakenings were: N(g) ⊄ A; g has a neighbour outside A ∪ N[c]; g ∈ N(c); and variants.
+- One-step derived instances (G − gu, c, A), for admissible (G, c, A) with c ∉ N(g): bad for some particular u (2,258 cases where not every u is good). But in **all 267,664** admissible instances some u makes (G − gu, c, A) good (`out/exp3_9.txt`; order 7: `out/exp3_7.txt`).
+
+**(F) Flowers.** No computation is needed. Every flower or receipt-or-flower output has two ends on the transversal (`flower_decomp_not_le_one`), so a flower cannot be the last move of a Lovász-type argument. Lovász decompositions never meet the hypothesis of `hub_cycles` with |T| ≥ 2 (`hub_cycles_card_le_one`).
+
+**Audit A24** (`research/audit/A24-tight-fan.md`): every committed number reproduced. Fan-image uniqueness was checked in 108,870 cases at order 7, and `exp1d.py` now asserts it. F1 (47 vs 68) and F2 (L1* converse) are corrected above.
