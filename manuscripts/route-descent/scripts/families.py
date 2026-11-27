@@ -92,3 +92,55 @@ def random_graphs(n, count, seed, pmin=0.25, pmax=0.7, mmax=64, min_even=2):
             continue
         out.append(G)
     return out
+
+
+def kotzig_even(name):
+    """G'(H) of endpoint-min-max Thm 45 (all degrees even, >= 4): H = prism (n = 16) or
+    petersen (n = 28)."""
+    sys.path.insert(0, EMM)
+    import kotzig_even as KE
+    H = nx.circular_ladder_graph(3) if name == "prism" else nx.petersen_graph()
+    G = KE.build(H)[0]
+    H2 = nx.convert_node_labels_to_integers(G, label_attribute="old")
+    out = nx.Graph()
+    out.add_nodes_from(H2)
+    out.add_edges_from(H2.edges())
+    return out
+
+
+def block_graphs(count, seed, nmax=20):
+    """Random 'block trees': small dense blocks (K4, K5, K5 - e, C5, K33) joined along a random tree
+    by paths of length 1-3, plus a few random chords; even order only."""
+    rng = random.Random(seed)
+    blocks = [nx.complete_graph(4), nx.complete_graph(5), nx.complete_graph(5), nx.cycle_graph(5),
+              nx.complete_bipartite_graph(3, 3)]
+    blocks[2].remove_edge(0, 1)
+    out = []
+    while len(out) < count:
+        k = rng.randint(2, 4)
+        G = nx.Graph()
+        reps = []
+        for i in range(k):
+            B = nx.convert_node_labels_to_integers(rng.choice(blocks), first_label=G.number_of_nodes())
+            G = nx.union(G, B)
+            reps.append(list(B.nodes()))
+        for i in range(1, k):
+            j = rng.randrange(i)
+            u, w = rng.choice(reps[i]), rng.choice(reps[j])
+            L = rng.randint(1, 3)
+            prev = u
+            for _ in range(L - 1):
+                x = G.number_of_nodes()
+                G.add_edge(prev, x)
+                prev = x
+            G.add_edge(prev, w)
+        for _ in range(rng.randint(0, 2)):
+            a, b = rng.sample(list(G.nodes()), 2)
+            G.add_edge(a, b)
+        G = nx.convert_node_labels_to_integers(G)
+        if G.number_of_nodes() % 2 or G.number_of_nodes() > nmax or G.number_of_edges() > 100:
+            continue
+        if sum(1 for v in G if G.degree(v) % 2 == 0) < 2:
+            continue
+        out.append(G)
+    return out

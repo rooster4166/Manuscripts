@@ -8,7 +8,7 @@
 
 - (a) every vertex outside X has at most cm own-shore neighbours and at most cm cross non-neighbours;
 - (b) every vertex x of X has degree (1 ± c)m and at least m/4 cross neighbours; its own-shore degree is otherwise unrestricted, up to about 3m/4;
-- (c) the balance condition holds: I_X(A) + ρm/2 ≤ e(B) + cm and I_X(B) ≤ e(A) + ρm/2 + cm, where I_X(S) counts the edges inside S that meet X.
+- (c) the balance condition holds: I_X(A) + ρm/2 ≤ e(B) + 250cm and I_X(B) ≤ e(A) + ρm/2 + 250cm, where I_X(S) counts the edges inside S that meet X.
 
 Then every degree-parity profile b ≤ 2 with b(V) = 2m and |b(A) − b(B)| ≤ cm is realised by exactly m paths.
 
@@ -16,7 +16,7 @@ Consequences:
 
 - **SP Theorem 14.27** is the special case X = ∅, ρ = 0.
 - **Corollary 1.2.** Near-regular graphs near K_{n/2,n/2} whose degree excess over ⌊n/2⌋ balances across a bisection satisfy the floor bound at both parities and the rooted private-leaf bound at even order.
-- **Corollary 1.3.** In every failure sequence (SP Cor 14.24), every admissible partition and exceptional set violates the balance condition.
+- **Corollary 1.3.** In every failure sequence (SP Cor 14.24), every admissible partition and exceptional set with |X| ≤ cm violates the balance condition.
 
 ## Proof
 
@@ -27,7 +27,7 @@ The proof extends SP Theorem 14.27:
 - a weaving lemma (Lemma 3.2, by Hall);
 - a two-apex Hamilton finish via CKLOT Theorem 1.3.5 (Lemma 4.2).
 
-Exceptional vertices enter the slots only through prebuilt partner blocks u x u'. Their internal edges are kept for the Hamilton phase, and the imbalance is absorbed exactly by kept healthy internal edges and by the slot end patterns. Lemma 4.1 is the counting identity that makes the balance condition necessary for this two-apex architecture (Remark 4.3).
+Exceptional vertices enter the slots only through prebuilt partner blocks u x u'. Their internal edges are kept for the Hamilton phase, and the imbalance is absorbed exactly by kept healthy internal edges and by the slot end patterns. Lemma 4.1 is the counting identity behind the balance condition (Remark 4.3). Its bipartite case is SP's counting obstruction in §14.18. The u x u' threading device is SP's own (Thm 14.30). Balance is sufficient for the construction, not claimed necessary.
 
 ## Relation to SP §14 (manuscript §7)
 
@@ -37,7 +37,13 @@ Exceptional vertices enter the slots only through prebuilt partner blocks u x u'
 
 ## What remains for full Target D
 
-- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores. The one-apex identity and the greedy side-choice are done; the scheduling of pairs on the bin shore is open.
+- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores.
+  - **Counting half: proved in §8** for the route in which exceptional vertices are kept in J.
+    - Lemma 8.1 (exact balancing) uses a mirror symmetry (S, Γ) ↦ (−S, −Γ) between the two namings of the bin shore.
+    - Lemma 8.2 is the robust form.
+    - Proposition 8.3: the one-apex window e_R(I) − e_R(K) ∈ [D(t−1)/2, D(t+1)/2] with |W| ≥ 0 can always be met if the healthy shores differ by more than |X| (any |X|), or if |X| ≤ √D/6.
+    - Open counting case: nearly equal healthy shores with |X| ≳ √n.
+  - **Scheduling half: open.** It needs SP 14.31/14.33 re-derived with weak exceptional sites.
 - **Problem 7.2.** Exceptional vertices of degree at least (1/2 + β)n. NH handles at most two, under exact regularity.
 
 ## Lean

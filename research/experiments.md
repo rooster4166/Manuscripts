@@ -723,7 +723,9 @@ Manuscript: `manuscripts/route-descent/route-descent.tex`. Scripts: `manuscripts
 | G₁₈ (n = 18, δ = 3) | min | 20 | 1,280 (all route-respecting) | 0 |
 | G₁₈ | tree | 6 | 144 (131 decided) | 0 |
 | G_bad (n = 28, Petersen) | min | 4 | 128 sampled (all route-respecting) | 0 |
-| G₂ half (n = 20) | min | 4 | 256 sampled: 37 route-respecting, rest undecided within budget | 0 |
+| G₂ half (n = 20) | min | 4 + 3 | 256 + 96 sampled: 37 + 64 route-respecting, the rest undecided within budget (6 of the second 96 undecided for plain realisability) | 0 |
+| G′(prism), Kotzig even-degree graph (n = 16, degrees 4–8) | min / tree | 10 / 10 | 640 / 640 (all realisable; 419 / 553 route-respecting found) | 0 |
+| G′(Petersen) (n = 28, m = 116) | min | 4 | 128 sampled: 115 realisable, 13 undecided | 0 |
 
 Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were tested (sampled where 2^{e/2} > 256).
 
@@ -731,6 +733,7 @@ Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were
 - **Tree T-joins.** Order 12: 244,100 of 268,800 queries succeed, and every transversal has a good p. n = 10 sparse: 41,158 of 43,104 succeed; of the 1,946 failures, **1,851 are trivial** (N_{G′}(c) ⊆ V(R_p): c has degree 2 and the route passes through its other neighbour) and 95 are not. **Stuck** transversals (no p works): 66 of 15,024 at n = 10 sparse, 8 of 7,328 at n = 10, 2 of 8,346 at n = 12 sparse, 0 elsewhere. In every stuck instance every route is trivially obstructed, all have one or two routes, and **re-routing (another construction with the same pairing) fixes all of them** (`stuck_analysis.py`).
 - **Minimum T-joins: the extension never fails.** Order 12: 134,400 / 134,400 queries; n = 10: 23,160 / 23,160; n = 10 sparse: 21,656 / 21,656; n = 12 sparse: 30,240 / 30,240; G₁₈: 975 / 975 decided. So *every* route admits the extension for *every* transversal.
 - **Route-respecting realisations (RR):** a realisation of M in which *all* routes are terminal segments simultaneously, i.e. a Lovász decomposition of F = G − J along which every route can be appended at its unmarked end (oracle query C). Min T-joins: 1,276 / 1,276 (n = 10), all 1,280 transversals of G₁₈, all 128 sampled transversals of G_bad. Tree T-joins: G₁₈ 111 / 131.
+- **Linking is needed** (`unlinked.py`). Minimum T-joins decomposed into routes by arbitrary transitions, with no linking condition: 4 of 1,834 transversals (n = 10) are not realisable. So conjecture RR must keep the Thm-21 linking hypothesis; minimality alone does not suffice.
 - **RR\* is false.** One Lovász decomposition of F serving all transversals at once fails for min T-joins in 1 of 250 graphs (n = 10) and in 2 of the 12 order-12 graphs (tree: 55 / 250, 10 / 12). The realisation must depend on M.
 
 **(C) Existential version** (tree T-joins, n = 10 sparse, 600 graphs × 3 constructions; `exist_test.py`). The universal one-step induction fails at 59 / 10,842 transversals; the existential one (choose the end to extend, r's pair forced) fails at **45 / 8,562 roots**. The freedom of the existential form does not rescue fixed routes; minimality of J does.
@@ -739,7 +742,9 @@ Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were
 - **L1** (the path at c avoids a non-neighbour a): 70,978 pairs, n ≤ 10, **0 failures** (adjacent pairs: 13,639 / 70,914 fail, as they must). One even vertex a with no end (L1e): 4,516 pairs, 0 failures.
 - **L∞** (the path at c lies inside N[c]): 19,040 / 19,040; random subsets of non-neighbours: 16,821 / 16,821. Simultaneous N[·]-confinement at several vertices is false (two vertices: 80 / 1,426 fail).
 - **L_N** (single-edge routes: a matching of forbidden pairs (c_i, a_i), one orientation): 3,732 instances, n ≤ 14, up to 7 pairs, **0 failures** (135 undecided within budget).
+- **L_N for perfect matchings** (`ln_perfect.py 2500 60000 8 20`, `outputs/ln_perfect.log`): F all-odd on n = 8–20 vertices, N a random perfect matching of non-edges of F, random orientation (so G = F + N is Eulerian with a perfect matching, and L_N asks for every orientation of N to be realisable with N-edges terminal). **2,489 instances: 2,332 decided, 0 failures**, 157 undecided (mostly n ≥ 16); 2,421 of the 2,489 have a pair at F-distance 2. So the asymmetric L_N survives at distance 2, where symmetric separation fails.
 - **SEP** (no path contains both c and a): **proved for dist(c, a) ≥ 3** (manuscript Thm "separation"). It can fail at distance 2 when there is an even vertex: z adjacent to u₁, u₂, each u_i adjacent to z, c, a, plus a leaf at each of c, a (n = 7). There L1 still holds, and adding a leaf at z restores SEP.
 - Counting: among all Lovász decompositions of 2,417 small graphs, the fraction with a ∉ Q_c is ≥ 0.217 (no half-and-half involution).
+- **Separation at distance 2** (`sep2.py`): fails for 446 / 2,945 pairs in all-odd graphs and 961 / 2,438 with one even vertex (budget-undecided excluded). So separation is a distance-3 phenomenon; L1 at distance 2 is strictly weaker, and had no failure.
 - **Multi-pair separation** (`msep3.py`, query S; `outputs/msep3.log`). F all-odd, a random maximal matching of pairs at F-distance ≥ 3. **2,892 instances, n = 8–16, 0 failures**, of which 925 are perfect matchings; 102 undecided within budget. With some pair at distance 2: 500 / 2,191 fail. So symmetric separation needs distance 3.
 - **n = 14, minimum T-joins** (80 graphs, 160 constructions): 2,232 transversals, 0 not realisable, 8,896 / 8,896 extension queries succeed, RR true for 2,020, undecided for 212, never false.

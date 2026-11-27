@@ -133,17 +133,22 @@ Manuscript: `manuscripts/near-dirac`.
 - **Proved: balanced return theorem (Thm 1.1).** Exceptional sets of linear size with arbitrary two-sided neighbourhoods and moderate degree are returned exactly, at both parities. The condition is the *balance condition*: the internal edges at exceptional vertices on each side are matched by the internal edges of the other side, up to cm and the correction ρm/2. This contains SP 14.27.
 - **Corollary 1.2.** The floor and the rooted bound hold for near-regular graphs near K_{n/2,n/2} whose degree excess balances across a bisection.
 - **Corollary 1.3.** Every failure sequence violates the balance condition on every admissible (partition, X).
-- **Counting identity (Lemma 4.1).** In any two-apex Hamilton finish, b'(B) − b'(A) = 2(e_R(A) − e_R(B)) + ρD. This is why imbalanced configurations, and unequal shores near K_{m,m+d}, need SP's one-apex removal scheme.
+- **Counting identity (Lemma 4.1).** In any two-apex Hamilton finish, b'(B) − b'(A) = 2(e_R(A) − e_R(B)) + ρD. Its bipartite case is SP's §14.18 obstruction. Together with |l(A) − l(B)| ≤ 2q, it forces a balance condition of this type, up to an error of order q. It does so only for finishes whose preliminary paths avoid the internal edges at X. This is why imbalanced configurations, and unequal shores near K_{m,m+d}, appear to need SP's one-apex removal scheme.
 
 Open:
 
-- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores.
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is now **proved in §8** for the "keep X in J" route.
+  - Mirror-symmetry balancing lemma (Lemma 8.1), with a robust form (Lemma 8.2).
+  - Prop 8.3: the window can be met if the healthy shores differ by more than |X|, or if |X| ≤ √D/6.
+  - Open: nearly equal shores with |X| ≳ √n, and the whole scheduling half (SP 14.31/14.33 with weak sites).
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
-Two ideas tried this session do not work:
+Two observations from this session (heuristic, not proved in the manuscript):
 
 - Bounded |X| is *not* easier than |X| = o(n). Each exceptional vertex individually needs about n/4 integrated visits, and the healthy shores can be unbalanced regardless of |X|.
-- An "X-in-J with one-sided labels" scheme cannot balance more than about two two-sided vertices.
+- An "X-in-J with one-sided labels" scheme appears unable to balance more than about two two-sided vertices.
+
+This session's own referee subagent, run before audit A17, found no error in the proof of Thm 1.1. It found one gap, now fixed: Cor 1.3 needed |X| ≤ cm. It also raised two attribution points, now credited in the manuscript: SP 14.30 already threads exceptional vertices through rows as u, x, v, and SP §14.18 contains the bipartite case of the counting identity. Audit A17 (`research/audit/A17-near-dirac.md`) confirms Thm 1.1; its wording items are addressed in 7228bdb and later commits.
 
 ---
 
@@ -1029,6 +1034,13 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 **Multi-pair version (conjecture, strong evidence).** If all degrees are odd and disjoint pairs are each at distance ≥ 3, some Lovász decomposition separates every pair. E20: 2,892 instances (n = 8–16, 925 of them perfect matchings), 0 failures. At distance 2 the symmetric version is false (about 22% of instances fail).
 - It would give Gallai, with every orientation realisable, for every graph whose even subgraph has a perfect matching none of whose edges lies in a triangle. This includes all triangle-free Eulerian graphs with a perfect matching.
 - The proof of the one-pair theorem does not extend: when every vertex is paired, every Fan target is paired, and the path gaining the target may contain its partner.
+
+**L1 at distance 2: how far the induction goes.** The L1 invariant (Q_c ∌ a) survives a Fan transfer towards g ≠ a when c ∉ N(g). The chain lies in N(g) ∪ {t}, and re-routings keep vertex sets. When c ∈ N(g) it survives provided the path through the edge cg avoids a: if c enters the chain, c's end moves onto exactly that path.
+- So Lovász's induction proves L1 except in two residual configurations:
+  - (R-I) the even vertex z has N(z) ⊆ N[c] ∪ {a};
+  - (R-II) all degrees are odd and the non-isolated vertices are c, N(c) and a, with N(a) ⊆ N(c) and every vertex of N(c) of degree ≥ 3.
+- In addition, leaves adjacent to c finish at once (Q_c = cv), and leaves outside N[c] are deleted.
+- Separation itself fails at distance 2 in about 15% of all-odd instances (E20), so the residual cases need an invariant strictly between L1 and separation.
 
 ### V.5 Existential version and BranchBase
 - A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).

@@ -60,8 +60,8 @@ conjecture:\\ two deletion tests on 3-connected graphs}
 
 \begin{abstract}
 Gallai's conjecture asserts that the edges of every connected graph on $n$ vertices can be
-partitioned into at most $\lceil n/2\rceil$ paths. We give a complete, self-contained proof that
-the conjecture is equivalent to two deletion tests on $3$-connected graphs. Let $J$ be
+partitioned into at most $\lceil n/2\rceil$ paths. We give a complete proof that the
+conjecture is equivalent to two deletion tests on $3$-connected graphs. Let $J$ be
 $3$-connected, let $z\in V(J)$, and suppose that $J-z$ has no matching cut. If $z$ is the only
 vertex of even degree, then for every neighbour $r$ of $z$ the graph $J-z$ should have a path
 decomposition into at most $(|V(J)|-1)/2$ paths, at least two of which end at $r$. If $z$ and a
@@ -69,8 +69,10 @@ neighbour $r$ of $z$ are the only vertices of even degree, then $J-z$ should hav
 decomposition into at most $|V(J)|/2$ paths with at least three path ends at $r$. The mathematics
 is that of the author's marked-reduction manuscript (Theorems~1, 7, 59, 113 and~114 there). We
 follow its Lean~4 formalisation, which proves the equivalence with no hypotheses and only the
-standard axioms, and which simplifies several steps. Every proof is given in full here; the
-formalisation is an independent check and is not needed to read the paper.
+standard axioms, and which simplifies several steps. Two classical theorems are quoted without
+proof: Lov\'asz's theorem on graphs with at most one vertex of even degree, and Hall's marriage
+theorem. Every other proof is given in full; the formalisation is an independent check and is not
+needed to read the paper.
 \end{abstract}
 
 \maketitle
@@ -88,7 +90,7 @@ edges).
 \end{quote}
 
 The conjecture is attributed to Gallai and was published by Lov\'asz~\cite{L68}. The bound is
-attained: $K_{2k+1}$ has $k(2k+1)$ edges and a path in it has at most $2k$ edges, so
+attained: for $k\ge1$, $K_{2k+1}$ has $k(2k+1)$ edges and a path in it has at most $2k$ edges, so
 $p(K_{2k+1})\ge k+1=\lceil (2k+1)/2\rceil$. Lov\'asz~\cite{L68} proved the conjecture for graphs
 with at most one vertex of even degree (Theorem~\ref{thm:lovasz} below). The parity condition was
 weakened by Pyber~\cite{Pyb96} (the even-degree vertices induce a forest) and by
@@ -112,8 +114,8 @@ the parity of its degree.
 \begin{itemize}[leftmargin=3.2em]
 \item[(T1)] If $z$ is the only even vertex of $J$, then for every neighbour $r$ of $z$ the graph
 $J-z$ has a path decomposition into at most $(n-1)/2$ paths, at least two of which end at $r$.
-\item[(T2)] If $z$ and $r$ are adjacent and are the only two even vertices of $J$, then $J-z$ has a
-path decomposition into at most $n/2$ paths with at least three path ends at $r$.
+\item[(T2)] For every neighbour $r$ of $z$: if $z$ and $r$ are the only two even vertices of $J$,
+then $J-z$ has a path decomposition into at most $n/2$ paths with at least three path ends at $r$.
 \end{itemize}
 \end{definition}
 
@@ -150,8 +152,8 @@ conjecture; their value is that every potential counterexample is forced into th
 \subsection*{The chain of reductions}
 The proof has five steps, one per section.
 \begin{enumerate}[label=\arabic*.,leftmargin=2em]
-\item \emph{Marked path numbers} (Section~\ref{sec:marked}; MR Theorem~1). A set $S$ of marks may
-each absorb one path ending there; $q(F,S)$ counts the paths that are not absorbed. The marked bound
+\item \emph{Marked path numbers} (Section~\ref{sec:marked}; MR Theorem~1). Each mark in a set $S$ may
+absorb one path ending there; $q(F,S)$ counts the paths that are not absorbed. The marked bound
 $q(F,S)\le\fl{(|V(F)|-|S|)/2}$ implies Gallai's bound with one mark. On graphs whose $2$-connected
 blocks are small, it follows from the marked bound on $2$-connected graphs and a three-end condition.
 \item \emph{Block transfer and matching cuts} (Section~\ref{sec:transfer}; MR \S2, Lemma~6,
@@ -171,25 +173,36 @@ $3$-connected graph on which a deletion test fails.
 The whole chain is formalised in Lean~4~\cite{Lean4} with Mathlib~\cite{Mathlib}. The theorem
 \texttt{Gallai.gallai\_iff\_spineTests'} states Theorem~\ref{thm:main}. It has no hypotheses and
 depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}
-(Section~\ref{sec:lean}). The formal proof follows MR but simplifies it in several places
-(audit~A14 of the project records these), and we follow the formal proof wherever it is simpler:
+(Section~\ref{sec:lean}). The formal proof follows MR, but in several places it is organised
+differently or more simply, and we follow the formal proof at each of them. The project records
+these departures in audit~A14, in the module documentation of \texttt{MarkedBlocks.lean}, in the
+proofs in \texttt{ThreeConnected.lean}, and in the section ``Deviations from the manuscript proof'' of
+\texttt{lean/README.md}:
 \begin{itemize}
 \item a single assignment lemma proved with Hall's theorem (Lemma~\ref{lem:hall}) replaces two
-arguments of MR~\S2.1: the private-leaf identity and the odd-mark rank inequality;
-\item the bridge formula of MR~\S2 is not needed, and the pendant configuration in the block transfer
-needs no parity hypothesis on the root (Lemma~\ref{lem:pendant});
-\item a matching cut is chosen with connected shores (Lemma~\ref{lem:shores});
-\item Theorem~59 is proved by induction on the order of the $2$-connected blocks
-(Theorem~\ref{thm:59});
-\item singletons of odd order are reduced to the two-mark cone (Proposition~\ref{prop:classC});
+arguments of MR~\S2.1, the private-leaf identity and the odd-mark rank inequality (A14);
+\item the bridge formula of MR~\S2 is not needed: a bridge whose sides both have at least two
+vertices gives a cut vertex with two large sides, or else ends in a leaf (\texttt{MarkedBlocks.lean});
+\item the matching cut with connected shores is obtained from components
+(Lemma~\ref{lem:shores}) rather than from an inclusion-minimal disconnecting submatching (A14);
+\item the induction of Theorem~59 runs explicitly on the bound for the order of the
+$2$-connected blocks (Theorem~\ref{thm:59}); MR's phrase ``induct on the order of a two-connected
+block'' says this, and the formal statement makes it explicit (A14);
+\item singletons of odd order are handled by the two-mark cone and forgetting one mark
+(Proposition~\ref{prop:classC}) instead of adjoining a degree-two vertex and trimming (A14);
+\item the matching-cut step needs only connectivity (Theorem~\ref{thm:mc}; A14);
 \item the forward direction of Theorem~\ref{thm:main} is proved directly from the bridge double
-(Lemma~\ref{lem:gallai-rooted}), without the diamond construction of MR Theorem~59;
+(Lemma~\ref{lem:gallai-rooted}); the bridge and diamond identities of MR~\S17 are not used
+(see the proofs of \texttt{test1\_of\_gallai} and \texttt{test2\_of\_gallai});
 \item in the separator theorem a single root analysis (Lemma~\ref{lem:root}) serves all cases, and
-the four sub-cases of the even/even case become at most two grafts (Lemma~\ref{lem:lift-ee}).
+the four sub-cases of the even/even case become at most two grafts (Lemma~\ref{lem:lift-ee};
+\texttt{lean/README.md}).
 \end{itemize}
 The audits A1 and A2 of MR found no error but recorded gaps in its exposition. We use the corrected
 statements throughout. Theorem~59 is stated with an explicit marked-bound conclusion (A2,~F1).
-Theorem~113 is stated under the two hypotheses its proof uses (A2,~F7). The marked tests on blocks
+Theorem~113 is stated, as A2 (F7) recommends, without minimality and without excluding matching
+cuts; its second hypothesis is the marked bound $(\MBU_{n-2})$, which F7's hypothesis (both tests
+below order $n$) implies by Theorem~59. The marked tests on blocks
 without a matching cut are derived for every nonempty marking, not only for even marks (A1, G1 and
 G7). The instances of order $m+1$ used by Theorem~59 are named (A1,~G10). Only the two-part case of
 MR Theorem~7, a matching cut, is used (A1,~G6). Single-vertex deletions are covered in the apex lemma
@@ -209,7 +222,9 @@ $G-X=G[V(G)\setminus X]$. A \emph{leaf} is a vertex of degree one.
 
 $G$ is \emph{$k$-connected} if $|V(G)|\ge k+1$ and $G-X$ is connected for every $X\subseteq V(G)$
 with $|X|<k$ \lean{Gallai.KConnected}. Thus $G$ is $2$-connected if and only if it has at least three
-vertices, is connected, and has no \emph{cut vertex}, that is, no $x$ with $G-x$ disconnected. If
+vertices, is connected, and has no \emph{cut vertex}, that is, no $x$ with $G-x$ disconnected. (The
+block transfer in Lean states its tests with this no-cut-vertex form, \texttt{TwoConnected}, and
+converts it with \texttt{Gallai.TwoConnected.kConnected}.) If
 $x$ is a cut vertex of a connected graph $G$, then $V(G)\setminus\{x\}=C\sqcup D$ with $C,D$
 nonempty and no edge between $C$ and $D$; we call $(C,D)$ a \emph{separation at $x$}. We say that
 the $2$-connected blocks of $G$ have order at most $m$ if $|U|\le m$ for every $U\subseteq V(G)$ such
@@ -218,7 +233,8 @@ that $G[U]$ is $2$-connected \lean{Gallai.SmallBlocks}.
 \begin{lemma}\label{lem:kconn}
 Let $G$ be $k$-connected. Then $d_G(v)\ge k$ for every $v$; $G$ is connected if $k\ge1$; and
 $G-z$ is connected for every vertex $z$ if $k\ge2$.
-\leanst{Gallai.KConnected.le\_degree, Gallai.KConnected.delVert\_connected}
+\leanst{Gallai.KConnected.le\_degree, Gallai.KConnected.connected,
+Gallai.KConnected.delVert\_connected}
 \end{lemma}
 
 \begin{proof}
@@ -250,7 +266,8 @@ Put $\ind{\phi}=1$ if $\phi$ holds and $0$ otherwise.
 \begin{lemma}[parity]\label{lem:parity}
 For every decomposition $D$ of $G$ and every vertex $v$:
 $\sum_{u}b_D(u)=2|D|$, $b_D(v)\le d_G(v)$, and $b_D(v)\equiv d_G(v)\pmod 2$.
-\leanst{Gallai.PathDecomp.sum\_ends, Gallai.PathDecomp.ends\_mod\_two}
+\leanst{Gallai.PathDecomp.sum\_ends, Gallai.PathDecomp.ends\_mod\_two,
+Gallai.PathDecomp.ends\_le\_degree}
 \end{lemma}
 
 \begin{proof}
@@ -271,7 +288,7 @@ a decomposition $D'$ with $|D'|=|D|+1$, $b_{D'}(v)=b_D(v)+2$ and $b_{D'}(u)=b_D(
 are the other ends of $P$ and $Q$.
 \end{enumerate}
 \leanst{Gallai.PathDecomp.exists\_split, Gallai.PathDecomp.exists\_internal\_of\_ends\_lt,
-Gallai.PMP.exists\_join}
+Gallai.GPath.exists\_join}
 \end{lemma}
 
 \begin{proof}
@@ -330,8 +347,8 @@ even), then $p(G)\le\fl{N/2}$.
 
 This is the statement \texttt{LovaszStatement} of the library. It is proved there as
 \texttt{lovaszStatement}, from a strong form (\texttt{lovasz\_ends}): if at most one vertex has
-\emph{positive} even degree, some decomposition has $b_D(v)=d(v)\bmod2$ for every $v$. We use the
-theorem only in the following form.
+\emph{positive} even degree, some decomposition has $b_D(v)=d(v)\bmod2$ for every $v$. Besides the
+statement itself we use the following tight form.
 
 \begin{corollary}[tight form]\label{cor:lovasz}
 Let $G$ be a graph and $U\subseteq V(G)$ a set containing both ends of every edge. If at most one
@@ -370,8 +387,8 @@ q(F,S)\le\fl{(|V(F)|-|S|)/2}.
 \leanst{Gallai.MarkedPartition, Gallai.markedNumber}
 \end{definition}
 
-Thus $q(F,\emptyset)=p(F)$. Every path of $D$ has two distinct ends, so a mark absorbs at most one
-path and each path is absorbed by at most one mark.
+Thus $q(F,\emptyset)=p(F)$. Since $\sigma$ is injective, a mark absorbs at most one path, and since
+$\sigma$ is a map, each path is absorbed by at most one mark.
 
 \begin{lemma}\label{lem:marked-basic}
 Let $F$ be a graph, $S\subseteq V(F)$ and $x,y\in V(F)$.
@@ -456,8 +473,7 @@ distinct marks receive distinct paths because $f$ is injective. At most $k$ mark
 slots, so at least $|T|-k$ paths are assigned, and the cost is at most $|D|-|T|+k$.
 \end{proof}
 
-In applications $O$ is a set of odd vertices, which have an end by parity as soon as they have
-positive degree, and the marks outside $O$ are even vertices with at least one end, hence with two.
+In applications $O$ is a set of odd vertices, which always have an end by parity, and the marks outside $O$ are even vertices with at least one end, hence with two.
 
 \subsection{The marked tests}
 
@@ -606,12 +622,13 @@ $G$ has a leaf. By Step~3, every leaf $w$ is adjacent to the unique mark $v$, wh
 is even. By Step~4 there is only one leaf, $w$. Now $J=G-w$ is connected with $n-1\ge3$ vertices
 (as $n$ is even and at least three). If $J$ had a cut vertex, Lemma~\ref{lem:residue} would give a
 separation of $G$ as in Step~2 or a second leaf of $G$; both are excluded. So $J$ is $2$-connected,
-and Lemma~\ref{lem:pendant} gives the bound. This completes the induction, given the four lemmas
+and Lemma~\ref{lem:pendant} gives the bound. This completes the induction, given the five lemmas
 below. Theorem~\ref{thm:transfer} is $(\ast)_n$ for all $n$.\qed
 
 \medskip
-In the four lemmas, $G$ and $S$ are as in $(\ast)_n$ and the marked bound holds for every connected
-induced subgraph of order less than $n$.
+In Lemmas~\ref{lem:cut}--\ref{lem:pendant}, $G$ and $S$ are as in $(\ast)_n$ and the marked bound
+holds for every connected induced subgraph of order less than $n$. Lemma~\ref{lem:residue} is a
+statement about any connected graph.
 
 \begin{lemma}[cut vertices; MR p.~5]\label{lem:cut}
 If $G$ has a separation $(C,D)$ at $x$ with $|C|,|D|\ge2$, then $q(G,S)\le\fl{(n-|S|)/2}$.
@@ -620,8 +637,10 @@ If $G$ has a separation $(C,D)$ at $x$ with $|C|,|D|\ge2$, then $q(G,S)\le\fl{(n
 
 \begin{proof}
 Put $U_1=C\cup\{x\}$, $U_2=D\cup\{x\}$ and $G_i=G[U_i]$. Then $|U_i|\ge3$, $U_1\cap U_2=\{x\}$,
-$|U_1|+|U_2|=n+1$, and $E(G)=E(G_1)\sqcup E(G_2)$. Each $G_i$ is connected: a path in $G$ from a
-vertex of $C$ to a vertex of $D$ passes through $x$, and its part before $x$ lies in $G_1$. In
+$|U_1|+|U_2|=n+1$, and $E(G)=E(G_1)\sqcup E(G_2)$. Each $G_i$ is connected: for $c\in C$, a path of $G$
+from $c$ to a vertex of $D$ must pass through $x$, and its part from $c$ to the first visit of $x$ lies
+in $G_1$; so every vertex of $C$ is joined to $x$ in $G_1$, and symmetrically every vertex of $D$ is
+joined to $x$ in $G_2$. In
 particular $x$ has a neighbour $y_i\in U_i\setminus\{x\}$. Let $S_i=S\cap U_i$. The graph
 $G_1^+=G[U_1\cup\{y_2\}]$ is $G_1$ plus the pendant edge $xy_2$ (the only neighbour of $y_2$ in
 $U_1$ is $x$). It is connected and has $|U_1|+1\le n-1$ vertices, since $|U_2|\ge3$. The same holds
@@ -685,7 +704,8 @@ $q(G,S)\le\fl{(n-|S|)/2}$.
 \end{lemma}
 
 \begin{proof}
-$G-w$ is connected of order $n-1$, and $E(G)=E(G-w)\sqcup\{wv\}$. In each case we take an optimal
+$G-w$ is connected of order $n-1$ (a path between two vertices other than $w$ cannot pass through
+the leaf $w$), and $E(G)=E(G-w)\sqcup\{wv\}$. In each case we take an optimal
 marked partition $M$ of $G-w$ for the stated marks and add the edge $wv$.
 \begin{enumerate}[label=(L\arabic*),leftmargin=3em]
 \item $w\in S$ and $S\ne\{w\}$. Marks $S\setminus\{w\}$: $c(M)\le\fl{(n-1-(|S|-1))/2}$. Add the path
@@ -709,7 +729,8 @@ If $S=\{v\}$ and $w\ne w'$ are leaves adjacent to $v$, then $q(G,\{v\})\le\fl{(n
 \end{lemma}
 
 \begin{proof}
-$G-w-w'$ is connected, contains $v$, and has order $n-2$. An optimal marked partition of
+$G-w-w'$ is connected (no path between two other vertices passes through a leaf), contains $v$, and
+has order $n-2$. An optimal marked partition of
 $(G-w-w',\{v\})$ costs at most $\fl{(n-3)/2}$. Add the unassigned path $wvw'$.
 \end{proof}
 
@@ -720,7 +741,8 @@ $q(G,\{v\})\le\fl{(n-1)/2}$.
 \end{lemma}
 
 \begin{proof}
-Write $n=2k+2$, so $|V(J)|=2k+1\le m$ and the target is $k$. By $(\TA_m)$,
+Write $n=2k+2$, so $|V(J)|=2k+1$, and the target is $k$. As $J$ is a $2$-connected induced subgraph
+of $G$, whose $2$-connected blocks have order at most $m$, we have $2k+1\le m$. By $(\TA_m)$,
 $q(J,\{v\})\le\fl{2k/2}=k$, so $p(J)\le k+1$ by Lemma~\ref{lem:marked-basic}(a). If $p(J)\le k$,
 take an optimal decomposition of $J$ and add the path $vw$ assigned to $v$; the cost is at most $k$.
 Otherwise $p(J)=k+1$, and we find a decomposition $D$ of $J$ with $|D|=k+1$ and $b_D(v)\ge2$. If
@@ -731,8 +753,8 @@ Now two distinct paths $P_1,P_2$ of $D$ end at $v$. Assign $P_2$ to $v$ and exte
 $vw$. This is a marked partition of $(G,\{v\})$ with $k+1$ paths, one assigned, so it costs $k$.
 \end{proof}
 
-No parity condition on $d_J(v)$ is needed here: MR's residual configuration has $d_J(v)$ odd, but
-the even case is handled directly by the optimal marked partition.
+As in MR, an even $d_J(v)$ causes no difficulty: an optimal marked partition already has two ends
+at $v$.
 
 \begin{lemma}[the residue; MR p.~6]\label{lem:residue}
 Let $w$ be a leaf of a connected graph $G$ with neighbour $v$, and suppose $J=G-w$ has a cut vertex
@@ -822,7 +844,7 @@ $p(B)\le\fl{n/2}$.
 \begin{proof}
 Take a matching cut $(X,Y)$ with connected shores (Lemma~\ref{lem:shores}), with crossing edges
 $a_ib_i$ as in Lemma~\ref{lem:lemma6}; $t\ge1$ since $B$ is connected. Split $S=A\sqcup O$ into its
-even vertices $A$ and odd vertices $O$; let $a=|A|$ and $o=|O|$. Let $H=L_A(B)$ and $H_X,H_Y$ as in
+even vertices $A$ and odd vertices $O$; let $\alpha=|A|$ and $o=|O|$. Let $H=L_A(B)$ and $H_X,H_Y$ as in
 Lemma~\ref{lem:lemma6}. The graph $H_X$ is connected ($B[X]$ is, and leaves are attached to it). A
 $2$-connected induced subgraph of $H_X$ has minimum degree at least two, so it contains no leaf and
 lies in $B[X]$; hence the $2$-connected blocks of $H_X$ have order at most $|X|\le n-1$. The same holds
@@ -830,18 +852,19 @@ for $H_Y$. By $(\MBU_{n-1})$ with the nonempty mark sets $\{a_i\}$ and $\{b_i\}$
 \[
 q(H_X,\{a_i\})\le\fl{\tfrac{|X|+|A\cap X|-t}2},\qquad q(H_Y,\{b_i\})\le\fl{\tfrac{|Y|+|A\cap Y|-t}2}.
 \]
-By Lemma~\ref{lem:lemma6}, $H$ has a decomposition $D$ with $|D|\le(n+a-2t)/2+t=(n+a)/2$, hence
-$|D|\le\fl{(n+a)/2}$. By Lemma~\ref{lem:trimleaves} there is a decomposition $D'$ of $B$ with
-$|D'|+z\le|D|$, where $z=|\{x\in A:b_{D'}(x)=0\}|$. Let $T=\{x\in A:b_{D'}(x)\ge1\}\cup O$, so
-$|T|=a-z+o$. Every vertex of $O$ has odd degree, hence an end, and every vertex of $T\setminus O$ is
+By Lemma~\ref{lem:lemma6}, $H$ has a decomposition $D$ with
+$|D|\le(n+\alpha-2t)/2+t=(n+\alpha)/2$, hence $|D|\le\fl{(n+\alpha)/2}$. By
+Lemma~\ref{lem:trimleaves} there is a decomposition $D'$ of $B$ with $|D'|+\zeta\le|D|$, where
+$\zeta=|\{v\in A:b_{D'}(v)=0\}|$. Let $T=\{v\in A:b_{D'}(v)\ge1\}\cup O$, so
+$|T|=\alpha-\zeta+o$. Every vertex of $O$ has odd degree, hence an end, and every vertex of $T\setminus O$ is
 an even vertex with an end, hence with two (Lemma~\ref{lem:parity}). Lemma~\ref{lem:hall} and
 Lemma~\ref{lem:marked-basic}(b) give
 \[
-q(B,S)\le q(B,T)\le|D'|+\fl{o/2}-|T|\le\fl{\tfrac{n+a}2}-z+\fl{\tfrac o2}-(a-z+o)
-=\fl{\tfrac{n-a}2}-\cl{\tfrac o2}\le\fl{\tfrac{n-a-o}2}.
+q(B,S)\le q(B,T)\le|D'|+\fl{o/2}-|T|\le\fl{\tfrac{n+\alpha}2}-\zeta+\fl{\tfrac o2}-(\alpha-\zeta+o)
+=\fl{\tfrac{n-\alpha}2}-\cl{\tfrac o2}\le\fl{\tfrac{n-\alpha-o}2}.
 \]
-The last step holds because $\fl{\alpha}+\cl{\beta}\ge\fl{\alpha+\beta}$ with $\alpha=(n-a-o)/2$ and
-$\beta=o/2$. For $S=\emptyset$ this reads $p(B)=q(B,\emptyset)\le\fl{n/2}$.
+The last step holds because $\fl{\mu}+\cl{\nu}\ge\fl{\mu+\nu}$ with $\mu=(n-\alpha-o)/2$ and
+$\nu=o/2$. For $S=\emptyset$ this reads $p(B)=q(B,\emptyset)\le\fl{n/2}$.
 \end{proof}
 
 \section{The class \texorpdfstring{$\cC$}{C} and Theorem 59}\label{sec:thm59}
@@ -891,7 +914,7 @@ Assume $(\RT_{m+1})$ and let $B\in\cC$ have order $n\le m$. Then:
 \begin{enumerate}[label=\textup{(\alph*)}]
 \item $q(B,S)\le\fl{(n-|S|)/2}$ for every nonempty $S\subseteq V(B)$;
 \item if $n=2k+1$ and $p(B)=k+1$, then for every odd vertex $x$ some decomposition of $B$ has exactly
-$k+1$ paths and $b(x)\ge3$.
+$k+1$ paths and at least three ends at $x$.
 \end{enumerate}
 \leanst{Gallai.markedBound\_of\_classC, Gallai.threeEnds\_of\_classC}
 \end{proposition}
@@ -964,7 +987,7 @@ the vertex set of a component of $B-\{x,y\}$ and $\{x,y\}$ separates $C$ from th
 \leanst{Gallai.IsSepComponent}
 \end{definition}
 
-\begin{theorem}[separator theorem; MR Theorem 113 in the form of A2, F7]\label{thm:sep}
+\begin{theorem}[separator theorem; MR Theorem 113, a strengthening of A2, F7]\label{thm:sep}
 Let $B$ be a $2$-connected graph of order $n$ and assume $(\MBU_{n-2})$. Let $C$ be a separated
 component for $\{x,y\}$ all of whose vertices are odd in $B$, and let $r\in V(B)\setminus C$ (possibly
 $r\in\{x,y\}$). Then $\RT(B,r)$ holds.
@@ -1006,7 +1029,7 @@ $w\in V\setminus(C\cup\{x,y\})$. The claim with $p=x$, $q=y$ joins every $v\noti
 and in particular $w$, to $x$; so all these vertices are joined to $w$. The claim with $p=y$, $q=x$
 joins $w$ to $y$. Hence every vertex of $V\setminus C$ is joined to $w$ in $E$.
 
-(b) By (a), $x$ and $y$ are joined in $E$ to $w\ne x,y$, so they have positive degree in $E$. Pick
+(b) By (a), $x$ and $y$ are joined in $E$ to a vertex $w\in V\setminus(C\cup\{x,y\})$, so they have positive degree in $E$. Pick
 $c\in C$. In $B-y$ there is a path from $c$ to $w$; it leaves $C$ along an edge $c'u$ with $c'\in C$,
 $u\notin C$, so $u\in\{x,y\}$ and $u\ne y$. Thus $c'x\in E(A)$ and $d_A(x)>0$; similarly $d_A(y)>0$.
 
@@ -1032,7 +1055,7 @@ $|D|\le N/2$ and $b_D(r)\ge2$.
 $b_D(r)\ge3$.
 \item If $N$ is odd and $d_W(r)=1$, then $p(W)\le\fl{N/2}$.
 \end{enumerate}
-\leanst{Gallai.R2\_on, Gallai.R3\_on, Gallai.floor\_on}
+\leanst{Gallai.R2\_on (part (a); the 2 counts ends), Gallai.R3\_on (part (b)), Gallai.floor\_on (part (c))}
 \end{lemma}
 
 \begin{proof}
@@ -1110,11 +1133,22 @@ Gallai.exists\_graft\_x}
 \end{lemma}
 
 \begin{proof}
-(a) $R=R_1\cdot ab\cdot R_2$ and $R'=R_1\cdot T\cdot R_2$; the pieces meet only at $a$ and $b$.
-(b) $b\notin V(R_a)$ since $R$ is a path, so $V(R_a)\cap V(X)\subseteq\{a\}$; similarly
-$V(R_b)\cap V(Y)\subseteq\{b\}$. The end identity holds because the ends of $N_1,N_2$ are those of
-$R,X,Y$ with $a$ (an end of $X$) and $b$ (an end of $Y$) removed. (c) Similar: the two copies of the
-end $p$ of $X_1$ and $X_2$ become internal.
+(a) Write $R=R_1\cdot ab\cdot R_2$, with $R_1$ ending at $a$ and $R_2$ starting at $b$ (either may
+be trivial). As $R$ is a path, $b\notin V(R_1)$ and $a\notin V(R_2)$, so $V(T)\cap V(R_1)=\{a\}$ and
+$V(T)\cap V(R_2)=\{b\}$, while $V(R_1)\cap V(R_2)=\emptyset$. Hence $R'=R_1\cdot T\cdot R_2$ is a path;
+its ends are the first vertex of $R_1$ and the last vertex of $R_2$, the ends of $R$.
+(b) $b\notin V(R_a)$ since $R$ is a path, so $V(R_a)\cap V(X)\subseteq\{a\}$, and $N_1$ is a path
+(Lemma~\ref{lem:split}(c)); similarly $a\notin V(R_b)$ gives $V(R_b)\cap V(Y)\subseteq\{b\}$ and $N_2$ is
+a path. The ends of $N_1$ are the first vertex of $R_a$ and the far end of $X$; those of $N_2$ are the
+far end of $Y$ and the last vertex of $R_b$. The ends of $R,X,Y$ are these four together with $a$ (an
+end of $X$) and $b$ (an end of $Y$), which gives the end identity; this includes the case $R_a=a$ or
+$R_b=b$, where $a$ or $b$ is also an end of $R$ and remains an end of $N_1$ or $N_2$. The edges of
+$N_1,N_2$ are those of $R$ except $ab$, together with those of $X$ and $Y$.
+(c) $N_1$ is a path because $V(q_1)\cap V(X_1)=\{p\}$, and $N_2$ because $V(X_2)\cap V(q_2)=\{p\}$.
+The ends of $N_1$ are the first vertex of $q_1$ and the far end of $X_1$; those of $N_2$ are the far
+end of $X_2$ and the last vertex of $q_2$. The ends of $R,X_1,X_2$ are these four together with the
+two ends of $X_1$ and $X_2$ at $p$; if $q_1$ (or $q_2$) is trivial, $p$ is an end of $R$ and of $N_1$
+(or $N_2$) as well, and the identity still holds. The edges are those of $R$, $X_1$ and $X_2$.
 \end{proof}
 
 When $R$ is a path of a family $L$ and the edge $ab$ (or the vertex $p$) lies on $R$, replacing $R$
@@ -1221,7 +1255,9 @@ $C$. So $w_0$ is the only even vertex and Corollary~\ref{cor:lovasz} applies.
 \begin{lemma}[the lift]\label{lem:lift-ee}
 For every decomposition $D_E$ of $E$ there is a decomposition $D$ of $B$ with $|D|\le|D_E|+s$ and
 $b_D(v)=b_{D_E}(v)$ for every $v\notin C$.
-\leanst{Gallai.case1\_lift, Gallai.case2\_lift}
+\leanst{Gallai.case1\_lift, Gallai.case2\_lift for the family $M$ below, with the ends preserved at
+the root $r$; the assembly of $D$ is the step \texttt{finish} in the proof of
+Gallai.rootedAt\_evenComp\_evenPorts}
 \end{lemma}
 
 \begin{proof}
@@ -1467,7 +1503,7 @@ and $r$ are the only even vertices of $J$, and they are adjacent. By (T2), $B$ h
 into at most $|V(J)|/2=(n+1)/2=\fl{n/2}+1$ paths with three ends at $r$.
 \end{proof}
 
-Since $|S|$ is even, in the last case $|S|\ge4$, so $d_J(z)\ge4$.
+Since $|S|$ is even in both cases, $|S|\ge4$, so $d_J(z)\ge4$.
 
 \begin{theorem}[the tests imply Gallai]\label{thm:converse}
 Assertion \textup{(iii)} of Theorem~\ref{thm:main} implies Gallai's conjecture.
@@ -1496,11 +1532,16 @@ Lemma~\ref{lem:marked-basic}(a), $p(G)\le\fl{(N-1)/2}+1=\cl{N/2}$.
 \section{The formalisation}\label{sec:lean}
 
 \subsection{What is checked}
-Every result of Sections~\ref{sec:prelim}--\ref{sec:thm114} is proved in the Lean~4 library
-\texttt{GallaiLean} of the project repository (directory \texttt{lean/}), on top of Mathlib. The
+Every result of Sections~\ref{sec:prelim}--\ref{sec:thm114} that the main theorem depends on is
+proved in the Lean~4 library \texttt{GallaiLean} of the project repository (directory \texttt{lean/}),
+on top of Mathlib. Three statements are formalised only in the form the main proof needs:
+Lemma~\ref{lem:gallai-rooted} only for $H=J-z$ (inside \texttt{test1\_of\_gallai} and
+\texttt{test2\_of\_gallai}); Lemma~\ref{lem:lift-ee} with the ends preserved at the chosen root; and
+Remark~\ref{rem:59conv} (Gallai implies the rooted tests) not at all. The
 toolchain is \texttt{leanprover/lean4:v4.36.0} with Mathlib at tag \texttt{v4.36.0}. The library
 contains no \texttt{sorry}. Lov\'asz's theorem is not an assumption: it is proved in
-\texttt{GallaiLean/Lovasz.lean} by an induction on the degree sum using Fan's addible-edge lemma,
+\texttt{GallaiLean/Lovasz.lean} by induction on $\sum_v d(v)$ plus the indicator that no vertex has
+positive even degree, using Fan's addible-edge lemma,
 which is itself proved in \texttt{Fan.lean}. Theorem~\ref{thm:main} is the conjunction
 {\footnotesize
 \begin{verbatim}
@@ -1511,13 +1552,20 @@ theorem gallai_iff_spineTests' :
 }
 in \texttt{Separator.lean}, where \texttt{gallai\_iff\_spineTests} combines
 \texttt{spineTests\_of\_gallai} with \texttt{gallai\_of\_spineTestsNMC lovaszStatement h59
-separatorStatement}. The statement is universe-polymorphic: for every universe \texttt{u} it relates
+separatorStatement}. Several cited declarations take Lov\'asz's theorem, Theorem~59 or Theorem~113 as explicit hypotheses
+(\texttt{LovaszStatement}, \texttt{Thm59Statement}, \texttt{SeparatorStatement}): for example
+\texttt{separator\_theorem}, \texttt{rootedAt\_of\_few\_even}, \texttt{rootedAt\_of\_tests} and
+\texttt{gallai\_of\_spineTestsNMC}. These hypotheses are discharged by \texttt{lovaszStatement},
+\texttt{thm59} and \texttt{separatorStatement}, as in the line above. The statement is
+universe-polymorphic: for every universe \texttt{u} it relates
 the conjecture for all finite vertex types in \texttt{Type u} to the tests for all finite vertex types
 in \texttt{Type u}.
 
 \subsection{The definitions}
 The definitions behind the statement are the following (\texttt{Basic.lean} and
 \texttt{ThreeConnected.lean}; \texttt{V} is a type with \texttt{[Fintype V] [DecidableEq V]}).
+Declarations made inside a namespace are shown with their full names, and the comments are ours;
+otherwise the text is verbatim.
 {\footnotesize
 \begin{verbatim}
 structure GPath (G : SimpleGraph V) where          -- a path: a simple walk of length ≥ 1
@@ -1526,11 +1574,16 @@ structure GPath (G : SimpleGraph V) where          -- a path: a simple walk of l
   walk : G.Walk src tgt
   isPath : walk.IsPath
   pos : 0 < walk.length
+def GPath.edges (P : GPath G) : List (Sym2 V) := P.walk.edges
+def GPath.endsAt [DecidableEq V] (P : GPath G) (v : V) : ℕ :=
+  (if P.src = v then 1 else 0) + (if P.tgt = v then 1 else 0)
 structure PathDecomp (G : SimpleGraph V) where     -- edge lists partition E(G)
   paths : List (GPath G)
   nodup_edges : (paths.flatMap GPath.edges).Nodup
   covers : ∀ e, e ∈ G.edgeSet ↔ e ∈ paths.flatMap GPath.edges
-def PathDecomp.ends (D : PathDecomp G) (v : V) : ℕ := (D.paths.map (fun P => P.endsAt v)).sum
+def PathDecomp.size (D : PathDecomp G) : ℕ := D.paths.length
+def PathDecomp.ends [DecidableEq V] (D : PathDecomp G) (v : V) : ℕ :=
+  (D.paths.map (fun P => P.endsAt v)).sum
 noncomputable def pathNumber (G : SimpleGraph V) : ℕ :=
   sInf {k | ∃ D : PathDecomp G, D.size = k}
 def GallaiConjecture : Prop :=
@@ -1611,16 +1664,20 @@ The table lists each result of the paper with the Lean declaration that proves i
 Paper & Lean declaration & File:line\\
 \midrule
 \endhead
-Lemma~\ref{lem:kconn} & \texttt{KConnected.le\_degree}, \texttt{KConnected.delVert\_connected} &
-ThreeConnected:106, :149\\
-Lemma~\ref{lem:parity} & \texttt{PathDecomp.ends\_mod\_two}, \texttt{PathDecomp.sum\_ends} &
-Parity:187, :193\\
-Lemma~\ref{lem:split} & \texttt{PathDecomp.exists\_split}, \texttt{exists\_internal\_of\_ends\_lt} &
-Surgery:83, ThreeConnected:220\\
+Section~\ref{sec:prelim} constructions & \texttt{addLeaf}, \texttt{apex}, \texttt{cone},
+\texttt{delVert}, \texttt{delVert\_degree} & Doubling:26, Realisable:118, Marked:48,
+ThreeConnected:134, :136\\
+Lemma~\ref{lem:kconn} & \texttt{KConnected.le\_degree}, \texttt{KConnected.connected},
+\texttt{KConnected.delVert\_connected} & ThreeConnected:106, :98, :149\\
+Lemma~\ref{lem:parity} & \texttt{PathDecomp.ends\_mod\_two}, \texttt{PathDecomp.sum\_ends},
+\texttt{PathDecomp.ends\_le\_degree} & Parity:187, :193, TwoEven:1084\\
+Lemma~\ref{lem:split} & \texttt{PathDecomp.exists\_split},
+\texttt{PathDecomp.exists\_internal\_of\_ends\_lt}, \texttt{GPath.exists\_join} & Surgery:83,
+ThreeConnected:220, MarkedSurgery:409\\
 Lemma~\ref{lem:ends} & \texttt{exists\_two\_ends}, \texttt{exists\_three\_ends} &
 ThreeConnected:251, :268\\
-Lemma~\ref{lem:leaf} & \texttt{PathDecomp.trim\_ends}, \texttt{pathNumber\_addLeaf\_le},
-\texttt{exists\_leafCost\_le} & ThreeConnected:325, PrivateLeaf:124, :211\\
+Lemma~\ref{lem:leaf} & \texttt{leafCost}, \texttt{PathDecomp.trim\_ends}, \texttt{pathNumber\_addLeaf\_le},
+\texttt{exists\_leafCost\_le} & PrivateLeaf:121, ThreeConnected:325, PrivateLeaf:124, :211\\
 Theorem~\ref{thm:lovasz} & \texttt{lovaszStatement} (\texttt{lovasz\_ends}) & Lovasz:511 (:505)\\
 Corollary~\ref{cor:lovasz} & \texttt{lovasz\_tight}, \texttt{lovasz\_on} & SmallBounds:92, :64\\
 Definition~\ref{def:marked} & \texttt{MarkedPartition}, \texttt{markedNumber} & Marked:262, :295\\
@@ -1660,12 +1717,14 @@ Proposition~\ref{prop:classC} & \texttt{cone\_step}, \texttt{singleton\_step},
 Definition~\ref{def:sepcomp} & \texttt{IsSepComponent} & ThreeConnected:666\\
 Theorem~\ref{thm:sep} & \texttt{separatorStatement}, \texttt{separator\_theorem},
 \texttt{SeparatorStatement} & Separator:64, :29, ThreeConnected:680\\
+Section~\ref{sec:sep} setup & \texttt{sideA}, \texttt{sideE} & SeparatorSetup:78, :84\\
 Lemma~\ref{lem:sides} & \texttt{sideE\_induce\_connected}, \texttt{sideE\_port\_pos},
 \texttt{sideA\_port\_pos}, \texttt{sideA\_parity}, \texttt{two\_le\_card\_of\_odd} &
 SeparatorSetup:241, :250, :256, :285, SeparatorOdd:80\\
-Lemma~\ref{lem:small} & \texttt{R2\_on}, \texttt{R3\_on}, \texttt{floor\_on} & SmallBounds:238, :258,
+Lemma~\ref{lem:small}(a)--(c) & \texttt{R2\_on}, \texttt{R3\_on}, \texttt{floor\_on} & SmallBounds:238, :258,
 :289\\
 Lemma~\ref{lem:root} & \texttt{rootedAt\_of\_lift} & SeparatorSetup:339\\
+Path surgery conventions & \texttt{TPath}, \texttt{exists\_decomp\_of\_edgesM} & PathSurgery:29, :127\\
 Lemma~\ref{lem:surgery} & \texttt{exists\_subst\_list}, \texttt{exists\_cut\_edge},
 \texttt{exists\_graft}, \texttt{exists\_graft\_x} & PathSurgery:411, :544, :447,
 SeparatorEvenEven:82\\
@@ -1673,7 +1732,8 @@ Proposition~\ref{prop:odd} & \texttt{rootedAt\_oddComp} & SeparatorOdd:106\\
 Proposition~\ref{prop:evenodd} & \texttt{rootedAt\_evenComp\_oddPorts} & SeparatorEvenOdd:26\\
 Lemma~\ref{lem:local} & \texttt{exists\_localX}, \texttt{exists\_localA'} & SeparatorEvenEven:583,
 :665\\
-Lemma~\ref{lem:lift-ee} & \texttt{case1\_lift}, \texttt{case2\_lift} & SeparatorEvenEven:223, :271\\
+Lemma~\ref{lem:lift-ee} & \texttt{case1\_lift}, \texttt{case2\_lift} (the family $M$, ends at the root);
+assembly in \texttt{rootedAt\_evenComp\_evenPorts} & SeparatorEvenEven:223, :271, :757\\
 Proposition~\ref{prop:eveneven} & \texttt{rootedAt\_evenComp\_evenPorts} & SeparatorEvenEven:757\\
 Lemma~\ref{lem:bridge} & \texttt{dbl}, \texttt{two\_mul\_pathNumber\_addLeaf\_le},
 \texttt{rootedTest\_of\_gallai} & Doubling:220, :552, :589\\
@@ -1692,7 +1752,8 @@ Separator:80, :70\\
 }
 
 \subsection{How the formal proof is organised}
-A few representation choices differ from the presentation here; none affects the mathematics.
+The formal proof makes some representation choices that the paper does not spell out; none affects
+the mathematics.
 \begin{itemize}
 \item The block transfer (Theorem~\ref{thm:transfer}) runs inside one vertex type: an instance is a
 vertex set $U$ carrying all edges of a graph, and sub-instances are restrictions to subsets of $U$,
@@ -1704,12 +1765,13 @@ connected, no cut vertex) is converted to \texttt{KConnected 2} in \texttt{Thm59
 end counts (\texttt{PathDecomp.project\_full}, \texttt{PathDecomp.map\_injective\_ends}).
 \item In the separator theorem all graphs live on the vertex type of $B$, and the exterior graph of
 the odd case reuses the vertex $c\in C$ as the leaf; paths are handled as paths of the complete graph
-on $V$ with edge multisets (\texttt{TPath}, \texttt{edgesM}, \texttt{endsL}), exactly as in
-Section~\ref{sec:sep}.
+on $V$ with edge multisets (\texttt{TPath}, \texttt{edgesM}, \texttt{endsL}); Section~\ref{sec:sep}
+adopts the same convention.
 \end{itemize}
 
-The formalisation was written to be faithful to MR; the project audit A14 lists its departures
-from MR, and this paper follows the formal proof at each of them.
+The formalisation was written to be faithful to MR. Its departures from MR are listed in
+Section~\ref{sec:intro}, with the project documents that record them, and this paper follows the
+formal proof at each of them.
 
 \subsection*{Acknowledgement}
 The mathematics of the spine is that of the marked-reduction manuscript~\cite{MR}. The present

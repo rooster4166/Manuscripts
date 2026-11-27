@@ -233,6 +233,9 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | bs-prescribed: five-even floor bound, Shaik removal (A11) | **sound**: scope verified against every Cor 106 use; certificates independently checked |
 | missing-move; endpoint-structure §7 (flower, barriers, receipt-or-flower) (A12) | **sound**: no mathematical error; key computations independently reproduced |
 | endpoint-min-max: cut selection Thm 21; hardness §5 (A13) | **sound**; Remark 28 (EMM₃ open) is out of date, since EMM₃ is false |
+| Lean proof of MR Thm 59 (A14) | **no gap in MR**; formal deviations listed |
+| near-dirac balanced return theorem (A17) | **Theorem 1.1 correct**; CKLOT hypotheses verified exactly; wording gaps and one false heuristic sentence (R2) are being fixed |
+| spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):

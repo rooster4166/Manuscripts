@@ -23,6 +23,12 @@ spine" and Lemma "minimum T-joins".
 * `IsEvenPairing.of_isPairing`: the cut-selection pairings of `cs_all` are even pairings, with the
   same transversals; so `cs_all` supplies the cut-feasibility half of TRC, and `gallai_of_pairingTRC`
   needs only the realisability half.
+* **`realisable_of_even_matching`**: TRC for one-edge routes when every even vertex has exactly one
+  even neighbour (`G[Ev]` a perfect matching): every transversal is realisable, by Fan descent
+  (`realisable_transfer`).
+* **`PathDecomp.route_append`**: the extension step of route descent. If the path of `D'` (a
+  decomposition of `G − E(R)`) ending at `c` meets the route `R` (from `c` to `a`) only in `c`,
+  appending `R` gives a decomposition of `G` of the same size with one end moved from `c` to `a`.
 * T-joins: `IsTJoin G T J`, `IsMinTJoin G T J`.
   **`isMinTJoin_sdiff`**: deleting a sub-edge-set `R` of a minimum `T`-join leaves a minimum join
   of `G − R` (for the parity set it induces); this is the heredity of minimality under route
@@ -84,6 +90,7 @@ structure IsEvenPairing (H : SimpleGraph V) [DecidableRel H.Adj] (σ : V → V) 
   ne : ∀ v ∈ evenSet H, σ v ≠ v
   invol : ∀ v ∈ evenSet H, σ (σ v) = v
 
+omit [DecidableEq V] in
 /-- The pairings of `cs_all` (`IsPairing (evenSet H) π`, `PairingLemma.lean`) are even pairings in
 the present sense, and `cs_all`'s transversal condition is `IsTransversal`. -/
 theorem IsEvenPairing.of_isPairing {H : SimpleGraph V} [DecidableRel H.Adj] {π : V → V}
@@ -277,5 +284,181 @@ theorem isMinTJoin_of_two_mul_card_le {G : SimpleGraph V} {T : Finset V} {K : Fi
   ⟨hK, fun K' hK' => by have := card_le_two_mul_of_isTJoin hK'; omega⟩
 
 end tjoins
+
+/-! ### TRC for one-edge routes when `G[Ev]` is a perfect matching -/
+
+section evenMatching
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **TRC for one-edge routes in the Fan-isolated case** (route-descent manuscript, Theorem
+"Fan-isolated routes" with every route an edge). If every even vertex has exactly one even
+neighbour, then every set `M` of even vertices containing exactly one end of every edge of
+`G[Ev]` is realisable. Induction on `|Ev|`: delete the edge `ac` at some `a ∈ M` and restore it by
+Fan's transfer (`realisable_transfer`), which applies because `a` has no other even neighbour. -/
+theorem realisable_of_even_matching : ∀ (n : ℕ) (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card = n →
+    (∀ u ∈ evenSet G, ∀ v ∈ evenSet G, ∀ w ∈ evenSet G, G.Adj u v → G.Adj u w → v = w) →
+    (∀ u ∈ evenSet G, ∃ v ∈ evenSet G, G.Adj u v) →
+    ∀ M : Finset V, M ⊆ evenSet G →
+      (∀ u ∈ evenSet G, ∀ v ∈ evenSet G, G.Adj u v → (u ∈ M ↔ v ∉ M)) →
+      Realisable G M := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  intro G _ hn huniq hex M hM htr
+  by_cases hMe : M = ∅
+  · subst hMe
+    have hE : evenSet G = ∅ := by
+      apply Finset.eq_empty_of_forall_notMem
+      intro u hu
+      obtain ⟨v, hv, huv⟩ := hex u hu
+      have := htr u hu v hv huv
+      simp at this
+    have h := realisable_evenSet_ni G
+    rwa [hE] at h
+  · obtain ⟨a, haM⟩ := Finset.nonempty_iff_ne_empty.mpr hMe
+    have haE := hM haM
+    obtain ⟨c, hcE, hac⟩ := hex a haE
+    have hcM : c ∉ M := (htr a haE c hcE hac).mp haM
+    have hEK := evenSet_delE_even haE hcE hac
+    have hne : a ≠ c := hac.ne
+    have hmemK : ∀ u, u ∈ evenSet (delE G {s(a, c)}) ↔ u ∈ evenSet G ∧ u ≠ a ∧ u ≠ c := by
+      intro u
+      rw [hEK, Finset.mem_erase, Finset.mem_erase]
+      tauto
+    have hKG : ∀ x y, (delE G {s(a, c)}).Adj x y → G.Adj x y := fun x y h => (delE_adj.mp h).1
+    have hcardK : (evenSet (delE G {s(a, c)})).card < n := by
+      rw [hEK]
+      have h1 := Finset.card_erase_of_mem haE
+      have h2 : c ∈ (evenSet G).erase a := Finset.mem_erase.mpr ⟨hne.symm, hcE⟩
+      have h3 := Finset.card_erase_of_mem h2
+      have hpos : 0 < (evenSet G).card := Finset.card_pos.mpr ⟨a, haE⟩
+      omega
+    have hR : Realisable (delE G {s(a, c)}) (M.erase a) := by
+      refine ih _ hcardK (delE G {s(a, c)}) rfl ?_ ?_ (M.erase a) ?_ ?_
+      · intro u hu v hv w hw huv huw
+        exact huniq u ((hmemK u).1 hu).1 v ((hmemK v).1 hv).1 w ((hmemK w).1 hw).1
+          (hKG _ _ huv) (hKG _ _ huw)
+      · intro u hu
+        obtain ⟨huE, hua, huc⟩ := (hmemK u).1 hu
+        obtain ⟨v, hvE, huv⟩ := hex u huE
+        have hva : v ≠ a := by
+          rintro rfl
+          exact huc (huniq v hvE u huE c hcE huv.symm hac)
+        have hvc : v ≠ c := by
+          rintro rfl
+          exact hua (huniq v hvE u huE a haE huv.symm hac.symm)
+        refine ⟨v, (hmemK v).2 ⟨hvE, hva, hvc⟩, delE_adj.mpr ⟨huv, ?_⟩⟩
+        rw [Finset.mem_singleton]
+        intro h
+        rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, -⟩
+        · exact hua h1
+        · exact huc h1
+      · intro x hx
+        obtain ⟨hxa, hxM⟩ := Finset.mem_erase.mp hx
+        exact (hmemK x).2 ⟨hM hxM, hxa, fun h => hcM (h ▸ hxM)⟩
+      · intro u hu v hv huv
+        obtain ⟨huE, hua, -⟩ := (hmemK u).1 hu
+        obtain ⟨hvE, hva, -⟩ := (hmemK v).1 hv
+        rw [Finset.mem_erase, Finset.mem_erase]
+        have := htr u huE v hvE (hKG _ _ huv)
+        tauto
+    have hfinal := realisable_transfer haE hcE hac hR (by
+      intro u hu _ hau
+      obtain ⟨huE, -, huc⟩ := (hmemK u).1 hu
+      exact huc (huniq a haE u huE c hcE hau hac))
+    rwa [Finset.insert_erase haM] at hfinal
+
+end evenMatching
+
+/-! ### The extension step: appending a route -/
+
+section append
+
+variable {U : Type u} [DecidableEq U]
+
+/-- **Appending a route** (route-descent manuscript, Lemma "extension", (i) ⇒ (ii)). Let `R` be a
+path of `G` from `c` to `a`, let `K = G − E(R)`, and let `D'` decompose `K`. If some path `Q` of
+`D'` ends at `c` and meets `R` only in `c`, then `Q ∪ R` is a path, and replacing `Q` by it gives
+a decomposition of `G` of the same size with one end moved from `c` to `a`. -/
+theorem PathDecomp.route_append {G K : SimpleGraph U} {R : GPath G} {a c : U}
+    (hRs : R.src = c) (hRt : R.tgt = a)
+    (hK : ∀ e, e ∈ K.edgeSet ↔ e ∈ G.edgeSet ∧ e ∉ R.edges)
+    (D' : PathDecomp K) {Q : GPath K} (hQ : Q ∈ D'.paths) (hQc : Q.src = c ∨ Q.tgt = c)
+    (hdisj : ∀ x ∈ Q.walk.support, x ∈ R.walk.support → x = c) :
+    ∃ D : PathDecomp G, D.size = D'.size ∧
+      ∀ w, D.ends w + (if c = w then 1 else 0) = D'.ends w + (if a = w then 1 else 0) := by
+  obtain ⟨Q₁, hQ₁s, hQ₁e, hQ₁ends, hQ₁supp⟩ := Q.exists_orient hQc
+  have hKG : ∀ e ∈ Q₁.walk.reverse.edges, e ∈ G.edgeSet := by
+    intro e he
+    rw [Walk.edges_reverse, List.mem_reverse] at he
+    exact ((hK e).1 (Q₁.walk.edges_subset_edgeSet he)).1
+  let A : G.Walk Q₁.tgt c := (Q₁.walk.reverse.transfer G hKG).copy rfl hQ₁s
+  let B : G.Walk c a := R.walk.copy hRs hRt
+  have hAsupp : ∀ x, x ∈ A.support ↔ x ∈ Q.walk.support := by
+    intro x
+    simp only [A, Walk.support_copy, Walk.support_transfer, Walk.support_reverse, List.mem_reverse]
+    exact hQ₁supp x
+  have hBsupp : B.support = R.walk.support := by simp [B]
+  have hAedges : A.edges = Q₁.edges.reverse := by
+    simp [A, GPath.edges, Walk.edges_copy, Walk.edges_transfer, Walk.edges_reverse]
+  have hBedges : B.edges = R.edges := by simp [B, GPath.edges]
+  have hWpath : (A.append B).IsPath := by
+    rw [Walk.isPath_append]
+    refine ⟨?_, ?_, ?_⟩
+    · simp only [A, Walk.isPath_copy]
+      exact (Walk.isPath_transfer _).mpr Q₁.isPath.reverse
+    · have hB : B.IsPath := by simp only [B, Walk.isPath_copy]; exact R.isPath
+      exact hB.tail
+    · intro x hxA hxB
+      have hBnd : B.support.Nodup := (Walk.isPath_def _).mp (by simp only [B, Walk.isPath_copy]; exact R.isPath)
+      have hxc : x ≠ c := by
+        rintro rfl
+        have hsc : ∀ {u v : U} (p : G.Walk u v), p.support = u :: p.support.tail := by
+          intro u v p; cases p <;> rfl
+        rw [hsc B] at hBnd
+        exact (List.nodup_cons.mp hBnd).1 hxB
+      have hxR : x ∈ R.walk.support := by
+        rw [← hBsupp]; exact List.mem_of_mem_tail hxB
+      exact hxc (hdisj x ((hAsupp x).1 hxA) hxR)
+  have hpos : 0 < (A.append B).length := by
+    rw [Walk.length_append]
+    have : 0 < B.length := by simp only [B, Walk.length_copy]; exact R.pos
+    omega
+  let P' : GPath G := ⟨Q₁.tgt, a, A.append B, hWpath, hpos⟩
+  have hP'edges : P'.edges = Q₁.edges.reverse ++ R.edges := by
+    show (A.append B).edges = _
+    rw [Walk.edges_append, hAedges, hBedges]
+  have hmemP' : ∀ e, e ∈ P'.edges ↔ e ∈ Q.edges ∨ e ∈ R.edges := by
+    intro e
+    rw [hP'edges, List.mem_append, List.mem_reverse, hQ₁e.mem_iff]
+  obtain ⟨D, hsize, -, hends, -⟩ := D'.replace hQ P' (by
+      intro e
+      rw [hmemP' e]
+      constructor
+      · intro he
+        by_cases heR : e ∈ R.edges
+        · exact Or.inr (Or.inr heR)
+        · by_cases heQ : e ∈ Q.edges
+          · exact Or.inr (Or.inl heQ)
+          · exact Or.inl ⟨(hK e).2 ⟨he, heR⟩, heQ⟩
+      · rintro (⟨he, -⟩ | heQ | heR)
+        · exact ((hK e).1 he).1
+        · exact ((hK e).1 (Q.walk.edges_subset_edgeSet heQ)).1
+        · exact R.walk.edges_subset_edgeSet heR)
+    (by
+      intro e he
+      rcases (hmemP' e).1 he with heQ | heR
+      · exact Or.inl heQ
+      · exact Or.inr (fun hk => ((hK e).1 hk).2 heR))
+  refine ⟨D, hsize, fun w => ?_⟩
+  have h1 := hends w
+  have h2 : P'.endsAt w = (if Q₁.tgt = w then 1 else 0) + (if a = w then 1 else 0) := rfl
+  have h3 : Q.endsAt w = (if c = w then 1 else 0) + (if Q₁.tgt = w then 1 else 0) := by
+    rw [← hQ₁ends w]; simp only [GPath.endsAt, hQ₁s]
+  omega
+
+end append
 
 end Gallai

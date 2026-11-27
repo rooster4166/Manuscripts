@@ -6,7 +6,11 @@ import GallaiLean.Lovasz
 
 Route-descent manuscript, Theorem "separation".
 
-**Theorem** (`separation`). Let `G` have at most one vertex of positive even degree, and let `c`,
+**Theorem** (`separation_set`). If `G` has at most one vertex of positive even degree and the
+vertices of `X` are pairwise at distance at least three (`Packed`), then some Lovász decomposition
+has every path meeting `X` at most once (`MeetsOnce`).
+
+**Theorem** (`separation`, the case `X = {c, a}`). Let `G` have at most one vertex of positive even degree, and let `c`,
 `a` be at distance at least three (`FarApart`: distinct, non-adjacent, no common neighbour). Then
 `G` has a path decomposition with `ends v = deg v mod 2` for every `v` (a Lovász decomposition) in
 which no path contains both `c` and `a` (`Separates`).
@@ -218,6 +222,15 @@ variable {W : Type u}
 def Separates {G : SimpleGraph W} (D : PathDecomp G) (c a : W) : Prop :=
   ∀ P ∈ D.paths, ¬ (c ∈ P.walk.support ∧ a ∈ P.walk.support)
 
+/-- Every path of `D` meets `X` in at most one vertex. -/
+def MeetsOnce {G : SimpleGraph W} (D : PathDecomp G) (X : Finset W) : Prop :=
+  ∀ P ∈ D.paths, ∀ x ∈ X, ∀ y ∈ X, x ∈ P.walk.support → y ∈ P.walk.support → x = y
+
+/-- The vertices of `X` are pairwise at distance at least three: no two are adjacent or have a
+common neighbour. -/
+def Packed (G : SimpleGraph W) (X : Finset W) : Prop :=
+  ∀ x ∈ X, ∀ y ∈ X, x ≠ y → ¬ G.Adj x y ∧ ∀ w, ¬ (G.Adj x w ∧ G.Adj w y)
+
 /-- `c` and `a` are at distance at least three: distinct, non-adjacent, no common neighbour. -/
 def FarApart (G : SimpleGraph W) (c a : W) : Prop :=
   c ≠ a ∧ ¬ G.Adj c a ∧ ∀ w, ¬ (G.Adj c w ∧ G.Adj w a)
@@ -225,6 +238,22 @@ def FarApart (G : SimpleGraph W) (c a : W) : Prop :=
 theorem FarApart.mono {G H : SimpleGraph W} {c a : W} (h : FarApart G c a)
     (hle : ∀ x y, H.Adj x y → G.Adj x y) : FarApart H c a :=
   ⟨h.1, fun hca => h.2.1 (hle _ _ hca), fun w hw => h.2.2 w ⟨hle _ _ hw.1, hle _ _ hw.2⟩⟩
+
+theorem Packed.mono {G H : SimpleGraph W} {X : Finset W} (h : Packed G X)
+    (hle : ∀ x y, H.Adj x y → G.Adj x y) : Packed H X := fun x hx y hy hxy =>
+  ⟨fun h' => (h x hx y hy hxy).1 (hle _ _ h'),
+    fun w hw => (h x hx y hy hxy).2 w ⟨hle _ _ hw.1, hle _ _ hw.2⟩⟩
+
+/-- `MeetsOnce` passes to a decomposition whose paths lie in old paths plus a vertex `g ∉ X`. -/
+theorem meetsOnce_of_cover {G G' : SimpleGraph W} {D : PathDecomp G} {D' : PathDecomp G'}
+    {X : Finset W} {g : W} (hg : g ∉ X) (hD' : MeetsOnce D' X)
+    (hcov : ∀ Q ∈ D.paths, ∃ Q' ∈ D'.paths, ∀ x ∈ Q.walk.support, x ∈ Q'.walk.support ∨ x = g) :
+    MeetsOnce D X := by
+  intro Q hQ x hx y hy hxQ hyQ
+  obtain ⟨Q', hQ', h⟩ := hcov Q hQ
+  have hxg : x ≠ g := fun h' => hg (h' ▸ hx)
+  have hyg : y ≠ g := fun h' => hg (h' ▸ hy)
+  exact hD' Q' hQ' x hx y hy ((h x hxQ).resolve_right hxg) ((h y hyQ).resolve_right hyg)
 
 /-- Separation passes to a decomposition whose paths lie in old paths plus a vertex `g ∉ {c, a}`. -/
 theorem separates_of_cover {G G' : SimpleGraph W} {D : PathDecomp G} {D' : PathDecomp G'}
@@ -237,49 +266,36 @@ theorem separates_of_cover {G G' : SimpleGraph W} {D : PathDecomp G} {D' : PathD
 
 /-- The statement proved by strong induction on `n = ν(G)`. -/
 def SepStrong (n : ℕ) : Prop :=
-  ∀ (W : Type u) [Fintype W] [DecidableEq W] (G : SimpleGraph W) [DecidableRel G.Adj] (c a : W),
-    (evenSet G).card ≤ 1 → FarApart G c a →
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (G : SimpleGraph W) [DecidableRel G.Adj]
+    (X : Finset W), (evenSet G).card ≤ 1 → Packed G X →
     (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n →
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X
 
 variable [Fintype W] [DecidableEq W]
 
 omit [DecidableEq W] in
-/-- A vertex of degree at least two has a neighbour outside `{c, a}` when `c, a` are far apart. -/
-theorem exists_adj_ne_ne {G : SimpleGraph W} [DecidableRel G.Adj] {c a z : W}
-    (hfar : FarApart G c a) (hz : 2 ≤ G.degree z) : ∃ u, G.Adj z u ∧ u ≠ c ∧ u ≠ a := by
+/-- A vertex of degree at least two has a neighbour outside a packed set `X`. -/
+theorem exists_adj_not_mem {G : SimpleGraph W} [DecidableRel G.Adj] {X : Finset W} {z : W}
+    (hX : Packed G X) (hz : 2 ≤ G.degree z) : ∃ u, G.Adj z u ∧ u ∉ X := by
   classical
   by_contra hno
   simp only [not_exists, not_and, not_not] at hno
-  have hsub : G.neighborFinset z ⊆ {c, a} := by
-    intro u hu
-    rw [mem_neighborFinset] at hu
-    rw [Finset.mem_insert, Finset.mem_singleton]
-    by_cases huc : u = c
-    · exact Or.inl huc
-    · exact Or.inr (hno u hu huc)
-  have hcard : ({c, a} : Finset W).card ≤ (G.neighborFinset z).card := by
-    rw [Finset.card_pair hfar.1, card_neighborFinset_eq_degree]; exact hz
-  have heq := Finset.eq_of_subset_of_card_le hsub hcard
-  have hzc : G.Adj z c := by
-    rw [← mem_neighborFinset, heq]; simp
-  have hza : G.Adj z a := by
-    rw [← mem_neighborFinset, heq]; simp
-  by_cases h1 : z = c
-  · subst h1; exact hfar.2.1 hza
-  · by_cases h2 : z = a
-    · subst h2; exact hfar.2.1 hzc.symm
-    · exact hfar.2.2 z ⟨hzc.symm, hza⟩
+  have h1 : 1 < (G.neighborFinset z).card := by rw [card_neighborFinset_eq_degree]; omega
+  obtain ⟨p, hp, q, hq, hpq⟩ := Finset.one_lt_card.mp h1
+  rw [mem_neighborFinset] at hp hq
+  by_cases hzX : z ∈ X
+  · exact (hX z hzX p (hno p hp) hp.ne).1 hp
+  · exact (hX p (hno p hp) q (hno q hq) hpq).2 z ⟨hp.symm, hq⟩
 
 /-- Case I: there is a vertex of positive even degree. -/
 theorem sep_case_even {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
-    (G : SimpleGraph W) [DecidableRel G.Adj] {c a : W} (hev : (evenSet G).card ≤ 1)
-    (hfar : FarApart G c a)
+    (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hev : (evenSet G).card ≤ 1)
+    (hfar : Packed G X)
     (hn : (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n)
     {z : W} (hz : z ∈ evenSet G) :
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a := by
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X := by
   have hzd := mem_evenSet_iff.mp hz
-  obtain ⟨u, hzu, huc, hua⟩ := exists_adj_ne_ne hfar (by omega : 2 ≤ G.degree z)
+  obtain ⟨u, hzu, huX⟩ := exists_adj_not_mem hfar (by omega : 2 ≤ G.degree z)
   have huz : G.Adj u z := hzu.symm
   have hne : u ≠ z := huz.ne
   have huniq : ∀ w ∈ evenSet G, w = z := fun w hw => Finset.card_le_one.mp hev w hw z hz
@@ -311,8 +327,8 @@ theorem sep_case_even {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
     have : (evenSet G).card ≠ 0 := Finset.card_ne_zero.mpr ⟨z, hz⟩
     simp only [this, ite_false, add_zero] at hn
     split_ifs <;> omega
-  have hfar' : FarApart (delEdge G u z) c a := hfar.mono (fun _ _ h => h.1)
-  obtain ⟨D', hD', hsep'⟩ := ih _ hlt W (delEdge G u z) c a hcard' hfar' rfl
+  have hfar' : Packed (delEdge G u z) X := hfar.mono (fun _ _ h => h.1)
+  obtain ⟨D', hD', hsep'⟩ := ih _ hlt W (delEdge G u z) X hcard' hfar' rfl
   have hD'z : D'.ends z = 1 := by rw [hD' z]; omega
   obtain ⟨D, -, hDu, hDz, hDo, hcov⟩ := fan_single_supp huz (delEdge_edgeSet G u z) D' (by
     rw [hD'z]
@@ -326,7 +342,7 @@ theorem sep_case_even {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
       exact hwu (Finset.mem_singleton.mp (hev' (mem_evenSet_iff.mpr ⟨hpos, h0⟩)))
     rw [this, Finset.card_empty]
     exact Nat.one_pos)
-  refine ⟨D, fun w => ?_, separates_of_cover huc hua hsep' hcov⟩
+  refine ⟨D, fun w => ?_, meetsOnce_of_cover huX hsep' hcov⟩
   by_cases hwu : w = u
   · subst hwu
     rw [hDu, hD' w]
@@ -341,10 +357,10 @@ theorem sep_case_even {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
 
 /-- Case II: every vertex of positive degree is odd and some `x ∉ {c, a}` has degree `≥ 3`. -/
 theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
-    (G : SimpleGraph W) [DecidableRel G.Adj] {c a : W} (hfar : FarApart G c a)
+    (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hfar : Packed G X)
     (hn : (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n)
-    (hnone : ∀ z, z ∉ evenSet G) {x : W} (hxc : x ≠ c) (hxa : x ≠ a) (hx : 3 ≤ G.degree x) :
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a := by
+    (hnone : ∀ z, z ∉ evenSet G) {x : W} (hxX : x ∉ X) (hx : 3 ≤ G.degree x) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X := by
   obtain ⟨u, hxu⟩ := (G.degree_pos_iff_exists_adj x).mp (by omega)
   have hux : G.Adj u x := hxu.symm
   have hne : u ≠ x := hux.ne
@@ -404,27 +420,32 @@ theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
     simp only [h2, ite_true] at hn
     simp only [h1, ite_false, add_zero, hsumH]
     omega
-  have hfarH : FarApart (apex (delEdge G u x) {u}) (some c) (some a) := by
-    refine ⟨fun h => hfar.1 (Option.some.inj h), fun h => hfar.2.1 h.1, fun w hw => ?_⟩
+  have hfarH : Packed (apex (delEdge G u x) {u}) (X.image some) := by
+    intro p hp q hq hpq
+    obtain ⟨p', hp', rfl⟩ := Finset.mem_image.mp hp
+    obtain ⟨q', hq', rfl⟩ := Finset.mem_image.mp hq
+    have hpq' : p' ≠ q' := fun h => hpq (h ▸ rfl)
+    refine ⟨fun h => (hfar p' hp' q' hq' hpq').1 h.1, fun w hw => ?_⟩
     cases w with
     | none =>
       obtain ⟨h1, h2⟩ := hw
       rw [apex_adj_some_none, Finset.mem_singleton] at h1
       rw [apex_adj_none_some, Finset.mem_singleton] at h2
-      exact hfar.1 (h1.trans h2.symm)
-    | some w' => exact hfar.2.2 w' ⟨hw.1.1, hw.2.1⟩
+      exact hpq' (h1.trans h2.symm)
+    | some w' => exact (hfar p' hp' q' hq' hpq').2 w' ⟨hw.1.1, hw.2.1⟩
   obtain ⟨DH, hDH, hsepH⟩ :=
-    ih _ hlt (Option W) (apex (delEdge G u x) {u}) (some c) (some a) hcardH hfarH rfl
+    ih _ hlt (Option W) (apex (delEdge G u x) {u}) (X.image some) hcardH hfarH rfl
   -- delete the new leaf
   obtain ⟨D', hD', hcovD'⟩ := (apexRetract (delEdge G u x) {u} x).delete_supp DH (by
     intro P _ y hy hky
     cases y with
     | some _ => simp [apexRetract] at hky
     | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
-  have hsep' : Separates D' c a := by
-    intro Q hQ ⟨hc, ha⟩
+  have hsep' : MeetsOnce D' X := by
+    intro Q hQ p hp q hq hpQ hqQ
     obtain ⟨P, hP, hPs⟩ := hcovD' Q hQ
-    exact hsepH P hP ⟨hPs c hc, hPs a ha⟩
+    exact Option.some.inj (hsepH P hP (some p) (Finset.mem_image_of_mem _ hp) (some q)
+      (Finset.mem_image_of_mem _ hq) (hPs p hpQ) (hPs q hqQ))
   have hD'w : ∀ w, w ≠ u → D'.ends w = (delEdge G u x).degree w % 2 := by
     intro w hwu
     rw [(hD' w).1 (fun e he hk hwe => hwu (Finset.mem_singleton.mp (apex_nonkept he hk hwe).2))]
@@ -456,14 +477,14 @@ theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
         · have h := hdeg w
           simp only [hwu, hwx, Ne.symm hwu, Ne.symm hwx, ite_false, add_zero] at h ⊢
           rw [h]
-    · intro Q hQ ⟨hc, ha⟩
+    · intro Q hQ p hp q hq hpQ hqQ
       rcases hcovD Q hQ with hsmall | ⟨Q', hQ', hs⟩
-      · rcases hsmall c hc with h1 | h1 <;> rcases hsmall a ha with h2 | h2
-        · exact hfar.1 (h1.trans h2.symm)
-        · exact hxa h2.symm
-        · exact hxc h1.symm
-        · exact hxc h1.symm
-      · exact hsep' Q' hQ' ⟨hs c hc, hs a ha⟩
+      · rcases hsmall p hpQ with h1 | h1
+        · rcases hsmall q hqQ with h2 | h2
+          · exact h1.trans h2.symm
+          · exact absurd (h2 ▸ hq) hxX
+        · exact absurd (h1 ▸ hp) hxX
+      · exact hsep' Q' hQ' p hp q hq (hs p hpQ) (hs q hqQ)
   · -- `u` has two ends: Fan's transfer `u → x`
     have hG'x : ∀ e, e ∈ (delEdge G u x).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(x, u) := by
       intro e
@@ -485,7 +506,7 @@ theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
           omega
       rw [this, Finset.card_empty]
       omega)
-    refine ⟨D, fun w => ?_, separates_of_cover hxc hxa hsep' hcov⟩
+    refine ⟨D, fun w => ?_, meetsOnce_of_cover hxX hsep' hcov⟩
     by_cases hwx : w = x
     · subst hwx
       rw [hDx, hD'w w (Ne.symm hne)]
@@ -501,11 +522,11 @@ theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
 /-- Case III: all degrees odd or zero, every vertex outside `{c, a}` has degree `< 3`, and some
 vertex `v ∉ {c, a}` has positive degree (so it is a leaf). -/
 theorem sep_case_leaf {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
-    (G : SimpleGraph W) [DecidableRel G.Adj] {c a : W} (hfar : FarApart G c a)
+    (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hfar : Packed G X)
     (hn : (∑ w, G.degree w) + (if (evenSet G).card = 0 then 1 else 0) = n)
-    (hnone : ∀ z, z ∉ evenSet G) (hsmall : ∀ x, x ≠ c → x ≠ a → G.degree x < 3)
-    {v : W} (hvc : v ≠ c) (hva : v ≠ a) (hv : 0 < G.degree v) :
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a := by
+    (hnone : ∀ z, z ∉ evenSet G) (hsmall : ∀ x, x ∉ X → G.degree x < 3)
+    {v : W} (hvX : v ∉ X) (hv : 0 < G.degree v) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X := by
   obtain ⟨w, hvw⟩ := (G.degree_pos_iff_exists_adj v).mp hv
   have hne : v ≠ w := hvw.ne
   have hpar : ∀ y, 0 < G.degree y → G.degree y % 2 = 1 := fun y hy => by
@@ -513,7 +534,7 @@ theorem sep_case_leaf {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
     rw [mem_evenSet_iff] at this
     omega
   have hwpos : 0 < G.degree w := (G.degree_pos_iff_exists_adj w).mpr ⟨v, hvw.symm⟩
-  have hdv1 : G.degree v = 1 := by have := hpar v hv; have := hsmall v hvc hva; omega
+  have hdv1 : G.degree v = 1 := by have := hpar v hv; have := hsmall v hvX; omega
   have hdwo := hpar w hwpos
   have hdeg := delEdge_degree G hvw
   have hdv := hdeg v
@@ -539,8 +560,8 @@ theorem sep_case_leaf {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
       Finset.card_eq_zero.mpr (Finset.eq_empty_of_forall_notMem hnone)
     simp only [h2, ite_true] at hn
     split_ifs <;> omega
-  have hfar' : FarApart (delEdge G v w) c a := hfar.mono (fun _ _ h => h.1)
-  obtain ⟨D', hD', hsep'⟩ := ih _ hlt W (delEdge G v w) c a hcard' hfar' rfl
+  have hfar' : Packed (delEdge G v w) X := hfar.mono (fun _ _ h => h.1)
+  obtain ⟨D', hD', hsep'⟩ := ih _ hlt W (delEdge G v w) X hcard' hfar' rfl
   obtain ⟨D, hD, hcovD⟩ := PathDecomp.add_edge_supp hvw (delEdge_edgeSet G v w) D'
   refine ⟨D, fun y => ?_, ?_⟩
   · rw [hD y, hD' y]
@@ -555,77 +576,88 @@ theorem sep_case_leaf {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
       · have h := hdeg y
         simp only [hyv, hyw, Ne.symm hyv, Ne.symm hyw, ite_false, add_zero] at h ⊢
         rw [h]
-  · intro Q hQ ⟨hc, ha⟩
+  · intro Q hQ p hp q hq hpQ hqQ
     rcases hcovD Q hQ with hsm | ⟨Q', hQ', hs⟩
-    · rcases hsm c hc with h1 | h1 <;> rcases hsm a ha with h2 | h2
-      · exact hvc h1.symm
-      · exact hvc h1.symm
-      · exact hva h2.symm
-      · exact hfar.1 (h1.trans h2.symm)
-    · exact hsep' Q' hQ' ⟨hs c hc, hs a ha⟩
+    · rcases hsm p hpQ with h1 | h1
+      · exact absurd (h1 ▸ hp) hvX
+      · rcases hsm q hqQ with h2 | h2
+        · exact absurd (h2 ▸ hq) hvX
+        · exact h1.trans h2.symm
+    · exact hsep' Q' hQ' p hp q hq (hs p hpQ) (hs q hqQ)
 
-/-- Case IV: no vertex outside `{c, a}` has positive degree; then there are no edges. -/
-theorem sep_case_empty (G : SimpleGraph W) [DecidableRel G.Adj] {c a : W} (hfar : FarApart G c a)
-    (hzero : ∀ x, x ≠ c → x ≠ a → G.degree x = 0) :
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a := by
+/-- Case IV: no vertex outside `X` has positive degree; then there are no edges. -/
+theorem sep_case_empty (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} (hfar : Packed G X)
+    (hzero : ∀ x, x ∉ X → G.degree x = 0) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X := by
   have hnoadj : ∀ x y, ¬ G.Adj x y := by
     intro x y hxy
     have hx : 0 < G.degree x := (G.degree_pos_iff_exists_adj x).mpr ⟨y, hxy⟩
     have hy : 0 < G.degree y := (G.degree_pos_iff_exists_adj y).mpr ⟨x, hxy.symm⟩
-    by_cases hxc : x = c
-    · subst hxc
-      by_cases hya : y = a
-      · subst hya; exact hfar.2.1 hxy
-      · have := hzero y (fun h => hxy.ne h.symm) hya; omega
-    · by_cases hxa : x = a
-      · subst hxa
-        by_cases hyc : y = c
-        · subst hyc; exact hfar.2.1 hxy.symm
-        · have := hzero y hyc (fun h => hxy.ne h.symm); omega
-      · have := hzero x hxc hxa; omega
+    by_cases hxX : x ∈ X
+    · by_cases hyX : y ∈ X
+      · exact (hfar x hxX y hyX hxy.ne).1 hxy
+      · have := hzero y hyX; omega
+    · have := hzero x hxX; omega
   have hdeg0 : ∀ x, G.degree x = 0 := fun x => by
     rcases Nat.eq_zero_or_pos (G.degree x) with h | h
     · exact h
     · obtain ⟨y, hxy⟩ := (G.degree_pos_iff_exists_adj x).mp h
       exact absurd hxy (hnoadj x y)
   obtain ⟨D, hD⟩ := lovasz_case_empty G hdeg0
-  refine ⟨D, hD, fun P hP _ => ?_⟩
+  refine ⟨D, hD, fun P hP _ _ _ _ _ _ => ?_⟩
   obtain ⟨e, he⟩ := List.exists_mem_of_ne_nil _ P.edges_ne_nil
   have heG := (D.covers e).2 (List.mem_flatMap.mpr ⟨P, hP, he⟩)
   induction e using Sym2.inductionOn with
-  | hf x y => exact hnoadj x y heG
+  | hf x y => exact absurd heG (hnoadj x y)
 
 theorem sep_strong (n : ℕ) : SepStrong.{u} n := by
   induction n using Nat.strong_induction_on with
   | _ n ih =>
-  intro W _ _ G _ c a hev hfar hn
+  intro W _ _ G _ X hev hfar hn
   by_cases hz : ∃ z, z ∈ evenSet G
   · obtain ⟨z, hz⟩ := hz
     exact sep_case_even ih G hev hfar hn hz
   · simp only [not_exists] at hz
-    by_cases hx : ∃ x, x ≠ c ∧ x ≠ a ∧ 3 ≤ G.degree x
-    · obtain ⟨x, hxc, hxa, hx⟩ := hx
-      exact sep_case_big ih G hfar hn hz hxc hxa hx
-    · have hsmall : ∀ x, x ≠ c → x ≠ a → G.degree x < 3 := fun x hxc hxa => by
+    by_cases hx : ∃ x, x ∉ X ∧ 3 ≤ G.degree x
+    · obtain ⟨x, hxX, hx⟩ := hx
+      exact sep_case_big ih G hfar hn hz hxX hx
+    · have hsmall : ∀ x, x ∉ X → G.degree x < 3 := fun x hxX => by
         by_contra h
-        exact hx ⟨x, hxc, hxa, by omega⟩
-      by_cases hv : ∃ v, v ≠ c ∧ v ≠ a ∧ 0 < G.degree v
-      · obtain ⟨v, hvc, hva, hv⟩ := hv
-        exact sep_case_leaf ih G hfar hn hz hsmall hvc hva hv
-      · have hzero : ∀ x, x ≠ c → x ≠ a → G.degree x = 0 := fun x hxc hxa => by
+        exact hx ⟨x, hxX, by omega⟩
+      by_cases hv : ∃ v, v ∉ X ∧ 0 < G.degree v
+      · obtain ⟨v, hvX, hv⟩ := hv
+        exact sep_case_leaf ih G hfar hn hz hsmall hvX hv
+      · have hzero : ∀ x, x ∉ X → G.degree x = 0 := fun x hxX => by
           by_contra h
-          exact hv ⟨x, hxc, hxa, Nat.pos_of_ne_zero h⟩
+          exact hv ⟨x, hxX, Nat.pos_of_ne_zero h⟩
         exact sep_case_empty G hfar hzero
 
 end separation
+
+/-- **Separation theorem, set form.** If `G` has at most one vertex of positive even degree and
+the vertices of `X` are pairwise at distance at least three, then `G` has a decomposition into
+paths with `ends v = deg v mod 2` for all `v`, in which every path meets `X` at most once. -/
+theorem separation_set {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGraph W)
+    [DecidableRel G.Adj] (hev : (evenSet G).card ≤ 1) {X : Finset W} (hX : Packed G X) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D X :=
+  sep_strong _ W G X hev hX rfl
 
 /-- **Separation theorem.** If `G` has at most one vertex of positive even degree and `c`, `a`
 are distinct, non-adjacent and have no common neighbour, then `G` has a decomposition into paths
 with `ends v = deg v mod 2` for all `v`, in which no path contains both `c` and `a`. -/
 theorem separation {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGraph W)
     [DecidableRel G.Adj] (hev : (evenSet G).card ≤ 1) {c a : W} (hfar : FarApart G c a) :
-    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a :=
-  sep_strong _ W G c a hev hfar rfl
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ Separates D c a := by
+  have hX : Packed G {c, a} := by
+    intro x hx y hy hxy
+    rw [Finset.mem_insert, Finset.mem_singleton] at hx hy
+    rcases hx with rfl | rfl <;> rcases hy with rfl | rfl
+    · exact absurd rfl hxy
+    · exact ⟨hfar.2.1, hfar.2.2⟩
+    · exact ⟨fun h => hfar.2.1 h.symm, fun w hw => hfar.2.2 w ⟨hw.2.symm, hw.1.symm⟩⟩
+    · exact absurd rfl hxy
+  obtain ⟨D, hD, hm⟩ := separation_set G hev hX
+  exact ⟨D, hD, fun P hP ⟨hc, ha⟩ => hfar.1 (hm P hP c (by simp) a (by simp) hc ha)⟩
 
 /-- **`L₁` at distance three.** In a graph with at most one vertex of positive even degree, if
 `c, a` are distinct, non-adjacent and have no common neighbour, some Lovász decomposition has
