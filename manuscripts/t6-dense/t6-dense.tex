@@ -470,6 +470,32 @@ six vertices of a nearly complete $K_6$, simultaneously. The known single-vertex
 (\texttt{lovasz\_avoid\_set}, \texttt{separation\_sparse}) need the special vertices to be
 packed or sparse, which is the opposite of the dense regime.
 
+\subsection*{The base conjecture is not a conjunction of $L_1^*$ instances}
+Each of (E1)--(E5), (E7) has the form ``the path ending at $c$ avoids $A$'', or can be
+strengthened to it. (E1) avoids $x_1$, and $P_{y_2},P_{y_3}$ avoid $z$; for (E4), $P_{y_2}$
+avoids $y_3$. The avoidance conjecture $L_1^*$ of \cite{L1S} (open; reduced to TR and ST in the
+l1-induction work) treats one such condition in a graph with one even vertex $g$, but only for
+$A\cap(N[c]\cup N(g))=\emptyset$. That hypothesis cannot be weakened to $A\cap N(g)\ne\emptyset$:
+the example \texttt{DTw} of \cite{L1S} is a counterexample. Here $g=x_3$, and in a dense shape
+$x_3$ is adjacent in $B$ to at least three of the other five vertices of $U$.
+\texttt{admissible.py} checks all labellings with $x_1y_2,x_2y_3\in E(B)$. In every labelling of
+every shape, some conditions avoid a neighbour of $g$. The fewest such conditions are:
+\begin{itemize}
+\item $C_4$: (E1) and (E7);
+\item $K_3$: (E1) and (E2);
+\item $P_3$: (E2), (E4) and (E7);
+\item $K_2$: (E1), (E2), (E4) and (E7);
+\item $\emptyset$: all of (E1)--(E7) except the avoidance of $z$.
+\end{itemize}
+These conditions are not implied by the others. In residual $C_4$ graphs (\texttt{partial.py}),
+$1{,}920$ Lov\'asz decompositions of $M$ were found satisfying only the $L_1^*$-admissible
+conditions. Of these, (E1) holds in $186$, (E7) in $1{,}042$, and both in only $120$. So
+Conjecture~\ref{conj:base} does not reduce to $L_1^*$, or to TR and ST, constraint by
+constraint. Even for $C_4$ it contains an avoidance in the range where $L_1^*$ fails in
+general: the $z$-path must avoid $x_1\in N(x_3)$. It is a \emph{joint} statement in the
+tight-Fan regime of \cite{TF}. Replacing (E7) by (E6), a predecessor condition, moves one
+constraint into the forced-chain form.
+
 \section{Computations}\label{sec:comp}
 \emph{This section is computational; no proof above depends on it.} Scripts are in
 \texttt{scripts/}; the experiment log is E28 in \texttt{research/experiments.md}.
