@@ -430,3 +430,14 @@ Candidate uniform mechanisms (`research/connections.md`):
   - RR1/RR2 compatibility.
   - L1 (`lovasz_avoid_nonadj`) is the one-pair instance and is proved.
   - **Open:** the L∞ residual (z at distance 3), L_N for 2 pairs, and RR in general.
+- **multi-sep interim (2026-11-27, 05:20; Lean merged at 7e05af7 after the 14dbc55 revert was undone, build green).**
+  - **MSEP is not proved, and no counterexample is known.** The checks are all distance-3 perfect pairings of all 4,060 connected cubic graphs of order 16 (36M pairings), 8.26M random pairings at order 18, and random all-odd graphs to n = 20, 5-regular to n = 40.
+  - **Stronger conjecture CSEP:** partition V into packed classes (a proper colouring of G²); some Lovász decomposition has every path rainbow.
+  - **Proved in MultiSep.lean, standard axioms (verified):**
+    - `lovasz_endEdge`: in an all-odd graph, any edge xu can be the terminal edge of the path ending at x;
+    - `lovasz_endEdge_set`: the same, with a packed set met at most once;
+    - leaf merge;
+    - `caseII_lift`: CSEP reduces to graphs with one even vertex;
+    - a certified Case I step;
+    - sparse-class separation.
+  - **Exact obstruction:** "L1 at the even vertex", i.e. prescribing uz as the terminal edge at a neighbour u of the even vertex z. It holds in about 3,300 tests, but the leaf trick does not apply.
