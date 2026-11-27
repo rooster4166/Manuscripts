@@ -462,3 +462,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `test2_of_stl2` is the Test2 analogue. **`gallai_of_stl`: STL + STL2 on 3-connected J (with J − z free of matching cuts) ⇒ GallaiConjecture**, via `gallai_iff_spineTests'`; standard axioms.
   - Gallai is thus formally reduced to two single-vertex constraints on Lovász-type decompositions of 3-connected graphs with ≤ 2 even vertices.
   - Evidence: STL holds on all 25,210 3-connected (J, r) pairs with n ≤ 9 and on random samples to n = 15. STL2 holds on all 948 3-connected instances with n ≤ 8.
+- **ee, first verdict (06:33).**
+  - **EE:** exhaustive to n = 9, 47,688 (z, u) pairs, **0 failures**; the n = 11 run is in progress.
+  - **PEE away from z is FALSE.** The smallest counterexample has n = 5. In every failure y ≁ z, and the reverse prescription holds. The candidate statements are (P1) PEE for y ∈ N[z], and (P2) every edge is terminal at one of its two ends.
+  - **New proof, not yet in Lean: EE holds whenever |N(u) ∩ N(z)| ≤ 1.** The argument: separate u from z in K − uz − uw, restore uw by Fan's lemma with target w, then append zu. This subsumes EE3 (a)–(c) and the STL d(z) = 2 triangle case.
+  - **Open:** |N(u) ∩ N(z)| ≥ 2.
