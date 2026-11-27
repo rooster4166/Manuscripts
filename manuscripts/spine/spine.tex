@@ -1572,7 +1572,7 @@ From the root of the repository:
 export PATH=$HOME/.elan/bin:$PATH
 cd lean
 lake exe cache get        # download the Mathlib build cache
-lake build                # builds GallaiLean: "Build completed successfully (18364 jobs)."
+lake build                # ends with "Build completed successfully"
 lake env lean ../manuscripts/spine/SpineAxioms.lean   # prints the axioms below
 lake env lean ../manuscripts/spine/SpineCheck.lean    # #check of every name cited here
 \end{verbatim}
