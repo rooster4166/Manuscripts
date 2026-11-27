@@ -60,7 +60,9 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
-- **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
+- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`, new): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
+- **multi-sep**: **finished** (04207b3). MSEP is open, with 36M+ cubic pairings and 0 failures. EE3 is proved in Lean. Audit A18 is sound.
+- (original entry) **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
 - **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
@@ -453,3 +455,15 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `separation_sparse_set`: holds as well.
   - Audit A18 of the multi-sep manuscript found every result sound; only wording and count fixes were needed, and they are applied.
   - EE is the one-transition case of STL (synthesis §19). The remaining EE cases are uz in a triangle with deg u ≥ 5, and that one deg-3 configuration.
+- **STL in Lean (2026-11-27, stl 367de83; standard axioms, verified).** In StarTerminal.lean:
+  - `test1_of_stl`: STL at every neighbour of z (with all neighbours of degree ≥ 3) implies spine Test1 J z;
+  - `stl_of_deg_two`: STL when d(z) = 2 and the two neighbours are non-adjacent.
+  - Manuscript draft `manuscripts/stl/stl.tex` and experiment log E22.
+  - `test2_of_stl2` is the Test2 analogue. **`gallai_of_stl`: STL + STL2 on 3-connected J (with J − z free of matching cuts) ⇒ GallaiConjecture**, via `gallai_iff_spineTests'`; standard axioms.
+  - Gallai is thus formally reduced to two single-vertex constraints on Lovász-type decompositions of 3-connected graphs with ≤ 2 even vertices.
+  - Evidence: STL holds on all 25,210 3-connected (J, r) pairs with n ≤ 9 and on random samples to n = 15. STL2 holds on all 948 3-connected instances with n ≤ 8.
+- **ee, first verdict (06:33).**
+  - **EE:** exhaustive to n = 9, 47,688 (z, u) pairs, **0 failures**; the n = 11 run is in progress.
+  - **PEE away from z is FALSE.** The smallest counterexample has n = 5. In every failure y ≁ z, and the reverse prescription holds. The candidate statements are (P1) PEE for y ∈ N[z], and (P2) every edge is terminal at one of its two ends.
+  - **New proof, not yet in Lean: EE holds whenever |N(u) ∩ N(z)| ≤ 1.** The argument: separate u from z in K − uz − uw, restore uw by Fan's lemma with target w, then append zu. This subsumes EE3 (a)–(c) and the STL d(z) = 2 triangle case.
+  - **Open:** |N(u) ∩ N(z)| ≥ 2.

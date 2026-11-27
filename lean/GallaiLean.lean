@@ -63,3 +63,4 @@ import GallaiLean.MultiSep
 import GallaiLean.MultiSepEE
 import GallaiLean.PrescribedEnd
 import GallaiLean.NearDirac
+import GallaiLean.StarTerminal

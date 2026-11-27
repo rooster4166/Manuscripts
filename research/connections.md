@@ -1166,4 +1166,74 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 - The auditor's mixed-strategy search (`combined.py`) confirms that the certified moves do not suffice.
 - Wording and citation fixes: L1 is now stated, the precise RD numbers are cited, the overlap counterexample is explicit, and the corollary of the sparse theorem has a proof.
 - The audit predates Proposition EE3 and `MultiSepEE.lean`.
+## X. Star-terminal Lovász decompositions (cloud session `claude/stl`, 2026-11-27)
 
+*Experiments: E22. Manuscript: `manuscripts/stl/stl.tex`. Lean: `lean/GallaiLean/StarTerminal.lean`. Audit: `research/audit/A20-stl.md`. Origin: synthesis §19.*
+
+### X.1 Verdict on the observation
+- **STL(r) ⇒ Test1 at r is correct**, including the degenerate cases. It needs d(r) ≥ 3: a leaf r at z is isolated in J − z.
+- **It generalises.** Let D decompose J with b_D(z) = 0, and delete z. Then |D′| = |D| + #LL − #SS. Each long side at z gains one end, and each short end loses one.
+- **One criterion covers both tests:** #LL − #SS + [r short] ≤ 0.
+  - For Test1, apply it to Lovász decompositions.
+  - For Test2, apply it to decompositions with b(z) = 0, b(r) ∈ {0, 2} and b = 1 elsewhere.
+  - In the Test2 case, b(r) = 0 forces r to be long. A decomposition with b(r) = 2 always exists: apply L₁ to J − zr and append zr.
+  - The star-terminal case (#LL = 0) is STL / STL2; the general case is BAL / BAL2.
+- **Lean** (sorry-free, standard axioms, full build green): `star_delete`, `test1_of_stl`, `test2_of_stl2`. Also **`gallai_of_stl`**: STL and STL2 on every 3-connected J (with J − z free of matching cuts) imply Gallai.
+
+### X.2 How strong STL is (it is Gallai-strength; no shortcut)
+- **Cone.** Suppose every J with a unique even vertex z and J − z connected has *some* star-terminal Lovász decomposition. Then Gallai follows: take J = H + z(Ev(H)). Not even the r-condition is needed.
+- **d(z) = 2.** STL(r) is exactly multi-sep's EE at the other neighbour (§W.4). So STL contains the multi-sep crux as its one-transition case. For d(z) = 2k it asks for k short ends at once.
+- **Pairing form.** Prescribing the pairing M at z (STL-P) is equivalent to the following statement about G = (J − z) + M, which is all-odd: some Lovász decomposition of G has every M-edge terminal, and no path contains two M-edges. Every all-odd graph G with a matching F arises this way, via J = (G − F) + z(V(F)).
+  - For |F| = 1 this is `lovasz_endEdge`.
+  - For |F| ≥ 2 it is the multi-prescription problem of §W.5.2. Here we may choose which end of each pair is short, and M itself is free.
+- **J − z view.** STL is equivalent to a *tight* Test1 decomposition (odd vertices have exactly one end; N(z) vertices have 0 or 2) plus an avoidance system of distinct representatives. This makes the brief's "partial converse" exact.
+
+### X.3 Data (E22)
+- **No failure when J − z is connected.** This covers:
+  - all 54,336 pairs (J, r) up to order 9;
+  - all 25,210 pairs from 3-connected graphs of order 9;
+  - 9,146 random 3-connected pairs, n = 11–17;
+  - 780 pairs with J − z connected but J not 3-connected;
+  - wheels;
+  - universal z over 4-regular H (J − z Eulerian).
+- **STL is equivalent to Test1 to order 9 and in the random disconnected samples.** On all graphs of order ≤ 9, STL(r) ⇔ BAL(r) ⇔ Test1(r): all 58 failures have J − z disconnected, and Test1 fails there too. So the data cannot separate STL from Test1.
+- **STL2** holds in every 3-connected instance: exhaustive to n = 8; random samples at n = 10–14.
+- **Flexibility (3-connected).**
+  - EE and STS hold at every neighbour; STS means "u short in a *star-terminal* decomposition".
+  - Every pairing M of N(z) is realisable (all 54,045 at n = 9), **except the diagonal pairing of W₄**. So STL-P is false as stated, but true on all 3-connected graphs of order 7 and 9 and on all samples.
+  - Not every short half-set is realisable.
+
+### X.4 Proved partial results
+- **STL for d(z) = 2**, unless the two neighbours u, w are adjacent and have a second common neighbour. Both cases are in Lean (`stl_of_deg_two`, `stl_of_deg_two_tri`).
+  - If uw ∉ E: separation in J − uz, where z is a leaf. This is the d(z) = 2 instance of multi-sep's `ee_noTriangle`.
+  - If uw ∈ E with no other common neighbour: separation in J − uz − uw, then re-attach uw. This is a **new case of EE** (uz in a triangle, d(u) arbitrary); multi-sep's triangle cases have d(u) = 3.
+- The remaining d(z) = 2 configuration, two triangles z u w and t u w, is exactly EE where separation is unavailable.
+- **Why d(z) ≥ 4 is out of reach of the current tools.**
+  - Each tool creates at most one even vertex per prescription: L₁ attaches a leaf, the end-edge theorem detaches an edge, the d(z) = 2 proof deletes edges.
+  - Two short ends at once means two even vertices, where separation and L₁ fail (E20).
+  - The one parity-neutral construction we found works when the two short ends a, c are adjacent: delete ac and attach leaves at both long sides. It additionally needs the two end-paths at a and c to be vertex-disjoint, which separation does not give.
+
+### X.4a Do the single-transition lemmas compose? (coordinator question, 2026-11-27)
+Short answer: **not as black boxes with prescribed ends; possibly with free ends, but that needs a genuinely two-prescription argument.**
+- **d(z) = 2.** STL-P is ST-any, which is EE(u) ∨ EE(w). It is known except when u ~ w, u and w have a second common neighbour, and neither EE3 (multi-sep), nor `stl_of_deg_two_tri`, nor a future PEE result applies at u or at w.
+- **d(z) = 4 is exactly two prescriptions.** STL-P(J, {ab, cd}) ⇔ PTM((J − z) + {ab, cd}). Each scheme we tried breaks at a specific point:
+  - *Iterated EE.* Case I at z with a trivial Fan chain makes one neighbour short, but the next application produces a fresh decomposition with no memory of the first. To keep a finished transition, one must freeze it by lifting x z y to xy and carry xy as a *pending terminal edge*. The induction hypothesis then needs two prescriptions: a pending edge plus the next transition.
+  - *Leaf / merge at z.* Each prescription detaches an edge into a leaf, which makes its far end even. Two prescriptions give two even vertices, where separation and L₁ fail (§V.4a).
+  - *Parity-neutral variant.* This needs adjacent short ends a ~ c: delete ac and attach leaves at both long sides, so every degree stays odd.
+    - Separation of the packed set {a, c, ℓ_b, ℓ_d} then gives every condition except one: the end-paths Q_a and Q_c must be vertex-disjoint, so that Q_a + ac + Q_c is a path.
+    - That disjointness is the precise missing ingredient.
+    - The same obstacle appears when cd is lifted first and Case I is applied at a.
+- **PEE as a black box cannot compose.** E22(F) found 17 counterexamples to PEE_m (m = 2, 3: terminal edges at prescribed ends). Every one has two adjacent prescribed ends, typically both of degree 3: the edge between them is forced into a single transition at both ends.
+  - With the end left free (PTM), all 1,199 random instances held, for m = 2 and 3.
+  - So the interface statement to ask of §Y is the free-end form. **PTM₂**: in an all-odd graph (or one with a single even vertex), any two disjoint edges are simultaneously terminal at some ends, on distinct paths. PTM₂ gives STL-P at d(z) = 4 whenever the pairs are not edges of J. PEE₂ with prescribed ends is false.
+- **Partial prescription** (the pairing fixed on all but one or two pairs) is implied by full STL-P wherever STL-P holds. On W₄, fixing one pair fixes both, so it adds nothing.
+
+### X.5 Coordination with multi-sep (§W)
+- **STL vs EE.** STL at d(z) = 2 *is* EE, so any proof of EE gives STL there. Conversely, STL in general needs the multi-prescription version: W.5.2 with free choice of ends and pairing.
+- **A sharper target for multi-sep.** E22 shows STS (EE inside star-terminal decompositions) holding at every neighbour of every 3-connected graph of order 9.
+- **Not duplicated.** No MSEP or CSEP work was done here.
+
+### X.6 Open (in order of promise)
+1. **STL-P for 3-connected J ≠ W₄**, i.e. the terminal-matching property for matchings of virtual edges on N(z). This is the form suited to induction: lifting a pair lowers d(z) by 2, and the base case is `lovasz_endEdge`. The obstruction is carrying two pending terminal edges.
+2. Test1 ⇒ STL (manuscript Conjecture "STL = (T1)"). Supported by all graphs to order 9 and by 1,282 random pairs with J − z disconnected, where STL fails exactly when Test1 does. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
+3. The d(z) = 2 two-triangle configuration (EE at distance 2).

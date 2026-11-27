@@ -1,0 +1,7 @@
+[../../../data/conn8.g6] all: instances 2772, P0 2382, S0 2371, STL2 2763, BAL2 2763, T2fail 9, STL2fail-but-T2 0
+[../../../data/conn8.g6] 3c: instances 948, P0 744, S0 744, STL2 948, BAL2 948, T2fail 0, STL2fail-but-T2 0
+[../../../data/conn8.g6] 3c_nomc: instances 832, P0 628, S0 628, STL2 832, BAL2 832, T2fail 0, STL2fail-but-T2 0
+
+real	0m3.157s
+user	0m1.956s
+sys	0m0.127s
