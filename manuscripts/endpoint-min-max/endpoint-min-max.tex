@@ -161,7 +161,9 @@ Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ par
 simple profile, $G_b$ is Eulerian. Form (b) at every $v$ says $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$ for
 every $v\in V$: every vertex is joined to $t$ by as many edge-disjoint paths as its degree. A
 realisation is a decomposition of $G_b$ into $k$ cycles through $t$, none of length two. EMM thus
-asserts that this connectivity condition is sufficient for such special Eulerian graphs.
+asserts that this connectivity condition is sufficient for such special Eulerian graphs. The closest
+classical min-max theorem of this shape is the Lov\'asz--Cherkassky theorem on edge-disjoint
+$T$-paths in inner-Eulerian graphs (\texttt{research/synthesis.md}~\S7).
 \end{remark}
 
 \subsection{The signed form for half-sets}
@@ -235,7 +237,10 @@ By Proposition~\ref{prop:nec}, CS for $(G,r)$ follows from the \emph{simple-prof
 conjecture is equivalent to the rooted test (R) (Lean \texttt{gallai\_iff\_rootedTest}, ES \S1).
 However, (R) gives a partition into $n/2$ paths with an end at $r$, and that partition need not have a
 simple profile (ES Corollary~6). So ``Gallai and EMM imply CS'' is \emph{not} formal; it needs
-(R)$\Rightarrow$(R$_s$). Both hold at order $\le 8$ by the computations below.
+(R)$\Rightarrow$(R$_s$). Both hold at order $\le 8$ by the computations below. The general-profile extension EMM$^+$
+(\texttt{research/synthesis.md}~\S8: every profile with at least $\lceil n/2\rceil$ paths is realisable
+if and only if it is cut-feasible) would let one replace CS$_0$ by the existence of \emph{any}
+cut-feasible profile with $b(V)=n$. We have not found a direct proof of that either.
 \end{remark}
 
 \subsection{Caps, matroids and EMC}\label{sec:caps}
@@ -634,6 +639,14 @@ all trees of orders $8$, $10$ and $12$: $20$, $99$ and $538$ trees with $e\ge 2$
 $62$ need guards. It also found them for $300$ sparse random graphs ($p\in[.15,.3]$) of each of the
 orders $10$ and $12$, and for $K_{2,m}$ and $K_{2,m}$ plus the hub edge, $m=6,8,10$.
 
+Every certified pairing in Table~\ref{tab:cert} and every tree is also checked against the enumeration
+of \texttt{tools/cutfeas.c}, and all of them are good. As a direct test of Theorem~\ref{thm:guarded},
+\texttt{certificates.py stress} draws random pairings with random edge-disjoint route systems in $400$
+random graphs of orders $8$ and $10$. All $3{,}310$ guarded systems with a busy vertex and all
+$1{,}691$ linkages give good pairings. Of the $7{,}227$ unguarded systems, $7{,}079$ still give good
+pairings. So the guards are far from necessary, which leaves room for Conjecture~\ref{conj:gr} and for
+weaker hypotheses.
+
 \begin{table}[h]
 \caption{Caps (\texttt{scripts/caps.py}); order $8$. The columns are: global cap submodular; cap system a
 matroid; $\cF$ a matroid basis family; $\cF=\cF_v$ for one $v$; critical. At order $6$: $98$ of $99$
@@ -662,7 +675,7 @@ basis family, at orders $6$ and $8$.
 \section{Formalisation}
 The Lean side lives in the \texttt{lean-d6-frontier} track: the definition \texttt{CutFeasible}, the
 necessity of~\eqref{eq:one} and \texttt{gallai\_of\_emm\_cs}. The shared definitions are fixed in
-\texttt{research/connections.md}~\S T. We recommend the arm form (c) as the definition, since its
+\texttt{research/connections.md}~\S U. We recommend the arm form (c) as the definition, since its
 quantifiers are the simplest, with (a) proved equivalent.
 Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing} and Theorem~\ref{thm:guarded} are finite and
 elementary, and they are good targets.

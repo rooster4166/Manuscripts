@@ -12,13 +12,16 @@ A route system with no vertex on two routes (a linkage) needs no guards.
 
 For every graph the script searches, in this order, for (1) a Hamiltonian path (pair consecutive
 even vertices along it: a linkage), (2) any linkage, (3) a guarded route system.  It prints how many
-graphs are certified by each step and lists the graphs with no certificate.
+graphs are certified by each step and lists the graphs with no certificate.  Every certified pairing
+is also checked against the enumeration of tools/cutfeas.c, which tests the lemma itself.
 
-Usage: python3 certificates.py [6] [8] [10] [bottleneck]
+Usage: python3 certificates.py [6] [8] [10] [bottleneck] [trees] [stress]
 """
 import collections
 import sys
 import time
+
+import networkx as nx
 
 import emm_lib as L
 from cut_selection import pairings
@@ -125,7 +128,7 @@ def guarded(G, routes):
 
 def guarded_search(G, P, usedE=frozenset(), routes=()):
     if not P:
-        return guarded(G, list(routes))
+        return guarded(G, list(routes))  # noqa: the caller records P
     (a, c), rest = P[0], P[1:]
     for R in edge_paths(G, a, c, usedE):
         E = {frozenset((R[i], R[i + 1])) for i in range(len(R) - 1)}
@@ -135,30 +138,106 @@ def guarded_search(G, P, usedE=frozenset(), routes=()):
 
 
 def certify(G):
+    """Return (kind, pairing) for the first certificate found, or (None, None)."""
     Ev = L.even_vertices(G)
-    if hamiltonian_path(G):
-        return "hamiltonian path"
-    if any(linkable(G, P) for P in pairings(Ev)):
-        return "linkage"
-    if any(guarded_search(G, P) for P in pairings(Ev)):
-        return "guarded routes"
-    return None
+    H = hamiltonian_path(G)
+    if H:
+        ev = [v for v in H if v in set(Ev)]
+        return "hamiltonian path", [(ev[i], ev[i + 1]) for i in range(0, len(ev), 2)]
+    for P in pairings(Ev):
+        if linkable(G, P):
+            return "linkage", P
+    for P in pairings(Ev):
+        if guarded_search(G, P):
+            return "guarded routes", P
+    return None, None
+
+
+def good(P, F):
+    return all(frozenset(q[o >> i & 1] for i, q in enumerate(P)) in F for o in range(1 << len(P)))
 
 
 def run(name, graphs):
+    """Certify every graph, and check each certified pairing against the cut enumeration
+    (a test of the Guarded Route Lemma itself)."""
     t = time.time()
     c = collections.Counter()
-    for G in graphs:
-        how = certify(G)
+    for G, F in zip(graphs, L.cut_feasible(graphs)):
+        how, P = certify(G)
         c[how] += 1
         if how is None:
             print("   NO CERTIFICATE:", sorted(G.edges()), flush=True)
+        elif not good(P, F):
+            print("   LEMMA VIOLATED (certified pairing not good):", how, P, sorted(G.edges()), flush=True)
+            c["lemma violated"] += 1
     print(f"{name}: {len(graphs)} graphs, {dict(c)}   [{time.time() - t:.0f}s]", flush=True)
 
 
+def stress(count=400, tries=40, seed=3):
+    """Random pairings with random edge-disjoint route systems on random graphs of order 8 and 10:
+    every guarded system must give a good pairing (a direct test of the lemma)."""
+    import random
+    rng = random.Random(seed)
+    stats = collections.Counter()
+
+    def random_routes(G, P):
+        used, routes = set(), []
+        for a, c in P:
+            ok = False
+            for _ in range(20):
+                path, seen, x = [a], {a}, a
+                while x != c:
+                    nb = [y for y in G[x] if y not in seen and frozenset((x, y)) not in used]
+                    if not nb:
+                        break
+                    x = rng.choice(nb)
+                    path.append(x)
+                    seen.add(x)
+                if x == c:
+                    ok = True
+                    break
+            if not ok:
+                return None
+            used |= {frozenset((path[i], path[i + 1])) for i in range(len(path) - 1)}
+            routes.append(path)
+        return routes
+
+    graphs = []
+    while len(graphs) < count:
+        n = rng.choice([8, 10])
+        G = nx.gnp_random_graph(n, rng.choice([.25, .35, .5, .7]), seed=rng.randrange(2**31))
+        if nx.is_connected(G) and len(L.even_vertices(G)) >= 4:
+            graphs.append(G)
+    for G, F in zip(graphs, L.cut_feasible(graphs)):
+        Ev = L.even_vertices(G)
+        for _ in range(tries):
+            E = Ev[:]
+            rng.shuffle(E)
+            P = [(E[i], E[i + 1]) for i in range(0, len(E), 2)]
+            R = random_routes(G, P)
+            if R is None:
+                continue
+            on = collections.Counter(v for p in R for v in p)
+            busy = any(c >= 2 for c in on.values())
+            if guarded(G, R):
+                stats["guarded with a busy vertex" if busy else "linkage"] += 1
+                if not good(P, F):
+                    stats["LEMMA VIOLATED"] += 1
+                    print("   LEMMA VIOLATED:", sorted(G.edges()), R, flush=True)
+            else:
+                stats["unguarded, good" if good(P, F) else "unguarded, not good"] += 1
+    print(f"stress test (seed {seed}): {dict(stats)}", flush=True)
+
+
 def main():
-    for w in sys.argv[1:] or ["6", "8", "10", "bottleneck"]:
-        if w in ("6", "8"):
+    for w in sys.argv[1:] or ["6", "8", "10", "bottleneck", "trees", "stress"]:
+        if w == "stress":
+            stress()
+        elif w == "trees":
+            for n in (8, 10, 12):
+                run(f"trees, order {n}", [T for T in (L.relabel(T) for T in nx.nonisomorphic_trees(n))
+                                         if len(L.even_vertices(T)) >= 2])
+        elif w in ("6", "8"):
             run(f"all connected, order {w}", L.all_connected(int(w)))
         elif w == "10":
             run("random G(10,p), seed 20261127", L.random_sample())

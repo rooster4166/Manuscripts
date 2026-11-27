@@ -709,3 +709,32 @@ Contribution from the missing-move session, 2026-11-27. Details: E17, missing-mo
   - So step (2) of the template needs an equality lemma producing a tight cut. The stuck instances, which include the butterfly, the octahedron and `Eqzo`, are the test cases.
 - Not done here: 2-connectivity of a minimal counterexample through TVS Thm 7 / SP §2 gluing.
 
+
+## U. EMM definitions for Lean, and cut selection (tracks C1/C2; coordination with lean-d6-frontier)
+
+Contribution from the emc-four session, 2026-11-27. Manuscript: `manuscripts/endpoint-min-max/`. (The coordinator asked for this as §T, but §T was already taken by C4.)
+
+**Shared definitions.** Reuse `CutOK G b p` from `EmmTemplate.lean`. It is form (a) of the manuscript's Lemma 1, written as Σ_W b + d(v) + b(v) ≤ cut(W) + 2p. Then:
+- `simpleProfile G M v := if Odd (G.degree v) then 1 else if v ∈ M then 2 else 0`;
+- `HalfSet G M := M ⊆ Ev ∧ 2 * M.card = Ev.card`;
+- `CutFeasible G M := CutOK G (simpleProfile G M) (Fintype.card V / 2)`;
+- `EMM : Prop := ∀ G connected of even order, ∀ M, HalfSet G M → CutFeasible G M → Ach G.edgeSet (simpleProfile G M)`, together with Ach's path count;
+- `CS0 G := ∃ M, HalfSet G M ∧ CutFeasible G M`, `CS G := ∀ r ∈ Ev, ∃ M ∋ r, …`, `PS G := ∃ P` (a pairing of Ev) `, ∀ transversals M, CutFeasible G M`.
+
+**Theorems for the Lean session.**
+- `cutOK_of_ach` (necessity, any profile): realisation by p paths ⇒ `CutOK b p`. The manuscript's proof is by arms: each edge vy is extended along its path to an end, and the arms are edge-disjoint and end at distinct end occurrences. This may be easier to formalise than ED's count.
+- `gallai_of_emm_cs0 : EMM → (∀ G, CS0 G) → GallaiConjecture`. The odd-order case uses a pendant vertex. The case e = 0 needs no hypothesis (M = ∅).
+- Optional: `cutOK_iff_arm` (the algebra (a) ⇔ (c), which needs b(V) = 2p).
+
+**C2 targets that are finite and elementary** (no flows needed):
+- `parity_Gv`: |δ_{G^v}(Y)| ≡ |Y ∩ Ev| (mod 2);
+- `good_pairing_of_cuts` (the "if" half of the manuscript's Lemma 13);
+- `guarded_route_lemma` (Thm 17): a token-injection argument plus parity;
+- `cone_ps`: the T-join pairing lemma plus the guarded route lemma with the apex as bypass.
+
+The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
+
+**Open after this session.**
+- Conjecture GR: every connected even-order graph has a guarded route system. This would give PS ⇒ CS.
+- Why EMM's family is a matroid on critical graphs (Question 12). Four n = 8 critical graphs are not explained by one dominant vertex or by a submodular cap: Gs`ALo, GsQcaO, GqHTTS, GqhTTS.
+- (R) ⇒ (R_s): turning a rooted partition into a simple one.
