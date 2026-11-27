@@ -1,0 +1,13 @@
+cutfeas.c on G_18: 12609 cut-feasible half-sets; balance.c: 10136 balanced (| |M cap X| - |U cap X| | <= |delta(X)| for all X)
+bemm_run.py realis_wide bal18.txt:
+progress 1000 {'1': 1000}
+progress 2000 {'1': 2000}
+progress 3000 {'1': 3000}
+progress 4000 {'1': 4000}
+progress 5000 {'1': 5000}
+progress 6000 {'1': 6000}
+progress 7000 {'1': 7000}
+progress 8000 {'1': 8000}
+progress 9000 {'1': 9000}
+progress 10000 {'1': 10000}
+FINAL 10136 {'1': 10136}
