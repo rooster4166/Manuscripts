@@ -18,8 +18,14 @@
                            "q" = quiet (no MINFAIL lines).
      ed [budget]    lines "n m u1 v1 ... um vm c mask"; prints 1 (avoidable), 0 (not), 2 (budget hit),
                     -1 (c not odd).
-     sep [budget]   lines "n m u1 v1 ... um vm c mask"; prints 1 if some Lovász decomposition has
-                    Q_c disjoint from mask AND no path containing c and a vertex of mask... (unused)
+     stats          per (G, c): least length of Q_c (free, and inside N[c] u N(g)) and least number of
+                    vertices of Q_c outside N[c]; prints EXTREME lines and histograms.
+     gen K          one even vertex: every A inside V - N[c] with |A| <= K, classified by admissibility
+                    (A misses N(g)), separation (A separates c from g) and g in A; prints GENFAIL lines
+                    for failures that are admissible or separated.
+     two            exactly two even vertices: is there a decomposition with b = deg mod 2?  By distance.
+     packedev       at least two even vertices, pairwise at distance >= 3: the same question.
+     peloc          packed even vertices Ev: is Q_c inside N[c] u N(Ev) possible, for each odd c?
    At most 32 vertices and 128 edges.
 */
 #include <stdio.h>

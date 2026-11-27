@@ -1,9 +1,12 @@
 """L1* instances (|A| <= K) to which none of the reductions of the manuscript applies, one level
-deep (l1star session).  Reductions: M1 (Case I at g, Theorem 3.3 cases (b), (c)); shrink A to the
-boundary of the component of c in G - A (Lemma 4.1); M2 (route g..c appended, g not in A);
-M9 (Fan route from g to a vertex with no neighbour in A); M7 (d(g) = 2, N(g) = {u, v}
-non-adjacent: split off g); M13 (d(g) = 2, uv an edge, g in A: drop g from A); M8 (d(c) = 3,
-split off two non-adjacent neighbours one of which is not in N(g)).
+deep (l1star session).  Reductions: M1 (Case I at g, Theorem 4.2 (b), (c)); shrink A to the
+boundary of the component of c in G - A (Lemma 5.1); M2 (route g..c appended, g not in A; Proposition 5.2);
+M9 (Fan route from g to a vertex with no neighbour in A; Proposition 5.3); M7 (d(g) = 2,
+N(g) = {u, v} non-adjacent: split off g; Proposition 5.4(i)); M13 (d(g) = 2, uv an edge, g in A:
+drop g from A; Proposition 5.4(ii)); M8 (d(c) = 3, split off two non-adjacent neighbours one of
+which is not in N(g); Proposition 5.5).
+Counts: instances with 1 <= |A| <= 2 and c not in N(g) (the c in N(g) instances are reducible by
+Theorem 4.2(a) and are not listed).
 usage: nauty-geng -cq n | python3 irred_all.py K
 """
 import sys, itertools, collections

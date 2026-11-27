@@ -18,6 +18,7 @@
 \newtheorem{example}[theorem]{Example}
 
 \newcommand{\cD}{\mathcal D}
+\emergencystretch=3em
 \newcommand{\Good}{\mathrm{Good}}
 
 \title[The avoidance conjecture $L_1^*$]{The avoidance conjecture $L_1^*$:\\ a local form, a
@@ -38,10 +39,10 @@ single-transition step of the star-terminal programme for Gallai's conjecture.
 \item \emph{A local form.} Computation supports a much stronger statement: some Lov\'asz
 decomposition has $V(Q_c)\subseteq N[c]\cup N(g)$. Equivalently, every set $A$ disjoint from
 $N[c]\cup N(g)$, of any size, can be avoided. There is no counterexample among all connected graphs
-of order at most~$11$ ($1{,}000{,}000$+ pairs $(G,c)$ at order $10$ and $11$ together, see
-Section~\ref{sec:comp}) and among $38{,}896$ random pairs of orders $11$--$16$. In all-odd graphs it
-says $V(Q_c)\subseteq N[c]$. It implies that a graph whose only two even vertices are at distance at
-least three has a Lov\'asz decomposition (also verified to order $10$).
+of order at most~$11$ ($119{,}593{,}670$ pairs $(G,c)$ at order $11$), nor among $45{,}714$ decided
+random pairs of orders $11$--$20$. In all-odd graphs it says $V(Q_c)\subseteq N[c]$. It implies that
+a graph whose only two even vertices are at distance at least three has a Lov\'asz decomposition
+(also verified to order $10$, and on random graphs to order $16$).
 \item \emph{A reduction.} We prove, and formalise in Lean, that a smallest counterexample to the
 general form of $L_1^*$ is \emph{blocked}: $G$ has an even vertex $g$, $c\notin N(g)$, and every
 neighbour of $g$ is adjacent to a vertex of $A\setminus\{g\}$. The proof is Lov\'asz's induction with
@@ -105,7 +106,7 @@ statements about Lov\'asz decompositions (Lean: \texttt{gallai\_of\_stl}).
 \begin{enumerate}
 \item The local form (Conjecture~\ref{conj:loc}) has no counterexample in our data
 (Section~\ref{sec:comp}). Its consequences (Section~\ref{sec:local}): in all-odd graphs,
-$V(Q_c)\subseteq N[c]$; and the two-even theorem (Conjecture~\ref{conj:te3}), which says that two even
+$V(Q_c)\subseteq N[c]$; and the two-even conjecture (Conjecture~\ref{conj:te3}), which says that two even
 vertices at distance at least three do not prevent a Lov\'asz decomposition. The hypothesis
 $A\cap N(g)=\emptyset$ cannot be weakened to ``$A$ separates $c$ from $g$'' (Example~\ref{ex:sep}),
 and the local form fails with two even vertices even where Lov\'asz decompositions exist
@@ -220,6 +221,20 @@ decomposition with $V(Q_c)\subseteq N[c]\cup N(g_1)\cup N(g_2)$, though each gra
 decomposition. One example is \texttt{GCQbVg} with $c=1$ at order $8$.
 \end{remark}
 
+\begin{remark}[one-sided separation]\label{rem:ball}
+Route descent~\cite[Conjecture~8.2]{RD} conjectures a different region. With at most one even vertex,
+some Lov\'asz decomposition should have every vertex of $Q_c$ at distance at most two from $c$:
+$V(Q_c)\subseteq B_2(c)$. For a leaf $c$ with neighbour $y$ this reads $V(Q_c)\subseteq\{c\}\cup N[y]$,
+and through the leaf trick it gives $V(Q_c)\subseteq N[c]$ in all-odd graphs, as
+Proposition~\ref{prop:allodd} does. That region does not depend on $g$, which is why Lov\'asz's
+induction nearly proves the leaf case there. The one residual configuration has the even vertex at
+distance three from $c$ and all its neighbours at distance two. It is the same tight case of Fan's
+inequality as the blocked case below. The two regions can be combined. Some Lov\'asz decomposition has
+\[V(Q_c)\subseteq N[c]\cup\bigl(N(g)\cap B_2(c)\bigr),\]
+which implies Conjecture~\ref{conj:loc} and~\cite[Conjecture~8.2]{RD}, for every connected graph of
+order at most $9$ (\texttt{ball\_test.py}, \texttt{out/ball\_5\_9.txt}).
+\end{remark}
+
 \begin{example}[the hypothesis $A\cap N(g)=\emptyset$]\label{ex:sep}
 In a star $K_{1,4}$ with centre $g$ and $c$ a leaf, $Q_c=c\,g\,a$ for another leaf $a$, so $A$ cannot
 contain the three other leaves. The condition cannot be replaced by ``$A$ separates $c$ from $g$''.
@@ -244,7 +259,7 @@ Let $(G,c,A)$ be an instance.
 \begin{enumerate}
 \item[(a)] If $c\in N(g)$, then $(G-gc,\,g,\,A\cup\{c\})$ is an instance, and if it is good so is
 $(G,c,A)$.
-\item[(b)] If $u\in N(g)\setminus N(c)$ has no neighbour in $A\setminus\{g\}$, then $(G-gu,\,c,\,A)$
+\item[(b)] If $c\notin N(g)$ and $u\in N(g)\setminus N(c)$ has no neighbour in $A\setminus\{g\}$, then $(G-gu,\,c,\,A)$
 is an instance, and if it is good so is $(G,c,A)$.
 \item[(c)] If $u\in N(g)\cap N(c)$ has no neighbour in $A\setminus\{g\}$, then
 $(G-cu-gu,\,u,\,A\cup\{c\})$ is an instance, and if it is good so is $(G,c,A)$.
@@ -266,7 +281,8 @@ No path contains $\ell$ with $c$ or with a vertex of $A$. Lemma~\ref{lem:merge} 
 of $G$ with $b(c)=1$, $b(g)=b'(g)-1=0$, the Lov\'asz counts elsewhere, and $Q_c$ disjoint from $A$.
 This is ``append $gc$ to $Q'_g$''.
 
-(b) In $G'=G-gu$, $u$ is the only possible even vertex, $c$ is odd, and $A$ is admissible: a vertex of
+(b) In $G'=G-gu$, $u$ is the only possible even vertex, $c$ is odd (it is neither $g$ nor $u$, since
+$c\notin N(g)$), and $A$ is admissible: a vertex of
 $A$ in $N'(u)$ would be a neighbour of $u$ in $A\setminus\{g\}$. Given a good $\cD'$, apply
 Lemma~\ref{lem:protect} with $t=g$, $w=u$: $b'(g)=1$; every neighbour of $u$ in $G'$ is odd, so
 $Z(u)=\emptyset$; $c\notin N(u)$; and $u\notin A$ since $u\in N(g)$.
@@ -302,7 +318,8 @@ If $G$ has no even vertex, $d(c)=1$ (Proposition~\ref{prop:allodd}) or $d(c)\ge3
 \end{proof}
 
 \begin{corollary}\label{cor:eeblocked}
-If every blocked instance is good, Conjecture~EE holds. \emph{(Lean: \texttt{ee\_of\_l1Blocked}.)}
+If every blocked instance is good, Conjecture~EE holds.
+\emph{(Lean: \texttt{ee\_of\_\allowbreak l1Blocked}.)}
 \end{corollary}
 
 \begin{proof}
@@ -316,16 +333,22 @@ $(K-uz-uw,\,z,\,\{u\})$ instead~\cite{PE}. The first instance is never blocked w
 Being blocked would mean $N(z)\setminus\{u\}\subseteq N(u)$; then $u$ and $z$ would have the same
 neighbours apart from each other, hence the same degree, but $d(u)$ is odd and $d(z)$ even. Blocked
 instances do arise one or two reductions later. In the double $K_4$ (\texttt{FQhVw}, two $K_4$'s
-sharing $z$), every branch of the reductions of Theorem~\ref{thm:reductions} for EE at a vertex
-$u\ne z$ reaches a blocked instance with $d(g)=2$; the reductions of Section~\ref{sec:more} then
-finish it. They do not finish $K_7$ minus a perfect matching of $K_6$, that is, the cocktail party
-graph $\mathrm{CP}(3)$ with an apex $z$ (Section~\ref{sec:comp}).
+sharing $z$), every branch of the reductions of Theorem~\ref{thm:reductions} alone, from the
+instances $(K-uz,z,\{u\})$ and from the triangle instances, ends in a blocked instance with
+$d(g)=2$. No reduction of Section~\ref{sec:more} applies to any of these blocked instances (audit
+A23). One of them is $K-\{02,06,26,16\}$ with $g=1$, $c=2$, $A=\{0,6\}$. It is good, with $Q_c=24$.
+Interleaving the reductions of Section~\ref{sec:more} earlier in the branches certifies the six
+instances $(K-uz,z,\{u\})$ (\texttt{cert\_ee.py}), but not the twelve triangle instances. With the
+same interleaving, EE is certified at every pair of order at most $7$ except those of $K_7$ minus a
+perfect matching of $K_6$, that is, the cocktail party graph $\mathrm{CP}(3)$ with an apex $z$
+(Section~\ref{sec:comp}).
 \end{remark}
 
 \section{Further reductions}\label{sec:more}
 
 The following reductions are proved here, not formalised. Each maps an instance to an instance that
-is smaller in $(\nu(G),|A|)$ lexicographically, and transfers goodness back.
+is smaller in $(\nu(G),|A|)$ lexicographically (for Lemma~\ref{lem:boundary}, when
+$\partial C\neq A$), and transfers goodness back.
 
 \begin{lemma}[boundary]\label{lem:boundary}
 Let $C$ be the component of $G-A$ containing $c$ and $\partial C=N(C)\subseteq A$. Then
@@ -338,7 +361,8 @@ misses $A$.
 \end{proof}
 
 \begin{proposition}[route to $c$]\label{prop:route}
-Let $g\notin A$ and let $R=g\,r_1\cdots r_{k-1}\,c$ be a shortest $g$--$c$ path in $G-A$, $k\ge2$.
+Let $G$ have an even vertex $g\notin A$, let $c\notin N(g)$, and let $R=g\,r_1\cdots r_{k-1}\,c$ be a
+shortest $g$--$c$ path in $G-A$ (so $k\ge2$).
 Then $(G-E(R),\,g,\,A\cup\{r_1,\dots,r_{k-1},c\})$ is an instance, and if it is good so is
 $(G,c,A)$.
 \end{proposition}
@@ -348,14 +372,14 @@ In $G'=G-E(R)$, $g$ and $c$ change parity and the interior of $R$ does not, so $
 possible even vertex. Admissibility: $R$ has no chords, being shortest in $G-A$, so
 $N'[g]\cap V(R)=\{g\}$ and $N'(c)\cap V(R)=\emptyset$. Also $A\cap N'[g]=\emptyset$ ($g\notin A$,
 $A\cap N(g)=\emptyset$) and $A\cap N'(c)=\emptyset$. If $Q'_g$ avoids $A\cup(V(R)\setminus\{g\})$, then
-$Q'_g$ and $R$ share only $g$, an end of both, so $Q'_g\cup R$ is a path (route append,
-\cite[Lemma~3.6]{RD}). Replacing $Q'_g$ by it gives a Lov\'asz decomposition of $G$: $g$ loses its
+$Q'_g$ and $R$ share only $g$, an end of both, so $Q'_g\cup R$ is a path. Replacing $Q'_g$ by it gives a Lov\'asz decomposition of $G$: $g$ loses its
 end and $c$ gains one. Its path ending at $c$ is $Q'_g\cup R$, which misses $A$.
 \end{proof}
 
 \begin{proposition}[Fan route]\label{prop:fanroute}
-Let $R=g\,e_1\cdots e_k$ ($k\ge1$) be a path with $c\notin V(R)$, $e_i\notin A$ for all $i$, and
-$N(e_k)\cap A\subseteq\{e_{k-1}\}$ (where $e_0=g$). Suppose $e_i\notin N(c)$ for all $i$, or $d(c)=1$.
+Let $G$ have an even vertex $g$, and let $R=g\,e_1\cdots e_k$ ($k\ge1$) be a path with $c\notin V(R)$,
+$e_i\notin A$ for $i=1,\dots,k$, and $N(e_k)\cap A\subseteq\{e_{k-1}\}$ (where $e_0=g$). Suppose
+$e_i\notin N(c)$ for $i=1,\dots,k$, or $d(c)=1$.
 Then $(G-E(R),\,c,\,A)$ is an instance, and if it is good so is $(G,c,A)$.
 \end{proposition}
 
@@ -366,9 +390,14 @@ $A\cap N_{K_k}(e_k)\subseteq A\cap(N(e_k)\setminus\{e_{k-1}\})=\emptyset$, and $
 Starting from a good decomposition of $K_k$, for $i=k,\dots,1$ restore $e_{i-1}e_i$ by Fan's lemma
 with $t=e_{i-1}$ ($b=1$) and target $e_i$; $Z(e_i)=\emptyset$ since every other vertex of $K_i$ is
 odd. If $e_i\notin N(c)$, Lemma~\ref{lem:protect} keeps $Q_c$ off $A$, as $e_i\notin A$. If $d(c)=1$
-and $e_i$ is the neighbour of $c$, the edge at $c$ is the end edge of $Q_c$ and goes to the target. The
-protected-end lemma~\cite[Lemma~4.1]{PE} in the leaf graph $H(K_i;c,e_i)$, together with
-Lemma~\ref{lem:fan} there, again adds only $e_i$ to the leaf path.
+and $e_i$ is the neighbour of $c$, argue in the leaf graph, as in the proof of~\cite[Lemma~4.1]{PE}.
+(1) In $H=H(K_i;c,e_i)$ the vertex $c$ is isolated, and replacing $Q_c=c\,e_i\cdots$ by
+$\ell\,e_i\cdots$ gives a decomposition of $H$ in which $\ell$ ends the leaf path, which avoids $A$.
+(2) The neighbours of $e_i$ in $H$ are $\ell$, which has an end, and odd vertices of $K_i$, so
+$Z_H(e_i)=\emptyset<1=b(e_{i-1})$. (3) Lemma~\ref{lem:fan} in $H$ restores $e_{i-1}e_i$ and gives a
+decomposition of $H(K_{i-1};c,e_i)$. Every path lies in an old one together with $e_i$, so the leaf
+path still avoids $A$ (it already contains $e_i$). (4) Lemma~\ref{lem:merge} merges $\ell$ back into
+$c$, which lies on no path of $H$.
 \end{proof}
 
 Theorem~\ref{thm:reductions}(b),(c) are the cases $k=1$ ((c) in a stronger form that also works
@@ -431,8 +460,8 @@ theorem~\cite[Theorem~6.1]{RD}.
 
 \section{Computations}\label{sec:comp}
 
-\emph{This section is computational. No proof above depends on it.} Scripts are in
-\texttt{manuscripts/l1star/scripts/}; outputs are in \texttt{scripts/out/}.
+\emph{This section is computational. No proof above depends on it.} The scripts are in
+\nolinkurl{manuscripts/l1star/scripts/}, and their outputs in \nolinkurl{scripts/out/}.
 
 \subsection*{Oracle and validation}
 \texttt{l1s.c} decides whether an instance is good. Its search core is the oracle of~\cite{PE}
@@ -440,10 +469,10 @@ theorem~\cite[Theorem~6.1]{RD}.
 from $c$, never entering $A$. The remaining edges are then decomposed exactly with prescribed end
 counts, using a failure memo and parity, degree and component pruning. \texttt{xcheck\_brute.py}
 compares it with an independent brute force (\texttt{brute.py}, which enumerates all transition
-systems) on every connected graph of order at most $7$ with at most one even vertex, every odd $c$
+systems) on every connected graph of order $4$--$7$ with at most one even vertex, every odd $c$
 and every subset $A\subseteq V\setminus\{c\}$, admissible or not. There were no mismatches: $64$,
-$448$ and $2{,}496$ queries at orders $4$, $5$, $6$, and the order-$7$ run is recorded in
-\texttt{out/xcheck\_7.txt}.
+$448$, $2{,}496$ and $49{,}920$ queries at orders $4$, $5$, $6$, $7$ (\texttt{out/xcheck\_4\_6.txt},
+\texttt{out/xcheck\_7.txt}).
 
 \subsection*{The local form, exhaustively}
 Mode \texttt{max} tests $A_{\max}=V\setminus(N[c]\cup N(g))$ (vertices of positive degree) for every
@@ -461,16 +490,25 @@ $7$ & $130$ & $780$ & $0$\\
 $8$ & $224$ & $1{,}792$ & $0$\\
 $9$ & $11{,}936$ & $95{,}488$ & $0$\\
 $10$ & $32{,}851$ & $328{,}510$ & $0$\\
-$11$ & \multicolumn{3}{l}{see \texttt{out/max11\_*.txt} (three geng slices)}\\
+$11$ & $11{,}959{,}367$ & $119{,}593{,}670$ & $0$\\
 \bottomrule
 \end{tabular}
 \end{center}
+Order $11$ ran as three \texttt{geng} slices (\texttt{run\_n11.sh}, \texttt{out/max11\_*.txt}); the
+graph count equals that of the order-$11$ EE run of~\cite{PE}. In $4{,}914{,}097$ of the pairs at
+order $11$, $A_{\max}$ is empty.
 
 \subsection*{Random graphs}
 \texttt{rand\_max.py 3000 7 5000000 11 12 13 14 15 16}: $G(n,p)$ with $p\in[0.15,0.6]$, parities
 repaired by toggling edges between pairs of even vertices, connected; $3{,}000$ graphs ($483$--$521$
-per order), $38{,}896$ pairs $(G,c)$, $0$ failures, $199$ undecided (node budget $5\cdot10^6$).
-Output: \texttt{out/rand\_max\_11\_16.txt}.
+per order), $38{,}896$ pairs $(G,c)$: $38{,}697$ decided, $0$ failures, $199$ undecided (node
+budget $5\cdot10^6$). Output: \texttt{out/rand\_max\_11\_16.txt}. With
+\texttt{PLO=0.12 PHI=0.35 rand\_max.py 400 21 2000000 17 18 19 20}: $400$ graphs, $7{,}202$ pairs,
+$7{,}017$ decided, $0$ failures, $185$ undecided (\texttt{out/rand\_max\_17\_20.txt}). For
+Conjecture~\ref{conj:te3}, \texttt{rand\_te3.py 600 11 3000000 2 12 13 14 15 16} gives $360$ graphs
+(two even vertices at distance at least three, even orders $12$--$16$): $358$ decomposable, $2$
+undecided. \texttt{rand\_te3.py 400 12 3000000 3 13 15} gives $320$ graphs with three packed even
+vertices: $318$ decomposable, $2$ undecided (\texttt{out/rand\_te3\_k*.txt}).
 
 \subsection*{Necessity and shape}
 \begin{itemize}
@@ -497,12 +535,15 @@ $10$ & $540{,}756/562{,}856$ & $480{,}198/501{,}456$ & $50{,}561/50{,}561$\\
 \bottomrule
 \end{tabular}
 \end{center}
-Packed even vertices (mode \texttt{packedev}): every graph is decomposable (orders $6$--$10$; at order
-$9$, $52$ graphs with three packed even vertices). Mode \texttt{peloc}: Remark~\ref{rem:pe}.
+Packed even vertices (mode \texttt{packedev}): every graph is decomposable (orders $6$, $8$, $9$,
+$10$; order $7$ has no graph with two packed even vertices; at order $9$, $52$ graphs with three
+packed even vertices). Mode \texttt{peloc}: Remark~\ref{rem:pe}.
 
 \subsection*{Census of reductions}
-\texttt{blocked\_count.py~2} classifies the instances with $|A|\le2$ (graphs with one even vertex) by
-the first case of Theorem~\ref{thm:blocked} that applies:
+\texttt{blocked\_count.py~2} classifies the instances with $1\le|A|\le2$ (connected graphs with
+one even vertex; $A$ of vertices of positive degree) by the case of Theorem~\ref{thm:reductions}
+that the proof of Theorem~\ref{thm:blocked} uses. The priority is (a), then (c), then (b), so row (b)
+counts the instances with a free $u$ but none in $N(c)$:
 \begin{center}
 \begin{tabular}{lrr}
 \toprule
@@ -518,13 +559,20 @@ blocked, $g\notin A$ & $182$ & $43{,}542$\\
 \end{tabular}
 \end{center}
 \texttt{irred\_all.py~2} applies all reductions of Sections~\ref{sec:blocked}--\ref{sec:more} one
-level deep. At order $9$, $2{,}414$ instances remain ($0.59\%$). All of them have $d(g)\in\{2,4\}$;
+level deep to the $267{,}664$ instances with $c\notin N(g)$. At order $9$, $2{,}414$ instances
+remain: $0.59\%$ of the $411{,}948$ instances of the census, and $0.90\%$ of those with $c\notin N(g)$.
+All of them have $d(g)\in\{2,4\}$;
 $2{,}219$ have $g\in A$, and the others have $A$ separating $c$ from $g$. All are good, like every
 instance.
 
-\texttt{cert.py} searches recursively for a certificate built only from these reductions, trying
-shortest routes and a bounded number of choices; \texttt{cert\_ee.py} does the same from the EE
-instances $(K-uz,z,\{u\})$. At order $6$ every instance with $|A|\le2$ is certified. At order $7$,
+\texttt{cert.py} searches recursively for a certificate, trying shortest routes and a bounded
+number of choices. Its reductions are Theorem~\ref{thm:reductions}, Lemma~\ref{lem:boundary} and
+Propositions~\ref{prop:route}--\ref{prop:deg3}. It also uses one composite move, a Fan route from $g$
+to a neighbour $y$ of $c$ with $N[y]\cap A=\emptyset$, followed by Theorem~\ref{thm:reductions}(c);
+the counts below are the same without it (audit A23). Its base cases are: $A$ misses the component of
+$c$; $A\cup\{c\}$ is packed (the separation theorem~\cite[Theorem~6.1]{RD}); no even vertex and $A$
+packed~\cite[Theorem~6.3]{RD}; no even vertex and $d(c)=1$. \texttt{cert\_ee.py} does the same from
+the EE instances $(K-uz,z,\{u\})$. At order $6$ every instance with $|A|\le2$ is certified. At order $7$,
 $35$ of the $1{,}868$ instances are not. For EE at order $7$, every pair $(z,u)$ is certified except
 the six pairs of $\mathrm{CP}(3)$ with an apex (\texttt{F]\char`~vw}), all of which have $|T|=4$.
 Outputs: \texttt{out/cert\_5\_7.txt}, \texttt{out/cert\_ee7.txt}. So the reductions do not decide
@@ -543,7 +591,9 @@ builds).
 Lemma~\ref{lem:hang}(ii). Lemma~\ref{lem:hang}(i) is \texttt{PathDecomp.liftLeaf}~\cite{PE}.
 \item \texttt{l1\_case\_adj}, \texttt{l1\_case\_target}, \texttt{l1\_case\_target\_adj},
 \texttt{l1\_case\_big}: Theorem~\ref{thm:reductions}(a)--(d); \texttt{l1\_case\_leaf}:
-Proposition~\ref{prop:allodd}.
+Proposition~\ref{prop:allodd}. Both \texttt{l1\_case\_target} and \texttt{l1\_case\_target\_adj}
+assume $c\notin N(g)$, as the proof of Theorem~\ref{thm:blocked} needs. Lemma~\ref{lem:protect} is
+not a separate Lean lemma; it is inlined in \texttt{l1\_case\_target}.
 \item \texttt{l1\_strong}, \texttt{l1starGen\_of\_blocked}: Theorem~\ref{thm:blocked}.
 \texttt{l1star\_of\_gen}: Conjecture~\ref{conj:gen} implies \texttt{L1Star}.
 \texttt{ee\_of\_L1StarGen}, \texttt{ee\_of\_l1Blocked}: Corollary~\ref{cor:eeblocked}.
@@ -556,10 +606,11 @@ Not formalised: Section~\ref{sec:more}, Proposition~\ref{prop:te3}, the examples
 Corollary~\ref{cor:mincex} the two shapes to handle are: $g\in A$ with every neighbour of $g$
 adjacent to $A\setminus\{g\}$ (if $d(g)=2$, $N(g)\subseteq N(c)$ is an independent pair); and $A$
 separating $c$ from $g$.
-\item The two-even theorem (Conjecture~\ref{conj:te3}), a statement of independent interest and a
+\item The two-even conjecture (Conjecture~\ref{conj:te3}), a statement of independent interest and a
 consequence of the local form. Lov\'asz's Case~I step moves one even vertex at a time, and walks of
 such steps do not always reach a smaller instance at distance three. At order $8$, one graph needs a
-different argument (\texttt{G?Bvvo}, \texttt{te3walk.py}).
+different argument (\texttt{G?Bvvo}, \texttt{te3walk.py}); so does one graph at order $6$
+(\texttt{EEz\_}).
 \item Is there a separation-type invariant, a property of the vertex sets of \emph{all} paths, that
 implies $V(Q_c)\subseteq N[c]\cup N(g)$ and survives Fan's lemma? The one-sided form above is not
 such an invariant, which is why $c$'s end must be protected at every step.

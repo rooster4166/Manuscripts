@@ -1337,7 +1337,10 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 ### AA.1 Verdict
 - **L1\* survives in a much stronger, local form:** some Lovász decomposition has V(Q_c) ⊆ N[c] ∪ N(g).
   - This is L1* for every admissible A at once, with no bound on |A|. In all-odd graphs it reads V(Q_c) ⊆ N[c].
-  - Exhaustive to n = 11 (E25 A), plus 38,896 random pairs at n = 11–16. No failure.
+  - Exhaustive to n = 11: at n = 11, 11,959,367 graphs and 119,593,670 pairs.
+  - Random: 45,714 decided pairs at n = 11–20.
+  - No failure.
+  - It combines with route-descent's one-sided separation (§V.4c, its Conjecture 8.2). V(Q_c) ⊆ N[c] ∪ (N(g) ∩ B₂(c)) holds exhaustively at n ≤ 9. Our blocked case and its L∞ residual are the same tight Fan configuration, seen under the two hypotheses.
 - **This is the natural general form.** The condition A ∩ N(g) = ∅ cannot be weakened, not even to "A separates c from g" (example `DTw`). Size does not matter: every |A| passes.
 - **A clean corollary of the local form:** if the only two even vertices are at distance ≥ 3, a Lovász decomposition exists.
   - Exhaustive to n = 10. It fails at distance 1 or 2 in about 4% of graphs.
@@ -1362,7 +1365,11 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ### AA.3 What remains, and what does not work
 - **Open: the blocked case.** At n = 9 it is 13.9% of the |A| ≤ 2 instances, and 0.59% survive all reductions one level deep.
-- The reductions alone do not decide the problem. Recursive certificates fail on 35 instances at n = 7, and on EE for CP(3) + apex: the cocktail party graph again, as in `cocktail_fan_barrier`.
+- The reductions alone do not decide the problem.
+  - Recursive certificates fail on 35 instances at n = 7.
+  - They also fail on EE for CP(3) + apex: the cocktail party graph again, as in `cocktail_fan_barrier`.
+  - The triangle instances of the double K4 are not certified either (audit A23, F2).
+- **Audit A23:** every theorem is correct as stated, except that Theorem 4.2(b) was missing the hypothesis c ∉ N(g) (F1). F1 is fixed; it never affected the Lean proof or Theorem 4.3. All other findings are applied.
 - Tried and not inductive:
   - Lovász Case I at g with the local form as hypothesis. The region becomes N[c] ∪ N(u) for the new even vertex u.
   - Two-terminal statements. Simultaneous locality fails already for K_{1,3}.

@@ -1056,7 +1056,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **Oracle.** `l1s.c` decides whether some Lovász decomposition has Q_c ∩ A = ∅. Its search core is the `pee.c` oracle of E23: Q_c is grown first and never enters A, then the remaining edges get an exact search with prescribed ends.
 - Validation against an independent brute force over transition systems (`brute.py`, `xcheck_brute.py`): every connected graph of order ≤ 7 with ≤ 1 even vertex, every odd c, and *every* subset A ⊆ V ∖ {c}, admissible or not.
   - 64 + 448 + 2,496 queries at n = 4, 5, 6, 0 mismatches.
-  - n = 7: `out/xcheck_7.txt`.
+  - n = 7: 49,920 queries, 0 mismatches (`out/xcheck_7.txt`).
 
 **(A) Local form, exhaustive** (`l1s max`): A_max = V ∖ (N[c] ∪ N(g)) for every connected graph with ≤ 1 even vertex and every odd c. A pass implies L1* for every admissible A, of any size.
 
@@ -1068,9 +1068,13 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | 8 | 224 | 1,792 | 0 |
 | 9 | 11,936 | 95,488 | 0 |
 | 10 | 32,851 | 328,510 | 0 |
-| 11 | see `out/max11_*.txt` | | |
+| 11 | 11,959,367 | 119,593,670 | 0 |
 
-**(B) Random** (`rand_max.py 3000 7 5000000 11 … 16`): 3,000 connected graphs at n = 11–16, 38,896 pairs (G, c), 0 failures, 199 undecided (budget 5·10⁶).
+**(B) Random.**
+- `rand_max.py 3000 7 5000000 11 … 16`: 3,000 connected graphs at n = 11–16, 38,896 pairs (G, c), 0 failures, 199 undecided (budget 5·10⁶).
+- At n = 17–20 (p ∈ [0.12, 0.35]): 400 graphs, 7,202 pairs, 0 failures, 185 undecided.
+- The two-even conjecture on random graphs: 358 of 360 graphs (n = 12–16) decomposable, 2 undecided. Three packed even vertices (n = 13, 15): 318 of 320 decomposable, 2 undecided.
+- Region forms, exhaustive n ≤ 9 (`ball_test.py`): 0 failures for route-descent's B₂(c) (its Conjecture 8.2), the leaf form, and the intersection N[c] ∪ (N(g) ∩ B₂(c)).
 
 **(C) Necessity and shape.**
 - Dropping A ∩ N(g) = ∅ gives failures (`maxn5–7`); every minimal failing set meets N(g).
