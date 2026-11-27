@@ -1,0 +1,15 @@
+|D| = 4: nauty-geng -cq -d1 4 | gadget 3
+graphs 6 port-pairs 11 profiles 29 realisable-pairs 11 forcing-profiles 0 forcing-pairs 0
+|D| = 5: nauty-geng -cq -d1 5 | gadget 3
+graphs 21 port-pairs 57 profiles 474 realisable-pairs 57 forcing-profiles 0 forcing-pairs 0
+|D| = 6: nauty-geng -cq -d1 6 | gadget 3
+graphs 112 port-pairs 492 profiles 4155 realisable-pairs 492 forcing-profiles 0 forcing-pairs 0
+|D| = 7: nauty-geng -cq -d1 7 | gadget 3
+graphs 853 port-pairs 5361 profiles 81432 realisable-pairs 5361 forcing-profiles 0 forcing-pairs 0
+|D| = 8: nauty-geng -cq -d1 8 | gadget 3
+graphs 11117 port-pairs 113914 profiles 2415862 realisable-pairs 113914 forcing-profiles 0 forcing-pairs 0
+|D| = 9 (4 shards res/mod): nauty-geng -cq -d1 9 r/4 | gadget 3
+graphs 65533 port-pairs 977701 profiles 32380874 realisable-pairs 977701 forcing-profiles 0 forcing-pairs 0
+graphs 47296 port-pairs 954130 profiles 31869230 realisable-pairs 954130 forcing-profiles 0 forcing-pairs 0
+graphs 94487 port-pairs 1529885 profiles 49123726 realisable-pairs 1529885 forcing-profiles 0 forcing-pairs 0
+graphs 53764 port-pairs 963403 profiles 32350934 realisable-pairs 963403 forcing-profiles 0 forcing-pairs 0

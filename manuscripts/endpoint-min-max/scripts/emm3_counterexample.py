@@ -12,8 +12,10 @@ Checks for the manuscript's section "Forcing gadgets" (Theorem: EMM_3 is false):
   2. The host graph G = D + S + s p + s b0 (S = K_{4,4}, s in S) has minimum degree 3, and the
      half-set M = V(S) is cut-feasible, by three implementations of the cut inequality
      (gemm_test.feasible, cut_test.cut_ok, tools/cutfeas.c) and by the arm form (max-flow).
-  3. Non-realisability of G is the gluing argument of the manuscript (no computation needed);
-     realis.c cannot run at n = 18.
+  3. The outer side of the cut (K_{4,4} with two leaves at s) is realisable, so the obstruction
+     is the pairing of the cut edges, not a non-realisable side.
+  4. Non-realisability of G is the gluing argument of the manuscript (no computation needed);
+     realis.c cannot run at n = 18 (tools/realis_wide.c confirms it, see outputs/).
 
 Usage: python3 manuscripts/endpoint-min-max/scripts/emm3_counterexample.py
 """
@@ -165,6 +167,15 @@ def check_host(D):
     print("cut-feasible: gemm_test.feasible", ok1, "| cut_test.cut_ok", ok2, "| cutfeas.c", ok3,
           f"({out[0]} cut-feasible half-sets in all)", "| arm form (max-flow)", ok4)
     assert ok1 and ok2 and ok3 and ok4
+    # the outer side of the cut {sp, sb0}: K_{4,4} with two leaves at s, b = 2 on K_{4,4}
+    O = G.subgraph(S).copy()
+    O.add_edges_from([(10, "l1"), (10, "l2")])
+    bO = {v: 2 for v in S}
+    bO["l1"] = bO["l2"] = 1
+    O2 = nx.convert_node_labels_to_integers(O, label_attribute="old")
+    outer = realis.profile_ok(O2, {v: bO[O2.nodes[v]["old"]] for v in O2})
+    print("outer side (K_{4,4} + two leaves at s) realisable:", outer)
+    assert outer
     print("graph6 of G:", nx.to_graph6_bytes(G, header=False).decode().strip(),
           "M mask", mM)
     return G

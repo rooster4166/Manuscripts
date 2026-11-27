@@ -1,0 +1,12 @@
+surplus clique S_N: explicit realisation of (1 on T, 2 elsewhere) valid for 6 <= N <= 29
+prism            n= 16 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True oracle realisable=True
+K33              n= 16 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True oracle realisable=True
+cube             n= 22 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+Petersen         n= 28 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=False explicit realisation=False
+bridged          n= 28 min deg 4 bridgeless=False edge-conn 2 M cut-feasible=False H Hamiltonian=False explicit realisation=False
+random cubic 8   n= 22 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+random cubic 10  n= 28 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+random cubic 12  n= 34 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+random cubic 14  n= 40 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+random cubic 16  n= 46 min deg 4 bridgeless=True  edge-conn 4 M cut-feasible=True  H Hamiltonian=True  explicit realisation=True
+OK

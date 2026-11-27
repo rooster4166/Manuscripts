@@ -1,0 +1,22 @@
+=== r = 2
+M_2: 1 Hamiltonian decomposition(s) (up to parallel copies), 0 with a repeated cycle; pairings at w: [[(0, 1), (2, 3)]]
+K_4 free: all 3 perfect matchings are end pairings of Hamiltonian path decompositions
+[half blow-up] D_2: 10 vertices, 18 edges; explicit realisation of D^+ valid, leaf pairs [(0, 1), (2, 3)]
+realis.c: D_2^+ realisable True; leaves of c_0, c_1 on different paths possible: False
+G_2: n = 20, m = 63, min degree 4, edge-connectivity 4, vertex-connectivity 3; all degrees even; M = V(S_2) is a half-set
+cut-feasible (arm form, max-flow at every vertex): True
+cut-feasible: gemm_test.feasible True, cut_test.cut_ok True
+graph6: Sj[oKEB?{O?`?F?B_@w?^?Bw?NW?\w?N{ M mask 1047552
+[full blow-up] D_2: 16 vertices, 30 edges; explicit realisation of D^+ valid, leaf pairs [(0, 1), (2, 3)]
+G_2: n = 32, m = 147, min degree 4, edge-connectivity 4, vertex-connectivity 3; all degrees even; M = V(S_2) is a half-set
+cut-feasible (arm form, max-flow at every vertex): True
+=== r = 3
+M_3: 1 Hamiltonian decomposition(s) (up to parallel copies), 0 with a repeated cycle; pairings at w: [[(0, 1), (2, 3), (4, 5)]]
+K_6 free: all 15 perfect matchings are end pairings of Hamiltonian path decompositions
+[half blow-up] D_3: 21 vertices, 60 edges; explicit realisation of D^+ valid, leaf pairs [(0, 1), (2, 3), (4, 5)]
+G_3: n = 42, m = 274, min degree 6, edge-connectivity 6, vertex-connectivity 3; all degrees even; M = V(S_3) is a half-set
+cut-feasible (arm form, max-flow at every vertex): True
+[full blow-up] D_3: 36 vertices, 105 edges; explicit realisation of D^+ valid, leaf pairs [(0, 1), (2, 3), (4, 5)]
+G_3: n = 72, m = 725, min degree 6, edge-connectivity 6, vertex-connectivity 5; all degrees even; M = V(S_3) is a half-set
+cut-feasible (arm form, max-flow at every vertex): True
+OK

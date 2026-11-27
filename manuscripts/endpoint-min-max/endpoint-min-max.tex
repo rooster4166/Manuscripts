@@ -18,6 +18,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem*{remark*}{Remark}
 \newtheorem*{example*}{Example}
+\newtheorem*{conjecture*}{Conjecture}
 
 \newcommand{\Ev}{\mathrm{Ev}}
 \newcommand{\Od}{\mathrm{Od}}
@@ -44,7 +45,10 @@ complementing the star at $v$.
 an explicit pairing of its even vertices such that every half-set with one vertex from each pair
 satisfies all the inequalities. The construction takes the $T$-join of a spanning tree. At each
 vertex it chooses the transitions of the $T$-join by the $T$-join pairing lemma in the free part of
-$G^v$. A parity lemma makes the odd vertices there exactly the ends of these transitions.
+$G^v$. A parity lemma makes the odd vertices there exactly the ends of these transitions. A second
+proof applies the pairing lemma once, to a single auxiliary graph, and is verified in Lean. We
+conjecture that every half-set with one vertex from each pair of such a pairing is realisable
+(Conjecture~TRC). This would imply Gallai's conjecture, and cut selection is its necessary half.
 \item \emph{Sufficiency fails, and characterisation is hard.} The inequality suffices for every graph
 of order at most eight and in the dense range, but not in general. Following a construction of the
 project lead, we prove the following. For every connected bridgeless cubic graph $H$ there is a graph
@@ -52,6 +56,14 @@ $G(H)$, with degrees $2$ and $4$, and a half-set of it that satisfies every cut 
 realisable if and only if $H$ is Hamiltonian. The proof combines Kotzig's theorem on Hamiltonian
 decompositions of line graphs with a computation of the cuts of line graphs. Hence deciding
 realisability of a half-set is NP-complete, even for half-sets that meet every cut inequality.
+\emph{Forcing gadgets} carry this to minimum degree $3$ and beyond. These are subgraphs, attached by
+an edge cut, in every realisation of which two given cut edges lie on one path; they come from
+multigraphs whose Hamiltonian decompositions all pair the edges at one vertex in the same way.
+\begin{itemize}
+\item There is a non-realisable cut-feasible half-set of order $18$ and minimum degree $3$.
+\item For every $r\ge2$ there are $2r$-edge-connected examples of minimum degree $2r$.
+\item Hardness holds for $4$-edge-connected graphs whose degrees are all even and at least $4$.
+\end{itemize}
 \item \emph{Matroid structure.} For each vertex, the half-sets meeting its inequalities are the bases
 of a matroid. The cut-feasible family is the intersection of these matroids, and is not a matroid in
 general. In cones it is described exactly by edge-disjoint pairings avoiding the apex.
@@ -87,12 +99,15 @@ $d(v)\le n-2$ when $d(v)$ is even.
 \emph{Overview.} Section~\ref{sec:emm} gives the cut inequality and its forms. Section~\ref{sec:consequences}
 sets up the selection statements and the matroid structure. Section~\ref{sec:cs} proves cut selection
 (Theorem~\ref{thm:ps}), and Section~\ref{sec:hard} shows that the inequality is not sufficient and
-that realisability is NP-complete (Theorem~\ref{thm:hard}). Sections~\ref{sec:dictionary}--\ref{sec:evidence}
+that realisability is NP-complete (Theorem~\ref{thm:hard}). Section~\ref{sec:gadgets} shows that
+neither minimum degree nor edge-connectivity helps (Theorems~\ref{thm:emm3false},
+\ref{thm:allclasses} and~\ref{thm:hard4}). Sections~\ref{sec:dictionary}--\ref{sec:evidence}
 contain the dictionary, related work and computations.
 
 We cite the archive by the abbreviations of \texttt{research/synthesis.md}:
 ED (even-degrees), SP (separating-pairs), TVS (two-vertex-separators), RE (root-endpoint-costs),
-MR (marked-reduction), ES (endpoint-structure) and JM-repair.
+MR (marked-reduction), OSB (odd-semi-clique-boundary), ES (endpoint-structure), MM (missing-move)
+and JM-repair.
 
 \section{The cut inequality}\label{sec:emm}
 
@@ -161,7 +176,8 @@ For $W=\emptyset$, inequality~\eqref{eq:one} is the local condition $d(v)+b(v)\l
 empty half-set is trivially cut-feasible, and its realisability is Lov\'asz's theorem for graphs with
 all degrees odd~\cite{L68}. The answer to Question~\ref{conj:emm} is yes for every connected graph of
 order at most $8$ (Table~\ref{tab:emm}) and in the dense range (Proposition~\ref{prop:dense} with SP
-Theorem~14.1). It is no in general (Section~\ref{sec:hard}).
+Theorem~14.1). It is no in general (Section~\ref{sec:hard}). It stays no at minimum degree $3$, and in every
+class defined by minimum degree and edge-connectivity (Section~\ref{sec:gadgets}).
 
 \begin{remark}[Eulerian form]\label{rem:euler}
 Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ parallel edges. For a
@@ -239,7 +255,8 @@ However, (R) gives a partition into $n/2$ paths with an end at $r$ that need not
 (ES Corollary~6). Theorem~\ref{thm:ps} proves CS outright. Section~\ref{sec:hard} shows that a
 cut-feasible half-set need not be realisable. So cut selection by itself says nothing about Gallai's
 conjecture, and we make no such claim. Its role in the project is as a guide for an existential
-descent towards (R$_s$) (\texttt{research/synthesis.md}~\S13).
+descent towards (R$_s$) (\texttt{research/synthesis.md}~\S13). The precise form of this hope is
+Conjecture~TRC in Section~\ref{sec:trc}, whose necessary half is Theorem~\ref{thm:ps}.
 \end{remark}
 
 \subsection{Caps, matroids and EMC}\label{sec:caps}
@@ -578,6 +595,47 @@ connected graphs of orders $6$ and $8$ and $1{,}133$ further graphs of orders $4
 orders $8$, $10$, $12$, cycles, complete bipartite graphs, random graphs), in about $113{,}000$
 constructions, and found no failure.
 
+\subsection{A second proof: one auxiliary graph}\label{sec:aux}
+The first statement of Theorem~\ref{thm:ps} also follows from a single application of
+Lemma~\ref{lem:tjoin}, to one graph that carries all the $F^v$ at once.
+
+\begin{proof}[Second proof that a good pairing exists]
+Let $J$ be any $T$-join for $T=\Ev$, not necessarily a forest, and let $F=G-J$. Build a graph $B$ on
+$V\times V$, and call $\{v\}\times V$ the \emph{copy} of $v$. The copy of $v$ carries $F^v$: join
+$(v,w)$ and $(v,w')$ whenever $ww'\in E(F^v)$. In addition, each edge $vx\in J$ joins $(v,x)$ and
+$(x,v)$. Then $\deg_B(v,w)=\deg_{F^v}(w)+[vw\in J]$. By Lemma~\ref{lem:free}, which does not use
+that $J$ is a forest, this is even when $w\neq v$, and $\deg_B(v,v)=\deg_{F^v}(v)$ is odd exactly when
+$v\in\Ev$. So the odd vertices of $B$ are the diagonal vertices $(v,v)$ with $v\in\Ev$. By
+Lemma~\ref{lem:tjoin} they pair up by edge-disjoint paths of $B$. Let $P$ be the induced pairing of
+$\Ev$.
+
+Fix $v$ and $Y\subseteq V-v$, and put
+\[
+S=\{(u,w):u\neq v,\ u\in Y\}\cup\{(v,w):w\in Y\}.
+\]
+An edge inside the copy of some $u\neq v$ has both ends in $S$ or neither. An edge inside the copy of
+$v$ leaves $S$ exactly when it lies in $\delta_{F^v}(Y)$. For $ab\in J$ with $a,b\neq v$, the edge
+$(a,b)(b,a)$ leaves $S$ exactly when $ab\in\delta_{J-v}(Y)$. For $vb\in J$, both ends of $(v,b)(b,v)$
+lie in $S$ if $b\in Y$, and neither does otherwise. Hence, by~\eqref{eq:split},
+\[
+|\delta_B(S)|=|\delta_{F^v}(Y)|+|\delta_{J-v}(Y)|=|\delta_{G^v}(Y)|.
+\]
+Moreover $(u,u)\in S$ if and only if $u\in Y$, because $v\notin Y$. So every pair of $P$ split by $Y$
+is joined by a path of $B$ that crosses $\delta_B(S)$, and these paths are edge-disjoint. Thus
+$\sigma_P(Y)\le|\delta_{G^v}(Y)|$, and $P$ is good by Lemma~\ref{lem:pairing}.
+\end{proof}
+
+A path of $B$ leaves the copy of $v$ only along an edge $(v,x)(x,v)$ with $vx\in J$, so it projects to
+a trail of $J$. Its segment inside the copy of $v$ runs from $(v,x)$ to $(v,y)$, and links the
+transition $\{x,y\}$ at $v$ in $F^v$. When $J$ is a forest, the paths use every edge $(v,x)(x,v)$:
+the unused edges of $B$ form an even graph, and a cycle through such an edge would project to a closed
+trail of $J$. So for a forest $J$ the pairings obtained from $B$ are exactly those of
+Theorem~\ref{thm:ps}. The cost of a single graph is the loss of the route picture, and the gain is
+that no simultaneity argument is needed. This is the proof formalised in Lean
+(Section~\ref{sec:lean}).
+
+\subsection{Transversals of the constructed pairings}\label{sec:trc}
+
 \begin{remark*}[transversals of good pairings]
 A good pairing may have a non-realisable transversal. In \texttt{KsOeBW??G`?A} the pairing
 $\{0\,3,\ 1\,8,\ 4\,5,\ 6\,9,\ 7\,10\}$ is good, and its transversal $\{3,4,8,9,10\}$ is the
@@ -585,6 +643,33 @@ non-realisable half-set of the example in Section~\ref{sec:hard}. No pairing pro
 Theorem~\ref{thm:ps} has that transversal: $3\,10$ and $8\,9$ are bridges that lie in every $T$-join,
 and each is a whole route.
 \end{remark*}
+
+Call a pairing of $\Ev$ \emph{constructible} if Theorem~\ref{thm:ps} produces it for some forest
+$T$-join $J$ and some choice, at each vertex $v$, of edge-disjoint paths of $F^v$ pairing the odd
+vertices of $F^v$. Audit A13 (\texttt{research/audit/A13-cut-selection.md}) examined the twelve graphs
+of order $12$ that have a non-realisable cut-feasible half-set. In all twelve, no non-realisable
+half-set is a transversal of a constructible pairing. In eight of them the complement of every such
+half-set fails~\eqref{eq:one}, so the half-set is a transversal of no good pairing. In the other four,
+every such half-set contains both ends of a one-edge route that every construction produces, as in
+the remark. The failing half-sets of Section~\ref{sec:gadgets}, and $\mathcal L$ in
+$G(\text{Petersen})$, are not transversals of constructible pairings either. They \emph{starve} a region behind a small cut. The routes of a
+constructible pairing are edge-disjoint, so a cut of $c$ edges splits at most $c$ of its pairs
+(Section~\ref{sec:survives}). For example, $\mathcal L$ in $G(\text{Petersen})$ would need $14$ split
+pairs across a cut of $4$ edges.
+
+\begin{conjecture*}[TRC, transversal realisability]
+Let $G$ be a connected graph of even order. Every transversal of every constructible pairing of $\Ev$
+is realisable.
+\end{conjecture*}
+
+Theorem~\ref{thm:ps} is the necessary half of TRC: every such transversal is cut-feasible. TRC
+implies Gallai's conjecture. A realisable half-set gives a partition into $n/2$ paths, and a
+connected graph of odd order $n$ reduces to even order. Indeed, one adds a pendant edge, partitions
+the new graph into $(n+1)/2$ paths, and deletes the pendant edge. TRC also gives (R$_s$) at every even
+vertex $r$: take the transversal containing $r$. TRC holds trivially at order $\le8$, where every
+cut-feasible half-set is realisable. The order-$12$ graphs above, $G_{18}$, the graphs $G_r$ and
+$G'(H)$ of Section~\ref{sec:gadgets}, and larger random graphs are the informative tests
+(\texttt{research/synthesis.md}~\S15).
 
 \begin{remark*}[certificates and guards]
 Before Theorem~\ref{thm:ps} was found, \texttt{scripts/certificates.py} certified PS at every order
@@ -757,16 +842,524 @@ $8$--$18$, and a cubic graph with a bridge, for which $\mathcal L$ is not cut-fe
 \end{example*}
 
 \begin{remark}[what remains]\label{rem:what}
-The counterexamples use saturated vertices of degree $2$. Whether cut-feasibility suffices at minimum
-degree at least $3$ (\emph{EMM$_3$}) is open. The evidence is thin: at order $\le8$, every half-set
-of a graph with $\delta\ge3$ is realisable, so the inequality never binds there
-(Section~\ref{sec:evidence}). Replacing the gadget by degree-$3$ forcing structures would very likely
-carry Theorem~\ref{thm:hard} to $\delta\ge3$ (\texttt{research/synthesis.md}~\S12). Theorem~\ref{thm:hard}
+The counterexamples above use saturated vertices of degree $2$. They do not settle
+\emph{EMM$_3$}, the case of minimum degree at least $3$. The evidence for it was thin: at order
+$\le8$, every half-set of a graph with $\delta\ge3$ is realisable, so the inequality never binds
+there (Section~\ref{sec:evidence}). Section~\ref{sec:gadgets} answers it negatively, with forcing
+gadgets in place of saturated vertices. It also carries Theorem~\ref{thm:hard} to graphs whose
+degrees are all even and at least $4$ (Theorem~\ref{thm:hard4}). Theorem~\ref{thm:hard}
 concerns a \emph{prescribed} half-set, and it does not bear on the existence of some realisable
 half-set. In $G(H)$, for instance, $\mathcal L$ starves $R$ of ends: fourteen even vertices and only
 four boundary edges in the Petersen case. Marks placed inside $R$ remove the Hamiltonicity requirement
 at once.
 \end{remark}
+
+\section{Minimum degree three and beyond: forcing gadgets}\label{sec:gadgets}
+
+Both counterexamples of Section~\ref{sec:hard} use saturated vertices of degree $2$. No path
+passes through such a vertex, so it splits the problem. For a simple profile, $b(v)=d(v)$ forces
+$d(v)\le2$. This suggested EMM$_3$, the question for graphs of minimum degree at least $3$. A least
+counterexample to Gallai's conjecture has minimum degree at least $5$, so EMM$_3$ is what the
+application would need (MM, Remark~7.7).
+
+In this section we show that the answer is still no. Indeed, no restriction by minimum degree and
+edge-connectivity makes cut-feasibility sufficient (Theorems~\ref{thm:emm3false}
+and~\ref{thm:allclasses}). Theorem~\ref{thm:hard} also extends to all degrees even and at least $4$
+(Theorem~\ref{thm:hard4}). The saturated vertex is replaced by a \emph{forcing gadget}. This is a
+subgraph, attached by an edge cut, in every realisation of which two given cut edges lie on one path.
+If both cut edges end at the same outside vertex, that path visits it twice. The cut inequality sees
+the gadget only as a supply of arms and ends. It cannot see the forced pairing.
+
+\subsection{Edge cuts and forced pairs}
+Let $X\subseteq V$ and $F=\delta(X)$. Let $X^+$ be $G[X]$ together with a new vertex $\ell_f$ for each
+$f\in F$, joined to the end of $f$ in $X$. These are the temporary leaves of SP~\S11. For a profile $b$
+of $G$, let $b^+$ be $b$ on $X$ and $1$ on every leaf.
+
+\begin{lemma}[restriction]\label{lem:restrict}
+Let $\cP$ realise $b$ in $G$. Split every path of $\cP$ at each of its vertices outside $X$, and keep
+the pieces that contain an edge incident with $X$. In each kept piece, replace the end outside $X$
+of every edge $f\in F$ by $\ell_f$. The result is a partition of $X^+$ that realises $b^+$. Two leaves
+$\ell_f,\ell_g$ lie on one of its paths if and only if some path of $\cP$ traverses $f$, then a path
+of $G[X]$, then $g$.
+\end{lemma}
+
+\begin{proof}
+A piece has all its interior vertices in $X$. So the kept pieces contain every edge of $G[X]$ and of
+$F$ exactly once, and no other edge. The replacement makes each of them a path of $X^+$. A piece ends
+at a vertex $v\in X$ exactly when its path of $\cP$ does, so $v$ is an end of $b(v)$ pieces. Each
+leaf has degree one and is an end of its piece. The last statement is clear.
+\end{proof}
+
+\begin{definition}
+Let $H$ be a graph with a profile $\beta$. Two leaves $\ell,\ell'$ of $H$ form a \emph{forced pair} if
+$\beta$ is realisable in $H$ and every realisation has a path with ends $\ell$ and $\ell'$.
+\end{definition}
+
+\begin{lemma}[closing]\label{lem:closing}
+Suppose that $\{\ell_f,\ell_g\}$ is a forced pair of $(X^+,b^+)$ and that $f$ and $g$ have the same end
+$s\notin X$. Then $b$ is not realisable in $G$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:restrict}, a realisation of $b$ would contain a path that traverses $f$, then a path
+of $G[X]$, then $g$. That path passes through $s$ twice.
+\end{proof}
+
+\begin{remark}[what can be forced]\label{rem:forced}
+\begin{enumerate}
+\item By Lemma~\ref{lem:restrict} applied to $V-X$, the outside always sees two leaves at the outer
+ends of $f$ and $g$, whatever $X$ does. Forcing two leaves \emph{apart} therefore constrains nothing
+outside. Forcing them \emph{together} makes the gadget behave like a vertex of degree $2$ with $b=0$
+that every path must pass straight through. The saturated vertex of MM, Theorem~7.5 ($b=2$),
+cannot be imitated this way, but forcing together is enough for Lemma~\ref{lem:closing}.
+\item Let the two leaves hang at distinct vertices $x_1,x_2$. Let $X+w$ be $G[X]$ with a new vertex $w$
+joined to $x_1$ and $x_2$, and put $b(w)=2$. The realisations of $X+w$ are exactly the realisations of
+$X^+$ that put the two leaves on different paths. So $\{\ell_1,\ell_2\}$ is forced if and only if $X^+$
+is realisable and $X+w$ is not. Consider the demand form~(b) of Lemma~\ref{lem:forms} at a vertex of $X$, and choose
+optimally whether $w$, or each leaf, lies in $U$. Then $w$ with $b(w)=2$ and the two leaves both
+contribute $|U\cap\{x_1,x_2\}|$ to $b(U)+|\delta(U)|$. So $X+w$ and $X^+$ satisfy the same conditions
+at the vertices of $X$. A two-leaf gadget is therefore the same thing as a non-realisable profile with
+exactly one vertex of degree $2$, which is saturated, all other degrees at least~$3$, and the
+conditions of Lemma~\ref{lem:forms} at all its other vertices.
+\item A leaf $\ell$ at a vertex $x$ with $b(x)\ge1$ lies in no forced pair. Take a realisation in which
+the path $P$ through $\ell$ continues past $x$, and a path $R\ne P$ that ends at $x$. Replacing $P$ and
+$R$ by $\ell xR$ and $P-\ell$ keeps the profile. It gives $\ell$ a new partner, the other end of
+$R$, which is not the other end of $P$ when that end is a leaf. (If no realisation lets $P$ continue
+past $x$, then $\ell$ is always paired with $x$.) So the ports of a forced pair carry no ends.
+\end{enumerate}
+\end{remark}
+
+\subsection{Hamiltonian gadgets}
+
+\begin{lemma}[Hamiltonian realisations]\label{lem:hamreal}
+Let $H$ be a graph with leaves at distinct vertices, and let $\beta$ be a profile with the following
+properties: $\beta=1$ on the leaves; $\beta\le1$ elsewhere; no leaf hangs at a vertex with $\beta=1$;
+$\beta(V(H))=2r$; and $d(v)+\beta(v)=2r$ for every vertex $v$ that is not a leaf. Let $H'$ be obtained
+from $H$ by identifying all leaves into one vertex $w$ and joining $w$ to every vertex with $\beta=1$.
+Then $H'$ is a $2r$-regular graph. Closing every path through $w$ is a bijection from the realisations
+of $\beta$ to the decompositions of $H'$ into $r$ Hamiltonian cycles. Two ends lie on one path if and
+only if the corresponding edges at $w$ lie on one cycle.
+\end{lemma}
+
+\begin{proof}
+A realisation has $r$ paths. A vertex $v$ that is not a leaf lies on $(d(v)+\beta(v))/2=r$ of them,
+so every path passes through every such vertex. Replace each end of a path by the corresponding edge
+at $w$: the edge $xw$ for a leaf at $x$, and the edge $vw$ for an end at a vertex $v$ with
+$\beta(v)=1$. Each path becomes a cycle through $w$ and through every other vertex of $H'$. Each edge
+at $w$ comes from exactly one end. The inverse map deletes $w$.
+\end{proof}
+
+\begin{lemma}[blocks]\label{lem:blocks}
+Let $H$ be a $2r$-regular multigraph, and let $Q$ be a set of $2r$ vertices that induces a simple
+$K_{2r}$, each vertex of $Q$ having exactly one edge leaving $Q$. In every decomposition of $H$ into $r$
+Hamiltonian cycles, each cycle meets $\delta(Q)$ in exactly two edges and meets $E(Q)$ in a Hamiltonian
+path of $Q$. Contracting $Q$ maps these decompositions onto the decompositions of $H/Q$ into $r$
+Hamiltonian cycles.
+\end{lemma}
+
+\begin{proof}
+A Hamiltonian cycle crosses $\delta(Q)$ a positive even number of times, and the $r$ cycles share
+$|\delta(Q)|=2r$ edges. So each crosses exactly twice. It therefore runs through $Q$ in one Hamiltonian
+path, and contracting $Q$ turns it into a Hamiltonian cycle of $H/Q$. Conversely, a decomposition of
+$H/Q$ assigns two edges of $\delta(Q)$ to each cycle, and so a perfect matching $\mu$ of $Q$. Walecki's
+construction decomposes $K_{2r}$ into $r$ Hamiltonian paths~\cite{Als08}. Each vertex has odd degree
+$2r-1$, so it is an end of exactly one of these paths, and their end pairs form a perfect matching.
+The symmetric group acts transitively on perfect matchings, so we may take this matching to be $\mu$.
+Inserting these paths lifts the decomposition.
+\end{proof}
+
+\begin{definition}[the cycle multigraph]
+For $r\ge2$ let $M_r$ have vertices $c_0,\dots,c_{2r-1},w$. For $i\in\mathbb Z_{2r}$, join $c_i$ to
+$c_{i+1}$ by $m_i$ parallel edges, where $m_i=r-1$ for even $i$ and $m_i=r$ for odd $i$. Join $w$ once
+to every $c_i$.
+\end{definition}
+
+$M_r$ is $2r$-regular. $M_2$ is a $4$-cycle with sides of multiplicities $1,2,1,2$ together with a
+vertex joined to all four of its vertices.
+
+\begin{lemma}\label{lem:Mr}
+$M_r$ has a decomposition into $r$ Hamiltonian cycles. In every such decomposition, and for every $j$,
+the edges $wc_{2j}$ and $wc_{2j+1}$ lie on the same cycle.
+\end{lemma}
+
+\begin{proof}
+A Hamiltonian cycle passes $w$ once. Without $w$ it is a Hamiltonian path of $M_r-w$, whose
+underlying simple graph is the cycle $c_0c_1\cdots c_{2r-1}$. Such a path is the cycle minus one side.
+It uses one copy of each other side, and its ends are the ends of the missing side. In a decomposition,
+the side $c_ic_{i+1}$ is used by exactly $m_i$ of the $r$ paths, so it is missing from one path if $i$
+is even and from none if $i$ is odd. Hence the $r$ paths miss the $r$ even sides, one each, and the
+path that misses $c_{2j}c_{2j+1}$ has ends $c_{2j}$ and $c_{2j+1}$. Conversely, these $r$ paths, using
+distinct copies of each side and closed through $w$, form a decomposition.
+\end{proof}
+
+\begin{definition}[the gadgets $D_r$]\label{def:Dr}
+Let $I\subseteq\mathbb Z_{2r}$ contain an end of every side, for instance the odd indices
+(\emph{half blow-up}) or all indices (\emph{full blow-up}). Obtain $D_r$ from $M_r$ in two steps. First,
+replace each $c_i$ with $i\in I$ by a block $B_i\cong K_{2r}$, attaching the $2r$ edges at $c_i$ to
+distinct vertices of $B_i$. Then delete $w$. The \emph{port} $x_i$ is the vertex that carried the edge
+$wc_i$: this is $c_i$ itself if $i\notin I$, and a vertex of $B_i$ if $i\in I$. Since $I$ meets every
+side, $D_r$ is simple. Every port has degree $2r-1$ and every other vertex has degree $2r$. The half
+blow-up has $2r^2+r$ vertices and the full blow-up has $4r^2$.
+\end{definition}
+
+\begin{proposition}[forcing]\label{prop:forcing}
+Let $L$ be a set of ports of $D_r$. Hang one leaf at each port in $L$, and put $b=1$ at the other ports
+and $b=0$ at all other vertices of $D_r$. This profile is realisable. If $x_{2j},x_{2j+1}\in L$, then
+their leaves form a forced pair.
+\end{proposition}
+
+\begin{proof}
+Lemma~\ref{lem:hamreal} applies with $r$ as given, and $H'$ is $D_r+w$ with $w$ joined to every port,
+that is, $M_r$ with the blocks inserted. Lemma~\ref{lem:blocks}, applied to the blocks one at a time,
+shows that the decompositions of $H'$ into $r$ Hamiltonian cycles map onto those of $M_r$ and that the
+cycles keep their edges at $w$. Lemma~\ref{lem:Mr} finishes the proof.
+\end{proof}
+
+For $r=2$ and the half blow-up, write $p=c_0$, $q=c_2$, $A=B_3=\{a_0,\dots,a_3\}$ and $B=B_1=\{b_0,\dots,b_3\}$,
+with ports $a_0$ and $b_0$. Then $D_2$ consists of the two copies of $K_4$ on $A$ and on $B$ and the
+edges
+\[
+pa_1,\ pa_2,\ pb_1,\qquad qa_3,\ qb_2,\ qb_3.
+\]
+It has $10$ vertices and $18$ edges, and its ports are $x_0=p$, $x_1=b_0$, $x_2=q$ and $x_3=a_0$.
+Taking $L=\{p,b_0\}$
+gives the profile $b(a_0)=b(q)=1$, and $0$ elsewhere, of the graph $D_2+\ell_pp+\ell_{b_0}b_0$. Its
+two leaves form a forced pair. One realisation is
+\[
+\ell_p\,p\,a_2\,a_1\,a_0\,a_3\,q\,b_3\,b_1\,b_2\,b_0\,\ell_{b_0},\qquad
+a_0\,a_2\,a_3\,a_1\,p\,b_1\,b_0\,b_3\,b_2\,q .
+\]
+Here is a direct reading of the proof. In $D_2+w$, each of the two Hamiltonian cycles crosses each
+$K_4$ twice. After contracting $A$ and $B$, each cycle uses one of the two parallel edges $Ap$ and one
+of the two parallel edges $Bq$. The only such Hamiltonian cycles are $p\,A\,q\,B\,w\,p$ and
+$w\,A\,p\,B\,q\,w$, and together they form the only decomposition. The first contains $wp$ and $wB$,
+and $wB$ is the edge $wb_0$.
+
+\subsection{Cut-feasibility across a cut}
+
+\begin{lemma}[arms across a cut]\label{lem:armscut}
+Let $b$ be a profile of $G$ with $b(V)=n$, let $X\subseteq V$, and let $F=\delta(X)$. Suppose:
+\begin{enumerate}
+\item[(i)] $b^+$ is realisable in $X^+$;
+\item[(ii)] $b(y)=2$ for every $y\notin X$, and every $y\notin X$ is an end of at most two edges of
+$F$;
+\item[(iii)] for every $y\notin X$ there are edge-disjoint paths of $G-y$, one starting at the end in
+$X$ of each edge of $F$ at $y$, that end at distinct vertices $z$ with $z\notin X$ or $b(z)\ge1$.
+\end{enumerate}
+Then $b$ is cut-feasible.
+\end{lemma}
+
+\begin{proof}
+Since $b(V)=n$, it suffices to give an arm system (Lemma~\ref{lem:forms}(d)) at every vertex $v$.
+
+Let $v\in X$. Proposition~\ref{prop:nec}, applied to a realisation of $b^+$, gives an arm system at
+$v$ in $X^+$. Read an arm that ends at a leaf $\ell_f$ as ending at the end $y\notin X$ of $f$. Each
+leaf ends at most one arm, so by (ii) $y$ ends at most two arms, and $b(y)=2$.
+
+Let $v\notin X$. Give each neighbour $y\notin X$ the arm $(y)$ of length $0$, and use the paths of
+(iii) for the neighbours in $X$. A vertex outside $X$ then ends at most one arm of each kind, so at
+most $2=b(z)$ arms. A vertex in $X$ ends at most one arm. All arms are edge-disjoint and avoid $v$.
+\end{proof}
+
+\begin{lemma}[substitution]\label{lem:subst}
+Let $H$ be a $k$-edge-connected multigraph and $v$ a vertex. Let $H'$ arise from $H$ by replacing $v$
+with a graph $Q$, attaching each edge at $v$ to some vertex of $Q$. For $Y\subseteq V(Q)$, let
+$\mathrm{ext}(Y)$ be the number of these edges at $Y$. Suppose that every $Y$ with
+$\emptyset\ne Y\subsetneq V(Q)$ satisfies
+\begin{gather*}
+|\delta_Q(Y)|+\mathrm{ext}(Y)\ge k,\qquad |\delta_Q(Y)|+\mathrm{ext}(V(Q)-Y)\ge k,\\
+|\delta_Q(Y)|\ge\min\{\mathrm{ext}(Y),\mathrm{ext}(V(Q)-Y)\}.
+\end{gather*}
+Then $H'$ is $k$-edge-connected.
+\end{lemma}
+
+\begin{proof}
+Let $\emptyset\ne X\subsetneq V(H')$, put $Y=X\cap V(Q)$ and $Z=X-V(Q)$, and let $O=V(H)-v$. If
+$Y=\emptyset$ or $Y=V(Q)$, then $\delta_{H'}(X)$ corresponds to $\delta_H(Z)$ or to $\delta_H(Z+v)$. If
+$Z=\emptyset$, then $|\delta_{H'}(X)|=|\delta_Q(Y)|+\mathrm{ext}(Y)$. If $Z=O$, the same holds with
+$V(Q)-Y$ in place of $Y$ in the $\mathrm{ext}$ term. Otherwise, writing $e(\cdot,\cdot)$ for edge
+counts in $H'$,
+\begin{align*}
+|\delta_{H'}(X)|&=|\delta_Q(Y)|+e(Y,O-Z)+e(Q-Y,Z)+e(Z,O-Z),\\
+|\delta_H(Z)|&=e(Z,O-Z)+e(Y,Z)+e(Q-Y,Z),\\
+|\delta_H(Z+v)|&=e(Z,O-Z)+e(Y,O-Z)+e(Q-Y,O-Z).
+\end{align*}
+So $|\delta_{H'}(X)|$ exceeds $|\delta_H(Z)|$ by at least $|\delta_Q(Y)|-\mathrm{ext}(Y)$, and exceeds
+$|\delta_H(Z+v)|$ by at least $|\delta_Q(Y)|-\mathrm{ext}(V(Q)-Y)$. One of these differences is
+non-negative, and both $|\delta_H(Z)|$ and $|\delta_H(Z+v)|$ are at least $k$.
+\end{proof}
+
+For $Q=K_{2r}$ with $\mathrm{ext}\equiv1$ and $k=2r$, the three conditions read
+$j(2r+1-j)\ge2r$, $(2r-j)(j+1)\ge2r$ and $j(2r-j)\ge\min\{j,2r-j\}$ for $|Y|=j\in[1,2r-1]$. All
+three hold.
+
+\subsection{The counterexamples}
+
+\begin{theorem}[minimum degree $3$: the answer to EMM$_3$ is no]\label{thm:emm3false}
+Let $G_{18}$ consist of $D_2$ (half blow-up, as described after Proposition~\ref{prop:forcing}),
+the complete bipartite graph $K_{4,4}$ on eight new vertices, and the edges $sp$ and $sb_0$ for one
+vertex $s$ of the $K_{4,4}$. Then $G_{18}$ is connected, has order $18$, $36$ edges and minimum degree
+$3$, and $M=V(K_{4,4})$ is a half-set of its even vertices. The simple profile of $M$ is cut-feasible
+and is not realised by $9$ paths.
+\end{theorem}
+
+\begin{proof}
+The odd vertices are $a_0$ and $q$, of degree $3$. Vertex $s$ has degree $6$, and every other vertex
+has degree $4$. So $|\Ev|=16$ and $|M|=8$, and $b$ is $1$ at $a_0,q$, $2$ on $M$ and $0$ on the eight
+even vertices of $D_2$.
+
+\emph{Not realisable.} Take $X=V(D_2)$. Then $(X^+,b^+)$ is the gadget of
+Proposition~\ref{prop:forcing} with $L=\{p,b_0\}$, so the leaves of $sp$ and $sb_0$ form a forced pair.
+Both edges end at $s$, so Lemma~\ref{lem:closing} applies.
+
+\emph{Cut-feasible.} Apply Lemma~\ref{lem:armscut} with $X=V(D_2)$. Condition (i) is the realisation
+displayed above. For (ii), $b=2$ on $M$, and only $s$ meets $F=\{sp,sb_0\}$, twice. For (iii), only
+$s$ needs paths: take $p\,a_1\,a_0$ and $b_0\,b_2\,q$. They end at $a_0$ and $q$, where $b=1$.
+\end{proof}
+
+In graph6 the graph is
+\[\texttt{Q\textasciitilde?GW\textbackslash cCoP?@?A?A?@??N?@w?F\_},\]
+with $a_0,\dots,a_3,b_0,\dots,b_3,p,q$ numbered $0,\dots,9$, with $s=10$, and with
+$M=\{10,\dots,17\}$.
+\texttt{scripts/emm3\_counterexample.py} checks the following.
+\begin{itemize}
+\item Cut-feasibility, by max-flow in the arm form and by three independent implementations
+of~\eqref{eq:one} over all $2^{18}$ sets, namely \texttt{gemm\_test.py}, \texttt{cut\_test.py} and
+\texttt{cutfeas.c} in \texttt{tools/}.
+\item Forcing in $D_2$, by the oracle and by listing the $16$ Hamiltonian decompositions of $D_2+w$.
+\end{itemize}
+The oracle \texttt{tools/realis\_wide.c} handles simple profiles up to order $30$. On $G_{18}$ it
+confirms by exhaustive search that $b$ is not realisable, in $75$ seconds.
+
+The construction needs the outside to be one vertex $s$ that receives both forced edges, with enough
+marked vertices to reach the budget. The gadget $D_2$ has $b(D_2)-|D_2|=-8$, and each marked vertex
+outside it contributes $+1$. So eight marked vertices of even degree are needed. With the gadget
+$D_2$, order $18$ is therefore the least possible.
+
+\begin{theorem}[every connectivity class]\label{thm:allclasses}
+Let $r\ge2$, and let $D_r$ be either blow-up, with $N$ vertices. Let $S_r$ be a complete graph on $N$
+new vertices containing $s$ and distinct $t_2,\dots,t_{2r-1}$. Let $G_r$ consist of $D_r$, $S_r$ and
+the edges $sx_0$, $sx_1$ and $t_ix_i$ for $2\le i\le 2r-1$, minus a perfect matching of the vertices of
+$S_r$ of odd degree. Then the following hold.
+\begin{enumerate}
+\item Every vertex of $G_r$ has even degree, and $\delta(G_r)=2r$.
+\item $G_r$ is $2r$-edge-connected.
+\item $M=V(S_r)$ is a half-set whose simple profile ($2$ on $S_r$, $0$ on $D_r$) is cut-feasible and
+is not realised by $N$ paths.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) Every vertex of $D_r$ has degree $2r$. In $K_N$ plus the port edges, the odd-degree vertices all
+lie in $S_r$. They form a clique, and there is an even number of them, so the matching exists.
+Afterwards every vertex of $S_r$ has degree at least $N-2\ge 2r$.
+
+(3) Since $|S_r|=N=|D_r|$ and all vertices are even, $M$ is a half-set. Non-realisability follows
+from Proposition~\ref{prop:forcing} with $L$ the set of all ports, using the pair $x_0,x_1$, and from
+Lemma~\ref{lem:closing} at $s$. For cut-feasibility, apply Lemma~\ref{lem:armscut} with $X=V(D_r)$.
+\begin{itemize}
+\item[(i)] Proposition~\ref{prop:forcing} gives the realisation.
+\item[(ii)] $b=2$ on $S_r$, $s$ meets two edges of $F$, and each $t_i$ meets one.
+\item[(iii)] For each $i$, let $R_i^\pm$ be the path in $D_r$ from $x_i$ to $x_{i\pm1}$ that runs
+along one copy of the side between $c_i$ and $c_{i\pm1}$, using one edge inside a block at either end
+when needed. Extend it by the edge from $x_{i\pm1}$ to its outer end. For $s$, use $R_0^-$ and
+$R_1^+$. They use the sides at $c_{2r-1}c_0$ and $c_1c_2$ and different blocks, so they are
+edge-disjoint, and they end at $t_{2r-1}\ne t_2$. For $t_i$ ($i\ge2$), use $R_i^+$. It ends at
+$t_{i+1}$, or at $s$ if $i=2r-1$.
+\end{itemize}
+
+(2) The multigraph $M_r$ is $2r$-edge-connected. Indeed, let $\emptyset\ne X\subseteq\{c_i\}$. If $X$ is
+all of $\{c_i\}$, the edges leaving it are the $2r$ edges at $w$. Otherwise each maximal arc of $X$
+with $t$ vertices has $t-1$ internal sides of multiplicity at most $r$. So at least
+$2rt-2r(t-1)=2r$ edges leave the arc, and edges leaving different arcs are distinct. Sets containing
+$w$ are complements of such sets. Now build $G_r$ by Lemma~\ref{lem:subst}, one substitution at a
+time. Each $c_i$ with $i\in I$ is replaced by $K_{2r}$, which is allowed by the computation after
+that lemma. Then $w$ is replaced by $S_r$, whose external edges total $2r$. For $|Y|=j$, $K_N$ minus a
+matching has $|\delta_{S_r}(Y)|\ge j(N-j)-\min\{j,N-j\}\ge N-2\ge2r\ge\mathrm{ext}$, so all three
+conditions hold.
+\end{proof}
+
+\texttt{scripts/emm\_connectivity.py} builds $G_r$ for $r=2,3$ and both blow-ups, and checks every
+claim of the theorem. It verifies cut-feasibility by max-flow at every vertex, and also with
+\texttt{gemm\_test} and \texttt{cut\_test} for $G_2$ (half), of order~$20$. It also checks the
+decomposition of $M_r$, the freeness of $K_{2r}$, the explicit realisation of $D_r^+$, and, for $r=2$,
+the forcing by the oracle.
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+$G_r$ & order & $\delta$ & edge-conn. & vertex-conn. & edges\\
+\midrule
+$r=2$, half & $20$ & $4$ & $4$ & $3$ & $63$\\
+$r=2$, full & $32$ & $4$ & $4$ & $3$ & $147$\\
+$r=3$, half & $42$ & $6$ & $6$ & $3$ & $274$\\
+$r=3$, full & $72$ & $6$ & $6$ & $5$ & $725$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So cut-feasibility is not sufficient even for $6$-edge-connected, $5$-connected graphs of minimum degree $6$ (order $72$). This
+covers the minimum-degree and edge-connectivity class of a least counterexample to the rooted test
+(R): SP gives $\delta\ge6$ and $6$-edge-connectivity. SP lists other properties of such a
+counterexample, such as having no matching cut, or every vertex of degree $6$ having an odd
+neighbour. $G_r$ does not have these properties. All its degrees are even, and in the full blow-up
+the edges leaving $B_2\cup B_3$ form a matching cut. Such properties are not of the kind that a min-max statement for all graphs
+could use. The vertex connectivity of the half blow-up is $3$,
+because the two single vertices next to a block, together with the outer end of its port, separate
+the block. We have not determined the vertex connectivity of the full blow-up for $r\ge4$.
+
+\subsection{Hardness at even degrees at least four}\label{sec:hard4}
+The saturated tail of Definition~\ref{def:GH} can be replaced by a marked clique. Lemma~\ref{lem:hamreal}
+then does the work of the one-edge gadget paths.
+
+\begin{definition}\label{def:GH4}
+Let $H$ be a connected cubic graph with $N=|E(H)|-1\ge6$, and let $w^*$, $u_1,\dots,u_4$ and $R$ be as
+in Definition~\ref{def:GH}. Let $S$ be a set of $N$ new vertices containing distinct
+$t_1,\dots,t_4$, and put $T=\{t_1,\dots,t_4\}$. The graph $G'(H)$ consists of three parts:
+\begin{itemize}
+\item the edges of $L(H)-w^*$;
+\item the cross edges $u_it_i$;
+\item on $S$, the complete graph minus the edges $t_1t_2$ and $t_3t_4$ if $N$ is odd, or minus a
+perfect matching $\mu$ of $S-T$ if $N$ is even.
+\end{itemize}
+\end{definition}
+
+Every vertex of $R$ has degree $4$, every vertex of $S$ has even degree at least $N-2\ge4$, and
+$n=2N$. So $S$ is a half-set, with profile $2$ on $S$ and $0$ on $R$.
+
+\begin{lemma}[the marked clique]\label{lem:clique}
+The profile $1$ on $T$ and $2$ on $S-T$ is realisable in $G'(H)[S]$.
+\end{lemma}
+
+\begin{proof}
+Let $N=2m+1$ be odd, so $m\ge3$. Walecki's construction decomposes $K_N$ into $m$ Hamiltonian
+cycles $C_1,\dots,C_m$~\cite{Als08}. Take an edge of $C_1$, and an edge of $C_2$ disjoint from it. This
+exists, since $C_2$ has $N\ge7$ edges and at most four of them meet the first one. By symmetry these
+edges are $t_1t_2$ and $t_3t_4$.
+\begin{itemize}
+\item $C_1-t_1t_2$ is a Hamiltonian path from $t_1$ to $t_2$. Cut it at one interior vertex $x\notin T$
+into two paths.
+\item $C_2-t_3t_4$ is a Hamiltonian path from $t_3$ to $t_4$.
+\item Split the remaining $2m-4$ vertices of $S-T-x$ into pairs, one pair $\{y,z\}$ for each of
+$C_3,\dots,C_m$, and cut $C_j$ at $y$ and $z$ into two paths with ends $y$ and $z$.
+\end{itemize}
+Every vertex of $T$ is now an end once, and every other vertex twice.
+
+Let $N=2m$ be even, so $m\ge3$. Walecki's construction decomposes $K_N$ into $m$ Hamiltonian paths
+whose end pairs form a perfect matching. Permuting the vertices fixes $T$ and maps any perfect
+matching of $S-T$ to any other. So by symmetry the end pairs are $t_1t_2$, $t_3t_4$ and the edges of
+$\mu$. An edge $xy\in\mu$ joins the two ends of one path, so it is an interior edge of another path.
+Deleting it cuts that path in two, with new ends $x$ and $y$. After all these deletions every vertex
+of $T$ is an end once, and every vertex of $S-T$ twice.
+\end{proof}
+
+\begin{theorem}[hardness at even degrees]\label{thm:hard4}
+Let $H$ be a connected bridgeless cubic graph with at least $7$ edges. Then:
+\begin{itemize}
+\item every vertex of $G'(H)$ has even degree at least $4$, and $G'(H)$ is $4$-edge-connected;
+\item the half-set $S$ is cut-feasible;
+\item $S$ is realisable if and only if $H$ is Hamiltonian.
+\end{itemize}
+Consequently, deciding whether a cut-feasible half-set is realisable is NP-complete, even for
+$4$-edge-connected graphs whose degrees are all even and at least $4$.
+\end{theorem}
+
+\begin{proof}
+\emph{Edge-connectivity.} $L(H)$ is $4$-edge-connected by Lemma~\ref{lem:linecuts}. $G'(H)$ arises
+from it by substituting $G'(H)[S]$ for $w^*$, with $\mathrm{ext}=1$ on $T$ and $0$ elsewhere. As in
+the proof of Theorem~\ref{thm:allclasses}, every $Y$ with $\emptyset\ne Y\subsetneq S$ has
+$|\delta_S(Y)|\ge N-2\ge4\ge\mathrm{ext}$, so Lemma~\ref{lem:subst} applies with $k=4$.
+
+\emph{Cut-feasibility.} Since $b(V)=n$, it suffices to give an arm system
+(Lemma~\ref{lem:forms}(d)) at every vertex.
+\begin{itemize}
+\item Let $v\in R$. As $L(H)$ is $4$-edge-connected, it has four edge-disjoint paths from $v$ to
+$w^*$. They start with different edges at $v$ and end with different edges $u_jw^*$. Delete $v$
+from each, and replace the last edge $u_jw^*$ by the cross edge $u_jt_j$. A path that was the single
+edge $u_iw^*$ becomes the arm $(t_i)$ of length $0$. This gives arms from the four neighbours of $v$
+to four distinct vertices of $S$.
+\item Let $v\in S$. Each neighbour in $S$ gets the arm of length $0$. If $v=t_i$, its neighbour $u_i$
+also needs an arm. Take a path in the connected graph $L(H)-w^*$ from $u_i$ to some $u_j$ with
+$j\ne i$, followed by $u_jt_j$.
+\end{itemize}
+Every vertex of $S$ ends at most two arms, and $b=2$ there.
+
+\emph{Realisable only if Hamiltonian.} Take $X=R$. By Lemma~\ref{lem:restrict}, a realisation of $b$
+gives one of $(X^+,b^+)$, where $b^+=0$ on $R$ and the four leaves sit at $u_1,\dots,u_4$.
+Identifying the leaves recovers $L(H)$. So by Lemma~\ref{lem:hamreal} with $r=2$, $L(H)$ has a
+Hamiltonian decomposition, and $H$ is Hamiltonian by Theorem~\ref{thm:kotzig}.
+
+\emph{Realisable if Hamiltonian.} By Theorem~\ref{thm:kotzig} and Lemma~\ref{lem:hamreal}, $X^+$
+is realised by two paths, which pair the leaves as $\{a,b\}$ and $\{c,d\}$. Replacing the leaves by
+the cross edges gives the paths $t_au_a\cdots u_bt_b$ and $t_cu_c\cdots u_dt_d$ of $G'(H)$. Each
+vertex of $T$ gets one end from them. Lemma~\ref{lem:clique} realises the rest of $b$ on the edges of
+$S$.
+
+\emph{Complexity.} This is as in Theorem~\ref{thm:hard}.
+\end{proof}
+
+For the Petersen graph, $G'(P)$ has order $28$, all degrees even, minimum degree $4$ and
+edge-connectivity $4$, and $S$ is cut-feasible but not realisable. \texttt{scripts/kotzig\_even.py}
+checks Theorem~\ref{thm:hard4} on the following graphs: the prism, $K_{3,3}$, the cube, the Petersen
+graph, five random cubic graphs of orders $8$--$16$, and a cubic graph with a bridge, for which $S$
+is not cut-feasible. It checks:
+\begin{itemize}
+\item the degrees and the edge-connectivity;
+\item cut-feasibility, by max-flow at every vertex;
+\item for the Hamiltonian graphs, the explicit realisation from a Hamiltonian decomposition of $L(H)$
+and Lemma~\ref{lem:clique}, which it verifies for $6\le N\le29$;
+\item the exact oracle at order $16$, for the prism and $K_{3,3}$.
+\end{itemize}
+
+\subsection{Where the forcing comes from, and what survives}\label{sec:survives}
+
+\emph{Search.} \texttt{tools/gadget.c} lists two-leaf gadgets exhaustively, using the exact search
+of \texttt{tools/realis.c}. It considers every connected graph $X$, every pair of ports and every
+simple profile in which all vertices other than the leaves have degree at least $3$. There is none
+with $|X|\le9$:
+\begin{itemize}
+\item $4{,}425{,}119$ port pairs and $1.46\times10^8$ profiles at $|X|=9$;
+\item $113{,}914$ port pairs at $|X|=8$
+\end{itemize}
+(\texttt{outputs/gadget\_search\_le9.log}). So $D_2$ is a two-leaf gadget of least order. In the
+Hamiltonian regime of Lemma~\ref{lem:hamreal}, \texttt{tools/hamdec.c} lists the $4$-regular graphs
+with a vertex at which every Hamiltonian decomposition uses the same transition. There are none up to
+order $10$, two of order $11$ ($D_2+w$ and one other) and ten of order $12$
+(\texttt{outputs/hamdec\_4reg\_le12.log}).
+
+\emph{Rigidity versus density.} The pieces that force are sparse and rigid. The blocks $K_{2r}$ are the
+opposite: by Lemma~\ref{lem:blocks}, they realise every pairing. This matches the dense case
+(Proposition~\ref{prop:dense} and SP~14.1), where every locally feasible profile is realisable. Odd
+semi-cliques, the candidates suggested by OSB, sit on the same side. By OSB Theorem~4, at $e(H)=k$
+every minimum partition of $K_{2k+1}-H$ consists of Hamiltonian paths, so Lemma~\ref{lem:hamreal}
+applies. But these partitions come from rainbow Hamilton decompositions of $K_{2k+1}$, and OSB
+Theorem~11 and Corollary~12 show how much freedom these leave in prescribing ends. We expect
+semi-cliques to act as free blocks, like $K_{2r}$, rather than as gadgets.
+
+\emph{Why the cores of MM, Remark~7.7, found nothing.} A partition of $G_{18}$ restricts to
+realisations of both sides of the cut $\{sp,sb_0\}$, and both sides are realisable. (For the side
+$K_{4,4}$ with two leaves at $s$, this is checked by the oracle in
+\texttt{emm3\_counterexample.py}.) The obstruction
+lies in the \emph{pairing} of the cut edges: inside $D_2$ they are always joined, and outside both end
+at $s$. A core search that tests each side for realisability separately cannot see this. The exact
+gluing data across an edge cut are the realisable pairs (profile, pairing of the cut edges) on each
+side. This is the edge-cut analogue of the TVS records, whose matching number $\rho$ records the
+vertex-disjoint pairs across a separating pair.
+
+\emph{What survives.}
+\begin{itemize}
+\item Cut selection (Theorem~\ref{thm:ps}) is a statement about~\eqref{eq:one} alone, and it is
+unaffected.
+\item The failing half-sets of this section \emph{starve} the gadget: all marks lie outside $D_r$ and
+all even vertices of $D_r$ are unmarked. A good pairing of Theorem~\ref{thm:ps} runs along
+edge-disjoint paths, so at most $|\delta(D_r)|=2r$ of its pairs have one vertex on each side of the
+cut. But a transversal equal to $V(S_r)$ needs all $N$ pairs to do so. Hence none of these half-sets is
+a transversal of such a pairing, and the same holds for $G_{18}$ and for $G'(H)$. The
+existence question of Remark~\ref{rem:what} is untouched.
+\item Theorems~\ref{thm:hard} and~\ref{thm:hard4} rule out a polynomial characterisation unless
+P$\,=\,$NP. So the gadgets do not call for a corrected min-max theorem. They show which
+information the cut inequality discards: the pairing of the boundary edges of a rigid piece.
+\end{itemize}
 
 \section{The dictionary}\label{sec:dictionary}
 
@@ -1033,18 +1626,44 @@ yes & yes & yes & yes & yes & 1{,}050\\
 The script also verifies Theorem~\ref{prop:pervertex} by brute force: every $\cF_v$ is a matroid
 basis family, at orders $6$ and $8$.
 
-\section{Formalisation}
-The shared Lean definitions are fixed in \texttt{research/connections.md}~\S U. We recommend the arm
-form (c) as the definition, since its quantifiers are the simplest, with (a) proved equivalent.
-Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing}, Lemma~\ref{lem:free}, Lemma~\ref{lem:linked} and
-Theorem~\ref{thm:ps} are finite and elementary, so Theorem~\ref{thm:ps} (\texttt{cs\_all}) is the
-natural target. Lemma~\ref{lem:linecuts} and Propositions~\ref{prop:Lfeasible} and~\ref{prop:Lreal}
-are also elementary. Kotzig's theorem would be an imported hypothesis.
+\section{Formalisation}\label{sec:lean}
+The shared Lean definitions are fixed in \texttt{research/connections.md}~\S U.
+Theorem~\ref{thm:ps} is formalised as \texttt{cs\_all} in \texttt{lean/GallaiLean/CutSelection.lean}.
+For a connected graph $G$ of even order, it gives a pairing of $\Ev$ every transversal $M$ of which
+satisfies \texttt{CutOK} for $b_M$ and $k=n/2$. Here \texttt{CutOK} consists of the local
+inequalities $b\le d$ and $d+b\le2k$ together with inequality~\eqref{eq:one} for every $v$ and every
+$W\subseteq V-v$. The proof follows
+Section~\ref{sec:aux}:
+\begin{itemize}
+\item the $T$-join is built from paths to a fixed vertex by symmetric differences;
+\item the proof uses Lemma~\ref{lem:tjoin} only in its cut form, which is proved in
+\texttt{PairingLemma.lean}: the odd vertices of any graph pair up so that every vertex set splits at
+most as many pairs as it has boundary edges.
+The proof deletes one edge at a time and uses the triangle inequality for being separated by $S$;
+\item the graph $B$ carries its parity and cut identity;
+\item an algebraic identity turns the cut condition in $G^v$ into~\eqref{eq:one}.
+\end{itemize}
+There is no \texttt{sorry}, and only the standard axioms are used. Lemma~\ref{lem:linecuts} and
+Propositions~\ref{prop:Lfeasible} and~\ref{prop:Lreal} are also elementary. Kotzig's theorem would
+be an imported hypothesis.
 
 \section{Open problems}
 \begin{enumerate}
-\item EMM$_3$: is every cut-feasible half-set of a connected graph of minimum degree at least $3$
-realisable? Or does Theorem~\ref{thm:hard} extend to minimum degree $3$ via forcing gadgets?
+\item \emph{The main problem: Conjecture~TRC} (Section~\ref{sec:trc}). Is every transversal of every
+constructible pairing realisable? Theorem~\ref{thm:ps} is its necessary half, and TRC implies Gallai's
+conjecture. A natural line of attack is a descent, one vertex of a pair at a time, guided by the
+routes of $J$. By the discussion before the conjecture, a counterexample cannot starve a region
+behind a small cut.
+\item Forcing gadgets (Section~\ref{sec:gadgets}).
+\begin{itemize}
+\item Is $18$ the least order of a non-realisable cut-feasible half-set at minimum degree $3$? No
+two-leaf gadget has order at most $9$.
+\item Is there a forcing gadget with about half of its even vertices marked? Only such a gadget could
+produce a failing transversal of a constructible pairing, and so refute TRC; see the remark on
+starving half-sets in Section~\ref{sec:survives}.
+\item Does high vertex connectivity make cut-feasibility sufficient? The full blow-ups are
+$(2r-1)$-connected for $r=2,3$.
+\end{itemize}
 \item Existence instead of characterisation. Theorem~\ref{thm:hard} rules out characterising the
 realisable half-sets, but not proving that \emph{some} half-set containing a given $r$ is realisable,
 which is (R$_s$). Can the good pairing of Theorem~\ref{thm:ps} guide a descent from $\Ev$, which is
@@ -1061,6 +1680,8 @@ made simple?
 \end{enumerate}
 
 \begin{thebibliography}{99}
+\bibitem{Als08} B.~Alspach, The wonderful Walecki construction, Bull.\ Inst.\ Combin.\ Appl.\ 52
+(2008) 7--20.
 \bibitem{Ber78} J.-C.~Bermond, Hamiltonian decompositions of graphs, directed graphs and hypergraphs,
 Ann.\ Discrete Math.\ 3 (1978) 21--28.
 \bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
