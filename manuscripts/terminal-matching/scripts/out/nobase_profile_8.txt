@@ -1,0 +1,3 @@
+instances by distance between the edges: {1: 12341, 2: 668, 3: 16}
+NOBASE by (distance, admissible walk exists): {(1, 'anypath=1'): 761, (2, 'anypath=0'): 63, (2, 'anypath=1'): 3, (3, 'anypath=0'): 5}
+mean |E(G-F)|: base ok 13.83, NOBASE 21.74

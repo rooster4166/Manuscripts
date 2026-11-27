@@ -1052,8 +1052,13 @@ Every failure other than K4 has a cut vertex in G' = G − F, and J of connectiv
 
 The base hypothesis is decided exactly (the stl.c engine with a separation constraint). Outputs: `out/walk_{6,8}_0.txt`, `out/walk_8_2.txt` (walks up to 2 longer), `out/walk_{6,8}_0_sparse.txt`, `out/walk_8_3_sparse.txt` (sparse mode, `walk EXTRA 1`).
 
-- **Longer walks do not help the base hypothesis.** With walks up to 2 longer than shortest, the count stays at 12,193 (the same 832 NOBASE lines). They do help the sparse form (2,288 → 3,093).
+- **Longer walks do not help the base hypothesis.** With walks up to 2 longer than shortest, the count stays at 12,193 (the same 832 NOBASE lines). With every admissible walk of every length, none of the 832 is covered either (`walk 6 0` on the NOBASE lines, `out/walk_8_nobase_all.txt`). They do help the sparse form (2,288 → 3,093).
 - **So the base problem has genuine failures.** In the 832 NOBASE instances (764 with an admissible walk) the base separation fails for every orientation, although PTM₂ holds.
+- **Where the failures are** (distance between the edges in G − F; `nobase_profile.py`, `out/nobase_profile_8.txt`). There are two kinds:
+  - no admissible walk at all: 68 instances, all at distance 2 (63) or 3 (5);
+  - admissible walk but base fails: 764 instances, 761 at distance 1 (the shortest walk is a single edge, k = 1) and 3 at distance 2.
+  - So with the edges at distance ≥ 2 and an admissible walk, the base hypothesis fails in 3 of 616 instances. At distance 1 it fails in 761 of 12,341.
+  - NOBASE graphs are dense: 21.7 edges in G − F on average, against 13.8 for the others.
 - **The packed case has none.** With the three pairs packed in M, every base graph is separable: n = 6: 200 of 1,298 base graphs packed; n = 8: 11,810 of 85,608 (audit A22, `packedbase.py`).
 
 **(G) Random multigraph case, G − F 2-connected** (`run_multi.sh`, `gen_multi.py n M 120 seed 2conn` → `ptm p M`, budget 2·10⁵; `out/multi.log`). For each n = 10, 12, 14 and M = 2, 3: 120 random 2-connected G' with exactly 2M even vertices, and every pairing F of them.

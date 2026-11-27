@@ -583,8 +583,12 @@ $n=8$, walks up to $3$ longer than shortest & 13{,}025 & 68 & & 3{,}093\\
 So the reduction to a separation problem is strong, much stronger than the part of it that is
 proved. But it is lossy: in $832$ instances of order eight the base hypothesis fails for every
 orientation and every shortest admissible walk ($764$ of them have such a walk, $68$ have none),
-although $\PTM_2$ holds in all of them; allowing walks up to two longer than shortest covers no
-further instance. So the base separation problem (three pairs forming a path $x-y-\ell_1-a$ of
+although $\PTM_2$ holds in all of them; allowing admissible walks of every length covers none of
+them. The failures are of two kinds. In the $68$ instances without an admissible walk
+the edges are at distance two or three, and every path between them enters the neighbourhood of
+the short end. Of the $764$ with an admissible walk, $761$ have the two edges joined by an edge,
+so that $P$ is that single edge ($k=1$). Among the $616$ instances whose edges are at distance at
+least two and which have an admissible walk, the base hypothesis fails only $3$ times. So the base separation problem (three pairs forming a path $x-y-\ell_1-a$ of
 constraints, one even vertex) is not always solvable. When the three pairs are packed in $M$, it
 is a case of the class-separation questions of~\cite{MS} for the union of two matchings, where no
 counterexample is known; all $11{,}810$ base graphs of order eight with packed pairs are
@@ -594,7 +598,10 @@ separable (audit~A22).
 
 \begin{enumerate}
 \item \emph{$\PTM_2$ beyond girth five.} The walk theorem reduces it to the base separation
-problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The obstructions to
+problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
+alone does not suffice (Section~\ref{sec:comp}): its failures are concentrated where the two edges
+are joined by an edge, and where no admissible walk exists. These two configurations need a
+second mechanism. The obstructions to
 sparseness are short cycles through the special vertices. $K_4$ shows that some such
 configurations are genuinely bad.
 \item \emph{More than two edges.} The walk theorem chains: leaf the first edge, and for each
