@@ -450,3 +450,11 @@ ptm is testing these on random J with B[U] = K6 − D. tight-fan's protected-bla
 - **Why the separation fails.** In M every edge lies on a path, so separated pairs must be non-adjacent in M. A parallel pair in role e2 or e3 keeps its B-edge in M, so the separation of {x_i, y_i} is impossible. This holds whatever Fan lemma is used; `walk_step_protected` repairs the walk-back step, not the base.
 - **What the scheme can handle.** Only D = C4, with the parallel pair in role e1 and y2y3 ∈ D. Data are running.
 - **What is needed for the rest.** The six separations come from vertex-set tracking ("every path through y_i"). What is actually needed is that the path *ending* at y_i avoids x_i. So an **end-path-tracking refinement** of walk_back / leaf_walk is required, or a chain design whose walks use the B-edges, before K2/P3/K3/∅ can be attacked.
+
+**Sharpening and correction (ptm, 14:06).**
+- **Forced non-edges.** The forced non-edges of B are x2y2, x3y3 and y2y3, which form a path x2 y2 y3 x3 contained in D. Only C4 contains such a path.
+- **C4 needs one protected step.** Along the cycle, y2x3 is a diagonal, so the blank x3 is adjacent to the first target y2 of P1. That is exactly `walk_step_protected` with u = y2 and p = x3.
+- **The "impossible" verdict for K2/P3/K3/∅ is conditional.** It depends on the proof's use of y2 ∉ V(P2), and A22c found no counterexample to Thm 8.2 without that condition. Two concrete lemmas follow:
+  - (a) Thm 8.2 without y2 ∉ V(P2), via end-path tracking at y2;
+  - (b) the chained walk with one protected step at the start of P1.
+  - (b) covers C4; (a) + (b) might reach K2/P3/K3.
