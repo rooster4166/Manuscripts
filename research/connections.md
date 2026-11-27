@@ -1665,6 +1665,12 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **Not proved.** DL(1) when a, b ∈ N(g) and a, b have a common neighbour. The natural attack is the L1\* induction (`l1_strong`) with the disjunction as invariant: a minimal counterexample would have to be blocked for both orientations at once.
 - **Forest lift (coordinator, §4 / synthesis §25).** Its condition (i) p(v) ∉ Q0(v) is a fixed-orientation avoidance on each tree, up to the choice of root. For one-edge trees that choice is exactly DL's disjunction. A forest version of DL would need the root choice as its only freedom. The data above do not test it.
 
+### AF.4′ The forest base is false as stated (E29 (G))
+- At 3 of the 2,438 roots without triangle data in 3-connected graphs of order 9, no forest base exists. Test1 holds at all three. Two independent exact checks agree.
+- The cleanest instance is the cone over K_{2,6} at a degree-7 root (manuscript Example 4.7). There H = J − {z, r} is a star, so the T-join is unique and its leaves are siblings. The 7 branches at r force two siblings onto one path, which violates (ii).
+- Elsewhere the forest lift is very effective: 2,435 of the 2,438 roots have a forest base, and all 12 at order 7 do.
+- A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
+
 ### AF.5 For the clt session (§AE)
 - DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.
 - The hardest instances found are the residual ∅ graphs and E28's K2 |O| = 8 graphs. Graph6 strings are in E29 and in `t6-dense` E28.

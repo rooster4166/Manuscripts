@@ -555,6 +555,12 @@ In M, z is a leaf at r and w is the only even vertex.
 - **New single-vertex target: Conjecture DL** (disjunctive avoidance, `DisjL1`). DL ⇒ triangle base whenever M is connected.
 - **Isolated roots** (refining the next paragraph). Data at r depend only on J[N(z) − r]: they exist iff ν(J[N(z) − r]) ≥ 2 (d(z) = 6). So they exist at every root of the five dense shapes, and at an isolated root whenever the other five core vertices carry two disjoint edges (e.g. D = K_{1,5}). For "triangle base ⇒ T(6)-i", isolated roots therefore need MR Thm 144 only when ν(J[N(z) − r]) ≤ 1.
 
+- **Forest base (§25) refuted as stated** (triangle-base, E29 (G); direct-test1 Example 4.7).
+  - Counterexample: the cone over K_{2,6} at a degree-7 root, plus one more 3-connected graph of order 9. There no w, forest T-join or rooting works, yet Test1 holds.
+  - Evidence: an exhaustive check and an independent brute force.
+  - At order 9 the forest base still exists at 2,435 of the 2,438 roots without triangle data.
+  - Lean: `test1At_of_forestBase` (ForestLift.lean) is banked; it is the lift, not the conjecture.
+
 **Correction to §§22–23 (audit A26, F1).**
 - Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
 - t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.

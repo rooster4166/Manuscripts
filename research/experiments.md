@@ -1562,3 +1562,18 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
 - n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
 - n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28) and at 2·10⁸. An exact run with no budget is pending; see the final status below.
+
+**(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
+- **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.
+  - Test1 was decided exactly at each root.
+  - Forest base search: for each w, up to 30 forest T-joins of J − {z, r} (the T-join inside a spanning tree) and up to 8 rootings.
+  - Conditions (i) and (ii) together are exactly route_ext's query C with r_v = {v, p(v)}.
+- **Results.**
+  - Test1 holds at all 2,438 roots.
+  - A forest base was found, and its lift verified, at 2,435.
+  - At the remaining 3 roots, the exhaustive check (every w, every forest T-join via T-join + cycle space, every rooting, exact) finds **no forest base**. An independent brute force over all Lovász decompositions of M agrees (735 and 2,100 decompositions).
+  - Condition (i) alone is satisfiable at every rooting, so the obstruction is the sibling condition (ii).
+- **The counterexamples.**
+  - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
+  - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
+- **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
