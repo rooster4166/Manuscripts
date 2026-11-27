@@ -32,6 +32,8 @@ static int MA[MAXN][MAXN];
 static int pathv[MAXN], plen2, found;
 static int a1, b1, x2, y2;
 static long long tried;
+static int sparse_mode;
+static int sparse_ok(void);
 static int try_path(void) {
   /* M = G - e1 - e2 - E(P) + l1@b1 ; l1 = gn */
   for (int u = 0; u <= gn; u++) for (int v = 0; v <= gn; v++) MA[u][v] = (u < gn && v < gn) ? GA[u][v] : 0;
@@ -40,7 +42,31 @@ static int try_path(void) {
   int l1 = gn; MA[l1][b1] = MA[b1][l1] = 1;
   int pu[3] = {x2, a1, l1}, pv[3] = {y2, l1, y2};
   tried++;
+  if (sparse_mode) return sparse_ok();
   return sepq(gn + 1, MA, 3, pu, pv);
+}
+/* the hypotheses of ptm2_of_sparse, checked combinatorially on MA (order gn + 1, l1 = gn) */
+static int packed_pair(int u, int v, int A[MAXN][MAXN], int N) {
+  if (A[u][v]) return 0;
+  for (int w = 0; w < N; w++) if (A[u][w] && A[w][v]) return 0;
+  return 1;
+}
+static int sparse_check(int A[MAXN][MAXN], int N) {
+  int X[4] = {x2, y2, a1, gn};
+  for (int v = 0; v < N; v++) { int c = 0; for (int i = 0; i < 4; i++) if (A[v][X[i]]) c++; if (c > 1) return 0; }
+  return packed_pair(x2, y2, A, N) && packed_pair(a1, gn, A, N) && packed_pair(gn, y2, A, N);
+}
+static int sparse_ok(void) {
+  int N = gn + 1;
+  if (sparse_check(MA, N)) return 1;
+  for (int v = 0; v < N; v++) {
+    if (!MA[x2][v] || v == x2 || v == y2 || v == a1 || v == gn) continue;
+    MA[x2][v] = MA[v][x2] = 0;
+    int ok = sparse_check(MA, N);
+    MA[x2][v] = MA[v][x2] = 1;
+    if (ok) return 1;
+  }
+  return 0;
 }
 static int maxlen;
 static void dfs(int v, uint32_t vis) {
@@ -56,6 +82,7 @@ static void dfs(int v, uint32_t vis) {
 }
 int main(int argc, char **argv) {
   int extra = argc > 1 ? atoi(argv[1]) : 0;   /* allow paths up to shortest + extra */
+  sparse_mode = argc > 2 ? atoi(argv[2]) : 0;  /* 1: test the sparse hypotheses instead */
   char line[1024]; long long inst = 0, okc = 0, nopath = 0;
   while (fgets(line, sizeof line, stdin)) {
     char *tok = strtok(line, " \t\n"); if (!tok) continue;

@@ -1,0 +1,605 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\PTM}{\mathrm{PTM}}
+\newcommand{\STL}{\mathrm{STL}}
+\newcommand{\ind}[1]{[\,#1\,]}
+
+\title[Two terminal edges at once]{Two terminal edges at once:\\
+the terminal-matching property of Lov\'asz decompositions}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+A Lov\'asz decomposition of a graph $G$ whose degrees are all odd is a decomposition into $|G|/2$
+paths in which every vertex is the end of exactly one path. For a matching $F$ of $G$ we ask for
+a Lov\'asz decomposition in which every edge of $F$ is the terminal edge of its path, at one of
+its ends, and no two edges of $F$ lie on the same path. For one edge this is the prescribed end
+edge theorem. For two edges it is equivalent to the star-terminal form of the first deletion test
+of the spine of Gallai's conjecture at a vertex of degree four, which is how the question arose.
+
+\emph{Statements.} The property fails for two edges in $K_4$ with a perfect matching (this is the
+wheel $W_4$ with its diagonal pairing), and for three edges in the prism with its rungs. By
+exhaustive computation these are essentially the only obstructions on simple graphs: for two
+edges, $K_4$ is the only failure among all instances on at most $10$ vertices; for three edges
+and for a prescribed end, every failure has $G-F$ disconnected. When the edges of $F$ may be
+parallel to edges of $G$, every failure has a cut vertex in $G-F$.
+
+\emph{Theorems.} We prove a \emph{walk theorem}: attach a leaf in place of the first edge, walk
+the resulting even vertex along a path to the second edge, and restore the path edge by edge with
+Fan's transfer lemma inside a two-leaf graph, where both prescriptions have become separations of
+vertex sets. This reduces two terminal edges to a separation problem with a single even vertex,
+which the sparse separation theorem solves when the special vertices are locally sparse. As a
+consequence, every connected graph with all degrees odd and girth at least five has the
+property for every pair of disjoint edges, even with one end prescribed. Lifting back gives the
+star-terminal condition, hence the first deletion test, for every vertex $z$ of degree four whose
+lifted graph $(J-z)+ab+cd$ has girth at least five. All theorems are formalised in Lean~4 with
+Mathlib, without \texttt{sorry} and with only the standard axioms.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple unless stated otherwise. A \emph{path decomposition} of $G$ is
+a set of paths whose edge sets partition $E(G)$. For a decomposition $\cD$ and a vertex $v$ let
+$b_\cD(v)$ be the number of paths of $\cD$ with an end at $v$; always $b_\cD(v)\equiv d(v)\pmod
+2$. Following~\cite{RD} we call $\cD$ a \emph{Lov\'asz decomposition} if $b_\cD(v)=d(v)\bmod 2$
+for every $v$. Lov\'asz~\cite{L68} proved that every graph with at most one vertex of positive
+even degree has one. When all degrees are odd (or zero), every non-isolated vertex is the end of
+exactly one path, and for such a vertex $x$ we write $Q_x$ for that path. An edge $xy$ is
+\emph{terminal at $x$} if $xy\in E(Q_x)$, that is, if $xy$ is the edge of $Q_x$ at its end $x$.
+
+\begin{theorem}[prescribed end edge~\cite{MS}]\label{thm:endedge}
+If $G$ has no vertex of positive even degree, every edge $xy$ is terminal at $x$ in some Lov\'asz
+decomposition.
+\end{theorem}
+
+This paper is about prescribing several terminal edges at once.
+
+\begin{definition}\label{def:ptm}
+Let $G$ have no vertex of positive even degree and let $F$ be a matching of $G$. Then
+$\PTM(G,F)$ is the statement that some Lov\'asz decomposition of $G$ has every edge of $F$
+terminal at one of its ends, with no two edges of $F$ on the same path. For $e\in F$ and an end
+$x$ of $e$, $\PTM(G,F;e@x)$ additionally requires $e$ to be terminal at $x$. \emph{$\PTM_m$} is
+the statement ``$\PTM(G,F)$ for every $G$ and every $F$ with $|F|=m$'', and $\PTM_m(r)$ the same
+with one end prescribed.
+\end{definition}
+
+For $m=1$ this is Theorem~\ref{thm:endedge}. Prescribing all ends (``PEE$_m$'') is false for
+$m\ge2$: two adjacent prescribed ends of degree three force the edge between them into a single
+transition at both ends~\cite[E22(F)]{STL}. The free choice of ends is therefore essential.
+
+\subsection*{Motivation: the spine}
+The spine of the project~\cite{SP} reduces Gallai's conjecture to two deletion tests on
+$3$-connected graphs. In the first, $J$ has a unique even vertex $z$, and for every $r\in N(z)$
+the graph $J-z$ must have a decomposition into at most $(|J|-1)/2$ paths with two ends at $r$.
+The star-terminal programme~\cite{STL} reaches this test from inside Lov\'asz's setting: a
+Lov\'asz decomposition of $J$ is \emph{star-terminal} at $z$ if every path through $z$ has the
+form $x\,z\,y\cdots$ with $x$ an end, and $\STL(J,z,r)$ asks for one in which $r$ is on a long
+side (or some path through $z$ has length two). By~\cite[Theorem~3.2]{STL}, $\STL(J,z,r)$
+implies the first test at $r$ (formalised as \texttt{test1\_of\_stl}).
+
+Fix a perfect matching $M$ of $N(z)$ whose pairs are not adjacent in $J$, and let
+$G=(J-z)+M$. Replacing each edge $xy\in M$ by the path $x\,z\,y$ turns a Lov\'asz decomposition
+of $G$ in which every edge of $M$ is terminal and no path has two of them into a star-terminal
+Lov\'asz decomposition of $J$ with transitions $M$ at $z$, and conversely~\cite[Proposition~3.4]{STL}.
+An edge $xy\in M$ terminal at $x$ lifts to $x\,z\,y\cdots$, so $x$ is short and $y$ is long. Hence
+\[
+\PTM(G,M;e@s)\ \Longrightarrow\ \STL(J,z,r)\qquad(e=rs\in M).
+\]
+At $d(z)=4$, two edges are prescribed. This is the composition problem of~\cite[\S X.4a]{CONN}:
+the single-transition tools (separation, the leaf trick, the prescribed end edge, the end-edge
+theorem EE at the even vertex~\cite{PE}) each create one even vertex per prescription, and two
+even vertices are beyond them.
+
+\subsection*{Results}
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{The right statements} (Section~\ref{sec:statements}). $K_4$ with a perfect matching
+violates $\PTM_2$ (Example~\ref{ex:K4}); it is the wheel $W_4$ with its diagonal pairing, the only
+known failure of the pairing-prescribed form of STL. The prism with its rungs violates $\PTM_3$.
+Exhaustive computation (Section~\ref{sec:comp}) supports Conjecture~\ref{conj:ptm}: $\PTM_2$ holds
+for every simple $G$ except $K_4$, and $\PTM_m(r)$ holds whenever $G-F$ is connected. When edges
+of $F$ are allowed to be parallel to edges of $G$ (pairs of $M$ adjacent in $J$), every failure
+found has a cut vertex in $G-F$ (Conjecture~\ref{conj:multi}).
+\item \emph{The walk theorem} (Theorem~\ref{thm:walk}). Two terminal edges reduce to a
+separation problem in a graph with one even vertex: three pairs of vertices must be separated in
+a Lov\'asz decomposition of a base graph obtained by deleting a path.
+\item \emph{The sparse form} (Theorem~\ref{thm:sparse}). That separation problem is solved by the
+sparse separation theorem of~\cite{MS} when four special vertices are sparse, up to one
+exceptional vertex, which is removed by one more Fan transfer (Lemma~\ref{lem:fix}).
+\item \emph{Girth five} (Theorem~\ref{thm:girth}). If $G$ is connected, has all degrees odd and
+has no triangles and no $4$-cycles, then $\PTM(G,F;e@x)$ holds for every pair $F$ of disjoint
+edges and every choice of $e\in F$ and of its end $x$.
+\item \emph{STL and the first test} (Theorem~\ref{thm:stl}, Corollary~\ref{cor:test1}). If $z$ has
+degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and $(J-z)+ab+cd$ has girth at least five
+(and $c$ is reachable from $a$ in it), then $\STL(J,z,r)$ holds for every $r\in N(z)$, and the
+first deletion test holds at $z$.
+\item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
+\texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
+connected to \texttt{test1\_of\_stl}.
+\end{enumerate}
+
+\subsection*{Honest status}
+$\PTM_2$ in general is not proved. The walk theorem is a reduction, and its base hypothesis holds
+in $93.6\%$ of all instances on eight vertices when only shortest walks are used
+(Section~\ref{sec:comp}); the sparse form that we can prove covers girth five, and $17.6\%$ of
+the (mostly dense) eight-vertex instances. The girth-five consequence for the spine is narrow:
+the lifted graph of a $3$-connected $J$ rarely has girth five. Its value is that it is the first
+unconditional two-prescription result in this programme, and that the mechanism (walk the even
+vertex, restore inside the leaf graph) is general.
+
+\section{Statements, examples and conjectures}\label{sec:statements}
+
+\begin{example}[$K_4$]\label{ex:K4}
+Let $G=K_4$ on $\{a,b,c,d\}$ and $F=\{ac,bd\}$. A Lov\'asz decomposition has two paths with three
+edges each, so both are Hamiltonian paths. A Hamiltonian path in which $ac$ is terminal at $a$
+reads $a\,c\,u\,v$ with $\{u,v\}=\{b,d\}$, so its last edge is $bd$; the same holds with the roles
+of $a$ and $c$ exchanged. So $ac$ and $bd$ lie on one path, and $\PTM(K_4,F)$ fails. Here
+$J=(G-F)+z(V(F))$ is the wheel $W_4$ and $F$ its diagonal pairing, the exception
+in~\cite[Example~3.7]{STL}. The pairs of $F$ are not adjacent in $J$; this is a simple-graph
+failure.
+\end{example}
+
+\begin{example}[the prism]\label{ex:prism}
+Let $G$ be the prism, two triangles $x_1x_2x_3$ and $y_1y_2y_3$ joined by the rungs
+$F=\{x_iy_i\}$. Then $G-F$ is two triangles, which need four paths, while a decomposition as in
+$\PTM(G,F)$ lifts, by deleting $z$ from the corresponding star-terminal decomposition
+of $J=(G-F)+z(V(F))$, to a decomposition of $G-F$ into at most $(7-1)/2=3$
+paths~\cite[Lemma~3.1]{STL}. So $\PTM(G,F)$ fails, with $|F|=3$.
+\end{example}
+
+The second example generalises: whenever $\PTM(G,F)$ holds, $G-F$ has a decomposition into at
+most $|G|/2$ paths (delete $z$ from the lifted decomposition). So a disconnected $G-F$ with too
+many components is an obstruction, and connectivity of $G-F$ (of $J-z$ in~\cite{STL}) is the
+natural hypothesis.
+
+\emph{Parallel edges.} For a pairing $M$ of $N(z)$ with a pair $xy$ adjacent in $J$, the graph
+$(J-z)+M$ has two parallel edges $xy$. We call this the \emph{multigraph case}: $G'=G-F$ is
+simple, $F$ is a perfect matching of the even-degree vertices of $G'$, and an edge of $F$ may
+join two adjacent vertices of $G'$. The oracle of Section~\ref{sec:comp} works with $J$
+directly, so it covers both cases.
+
+\begin{conjecture}[$\PTM$, simple case]\label{conj:ptm}
+Let $G$ be a simple graph with all degrees odd and $F$ a matching of $G$ such that $G-F$ is
+connected. Then $\PTM(G,F;e@x)$ holds for every $e\in F$ and every end $x$ of $e$, unless $G=K_4$
+and $|F|=2$. Moreover $\PTM(G,F)$ holds for $|F|=2$ even when $G-F$ is disconnected, unless the
+component of $G$ containing $F$ is $K_4$.
+\end{conjecture}
+
+\begin{conjecture}[$\PTM$, multigraph case]\label{conj:multi}
+In the multigraph case, if $G-F$ is $2$-connected and $G\ne K_4$ (as in Example~\ref{ex:K4}),
+then $\PTM(G,F;e@x)$ holds for every $e$ and $x$.
+\end{conjecture}
+
+If $J$ is $3$-connected then $J-z$ is $2$-connected, so Conjecture~\ref{conj:multi} implies the
+pairing-prescribed STL for $3$-connected $J\ne W_4$~\cite[Conjecture~6.4]{STL}, and with it STL
+and the first deletion test.
+
+\section{Tools}\label{sec:tools}
+
+For a decomposition $\cD$ and a vertex $g$ let $Z_\cD(g)=\{w\in N(g):b_\cD(w)=0\}$.
+
+\begin{lemma}[Fan's lemma with vertex sets~\cite{Fan05},~\cite[Lemma~2.2]{RD}]\label{lem:fan}
+Let $g\ne t$ be adjacent in $K$, and let $\cD$ decompose $K-gt$ with $b_\cD(t)>|Z_\cD(g)|$, where
+$Z$ is taken in $K-gt$. Then $K$ has a decomposition $\cD^+$ with
+$b_{\cD^+}=b_\cD+\mathbf 1_g-\mathbf 1_t$, every path of which has its vertex set inside
+$V(Q)\cup\{g\}$ for some path $Q$ of $\cD$.\lean{fan\_single\_supp}
+\end{lemma}
+
+\begin{theorem}[sparse separation~\cite{MS}]\label{thm:sparsesep}
+Let $K$ have at most one vertex of positive even degree, let $X\subseteq V(K)$ be \emph{sparse}
+(every vertex of $K$ has at most one neighbour in $X$), and let $\mathcal A$ be a family of
+subsets of $X$, each of which is packed (its vertices are pairwise non-adjacent without common
+neighbours). Then some Lov\'asz decomposition of $K$ meets every member of $\mathcal A$ in at most
+one vertex per path.\lean{separation\_sparse}
+\end{theorem}
+
+\emph{Leaves.} For a graph $K$ and a vertex $r$, $K+\ell r$ is $K$ with a new vertex $\ell$
+joined to $r$. For an edge $xy$ of $K$, the \emph{leaf graph} $K\langle x,y\rangle$ is
+$(K-xy)+\ell y$; the leaf $\ell$ stands for $x$.
+
+\begin{lemma}[lift and merge~\cite{PE,MS}]\label{lem:leaf}
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $P\in\cD$ ends at $r$, extending $P$ by $r\ell$ gives a decomposition of $K+\ell r$ with
+one end fewer at $r$, one end at $\ell$, the other end counts of $\cD$, and every path either inside
+$V(P)\cup\{\ell\}$ or with the vertex set of a path of $\cD$.\lean{PathDecomp.liftLeaf}
+\item Let $\cD_H$ decompose $K\langle x,y\rangle$ with no path containing both $x$ and $\ell$.
+Identifying $\ell$ with $x$ gives a decomposition $\cD$ of $K$ with
+$b_\cD(x)=b_{\cD_H}(x)+b_{\cD_H}(\ell)$ and the other end counts unchanged; each path of $\cD$ is the
+image of a path of $\cD_H$, with the same ends and edges up to $\ell\mapsto x$.\lean{leaf\_merge}
+\end{enumerate}
+\end{lemma}
+
+In particular, in (b) the path through $y\ell$, which ends at the leaf $\ell$, becomes a path
+ending at $x$ whose terminal edge is $yx$. In the leaf graph, ``$xy$ is terminal at $x$'' is
+the vertex-set property ``$x$ and $\ell$ are separated'', and Lemma~\ref{lem:fan} preserves it
+whenever its target is neither $x$ nor $\ell$. This is the observation behind the protected-end
+lemma of~\cite[Lemma~4.1]{PE}, and the engine of everything below.
+
+\begin{lemma}[walking back]\label{lem:walkback}
+Let $w_0w_1\cdots w_k$ $(k\ge0)$ be a path in $K$, let $K_0=K-\{w_0w_1,\dots,w_{k-1}w_k\}$, and
+let $\cD$ decompose $K_0$. Suppose that every vertex $v\ne w_0$ adjacent in $K$ to one of
+$w_0,\dots,w_{k-1}$ has $b_\cD(v)\ge1$. Then $K$ has a decomposition $\cD'$ with
+$b_{\cD'}=b_\cD+\mathbf 1_{w_0}-\mathbf 1_{w_k}$, every path of which lies in a path of $\cD$
+together with some of $w_0,\dots,w_{k-1}$.\lean{walk\_back}
+\end{lemma}
+
+\begin{proof}
+Induction on $k$; for $k=0$ take $\cD'=\cD$. For $k\ge1$ let
+$K_1=K-\{w_1w_2,\dots,w_{k-1}w_k\}$, so $K_0=K_1-w_0w_1$. Every neighbour of $w_0$ in $K_0$ has an
+end, so $Z_\cD(w_0)=\emptyset$, and $b_\cD(w_1)\ge1$ because $w_1$ is adjacent to $w_0$.
+Lemma~\ref{lem:fan} with target $w_0$ and $t=w_1$ gives $\cD_1$ on $K_1$ with
+$b_{\cD_1}=b_\cD+\mathbf 1_{w_0}-\mathbf 1_{w_1}$, whose paths lie in paths of $\cD$ plus $w_0$.
+The hypothesis holds for $\cD_1$ and the path $w_1\cdots w_k$: a vertex $v\ne w_1$ adjacent to one
+of $w_1,\dots,w_{k-1}$ either is $w_0$, which now has an end, or keeps its end count. Induction
+gives $\cD'$ on $K$, and the end counts and vertex sets compose.
+\end{proof}
+
+\section{The walk theorem}\label{sec:walk}
+
+Throughout this section $G$ has no vertex of positive even degree, and $ab$, $xy$ are disjoint
+edges of $G$. We aim at $ab$ terminal at $a$ and $xy$ terminal at $x$, on different paths.
+
+\begin{definition}\label{def:walk}
+An \emph{admissible walk} is a path $P=p_0p_1\cdots p_k$ of $G$ with $k\ge1$, $p_0=y$, $p_k=a$,
+$b,x\notin V(P)$, and $p_i\notin N(x)$ for $0<i<k$. Its \emph{base graph} is
+\[
+M=\bigl((G-ab)+\ell_1b\bigr)-xy-E(P),
+\]
+where $\ell_1$ is a new leaf at $b$ (it stands for $a$).
+\end{definition}
+
+The path $P$ uses neither $ab$ nor $xy$, because $b,x\notin V(P)$. In $M$ the degrees of $a$ and
+$y$ drop by two, those of the inner vertices of $P$ drop by two, that of $x$ drops by one, and
+$\ell_1$ has degree one. So $x$ is the only vertex of $M$ that can have positive even degree, and
+$d_M(v)\equiv d_G(v)+\ind{v=x}\pmod 2$.\lean{baseG\_parity}
+
+\begin{theorem}[walk theorem]\label{thm:walk}
+Let $P$ be an admissible walk with base graph $M$. If $M$ has a Lov\'asz decomposition in which no
+path contains both vertices of any of the pairs $\{x,y\}$, $\{a,\ell_1\}$, $\{\ell_1,y\}$, then $G$
+has a Lov\'asz decomposition in which $ab$ is terminal at $a$, $xy$ is terminal at $x$, and the two
+paths are different.\lean{ptm2\_of\_base}
+\end{theorem}
+
+\begin{proof}
+Let $\cD_0$ be the given decomposition of $M$. Every non-isolated vertex of $M$ other than $x$ has
+odd degree, hence one end, and $b_{\cD_0}(x)=0$.
+
+\emph{Step 1: the second leaf.} Let $Q_y$ be the path of $\cD_0$ ending at $y$, and extend it by a
+new leaf $\ell_2$ at $y$ (Lemma~\ref{lem:leaf}(a)). The result $\cD_1$ decomposes $M+\ell_2y$,
+with $b_{\cD_1}(y)=0$, $b_{\cD_1}(\ell_2)=1$ and the other end counts of $\cD_0$. Every path of
+$\cD_1$ is either $Q_y\ell_2$ or a path of $\cD_0$. Since $Q_y$ contains $y$, the hypothesis gives:
+no path of $\cD_1$ contains $\{x,\ell_2\}$, $\{\ell_1,\ell_2\}$ or $\{a,\ell_1\}$.
+
+\emph{Step 2: walking back.} Let $H$ be the two-leaf graph $\bigl((G-ab)+\ell_1b-xy\bigr)+\ell_2y$.
+Then $M+\ell_2y=H-E(P)$. Apply Lemma~\ref{lem:walkback} in $H$ to the path $y=p_0,\dots,p_k=a$. A
+vertex with no end in $\cD_1$ is $x$, $y=p_0$, or isolated. No vertex $p_i$ with $0\le i<k$ is
+adjacent to $x$ in $H$: for $i=0$ the edge $xy$ has been removed, and for $0<i<k$ this is
+admissibility. So the hypothesis of Lemma~\ref{lem:walkback} holds. It gives a decomposition
+$\cD_2$ of $H$ with $b_{\cD_2}(a)=0$, $b_{\cD_2}(y)=1$, $b_{\cD_2}(x)=0$, one end at each leaf, and
+one end at every other non-isolated vertex. Every path of $\cD_2$ lies in a path of $\cD_1$
+together with some of $p_0,\dots,p_{k-1}$. These targets are not $x$ (as $x\notin V(P)$), not $a$
+($a=p_k$ appears once on $P$), and not a leaf. So the three separations survive:
+no path of $\cD_2$ contains $\{x,\ell_2\}$, $\{\ell_1,\ell_2\}$ or $\{a,\ell_1\}$.
+
+\emph{Step 3: merging.} The graph $H$ is the leaf graph $K\langle x,y\rangle$ of
+$K=(G-ab)+\ell_1b$, with $\ell_2$ standing for $x$. Lemma~\ref{lem:leaf}(b) merges $\ell_2$ into
+$x$: we get a decomposition $\cD_3$ of $K$ with $b_{\cD_3}(x)=0+1$. The path through $y\ell_2$
+becomes a path $R_2$ ending at $x$ through $yx$. A path of $\cD_3$ containing $a$ and $\ell_1$
+would come from a path of $\cD_2$ containing $a$ and $\ell_1$, since the merge only renames
+$\ell_2$ as $x\ne a$; so $a$ and $\ell_1$ are separated in $\cD_3$. Now $K$ is the leaf graph
+$G\langle a,b\rangle$, and Lemma~\ref{lem:leaf}(b) merges $\ell_1$ into $a$. It gives a Lov\'asz
+decomposition $\cD$ of $G$ in which the image $R_1$ of the path through $b\ell_1$ ends at $a$
+through $ba$, and the image of $R_2$ ends at $x$ through $yx$. The end counts are those of a
+Lov\'asz decomposition of $G$: $a$ has $0+1$ ends, $x$ has one, and every other vertex keeps its
+count.
+
+\emph{Distinctness.} If the two final paths coincided, then $R_2$, as a path of $\cD_3$, would
+contain the edge $b\ell_1$, because this is the only preimage of $ba$ in $K$. Then its preimage in
+$\cD_2$, the path ending at $\ell_2$, would contain $\ell_1$. That contradicts the separation of
+$\ell_1$ and $\ell_2$.
+\end{proof}
+
+\begin{remark}
+During Step~2 the intermediate graphs have two vertices of even degree without ends: the short
+end $x$, and the current target $p_i$ (at the end, the short end $a$). So they are outside
+Lov\'asz's setting, and nothing could be obtained there by induction. Fan's lemma does not need
+parity, only the end count of its source and the absence of endless neighbours of its target.
+This is why the walk can be carried out with both prescriptions frozen as separations. The
+admissibility condition $p_i\notin N(x)$ is exactly what keeps the endless short end $x$ out of
+$Z(p_i)$.
+\end{remark}
+
+\section{The base case: sparse separation with one exception}\label{sec:sparse}
+
+\begin{lemma}[one exceptional vertex]\label{lem:fix}
+Let $g$ be the only vertex of $K$ that can have positive even degree, with $d(g)$ even, and let
+$v\in N(g)$. If $X$ and $\mathcal A$ satisfy the hypothesis of Theorem~\ref{thm:sparsesep} in
+$K-gv$ and $v\notin X$, then $K$ has a Lov\'asz decomposition meeting every member of $\mathcal
+A$ at most once per path.\lean{sep\_sparse\_fix}
+\end{lemma}
+
+\begin{proof}
+In $K-gv$ the vertex $g$ is odd and $v$ is the only vertex that can have positive even degree.
+Theorem~\ref{thm:sparsesep} gives a Lov\'asz decomposition of $K-gv$ with the separations; there
+$b(g)=1$, $b(v)=0$, and every neighbour of $v$ has odd degree, hence an end. Lemma~\ref{lem:fan}
+with target $v$ and $t=g$ restores $gv$. Every new path lies in an old path plus $v\notin X$, so
+the separations survive, and the end counts become $b(v)=1$, $b(g)=0$: a Lov\'asz decomposition of
+$K$.
+\end{proof}
+
+This is the mechanism of~\cite[Theorem~5.1]{PE} (one common neighbour of $u$ and $z$), isolated
+as a lemma.
+
+\begin{theorem}[walk theorem, sparse form]\label{thm:sparse}
+Let $P$ be an admissible walk with base graph $M$, and let $X=\{x,y,a,\ell_1\}$. Suppose that the
+pairs $\{x,y\}$, $\{a,\ell_1\}$, $\{\ell_1,y\}$ are packed and $X$ is sparse, either in $M$ or in
+$M-xv$ for one neighbour $v\notin X$ of $x$. Then $G$ has a Lov\'asz decomposition with $ab$
+terminal at $a$ and $xy$ terminal at $x$, on different paths.\lean{ptm2\_of\_sparse}
+\end{theorem}
+
+\begin{proof}
+$x$ is the only possible vertex of positive even degree of $M$, and $d_M(x)$ is even. Apply
+Theorem~\ref{thm:sparsesep} or Lemma~\ref{lem:fix}, then Theorem~\ref{thm:walk}.
+\end{proof}
+
+\section{Girth five}\label{sec:girth}
+
+\begin{theorem}\label{thm:girth}
+Let $G$ have no vertex of positive even degree and no cycle of length three or four. Let $ab$ and
+$cd$ be disjoint edges, with $c$ reachable from $a$. Then $G$ has a Lov\'asz decomposition in
+which $ab$ is terminal at $a$, $cd$ is terminal at $c$ or at $d$, and $ab$, $cd$ lie on
+different paths.\lean{ptm2\_girth5}
+\end{theorem}
+
+The end of $ab$ is prescribed, so for every $r\in\{a,b,c,d\}$ there is such a decomposition in
+which $r$ is the long end of its edge: apply the theorem to $(b,a)$ or to $(a,b)$, with the roles
+of the two edges exchanged if $r\in\{c,d\}$. In the language of Definition~\ref{def:ptm}:
+\emph{$\PTM_2$ and $\PTM_2(r)$ hold for all graphs of girth at least five with all degrees odd.}
+
+\begin{proof}
+Choose $u\in\{a,b\}$, $w\in\{c,d\}$ and a walk from $w$ to $u$ of least possible length $k$ over
+all four choices. Bypassing cycles gives a path of length at most $k$, hence exactly $k$; call it
+$P=p_0\cdots p_k$, $p_0=w$, $p_k=u$. Then $k\ge1$ since the edges are disjoint.
+
+\emph{Orientation.} If $u=a$, we use the walk theorem with short ends $a$ and $x$, where $y=w$ and
+$x$ is the other end of $cd$. If $u=b$, the prescribed long end $b$ is the end of $P$; we
+exchange the roles of the two edges: the walk theorem is applied to the edge $cd$ with short end
+$w$, to the edge $ab$ with $y=b$ and short end $x=a$, and to the reversed path. In both cases we
+are in the following situation, which we now treat: $ab$ and $xy$ are disjoint edges, $P$ is a
+path from $y$ to $a$ of length $k$, and every walk between $\{a,b\}$ and $\{x,y\}$ has length at
+least $k$. We show that Theorem~\ref{thm:sparse} applies; it yields $ab$ terminal at $a$ and $xy$
+terminal at $x$.
+
+\emph{Admissibility.} If $b\in V(P)$, the part of $P$ from $y$ to $b$ is shorter than $k$, since
+$b\ne a$. If $x\in V(P)$, the part from $x$ to $a$ is shorter. If an inner vertex $p_i$ were
+adjacent to $x$, the walk $x\,p_i\,p_{i+1}\cdots p_k$ would have length $k-i+1$. That is less than
+$k$ unless $i=1$, and then $p_1$ would be adjacent to both $x$ and $y=p_0$: a triangle.
+
+\emph{Short distances.} If $b$ were adjacent to $x$ or $y$, some walk between the two edges would
+have length one. Then $k=1$, $P=ya$, and $a\,y\,x\,b$ would be a $4$-cycle or $a\,b\,y$ a
+triangle. If $ya\in E(G)$ then $k=1$ and $ya$ is the edge of $P$.
+
+\emph{Sparseness.} The only neighbour of $\ell_1$ in $M$ is $b$, and $b$ is adjacent in $M$ to
+none of $a$, $x$, $y$. So $b$ has exactly one neighbour in $X$. Let $v\ne b$ be adjacent in $M$ to
+two vertices of $X\setminus\{\ell_1\}=\{x,y,a\}$.
+\begin{itemize}
+\item $v\sim x,y$: a triangle.
+\item $v\sim y,a$ by edges of $M$ (not of $P$): the walk $y\,v\,a$ gives $k\le2$. If $k=1$ then
+$v\,y\,a$ is a triangle. If $k=2$, then $P=y\,p_1\,a$ with $v\ne p_1$, since the edges $yp_1$ and
+$p_1a$ are not in $M$, and $y\,v\,a\,p_1$ is a $4$-cycle.
+\item $v\sim x,a$: the walk $x\,v\,a$ gives $k\le2$. If $k=1$ then $a\,v\,x\,y$ is a $4$-cycle.
+If $k=2$ this can happen (a $5$-cycle $a\,v\,x\,y\,p_1$). Such a $v$ is unique: two of them, $v$
+and $v'$, would give the $4$-cycle $x\,v\,a\,v'$. And $v\notin X$: $v\ne y$, because $ya\in E(G)$
+forces $k=1$ with $ya\in E(P)$.
+\end{itemize}
+The vertices of $X$ themselves have no neighbour in $X$ in $M$: $xy$ and $ab$ are deleted, $ya$ is
+an edge of $P$ if present, $xa\in E(G)$ would give $k=1$ and the triangle $a\,x\,y$, and
+$\ell_1$ is adjacent only to $b$. Packedness: $x$ and $y$ are non-adjacent in $M$ with no common
+neighbour (a triangle); $a$ and $\ell_1$ have no common neighbour because $b\not\sim a$ in $M$;
+$\ell_1$ and $y$ are non-adjacent, and $b\not\sim y$. If there is no exceptional vertex $v$, $X$
+is sparse in $M$. Otherwise $X$ is sparse in $M-xv$, where packedness persists because deleting an
+edge only helps. Theorem~\ref{thm:sparse} applies.
+\end{proof}
+
+\section{STL and the first deletion test at a vertex of degree four}\label{sec:stl}
+
+Let $J$ have $z$ as its only even vertex, with $N(z)=\{a,b,c,d\}$ and $ab,cd\notin E(J)$. Let
+\[
+J^\ast=(J-z)+ab+cd,
+\]
+regarded as a graph on $V(J)$ in which $z$ is isolated. It is obtained by lifting the transitions
+$a\,z\,b$ and $c\,z\,d$ at $z$, one after the other.\lean{liftJ, swapG}
+
+\begin{theorem}\label{thm:stl}
+If $J^\ast$ has a Lov\'asz decomposition with $ab$ terminal at $a$ and $cd$ terminal at $c$, on
+different paths, then $J$ has a star-terminal Lov\'asz decomposition with transitions $a\,z\,b$
+and $c\,z\,d$ in which $b$ and $d$ are on long sides, or a path through $z$ has length two. In
+particular $\STL(J,z,b)$ and $\STL(J,z,d)$ hold.\lean{stl\_of\_ptm2}
+\end{theorem}
+
+\begin{proof}
+Every vertex other than $z$ has the same degree in $J^\ast$ as in $J$, and $z$ has degree $0$, so
+the decomposition is a Lov\'asz decomposition of $J$-parities. Un-lift $cd$: the path ending at $c$
+through $cd$ reads $c\,d\cdots$ and avoids $z$, and replacing $cd$ by $c\,z\,d$ gives a path of
+$J^\ast-cd+cz+zd$. All other paths are kept. Then un-lift $ab$ in the same way. Every vertex keeps
+its ends. The only paths through $z$ are $a\,z\,b\cdots$ and $c\,z\,d\cdots$, so the
+decomposition is star-terminal. The side at $b$ is long unless the path is $a\,z\,b$, which has
+length two; likewise at $d$.
+\end{proof}
+
+\begin{corollary}\label{cor:test1}
+Let $z$ be the only even vertex of $J$, with $N(z)=\{a,b,c,d\}$, $ab,cd\notin E(J)$, and every
+neighbour of $z$ of degree at least three. If $J^\ast$ has no triangle and no $4$-cycle and $c$ is
+reachable from $a$ in $J^\ast$, then $\STL(J,z,r)$ holds for every $r\in N(z)$, and the first
+deletion test holds at $z$: for every $r\in N(z)$, $J-z$ has a decomposition into at most
+$(|J|-1)/2$ paths with two ends at $r$.\lean{stl\_of\_girth5, test1\_of\_girth5}
+\end{corollary}
+
+\begin{proof}
+$J^\ast$ has no vertex of positive even degree. For $r\in N(z)$, Theorem~\ref{thm:girth} with
+the suitable labelling (Section~\ref{sec:girth}) makes $r$ the long end of its pair, and
+Theorem~\ref{thm:stl} gives $\STL(J,z,r)$. The first test follows from STL~\cite[Theorem~3.2]{STL}
+(\texttt{test1\_of\_stl}).
+\end{proof}
+
+In terms of $J$: $J^\ast$ has girth at least five exactly when $J-z$ has girth at least five,
+$d_{J-z}(a,b),d_{J-z}(c,d)\ge4$, and
+$d_{J-z}(a,c)+d_{J-z}(b,d)\ge3$ and $d_{J-z}(a,d)+d_{J-z}(b,c)\ge3$. Each of the other two
+pairings gives its own condition, and one of them suffices.
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational; no proof above depends on it.} Scripts are in
+\texttt{scripts/}, outputs in \texttt{scripts/out/}; the experiment log is E24 in
+\texttt{research/experiments.md}.
+
+\subsection*{Oracle}
+\texttt{ptm.c} decides $\PTM(G,F)$, $\PTM(G,F;e@x)$ and the prescribed-end form through
+$J=(G-F)+z(V(F))$. It searches for a star-terminal Lov\'asz decomposition of $J$ with allowed
+transitions $F$ at $z$ and, for $e@x$, the required terminal edge $xz$. The search engine is a
+verbatim copy of \texttt{tools/stl.c}~\cite{STL}, validated there against two brute-force
+enumerators: a depth-first search over paths with memoised failures, exact unless a node budget
+is given. The only change is that the memo table is reset by generation stamps. Every positive
+answer is re-checked here by an independent verifier (paths, edge partition, end counts, star
+condition, transitions, prescribed ends); there were no bad witnesses in any run.
+Because the oracle works with $J$, the multigraph case (an $F$-edge parallel to an edge of $G$) is
+handled without change. For order $10$, the instances $(G,F)$ are reduced up to isomorphism.
+\texttt{encode.c} subdivides each $F$-edge by a vertex carrying two pendant leaves, the only
+vertices of even degree; nauty's \texttt{labelg} canonicalises the result; and \texttt{decode.py}
+recovers $(G-F,F)$.
+
+\subsection*{Results}
+\begin{table}[!ht]
+\centering\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+class & instances & PTM fails & PTM$(e@x)$ tests & fails\\
+\midrule
+simple, $m=2$, $n\le8$ & 13{,}234 & 3 ($K_4$) & 52{,}924 & 0\\
+simple, $m=3$, $n\le8$ & 14{,}124 & 2 & 84{,}732 & 15 \\
+simple, $m=4$, $n=8$ & 1{,}955 & 0 & 15{,}640 & 14 \\
+simple, $m=2$, $n=10$ (up to isomorphism) & 3{,}474{,}599 & \textit{pending} & & \\
+girth $\ge5$, $m=2$, $n\le12$ & 1{,}497 & 0 & 5{,}988 & 0\\
+multigraph, $G-F$ connected, $n\le8$ & 76{,}632 & 29 & 453{,}964 & 1{,}942\\
+\bottomrule
+\end{tabular}
+\caption{Exhaustive tests. ``Simple'': all connected all-odd $G$ and all matchings $F$ of $m$
+edges (all instances, not up to isomorphism, except at $n=10$). Every PTM failure with $m=3$ and
+every PTM$(e@x)$ failure in the simple rows has $G-F$ disconnected; the $m=3$ failures are the
+prism (order $6$) and one graph of order $8$. ``Multigraph'': all connected $G'$ of order $\le8$
+and all perfect matchings $F$ of the even vertices of $G'$ with $G'+F$ connected; every failure
+except $K_4$ has a cut vertex in $G'=G-F$ (and $J$ of connectivity at most $2$).}
+\label{tab:exh}
+\end{table}
+
+\subsection*{How far the walk theorem reaches}
+\texttt{walk.c} tests, for every instance with $|F|=2$, all eight choices of which edge is $ab$
+and which ends are short, and all admissible walks of least length (or up to a given excess). It
+decides whether the base graph has a Lov\'asz decomposition with the three separations (an exact
+search, the oracle with a separation constraint), or, in the second mode, whether the sparse
+hypotheses of Theorem~\ref{thm:sparse} hold.
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+instances ($n\le8$, all $2$-matchings) & total & no admissible walk & base hypothesis & sparse form\\
+\midrule
+$n=6$ & 206 & 1 & 160 & 31\\
+$n=8$ & 13{,}025 & 68 & 12{,}193 & 2{,}288 \\
+$n=8$, walks up to $3$ longer than shortest & 13{,}025 & 68 & & 3{,}093\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So the reduction to a separation problem is strong, much stronger than the part of it that is
+proved. The separation problem in the base graph (three pairs forming a path $x-y-\ell_1-a$ of
+constraints, one even vertex) is a case of the class-separation questions of~\cite{MS} for the
+union of two matchings, where no counterexample is known.
+
+\section{What remains}\label{sec:open}
+
+\begin{enumerate}
+\item \emph{$\PTM_2$ beyond girth five.} The walk theorem reduces it to the base separation
+problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The obstructions to
+sparseness are short cycles through the special vertices. $K_4$ shows that some such
+configurations are genuinely bad.
+\item \emph{More than two edges.} The walk theorem chains: leaf the first edge, and for each
+further edge walk the even vertex from the previous short end to the next long end, deleting
+the walk; restore in reverse order, re-attaching each leaf before walking back. The base graph
+then needs separations of $\{x_i,y_i\}$, $\{x_1,\ell_1\}$ and all pairs of long ends, and each
+walk must avoid the neighbourhoods of the later short ends. Writing down a clean sufficient
+condition (large girth and large mutual distances) is routine but has not been done or
+formalised.
+\item \emph{The multigraph case.} Theorem~\ref{thm:walk} assumes $G$ simple. For STL at a vertex
+whose neighbourhood is dense, every pairing may contain adjacent pairs.
+\item \emph{Relation to EE.} $\PTM_2(r)$ at $d(z)=4$ contains the end-edge conjecture EE of~\cite{PE}
+for those $u\in N(z)$ that can be paired with a non-neighbour, so a full proof of $\PTM_2(r)$
+would settle the open case of EE ($|N(u)\cap N(z)|\ge2$) at $d(z)=4$. The walk theorem's final
+step is EE-like (the Fan transfers end at the long end $y$); the girth hypothesis plays the role
+of ``at most one common neighbour'' in~\cite[Theorem~5.1]{PE}.
+\end{enumerate}
+
+\section{The formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/TerminalMatching.lean} (imports \texttt{StarTerminal}) contains, without
+\texttt{sorry}; \texttt{manuscripts/terminal-matching/PTMAxioms.lean} prints for the main
+theorems only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, and the full
+library builds.
+\begin{itemize}
+\item \texttt{chainEdges}, \texttt{ChainAdj}, \texttt{delChain}, \texttt{delChain\_degree\_mod}:
+paths as vertex lists, and the parity of degrees after deleting the edges of a path.
+\item \texttt{walk\_back}: Lemma~\ref{lem:walkback}, by induction along the list, each step
+\texttt{fan\_single\_supp}.
+\item \texttt{leafG}, \texttt{baseG}, \texttt{baseG\_parity}, \texttt{ptm2\_of\_base}:
+Definition~\ref{def:walk} and Theorem~\ref{thm:walk}; the conclusion is \texttt{PTM2At G a b x y}.
+The two leaves live in \texttt{Option (Option W)}; \texttt{PathDecomp.liftLeaf} and
+\texttt{leaf\_merge} (twice) do the leaf bookkeeping.
+\item \texttt{sep\_sparse\_fix}, \texttt{ptm2\_of\_sparse}: Lemma~\ref{lem:fix} and
+Theorem~\ref{thm:sparse}, from \texttt{separation\_sparse}.
+\item \texttt{NoTriangle}, \texttt{NoSquare}, \texttt{ptm2\_girth\_core}, \texttt{ptm2\_girth5}:
+Theorem~\ref{thm:girth}. The minimal walk is taken by \texttt{Nat.find} and made a path by
+\texttt{Walk.bypass}; the distance arguments use \texttt{takeUntil}/\texttt{dropUntil}.
+\item \texttt{swapG}, \texttt{liftJ}, \texttt{swapG\_degree}, \texttt{GPath.subdivide\_start},
+\texttt{PathDecomp.replace\_edges}, \texttt{unlift}, \texttt{stl\_of\_ptm2}: Theorem~\ref{thm:stl}.
+\item \texttt{stl\_of\_girth5}, \texttt{test1\_of\_girth5}: Corollary~\ref{cor:test1}, through
+\texttt{test1\_of\_stl}.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{CONN} Project notes, \texttt{research/connections.md}, \S\S X, Y, Z.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
+(2005) 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
+1966), Academic Press, 1968, 231--236.
+\bibitem{MS} J.~Williams, Separating many pairs in Lov\'asz decompositions: classes, the leaf
+merge, and the Case~I lemma, \texttt{manuscripts/multi-sep}, 2026.
+\bibitem{PE} J.~Williams, Prescribed end edges in Lov\'asz decompositions with one even vertex,
+\texttt{manuscripts/prescribed-end}, 2026.
+\bibitem{RD} J.~Williams, Route descent, \texttt{manuscripts/route-descent}, 2026.
+\bibitem{SP} J.~Williams, The spine: Gallai's conjecture and two deletion tests on $3$-connected
+graphs, \texttt{manuscripts/spine}, 2026.
+\bibitem{STL} J.~Williams, Star-terminal Lov\'asz decompositions and the deletion tests for
+Gallai's conjecture, \texttt{manuscripts/stl}, 2026.
+\end{thebibliography}
+\end{document}

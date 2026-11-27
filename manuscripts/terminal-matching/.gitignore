@@ -3,3 +3,5 @@ scripts/walk
 scripts/out/odd10*.g6
 scripts/out/pairs_*.txt
 scripts/out/odd10_part*
+scripts/encode
+scripts/out/n10/
