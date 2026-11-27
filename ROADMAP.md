@@ -41,7 +41,11 @@ EMM sufficiency work is **stopped**.
   - Open regime: Problem 8.5, with |X| ≳ √D and an explicit |X|² error.
   - Theorem 9.3, assuming the explicit Scheduling Hypothesis SH: a failure sequence must contain intermediate vertices (new obstruction, Problem 9.4) or lie in the 8.5 regime.
   - What remains for Target D on this route: SH, 7.2, 8.5 and 9.4.
-- **audit-a19** (session_01FxXpVeJfgH2Kk1YfHLu4K7, branch `claude/audit-a19`): audit of near-dirac §§8–9.
+- **audit-a19**: DONE (dc79e9f).
+  - Sound: Lemmas 8.1–8.2 and SH as stated.
+  - Fixes: a GAP in Prop 8.3(i)'s proof (the conclusion survives) and a sign ERROR in Problem 8.5's identity.
+  - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
+  - The fixes were sent to near-dirac.
 - **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
