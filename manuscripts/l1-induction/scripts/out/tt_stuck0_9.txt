@@ -1,0 +1,36 @@
+INST H?ABfbw c=8 A={5,6,7} g=7
+  u=0 inNc=1 goodD'=324 transferOK=246 chainAvoidsC=246(ok 246) chainThruC=78(ok 0)
+  u=1 inNc=1 goodD'=284 transferOK=260 chainAvoidsC=260(ok 260) chainThruC=24(ok 0)
+  u=2 inNc=1 goodD'=284 transferOK=260 chainAvoidsC=260(ok 260) chainThruC=24(ok 0)
+  u=3 inNc=1 goodD'=284 transferOK=260 chainAvoidsC=260(ok 260) chainThruC=24(ok 0)
+  RESULT CaseI-OK
+INST H?ABvrw c=7 A={5,6,8} g=6
+  u=1 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=2 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=3 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=4 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  RESULT CaseI-OK
+INST H?ABvrw c=8 A={5,6,7} g=6
+  u=1 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=2 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=3 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  u=4 inNc=1 goodD'=732 transferOK=612 chainAvoidsC=612(ok 612) chainThruC=120(ok 0)
+  RESULT CaseI-OK
+INST H?B@nbw c=8 A={5,6,7} g=7
+  u=0 inNc=1 goodD'=586 transferOK=502 chainAvoidsC=502(ok 502) chainThruC=84(ok 0)
+  u=1 inNc=1 goodD'=586 transferOK=502 chainAvoidsC=502(ok 502) chainThruC=84(ok 0)
+  u=2 inNc=1 goodD'=586 transferOK=502 chainAvoidsC=502(ok 502) chainThruC=84(ok 0)
+  u=3 inNc=1 goodD'=586 transferOK=502 chainAvoidsC=502(ok 502) chainThruC=84(ok 0)
+  RESULT CaseI-OK
+INST H?BDvp{ c=7 A={5,6,8} g=6
+  u=0 inNc=1 goodD'=1284 transferOK=1020 chainAvoidsC=1020(ok 1020) chainThruC=264(ok 0)
+  u=2 inNc=1 goodD'=1256 transferOK=1048 chainAvoidsC=1048(ok 1048) chainThruC=208(ok 0)
+  u=3 inNc=1 goodD'=1256 transferOK=1048 chainAvoidsC=1048(ok 1048) chainThruC=208(ok 0)
+  u=4 inNc=1 goodD'=1256 transferOK=1048 chainAvoidsC=1048(ok 1048) chainThruC=208(ok 0)
+  RESULT CaseI-OK
+INST H?Bcrrw c=8 A={5,6,7} g=7
+  u=1 inNc=1 goodD'=776 transferOK=634 chainAvoidsC=634(ok 634) chainThruC=142(ok 0)
+  u=2 inNc=1 goodD'=776 transferOK=634 chainAvoidsC=634(ok 634) chainThruC=142(ok 0)
+  u=3 inNc=1 goodD'=776 transferOK=634 chainAvoidsC=634(ok 634) chainThruC=142(ok 0)
+  u=4 inNc=1 goodD'=776 transferOK=634 chainAvoidsC=634(ok 634) chainThruC=142(ok 0)
+  RESULT CaseI-OK

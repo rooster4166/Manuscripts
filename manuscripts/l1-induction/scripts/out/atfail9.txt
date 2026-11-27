@@ -1,0 +1,16 @@
+ATFAIL H?AEMHw g=8 c=6 u=1 A={7,8}
+ATFAIL H?AEMHw g=8 c=7 u=1 A={6,8}
+ATFAIL H?BE@rF g=7 c=0 u=8 A={1,7}
+ATFAIL H?BE@rF g=7 c=1 u=8 A={0,7}
+ATFAIL H?BE@rF g=7 c=5 u=8 A={6,7}
+ATFAIL H?BE@rF g=7 c=6 u=8 A={5,7}
+ATFAIL H?`DRjk g=7 c=6 u=2 A={7,8}
+ATFAIL H?`crjw g=7 c=6 u=3 A={7,8}
+ATFAIL H?`bKzk g=7 c=6 u=5 A={7,8}
+ATFAIL H?ouPzw g=7 c=6 u=4 A={7,8}
+ATFAIL HCQRRQs g=8 c=6 u=2 A={7,8}
+ATFAIL HCQRRQs g=8 c=7 u=2 A={6,8}
+ATFAIL HCdbCre g=0 c=1 u=8 A={0,2}
+ATFAIL HCdbCre g=0 c=2 u=8 A={0,1}
+ATFAIL HCdbCre g=0 c=5 u=8 A={0,6}
+ATFAIL HCdbCre g=0 c=6 u=8 A={0,5}

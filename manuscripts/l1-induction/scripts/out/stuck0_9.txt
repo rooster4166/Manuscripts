@@ -1,0 +1,7 @@
+STUCK0 H?ABfbw 8 {5,6,7} g=7 blocked=1 nch=4
+STUCK0 H?ABvrw 7 {5,6,8} g=6 blocked=1 nch=4
+STUCK0 H?ABvrw 8 {5,6,7} g=6 blocked=1 nch=4
+STUCK0 H?B@nbw 8 {5,6,7} g=7 blocked=1 nch=4
+STUCK0 H?BDvp{ 7 {5,6,8} g=6 blocked=1 nch=4
+STUCK0 H?Bcrrw 8 {5,6,7} g=7 blocked=1 nch=4
+SUMMARY instances=95488 blocked=15277 notRec=0 notRec_blocked=0 stuck=6 flags=MB
