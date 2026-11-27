@@ -769,7 +769,7 @@ For $r=2$ and the half blow-up, write $p=c_0$, $q=c_2$, $A=B_3=\{a_0,\dots,a_3\}
 with ports $a_0$ and $b_0$. Then $D_2$ consists of the two copies of $K_4$ on $A$ and on $B$ and the
 edges
 \[
-pa_1,\ pa_2,\ pb_1,\qquad qa_3,\ qb_2,\ qb_3,
+pa_1,\ pa_2,\ pb_1,\qquad qa_3,\ qb_2,\ qb_3.
 \]
 It has $10$ vertices and $18$ edges, and its ports are $x_0=p$, $x_1=b_0$, $x_2=q$ and $x_3=a_0$.
 Taking $L=\{p,b_0\}$
@@ -968,7 +968,7 @@ with $|X|\le9$:
 \item $4{,}425{,}119$ port pairs and $1.46\times10^8$ profiles at $|X|=9$;
 \item $113{,}914$ port pairs at $|X|=8$
 \end{itemize}
-(\texttt{outputs/gadget\_search\_le9.log}). So $D_2$ has the least possible order. In the
+(\texttt{outputs/gadget\_search\_le9.log}). So $D_2$ is a two-leaf gadget of least order. In the
 Hamiltonian regime of Lemma~\ref{lem:hamreal}, \texttt{tools/hamdec.c} lists the $4$-regular graphs
 with a vertex at which every Hamiltonian decomposition uses the same transition. There are none up to
 order $10$, two of order $11$ ($D_2+w$ and one other) and ten of order $12$
@@ -984,7 +984,9 @@ Theorem~11 and Corollary~12 show how much freedom these leave in prescribing end
 semi-cliques to act as free blocks, like $K_{2r}$, rather than as gadgets.
 
 \emph{Why the cores of MM, Remark~7.7, found nothing.} A partition of $G_{18}$ restricts to
-realisations of both sides of the cut $\{sp,sb_0\}$, and both sides are realisable. The obstruction
+realisations of both sides of the cut $\{sp,sb_0\}$, and both sides are realisable. (For the side
+$K_{4,4}$ with two leaves at $s$, this is checked by the oracle in
+\texttt{emm3\_counterexample.py}.) The obstruction
 lies in the \emph{pairing} of the cut edges: inside $D_2$ they are always joined, and outside both end
 at $s$. A core search that tests each side for realisability separately cannot see this. The exact
 gluing data across an edge cut are the realisable pairs (profile, pairing of the cut edges) on each
@@ -1005,9 +1007,9 @@ all the marks outside the gadget.
 A corrected min-max statement must carry pairing data. Two directions remain open.
 \begin{itemize}
 \item Cut conditions plus boundary records of rigid pieces.
-\item A weaker statement that still implies Gallai's conjecture, for example that every connected
-graph has \emph{some} cut-feasible half-set, or some transversal of the pairing of
-Theorem~\ref{thm:ps}, that is realisable.
+\item A weaker statement that still implies Gallai's conjecture, for example that some transversal of
+the pairing of Theorem~\ref{thm:ps} is always realisable. (That \emph{some} half-set is realisable is
+the simple-profile form of Gallai's conjecture itself.)
 \end{itemize}
 
 \section{The dictionary}\label{sec:dictionary}
