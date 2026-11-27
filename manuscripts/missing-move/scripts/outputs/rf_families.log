@@ -1,0 +1,8 @@
+A62 [0 np rf hubs]: LOSE I~~~wF{~? Ev [0, 1, 2, 3, 4, 5, 8, 9] roots [0, 1, 2, 3, 4, 5] 1 graphs, 1 with a losing root (kmax=0, np, hubs, rf) 
+A62 [0 np rf orbit hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf, orbit) 
+B2 [0 np rf hubs]: LOSE I~~~wF{~G Ev [0, 1, 2, 3, 4, 5] roots [0, 1, 2, 3, 4, 5] 1 graphs, 1 with a losing root (kmax=0, np, hubs, rf) 
+B2 [0 np rf orbit hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf, orbit) 
+cp4 [0 np rf hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf) 
+cp4 [0 np rf orbit hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf, orbit) 
+cp5 [0 np rf hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf) 
+cp5 [0 np rf orbit hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, rf, orbit) 

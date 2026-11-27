@@ -60,10 +60,12 @@ share one new path. We test a hub-strategy conjecture: at a root with the hypoth
 branching base case, the root's star, a parity repair and a bounded number of further held
 edges suffice. At order $8$ two further edges suffice at all $9268$ root orbits. A sample of order
 $10$ needs three, and there the proved theorems apply at no root. Finally we test the inductive
-template proposed for the endpoint min-max conjecture EMM. Its extension to arbitrary profiles
-fails at order $7$ through a linkage obstruction. At the Gallai budget it holds at every order up
-to $8$, and above the budget at every order up to $7$ and on a sample of order $8$. Single-edge and bounded path-insertion moves are not inductive: they fail
-exactly where Fan's count is tight. The hub lemmas of every degree,
+template proposed for the endpoint min-max conjecture EMM, and find that EMM itself is false. Its
+extension to arbitrary profiles fails at order $7$ through a linkage obstruction, and padding at a
+saturated vertex lifts that failure to the Gallai budget. Gluing a below-budget failure to a gadget
+through a vertex with two ends, which no path can cross, gives simple half-set counterexamples to
+EMM of order $12$. Along the way, single-edge and bounded path-insertion moves turn out not to be
+inductive: they fail exactly where Fan's count is tight. The hub lemmas of every degree,
 the degree-four theorems, the critical instance and Fan's alternative are formalised in Lean~4.
 \end{abstract}
 
@@ -192,11 +194,12 @@ hub-strategy conjecture (Conjecture~\ref{conj:hub}) holds at order $8$ with $c=2
 order $10$ needs $c\ge3$, and the proved theorems cover none of its roots.
 \item \emph{The inductive template for EMM} (Section~\ref{sec:emm}). The cut criterion is exact for
 all profiles at order $\le6$. It fails once at order $7$ ($p=2$, a linkage obstruction) and $17$
-times at order $8$, always below the budget. This suggests EMM$^+$ (Conjecture~\ref{conj:emmplus}).
-A minimal counterexample is connected and has no reducible leaves or degree-$2$ vertices
-(Lemma~\ref{lem:reductions}; the leaf case is formalised). The profile-level moves leave a few stuck
-instances at order $6$, each at Fan's equality (Proposition~\ref{prop:template},
-Remark~\ref{rem:diag}).
+times at order $8$, always below the budget. But padding lifts the order-$7$ failure above the
+budget (Example~\ref{ex:padding}). Gluing through a vertex with $b=d=2$ gives counterexamples to
+EMM itself, of order $12$ (Theorem~\ref{thm:emmfalse}; verified with the project's EMM test). Minimal
+non-realisable cut-feasible instances admit the reductions of Lemma~\ref{lem:reductions}; the leaf
+case is formalised. The profile-level moves leave stuck instances at order $6$, each at Fan's
+equality (Proposition~\ref{prop:template}, Remark~\ref{rem:diag}).
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
@@ -1089,16 +1092,80 @@ is a $2$-linkage obstruction. The cut conditions do not see it: for $v\in\{0,1,2
 $2p-d(v)-b(v)$ is $0$, and (C) reduces to $b(W)\le|\delta(W)|$, which holds.
 \end{example}
 
-So EMM does not extend to arbitrary profiles. All failures we found are below the Gallai budget.
+So EMM does not extend to arbitrary profiles. All failures of Proposition~\ref{prop:gemm} lie
+below the Gallai budget, and at first this suggested restricting the induction to the following
+class.
 
-\begin{conjecture}[EMM$^+$]\label{conj:emmplus}
-Let $G$ be connected of order $n$, and let $b$ be a profile with $p\ge\lceil n/2\rceil$. Then $b$
-is realised by $p$ paths if and only if it is cut-feasible.
-\end{conjecture}
-EMM is the case of simple profiles of half-sets, where $n$ is even and $p=n/2$. By
-Proposition~\ref{prop:gemm}, EMM$^+$ holds for every profile at order at most $7$, for every profile
-with $p=4$ at order $8$, and on the order-$8$ sample with every $p$. At order $8$ the bound
-$\lceil n/2\rceil$ cannot be lowered by one, since three failures have $p=3$.
+\begin{definition}[The class EMM$^+$]\label{conj:emmplus}
+A graph with a profile $b$ is in the class EMM$^+$ if every component $C$ with an edge has
+$\sum_Cb\ge|V(C)|$, i.e.\ at least $\lceil|V(C)|/2\rceil$ paths. The statement EMM$^+$ asserts that
+in this class cut-feasibility implies realisability. EMM is the case of simple profiles of
+half-sets, where $n$ is even and $p=n/2$.
+\end{definition}
+
+By Proposition~\ref{prop:gemm}, EMM$^+$ holds at every order up to $7$, for every profile with $p=4$ at
+order $8$, and on the order-$8$ sample. It is nevertheless false, and so is EMM.
+
+\begin{example}[Padding]\label{ex:padding}
+In \texttt{FqJBo} the vertex $3$ is \emph{saturated}, $b(3)=d(3)$, so it is an end of every path through
+it. Attach $t$ new leaves to $3$ and raise $b(3)$ by $t$. Each new edge then has two saturated ends,
+so it is a path by itself, and the padded profile is realisable iff the original one is. It is not.
+For $t=3$ we get \texttt{IqJBo\_OC?}, with $n=10$ and $b=(1,0,1,5,0,0,0,1,1,1)$, so $p=5=n/2$; for
+$t=4$ we get $n=11$ and $p=6=\lceil n/2\rceil$. Both are cut-feasible, by our checker and by
+\texttt{cut\_ok} of \texttt{tools/cut\_test.py}, and neither has a partition, by \texttt{realis.c} and
+by an independent brute-force enumeration. So EMM$^+$ fails. Larger $t$ gives counterexamples with
+$p-\lceil n/2\rceil$ arbitrarily large.
+\end{example}
+
+Padding needs a saturated vertex of large degree, so it does not produce simple profiles. Simple
+profiles have a different saturated separator.
+
+\begin{theorem}[EMM is false]\label{thm:emmfalse}
+There are connected graphs of order $12$ with a half-set $M$ of their even vertices whose simple
+profile satisfies (L) and every inequality~(1), but is not realised by $6$ paths. One is
+\texttt{KsOeBW??G`?A}, with edges
+\[
+01,02,03,06,14,16,17,25,27,47,57,\ 3\,10,\ 10\,8,\ 8\,9,\ 9\,11
+\]
+and $M=\{3,4,8,9,10\}$.
+\end{theorem}
+\begin{proof}
+The vertices $3,8,9,10$ have degree $2$ and $b=2$, and $11$ is a leaf. In any partition with this
+profile a vertex with $b=d$ is an end of every path through it. So the edges $3\,10$, $10\,8$,
+$8\,9$ and $9\,11$ are four one-edge paths, and the path through $03$ ends at $3$. The remaining two
+paths must partition the core \texttt{GsOeBW} (vertices $0,\dots,7$), in which $3$ is a leaf, with
+$b=(0,0,1,1,2,0,0,0)$. That core profile is cut-feasible but not realisable. It is one of the $17$
+order-$8$ failures of Proposition~\ref{prop:gemm}, and we checked it again by brute force. So the
+order-$12$ profile is not realisable. Its cut-feasibility was checked exhaustively over all $v$
+and $W$ by two independent implementations, ours and \texttt{cut\_ok} of the EMM test
+\texttt{tools/cut\_test.py}. That test reports this half-set as an EMM failure.
+\end{proof}
+
+The construction glues a below-budget core with a leaf to a realisable gadget with a leaf. The two
+leaves are identified into a vertex $c$ of degree $2$ with $b(c)=2$, through which no path passes.
+The gadget's surplus of ends makes the glued profile a half-set, and its many paths enlarge every
+slack $2p-d(v)-b(v)$ in~(1), so the cut conditions no longer see the core's linkage obstruction.
+From the two order-$8$ failures with a leaf, \texttt{GsOeBW} and \texttt{GqGUDg}, and all gadgets of
+order $5$, \texttt{tools/emm\_glue\_search.py} finds $14$ glued instances. All are cut-feasible and
+not realisable, and they form $12$ distinct graphs of order $12$, each reported as an EMM failure
+by \texttt{tools/cut\_test.py} (\texttt{outputs/emm\_counterexamples12\_cut\_test.log}). A targeted
+search over simple half-sets of graphs obtained from \texttt{FqJBo} by attaching three vertices to
+its terminals $0,2,3$ found no failure ($199$ graphs, $10{,}327$ cut-feasible half-sets;
+\texttt{outputs/emm\_lift\_search.log}). This is consistent with the exhaustive evidence for EMM up
+to order $8$ and with the order-$10$ samples.
+
+\begin{remark}[What survives]\label{rem:survives}
+Any vertex with $b=d$ separates the problem: no path passes through it. A corrected statement must
+therefore decompose at such vertices and treat each piece with its own budget. Theorem~\ref{thm:emmfalse}
+shows that a piece below its budget can carry a linkage obstruction that no cut inequality
+detects. Two natural repairs remain open.
+\begin{itemize}
+\item Restrict EMM to graphs in which no vertex with $b=d$ is a cut vertex. The counterexamples
+above all have the cut vertex $3$. A $2$-connected version would need two such separators.
+\item Add linkage conditions for the pieces below the budget. The order-$7$ and order-$8$ failures
+are the test cases.
+\end{itemize}
+\end{remark}
 
 For disconnected graphs the class asks that every component $C$ with an edge have
 $\sum_Cb\ge|V(C)|$. Cut-feasibility passes to components. Indeed, if $v\in C$ and $W\subseteq C-v$,
@@ -1106,8 +1173,8 @@ apply (C) to $W\cup(V-C)$. This adds $b(V-C)=2p-2p_C$ to the left side and nothi
 it gives (C) for $C$ with $p_C$ paths. The case $W=V-C$ gives (L) for $C$.
 
 \begin{lemma}[Reductions]\label{lem:reductions}
-Let $(G,b)$ be a counterexample to Conjecture~\ref{conj:emmplus} (in the class, cut-feasible, not
-realisable) with $|E(G)|$ minimal. Then:
+Let $(G,b)$ be cut-feasible, in the class EMM$^+$ and not realisable, with $|E(G)|$ minimal among
+such instances (they exist by Example~\ref{ex:padding}). Then:
 \begin{enumerate}[label=(\alph*)]
 \item $G$ is connected;
 \item every vertex $w$ of degree $2$ with $b(w)=0$ has adjacent neighbours;
@@ -1154,6 +1221,10 @@ the following.
 \item C (concatenation): $b'=b+e_u+e_v$ with $p+1$ paths, if $b'(u)\ge2$ or $b'(v)\ge2$.
 \item $\mathrm{NP}_L$ (path insertion): delete a path $P$ of length at most $L$ whose ends $a\ne z$
 have $b\ge1$, and take $b'=b-e_a-e_z$ on $G-E(P)$.
+\item S (guarded split): replace $ux,uy$ ($xy\notin E$) by $xy$, keeping $b$ and $p$. A partition of
+the split graph lifts (route $xy$ through $u$) when the path through $xy$ avoids $u$. This is
+guaranteed if $x$ and $y$ are saturated (then that path is the edge $xy$), or if $d(u)=4$, $b(u)=0$
+and the other two neighbours of $u$ are saturated (then the path through $u$ is $a\,u\,c$).
 \end{itemize}
 A move is \emph{valid} if $b'$ is cut-feasible on the smaller graph and, for EMM$^+$, in the class.
 A valid move succeeds for every partition of the smaller graph: by Fan's lemma for T, because the
@@ -1178,8 +1249,19 @@ EMM$^+$ class, reduced; with $\mathrm{NP}_L$, $L\le5$ & $0/35$ & $2/589$ & $6/10
 \end{tabular}
 \end{center}
 In the last row every stuck instance has $p=\lceil n/2\rceil$. There a path insertion would leave
-the class.
+the class. Adding guarded splits gives $0/35$, $1/589$, $4/10{,}847$ in the EMM$^+$ class, and
+$0$, $0$, $4$ together with $\mathrm{NP}_L$, $L\le5$. In the class of simple profiles with
+$p\ge\lceil n/2\rceil$, where moves must keep $b\le2$, the counts are $0/6$, $14/68$, $38/456$, and
+$0$, $10$, $28$ with splits and path insertion.
 \end{proposition}
+Splitting off, the device of Mader's and Lov\'asz's splitting lemmas and of Frank's proof of the
+Lov\'asz--Cherkassky theorem, keeps $n$, $p$ and $b$. On the $14$ stuck EMM$^+$ instances at $n=6$,
+every vertex of degree $4$ with $b=0$ has a split that keeps (L) and (C), $39$ in all. In $10$ of
+the $14$ instances some such split lifts for every partition of the split graph, checked by
+enumerating the partitions (\texttt{tools/emm\_split.py}, \texttt{outputs/split\_lift6.log}). In
+general, though, simple graphs often admit no split: $26$ of the $35$ reduced instances at $n=4$
+and $267$ of $589$ at $n=5$ have none. Unlike trails, a path can lift only if it avoids $u$, so
+splitting carries the same guarantee problem as the single-edge moves.
 
 Examples of stuck instances are as follows.
 \begin{itemize}
@@ -1207,8 +1289,9 @@ exactly where the hypothesis of the move is tight, the situation of Section~\ref
 \subsection*{Negative results and what the template needs}
 \begin{enumerate}[label=(\arabic*)]
 \item EMM does not extend to arbitrary profiles. It fails at order $7$ and, $17$ times, at order $8$
-below the budget, through linkage obstructions (Example~\ref{ex:linkage}). The induction must stay
-in a class such as EMM$^+$.
+below the budget, through linkage obstructions (Example~\ref{ex:linkage}). Padding moves the
+failure above the budget (Example~\ref{ex:padding}). Gluing through a saturated vertex of degree
+$2$ makes it a simple half-set at order $12$, so EMM is false (Theorem~\ref{thm:emmfalse}).
 \item Profile-level single-edge moves do not make cut-feasibility inductive, even after the
 reductions. Neither do path insertions of bounded length.
 \item At the budget $p=\lceil n/2\rceil$ the class EMM$^+$ forbids path insertion. There only
@@ -1219,8 +1302,10 @@ or a concatenation has one end at each of $u$ and $v$, either the move succeeds,
 of $H$ has a rigid structure that exhibits a tight cut of $G$ through $uv$. Fan's alternative
 (Lemma~\ref{lem:alt}) and the append-or-through Lemma~\ref{lem:through} are the profile-level tools
 at equality. They did not repair the game (Section~\ref{sec:posa}), and the stuck instances above
-are the smallest test cases for any such lemma. The reductions to $2$-connected $G$ through the
-gluing theorems (two-vertex-separators Thm.~7, separating-pairs \S2) are not attempted here.
+are the smallest test cases for any such lemma. Since EMM is false as stated, the template can
+only succeed for a corrected statement (Remark~\ref{rem:survives}). The reductions to $2$-connected
+$G$ through the gluing theorems (two-vertex-separators Thm.~7, separating-pairs \S2), which the
+first repair would need, are not attempted here.
 
 \section{Consequences}\label{sec:conseq}
 

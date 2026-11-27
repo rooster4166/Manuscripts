@@ -1,0 +1,8 @@
+CUT-FEASIBLE glued KsOeBWO?G@?E n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 2, 2, 1, 2] realisable False gadget Dso c' 2 M2 (0, 1, 4)
+CUT-FEASIBLE glued KsOeBWO?G@?E n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 2, 2, 1, 2] realisable False gadget Dso c' 3 M2 (0, 1, 4)
+CUT-FEASIBLE glued KsOeBWO?G@?B n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 1, 2, 2, 2] realisable False gadget DsW c' 3 M2 (1, 2, 4)
+CUT-FEASIBLE glued KsOeBWO?G@?F n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 2, 2, 2, 1] realisable False gadget Dsw c' 3 M2 (0, 1, 2)
+CUT-FEASIBLE glued KsOeBW?CG@?@ n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 2, 2, 2, 1] realisable False gadget DqG c' 3 M2 (0, 1, 2)
+CUT-FEASIBLE glued KsOeBW??G`?A n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 2, 2, 2, 1] realisable False gadget DqG c' 4 M2 (0, 1, 2)
+CUT-FEASIBLE glued KsOeBW?CG@?D n 12 b [0, 0, 1, 2, 2, 0, 0, 0, 1, 2, 2, 2] realisable False gadget Dqg c' 3 M2 (1, 2, 4)
+{'tested': 7, 'cut_feasible': 7}
