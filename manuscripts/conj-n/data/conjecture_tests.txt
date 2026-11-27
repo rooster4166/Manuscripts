@@ -1,5 +1,5 @@
 # Conjecture tests (exhaustive over the stated graphs; exact oracle)
-## N (ncert.cpp, old calculus of l1-induction Thm 3.1 + bases)
+## N (ncert.cpp, calculus of l1-induction Thm 3.1 + bases; R = every route for (h))
 n=5 NCERT instances=12 (x~g 6) certified=12 uncertified=0 (good 0, not good 0)
 n=7 NCERT instances=1161 (x~g 657) certified=1161 uncertified=0 (good 0, not good 0)
 n=9 NCERT instances=263264 (x~g 134911) certified=263149 uncertified=115 (good 115, not good 0)
@@ -28,4 +28,10 @@ n=9 TRADJ tests=565744 violations=0
 n=4 NADJ total=3 ok=3
 n=6 NADJ total=129 ok=129
 n=8 NADJ total=4970 ok=4970
-n=10 (32851 out/allodd10.g6) NADJ total=1305621 ok=1305621
+n=10 (32851 graphs) NADJ total=1305621 ok=1305621
+## NA cases (nadjstat.cpp): d(y)=3 (split (g)), d(x)=1 (Lemma NP), no common neighbour (dl-one Thm 6.1), rest
+n=6 NA total=129 d(y)=3:92 d(x)=1:8 no-common-nbr:0 rest:29
+n=8 NA total=4970 d(y)=3:1840 d(x)=1:122 no-common-nbr:129 rest:2879
+n=10 NA total=1305621 d(y)=3:234420 d(x)=1:10639 no-common-nbr:48829 rest:1011733
+## far-end oracle vs enumeration (xcheckb.py)
+XCHECKB queries=399762 mismatches=0 graphs_skipped_cap=0

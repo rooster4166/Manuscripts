@@ -15,10 +15,11 @@ Then some Lovász decomposition of `G` has the path ending at `y` avoiding `x`.
   with the tail allowed to be adjacent to the even vertex; and
 * `ConjNDegTwoOn`: Conjecture N in the case `N(g) = {x, y}`.
 
-The degree-two case is equivalent to an all-odd statement (`conjNDegTwo_of_neighbourAvoid`):
+The degree-two case follows from an all-odd statement (`conjNDegTwo_of_neighbourAvoid`):
 `NeighbourAvoidOn`, the path ending at `y` can avoid a *neighbour* `x` when `y` has a neighbour
-not adjacent to `x`. It holds when `x, y` have no common neighbour other than `g`
-(`avoid_deg_two`).
+not adjacent to `x`. (The converse, which subdivides `xy` by a new vertex, and the case where `x, y`
+have no common neighbour other than `g`, which is `avoid_deg_two`, are manuscript Lemma 4.4 and are
+not formalised here.)
 
 Proof of the theorem: induction on the number of edges.
 * No even vertex: `lovasz_avoid_nonadj` (L₁).
@@ -374,12 +375,12 @@ theorem conjN_strong (hT : TightTransferNOn V) (hR : ConjNDegTwoOn V) (n : ℕ) 
       simp
     exact hR G hev g hg x y hNg hx hy hxy hnxy ⟨w0, hyw0, hw0g, hxw0⟩
 
-/-- **Theorem (manuscript Theorem 4.1).** The tight transfer for one forbidden vertex and the
+/-- **Theorem (manuscript Theorem 4.6).** The tight transfer for one forbidden vertex and the
 degree-two case imply Conjecture N. -/
 theorem conjN_of_tight_degTwo (hT : TightTransferNOn V) (hR : ConjNDegTwoOn V) : ConjNOn V :=
   fun G _ hev x y hx hy hxy hnxy hw => conjN_strong hT hR _ G rfl hev x y hx hy hxy hnxy hw
 
-/-- **The degree-two case is neighbour avoidance.** Split `g` off: in `H = G − gx − gy + xy` there is
+/-- **NA implies the degree-two case** (manuscript Lemma 4.4, first sentence). Split `g` off: in `H = G − gx − gy + xy` there is
 no even vertex and `x ~ y`; NA gives `Q(y) ∌ x` there, and subdividing `xy` by `g` keeps it. -/
 theorem conjNDegTwo_of_neighbourAvoid (hNA : NeighbourAvoidOn V) : ConjNDegTwoOn V := by
   intro G _ hev g hg x y hNg hx hy hxy hnxy hw

@@ -81,7 +81,8 @@ static bool xbase(const Gr& G, int c, uint32_t A, uint32_t B) {
   return false;
 }
 
-static int XMV_LEAFPATH_MAXLEN = 2;
+static int XMV_LEAFPATH_MAXLEN = 64;  // leaf paths of every length (Lemma 3.1); -L k caps them
+static int XMV_ROUTES_ALL = 1;       // all routes for (h); 0 = at most XMV_ROUTES shortest (capped variant)
 static int XMV_TR = 0;  // (t): TR move (conjectural, l1-induction Conj 4.1): c !~ g, u in N(g)&N(c)-A, A & N[c] = 0, B = 0: (G - gu, c, A, 0)
 static int XMV_ROUTES = 8;
 
@@ -156,13 +157,22 @@ static void xchildren(const Gr& G, int c, uint32_t A, uint32_t B, std::vector<XI
       }
     } else if (A >> g & 1) out.push_back({G, c, A & ~(1u << g), B, 'f'});
   }
-  // (h) routes g -> c: shortest in G - A, at most XMV_ROUTES of them
+  // (h) routes g -> c: all of them (default), or at most XMV_ROUTES shortest in G - A (capped variant)
   if (!(A >> g & 1) && !G.has(g, c)) {
     int dist[MAXV]; for (int x = 0; x < G.N; x++) dist[x] = -1;
     int q[MAXV], qh = 0, qt = 0; dist[c] = 0; q[qt++] = c;
     while (qh < qt) { int x = q[qh++]; for (int y = 0; y < G.N; y++) if (G.has(x, y) && dist[y] < 0 && !(A >> y & 1)) { dist[y] = dist[x] + 1; q[qt++] = y; } }
     std::vector<std::vector<int>> paths; std::vector<int> cur{g};
-    if (dist[g] >= 2) {
+    if (XMV_ROUTES_ALL) {  // every g--c path with interior outside A (the proved move (h) has no cap)
+      uint32_t vis = 1u << g;
+      std::function<void(int)> go = [&](int x) {
+        for (int y = 0; y < G.N; y++) if (G.has(x, y) && !(vis >> y & 1) && !(A >> y & 1)) {
+          if (y == c) { if (cur.size() >= 2) { cur.push_back(y); paths.push_back(cur); cur.pop_back(); } continue; }
+          vis |= 1u << y; cur.push_back(y); go(y); cur.pop_back(); vis &= ~(1u << y);
+        }
+      };
+      go(g);
+    } else if (dist[g] >= 2) {  // capped variant: at most XMV_ROUTES shortest routes in G - A
       std::function<void(int)> go = [&](int x) {
         if ((int)paths.size() >= XMV_ROUTES) return;
         if (x == c) { paths.push_back(cur); return; }

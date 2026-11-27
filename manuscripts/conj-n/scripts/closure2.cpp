@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
     else if (a == "-m") movelist = argv[++i];
     else if (a == "-x") exclude = argv[++i];
     else if (a == "-L") XMV_LEAFPATH_MAXLEN = atoi(argv[++i]);
+    else if (a == "-cap") { XMV_LEAFPATH_MAXLEN = 2; XMV_ROUTES_ALL = 0; }  // the capped variant of the first draft
     else if (a == "-T") XMV_TR = 1;
     else if (a == "-T2") XMV_TR = 2;
     else if (a == "-D") DMAX = atoi(argv[++i]);

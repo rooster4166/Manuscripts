@@ -1,4 +1,4 @@
-// trn.cpp: exhaustive test of TRN (manuscript Conjecture 4.2): g even, x, y odd, x !~ y,
+// trn.cpp: exhaustive test of TRN (manuscript Conjecture 4.1): g even, x, y odd, x !~ y,
 // u in N(g) & N(y), u != x.  If (G - gu, y, {x}) is good, is (G, y, {x}) good?
 // Counts tests separately for y ~ g and y !~ g; prints violations.
 #include "orcb.h"

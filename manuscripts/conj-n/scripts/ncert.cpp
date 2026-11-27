@@ -2,7 +2,7 @@
 // (session claude/conj-n).  Instance (G, y, {x}): G at most one even vertex g, x, y odd, x !~ y,
 // y has a neighbour w != g with w !~ x.  Certified = in Rec (moves.h of l1-induction, flags BMS,
 // plus the L1 set-form base of dlrec.cpp).
-// usage: ncert [FLAGS] < graph6      (prints UNCERT lines, then a summary)
+// usage: ncert [FLAGS] < graph6   FLAGS default BMS; add R for all routes in (h)  (prints UNCERT lines, then a summary)
 #include "moves.h"
 #include <unordered_map>
 static bool fB = true, fM = true, fS = true;
@@ -26,7 +26,8 @@ static bool rec(const Gr& G0, int c0, uint32_t A0) {
   memo[k] = r; return r;
 }
 int main(int argc, char** argv) {
-  if (argc > 1) { fB = strchr(argv[1], 'B'); fM = strchr(argv[1], 'M'); fS = strchr(argv[1], 'S'); }
+  if (argc > 1) { fB = strchr(argv[1], 'B'); fM = strchr(argv[1], 'M'); fS = strchr(argv[1], 'S');
+    if (strchr(argv[1], 'R')) { MV_ROUTE_ALL = 1; ROUTE_MAXLEN = 64; } }  // R: all g--c routes for (h)
   char line[256]; long long inst = 0, cert = 0, unc = 0, good = 0, bad = 0, xg = 0;
   while (fgets(line, sizeof line, stdin)) {
     line[strcspn(line, "\r\n")] = 0; if (!line[0]) continue;
