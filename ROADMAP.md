@@ -598,12 +598,12 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Direct lift to Test1 (external proposal via the project lead; verified 2026-11-27).**
   - Statement: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − ⋃ triangles z a_i b_i (for a matching of N(z) − {r, w}) with one disjunctive end-path condition per triangle.
   - Hand-checked proof. Computation: 180/180 roots at n = 11, d = 6; d = 8 partial, 24/24 so far; all lifts verified.
-  - Manuscript `manuscripts/direct-test1/` (synthesis §24). This is sharper than t6-dense Conj 5.1, which needs no fewer than STL-P plus two terminal edges.
+  - Manuscript `manuscripts/direct-test1/` (synthesis §24). Comparison with t6-dense Conj 5.1, made precise by audit A28: at m = 3, r = y1 the base graphs coincide, and (E5), (E7) are disjuncts of the triangle condition. So every (E7)-branch base is a triangle base (Lean `triangleBase_of_E5_E7`); nothing is known for the (E6) branch or for r ∈ {y2, y3}. For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w} (A28, direct-test1 Prop 2.2), a PTM-type strengthening of Test1.
   - Lean and audit pending.
 - **Direct lift to Test1 in Lean (triangle-base bd616c7, DirectTest1.lean; standard axioms, verified; definitions checked).**
   - `test1At_of_triangleBase`: if z is the only even vertex, d(r) ≥ 3, and TriangleBase holds (triangle data w, L with L a J-edge matching partitioning N(z) − {r, w}, plus a Lovász decomposition of triM with every disjunction), then Test1 holds at r.
   - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
-  - **So Test1, and with it the two-end half of Gallai via the spine, now reduces in Lean to the triangle base conjecture wherever N(z) − r has a near-perfect matching.**
+  - **So Test1 J z reduces in Lean to the triangle base conjecture for every 3-connected J in which every root has data** (about 80% of the 3-connected d(z) = 6 instances at order 9, A28). This is not "the two-end half of Gallai": the spine needs Test1 and Test2 for all 3-connected J (audit A28, F4).
   - Audit A28 is next.
 - **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
   - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.

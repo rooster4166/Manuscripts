@@ -544,6 +544,17 @@ In M, z is a leaf at r and w is the only even vertex.
 - An independent audit (A28).
 - Attack the triangle base conjecture, which is now the cleanest target for T(6)-i and for Test1 at every even d(z) with a near-perfect matching in N(z) − r.
 
+**Audit A28 and the triangle-base session (2026-11-27, 18:30; connections §AF, E29).**
+- **Lean.** Banked, sorry-free with standard axioms:
+  - the lift for every m (`DirectTest1.lean`);
+  - the packed, far-apart and L1\* cases of the base (`TriangleBase.lean`);
+  - the (E7)-branch comparison `triangleBase_of_E5_E7`.
+- **Precise comparison** (replacing "weaker / sharper" above). At m = 3 and r = y1, M is t6-dense's base graph, and (E5), (E7) are disjuncts of the triangle condition. So the triangle base is implied by the (E7) branch of Conj 5.1 at that root. No other implication is known.
+- **Framing** (A28 F3). For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w}. It is a PTM-type strengthening of Test1, not a weaker kind of statement.
+- **Data** (exhaustive to order 9). The triangle base holds at every root with data of every 2-connected J. All failures are universal-twin pairs in components of M. There are no multi-pair compatibility failures.
+- **New single-vertex target: Conjecture DL** (disjunctive avoidance, `DisjL1`). DL ⇒ triangle base whenever M is connected.
+- **Isolated roots** (refining the next paragraph). Data at r depend only on J[N(z) − r]: they exist iff ν(J[N(z) − r]) ≥ 2 (d(z) = 6). So they exist at every root of the five dense shapes, and at an isolated root whenever the other five core vertices carry two disjoint edges (e.g. D = K_{1,5}). For "triangle base ⇒ T(6)-i", isolated roots therefore need MR Thm 144 only when ν(J[N(z) − r]) ≤ 1.
+
 **Correction to §§22–23 (audit A26, F1).**
 - Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
 - t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.
