@@ -1,0 +1,128 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Problem}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsex}{\eps_{\mathrm{ex}}}
+\newcommand{\own}{\mathrm{own}}
+\newcommand{\cro}{\mathrm{cr}}
+\newcommand{\mis}{\mathrm{mis}}
+\newcommand{\odd}{\mathrm{odd}}
+
+\title{Exceptional vertices below the Dirac threshold:\\ a balanced return theorem for exact path decompositions}
+\author{Gallai project (near-dirac session)}
+\date{27 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $G$ be a large graph whose minimum degree is close to $n/2$ and which is close to a complete balanced bipartite graph. A maximum cut then leaves an exceptional set $X$ of $o(n)$ vertices with linear degree into their own shore. The archive manuscript \emph{Separators and endpoint exchange in the rooted Gallai problem} (cited as SP) proves the exact Gallai, floor and rooted private-leaf bounds once $X$ is deleted (its Corollary~14.39), but does not return~$X$.
+
+We return exceptional sets of linear size, with arbitrary two-sided neighbourhoods, whenever a single counting condition holds: the \emph{balance condition}. It asks that the internal edges at exceptional vertices on each side be matched by internal edges on the other side.
+
+Under the balance condition we realise every bounded endpoint profile of the right parity whose shore imbalance is at most a small linear amount. This is Theorem~\ref{thm:main}. It contains SP Theorem~14.27 as the case $X=\emptyset$, and it also covers odd order. Consequences:
+\begin{itemize}[nosep]
+\item an exact Gallai theorem, with the floor at both parities and the rooted private-leaf bound at even order, for near-regular graphs near $K_{n/2,n/2}$ whose degree excess is balanced across a bisection (Corollary~\ref{cor:class});
+\item a structural restriction on any counterexample sequence to the full ``Target~D'' (Corollary~\ref{cor:failures}).
+\end{itemize}
+An exact counting identity (Lemma~\ref{lem:identity}) shows that the balance condition is precisely what the Hamilton-decomposition finish of SP~14.27 requires. It therefore isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$. Two finite lemmas used in the proof are formalised in Lean.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{Target D}
+Write $p(G)$ for the least number of paths into which the edges of $G$ can be partitioned. For a vertex $t$, write $G^t$ for $G$ with one new vertex joined only to $t$ (a \emph{private leaf}). The project's synthesis (\texttt{research/synthesis.md} \S\S4--5, 13; \texttt{research/connections.md} \S D) sets the following target.
+
+\begin{quote}
+\textbf{Target D.} There is $\gamma>0$ such that every sufficiently large connected graph $G$ of order $n$ with $\delta(G)\ge(1/2-\gamma)n$ satisfies $p(G)\le\lceil n/2\rceil$, satisfies $p(G)\le\lfloor n/2\rfloor$ unless $G$ is an odd semi-clique, and, when $n$ is even, satisfies $p(G^t)\le n/2$ for every vertex $t$.
+\end{quote}
+
+The published state of the art in this range is $p(G)\le n/2+o(n)$ (Gir\~ao, Granet, K\"uhn and Osthus \cite{GGKO}, Theorem~1.10).
+
+\subsection{What SP \S14 provides}
+SP proves the exact statements above the Dirac threshold (SP Theorem~14.1, Corollary~14.2, Theorem~14.5) and for robust expanders. It then analyses a hypothetical \emph{failure sequence}: graphs $G_n$ with $\delta(G_n)\ge n/2-o(n)$ that fail the even-order private-leaf bound, or fail the odd-order floor while missing at least $\lfloor n/2\rfloor$ edges. SP shows:
+\begin{enumerate}[nosep]
+\item failures are $o(n^2)$-close to $K_{n/2,n/2}$ and satisfy $\max\{\Delta,\odd\}=n-o(n)$ (SP Corollaries~14.24 and 14.26);
+\item bipartite-like graphs satisfy the bounds (SP Theorems~14.27, 14.33 and 14.37, Corollary~14.38);
+\item for every maximum cut of a failure, the set $X$ of vertices with own-shore degree at least $\kappa n$ is nonempty and sublinear, and $G-X$ satisfies the bounds (SP Corollary~14.39).
+\end{enumerate}
+The missing step is the \emph{return of $X$}. The note \emph{near-half-mixed-vertices} (NH) returns $s\in\{1,2\}$ such vertices when every healthy vertex has degree exactly $D$ and every mixed vertex has degree exactly $2D$, by splitting the mixed vertices and decomposing the split graph into Hamilton cycles.
+
+\subsection{Results}
+All graphs are finite and simple. For a partition $V(G)=A\cup B$ and a vertex $v$, write $\own(v)$ for the number of neighbours of $v$ in its own part and $\cro(v)=d(v)-\own(v)$ for the number in the other part. Write $\mis(v)$ for the number of non-neighbours of $v$ in the other part, and $e(S)$ for the number of edges inside $S$.
+
+For $Y\subseteq V(G)$ and $S\in\{A,B\}$, let $I_Y(S)$ be the number of edges inside $S$ that have at least one end in $Y$. A \emph{profile} is a map $b:V(G)\to\{0,1,2\}$ with $b(v)\equiv d(v)\pmod 2$ for every $v$. It is \emph{realised} by a path decomposition if exactly $b(v)$ of the paths end at each $v$. Write $b(S)=\sum_{v\in S}b(v)$.
+
+\begin{theorem}[Balanced return theorem]\label{thm:main}
+There are $c>0$ and $m_0$ such that the following holds for every $m\ge m_0$. Let $G$ be a graph with a partition $V(G)=A\cup B$, where $|A|=m$ and $|B|=m+\rho$ with $\rho\in\{0,1\}$. Let $X\subseteq V(G)$ with $|X|\le cm$. Suppose:
+\begin{enumerate}[label=\textup{(\alph*)},nosep]
+\item\label{h:healthy} every $v\notin X$ has $\own(v)\le cm$ and $\mis(v)\le cm$;
+\item\label{h:exc} every $x\in X$ has $(1-c)m\le d(x)\le(1+c)m$ and $\cro(x)\ge m/4$;
+\item\label{h:bal} \emph{(balance)} $I_X(A)+\rho m/2\le e(B)+cm$ and $I_X(B)\le e(A)+\rho m/2+cm$.
+\end{enumerate}
+Then every profile $b$ with $b(V)=2m$ and $|b(A)-b(B)|\le cm$ is realised by a decomposition of $G$ into exactly $m$ paths.
+\end{theorem}
+
+Hypothesis~\ref{h:exc} puts no restriction on how the neighbours of an exceptional vertex split between the shores, beyond $\cro(x)\ge m/4$. In particular $\own(x)$ may be as large as $3m/4$. The set $X$ may have linear size.
+
+Hypothesis~\ref{h:bal} holds automatically when $X=\emptyset$ and $\rho=0$. With $X=\emptyset$, $\rho=0$ and $|b(A)-b(B)|\le 2$, Theorem~\ref{thm:main} is SP Theorem~14.27, apart from the values of the constants. A convenient sufficient condition for~\ref{h:bal} is $|e(A)-e(B)+\rho m/2|\le cm$, because $I_X(S)\le e(S)$. By the handshake identity this condition is
+\begin{equation}\label{eq:excess}
+\Bigl|\sum_{v\in A}(d(v)-m)-\sum_{v\in B}(d(v)-m)\Bigr|\le 2cm,
+\end{equation}
+a condition on degrees alone: the \emph{degree excess} over $m$ is balanced across the partition.
+
+\begin{corollary}[Exact bounds for balanced near-half graphs]\label{cor:class}
+There are $\gamma>0$ and $n_0$ with the following property. Let $G$ have order $n\ge n_0$ and $(1/2-\gamma)n\le\delta(G)\le\Delta(G)\le(1/2+\gamma)n$. Suppose $V(G)$ has a partition $A\cup B$ with $|A|=\lfloor n/2\rfloor$ such that
+\begin{itemize}[nosep]
+\item $e(A)+e(B)\le\gamma n^2$;
+\item every vertex has at least $n/8$ neighbours in the other part;
+\item $\bigl|\sum_{v\in A}(d(v)-\lfloor n/2\rfloor)-\sum_{v\in B}(d(v)-\lfloor n/2\rfloor)\bigr|\le\gamma n$.
+\end{itemize}
+Then $p(G)\le\lfloor n/2\rfloor$. If $n$ is even, then also $p(G^t)\le n/2$ for every vertex $t$.
+\end{corollary}
+
+No connectivity assumption is needed. For example, every $D$-regular graph with $|D-n/2|\le\gamma n$ that is $\gamma$-close to $K_{n/2,n/2}$ in this sense satisfies the third condition, at both parities, as soon as $\gamma\le 1/4$. Corollary~\ref{cor:class} contains graphs with linearly many vertices of own-shore degree up to about $n/4$. That is the regime of SP Corollary~14.39 that SP leaves open.
+
+\begin{corollary}[Restriction on counterexamples to Target D]\label{cor:failures}
+Let $(G_n)$ be a failure sequence as in SP Corollary~14.24. For all sufficiently large $n$ the following holds. Take any partition of $V(G_n)$ with $|A|=\lfloor n/2\rfloor$ and any set $X$ satisfying hypotheses \ref{h:healthy} and \ref{h:exc} of Theorem~\ref{thm:main}, with $m=\lfloor n/2\rfloor$ and the constant $c$ of that theorem. Then the balance condition \ref{h:bal} fails.
+\end{corollary}
+
+The proof of Theorem~\ref{thm:main} follows the architecture of SP Theorem~14.27:
+\begin{itemize}[nosep]
+\item a small number $q=\Theta(m)$ of preliminary paths, built slot by slot from a membership matrix and a weaving lemma;
+\item then a Hamilton decomposition of the residual graph with two apices, by Csaba, K\"uhn, Lo, Osthus and Treglown \cite{CKLOT}, Theorem~1.3.5.
+\end{itemize}
+The new points are these.
+\begin{itemize}[nosep]
+\item Exceptional vertices enter the preliminary paths only through prebuilt three-vertex blocks $u\,x\,u'$ whose ends are healthy. They therefore never meet the weaving step's degree requirement.
+\item Their internal edges are kept for the Hamilton phase. CKLOT Theorem~1.3.5 tolerates $\epsex N^2$ internal edges and has no per-vertex condition.
+\item The resulting unbalance of internal edges is absorbed exactly by retaining a suitable number of healthy internal edges and by the end pattern of the preliminary slots.
+\end{itemize}
+Lemma~\ref{lem:identity} is the exact identity behind the last point, and the balance condition is what makes it solvable.
+
+\subsection{What remains for Target D}\label{sec:remains}
+Theorem~\ref{thm:main} leaves two kinds of configuration that a failure sequence may still contain.
+
+\begin{enumerate}[label=(R\arabic*)]
+\item \textbf{Unbalanced configurations.} The maximum-cut shores of a failure differ in size by $o(n)$, but possibly by much more than $|X|$, and the degree excess need not balance. Rebalancing the shores then needs vertex \emph{removal}: SP Theorems~14.31 and 14.33 delete vertices of the larger shore and reinsert them as labelled internal edges of the other shore, in a \emph{one-apex} scheme with about $n/4$ short preliminary paths. SP does this only for removed vertices whose neighbours all lie in one shore. Exceptional vertices have linear degree into both shores, so their labelled pairs live on both shores. Scheduling pairs on the shore whose sites are placed by SP's ``bin'' construction is the missing technical step (Problem~\ref{prob:twosided}).
+\item \textbf{Exceptional vertices of high degree.} A vertex of degree $(1/2+\beta)n$ with fixed $\beta>0$ must lie on almost every path. In a Hamilton-decomposition finish it must lie on both halves of a positive proportion of the cycles. NH achieves this for at most two vertices by splitting, under exact regularity. For three or more split pairs, the cyclic order of the copies on a Hamilton cycle is not controlled by CKLOT used as a black box.
+\end{enumerate}
+
+Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
+
+\subsection{Organisation}
+\S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:lean} describes the Lean formalisation.

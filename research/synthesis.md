@@ -296,3 +296,45 @@ The Theorem 21 class is closed under deleting a route, and the base case is Lov�
 3. strengthen the invariant;
 4. compare with the existential version;
 5. bank the special classes (single-edge routes, star-forest J, linkages) as a manuscript plus Lean.
+
+## 18. Minimum T-joins remove the extension problem; Gallai reduces to a constrained Lovász theorem (route-descent, E20, connections §V)
+
+**Finding.**
+- With **minimum** T-joins, the extension step of §17 never failed: about 210,000 queries over orders 10–12, plus G₁₈. Moreover, all routes can be appended at once, which gives a route-respecting realisation (RR).
+- With spanning-tree T-joins, 4–5% of extension queries fail. The failures are almost all trivial: c has degree 2 and the route passes through its other neighbour.
+- TRC itself has no counterexample in about 160,000 transversals. These include the order-12 counterexamples, G₁₈, G_bad (n = 28) and G₂.
+
+**Why minimality is the right invariant.**
+- A minimum T-join is a forest, so Thm 21 applies to it.
+- Every subpath of a route is a geodesic: replacing it by a shorter path gives a smaller T-join. So routes are induced paths, and the trivial obstruction cannot occur.
+- **Minimality is inherited by route deletion.** If K′ were a smaller T′-join of G − E(R_p), then K′ ∪ E(R_p) would be a smaller T-join of G. Here T′ = T − {a, c}, and K′ is edge-disjoint from R_p.
+- A matching that is a T-join is minimum, since every vertex of T needs degree at least 1 in J.
+
+**The reduction (checked).** A route-respecting realisation of M is the same thing as a Lovász decomposition D of F = G − J, in which every vertex is the end of exactly one path, such that:
+- (RR1) the D-path at each unmarked end c_p meets R_p only in c_p;
+- (RR2) if a D-path has two unmarked ends c_p and c_q, then R_p and R_q are vertex-disjoint.
+
+Appending each route at its unmarked end then gives every marked a_p two ends, every c_p none, and every odd vertex one. So
+
+> **Conjecture RR.** For every Thm-21 system on a minimum T-join, and every transversal M, F has a Lovász decomposition with (RR1) and (RR2).
+
+RR ⇒ TRC on minimum T-joins ⇒ Gallai. **Gallai is thereby reduced to a statement about decompositions of graphs with all degrees odd**, Lovász's own setting. RR\* (one D serving all M) is false.
+
+**Special cases.**
+- **L1:** the D-path at c avoids one non-neighbour a. 70,978 pairs, no failure. L1 is proved at dist(c, a) ≥ 3 by the separation theorem: Lovász's induction plus the observation that Fan's lemma keeps vertex sets.
+- **L∞:** the D-path at c lies in N[c]. 19,040 out of 19,040.
+- **L_N:** J is a perfect matching of G[Ev]; every route is one edge. 3,732 instances, no failure.
+
+**L_N would give Gallai for every graph whose even vertices induce a subgraph with a perfect matching.** Such a graph automatically has even order. The class includes all Eulerian graphs with a perfect matching. As far as we know it is a new Gallai class; known classes (Pyber, Fan, Botler–Sambinelli) need G[Ev] to be sparse.
+
+**Priorities.**
+1. Prove L1 at distance 2, then L∞; L∞ ⇒ L1.
+2. Prove L_N, which gives a new Gallai class.
+3. Prove RR, which gives full Gallai.
+
+The single-vertex statements L1 and L∞ come first. They are Lovász's theorem with one protected vertex, so Lovász's induction (Lovasz.lean, cases I–III) and Fan's vertex-set-preserving lemma are the tools.
+
+**Literature check (2026-11-27).**
+- Gallai's conjecture is open for Eulerian graphs in general. It is known for Δ ≤ 4 (Favaron–Kouider) and Δ ≤ 5 (Bonamy–Perrett, arXiv 1609.06257). The best general-type Eulerian bound found is p(G) ≤ 3n/5, for Eulerian graphs whose triangles are pairwise at distance ≥ 3 (Chu–Wang, arXiv 2510.12806, Oct 2025).
+- No source was found on Lovász decompositions with avoidance constraints (L1, L∞, L_N, RR), nor on Gallai for "G[Ev] has a perfect matching".
+- So L_N, which would give Gallai for every Eulerian graph with a perfect matching, would be a significant new result. This was a web search, not a full survey.
