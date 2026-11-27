@@ -10,3 +10,6 @@ scripts/walk3
 scripts/out/walk3_d6_r1*_all.txt
 scripts/ptm_pee
 scripts/ptm_pee.c
+scripts/walk3p
+scripts/out/core_*_pairs.txt
+scripts/out/walk3p_*.txt

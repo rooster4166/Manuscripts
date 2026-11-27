@@ -822,7 +822,7 @@ class & instances & PTM fails & PTM$(e@x)$ tests & fails\\
 simple, $m=2$, $n\le8$ & 13{,}234 & 3 ($K_4$) & 52{,}924 & 0\\
 simple, $m=3$, $n\le8$ & 14{,}124 & 2 & 84{,}732 & 15 \\
 simple, $m=4$, $n=8$ & 1{,}955 & 0 & 15{,}640 & 14 \\
-simple, $m=2$, $n=10$ (up to isomorphism) & 3{,}474{,}599 & \textit{pending} & & \\
+simple, $m=2$, $n=10$ (iso., $18/24$ chunks) & 2{,}605{,}950 & 0 & 10{,}423{,}800 & 0\\
 cubic, $m=2$, $n=12$ (up to isomorphism) & 3{,}745 & 0 & 14{,}980 & 0\\
 cubic, $m=2$, $n=14$ (up to isomorphism) & 46{,}407 & 0 & 185{,}628 & 0\\
 girth $\ge5$, $m=2$, $n\le12$ & 1{,}497 & 0 & 5{,}988 & 0\\
@@ -927,8 +927,38 @@ separable (audit~A22).
 data (every pairing works) and the chained walk theorem, which leaves the base problem: a
 Lov\'asz decomposition of $M$ separating six pairs. It is solved when the neighbours are far
 apart, but there the first test was already known (Remark~\ref{rem:known6}). To reach the open
-part of T(6)-i, where $B[N(z)]$ is nearly complete, the base problem must be solved for dense
-neighbourhoods, where most pairings have adjacent pairs and $G$ is a multigraph. A sparse form along the lines of
+part of T(6)-i, the base problem must be solved for dense neighbourhoods. There
+$D=K_6-B[N(z)]\in\{\emptyset,K_2,P_3,K_3,C_4\}$ has matching number at most $2$, so \emph{no}
+pairing of $N(z)$ is simple: every pairing has at least $3-\nu(D)$ pairs adjacent in $J-z$ ($3$ for
+$D=\emptyset$, at least $2$ for $K_2,P_3,K_3$, exactly $1$ for the two matchings of $C_4$).
+
+A parallel pair is harmless in the role of the leafed edge $x_1y_1$. Then $x_1$ loses its end
+only at the last step of the last walk, and the edge $x_1y_1$ of $J-z$ simply stays in $M$; the
+leaves are merged through $z$ rather than into the $x_i$, which avoids the multigraph.
+
+The other roles are blocked by the base hypothesis itself. Every edge of $M$ lies on a path of
+any decomposition, so two vertices that must be separated cannot be adjacent in $M$. The walks
+cannot use the edges $x_2y_2$, $x_3y_3$, $y_2y_3$: we have $y_2\notin V(P_2)$, $x_2,x_3\notin V(P_1)$,
+$x_3\notin V(P_2)$ and $y_3\notin V(P_1)$. So the separations $\{x_2,y_2\}$, $\{x_3,y_3\}$,
+$\{y_2,y_3\}$ force the path $x_2\,y_2\,y_3\,x_3$ to lie in $D$. Among the residual shapes only
+$C_4$ contains such a path. So $D\in\{\emptyset,K_2,P_3,K_3\}$ is out of reach of
+Theorem~\ref{thm:chain} as stated, however the Fan steps are refined. The proof uses
+$y_2\notin V(P_2)$ (Step~3), but audit A22c found no counterexample to the theorem without that
+condition. A version without it would let $P_2$ end with the edge $y_2x_2$ or begin with $y_3y_2$,
+which removes two of these obstructions.
+
+For $D=C_4$, the path $x_2y_2y_3x_3$ runs along the cycle and the parallel pair is $x_1y_1$. Then
+$y_2x_3$ is a diagonal, an edge of $J-z$, so condition~(ii) $y_2\notin N(x_3)$ fails: at the first
+step of the second walk, the endless vertex $x_3$ is a blank neighbour of the target $y_2$. This is
+the configuration of the protected-blank form of Fan's lemma (\texttt{fan\_single\_protected\_supp},
+\texttt{walk\_step\_protected}), with $u=y_2$ and $p=x_3$. Indeed \texttt{walk3p.c} finds no
+configuration satisfying Definition~\ref{def:chain} together with the necessary non-adjacencies
+on $20$ random $3$-connected $J$ with $B[N(z)]=K_6-C_4$ (\texttt{gen\_core.py}).
+
+So the composition route at the open part of T(6)-i needs two things. For $C_4$ it needs one
+protected step. For the other shapes it needs a finer tracking than vertex sets: what must avoid
+$x_i$ is only the path \emph{ending} at $y_i$, not every path through $y_i$. Alternatively, a chain
+design whose walks use the edges $x_iy_i$ and $y_2y_3$ of $J-z$ would do. A sparse form along the lines of
 Theorem~\ref{thm:sparse} needs the six special vertices sparse and four sets packed, so local
 girth and distance conditions between the three edges; a proof for dense neighbourhoods needs a
 new mechanism, as at $d(z)=4$. Theorem~\ref{thm:chain}, Proposition~\ref{prop:far} and

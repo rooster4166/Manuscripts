@@ -89,7 +89,15 @@ EMM sufficiency work is **stopped**.
   - **Paper (`manuscripts/l1star`):** five more reductions narrow down a smallest counterexample.
   - **Audit A23:** applied.
   - **Open:** the blocked case. It is the same tight Fan configuration as route-descent's L∞ residual (§V.4c). In the original statement L1* (|A| ≤ 2) is still open, so EE is still open.
-- **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
+- **ptm**: **finished**.
+  - **Lean:** the walk theorems (PTM₂: sparse and local girth 5), the STL lift, the chained walk (PTM₃: far-apart), and `test1_of_chains3`. These re-derive the known d = 4 and far-apart d = 6 cases; the new content is STL-P with prescribed transitions.
+  - **Audits:** A22, A22b and A22c are all sound.
+  - **Open:**
+    - the base problem beyond sparseness (local K4/W4);
+    - chain conjecture 8.6 (1,184 graphs, 0 counterexamples);
+    - the dense T(6)-i residual. C4 needs one protected step; K2/P3/K3/∅ need Thm 8.2 without y2 ∉ V(P2) (end-path tracking).
+  - The order-10 PTM₂ run is still finishing (18/24 chunks, 0 failures).
+- (original entry) **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
 - **ee**: **finished** (463aa4c).
   - **EE has no counterexample:** exhaustive over all 11,959,367 one-even graphs at n = 11 (59.7M pairs).
   - **Lean:** `ee_atMostOneCommon`, `ee_deg_two`, `pee_adjEven`, the reductions `ee_of_triangle` / `ee_of_outside`, and `ee_of_L1Star`.
