@@ -1,0 +1,21 @@
+  construction 1 {"graphs": 1, "constructions": 1, "transversals": 64, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 64}
+  construction 2 {"graphs": 1, "constructions": 2, "transversals": 128, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 128}
+  construction 3 {"graphs": 1, "constructions": 3, "transversals": 192, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 192}
+  construction 4 {"graphs": 1, "constructions": 4, "transversals": 256, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 256}
+  construction 5 {"graphs": 1, "constructions": 5, "transversals": 320, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 320}
+  construction 6 {"graphs": 1, "constructions": 6, "transversals": 384, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 384}
+  construction 7 {"graphs": 1, "constructions": 7, "transversals": 448, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 448}
+  construction 8 {"graphs": 1, "constructions": 8, "transversals": 512, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 512}
+  construction 9 {"graphs": 1, "constructions": 9, "transversals": 576, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 576}
+  construction 10 {"graphs": 1, "constructions": 10, "transversals": 640, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 640}
+  construction 11 {"graphs": 1, "constructions": 11, "transversals": 704, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 704}
+  construction 12 {"graphs": 1, "constructions": 12, "transversals": 768, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 768}
+  construction 13 {"graphs": 1, "constructions": 13, "transversals": 832, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 832}
+  construction 14 {"graphs": 1, "constructions": 14, "transversals": 896, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 896}
+  construction 15 {"graphs": 1, "constructions": 15, "transversals": 960, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 960}
+  construction 16 {"graphs": 1, "constructions": 16, "transversals": 1024, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1024}
+  construction 17 {"graphs": 1, "constructions": 17, "transversals": 1088, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1088}
+  construction 18 {"graphs": 1, "constructions": 18, "transversals": 1152, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1152}
+  construction 19 {"graphs": 1, "constructions": 19, "transversals": 1216, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1216}
+  construction 20 {"graphs": 1, "constructions": 20, "transversals": 1280, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1280}
+g18_min_rr {"graphs": 1, "constructions": 20, "transversals": 1280, "trc_fail": 0, "ext_queries": 0, "ext_true": 0, "close": 0, "stuck": 0, "all_p": 0, "rr_true": 1280, "hist_num_good_p": {}, "seconds": 22}

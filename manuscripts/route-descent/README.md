@@ -55,4 +55,4 @@ All files are in `lean/GallaiLean/`. They are sorry-free, use only the standard 
 | `l1z_classify.py trials budget nmin nmax` | classifies L₁ failures in graphs with one even vertex |
 | `ball_test.py trials budget z\|leaf` | one-sided separation (Q_s within distance two), and Q_c ⊆ N[c] |
 
-Logs are in `scripts/outputs/`.
+Logs are in `scripts/outputs/`. The `*.log` files are committed despite the repository-wide `*.log` ignore rule (added with `git add -f`), so the statistics in E20 can be checked against them.

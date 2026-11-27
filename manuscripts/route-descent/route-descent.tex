@@ -6,7 +6,7 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 
-\newtheorem{theorem}{Theorem}
+\newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -41,8 +41,9 @@ Lov\'asz's theorem, and the inductive step is equivalent to finding a realisatio
 route is a terminal segment of a path. We show that TRC for some root-containing transversal implies
 every level of the branching hypothesis of the Lean spine, hence Gallai.
 \item \emph{Minimum $T$-joins.} If the $T$-join is minimum, every segment of every route is a geodesic,
-minimality survives route deletion, and the only obstruction ever met with spanning-tree $T$-joins
-(an unmarked end of degree two whose route runs through its other neighbour) cannot occur. For any
+minimality survives route deletion, and the obstruction behind almost all extension failures met
+with spanning-tree $T$-joins in random graphs (an unmarked end of degree two whose route runs through
+its other neighbour) cannot occur. For any
 route system, a realisation in which \emph{all} routes are terminal segments is equivalent to a
 \emph{constrained Lov\'asz decomposition} of the free graph, in which every vertex is the end of exactly
 one path and the paths at the unmarked ends avoid their routes. We conjecture that such decompositions
@@ -61,7 +62,7 @@ the leaf at distance three from $a$.
 We also prove TRC for two classes reachable by Fan's lemma, state the constrained Lov\'asz conjectures that
 would give TRC for minimum $T$-joins, and record what we know of their status. One of them would imply
 Gallai's conjecture for every graph whose even vertices induce a subgraph with a perfect matching. The
-proofs use no computation. Computations (an exact oracle, about $1.5\times10^5$ transversals and
+proofs use no computation. Computations (an exact oracle, about $1.6\times10^5$ transversals and
 $6\times10^5$ extension queries) are reported separately and only guided the statements. The
 separation theorem and its one-pair corollary, the vertex-set form of Fan's lemma, the extension step
 of route descent, the reduction of TRC to constrained Lov\'asz decompositions, and the resulting
@@ -150,7 +151,7 @@ path partition $\cD$ of $K$ let $Z_\cD(u)=\{w\in N_K(u): b_\cD(w)=0\}$.
 Let $\cD$ be a path partition of $K$, and let $t\neq u$ be vertices with $tu\notin E(K)$ and
 $b_\cD(t)>|Z_\cD(u)|$. Then $K+tu$ has a path partition $\cD^+$ with $|\cD^+|=|\cD|$,
 $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$, and a bijection $\varphi:\cD\to\cD^+$ with $V(\varphi(Q))=V(Q)$
-for all $Q\in\cD$ except one, $Q_0$, for which $V(\varphi(Q_0))=V(Q_0)\cup\{u\}$.
+for all $Q\in\cD$ except one, $Q^\ast$, for which $V(\varphi(Q^\ast))=V(Q^\ast)\cup\{u\}$.
 \end{lemma}
 
 \begin{proof}
@@ -174,7 +175,7 @@ On the other hand $t\in X\setminus N_K(u)$, and every vertex of $X\cap N_K(u)$ o
 least one end, so the left side is at least $b_\cD(t)+|X\cap N_K(u)|-|Z_\cD(u)|$. Thus
 $b_\cD(t)\le|Z_\cD(u)|$, a contradiction.
 
-\emph{Executing a chain.} Write $K_i=K+x_iu-x_{i+1}u$ for $i<k$ and $K_k=K+tu$. We construct partitions
+\emph{Executing a chain.} Write $K_i=K+tu-x_{i+1}u$ for $i<k$ and $K_k=K+tu$. We construct partitions
 $\cD_0=\cD$ of $K$ and $\cD_{i+1}$ of $K_i$ as follows.
 
 \emph{Re-routing} at step $i<k$: the path $Q_i$, read from $x_i$, is $x_i\cdots x_{i+1}\,u\cdots y$.
@@ -305,19 +306,26 @@ the route system producing a given pairing are all free.
 \begin{proposition}[existential form and the Lean spine]\label{prop:spine}
 Let $G$ be connected of even order and $y\in\Ev$. If some realisable $M\subseteq\Ev$ with $y\in M$ and
 $|M|\le|\Ev|/2$ exists, then for every $k\le|\Ev|/2$ there is $R\subseteq\Ev$ with $|R|=k$, $y\notin R$,
-and $\Ev\setminus R$ realisable. In particular, if every connected graph of even order has, for each of
-its even vertices $y$, a realisable transversal of a Thm-21 pairing containing $y$, then Gallai's
-conjecture holds.
+and $\Ev\setminus R$ realisable. In particular, if every connected graph of even order has a
+realisable transversal of a Thm-21 pairing, then Gallai's conjecture holds.
 \end{proposition}
 
 \begin{proof}
 $\Ev\setminus M$ has at least $|\Ev|/2\ge k$ elements and avoids $y$. Choose $R\subseteq\Ev\setminus M$
 with $|R|=k$. Then $\Ev\setminus R\supseteq M$ is realisable by Lemma~\ref{lem:up}. This is the statement
-$\mathrm{Desc}\,H\,k\,y\,\emptyset$ of the Lean library, so the hypothesis $\mathrm{BranchBase}_k$ holds
-for every $k$, without its side conditions on $y$. The Lean theorem \texttt{gallai\_of\_branchBase}
-gives Gallai's conjecture. The last claim applies this to the transversal containing $y$; Thm-21
-systems exist by~\cite[Theorem~21]{EMM}.
+$\mathrm{Desc}\,H\,k\,y\,\emptyset$ of the Lean library, so the hypothesis $\mathrm{BranchBase}_k$ of the
+Lean spine holds for every $k$, without its side conditions on $y$.
+
+For the last claim, a realisable transversal $M$ has $|M|=|\Ev|/2$, so its realisation has
+$|\Od|/2+|\Ev|/2=n/2$ paths, which is Gallai's bound for connected graphs of even order $n$. If $n$ is
+odd, attach a pendant edge at any vertex. The new graph is connected of even order $n+1$, and a
+partition of it into $(n+1)/2$ paths gives one of $G$ into at most $\lceil n/2\rceil$ paths, by shortening
+or deleting the path through the new edge. Thm-21 systems exist by~\cite[Theorem~21]{EMM}.
 \end{proof}
+
+The root $y$ plays no role in the last claim. It matters only for the Lean spine, where the theorems
+\texttt{gallai\_of\_pairingTRCExists} and \texttt{gallai\_of\_branchBase} go through $\mathrm{BranchBase}_k$
+(Section~\ref{sec:lean}).
 
 So for Gallai's conjecture we need only an \emph{existential} TRC. At each deletion we may choose
 which end of $p$ to extend, except at the pair containing the root.
@@ -369,10 +377,13 @@ chord of $R_p$, against Lemma~\ref{lem:min}(3).
 
 \begin{remark}\label{rem:triv}
 With spanning-tree $T$-joins the extension (i) of Lemma~\ref{lem:ext} fails in a few percent of cases.
-Most failures are of the trivial kind excluded by Corollary~\ref{cor:triv}: $c$ has degree two and the
-route runs through its other neighbour, so $Q_c$ cannot leave the route. The only instances in which no
-route at all admits the extension were all of this kind. With minimum $T$-joins no failure of (i) was
-found, for any route or any transversal (Section~\ref{sec:conj}).
+In random graphs most failures (about $95\%$) are of the trivial kind excluded by
+Corollary~\ref{cor:triv}: $c$ has degree two and the route runs through its other neighbour, so $Q_c$
+cannot leave the route. In the random graphs, the instances in which no route at all admits the
+extension were all of this kind. On random block trees, by contrast, most failures were nontrivial
+($70$ of $115$); one block-tree transversal admitting no extension came from a budgeted search and is
+unclassified. With minimum $T$-joins no failure of (i) was found, for any route or any transversal
+(Section~\ref{sec:conj}).
 \end{remark}
 
 \section{Route-respecting realisations}\label{sec:rr}
@@ -577,9 +588,9 @@ Then (RR1) holds for every choice of tails, and (RR2) holds vacuously, since no 
 $V(J)$.
 \end{proof}
 
-The hypothesis of Corollary~\ref{cor:packedroutes} forces $G[V(J)]=J$, a forest, so $G[\Ev]$ is a forest.
-These graphs lie in Pyber's class, and the corollary adds only the uniform realisation of all
-transversals.
+The hypothesis of Corollary~\ref{cor:packedroutes} forces $G[V(J)]=J$. For a Thm-21 system, where $J$
+is a forest, $G[\Ev]$ is then a forest. These graphs lie in Pyber's class, and there the corollary adds
+only the uniform realisation of all transversals. For general route systems $J$ may contain cycles.
 
 \begin{example}[distance two]\label{ex:dist2}
 Separation can fail at distance two in the presence of an even vertex. Let $K$ have vertices
@@ -595,6 +606,13 @@ paths $c\,u_1$, $\ \ell_c\,c\,u_2\,z\,u_1\,a$ and $u_2\,a\,\ell_a$ partition the
 at each odd vertex and none at $z$, and the path ending at $c$ is $c\,u_1$, which avoids $a$. Adding a
 leaf at $z$ makes all degrees odd, and then a separating decomposition exists again (found by computation;
 not used).
+
+Distance three is needed even when all degrees are odd. Let $K'$ be $K_4-ca$ on $\{c,a,u_1,u_2\}$ with a
+leaf at $c$ and a leaf at $a$: six vertices, seven edges, all degrees odd, and $\mathrm{dist}(c,a)=2$. In
+a Lov\'asz decomposition each $u_i$ has degree three and one end, hence one passage. A passage
+$\{c,a\}$ would put $c$ and $a$ on one path, so both passages use the edge $u_1u_2$. The path through
+$u_1u_2$ therefore continues beyond $u_1$ and beyond $u_2$ into $\{c,a\}$, and as before it either repeats
+a vertex or contains both $c$ and $a$. So no Lov\'asz decomposition of $K'$ separates $c$ and $a$.
 \end{example}
 
 \begin{remark}[what the leaf does, and its limits]\label{rem:L1res}
@@ -635,8 +653,8 @@ Then every transversal of $P$ is realisable.
 Induction on $|P|$, with Lemma~\ref{lem:base} as the base. The hypothesis passes to
 $G'=G-E(R_p)$ with the remaining routes, because $N_{G'}(x)\cap\Ev(G')\subseteq N_G(x)\cap\Ev$
 (Lemma~\ref{lem:hered}). Let $M$ be a transversal, $p=\{a,c\}$ with $a\in M$, and write
-$R_p=r_0r_1\cdots r_t$ with $r_0=c$ and $r_t=a$. By induction there is a realisation $\cD_0$ of $M-a$ in
-$G'$. Put the edges $r_{i-1}r_i$ back one at a time, for $i=1,\dots,t$. At step $i$, use
+$R_p=r_0r_1\cdots r_s$ with $r_0=c$ and $r_s=a$. By induction there is a realisation $\cD_0$ of $M-a$ in
+$G'$. Put the edges $r_{i-1}r_i$ back one at a time, for $i=1,\dots,s$. At step $i$, use
 Lemma~\ref{lem:fan} in $G_{i-1}=G'+r_0r_1+\dots+r_{i-2}r_{i-1}$ with $t=r_{i-1}$ and target $r_i$. This
 moves one end from $r_{i-1}$ to $r_i$. So after step $i-1$ the ends are $b_{i-1}=b_0-\mathbf
 1_c+\mathbf 1_{r_{i-1}}$ (with $b_0$ the profile of $M-a$ in $G'$).
@@ -648,7 +666,7 @@ So $Z(r_i)\subseteq N_{G_{i-1}}(r_i)\cap\Ev\subseteq N_{R_p}(r_i)$. But neither 
 $r_i$ is adjacent to $r_i$ in $G_{i-1}$: the edges $r_{i-1}r_i$ and $r_ir_{i+1}$ have not yet been added.
 So $Z(r_i)=\emptyset$.
 \end{itemize}
-Thus each transfer is legal, and after step $t$ the ends are $b_0-\mathbf 1_c+\mathbf 1_a$, which is the
+Thus each transfer is legal, and after step $s$ the ends are $b_0-\mathbf 1_c+\mathbf 1_a$, which is the
 profile of $M$ in $G$.
 \end{proof}
 
@@ -680,10 +698,10 @@ We show by induction on $j$ that $G_j$ has a path partition with two ends at $a_
 $c_1,\dots,c_j$, and $d_{G_j}(v)\bmod2$ ends at every other vertex. For $j=0$ this is
 Theorem~\ref{thm:lovasz}, since $F$ has all degrees odd (Lemma~\ref{lem:basic}). Every vertex of a later
 pair is odd in $G_j$, because each route through it contributes two edges. For the step, write
-$R_{p_j}=r_0r_1\cdots r_t$ with $r_0=c_j$ and $r_t=a_j$, and add its edges one at a time by
+$R_{p_j}=r_0r_1\cdots r_s$ with $r_0=c_j$ and $r_s=a_j$, and add its edges one at a time by
 Lemma~\ref{lem:fan}, moving an end from $r_{i-1}$ to $r_i$, exactly as in the proof of
 Theorem~\ref{thm:isolated}. At step $i$ the vertex $r_{i-1}$ has at least one end. The vertices without
-ends are those of $U_{j-1}$, together with $c_j$ when $i\ge2$. The neighbours of $r_i$ in the current
+ends are among those of $U_{j-1}$, together with $c_j$ when $i\ge2$. The neighbours of $r_i$ in the current
 graph are its neighbours in $G_{j-1}$, since its two edges on $R_{p_j}$ are not yet present. By the
 schedule property none of them has zero ends, so the transfer is legal.
 \end{proof}
@@ -738,12 +756,14 @@ transversals were found realisable and $13$ were undecided within the search bud
 marks automatically fall inside the forcing gadgets, as they must for transversals.
 \item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
 $4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
-\emph{minimum} $T$-joins it never failed, in about $220{,}000$ pairs $(M,p)$, including $8{,}896$ on
+\emph{minimum} $T$-joins it never failed, in about $241{,}000$ pairs $(M,p)$, including $8{,}896$ on
 $80$ random graphs of order $14$ and $21{,}896$ on $120$ random block trees of order at most $20$ ($16$
 undecided). On the block trees, spanning-tree $T$-joins failed $115$ times, $70$ of them nontrivially.
-\item \emph{RR.} An $M$-compatible decomposition was found for every transversal tested with minimum
-$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph,
-$4{,}512$ on block trees). A
+\item \emph{RR.} With minimum $T$-joins, an $M$-compatible decomposition was found for every
+transversal whose status was decided, and none was refuted: $1{,}276$ of order $10$, $2{,}020$ of order
+$14$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph, $4{,}512$ on block trees. The
+search stayed undecided for $212$ of $2{,}232$ transversals of order $14$, $221$ of $640$ on the prism
+graph of~\cite[Thm~45]{EMM}, and $251$ of $352$ on the half blow-up $G_2$. A
 single decomposition compatible with every transversal at once fails to exist in two of the twelve
 order-$12$ graphs, even with minimum $T$-joins.
 \item \emph{Linking is needed.} For minimum $T$-joins decomposed into routes by random
@@ -753,7 +773,8 @@ were not realisable.
 non-adjacent pairs (orders $\le10$). The stronger statement that $Q_c\subseteq N[c]$ can be achieved
 had no failure at $19{,}040$ vertices (orders $\le10$), nor at $5{,}026$ further vertices of orders
 $6$--$12$ ($41$ more were undecided). No failure of
-$L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs. When the pairs form a perfect matching $N$ of $V(F)$ (the Eulerian case: $F+N$ has all
+$L_N$ in $3{,}597$ decided instances of orders up to $14$ with up to seven pairs ($135$ more were
+undecided). When the pairs form a perfect matching $N$ of $V(F)$ (the Eulerian case: $F+N$ has all
 degrees even), no failure in $2{,}332$ decided
 instances of orders $8$--$20$ ($157$ more were undecided within the search budget). In $2{,}421$ of the
 $2{,}489$ instances some pair is at distance two, where the symmetric version below fails. On random $4$-regular graphs of orders $14$--$20$ and $6$-regular graphs of orders $14$--$18$, each with a random perfect matching and orientation, there was no failure in $600$ instances, all decided.
@@ -780,7 +801,7 @@ $\ell$ at $c$ and take $s=\ell$), Conjecture~\ref{conj:ball} implies that in a g
 odd some Lov\'asz decomposition has $V(Q_c)\subseteq N[c]$. For a minimum Thm-21 system the tail $c$ of
 a route has no neighbour in $F$ on its route, because routes have no chords
 (Lemma~\ref{lem:min}(3)). So this would give (RR1) for any single route. Conjecture~\ref{conj:ball}
-held in all $3{,}195$ random instances with one even vertex (orders $7$--$15$).
+held in all $3{,}195$ random instances with one even vertex (odd orders $7$--$15$).
 
 For the leaf case ($s=\ell$ a leaf at $c$) the induction of Theorem~\ref{thm:sep} nearly goes through.
 A leaf is never a chain vertex in Lemma~\ref{lem:fan}, because the chain vertices after the first are
@@ -818,7 +839,7 @@ follows from the Fan schedules of the endpoint-structure manuscript. Both are ne
 a perfect matching (respectively one avoiding triangles). These are not covered by the results above,
 because the even subgraph may have large degrees and many cycles.
 \item The heredity of minimum $T$-joins (Lemma~\ref{lem:min}(4)) is elementary. Its use here is to make
-route descent avoid the only obstruction ever observed.
+route descent avoid the obstruction behind most of the failures observed in random graphs.
 \end{itemize}
 
 \section{Formalisation}\label{sec:lean}
@@ -858,8 +879,10 @@ intermediate decomposition. As a consequence, \texttt{gallai\_of\_routeRR} deriv
 from Conjecture~\ref{conj:rr} in the following form: every connected graph of even order has a routed
 pairing all of whose transversals admit compatible Lov\'asz decompositions. The existential form
 (\texttt{gallai\_of\_routeRRExists}) asks this only for one transversal through each even vertex.
-\item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
-\texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
+\item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} in its cover form (\texttt{fan\_single\_supp},
+\texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}): every path of the new partition lies in a path of
+the old one together with $u$. The bijection $\varphi$ is not formalised. The cover form is all that
+Theorem~\ref{thm:sep} uses.
 \item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation\_set}, and
 \texttt{separation} for $X=\{c,a\}$), Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}) and
 Theorem~\ref{thm:L1} (\texttt{lovasz\_avoid\_set}, and \texttt{lovasz\_avoid\_nonadj} for $Y=\{a\}$). The
@@ -869,8 +892,10 @@ strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets and th
 kept part of an old one.
 \end{itemize}
 Not formalised: Lemma~\ref{lem:hered}, Lemma~\ref{lem:ext} (ii)$\Rightarrow$(i), Lemma~\ref{lem:min}(1)--(3),
-the converse half of Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
-Corollary~\ref{cor:upm}, which is close to the existing \texttt{realisable\_of\_fanSchedule}.
+Corollary~\ref{cor:triv}, the converse half of Proposition~\ref{prop:rr}, Proposition~\ref{prop:LN},
+Corollary~\ref{cor:packedroutes}, Theorem~\ref{thm:isolated} for routes of length at least two,
+Theorem~\ref{thm:schedule}, and Corollary~\ref{cor:upm}, which is close to the existing
+\texttt{realisable\_of\_fanSchedule}.
 
 \section{Open problems}\label{sec:open}
 \begin{enumerate}

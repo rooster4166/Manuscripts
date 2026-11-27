@@ -1,0 +1,21 @@
+  ... 10 graphs, 1s
+  ... 20 graphs, 5s
+  ... 30 graphs, 6s
+  ... 40 graphs, 15s
+  ... 50 graphs, 21s
+  ... 60 graphs, 22s
+  ... 70 graphs, 23s
+  ... 80 graphs, 36s
+  ... 90 graphs, 43s
+  ... 100 graphs, 49s
+  ... 110 graphs, 50s
+  ... 120 graphs, 52s
+  ... 130 graphs, 53s
+  ... 140 graphs, 71s
+  ... 150 graphs, 71s
+  ... 160 graphs, 95s
+  ... 170 graphs, 96s
+  ... 180 graphs, 100s
+  ... 190 graphs, 162s
+  ... 200 graphs, 164s
+rand12 {"graphs": 200, "constructions": 600, "transversals": 6006, "trc_fail": 0, "ext_queries": 21426, "ext_true": 21208, "close": 6006, "stuck": 0, "all_p": 5796, "hist_num_good_p": {"1": 56, "2": 570, "3": 2180, "4": 2528, "5": 672}, "seconds": 164}

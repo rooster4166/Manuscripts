@@ -1,0 +1,7 @@
+  construction 1 {"graphs": 1, "constructions": 1, "transversals": 24, "trc_fail": 0, "ext_queries": 192, "ext_true": 191, "close": 24, "stuck": 0, "all_p": 23, "rr_true": 14, "unknown_ext": 1}
+  construction 2 {"graphs": 1, "constructions": 2, "transversals": 48, "trc_fail": 0, "ext_queries": 368, "ext_true": 367, "close": 46, "stuck": 0, "all_p": 45, "rr_true": 36, "unknown_ext": 1, "unknown_real": 2}
+  construction 3 {"graphs": 1, "constructions": 3, "transversals": 72, "trc_fail": 0, "ext_queries": 544, "ext_true": 538, "close": 68, "stuck": 0, "all_p": 62, "rr_true": 48, "unknown_ext": 6, "unknown_real": 4}
+  construction 4 {"graphs": 1, "constructions": 4, "transversals": 96, "trc_fail": 0, "ext_queries": 720, "ext_true": 714, "close": 90, "stuck": 0, "all_p": 84, "rr_true": 70, "unknown_ext": 6, "unknown_real": 6}
+  construction 5 {"graphs": 1, "constructions": 5, "transversals": 120, "trc_fail": 0, "ext_queries": 880, "ext_true": 868, "close": 110, "stuck": 0, "all_p": 98, "rr_true": 90, "unknown_ext": 12, "unknown_real": 10}
+  construction 6 {"graphs": 1, "constructions": 6, "transversals": 144, "trc_fail": 0, "ext_queries": 1048, "ext_true": 1033, "close": 131, "stuck": 0, "all_p": 116, "rr_true": 111, "unknown_ext": 15, "unknown_real": 13}
+g18_rr {"graphs": 1, "constructions": 6, "transversals": 144, "trc_fail": 0, "ext_queries": 1048, "ext_true": 1033, "close": 131, "stuck": 0, "all_p": 116, "rr_true": 111, "unknown_ext": 15, "unknown_real": 13, "hist_num_good_p": {"7": 15, "8": 116}, "seconds": 63}
