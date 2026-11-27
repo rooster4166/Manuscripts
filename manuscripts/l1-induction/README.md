@@ -4,28 +4,31 @@ Manuscript: `l1-induction.tex` (compile with `pdflatex` twice). Lean: `lean/Gall
 Experiment log: `research/experiments.md`, E27. Conclusions: `research/connections.md`, §AC.
 Audit: `research/audit/A25-l1-induction.md`.
 
-## Status
+## Status (audit A25 applied)
 - **`L1Blocked` is not proved.** No candidate induction hypothesis closes.
 - **Proved and formalised** (sorry-free, standard axioms):
-  - `avoid_of_target_child` and `avoid_of_target_adj_child`: the Case I moves transfer goodness *unconditionally*, with no admissibility of the child;
+  - `avoid_of_target_child` and `avoid_of_target_adj_child`: the Case I moves (b) and (c) transfer goodness *unconditionally* (stated for c ∉ N(g));
   - `l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`, hence `l1starGen_of_ST_TR`, `l1star_of_ST_TR`, `ee_of_ST_TR`, `lInfty_of_ST_TR`;
+  - `l1Blocked_iff_tightTransferAdm`: given ST, L1Blocked ⟺ TR on admissible instances, so ST is the substantive half;
+  - `l1Blocked_of_out_tight`: ST_out (a good *non-tight* target whenever one exists) plus the all-tight case N(g) ⊆ N(c) give L1Blocked;
   - `l1Blocked_of_someTargetLocal : SomeTargetLocal → L1Blocked`.
 - **Proved on paper:**
-  - the full transfer calculus (Thm 3.1);
+  - the transfer calculus (Thm 3.1, per-move proof; it needs c ∉ A, now part of the definition of an instance);
   - walk to a degree-two vertex, a new reduction (Prop 3.3);
   - the exchange lemma at c (Lemma 4.2);
-  - ST′ is false (Prop 4.7, order 7, `FEhv?`).
+  - ST′ is false (Prop 4.8, order 7, `FEhv?`).
 - **Conjectures with exhaustive support:**
-  - **TR** (tight transfer): 1,735,156 tests to order 9, plus random orders 11–15; 0 violations. It fails if A may meet N(c).
-  - **ST** (some target): all 135,188 blocked instances to order 9, every admissible A, plus random orders 11–15; 0 failures.
+  - **TR** (tight transfer): 1,735,156 tests to order 9, 1,097,584 of them with A meeting N(g); 0 violations. It fails if A may meet N(c).
+  - **ST** (some target): all 135,188 blocked instances to order 9, every admissible A. **ST_out**: all 100,990 with a non-tight target.
+  - On 4 of the 100 slices of order 11 (1,037,788 blocked instances, A = Amax) and on random orders 11–15: no failure, a few undecided.
 - **Minimal obstructions** (manuscript Table 1):
   - ST′ (n = 7);
   - instance-level certificates: 6 stuck instances at n = 9;
-  - bounded excursions: gap 5 at n = 8;
-  - c-admissible dead ends (n = 5).
+  - certificate excursions: gap 5 at n = 8;
+  - c-admissible dead ends (n = 5, `DEk` − 04).
 
 ## Reproduction (scripts/)
-Requirements: g++, Python 3 with networkx, nauty (`nauty-geng`). Build each tool with `g++ -O2 -o NAME NAME.cpp`.
+Requirements: g++, Python 3 with networkx, nauty (`nauty-geng`). Build each tool with `g++ -O2 -o NAME NAME.cpp`. `./regen.sh` rebuilds the tools and regenerates every short run; the long runs are listed at its end.
 ```
 nauty-geng -cq 9 | ./rec2 adm MB      > out/rec_adm9_MB.txt     # Rec, Amax (also n = 10)
 nauty-geng -cq 9 | ./rec2 adm MBT     > out/rec_adm9_MBT.txt    # Rec_T (TR targets)
@@ -47,7 +50,7 @@ nauty-geng -cq 7 | ./trall                                      # TR sharpness (
 python3 randg.py 3000 27 11 13 | ./randtest 2000000 > out/rand_11_13_v2.txt
 python3 randg.py 600 41 15     | ./randtest 2000000 > out/rand_15.txt
 for n in 4 5 6 7; do nauty-geng -cq $n | ./xcheck2; done        # oracle cross-check
-./example "FEhv?" 6 3,5                                         # Prop 4.7 decompositions
+./example "FEhv?" 6 3,5                                         # Prop 4.8 decompositions
 ```
 
 | File | Content |

@@ -1,0 +1,25 @@
+STPFAIL F?q_w g=0 c=6 A={0,1,2}
+STPFAIL F?q_w g=0 c=6 A={1,2}
+STPFAIL F?re_ g=4 c=5 A={3,4,6}
+STPFAIL F?re_ g=4 c=5 A={4,6}
+STPFAIL F?re_ g=4 c=5 A={3,6}
+STPFAIL F?re_ g=4 c=5 A={6}
+STPFAIL F?re_ g=4 c=6 A={2,4,5}
+STPFAIL F?re_ g=4 c=6 A={4,5}
+STPFAIL F?re_ g=4 c=6 A={2,5}
+STPFAIL F?re_ g=4 c=6 A={5}
+STPFAIL FCZf? g=4 c=5 A={3,4,6}
+STPFAIL FCZf? g=4 c=5 A={4,6}
+STPFAIL FCZf? g=4 c=5 A={3,6}
+STPFAIL FCZf? g=4 c=5 A={6}
+STPFAIL FCZf? g=4 c=6 A={3,4,5}
+STPFAIL FCZf? g=4 c=6 A={4,5}
+STPFAIL FCZf? g=4 c=6 A={3,5}
+STPFAIL FCZf? g=4 c=6 A={5}
+STPFAIL FEhv? g=4 c=6 A={3,4,5}
+STPFAIL FEhv? g=4 c=6 A={3,5}
+graphs (one even vertex) = 130
+TR: tests 3764, violations 0; A admissible for G (conclusion = L1*) 2156, A meets N(g) 1608 (of which g in A 804)
+TRALL: non-tight tests 6672 viol 0; tight tests 8066 viol 14 (meeting N(c): 14)
+ST/ST': blocked admissible instances 406, ST holds 406, ST' holds 386
+ST' failures: 20; with N(g) in N(c) 20; d(g)=2 20 (of which g in A and N(g) non-adjacent 10); d(g)=4,d(c)=5 0

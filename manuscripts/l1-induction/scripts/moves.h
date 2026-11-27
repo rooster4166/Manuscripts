@@ -9,7 +9,7 @@
 struct Inst { Gr G; int c; uint32_t A; char mv; };
 
 static int MV_ROUTE_ALL = 0;  // route move: all g--c paths (not only shortest in G - A), up to length ROUTE_MAXLEN
-static int ROUTE_MAXLEN = 4;
+static int ROUTE_MAXLEN = 64;  // used only with MV_ROUTE_ALL (flag R)
 static int MV_TR = 0;      // TR moves: tight target u in N(g) cap N(c), keep c as terminal (valid when A cap N[c] empty)
 
 static void compact_inst(const Gr& G, int c, uint32_t A, Gr& H, int& c2, uint32_t& A2) {

@@ -1,0 +1,1 @@
+SUMMARY tight pairs=457 (every good D' covered by AV or EX: 111)  D': AV=24738 EX=375 REST=9665 (REST with good Fan image 824)

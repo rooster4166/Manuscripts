@@ -1,0 +1,4 @@
+# v_enum.cpp (transition systems) versus v_enum.py (path growing), canonical decomposition sets compared (count and order-free hash)
+# inputs: orders 3-5 all connected graphs (3 = all graphs), Lovász b and 3 random feasible b each; order 6 all 112 connected graphs, Lovász b; order 7 first 400 connected graphs, Lovász b (9,087 decompositions)
+v_enum.cpp self-checks (every decomposition verified, duplicates): bad=0 dup=0 bad=0 dup=0 bad=0 dup=0 
+checked 636 mismatches 0

@@ -1,0 +1,8 @@
+blocked instances=15277 someGoodTarget=15277
+  rule min|N(u)∩A|                            all minimisers good in 14971
+  rule max|N(u)∩N(g)|                         all minimisers good in 14916
+  rule outsideN(c) then min|N(u)∩A|           all minimisers good in 15241
+  rule min d(u)                                 all minimisers good in 14974
+  rule max|N(u)∩N(c)|                         all minimisers good in 14781
+  rule min|N(u)∩A| then max|N(u)∩N(g)|      all minimisers good in 15045
+  by |N(u)∩A-g|: 1: good 21738 bad 237; 2: good 14407 bad 7; 3: good 3700 bad 214; 4: good 703 bad 0; 5: good 30 bad 38; 

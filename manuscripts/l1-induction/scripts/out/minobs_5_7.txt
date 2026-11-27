@@ -1,0 +1,10 @@
+DEADEND root=DEk c=1 depth=1 g=4 d(g)=2 nch=1 A={0,2} N(g)={2,3} E: 0-3 1-3 2-4 3-4 
+DEADEND root=DEk c=2 depth=1 g=3 d(g)=2 nch=1 A={0,1} N(g)={1,4} E: 0-4 1-3 2-4 3-4 
+SUMMARY roots=8 deadends=2
+DEADEND root=F?BDw c=1 depth=1 g=6 d(g)=4 nch=1 A={0,2,3,4} N(g)={2,3,4,5} E: 0-5 1-5 2-6 3-6 4-6 5-6 
+DEADEND root=F?BDw c=2 depth=2 g=5 d(g)=2 nch=0 A={0,1,3,4} N(g)={0,1} E: 0-5 1-5 2-6 3-6 4-6 
+DEADEND root=F?BDw c=2 depth=1 g=5 d(g)=2 nch=1 A={0,1,3,4} N(g)={1,6} E: 0-6 1-5 2-6 3-6 4-6 5-6 
+DEADEND root=F?BDw c=3 depth=2 g=5 d(g)=2 nch=0 A={0,1,2,4} N(g)={0,1} E: 0-5 1-5 2-6 3-6 4-6 
+DEADEND root=F?BDw c=3 depth=1 g=5 d(g)=2 nch=1 A={0,1,2,4} N(g)={1,6} E: 0-6 1-5 2-6 3-6 4-6 5-6 
+DEADEND root=F?BDw c=4 depth=2 g=5 d(g)=2 nch=0 A={0,1,2,3} N(g)={0,1} E: 0-5 1-5 2-6 3-6 4-6 
+SUMMARY roots=338 deadends=314

@@ -1,0 +1,80 @@
+# Re-runs of the authors' tools (built from a git-archive copy of cca465c with g++ -O2), compared with the committed outputs
+# order 9: nauty-geng -cq 9 (261,080 graphs; 11,936 with exactly one even vertex)
+IDENTICAL out/tr2_9.txt :: SUMMARY TR (A cap N[c] empty, tight u): tests 1735156 violations 0
+IDENTICAL out/stprime9.txt :: SUMMARY blocked instances (all admissible A)=135188  ST'=133926  ST=135188
+IDENTICAL out/rechoice9.txt :: SUMMARY tight pairs with (G-gu,c,A) good=82079  some D' with chain avoiding c=82079  some D' with good transfer=82079  capped=0
+IDENTICAL out/l1e9.txt :: SUMMARY inst(c notin N(g), Amax)=46638 blocked=15277 sometarget=46638 sometarget_outNc=40066 L1E=46638 L1E_outNc=40007 L1E_blocked=15277
+IDENTICAL out/stuck0_9.txt :: SUMMARY instances=95488 blocked=15277 notRec=0 notRec_blocked=0 stuck=6 flags=MB
+IDENTICAL out/rec_adm9_MBT.txt :: SUMMARY instances=95488 blocked=15277 notRec=56 notRec_blocked=35 stuck=0 flags=MBT
+IDENTICAL out/rec_sub9_MBT.txt :: SUMMARY instances=574566 blocked=135188 notRec=57 notRec_blocked=36 stuck=0 flags=MBT
+rec2 adm MB (order 9) vs out/rec_adm9_MB.txt (written by rec.cpp): NOREC lists identical: yes :: SUMMARY instances=95488 blocked=15277 notRec=209 notRec_blocked=163 stuck=0 flags=MB
+targets (DUMP=1): BADT lines identical to out/badtargets9.txt: yes; the committed file lacks the summary:
+    blocked instances=15277 someGoodTarget=15277
+      rule min|N(u)∩A|                            all minimisers good in 14971
+      rule max|N(u)∩N(g)|                         all minimisers good in 14916
+      rule outsideN(c) then min|N(u)∩A|           all minimisers good in 15241
+      rule min d(u)                                 all minimisers good in 14974
+      rule max|N(u)∩N(c)|                         all minimisers good in 14781
+      rule min|N(u)∩A| then max|N(u)∩N(g)|      all minimisers good in 15045
+      by |N(u)∩A-g|: 1: good 21738 bad 237; 2: good 14407 bad 7; 3: good 3700 bad 214; 4: good 703 bad 0; 5: good 30 bad 38; 
+alltarget: ATFAIL lines identical to out/atfail9.txt: yes; the committed file lacks the table:
+      d(g)=2 d(c)=1: instances 1942 (some bad target 382), targets 3884 bad 382
+      d(g)=2 d(c)=3: instances 8751 (some bad target 81), targets 17502 bad 81
+      d(g)=2 d(c)>=5: instances 6137 (some bad target 28), targets 12274 bad 28
+      d(g)=4 d(c)=1: instances 2839 (some bad target 290), targets 11356 bad 290
+      d(g)=4 d(c)=3: instances 12629 (some bad target 16), targets 50516 bad 16
+      d(g)=4 d(c)>=5: instances 8596 (some bad target 0), targets 34384 bad 0
+      d(g)>=6 d(c)=1: instances 752 (some bad target 41), targets 4512 bad 41
+      d(g)>=6 d(c)=3: instances 2910 (some bad target 0), targets 17460 bad 0
+      d(g)>=6 d(c)>=5: instances 2082 (some bad target 0), targets 12492 bad 0
+    SUMMARY undecided=0
+walk2 0 10 (order 9): SUMMARY mode=0 blocked=15277  walk-to-degree-two=3969  Fan-route=0  either=3969  (degree-two only=3969)
+walk2 1 10 (order 9): SUMMARY mode=1 blocked=15277  walk-to-degree-two=12980  Fan-route=4283  either=13259  (degree-two only=8976)
+walkadm (order 9): SUMMARY blocked=15277 with TR-walk to admissible=4283 (maxlen 12)
+randtest on regenerated randg.py 3000 27 11 13: IDENTICAL SUMMARY graphs=3000 blocked=9071 ST ok=9069 undecided=2 | L1E ok=9068 undecided=3 | TR tight tests=32267 violations=0 undecided=150
+randtest on regenerated randg.py 600 41 15: IDENTICAL SUMMARY graphs=600 blocked=2816 ST ok=2805 undecided=11 | L1E ok=2803 undecided=13 | TR tight tests=10460 violations=0 undecided=146
+# not committed by the authors; re-run here
+tr2 order 7: SUMMARY TR (A cap N[c] empty, tight u): tests 3764 violations 0
+trall order 7: SUMMARY TR: u notin N(c): tests 6672 violations 0;  u in N(c): tests 8066 violations 14
+stprime order 7: SUMMARY blocked instances (all admissible A)=406  ST'=386  ST=406
+exch order 7: SUMMARY tight pairs=457 (every good D' covered by AV or EX: 111)  D': AV=24738 EX=375 REST=9665 (REST with good Fan image 824)
+xcheck2 order 4: xcheck2 queries=90 mismatches=0
+xcheck2 order 5: xcheck2 queries=312 mismatches=0
+xcheck2 order 6: xcheck2 queries=3126 mismatches=0
+xcheck2 order 7: xcheck2 queries=28176 mismatches=0
+rechoice order 5: SUMMARY tight pairs with (G-gu,c,A) good=8  some D' with chain avoiding c=8  some D' with good transfer=8  capped=0
+l1e order 5: SUMMARY inst(c notin N(g), Amax)=8 blocked=0 sometarget=8 sometarget_outNc=5 L1E=8 L1E_outNc=3 L1E_blocked=0
+rechoice order 7: SUMMARY tight pairs with (G-gu,c,A) good=457  some D' with chain avoiding c=457  some D' with good transfer=457  capped=0
+l1e order 7: SUMMARY inst(c notin N(g), Amax)=338 blocked=83 sometarget=338 sometarget_outNc=257 L1E=338 L1E_outNc=251 L1E_blocked=83
+walkadm order 7: SUMMARY blocked=83 with TR-walk to admissible=24 (maxlen 12)
+minobs 6 4 order 5: DEADEND root=DEk c=1 depth=1 g=4 d(g)=2 nch=1 A={0,2} N(g)={2,3} E: 0-3 1-3 2-4 3-4  DEADEND root=DEk c=2 depth=1 g=3 d(g)=2 nch=1 A={0,1} N(g)={1,4} E: 0-4 1-3 2-4 3-4  SUMMARY roots=8 deadends=2 
+minobs 6 4 order 7: SUMMARY roots=338 deadends=314
+gap 6 order 4: SUMMARY inst=8 least-gap histogram (all / blocked): 0:8/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+TR=1 gap 6 order 4: SUMMARY inst=8 least-gap histogram (all / blocked): 0:8/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+gap 6 order 5: SUMMARY inst=28 least-gap histogram (all / blocked): 0:28/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+TR=1 gap 6 order 5: SUMMARY inst=28 least-gap histogram (all / blocked): 0:28/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+gap 6 order 6: SUMMARY inst=78 least-gap histogram (all / blocked): 0:78/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+TR=1 gap 6 order 6: SUMMARY inst=78 least-gap histogram (all / blocked): 0:78/0 1:0/0 2:0/0 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+gap 6 order 7: SUMMARY inst=780 least-gap histogram (all / blocked): 0:760/73 1:11/4 2:5/2 3:4/4 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+TR=1 gap 6 order 7: SUMMARY inst=780 least-gap histogram (all / blocked): 0:764/73 1:11/8 2:5/2 3:0/0 4:0/0 5:0/0 6:0/0 7:0/0  (7 = none within KMAX)
+gap 6 order 8: SUMMARY inst=1792 least-gap histogram (all / blocked): 0:1589/0 1:68/0 2:112/0 3:20/0 4:0/0 5:3/0 6:0/0 7:0/0  (7 = none within KMAX)
+TR=1 gap 6 order 8: SUMMARY inst=1792 least-gap histogram (all / blocked): 0:1589/0 1:68/0 2:112/0 3:20/0 4:0/0 5:3/0 6:0/0 7:0/0  (7 = none within KMAX)
+rec2 subsets MB order 4: SUMMARY instances=9 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 subsets MB order 5: SUMMARY instances=23 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 subsets MB order 6: SUMMARY instances=405 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 subsets MB order 7: SUMMARY instances=2150 blocked=406 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 subsets MB order 8: SUMMARY instances=27837 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+KS=2 rec2 subsets MB order 7: SUMMARY instances=1868 blocked=268 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 adm '' order 6: SUMMARY instances=78 blocked=0 notRec=26 notRec_blocked=0 stuck=0 flags=
+rec2 adm 'B' order 6: SUMMARY instances=78 blocked=0 notRec=9 notRec_blocked=0 stuck=0 flags=B
+rec2 adm 'M' order 6: SUMMARY instances=78 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=M
+rec2 adm 'MB' order 6: SUMMARY instances=78 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 adm 'MBT' order 6: SUMMARY instances=78 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MBT
+rec2 adm MB order 7: SUMMARY instances=780 blocked=83 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 adm MBT order 7: SUMMARY instances=780 blocked=83 notRec=0 notRec_blocked=0 stuck=0 flags=MBT
+rec2 adm MB order 8: SUMMARY instances=1792 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MB
+rec2 adm MBT order 8: SUMMARY instances=1792 blocked=0 notRec=0 notRec_blocked=0 stuck=0 flags=MBT
+rec2 adm MB on the 29 graphs of out/rec_adm10_MB.txt: SUMMARY instances=290 blocked=0 notRec=54 notRec_blocked=0 stuck=0 flags=MB
+rec2 adm MBT on the 17 graphs of out/rec_adm10_MBT.txt: SUMMARY instances=170 blocked=0 notRec=33 notRec_blocked=0 stuck=0 flags=MBT
+rec2 explore MBT < out/norec9T.g6: IDENTICAL to out/explore9_MBT.txt SUMMARY instances=328 blocked=107 notRec=56 notRec_blocked=35 stuck=1296 flags=MBT
+tt 2000000 on the stuck0 instances: IDENTICAL to out/tt_stuck0_9.txt

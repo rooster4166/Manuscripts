@@ -1,0 +1,1 @@
+SUMMARY TR tests 1735156 violations 0; A admissible for G 637572 (of which A empty 82812); A meets N(g) 1097584

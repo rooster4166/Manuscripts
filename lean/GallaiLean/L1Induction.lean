@@ -14,9 +14,11 @@ Lovász's Case I step for `L₁*` deletes an edge `gx` at the even vertex `g`, d
   when `x ∉ N(c)` (`avoid_of_target_child`), and is the tight case of `manuscripts/tight-fan` when
   `x ∈ N(c)`.
 
-The point of this file is that the transfers themselves never need admissibility: each Case I
-reduction of `L1Star.lean` transfers goodness *unconditionally* from the smaller instance to the
-larger one.  Admissibility is used only to invoke the induction hypothesis.
+The point of this file is that the Case I transfers themselves never need admissibility: the two
+Case I reductions `l1_case_target` and `l1_case_target_adj` of `L1Star.lean` are re-proved here as
+*unconditional* transfers of goodness from the smaller instance to the larger one.  Admissibility
+is used only to invoke the induction hypothesis.  (The reductions `l1_case_adj` and `l1_case_big` are
+not re-proved here; the manuscript treats them on paper.)
 
 * `avoid_of_target_child`: `x ∈ N(g) ∖ N(c)`, `x ∉ A`, and `(G − gx, c, A)` good ⇒ `(G, c, A)`
   good.  (No condition on `A ∩ N(x)`.)
@@ -33,6 +35,14 @@ larger one.  Admissibility is used only to invoke the induction hypothesis.
 * `l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`, and hence `L1StarGen`,
   `L1Star`, EE and L∞ (`l1starGen_of_ST_TR`, `l1star_of_ST_TR`, `ee_of_ST_TR`, `lInfty_of_ST_TR`).
 * `l1Blocked_of_someTargetLocal : SomeTargetLocal → L1Blocked` (recorded for completeness).
+* `TightTransferAdm`: TR for admissible blocked instances only.  This is all that
+  `l1Blocked_of_someTarget` uses, and it follows from `L1Blocked` itself
+  (`tightTransferAdm_of_l1Blocked`).  Hence, given `SomeTarget`, `L1Blocked ↔ TightTransferAdm`
+  (`l1Blocked_iff_tightTransferAdm`): `ST` is the substantive half of the reduction.
+* `SomeTargetOut` (**ST_out**): a blocked instance with a non-tight target has a *non-tight*
+  target `x` with `(G − gx, c, A)` good; `L1BlockedTight`: `L1Blocked` restricted to
+  `N(g) ⊆ N(c)`.  `l1Blocked_of_out_tight : SomeTargetOut → L1BlockedTight → L1Blocked`, and
+  `l1BlockedTight_of_ST_TR`.  So the transfer conjecture is needed only when every target is tight.
 -/
 
 open SimpleGraph
@@ -373,6 +383,75 @@ theorem ee_of_ST_TR (hTR : TightTransfer.{u}) (hST : SomeTarget.{u}) (G : Simple
 /-- `TR ∧ ST ⇒ L∞`. -/
 theorem lInfty_of_ST_TR (hTR : TightTransfer.{u}) (hST : SomeTarget.{u}) : LInfty.{u} :=
   lInfty_of_l1Blocked (l1Blocked_of_someTarget hTR hST)
+
+/-- **TR on admissible instances**: the tight transfer for a blocked admissible instance. This is
+all that `l1Blocked_of_someTarget` uses of `TightTransfer`. -/
+def TightTransferAdm : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card ≤ 1 → ∀ c : V, G.degree c % 2 = 1 → ∀ A : Finset V,
+    Admissible G c A → ∀ g ∈ evenSet G, ¬ G.Adj g c →
+    (∀ w, G.Adj g w → ∃ a ∈ A, a ≠ g ∧ G.Adj w a) →
+    ∀ x : V, G.Adj g x → G.Adj c x → AvoidDecomp (delEdge G g x) c A → AvoidDecomp G c A
+
+theorem tightTransferAdm_of_tightTransfer (h : TightTransfer.{u}) : TightTransferAdm.{u} := by
+  intro V _ _ G _ hev c hc A hA g hg hgc _ x hgx hcx hgood
+  exact h V G hev g hg c hc hgc x hgx hcx A (fun h => (hA c h).1 rfl)
+    (fun h => (hA x h).2.2 g hg hgx) (fun a ha => (hA a ha).2.1) hgood
+
+/-- `L1Blocked` gives `TR` on admissible instances for free: its conclusion is `L1Blocked`'s. -/
+theorem tightTransferAdm_of_l1Blocked (hB : L1Blocked.{u}) : TightTransferAdm.{u} := by
+  intro V _ _ G _ hev c hc A hA g hg hgc hblk _ _ _ _
+  exact hB V G hev c hc A hA g hg hgc hblk
+
+/-- The two-sided reduction uses only `TR` on admissible instances. -/
+theorem l1Blocked_of_someTarget_adm (hTR : TightTransferAdm.{u}) (hST : SomeTarget.{u}) :
+    L1Blocked.{u} := by
+  intro V _ _ G _ hev c hc A hA g hg hgc hblk
+  obtain ⟨x, hgx, hgood⟩ := hST V G hev c hc A hA g hg hgc hblk
+  have hxA : x ∉ A := fun h => (hA x h).2.2 g hg hgx
+  by_cases hcx : G.Adj c x
+  · exact hTR V G hev c hc A hA g hg hgc hblk x hgx hcx hgood
+  · exact avoid_of_target_child G hev hg hgc hgx hcx hc hxA hgood
+
+/-- **Given `ST`, `L1Blocked` is equivalent to the tight transfer on admissible instances.** So `ST`
+is the substantive half of the two-sided reduction. -/
+theorem l1Blocked_iff_tightTransferAdm (hST : SomeTarget.{u}) :
+    L1Blocked.{u} ↔ TightTransferAdm.{u} :=
+  ⟨tightTransferAdm_of_l1Blocked, fun h => l1Blocked_of_someTarget_adm h hST⟩
+
+/-- **ST_out**: a blocked instance with a non-tight target has a *non-tight* target `x` with
+`(G − gx, c, A)` good.  No transfer conjecture is needed for such a target. -/
+def SomeTargetOut : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card ≤ 1 → ∀ c : V, G.degree c % 2 = 1 → ∀ A : Finset V,
+    Admissible G c A → ∀ g ∈ evenSet G, ¬ G.Adj g c →
+    (∀ w, G.Adj g w → ∃ a ∈ A, a ≠ g ∧ G.Adj w a) → (∃ w, G.Adj g w ∧ ¬ G.Adj c w) →
+    ∃ x, G.Adj g x ∧ ¬ G.Adj c x ∧ AvoidDecomp (delEdge G g x) c A
+
+/-- **The all-tight blocked case**: `L1Blocked` restricted to `N(g) ⊆ N(c)`. -/
+def L1BlockedTight : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card ≤ 1 → ∀ c : V, G.degree c % 2 = 1 → ∀ A : Finset V,
+    Admissible G c A → ∀ g ∈ evenSet G, ¬ G.Adj g c →
+    (∀ w, G.Adj g w → ∃ a ∈ A, a ≠ g ∧ G.Adj w a) → (∀ w, G.Adj g w → G.Adj c w) →
+    AvoidDecomp G c A
+
+/-- `ST_out` and the all-tight case give `L1Blocked`. -/
+theorem l1Blocked_of_out_tight (hO : SomeTargetOut.{u}) (hT : L1BlockedTight.{u}) :
+    L1Blocked.{u} := by
+  intro V _ _ G _ hev c hc A hA g hg hgc hblk
+  by_cases hout : ∃ w, G.Adj g w ∧ ¬ G.Adj c w
+  · obtain ⟨x, hgx, hcx, hgood⟩ := hO V G hev c hc A hA g hg hgc hblk hout
+    exact avoid_of_target_child G hev hg hgc hgx hcx hc (fun h => (hA x h).2.2 g hg hgx) hgood
+  · refine hT V G hev c hc A hA g hg hgc hblk fun w hw => ?_
+    by_contra h
+    exact hout ⟨w, hw, h⟩
+
+/-- `ST ∧ TR` give the all-tight case. -/
+theorem l1BlockedTight_of_ST_TR (hTR : TightTransfer.{u}) (hST : SomeTarget.{u}) :
+    L1BlockedTight.{u} := by
+  intro V _ _ G _ hev c hc A hA g hg hgc hblk _
+  exact l1Blocked_of_someTarget hTR hST V G hev c hc A hA g hg hgc hblk
 
 end reduction
 
