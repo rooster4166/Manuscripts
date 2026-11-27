@@ -109,6 +109,14 @@ EMM sufficiency work is **stopped**.
   - Literature, verified: RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free and Δ ≤ 4.
   - Open: RE in general, the ear case at even order, and conjecture UC.
 - **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`, new): prove DL(1), single-pair disjunctive avoidance. The open core is a, b ∈ N(g) with a common neighbour, the tight-Fan obstruction.
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
+- **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): Test1 on cones is rooted Gallai RE for Eulerian graphs (synthesis §§26–27, E30, `manuscripts/eulerian-cone`, Lean `EulerianCone.lean`).
+  - **Lean** (standard axioms; full build): `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `hasMatchingCut_delVert_fullCone_iff`, the vacuous tests, and **`rootedDecomp_of_spineTestsNMC`**. The spine needs RE exactly for 2-connected Eulerian B of even order **without a matching cut**. Also `rootedDecomp_of_gallai` (Gallai ⇒ RE), `rootedDecomp_iff_addLeaf` and `rootedDecomp_of_dbl`.
+  - **Literature:** RE holds for planar, treewidth ≤ 3, 2-degenerate and K5-minor-free B (floor theorems via the leaf), and for Δ ≤ 4 (Bonamy–Perrett via the double). There is no rooted Eulerian theorem of RE's strength. Survey: `research/notes/eulerian-gallai-literature.md`.
+  - **Data:** RE is exhaustive for even order ≤ 10 (300,540 roots), plus the order-12–16 families of E30. Every tight root is counting-tight (bound CB).
+  - **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected B. It is exhaustive to order 10 and holds on the dense order-12 family; it is false without 2-connectivity.
+  - **Reductions** (proved, constructions verified; the cycle-insertion lemma is in Lean as `PathDecomp.cycle_insert`, `ear_insert`): in a smallest counterexample to RE*, every degree-2 vertex other than r is a connected ear, no two are twins, and odd order has none. The open case is the even-order ear, an avoidance condition.
+  - **Audit A30:** pending.
 - **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
 - **t6-dense**: **finished** (ec9fcc4).
   - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
@@ -641,3 +649,10 @@ Candidate uniform mechanisms (`research/connections.md`):
     - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, that has a forest base.
     - Forest data always exist when J − {z, r} is connected, since T-joins exist. That fact is paper-only; it is not in Lean.
 - **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.9).
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).
+- **Cones: Test1 = rooted Gallai for Eulerian graphs (eulerian-cone, E30, synthesis §27).**
+  - Lean `EulerianCone.lean` (standard axioms, full build 18,406 jobs). **`rootedDecomp_of_spineTestsNMC`**: the cone instances of the spine are RE for 2-connected Eulerian B of even order without a matching cut. `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `fullConeTests_iff` (for even |B| every other test at a cone is vacuous), `rootedDecomp_of_gallai`, `rootedDecomp_of_dbl`.
+  - RE from the literature: planar (BBB), treewidth ≤ 3 (BSCL), 2-degenerate (Anto–Basavaraju), K5-minor-free (ZLH 2026, arXiv) via the leaf; Δ ≤ 4 via the double and Bonamy–Perrett.
+  - RE exhaustive to even order 10, and dense order 12 (124,004 graphs with ≥ 46 edges). Tight ⇔ counting-tight on these data. Conjecture UC.
+  - Smallest-counterexample structure at degree 2 (manuscript Thm 5.7). The next targets are the even-order ear (free insertion is an avoidance condition) and roots of degree n − 2 (a constrained Lovász problem on B − r, which has one even vertex).
+
