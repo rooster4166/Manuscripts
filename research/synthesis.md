@@ -215,3 +215,8 @@ The construction uses saturated degree-2 vertices, the same mechanism as at n = 
 The first test is **pairing-guided descent**: for the Thm 21 pairing, can one always descend from Ev to some transversal, choosing within pairs, keeping every intermediate set realisable? Check this exactly at n ≤ 8.
 
 **Bank in parallel.** Target D, exact Gallai below Dirac: return the o(n) exceptional set of SP Cor 14.39 using near-half-mixed-vertices and absorption. It is a major unconditional theorem, but parameterised.
+
+**Addendum (emc-four report, 2026-11-27).**
+- Thm 21 passed the author session's own adversarial review: about 50k graphs of orders 8–12, with no gap found. Audit A13, which is independent of the author, is running.
+- **Evidence caveat.** At n ≤ 8, and in the random n = 10 sample, *every* half-set of every δ ≥ 3 graph is realisable (19,422 of 19,422 at n = 8). So the small-order evidence for EMM₃ was vacuous: cuts never bind there. The only informative δ ≥ 3 data are the two-blob and bottleneck families (282 cut-excluded half-sets, 0 failures).
+- The conditional reduction "EMM₃ at δ ≥ 5 + Thm 21 ⇒ every Gallai failure is an odd SP 10.16(1) witness" is correct as an implication. It is moot, given §12: EMM₃ is expected to fail via gadgets.
