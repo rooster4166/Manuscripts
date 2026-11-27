@@ -855,7 +855,7 @@ def CrossLocal {V : Type u} (G : SimpleGraph V) (L : List (V × Finset V)) : Pro
 
 /-- **Conjecture CLT-B1.** Every locally bipartite in-degree-one, cross-local system of avoidance
 constraints is satisfied by some Lovász decomposition.  (No counterexample: every graph with at
-most one even vertex to order 9, random graphs to order 16; manuscript `clt`, experiment E29.) -/
+most one even vertex to order 9, random graphs to order 16; manuscript `clt`, experiment E30.) -/
 def CLTB1 : Prop :=
   ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
     (evenSet G).card ≤ 1 → ∀ L : List (V × Finset V), BLocal G L → CrossLocal G L →

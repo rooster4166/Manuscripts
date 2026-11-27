@@ -1,6 +1,6 @@
 # Constrained Lovász decompositions (session `claude/clt`)
 
-Manuscript `clt.tex` (in progress), Lean `lean/GallaiLean/ConstrainedLovasz.lean`, experiments E29
+Manuscript `clt.tex` (in progress), Lean `lean/GallaiLean/ConstrainedLovasz.lean`, experiments E30
 in `research/experiments.md`, conclusions in `research/connections.md` §AE.
 
 ## Scripts (`scripts/`)
@@ -12,7 +12,7 @@ in `research/experiments.md`, conclusions in `research/connections.md` §AE.
 * `trans.c` — exact search for unsatisfiable constraint systems of a prescribed shape (minimum
   hitting sets of the violation family), e.g. `trans bip1 8 < v1_8.txt`.
   Shapes: any, in1, func, lin, match, out1, star, bip, bip1, bipx, bipx2 (av atoms);
-  pmatch, pdeg2, comp (separation atoms); options `ne`, `net`, `tdeg=`, `hdeg=`, `gdeg=`.
+  pmatch, pdeg2, comp (separation atoms); options `ne`, `net`, `tdeg=`, `hdeg=`, `gdeg=`, `h1` (exclude atoms unsatisfiable alone: joint-compatibility failures).
 * `clt_lib.py` — graph6, the exact solver interface (`manuscripts/t6-dense/scripts/lsearch.c`,
   compiled to `$LSEARCH`, default `/tmp/claude-0/lsearch`), witness checker.
 * `rand_clt.py` — random tests of the maximal forms (star, bip1, bip1ne, bipx, lnmatch).
