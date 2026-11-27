@@ -579,6 +579,85 @@ edges that must leave a small set around it. Writing each of them out as an expl
 is left to track C4.
 \end{enumerate}
 
+\section{Related work}\label{sec:related}
+
+\textbf{Gallai's conjecture.} Lov\'asz~\cite{L68} proved that every graph on $n$ vertices decomposes
+into at most $\lfloor n/2\rfloor$ paths and cycles. When all degrees are odd, the decomposition
+consists of $n/2$ paths, which is the case $e=0$ of EMM. Pyber~\cite{Pyb96} proved Gallai's
+conjecture when the even vertices induce a forest, and Fan~\cite{Fan05} extended this to wider
+classes. Bonamy and Perrett~\cite{BP19} proved it for maximum degree at most $5$, and Botler and
+Sambinelli~\cite{BS21} survey the area. These results bound the number of paths without prescribing
+the ends. As far as two literature searches show (\texttt{research/synthesis.md}~\S7), no
+characterisation of path partitions with prescribed end counts by cut conditions has appeared, so
+EMM seems to be new. Corollary~\ref{cor:linkage}(3) ($G[\Ev]$ has a perfect matching) is reminiscent
+of Pyber's and Fan's hypotheses on the subgraph induced by the even vertices. Here, however, it
+yields only the cut conditions, not a realisation.
+
+\textbf{The Lov\'asz--Cherkassky theorem.} In an inner-Eulerian graph with terminal set $T$, the
+maximum number of edge-disjoint $T$-paths is $\frac12\sum_{t\in T}\lambda(t,T-t)$
+(Lov\'asz~\cite{L76}, Cherkassky~\cite{Ch77}; Frank~\cite{FrankBook} gives a splitting-off proof).
+It is the classical min-max theorem closest to EMM, in two respects.
+\begin{itemize}
+\item \emph{The upper bound is charged to cuts in the same way.} A $T$-path leaving $t$ crosses every
+cut separating $t$ from $T-t$. In the proof of Proposition~\ref{prop:nec}, each arm leaving $v$
+either ends in $U$ or crosses $\delta(U)$.
+\item \emph{The content is simultaneity.} Each $\lambda(t,T-t)$ is a single Menger number, and the
+theorem says that all of them are attained, up to the factor $\frac12$, by one packing. In the same
+way, each vertex condition of EMM is a single Menger statement, $\lambda_{G_b}(v,t)=\deg_{G_b}(v)$
+(Remark~\ref{rem:euler}), and EMM says that all of them are attained by one partition.
+\end{itemize}
+The analogy concerns the proof structure; it is not a reduction. Attaching $b(z)$ pendant terminals at
+each vertex $z$ gives an inner-Eulerian graph for a simple profile. There, a packing of $k$
+edge-disjoint $T$-paths that uses every end slot once is easy to find: pair the odd vertices by a
+$T$-join (Lemma~\ref{lem:tjoin}), and pair the two slots of each marked vertex with each other. The
+substance of EMM is that the packing can be chosen to \emph{cover every edge} with non-trivial paths,
+so that no even subgraph is left over. This is where the flower and missing-move arguments of the
+project operate, and inequality~\eqref{eq:one} is the obstruction.
+
+\textbf{Splitting off.} Mader's theorem~\cite{Mad78} is as follows. Let $s$ be a vertex of degree
+other than $3$ that is not incident with a cut edge. Then some pair of edges at $s$ can be split off
+(replacing $xs,sy$ by $xy$) without decreasing $\lambda(x,y)$ for any $x,y\neq s$. Frank~\cite{Fr92}
+gave a short proof. The global version, for $k$-edge-connectivity, is due to Lov\'asz
+(see~\cite{FrankBook}). In our setting this gives one clean fact.
+
+\begin{proposition}\label{prop:mader}
+Let $b$ be a simple profile and $v\in V$. Completely split off the vertex $v$ in $G_b$, deleting any
+loops that arise, so that the $\lambda$-values in the resulting multigraph $G'_b$ are preserved. If
+$b$ satisfies the conditions (b) at every vertex $w\neq v$, then $G'_b$ still satisfies
+$\lambda(w,t)=\deg(w)$ for every $w\neq v$.
+\end{proposition}
+
+\begin{proof}
+$G_b$ is Eulerian, so it has no cut edge. Every vertex has even degree, so it is never $3$. Splitting
+off a pair at $v$ keeps the graph Eulerian, and deleting a loop does not change any $\lambda$. So
+Mader's theorem applies repeatedly until $v$ is isolated. Splitting $xv,vy$ into $xy$ keeps the
+degrees of $x$ and $y$. A loop arises only when $x=y$, that is, from two parallel edges at $v$. Since
+$G$ is simple and split edges avoid $v$, these can only be the two edges $vt$ of a marked $v$. So the
+only degrees that change are those of $v$ and $t$. Hence $\lambda'(w,t)\ge\lambda(w,t)=\deg(w)=\deg'(w)
+\ge\lambda'(w,t)$ for every $w\neq v$.
+\end{proof}
+
+So the cut conditions survive the elimination of any vertex. The slack $2k-d(v)-b(v)$ of the anchor
+$v$ is twice the number of paths that miss $v$, and those paths are untouched by the splitting. What splitting loses is the constraint that a path passes
+through $v$ at most once. In $G'_b$, the cycles through $t$ must use at most one split edge from $v$
+each. A splitting-off proof of EMM would therefore have
+to choose Mader pairs \emph{compatibly} with the cycle structure. That is the same equality
+phenomenon that the missing-move session isolates (\texttt{research/synthesis.md}~\S8). For CS, the
+analogous step would be to split at $t$ in $G+t$ with $t$ joined once to every vertex (the
+half-integral point $b\equiv1$). A good pairing is a complete splitting of the $t$-edges at $\Ev$
+whose pairs satisfy the cut condition in every $G^v$ (Lemma~\ref{lem:pairing}). We have not found a
+splitting theorem that guarantees this for all $v$ at once.
+
+\textbf{Flows and $T$-joins.} Lemma~\ref{lem:forms} and Lemma~\ref{lem:signed} are instances of
+max-flow min-cut and of Gale's and Hoffman's feasibility theorems~\cite{Gale57,Hof60}.
+Lemma~\ref{lem:tjoin} is the path decomposition of a $T$-join~\cite{EJ73}, and
+Proposition~\ref{prop:pervertex} is Edmonds' theorem on matroids induced by submodular
+functions~\cite{Edm70}. Lemma~\ref{lem:pairing} says that a good pairing is a demand graph meeting
+the cut condition in each $G^v$. When the cut condition suffices for edge-disjoint routing is a
+classical question; Okamura and Seymour~\cite{OS81} settle it for planar supply graphs with all
+terminals on one face. The guarded route lemma takes the opposite direction. It replaces routability
+in every $G^v$ by a single routing in $G$ with local guards.
+
 \section{Evidence}\label{sec:evidence}
 
 All numbers are produced by the scripts in \texttt{scripts/}. They use the exact realisability oracle
@@ -689,13 +768,33 @@ elementary, and they are good targets.
 made simple?
 \end{enumerate}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
+\bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
+maximum degree, Discrete Math.\ 342 (2019) 1293--1299.
+\bibitem{BS21} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph
+Theory 97 (2021) 161--184.
+\bibitem{Ch77} B.~V.~Cherkassky, A solution of a problem on multicommodity flows in a network (in
+Russian), Ekonom.\ i Mat.\ Metody 13 (1977) 143--151.
 \bibitem{Edm70} J.~Edmonds, Submodular functions, matroids, and certain polyhedra, in: Combinatorial
 Structures and their Applications (Calgary, 1969), Gordon and Breach, 1970, 69--87.
+\bibitem{EJ73} J.~Edmonds and E.~L.~Johnson, Matching, Euler tours and the Chinese postman, Math.\
+Programming 5 (1973) 88--124.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
+117--125.
+\bibitem{Fr92} A.~Frank, On a theorem of Mader, Discrete Math.\ 101 (1992) 49--57.
+\bibitem{FrankBook} A.~Frank, Connections in Combinatorial Optimization, Oxford University Press, 2011.
 \bibitem{Gale57} D.~Gale, A theorem on flows in networks, Pacific J.\ Math.\ 7 (1957) 1073--1082.
 \bibitem{Hof60} A.~J.~Hoffman, Some recent applications of the theory of linear inequalities to extremal
 combinatorial analysis, Proc.\ Sympos.\ Appl.\ Math.\ 10 (1960) 113--127.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
 Academic Press, 1968, 231--236.
+\bibitem{L76} L.~Lov\'asz, On some connectivity properties of Eulerian graphs, Acta Math.\ Acad.\ Sci.\
+Hungar.\ 28 (1976) 129--138.
+\bibitem{Mad78} W.~Mader, A reduction method for edge-connectivity in graphs, Ann.\ Discrete Math.\ 3
+(1978) 145--164.
+\bibitem{OS81} H.~Okamura and P.~D.~Seymour, Multicommodity flows in planar graphs, J.~Combin.\ Theory
+Ser.~B 31 (1981) 75--81.
+\bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, J.~Combin.\ Theory Ser.~B 66
+(1996) 152--159.
 \end{thebibliography}
 \end{document}
