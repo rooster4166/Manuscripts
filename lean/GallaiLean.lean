@@ -44,3 +44,4 @@ import GallaiLean.SeparatorEvenEven
 import GallaiLean.Separator
 import GallaiLean.FiveEven
 import GallaiLean.FiveEvenCerts
+import GallaiLean.EmmTemplate
