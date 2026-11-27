@@ -1,0 +1,21 @@
+MINFAIL D?{ g=4 c=0 dc=1 A=1,2,3, size=3 hasg=0 packed=0 indep=1
+MINFAIL D?{ g=4 c=1 dc=1 A=0,2,3, size=3 hasg=0 packed=0 indep=1
+MINFAIL D?{ g=4 c=2 dc=1 A=0,1,3, size=3 hasg=0 packed=0 indep=1
+MINFAIL D?{ g=4 c=3 dc=1 A=0,1,2, size=3 hasg=0 packed=0 indep=1
+MINFAIL DCw g=0 c=3 dc=1 A=4, size=1 hasg=0 packed=1 indep=1
+MINFAIL DEk g=0 c=1 dc=1 A=4, size=1 hasg=0 packed=1 indep=1
+MINFAIL DEk g=0 c=2 dc=1 A=3, size=1 hasg=0 packed=1 indep=1
+MINFAIL DTw g=3 c=1 dc=1 A=0, size=1 hasg=0 packed=1 indep=1
+MINFAIL DTw g=3 c=1 dc=1 A=2, size=1 hasg=0 packed=1 indep=1
+MINFAIL DT{ g=4 c=1 dc=1 A=0, size=1 hasg=0 packed=1 indep=1
+MINFAIL DT{ g=4 c=1 dc=1 A=2, size=1 hasg=0 packed=1 indep=1
+MINFAIL DT{ g=4 c=1 dc=1 A=3, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]w g=3 c=0 dc=3 A=1, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]w g=3 c=1 dc=3 A=0, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]{ g=4 c=0 dc=3 A=1, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]{ g=4 c=1 dc=3 A=0, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]{ g=4 c=2 dc=3 A=3, size=1 hasg=0 packed=1 indep=1
+MINFAIL D]{ g=4 c=3 dc=3 A=2, size=1 hasg=0 packed=1 indep=1
+SUMMARY max K=3 dropNg=1 graphs=7 pairs(G,c)=28 Amax_ok=13 trivial(Amax empty)=0 minfail_size>K=0
+  smallest failing size 1: pairs=11 ; minimal failing sets of size 1: 14 (contain g: 0, packed: 14, independent: 14)
+  smallest failing size 3: pairs=4 ; minimal failing sets of size 3: 4 (contain g: 0, packed: 0, independent: 4)
