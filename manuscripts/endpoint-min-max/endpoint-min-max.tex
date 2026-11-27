@@ -16,6 +16,7 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{example}[theorem]{Example}
+\newtheorem*{remark*}{Remark}
 
 \newcommand{\Ev}{\mathrm{Ev}}
 \newcommand{\Od}{\mathrm{Od}}
@@ -32,31 +33,31 @@ Let $G$ be a connected graph of even order $n=2k$ and let $M$ be a set of half o
 vertices. The simple profile of $M$ asks for a partition of $E(G)$ into $k$ paths with one end at every
 odd vertex, two ends at every vertex of $M$ and none at the other even vertices. A cut inequality of
 the even-degrees manuscript is necessary for this. We conjecture that it is also sufficient (EMM), and
-we confirm this on every connected graph of order at most eight and on samples of order ten. Under
-EMM, Gallai's conjecture reduces to a statement about cuts alone: some half-set meets every
-inequality (CS).
+we confirm this on every connected graph of order at most eight and on samples of order ten.
 
 We give the inequality four equivalent forms. The most useful one asks that the edges at each vertex
 $v$ extend to edge-disjoint \emph{arms} in $G-v$ that end at the prescribed ends. For half-sets it
 becomes a single-commodity cut condition in the graph $G^v$ obtained by complementing the star at
 $v$.
 
-From this we prove four things.
+Our main result is that the cut inequality can always be met. Every connected graph of even order has
+an explicit pairing of its even vertices such that every half-set with one vertex from each pair is
+cut-feasible. The construction takes the $T$-join of a spanning tree. At each vertex $v$ it chooses the
+transitions of the $T$-join by the $T$-join pairing lemma in the free part of $G^v$. A parity lemma
+makes the odd vertices there exactly the ends of these transitions. Consequently \textbf{EMM implies
+Gallai's conjecture}, and Gallai's conjecture reduces, within this programme, to the sufficiency of
+the cut inequality.
+
+We also prove the following.
 \begin{itemize}
 \item In a cone, the cut-feasible half-sets are exactly the transversals of pairings of the even
-vertices by edge-disjoint paths avoiding the apex. CS for cones follows from the $T$-join pairing
-lemma.
-\item A \emph{guarded route lemma}: if the even vertices are paired by edge-disjoint paths and every
-passage through a vertex used by two or more of them is guarded locally, then every half-set with
-one marked end per pair is cut-feasible. This covers linkages, traceable graphs and cones.
-\item A computer search finds such certificates for every connected graph of order at most eight.
-So CS holds there with a proof that never uses realisability.
+vertices by edge-disjoint paths avoiding the apex.
 \item For each vertex, the half-sets meeting its inequalities are the bases of a matroid. The
 cut-feasible family is the intersection of these matroids, and the global cap function is not
 submodular. EMM therefore does not formally imply the endpoint matroid conjecture, although the
 intersection is a matroid for every critical graph of order at most eight.
 \end{itemize}
-We also restate several results of the archive as cut statements.
+We restate several results of the archive as cut statements and discuss related work.
 \end{abstract}
 \maketitle
 
@@ -236,11 +237,9 @@ By Proposition~\ref{prop:nec}, CS for $(G,r)$ follows from the \emph{simple-prof
 (R$_s$): $r$ lies in a realisable half-set. Under EMM, CS and (R$_s$) are equivalent. Gallai's
 conjecture is equivalent to the rooted test (R) (Lean \texttt{gallai\_iff\_rootedTest}, ES \S1).
 However, (R) gives a partition into $n/2$ paths with an end at $r$, and that partition need not have a
-simple profile (ES Corollary~6). So ``Gallai and EMM imply CS'' is \emph{not} formal; it needs
-(R)$\Rightarrow$(R$_s$). Both hold at order $\le 8$ by the computations below. The general-profile extension EMM$^+$
-(\texttt{research/synthesis.md}~\S8: every profile with at least $\lceil n/2\rceil$ paths is realisable
-if and only if it is cut-feasible) would let one replace CS$_0$ by the existence of \emph{any}
-cut-feasible profile with $b(V)=n$. We have not found a direct proof of that either.
+simple profile (ES Corollary~6). So ``Gallai and EMM imply CS'' is not formal. The question is now
+moot, because CS holds unconditionally (Theorem~\ref{thm:ps}). Under EMM, Theorem~\ref{thm:ps} also
+gives (R$_s$), and hence (R).
 \end{remark}
 
 \subsection{Caps, matroids and EMC}\label{sec:caps}
@@ -251,10 +250,10 @@ $\Ev$. Under EMM these are the cut-feasible half-sets. The inequalities are uppe
 $|M\cap X|\le f(X)$, and Edmonds' theorem turns a submodular cap into a matroid. So one asks whether
 the cap is submodular. The answer has two parts.
 
-\begin{proposition}[one vertex at a time]\label{prop:pervertex}
+\begin{theorem}[one vertex at a time]\label{prop:pervertex}
 For each vertex $v$, the half-sets satisfying (c) at $v$ form the set $\cF_v$ of bases of a matroid
 on $\Ev$.
-\end{proposition}
+\end{theorem}
 
 \begin{proof}
 For $Y\subseteq V-v$ put $\lambda_v(Y)=e(v,Y)-|\Od\cap Y|-|\delta_{G-v}(Y)|$. Condition (c) at $v$
@@ -297,7 +296,7 @@ path $0,1,6,7$. Here $X=\{1,4,5,6\}$ and $Y=\{0,1,4,7\}$ are in $\cF$, but neith
 $X-5+0$ nor $X-5+7$ is.
 \item For every one of the $1{,}082$ critical graphs of order eight, $\cF$ is a matroid basis family.
 In $1{,}071$ of them $\cF=\cF_v$ for a single vertex $v$, so EMC follows from EMM through
-Proposition~\ref{prop:pervertex}. In $1{,}057$ the global cap is submodular. Four critical graphs are
+Theorem~\ref{prop:pervertex}. In $1{,}057$ the global cap is submodular. Four critical graphs are
 explained by neither:
 \texttt{Gs`ALo}, \texttt{GsQcaO}, \texttt{GqHTTS} and \texttt{GqhTTS}.
 \end{itemize}
@@ -309,6 +308,21 @@ Looplessness is CS.
 Why is $\bigcap_v\cF_v$ a matroid basis family when $G$ is critical? Is there always a set of
 vertices whose conditions imply all others and whose caps combine submodularly?
 \end{question}
+
+\begin{remark*}[matroid intersection]
+Every matroid $\mathcal I_v$ in the proof of Theorem~\ref{prop:pervertex} has
+$g_v(X)\ge\lceil|X|/2\rceil$, so every set $A$ has rank at least $\lceil|A|/2\rceil$. For two vertices
+$u,w$ and an even vertex $r$, Edmonds' matroid intersection theorem on $\Ev-r$ gives a common
+independent set of size
+$\min_A\bigl(r_u(A)+r_w(\Ev-r-A)\bigr)\ge\lceil|A|/2\rceil+\lceil(e-1-|A|)/2\rceil\ge e/2$. So the
+conditions at any two vertices can be met together by a half-set containing $r$. This does not
+extend to three matroids of this kind. On $\{1,2,3,4\}$, the partition matroids with blocks
+$\{12,34\}$, $\{13,24\}$ and $\{14,23\}$ all have rank $\ge\lceil|A|/2\rceil$ on every $A$, yet they
+have no common independent pair. At order $8$, cutting out $\cF$ needs up to six of the $\cF_v$: a
+single one suffices in $10{,}798$ graphs and two in $75$. CS is nevertheless true for every graph
+(Theorem~\ref{thm:ps}). In matroid terms, the theorem exhibits a partition matroid, that of a good
+pairing, all of whose bases lie in every $\cF_v$.
+\end{remark*}
 
 \section{Cut selection}\label{sec:cs}
 
@@ -461,43 +475,118 @@ of its passages.
 \end{enumerate}
 \end{corollary}
 
-\begin{theorem}[computer-checked]\label{thm:small}
-Every connected graph of order at most $8$ with $e\ge 2$ has a Hamiltonian path, a linkage of $\Ev$,
-or a guarded route system. Hence, by Theorem~\ref{thm:guarded}, PS and CS hold for every connected
-graph of order at most eight, by an argument that never uses realisability. The same holds for all
-trees of order at most $12$, for $K_{2,m}$ ($m\le 10$ even), and for every graph in the order-$10$ and
-order-$12$ samples described in Section~\ref{sec:evidence}.
+\subsection{Cut selection holds for every graph}
+
+Fix a set $J$ of edges whose odd-degree vertices are exactly the even vertices of $G$ (a
+\emph{$T$-join} for $T=\Ev$), and put $F=G-J$, the \emph{free} edges. For a vertex $v$ let $F^v$ be
+the graph obtained from $F$ by deleting the edges at $v$ and joining $v$ to every vertex of
+$V-v-N(v)$. For $Y\subseteq V-v$ we have
+$|\delta_{F^v}(Y)|=|\delta_{F-v}(Y)|+|Y\setminus N(v)|$, and so
+\begin{equation}\label{eq:split}
+|\delta_{G^v}(Y)|=|\delta_{J-v}(Y)|+|\delta_{F^v}(Y)| ,
+\end{equation}
+where $\delta_{J-v}(Y)$ is the set of edges of $J$ between $Y$ and $V-Y-v$.
+
+\begin{lemma}[free degrees]\label{lem:free}
+Every vertex has odd degree in $F$. The odd vertices of $F^v$ other than $v$ are exactly the
+$J$-neighbours of $v$, and $v$ itself is odd in $F^v$ if and only if $v\in\Ev$.
+\end{lemma}
+
+\begin{proof}
+$d_J(w)\equiv[w\in\Ev]$ and $d(w)\equiv[w\notin\Ev]$, so $d_F(w)$ is odd. For $w\neq v$,
+$\deg_{F^v}(w)=d_F(w)-[vw\in F]+[w\notin N(v)]$. This is $d_F(w)$, which is odd, when $vw\in J$. It is
+$d_F(w)-1$ when $vw\in F$ and $d_F(w)+1$ when $w\notin N(v)$, both even. Finally
+$\deg_{F^v}(v)=n-1-d(v)$, which is odd exactly when $d(v)$ is even.
+\end{proof}
+
+For a route system with union $J$ (which is a $T$-join for $T=\Ev$), the \emph{transitions} at $v$
+are the passages at $v$. If $v\in\Ev$ there is also the \emph{end edge} $vz$ of the route ending at
+$v$.
+
+\begin{lemma}[linked transitions]\label{lem:linked}
+Let a route system for a pairing $P$ have union $J$. Suppose that for every vertex $v$ there are
+pairwise edge-disjoint paths of $F^v$ joining $x$ to $y$ for every passage $(x,y)$ at $v$, and,
+if $v\in\Ev$, joining $z$ to $v$ for the end edge $vz$. Then $P$ is good.
+\end{lemma}
+
+\begin{proof}
+Fix $v$ and $Y\subseteq V-v$. As in the proof of Theorem~\ref{thm:guarded}, every split pair is either
+good, and then charged injectively to an edge of $\delta_{J-v}(Y)$, or bad. A bad pair is the route
+ending at $v$ with its end edge $vz$, $z\in Y$, or it has a passage $(x,y)$ at $v$ with $x\in Y$ and
+$y\notin Y\cup\{v\}$. Charge a bad pair to an edge of $\delta_{F^v}(Y)$ on its linking path. The path
+from $x\in Y$ to $y\notin Y$, or from $z\in Y$ to $v\notin Y$, crosses $\delta_{F^v}(Y)$. Distinct bad
+pairs have distinct transitions at $v$, hence edge-disjoint linking paths and distinct charges. So
+$\sigma_P(Y)\le|\delta_{J-v}(Y)|+|\delta_{F^v}(Y)|=|\delta_{G^v}(Y)|$ by~\eqref{eq:split}, and
+Lemma~\ref{lem:pairing} applies.
+\end{proof}
+
+The guards of Theorem~\ref{thm:guarded} are special linking paths. A bypass gives $x,u,y$, and private
+neighbours give $x,w_x,v,w_y,y$. (Theorem~\ref{thm:guarded} also spends the parity unit of
+Lemma~\ref{lem:parity} on the end edge.) The decisive observation is that, once $J$ is fixed, the
+hypothesis at $v$ involves only the transitions at $v$. When $J$ is a forest, these can be chosen
+independently at every vertex.
+
+\begin{theorem}[cut selection]\label{thm:ps}
+Every connected graph $G$ of even order has a good pairing. Hence PS and CS hold for every connected
+graph of even order. A good pairing can be found in polynomial time as follows.
+\begin{enumerate}
+\item Let $J$ be the $T$-join, $T=\Ev$, of a spanning tree of $G$, or any other $T$-join that is a
+forest (for example a minimum one), and let $F=G-J$.
+\item At each vertex $v$ with $d_J(v)>0$, pair the odd vertices of $F^v$ by edge-disjoint paths of
+$F^v$ (Lemma~\ref{lem:tjoin}). By Lemma~\ref{lem:free} these are the $J$-neighbours of $v$, together
+with $v$ when $v\in\Ev$. Declare $vx,vy$ consecutive whenever $\{x,y\}$ is a pair, and declare $vz$
+an end edge when $z$ is paired with $v$.
+\item Follow these transitions. The resulting paths pair $\Ev$, and their pairing is good.
+\end{enumerate}
 \end{theorem}
 
-The certificate counts are in Table~\ref{tab:cert}. At order $8$, $9{,}848$ graphs have a Hamiltonian
-path, $996$ more have a linkage, and the remaining $49$ have guarded route systems. Those $49$ are
-sparse graphs in which many routes must pass through one or two hubs, such as $K_{2,m}$-like graphs
-(Corollary~\ref{cor:linkage}(5)) and spiders.
+\begin{proof}
+At each vertex the transitions pair up the $J$-edges, leaving exactly one unpaired edge at the
+vertices of odd $J$-degree, that is, at $\Ev$. Following transitions therefore decomposes $J$ into
+edge-disjoint trails and closed trails, and every trail ends at two vertices of $\Ev$, each the end of
+exactly one trail. Since $J$ is a forest, there are no closed trails, and no trail repeats a vertex.
+So the trails are edge-disjoint paths pairing $\Ev$. Their transitions at each $v$ are linked in $F^v$
+by construction, so Lemma~\ref{lem:linked} shows that the pairing is good.
+\end{proof}
 
-\begin{conjecture}[guarded routes]\label{conj:gr}
-Every connected graph of even order has a guarded route system pairing its even vertices.
-\end{conjecture}
+\begin{corollary}\label{cor:gallai_emm}
+EMM implies Gallai's conjecture.
+\end{corollary}
 
-Conjecture~\ref{conj:gr} implies PS, hence CS. Together with EMM, it would imply Gallai's
-conjecture.
+\begin{proof}
+For $e\ge 2$, Theorem~\ref{thm:ps} gives CS$_0$. For $e=0$, the empty half-set is cut-feasible. Now
+apply Proposition~\ref{prop:gallai}.
+\end{proof}
 
-\subsection{Remarks on the general case}
+So the combinatorial half of the programme is unconditional. The cut inequality can always be met,
+by an explicit half-set, and even by every transversal of an explicit pairing. Gallai's conjecture
+reduces entirely to the sufficiency direction of EMM. The script
+\texttt{scripts/construction.py} runs the construction with random spanning trees and checks the result
+against the cut enumeration. With three trees per graph, it checks all $99$ graphs of order $6$ and all
+$10{,}893$ of order $8$. It also covers the order-$10$ sample, the bottleneck families, all trees of
+orders $8$--$12$ and $150$ random graphs of order $12$. There are no failures.
+
+\begin{remark*}[certificates and guards]
+Before Theorem~\ref{thm:ps} was found, \texttt{scripts/certificates.py} certified PS at every order
+$\le 8$ by Hamiltonian paths ($9{,}848$ graphs at order $8$), other linkages ($996$) and guarded
+route systems ($49$) (Table~\ref{tab:cert}). Whether every graph has a route system with the
+restricted guards of Theorem~\ref{thm:guarded} is now immaterial. For instance, at order $8$ there are $31$ graphs in which no decomposition of a minimum $T$-join is
+guarded. Yet the proof of Theorem~\ref{thm:ps} works for any forest $T$-join, including a minimum one,
+so some decomposition always has linked transitions.
+\end{remark*}
+
+\subsection{Remarks}
 \begin{enumerate}
-\item \emph{The apex network.} One natural auxiliary network is an apex joined to the vertices with
-positive slack $s(v)=2k-d(v)-b(v)$. Lemma~\ref{lem:signed} carries this out exactly, but separately
-for each $v$. In $G^v$ the vertex $v$ is an apex joined to its $n-1-d(v)=s(v)+b(v)-1$
-non-neighbours, and Gale's theorem decides the conditions at $v$. A single global network cannot
-work. The conditions at different vertices define different matroids
-(Proposition~\ref{prop:pervertex}), and their intersection is not a matroid in general.
-\item \emph{Simultaneity is the difficulty.} The half-integral point $b\equiv 1$ satisfies every
-condition. CS asks for a simultaneous parity rounding of $n$ cut systems. A route system is a single
-global object, and the guards make it valid at each vertex. The parity of Lemma~\ref{lem:parity}
-absorbs one unit of excess per vertex for free. That is why linkages need no guards, and why a cone
-needs only its apex.
-\item \emph{Towards Conjecture~\ref{conj:gr}.} Linkages fail only when many routes must pass through
-a few hubs. The guards then use free edges at the other hubs (bypasses) or pendant structure (private
-neighbours, as in trees). A proof might take a $T$-join minimising the number of busy vertices, and
-show that an unguarded passage allows an exchange that lowers this number.
+\item \emph{The auxiliary networks.} An apex joined to the vertices of positive slack is realised
+exactly, but separately for each $v$. In $G^v$ the vertex $v$ is joined to its $n-1-d(v)=s(v)+b(v)-1$
+non-neighbours, and in the proof it is $F^v$, the free part of $G^v$, that carries the linking paths.
+No single global network can work. The conditions at different vertices define different matroids
+(Theorem~\ref{prop:pervertex}), and their intersection is not a matroid in general. Simultaneity is
+achieved instead by fixing $J$ first: the $n$ cut systems then decouple into independent choices of
+transitions.
+\item \emph{Parity.} Lemma~\ref{lem:free} is the heart of the argument. Because $J$ is a $T$-join for
+exactly the even vertices, every vertex keeps an odd number of free edges. The odd vertices of $F^v$
+are then precisely the ends of the transitions at $v$, so the $T$-join lemma links them.
 \end{enumerate}
 
 \section{The dictionary}\label{sec:dictionary}
@@ -651,7 +740,7 @@ splitting theorem that guarantees this for all $v$ at once.
 \textbf{Flows and $T$-joins.} Lemma~\ref{lem:forms} and Lemma~\ref{lem:signed} are instances of
 max-flow min-cut and of Gale's and Hoffman's feasibility theorems~\cite{Gale57,Hof60}.
 Lemma~\ref{lem:tjoin} is the path decomposition of a $T$-join~\cite{EJ73}, and
-Proposition~\ref{prop:pervertex} is Edmonds' theorem on matroids induced by submodular
+Theorem~\ref{prop:pervertex} is Edmonds' theorem on matroids induced by submodular
 functions~\cite{Edm70}. Lemma~\ref{lem:pairing} says that a good pairing is a demand graph meeting
 the cut condition in each $G^v$. When the cut condition suffices for edge-disjoint routing is a
 classical question; Okamura and Seymour~\cite{OS81} settle it for planar supply graphs with all
@@ -723,8 +812,7 @@ of \texttt{tools/cutfeas.c}, and all of them are good. As a direct test of Theor
 \texttt{certificates.py stress} draws random pairings with random edge-disjoint route systems in $400$
 random graphs of orders $8$ and $10$. All $3{,}310$ guarded systems with a busy vertex and all
 $1{,}691$ linkages give good pairings. Of the $7{,}227$ unguarded systems, $7{,}079$ still give good
-pairings. So the guards are far from necessary, which leaves room for Conjecture~\ref{conj:gr} and for
-weaker hypotheses.
+pairings. So the guards are far from necessary; Theorem~\ref{thm:ps} explains why.
 
 \begin{table}[h]
 \caption{Caps (\texttt{scripts/caps.py}); order $8$. The columns are: global cap submodular; cap system a
@@ -748,7 +836,7 @@ yes & yes & yes & yes & yes & 1{,}050\\
 \end{tabular}
 \end{table}
 
-The script also verifies Proposition~\ref{prop:pervertex} by brute force: every $\cF_v$ is a matroid
+The script also verifies Theorem~\ref{prop:pervertex} by brute force: every $\cF_v$ is a matroid
 basis family, at orders $6$ and $8$.
 
 \section{Formalisation}
@@ -756,16 +844,21 @@ The Lean side lives in the \texttt{lean-d6-frontier} track: the definition \text
 necessity of~\eqref{eq:one} and \texttt{gallai\_of\_emm\_cs}. The shared definitions are fixed in
 \texttt{research/connections.md}~\S U. We recommend the arm form (c) as the definition, since its
 quantifiers are the simplest, with (a) proved equivalent.
-Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing} and Theorem~\ref{thm:guarded} are finite and
-elementary, and they are good targets.
+Lemma~\ref{lem:parity}, Lemma~\ref{lem:pairing}, Lemma~\ref{lem:free}, Lemma~\ref{lem:linked} and
+Theorem~\ref{thm:ps} are finite and elementary. With them, \texttt{gallai\_of\_emm} needs no cut-selection
+hypothesis.
 
 \section{Open problems}
 \begin{enumerate}
-\item EMM (Conjecture~\ref{conj:emm}): sufficiency.
-\item Conjecture~\ref{conj:gr} (guarded routes), or directly PS or CS.
+\item EMM (Conjecture~\ref{conj:emm}): sufficiency. By Corollary~\ref{cor:gallai_emm} this is now the
+whole of Gallai's conjecture within the programme.
 \item Question~\ref{q:emc}: why EMM's family is a matroid for critical graphs.
-\item (R)$\Rightarrow$(R$_s$) (Remark~\ref{rem:converse}): can a partition with an end at $r$ always be
-made simple?
+\item Which cut-feasible half-sets are transversals of good pairings? Their union is closed under
+complementation, but $\cF$ need not be: it is not in $593$ graphs of order $8$. At order $\le 8$, the
+union equals the complement-closed part $\{M\in\cF:\Ev\setminus M\in\cF\}$ except in two graphs of
+order $8$. In cones it is all of $\cF$ (Theorem~\ref{thm:cone}).
+\item (R)$\Rightarrow$(R$_s$) (Remark~\ref{rem:converse}) without EMM: can a partition with an end at
+$r$ always be made simple?
 \end{enumerate}
 
 \begin{thebibliography}{99}
