@@ -607,7 +607,9 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Audit A28 is next.
 - **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
   - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.
-  - **E28 hard graphs, head to head:** the triangle base certifies 42/48 roots where Conj 5.1 / STL-P left 46 undecided. **Better target confirmed.**
+  - **E28 hard graphs, head to head:** the triangle base certifies **all 48/48 roots** where Conj 5.1 / STL-P left 46 undecided: 42 at 2·10⁶, and the last 6 at 2·10⁷ with five seeds. **Better target confirmed.**
+  - **No undecided triangle-base root remains** in the residual families (324/324), the K2-residual run (36/36) or at d(z) = 8, n = 13 (71/71). The last hard roots were found by clt's local search and independently verified (triangle-base `tb.py` checks; coordinator's `verify_clt_witness*`).
+  - **DL, single pair:** up to order 9 the disjunction fails exactly at the universal-twin pairs (3 / 14 / 170).
   - **Clean conjecture DL:** in a graph with ≤ 1 even vertex, any disjoint non-adjacent odd pairs, none of which are universal twins of their component, admit one Lovász decomposition satisfying all the disjunctions. Every failure to order 9 is a universal-twin pair.
   - **Lean:**
     - `triangleBase_of_packed` (any m);
@@ -618,10 +620,10 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Lemma 4.1 (forest stepping, an iff) and Thm 4.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
   - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
   - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
-  - Conj 4.5 (forest base) is weaker than the triangle base.
+  - Conj 4.5 (forest base) is weaker than the triangle base, but **false as stated**: the cone over K_{2,6} and one near-cone of order 9 (direct-test1 Example 4.7; triangle-base E29 (G), coordinator `fb_k26.py`). Test1 holds there, and on cones Test1 is rooted Eulerian Gallai (synthesis §26).
   - **Lean: DONE.** `ForestLift.lean` provides `test1At_of_forestBase` and `test1_of_forestBases` (triangle-base 6da125b), with standard axioms only, checked by the coordinator.
     - The data use (child, parent) pairs in parent-first order with distinct children. That ordering forces Φ to be a rooted forest, and w is never a child.
     - Conditions (i) and (ii) are stated exactly as in Thm 4.2.
     - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, that has a forest base.
     - Forest data always exist when J − {z, r} is connected, since T-joins exist. That fact is paper-only; it is not in Lean.
-- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.9).
