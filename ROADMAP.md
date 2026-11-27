@@ -589,3 +589,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **This is a reduction, not a closure. The remaining statement is the base conjecture (t6-dense manuscript, Conj 5.1).**
   - Data in the exact Lean form: C4, K3 and P3 48/48 roots certified; K2 and ∅ are running.
   - Audit A26 is in progress.
+- **Direct lift to Test1 (external proposal via the project lead; verified 2026-11-27).**
+  - Statement: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − ⋃ triangles z a_i b_i (for a matching of N(z) − {r, w}) with one disjunctive end-path condition per triangle.
+  - Hand-checked proof. Computation: 180/180 roots at n = 11, d = 6; d = 8 partial, 24/24 so far; all lifts verified.
+  - Manuscript `manuscripts/direct-test1/` (synthesis §24). This is sharper than t6-dense Conj 5.1, which needs no fewer than STL-P plus two terminal edges.
+  - Lean and audit pending.

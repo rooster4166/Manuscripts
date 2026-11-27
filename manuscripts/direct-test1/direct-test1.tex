@@ -1,0 +1,186 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{A direct lift to the two-end test through triangles at the even vertex}
+\author{Gallai project}
+\date{27 November 2026}
+
+\begin{document}
+
+\begin{abstract}
+The two-end test (T1) of the spine reduction asks, for a graph $J$ of odd order $2k+1$ whose only
+even vertex is $z$ and for a neighbour $r$ of $z$, for a decomposition of $J-z$ into at most $k$ paths
+with at least two ends at $r$. We show that (T1) follows from the existence of a single Lov\'asz
+decomposition of an auxiliary graph $M$ with one even vertex, subject to one \emph{disjunctive}
+end-path condition per triangle $z a_i b_i$. Here $M$ is obtained from $J$ by deleting an edge $zw$
+and the triangles $za_ib_i$ of a near-perfect matching of $N(z)-r$. The lift does not pass through
+star-terminal decompositions. For $d(z)=6$ it replaces the five or six end-path conditions of the
+dense-residual base conjecture by two disjunctive ones. Exact computation supports the resulting base
+conjecture on random dense $3$-connected graphs. The reduction was proposed by an external
+collaborator; the proof and data here are an independent check.
+\end{abstract}
+
+\maketitle
+
+\section{Setting}
+
+All graphs are finite and simple. A \emph{Lov\'asz decomposition} of a graph $H$ with at most one
+vertex of positive even degree is a partition of $E(H)$ into paths of positive length such that every
+vertex $v$ is an end of exactly $d_H(v) \bmod 2$ of them. Lov\'asz~\cite{L68} proved that one always
+exists. If $v$ has odd degree, $Q(v)$ denotes the unique path ending at $v$.
+
+Throughout, $J$ has order $2k+1$, minimum degree at least $3$, and exactly one vertex $z$ of even
+degree, with $d_J(z)=2m\ge 4$. The test (T1) at $(J,z,r)$, for $r\in N_J(z)$, asks for a decomposition
+of $B:=J-z$ into at most $k$ paths with at least two ends at $r$ (Lean: \texttt{Gallai.Test1}).
+
+\begin{definition}[triangle data]\label{def:data}
+Fix $r\in N_J(z)$, a vertex $w\in N_J(z)-r$, and a perfect matching
+$M_0=\{a_1b_1,\dots,a_{m-1}b_{m-1}\}$ of $N_J(z)-\{r,w\}$ consisting of edges of $J$. Put
+\[
+M \;=\; J-\bigl(\{zw\}\cup\{za_i,\ zb_i,\ a_ib_i : 1\le i\le m-1\}\bigr),
+\]
+deleting $3m-2$ edges.
+\end{definition}
+
+\begin{lemma}\label{lem:M}
+In $M$, the vertex $z$ is a leaf adjacent to $r$; the vertex $w$ is the unique vertex of positive even
+degree, and $d_M(w)\ge 2$; every other vertex has odd degree. Hence every Lov\'asz decomposition of $M$
+has exactly $k$ paths.
+\end{lemma}
+
+\begin{proof}
+Among the $2m$ edges at $z$ only $zr$ survives. The vertex $w$ loses one edge, so it has even degree
+$d_J(w)-1\ge 2$. Each $a_i$ and $b_i$ loses two edges ($za_i,a_ib_i$, resp.\ $zb_i,a_ib_i$), so its
+degree stays odd, and it is at least $1$. All other degrees are unchanged, and $z$ has degree $1$. So
+the $2k$ vertices other than $w$ are odd. Each is an end of exactly one path, so there are $k$ paths.
+Disconnected $M$ is handled componentwise.
+\end{proof}
+
+\section{The lift}
+
+\begin{theorem}[direct lift]\label{thm:lift}
+With the data of Definition~\ref{def:data}, suppose $M$ has a Lov\'asz decomposition $D_0$ such that,
+for every $i$,
+\begin{equation}\label{eq:disj}
+a_i\notin V(Q_0(b_i)) \quad\text{or}\quad b_i\notin V(Q_0(a_i)).
+\end{equation}
+Then $(J,z,r)$ passes (T1).
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1: delete $z$.} Let $B_0=B-M_0=M-z$. In $B_0$ the vertex $w$ has even degree, every $a_i$,
+$b_i$ has odd degree, and $r$ has even degree $d_J(r)-1\ge 2$. The path $Q_0(z)$ begins $z,r$.
+\begin{itemize}[leftmargin=*]
+\item If $Q_0(z)$ has length at least $2$, replace it by $Q_0(z)-z$, which starts at $r$. The vertex
+$r$ is interior to $Q_0(z)$, so its unique end in $D_0$ lies on another path $Q_0(r)$. Now $r$ is an end
+of two paths.
+\item If $Q_0(z)=zr$, delete it. Then $r$ is an end of no path, and since $r$ has positive even degree
+in $B_0$, some path passes through $r$ internally. Split that path at $r$ into two paths of positive
+length, both ending at $r$.
+\end{itemize}
+In both cases we obtain a decomposition $D_1$ of $B_0$ into $k$ paths of positive length. In $D_1$, $r$
+is an end of exactly two paths. Every odd vertex $v$ of $B_0$ other than $r$ is an end of exactly one
+path $P_1(v)$, and $V(P_1(v))\subseteq V(Q_0(v))$, because each step only deletes $z$ or splits a path.
+
+\emph{Step 2: restore the matching.} By~\eqref{eq:disj} and the inclusion just proved, for each $i$ we
+may choose $(v_i,u_i)\in\{(b_i,a_i),(a_i,b_i)\}$ with $u_i\notin V(P_1(v_i))$. Process $i=1,\dots,m-1$ in
+turn: append the edge $v_iu_i$ to the end $v_i$ of the current path $P(v_i)$. This is legal because
+$u_i\notin V(P(v_i))$. Indeed, $V(P(v_i))$ equals $V(P_1(v_i))$ unless the same path was earlier
+extended at its other end by some $u_j$, and $u_j\ne u_i$ because $M_0$ is a matching. A path has two
+ends, so it is extended at most twice. The number of paths stays $k$, and every edge of $B=B_0+M_0$ is
+used once. No $a_i$, $b_i$ equals $r$, so $r$ still ends two paths. This is (T1) at $(J,z,r)$.
+\end{proof}
+
+\begin{remark}[comparison]\label{rem:compare}
+For $m=3$ the dense-residual base conjecture of the T(6)-i manuscript
+(\texttt{manuscripts/t6-dense}, Conj.~5.1; Lean \texttt{test1\_of\_appendBases}) needs five or six
+end-path conditions on its base. Audit A26 shows its main branch is equivalent to the star-terminal
+condition STL-P plus two prescribed terminal edges, a strengthening of STL. Theorem~\ref{thm:lift}
+bypasses star-terminal decompositions and needs only two disjunctive conditions. Neither base condition
+obviously implies the other, since the auxiliary graphs differ. Both are sufficient for (T1).
+\end{remark}
+
+\begin{remark}[availability of the data]
+Definition~\ref{def:data} needs a perfect matching of $J[N(z)-\{r,w\}]$ for some $w$. In the dense
+regime of T(6)-i, where $J[N(z)]=K_6-D$ with $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$, such a matching exists
+for every root. If $J[N(z)-r]$ has no near-perfect matching, one can still peel the triangles of a
+maximal matching. Peeling leaves an instance in which $N(z)-r$ is independent, where pairings of
+$N(z)-r$ use non-edges only.
+\end{remark}
+
+\begin{conjecture}[triangle base]\label{conj:base}
+If $J$ is $3$-connected, then for every $r$ there are data as in Definition~\ref{def:data} and a
+Lov\'asz decomposition of $M$ satisfying~\eqref{eq:disj} for all $i$.
+\end{conjecture}
+
+By Theorem~\ref{thm:lift}, Conjecture~\ref{conj:base} implies (T1) for every $3$-connected $J$ whose
+even vertex admits the data. With the spine reduction, this covers the two-end half of Gallai's
+conjecture in that range.
+
+\section{A local guard}
+
+The disjunction~\eqref{eq:disj} fails at a pair $\{a,b\}$ exactly when $Q_0(a)=Q_0(b)$, or when each of
+$Q_0(a),Q_0(b)$ contains the other vertex. The next example shows that a repair cannot work with these
+two paths alone.
+
+\begin{example}\label{ex:guard}
+Let $H$ be the $4$-cycle $a\,x\,b\,y$ with pendant edges $bt_1$ and $at_2$, so that $ab\notin E(H)$. The
+odd vertices are $a,b,t_1,t_2$ and $x,y$ have degree $2$, so a decomposition with one end at each odd
+vertex has two paths. Since $t_1$ is a leaf at $b$, no path joins $t_1$ to $b$; similarly for $t_2$ and
+$a$. So the ends are paired either as $\{t_1,t_2\},\{a,b\}$ or as $\{t_1,a\},\{t_2,b\}$.
+\begin{itemize}[leftmargin=*]
+\item In the first case the paths are $t_1\,b\,x\,a\,t_2$ and $b\,y\,a$ (or with $x,y$ exchanged), and
+$Q(a)=Q(b)=b\,y\,a$.
+\item In the second case they are $t_1\,b\,x\,a$ and $t_2\,a\,y\,b$ (or with $x,y$ exchanged), and each
+of $Q(a),Q(b)$ contains the other vertex.
+\end{itemize}
+Thus every such decomposition violates~\eqref{eq:disj}. A local uncrossing inside $M$ must therefore
+involve a third path, ending at an odd vertex.
+\end{example}
+
+\section{Evidence}
+
+The script \texttt{scripts/dtl.py} generates random $J$ with $d(z)=6$, $J[N(z)]$ dense (each pair an
+edge with probability $0.9$ before parity repair), minimum degree $\ge 3$ and connectivity $\ge 3$.
+For every root $r$ it searches for data and a base decomposition with the exact oracle
+\texttt{tools/route\_ext.c}: the four orientation choices of~\eqref{eq:disj} are four per-end avoidance
+queries, with a node budget per query. On success it executes Steps~1--2 and verifies the result
+independently. The check confirms an edge partition of $J-z$ into simple paths, at most $k$ paths,
+and at least two ends at $r$.
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+order, $d(z)$ & graphs & roots & base found & lift verified & first data choice works\\
+\midrule
+$11$, $6$ & $30$ & $180$ & $180$ & $180$ & $175$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Nine individual queries exceeded the budget; in each case another data choice at the same root
+succeeded. No lift failed. The generalised script \texttt{scripts/dtl2.py} handles $d(z)=2m$ with
+$m-1$ pairs; results at $d(z)=8$ are recorded in \texttt{scripts/out/}.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.,
+Tihany, 1966), Academic Press, New York, 1968, pp.~231--236.
+\end{thebibliography}
+
+\end{document}

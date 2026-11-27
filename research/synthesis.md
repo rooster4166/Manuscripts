@@ -514,3 +514,32 @@ All four are statements about Lovász decompositions with at most one even verte
 - Realisability of a prescribed half-set is NP-hard.
 
 **Next.** Look for the master statement behind the open core: a **constrained Lovász theorem** with several end-path constraints under a locality and compatibility condition. It should be true on the data, contain ST, the t6 base conjecture and MSEP, and be provable by Lovász's induction carrying every constraint. In parallel, t6-dense attacks its base conjecture directly.
+
+## 24. Direct lift to Test1 through triangles at z (external proposal, verified; 2026-11-27 17:30)
+
+**Proposal.** The project lead forwarded it from another agent "with a grain of salt". Its data:
+- J with one even vertex z, d(z) = 2m, and δ(J) ≥ 3;
+- r ∈ N(z), w ∈ N(z) − r, and a perfect matching M0 = {a_i b_i} of J[N(z) − {r, w}] (edges of J);
+- M = J − zw − {z a_i, z b_i, a_i b_i}, with 3m − 2 edges deleted.
+
+In M, z is a leaf at r and w is the only even vertex.
+
+**Theorem (direct lift).** If some Lovász decomposition D0 of M satisfies, for every i, (a_i ∉ V(Q0(b_i))) ∨ (b_i ∉ V(Q0(a_i))), then Test1 holds at (J, z, r).
+- **Proof.** Delete z: drop or trim the zr-path, splitting at r if needed; vertex sets only shrink. Then append each a_i b_i at an end chosen by the disjunction. The appends are legal because M0 is a matching and each path has two ends.
+- **Comparison.** No STL, no star-terminal condition, and m − 1 disjunctive conditions in place of the 5–6 conditions of t6-dense Conj 5.1. Audit A26 showed Conj 5.1's main branch is STL-P plus two prescribed terminal edges, which is *stronger* than STL.
+
+**My checks.**
+1. **Hand proof.** I checked the two steps above by hand, including Q0(z) = zr and the shared-path case. The guard example (C4 + two pendants: every 2-path decomposition violates the disjunction) is also correct.
+2. **Computation** (`manuscripts/direct-test1/scripts`). Random dense 3-connected J. The base is found with route_ext.c (per-end avoidance queries), and the lift is executed and verified independently.
+
+   | order | d(z) | roots | base found | lift verified |
+   |---|---|---|---|---|
+   | 11 | 6 | 180 | 180 | 180 |
+   | 13 | 8 | (partial) 24 | 24 | 24 |
+
+**Manuscript:** `manuscripts/direct-test1/direct-test1.tex` (3 pp.), with Conjecture "triangle base".
+
+**Next.**
+- Lean formalisation of the lift.
+- An independent audit (A28).
+- Attack the triangle base conjecture, which is now the cleanest target for T(6)-i and for Test1 at every even d(z) with a near-perfect matching in N(z) − r.
