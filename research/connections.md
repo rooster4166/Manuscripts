@@ -133,11 +133,14 @@ Manuscript: `manuscripts/near-dirac`.
 - **Proved: balanced return theorem (Thm 1.1).** Exceptional sets of linear size with arbitrary two-sided neighbourhoods and moderate degree are returned exactly, at both parities. The condition is the *balance condition*: the internal edges at exceptional vertices on each side are matched by the internal edges of the other side, up to cm and the correction ρm/2. This contains SP 14.27.
 - **Corollary 1.2.** The floor and the rooted bound hold for near-regular graphs near K_{n/2,n/2} whose degree excess balances across a bisection.
 - **Corollary 1.3.** Every failure sequence violates the balance condition on every admissible (partition, X).
-- **Counting identity (Lemma 4.1).** In any two-apex Hamilton finish, b'(B) − b'(A) = 2(e_R(A) − e_R(B)) + ρD. This is why imbalanced configurations, and unequal shores near K_{m,m+d}, need SP's one-apex removal scheme.
+- **Counting identity (Lemma 4.1).** In any two-apex Hamilton finish, b'(B) − b'(A) = 2(e_R(A) − e_R(B)) + ρD. Its bipartite case is SP's §14.18 obstruction. Together with |l(A) − l(B)| ≤ 2q, it forces a balance condition of this type, up to an error of order q. It does so only for finishes whose preliminary paths avoid the internal edges at X. This is why imbalanced configurations, and unequal shores near K_{m,m+d}, appear to need SP's one-apex removal scheme.
 
 Open:
 
-- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores.
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is now **proved in §8** for the "keep X in J" route.
+  - Mirror-symmetry balancing lemma (Lemma 8.1), with a robust form (Lemma 8.2).
+  - Prop 8.3: the window can be met if the healthy shores differ by more than |X|, or if |X| ≤ √D/6.
+  - Open: nearly equal shores with |X| ≳ √n, and the whole scheduling half (SP 14.31/14.33 with weak sites).
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
 Two observations from this session (heuristic, not proved in the manuscript):
@@ -145,7 +148,7 @@ Two observations from this session (heuristic, not proved in the manuscript):
 - Bounded |X| is *not* easier than |X| = o(n). Each exceptional vertex individually needs about n/4 integrated visits, and the healthy shores can be unbalanced regardless of |X|.
 - An "X-in-J with one-sided labels" scheme appears unable to balance more than about two two-sided vertices.
 
-An independent referee pass on the manuscript found no error in the proof of Thm 1.1. It found one gap, now fixed: Cor 1.3 needed |X| ≤ cm. It also flagged attribution points, now credited: SP 14.30 already threads exceptional vertices through rows as u, x, v, and SP §14.18 contains the bipartite case of the counting identity.
+This session's own referee subagent, run before audit A17, found no error in the proof of Thm 1.1. It found one gap, now fixed: Cor 1.3 needed |X| ≤ cm. It also raised two attribution points, now credited in the manuscript: SP 14.30 already threads exceptional vertices through rows as u, x, v, and SP §14.18 contains the bipartite case of the counting identity. Audit A17 (`research/audit/A17-near-dirac.md`) confirms Thm 1.1; its wording items are addressed in 7228bdb and later commits.
 
 ---
 

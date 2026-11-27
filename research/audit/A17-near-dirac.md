@@ -3,7 +3,9 @@
 Auditor: independent adversarial referee pass, 2026-11-27.
 
 Sources audited:
-- **[ND]** `manuscripts/near-dirac/near-dirac.tex`, 15 pp. **Version audited:** branch `claude/quirky-dirac-d9km1q` at 981c46d (merge of d4f66e1). The .tex was last changed in dff7439; the README and `research/connections.md` §D.1 in d4f66e1. I did not edit the manuscript.
+- **[ND]** `manuscripts/near-dirac/near-dirac.tex`. I did not edit the manuscript.
+  - **First pass** (§§0–8): branch `claude/quirky-dirac-d9km1q` at 981c46d (merge of d4f66e1), 15 pp. The .tex was last changed in dff7439; the README and `research/connections.md` §D.1 in d4f66e1.
+  - **Re-audit** (§9): the author's revision **ebfcdd8** (with 43dcd85), merged into this branch at f01bd3b, 16 pp. This is the **current text**. The verdicts in §§0–8 refer to 981c46d; §9 gives the status of every finding at ebfcdd8 and checks the new material.
   - Numbers such as "Lemma 3.2" are those of the compiled PDF, which match the `\label`s: Theorem 1.1 (`thm:main`), Corollaries 1.2 (`cor:class`) and 1.3 (`cor:failures`), Lemmas 3.1 (`lem:matrix`), 3.2 (`lem:weave`), 4.1 (`lem:identity`), 4.2 (`lem:apex`), Remark 4.3 (`rem:forces`), Lemma 5.1 (`lem:profiles`), Remark 6.2 (`rem:maxcut`), Problems 7.1 and 7.2.
 - **External theorems.** `manuscripts/near-dirac/CITATIONS.md`, checked against the arXiv LaTeX sources that I downloaded myself:
   - CKLOT = arXiv:1401.4159v2, file `1factrevision.tex`: §1.3, the definitions at lines 587–595 and Theorem `1factbip` at lines 664–671;
@@ -87,6 +89,13 @@ The remaining items are wording and documentation:
 - a stale PDF (N24).
 
 **No mathematical error affects any theorem, lemma or corollary.**
+
+**Current status (ebfcdd8, §9).** The revision fixes N10 (in the manuscript), N24, N25, N26, N29, N30, N32 and N36. Corollary 1.3 is now **SOUND** as stated. The new material is correct: the quotes of CKLOT 1.3.4 and SP 14.37/14.38, the credits to SP 14.30 and SP §14.18, the "θm/20" remark, and the rewritten proofs of Cor 1.2 and Cor 1.3. Still open:
+- N33: ND §7.2 still presents its two heuristics as "pieces of the solution … in place", and the README still says they are "done";
+- N10, residual: connections §D.1 still says "This is why … need SP's one-apex removal scheme";
+- nits N15 (the ⌊q/100⌋ cap in (P4)) and N37 ([DEC] is still never referred to).
+
+None of these affects a result.
 
 ---
 
@@ -415,3 +424,71 @@ The file contains no `sorry`, `admit`, `axiom` or `native_decide`, and `GallaiLe
 | `a17_small_lemmas.py` | Lemma 3.1 stress (400), Lemma 4.1 identity (2,000), Lemma 5.1 profiles (4,000 graphs, all roots) | `out/small_lemmas.txt` |
 
 They need Python 3 and networkx. The Lean check uses only the commands in §6.
+
+---
+
+## 9. Re-audit of the revision ebfcdd8 (current text; merged into `claude/audit-a17` at f01bd3b)
+
+**What changed.** `git diff 981c46d f01bd3b -- manuscripts/near-dirac`:
+- `near-dirac.tex`: +41/−23 lines, in ebfcdd8 and 43dcd85;
+- `README.md` and `CITATIONS.md`;
+- a recompiled `near-dirac.pdf` (16 pp, created 03:52:25 UTC, 10 s before the ebfcdd8 commit; its text matches the .tex);
+- a new `near-dirac.toc`.
+
+`lean/GallaiLean/NearDirac.lean` and the Lean toolchain files are unchanged. I rebuilt at f01bd3b: `lake build GallaiLean.NearDirac` succeeds, and `#print axioms` gives the same three standard axioms for all three theorems.
+
+The proof of Theorem 1.1 changed in only two places: a sentence added to Step 1 and the figures in Step 3 (both checked below). The construction is the same, so the scripts of §8 still apply unchanged.
+
+### 9.1 Status of the first-pass findings
+
+| # | First pass (981c46d) | Change in ebfcdd8 | Status |
+|---|---|---|---|
+| N25 | Cor 1.3 omits \|X\| ≤ cm (GAP) | The statement now reads "any set X **with \|X\| ≤ cm** satisfying (a) and (b)". The proof is now direct: for ⌊n/2⌋ ≥ m₀, (c) together with Theorem 1.1 and Lemma 5.1 contradicts the defining failure. The README says "with \|X\| ≤ cm". | **FIXED — Cor 1.3 SOUND** |
+| N10 | "precisely what the finish requires" (GAP, wording) | The abstract now says the identity, "whose bipartite case is SP's counting obstruction (SP §14.18), explains why some balance condition of this kind is needed". Remark 4.3 adds: "sufficient, not necessary … the slack cm in (c) could be raised to about θm/20 … relies on the choice to keep every internal edge at X". **θm/20 checked:** Λ₀ − e_H(B) ≤ θm/20 + cm/2 − ρq/2 ≤ 0.051q, and Λ₀ + e_H(A) ≥ −θm/20 − cm/2 − ρq/2 ≥ −0.551q, so \|Λ\| ≤ 0.6q is still attainable. The README now says "the counting identity behind the balance condition". | **FIXED in ND and README.** Residual: connections §D.1, line 136, still says "This is why imbalanced configurations … need SP's one-apex removal scheme" (doc only). |
+| N29 | Summary of SP 14.31, 14.33, 14.37, 14.38 inaccurate; "c ≤ 10⁻⁶" (GAP) | Rewritten as three bullets. 14.31 and 14.33: bipartite, shores m and m + 1 + r, with r, the missing degree and the number of even-degree vertices all o(m) (14.31 is r = 0). 14.37: 0 ≤ d ≤ cm, own ≤ cm and mis ≤ cm at every vertex. 14.38: the two-colouring statement. "None of them has an exceptional set." "The constant c of SP 14.37 is not explicit." 14.37 and 14.38 are now quoted in §2. | **FIXED** (checked against SP pp. 165–171) |
+| N30 | "returns the exceptional set of Cor 14.39" (GAP, wording) | Now "returns an exceptional set of the kind in Cor 14.39, taken with a threshold κ′ ≤ c/3, whenever three conditions hold", followed by the three conditions and the remark that the degree cap matters by SP 14.26. Remark 6.2 adds that X_{κ′} ⊇ X_κ when κ′ ≤ κ, which is correct since the threshold is lower. | **FIXED** |
+| N26 | Remark 6.2: "a failure of Target D" | Now "let (G_n) be a failure sequence … for all large n". The hypothesis Δ ≤ (1/2 + c/3)n is replaced by "every vertex of X has degree at most (1 + c)m", which is exactly what (b) needs. | **FIXED** |
+| N32 | (R2) "almost every path" (ERROR, wording) | Now "at least (1/4 + β/2)n of the at most n/2 paths, a (1/2 + β)-fraction of them". Problem 7.2 now says "at least", which is correct since a vertex has ≥ ⌈d/2⌉ visits. | **FIXED** |
+| N36 | CITATIONS.md lists statements §2 does not reproduce | It now lists 14.24, 14.26, 14.27, 14.37, 14.38 and 14.39 as reproduced, and all six are now in §2. It says 14.30, 14.31, 14.33 and §14.18 are described and credited, and they are. | **FIXED** |
+| N24 | Stale PDF ("n/4") | Recompiled; the text has "3n/8", "\|X\| ≤ cm" and "θm/20". | **FIXED** |
+| N14 | Step 3 rounding ("101cm") | Now "1.01cm²/⌊m/100⌋ ≤ 102cm" and "104cm + 2 < q". This holds for m ≥ 10,200, inside "m₀ large". | **FIXED** |
+| N15 | Step 4: cap q/100, "102\|X\|" (nit) | Unchanged. | open (nit, harmless) |
+| N33 | ND §7.2 "Two pieces of the solution are in place … What is missing is only the scheduling"; README "done" (UNCLEAR) | ND §7.2 lines 510–515 are unchanged, including the "within ±D" bound and "the counting obstruction … disappears". The README (Problem 7.1) still says "The one-apex identity and the greedy side-choice are done". connections §D.1 now labels its *other* two observations as heuristic. | **open** (F6 still applies) |
+| N37 | [DEC] never referred to | Unchanged. | open (nit) |
+| all others | SOUND | Unchanged, or reworded without changing the mathematics: Hypothesis (c) is "automatically satisfied" when X = ∅, ρ = 0; Lemma 3.1 is "SP Lemma 14.28 in our notation"; in the Lean description R is renamed L′. | SOUND |
+
+### 9.2 New material, checked
+
+- **Step 1, new sentence** ("The endpoints of this integer interval are integers … either an endpoint lies in [−0.6q, 0.6q] or the interval contains 0"). Correct: an integer interval with lower end ≤ 0.6q and upper end ≥ −0.6q meets [−0.6q, 0.6q] in an integer.
+- **Cor 1.2, proof.** n₀ is now chosen so that m ≥ 17, 1 + γn + cm/2 ≤ cm and (1/2 + γ)n ≤ (1 + c)m. The other facts the proof uses follow automatically:
+  - γn/2 = c²n/40 ≤ cm;
+  - cm ≥ 2(1 + γn) > 2, so \|b(A) − b(B)\| ≤ 2 ≤ cm;
+  - (1/2 − γ)n ≥ m − γ(2m + 1) ≥ (1 − c)m, since γ(2m + 1) ≤ cm;
+  - m ≥ m₀, since n₀ ≥ 2m₀ + 2.
+
+  **SOUND.**
+- **CKLOT Theorem 1.3.4.** The quote is verbatim against `1factrevision.tex`: the robust-expander definition at line 597 and Theorem `undir_decomp` at line 649, with (i) and (ii) inlined. The theorem is marked unused, correctly.
+  - "Derived from Kühn and Osthus": the source says "The next result from [KellyII] (derived from the main result of [Kelly])".
+  - "SP uses robust-expander decompositions (through Pfenninger's multigraph version) in its Theorems 14.1 and 14.8, and hence in Corollaries 14.24 and 14.26": correct. SP applies Pfenninger's Theorem 4 in the proof of 14.1 (pdftotext l. 7027) and of 14.8 (l. 7365). 14.24's proof applies Cor 14.9, which comes from 14.8 (l. 8053). 14.26 applies Thm 14.25, whose proof uses "the inputs … detailed in Theorem 14.8" (l. 8112).
+  - "Near-bipartite graphs are not robust expanders: a shore S of size n/2 has only about \|S\| robust neighbours": correct for τ ≤ 1/2.
+- **SP 14.37 and 14.38 quotes.** Verbatim against pdftotext (p. 170 and p. 171).
+- **Credit to SP 14.30** ("the device of threading an exceptional vertex through a preliminary row as u, x, v is SP's own"). Correct: SP's proof of 14.30 says "Replace each labelled pair uv in its preliminary row by u, x, v" (p. 165). ND's partner blocks are this device, with (P2) playing the role of SP's "distinct physical spokes".
+- **Credit to SP §14.18** ("for bipartite residuals the identity is SP's counting obstruction \|t(A) − t(B) − D(a − b)\| ≤ 2q"). Correct. Take e_R(A) = e_R(B) = 0 and shore sizes a, b in Lemma 4.1. Then b′(B) − b′(A) = (b − a)D, and with b′ = t − l and \|l(A) − l(B)\| ≤ 2q this is exactly SP's inequality.
+- **ND §1.3.** "This goes beyond the o(n) exceptional sets of SP Corollary 14.39, which SP leaves unreturned." Correct.
+- **ND §7.2, closing paragraph.** The new sentence "[Problem 7.2] also arises when odd(G) = n − o(n) and some vertex has degree above (1 + c)m" and the cap Δ ≤ (1 + c)⌊n/2⌋ are consistent with (b): a degree above (1 + c)m is (1/2 + β)n with β ≈ c/2 fixed.
+
+### 9.3 A note on `research/connections.md` §D.1
+
+The new line 148 says: "An independent referee pass … found one gap, now fixed: Cor 1.3 needed \|X\| ≤ cm. It also flagged attribution points, now credited: SP 14.30 … SP §14.18". That is accurate as far as Cor 1.3 goes. For the record:
+- the attribution points were **not** A17 findings; A17 noted SP §14.18's obstruction only in passing (§5.3);
+- A17's other findings (N10, N29, N30, N32, N36, N24) are now fixed;
+- N33 remains open.
+
+### 9.4 Verdict at ebfcdd8
+
+**Theorem 1.1, Lemmas 3.1, 3.2, 4.1, 4.2 and 5.1, and Corollaries 1.2 and 1.3 are SOUND as stated.** The Lean file is SOUND.
+
+Open items, none affecting a result:
+- **N33.** Relabel the two "pieces in place" of ND §7.2 as heuristics, state the one-apex window \|2(e_R(A) − e_R(B)) + ρD\| ≤ D, and drop or justify "within ±D" and "what is missing is only …". Change the README's "done" to "sketched".
+- **connections §D.1, line 136.** Change "This is why …" to "This is the obstruction for the two-apex scheme with the internal edges at X kept".
+- **Nits.** N15 (⌊q/100⌋ in (P4)) and N37 (the uncited [DEC]).

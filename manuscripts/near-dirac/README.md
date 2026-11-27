@@ -8,7 +8,7 @@
 
 - (a) every vertex outside X has at most cm own-shore neighbours and at most cm cross non-neighbours;
 - (b) every vertex x of X has degree (1 ± c)m and at least m/4 cross neighbours; its own-shore degree is otherwise unrestricted, up to about 3m/4;
-- (c) the balance condition holds: I_X(A) + ρm/2 ≤ e(B) + cm and I_X(B) ≤ e(A) + ρm/2 + cm, where I_X(S) counts the edges inside S that meet X.
+- (c) the balance condition holds: I_X(A) + ρm/2 ≤ e(B) + 250cm and I_X(B) ≤ e(A) + ρm/2 + 250cm, where I_X(S) counts the edges inside S that meet X.
 
 Then every degree-parity profile b ≤ 2 with b(V) = 2m and |b(A) − b(B)| ≤ cm is realised by exactly m paths.
 
@@ -37,7 +37,13 @@ Exceptional vertices enter the slots only through prebuilt partner blocks u x u'
 
 ## What remains for full Target D
 
-- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores. The one-apex identity and the greedy side-choice are done; the scheduling of pairs on the bin shore is open.
+- **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores.
+  - **Counting half: proved in §8** for the route in which exceptional vertices are kept in J.
+    - Lemma 8.1 (exact balancing) uses a mirror symmetry (S, Γ) ↦ (−S, −Γ) between the two namings of the bin shore.
+    - Lemma 8.2 is the robust form.
+    - Proposition 8.3: the one-apex window e_R(I) − e_R(K) ∈ [D(t−1)/2, D(t+1)/2] with |W| ≥ 0 can always be met if the healthy shores differ by more than |X| (any |X|), or if |X| ≤ √D/6.
+    - Open counting case: nearly equal healthy shores with |X| ≳ √n.
+  - **Scheduling half: open.** It needs SP 14.31/14.33 re-derived with weak exceptional sites.
 - **Problem 7.2.** Exceptional vertices of degree at least (1/2 + β)n. NH handles at most two, under exact regularity.
 
 ## Lean
