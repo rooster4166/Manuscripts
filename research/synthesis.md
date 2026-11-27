@@ -635,3 +635,39 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
    - the Eulerian Gallai literature.
 
    A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.
+
+## 27. Cones, worked out: rooted Gallai for Eulerian graphs (eulerian-cone session, 2026-11-27)
+
+Manuscript `manuscripts/eulerian-cone` (10 pp.), Lean `EulerianCone.lean`, data E30, literature `research/notes/eulerian-gallai-literature.md`. Audit A30 pending.
+
+**What the spine needs of cones.** All of the following is in Lean with standard axioms.
+- At the apex: Test1 ⇔ RE(B) (`test1_fullCone_iff`), and the cone is 3-connected ⇔ B is 2-connected.
+- Every other test at a cone over an even-order B is vacuous (`fullConeTests_iff`).
+- With the matching-cut restriction (`rootedDecomp_of_spineTestsNMC`), the spine needs RE exactly for 2-connected Eulerian B of even order without a matching cut. At order 10 that is 27,933 of 30,054 graphs.
+- Gallai ⇒ RE (`rootedDecomp_of_gallai`), so RE sits between Gallai and Gallai-for-Eulerian.
+
+**What is already known.**
+- Via the leaf (RE ⇔ p(B + leaf) ≤ n/2), the floor theorems give RE for planar, treewidth ≤ 3, 2-degenerate and K5-minor-free B.
+- Via the double (Lean `rootedDecomp_of_dbl`; the double has even order, so a ceiling bound suffices), Bonamy–Perrett gives RE for Δ(B) ≤ 4.
+- The cone over K_{2,6} is planar, so it is already covered.
+- No rooted Eulerian theorem of RE's strength was found.
+- Chu–Wang 2025, "Path decompositions of Eulerian graphs", proves only 3n/5.
+
+**What the data say.**
+- RE holds exhaustively to even order 10, and on all dense order-12 graphs (m ≥ 46).
+- **Every tight root is tight by end-counting.** The bound is CB(B, r) = least p with 2p − d_r ≥ 2 and Σ_v min(d_v, 2p − d_v) ≥ 2p. p_r = CB at 99.9% of roots.
+- Almost all tight roots have d(r) = n − 2.
+- **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) on 2-connected B. One path is to spare unless counting forbids it.
+
+**Reductions.** In a smallest counterexample to RE* (p_r ≤ ⌈n/2⌉, connected Eulerian):
+- every degree-2 vertex v ≠ r is an ear avb with B − v − ab connected;
+- no two such vertices are twins;
+- there are none at odd order.
+
+Suppression, cycle insertion and ear gluing are proved, and the constructions were executed and verified on all graphs of order ≤ 9 and on samples at order 10.
+
+**Where the difficulty sits.** Two places, both of the project's familiar kind:
+1. **The even-order ear.** Inserting the triangle into an optimal decomposition of B − v − ab is free only under an avoidance or disjointness condition at a or b (manuscript Rem. 5.8). This is L1*/DL-type.
+2. **Roots of degree n − 2**, where RE is tight. Then B − r has exactly one even vertex, and RE becomes a constrained Lovász decomposition of B − r: one piece attached at each neighbour of r, grouped into n/2 − 2 vertex-disjoint pairs and 2 singletons (Rem. 7.2). This is terminal-matching type.
+
+So the cone case does not escape the open core. It lands on the same constrained-Lovász targets, and the n − 2 formulation is a clean new instance of them.

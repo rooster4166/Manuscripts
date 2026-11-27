@@ -1,0 +1,665 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\pr}{p_r}
+\newcommand{\CB}{\mathrm{CB}}
+\newcommand{\lean}[1]{\texttt{\hyphenchar\font=`\_ #1}}
+\usepackage{array}
+
+\title{The two-end test on cones: rooted Gallai for Eulerian graphs}
+\author{Gallai project}
+\date{27 November 2026}
+
+\begin{document}
+\sloppy
+
+\begin{abstract}
+The spine reduction of the project turns Gallai's path decomposition conjecture into two deletion
+tests on $3$-connected graphs. We study the first test, (T1), on cones $J=B+z$. Then (T1) is exactly
+the following statement RE: every $2$-connected Eulerian graph $B$ of even order $n$ has, for every
+vertex $r$, a decomposition into at most $n/2$ paths of which at least two end at $r$. The spine needs
+RE precisely for such $B$ without a matching cut. Gallai's conjecture implies RE, and RE implies
+Gallai's conjecture for $2$-connected Eulerian graphs of even order. The correspondence is
+machine-checked.
+
+Published floor-bound theorems give RE for planar graphs, graphs of treewidth at most $3$,
+$2$-degenerate graphs and $K_5$-minor-free graphs. A doubling argument added here derives RE for
+maximum degree at most $4$ from Bonamy and Perrett's ceiling theorem. We prove a lower bound
+$\CB(B,r)$ on the rooted path number by counting ends. We also prove reductions at vertices of
+degree $2$: in a smallest counterexample to the parity-free form RE$^*$, every degree-$2$ vertex other
+than $r$ is a triangle ear, no two are twins, and at odd order there are none.
+
+By exhaustive computation, RE holds for all $2$-connected Eulerian graphs of even order at most $10$
+($300{,}540$ roots). It also holds on several families of order $12$ to $16$, including all
+$124{,}004$ dense $2$-connected Eulerian graphs of order $12$ with at least $46$ edges. At order at
+most $10$ the rooted path number equals the counting bound at $99.9\%$ of the roots, and every tight
+root is tight for counting reasons. This leads to a strengthened conjecture UC: unless the counting
+bound forbids it, one path is always to spare.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+All graphs are finite and simple. A \emph{decomposition} of a graph $G$ is a partition of $E(G)$ into
+paths of positive length. For a decomposition $D$ and a vertex $v$, $e_D(v)$ is the number of paths of
+$D$ with an end at $v$. A path has two distinct ends, and it contains $v$ at most once. Every path
+through $v$ uses two edges at $v$, and every path ending at $v$ uses one, so
+\begin{equation}\label{eq:par}
+d(v) = e_D(v) + 2\,\#\{P\in D: v \text{ interior to } P\}, \qquad e_D(v)\equiv d(v) \pmod 2 .
+\end{equation}
+The path number $p(G)$ is the least size of a decomposition. For a vertex $r$, the \emph{rooted path
+number} $\pr(G)$ is the least size of a decomposition with $e_D(r)\ge 1$. A graph is \emph{Eulerian}
+if every degree is even; connectivity is stated separately. For Eulerian $G$, \eqref{eq:par} gives
+$e_D(r)\ge 1 \iff e_D(r)\ge 2$.
+
+\begin{definition}
+\textbf{RE}$(B,r)$: $\pr(B)\le |B|/2$, for a $2$-connected Eulerian graph $B$ of even order and $r\in
+V(B)$. \textbf{RE$^*$}$(B,r)$: $\pr(B)\le\lceil |B|/2\rceil$, for a connected Eulerian graph $B$ with
+$|B|\ge 3$ and $r\in V(B)$.
+\end{definition}
+
+The spine of the project (Lean \lean{gallai\_iff\_spineTests'}) states that Gallai's conjecture is
+equivalent to two tests on $3$-connected graphs $J$ at a vertex $z$, in their weakest form only when
+$J-z$ has no matching cut. The first test, (T1) (Lean \lean{Test1}), asks: if $z$ is the only even
+vertex of $J$, then for every $r\in N(z)$ the graph $J-z$ has a decomposition into at most
+$(|J|-1)/2$ paths with at least two ends at $r$. Synthesis \S26 observed that on cones $J=B+z$ this is
+RE. The triangle, forest and forest-through-$r$ lifts of \texttt{direct-test1} all fail on the cone
+over $K_{2,6}$ (\texttt{direct-test1}, Example~4.7), so the cone case needs its own treatment.
+
+\subsection*{What is proved, and how}
+\begin{center}\small
+\begin{tabular}{@{}>{\raggedright}p{0.5\textwidth}>{\raggedright}p{0.2\textwidth}p{0.22\textwidth}@{}}
+\toprule
+Statement & Status & Where \\
+\midrule
+(T1) on cones $\iff$ RE; spine scope (Cor.~\ref{cor:spine}) & proved & Lean \lean{EulerianCone.lean} \\
+Gallai $\Rightarrow$ RE$^*$ at even order; RE $\iff$ leaf test; double & proved & Lean, \S\ref{sec:lit} \\
+RE on planar, tw $\le 3$, $2$-degenerate, $K_5$-minor-free, $\Delta\le4$ & from the literature & Thm.~\ref{thm:lit} \\
+Counting bound $\pr\ge\CB$ & proved & Prop.~\ref{prop:cb} \\
+Reductions at degree $2$; smallest counterexample & proved, data-checked; insertion lemma in Lean & \S\ref{sec:red}, \lean{CycleInsert.lean} \\
+RE, $|B|\le 10$, all roots & computation (exhaustive) & \S\ref{sec:comp} \\
+RE, families of order $12$--$16$ & computation (scope in Table~\ref{tab:fam}) & \S\ref{sec:comp} \\
+UC (Conj.~\ref{conj:uc}) & conjecture; exhaustive to order $10$ & \S\ref{sec:uc} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Cones and the spine}\label{sec:cones}
+
+For a graph $B$ on $W$, the cone $J=B+z$ has vertex set $W\cup\{z\}$; $z$ is joined to every vertex
+of $W$, and $B$ is induced on $W$. (Lean: \lean{fullCone B} on \lean{Option W}, apex \lean{none}; it is
+the graph \lean{cone B univ} of \lean{Marked.lean}.) Write $n=|B|$.
+
+\begin{proposition}[Lean: \lean{fullCone\_degree\_none}, \lean{fullCone\_degree\_some},
+\lean{fullCone\_onlyEven\_iff}]\label{prop:par}
+$d_J(z)=n$ and $d_J(a)=d_B(a)+1$ for $a\in W$. Hence $z$ is the only vertex of even degree of $J$ if
+and only if $n$ is even and $B$ is Eulerian.
+\end{proposition}
+
+\begin{proof}
+The neighbourhood of $z$ is $W$. The neighbourhood of $a$ is $N_B(a)\cup\{z\}$. So $d_J(a)$ is odd iff
+$d_B(a)$ is even.
+\end{proof}
+
+\begin{proposition}[Lean: \lean{kConnected\_three\_fullCone\_iff}]\label{prop:conn}
+$J$ is $3$-connected if and only if $B$ is $2$-connected. (Here $k$-connected includes having at least
+$k+1$ vertices.)
+\end{proposition}
+
+\begin{proof}
+Suppose $B$ is $2$-connected and $X\subseteq V(J)$ has $|X|\le 2$. If $z\in X$, then $J-X=B-(X-z)$ is
+connected, since $|X-z|\le1$. If $z\notin X$, then $z$ survives, is adjacent to all of $J-X$, and $J-X$
+is connected. Also $|J|=n+1\ge 4$.
+
+Conversely, suppose $J$ is $3$-connected and $X\subseteq W$ has $|X|\le1$. Then $J-(X\cup\{z\})$ is
+connected and equals $B-X$; a walk avoiding $z$ uses only edges of $B$. Also $n\ge 3$.
+\end{proof}
+
+\begin{proposition}[Lean: \lean{fullConeDelIso}, \lean{test1At\_fullCone\_iff},
+\lean{test1\_fullCone\_iff}]\label{prop:t1}
+$J-z\cong B$. For every $r\in W$, (T1) holds at $(J,z,r)$ if and only if $B$ has a decomposition into
+at most $n/2$ paths with $e(r)\ge2$. Consequently (T1) holds at $(J,z)$ if and only if the following
+holds: if $n$ is even and $B$ is Eulerian, then $B$ has such a decomposition for every $r$. When $B$
+is $2$-connected this is RE$(B,\cdot)$; the equivalence itself does not use connectivity.
+\end{proposition}
+
+\begin{proof}
+$(|J|-1)/2=n/2$, and decompositions are transported along the isomorphism with their sizes and
+ends (Lean \lean{PathDecomp.exists\_of\_iso}, built on \lean{PathDecomp.mapInj}). The hypothesis
+of (T1), that $z$ be the only even vertex, is Proposition~\ref{prop:par}.
+\end{proof}
+
+\begin{proposition}[Lean: \lean{test2\_fullCone\_apex}, \lean{test1\_fullCone\_some},
+\lean{test2\_fullCone\_some\_of\_even}]\label{prop:vac}
+The other tests at a cone are vacuous: (T2) at $z$ always; (T1) at every $a\in W$ always; (T2) at every
+$a\in W$ when $n$ is even.
+\end{proposition}
+
+\begin{proof}
+No graph has exactly one vertex of odd degree (handshake lemma).
+\begin{itemize}[leftmargin=*]
+\item (T2) at $(z,a)$ needs $z,a$ to be the only even vertices of $J$. Then $a$ would be the only odd
+vertex of $B$.
+\item (T1) at $a$ needs $a$ to be the only even vertex. Then $z$ is odd, so $n$ is odd and $|J|$ is even,
+and $J$ would have the odd number $|J|-1$ of odd vertices.
+\item (T2) at $(a,x)$ with $n$ even: $z$ is even, so $x=z$, and $a$ would be the only odd vertex of $B$.
+\end{itemize}
+\end{proof}
+
+When $n$ is odd, (T2) at a non-apex vertex $a$ of the cone is a genuine test. It concerns
+$B$ with exactly two odd vertices, which are adjacent. It is not part of RE and is not treated here.
+
+\begin{proposition}[Lean: \lean{hasMatchingCut\_delVert\_fullCone\_iff}]\label{prop:mc}
+$J-z$ has a matching cut if and only if $B$ has one.
+\end{proposition}
+
+\begin{proof}
+Matching cuts are invariant under isomorphism (Lean \lean{HasMatchingCut.of\_iso}).
+\end{proof}
+
+\begin{corollary}[Lean: \lean{rootedDecomp\_of\_spineTestsNMC}, \lean{fullConeTests\_iff},
+\lean{rootedDecomp\_of\_gallai}]\label{cor:spine}
+\leavevmode
+\begin{enumerate}[label=(\roman*)]
+\item The cone instances of the spine, in its weakest form \lean{SpineTestsNMC}, are exactly RE$(B,r)$
+for $2$-connected Eulerian $B$ of even order \emph{without a matching cut}, at every $r$. For $B$ of
+even order, every test at every vertex of $B+z$ holds if and only if RE$(B,\cdot)$ holds (when $B$ is
+Eulerian).
+\item Gallai's conjecture implies $\pr(B)\le |B|/2$ for every connected Eulerian $B$ of even order and
+every $r$ with $d(r)>0$. So
+\[
+\text{Gallai}\ \Longrightarrow\ \text{RE}\ \Longrightarrow\ \text{Gallai for $2$-connected
+Eulerian graphs of even order.}
+\]
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(i) Propositions~\ref{prop:par}--\ref{prop:mc}. (ii) Gallai's conjecture is equivalent to the rooted
+private-leaf test (Lean \lean{gallai\_iff\_rootedTest}): $p(B+\text{leaf at } r)\le|B|/2$ for
+connected $B$ of even order. Lemma~\ref{lem:leaf} below converts this to $\pr(B)\le |B|/2$. The last
+implication holds since $p(B)\le\pr(B)$.
+\end{proof}
+
+Matching cuts are common among small $2$-connected Eulerian graphs, but most have none. Among the $1$,
+$7$, $162$, $30{,}054$ graphs of orders $4,6,8,10$, those without a matching cut number $0$, $5$,
+$130$, $27{,}933$ (\texttt{scripts/mcut.c}). Cycles of length at least $4$ have matching cuts. $K_{2,6}$
+has none.
+
+\section{The leaf graph, the double, and the literature}\label{sec:lit}
+
+Let $B^r$ be $B$ with a new vertex $\ell$ joined to $r$ only. Let $B\oplus_r B$ be two disjoint copies
+of $B$ joined by an edge between the two copies of $r$ (Lean \lean{dbl}).
+
+\begin{lemma}[Lean: \lean{rootedDecomp\_iff\_addLeaf}]\label{lem:leaf}
+If $d_B(r)$ is even and positive, then $\pr(B)=p(B^r)$.
+\end{lemma}
+
+\begin{proof}
+($\ge$) Extend a path ending at $r$ by $r\ell$.
+($\le$) Let $D$ decompose $B^r$, and let $P$ be the path containing $r\ell$.
+\begin{itemize}[leftmargin=*]
+\item If $P=r\ell$, then $D-P$ decomposes $B$ into $|D|-1$ paths. If $r$ is an end of none of them, some
+path passes through $r$, because $d_B(r)>0$. Splitting it there gives $|D|$ paths with two ends at $r$.
+\item Otherwise $P-\ell$ ends at $r$, and the count is unchanged.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Lean: \lean{two\_mul\_pathNumber\_addLeaf\_le}, \lean{rootedDecomp\_of\_dbl}]\label{lem:dbl}
+$2p(B^r)\le p(B\oplus_r B)+1$. Hence, if $|B|$ is even, $d_B(r)$ is even and positive, and
+$p(B\oplus_r B)\le |B|$, then $\pr(B)\le |B|/2$.
+\end{lemma}
+
+\begin{proof}
+Exactly one path $P$ of a decomposition of the double uses the bridge. Cutting $P$ at the bridge, and
+keeping each half on its own side together with the bridge edge as the leaf edge, gives decompositions
+of the two leaf graphs. Their sizes add up to at most $|D|+1$. Then
+$\pr(B)=p(B^r)\le(|B|+1)/2$, which is $\le|B|/2$ since $|B|$ is even.
+\end{proof}
+
+The leaf lemma converts a floor bound $p\le\lfloor n'/2\rfloor$ on a class closed under adding a leaf
+into RE. The double needs only a ceiling bound, since $|B\oplus_rB|$ is even, but the class must
+contain the double.
+
+\begin{theorem}[RE from the literature]\label{thm:lit}
+Let $B$ be a connected Eulerian graph of even order and $r\in V(B)$. Then $\pr(B)\le|B|/2$ in each of
+the following cases.
+\begin{enumerate}[label=(\alph*)]
+\item $B$ is planar.
+\item $B$ has treewidth at most $3$.
+\item $B$ is $2$-degenerate.
+\item $B$ is $K_5$-minor-free.
+\item $\Delta(B)\le 4$.
+\item $\Delta(B-r)\le3$.
+\item $B-r$ is a forest.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+In (a)--(d) and (f)--(g) we apply Lemma~\ref{lem:leaf}. The graph $B^r$ has odd order $|B|+1$ and a leaf,
+so it is none of the exceptions $K_3$, $K_5^-$, $K_5$, or a SET graph (whose odd vertices have two even
+neighbours; the odd vertex $\ell$ has none). It lies in the class whenever $B$ does.
+\begin{enumerate}[label=(\alph*)]
+\item Blanch\'e, Bonamy and Bonichon \cite[Thm.~1.2]{BBB}: every connected planar graph except $K_3$ and
+$K_5^-$ decomposes into $\lfloor n/2\rfloor$ paths.
+\item Botler, Sambinelli, Coelho and Lee \cite[Thm.~3.2]{BSCL}: connected partial $3$-trees, except
+$K_3$ and $K_5^-$.
+\item Anto and Basavaraju \cite[Thm.~1]{AB}: connected $2$-degenerate graphs, except $K_3$.
+\item Zhang, Liu and Hong \cite[Thm.~1.1]{ZLH}: connected $K_5$-minor-free graphs, except $K_3$ and
+$K_5-e$. This is an arXiv preprint (November 2026), not yet refereed.
+\item This case uses Lemma~\ref{lem:dbl} instead. The double is connected and has maximum degree
+$\max(\Delta(B),d(r)+1)\le 5$. Bonamy and Perrett \cite[Thm.~1.3]{BP} decompose every connected graph
+of maximum degree at most $5$ into $\lceil n/2\rceil$ paths. So $p(B\oplus_rB)\le|B|$.
+\item Botler and Sambinelli \cite[Thm.~13]{BS}: if $\Delta(\mathrm{EV}(G))\le3$, then $G$ is a Gallai
+graph or a SET graph. Here $\mathrm{EV}(B^r)=B-r$.
+\item Pyber's theorem: if the even vertices induce a forest, then $p\le\lfloor n/2\rfloor$. We used the
+restatements in \cite[Thm.~2(b)]{BS} and \cite{BP}, not Pyber's paper itself, which we could not access
+(\texttt{research/notes/eulerian-gallai-literature.md}).
+\end{enumerate}
+\end{proof}
+
+The cone over $K_{2,6}$, which defeats the terminal-structure lifts, is covered by (a) and by (g).
+Every class of Theorem~\ref{thm:lit} is sparse or of bounded degree. The tight instances of RE in
+\S\ref{sec:comp} are dense.
+
+No paper we found proves a rooted statement for Eulerian graphs of RE's strength. The closest are
+the following:
+\begin{itemize}[leftmargin=*]
+\item Fan--Hou--Zhou \cite[Thm.~5]{FHZ} and Xie \cite[Thm.~1.4]{Xie} prove bounds $(n+1)/2$ with
+two ends at a prescribed vertex. We read Fan--Hou--Zhou only in its abstract and in Xie's verbatim
+restatement.
+For $2$-connected Eulerian graphs their hypotheses force a cycle, or an edge with all other vertices of
+degree $2$.
+\item Botler--Sambinelli \cite[Lemma~10]{BS} is a rooted lemma for non-Eulerian SET graphs.
+\end{itemize}
+Chu and Wang \cite{CW}, whose title is \emph{Path decompositions of Eulerian graphs}, prove $3n/5$. The
+survey with access levels is \texttt{research/notes/eulerian-gallai-literature.md}.
+
+\section{A lower bound by counting ends}\label{sec:cb}
+
+\begin{proposition}\label{prop:cb}
+Let $B$ be Eulerian and $r\in V(B)$, and let $D$ be a decomposition into $p$ paths with $e_D(r)\ge1$.
+Then the numbers $e_v=e_D(v)$ are even and satisfy
+\[
+0\le e_v\le c_v(p):=\min(d_v,\,2p-d_v),\qquad e_r\ge 2,\qquad \textstyle\sum_v e_v=2p .
+\]
+Hence $\pr(B)\ge\CB(B,r)$, the least $p$ such that $c_r(p)\ge2$, $c_v(p)\ge 0$ for all $v$, and
+$\sum_v c_v(p)\ge 2p$.
+\end{proposition}
+
+\begin{proof}
+By \eqref{eq:par}, $v$ lies on exactly $(d_v-e_v)/2+e_v=(d_v+e_v)/2$ paths, which is at most $p$. So
+$e_v\le 2p-d_v$. Clearly $e_v\le d_v$. All quantities are even because every $d_v$ is even. Conversely,
+if the three conditions hold, even values $e_v$ with these bounds and sum $2p$ exist. So $\CB$ is
+exactly the least $p$ for which these necessary conditions can be met.
+\end{proof}
+
+Three special cases give the three classical lower bounds:
+\begin{itemize}[leftmargin=*]
+\item $c_r\ge2$ gives $p\ge d(r)/2+1$;
+\item $c_v\ge0$ gives $p\ge\Delta/2$;
+\item $\sum_v(2p-d_v)\ge2p$ gives $p\ge\lceil m/(n-1)\rceil$.
+\end{itemize}
+The bound $\CB$ can exceed all three.
+
+\begin{example}\label{ex:ds}
+Let $B$ be $K_8$ minus a double star: the centres $s,t$ are adjacent in the complement, with four and
+two leaves (graph6 \texttt{GTm\~{}vs}). Then $d(s)=2$, $d(t)=4$, all other degrees are $6$, and $m=21$.
+At $p=3$ we get $\sum_v c_v=2+2+6\cdot0=4<6$, so $\CB=4=|B|/2$ at every root, while the three classical
+bounds give $3$ at the roots $s$ and $t$. Directly: three paths with $21=3\cdot 7$ edges are Hamiltonian,
+and all three would visit $s$, which lies on at most $d(s)=2$ paths.
+\end{example}
+
+\section{Reductions at vertices of degree two}\label{sec:red}
+
+Throughout, $B$ is connected and Eulerian with $n=|B|\ge 4$, and $r\in V(B)$. A vertex $v$ of degree $2$
+with $N(v)=\{a,b\}$ is an \emph{ear} if $ab\in E(B)$.
+
+\begin{lemma}[suppression]\label{lem:supp}
+Let $v\ne r$ have degree $2$ with $N(v)=\{a,b\}$ and $ab\notin E(B)$. Then $B/v:=B-v+ab$ is a
+connected Eulerian simple graph on $n-1$ vertices, and $\pr(B)\le\pr(B/v)$.
+\end{lemma}
+
+\begin{proof}
+Degrees are unchanged, and connectivity is clear. In a decomposition of $B/v$, replace the edge $ab$
+by $avb$ inside its path. The vertex $v$ is new, so this is still a path, and no end changes.
+\end{proof}
+
+\begin{lemma}[cycle insertion; Lean: \lean{PathDecomp.cycle\_insert}]\label{lem:ins}
+Let $G'$ be a graph, and let $a\in V(G')$ with $d_{G'}(a)>0$. Let $C=a\,c_1\cdots c_l\,a$ ($l\ge2$) be a
+cycle that is edge-disjoint from $G'$, such that $c_l\notin V(G')$ and at most one of
+$c_1,\dots,c_{l-1}$ lies in $V(G')$. For every decomposition $D'$ of $G'$, the graph $G=G'\cup C$ has
+a decomposition $D$ with:
+\begin{itemize}
+\item $|D|=|D'|+1$;
+\item $e_D(x)=e_{D'}(x)$ for every $x\in V(G')$;
+\item $e_D(c_l)=2$, and $e_D=0$ at the other new vertices.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+\emph{Case 1: $a$ is interior to some $Q\in D'$.} At most one vertex $c_j$ of $C$ other than $a$ lies on
+$Q$, and it lies on one side of $a$. Orient $Q=Q_1\,a\,Q_2$ with $c_j\notin Q_1$; both $Q_1$ and $Q_2$
+are nonempty. Replace $Q$ by $Q_1\,a\,c_1\cdots c_l$ and $c_l\,a\,Q_2$. The first is a path because the
+$c_i$ avoid $Q_1$. The second is a path because $c_l$ is new.
+
+\emph{Case 2: otherwise.} Then $a$ is an end of some path $P=a\,P'$. Replace $P$ by $c_l\,a\,P'$ and add
+the path $c_l\,c_{l-1}\cdots c_1\,a$.
+
+In both cases every edge of $C$ is used once. The old ends stay where they were, except that in Case~2
+the end of $P$ at $a$ moves to $c_l$ and the new path ends at $a$. So $c_l$ gains two ends.
+
+In the Lean statement, $C$ is given as a path $R\colon a\to c_l$ of $G$ together with the edge $c_la$, and
+``$x\notin V(G')$'' is weakened to ``$x$ has no edge in $G'$''. Case~2 is used whenever $a$ is an end of
+some path, and Case~1 otherwise.
+\end{proof}
+
+\begin{proposition}[ears; the insertion step in Lean: \lean{PathDecomp.ear\_insert}]\label{prop:ear}
+Let $v\ne r$ be an ear with $N(v)=\{a,b\}$, and suppose $B':=B-v-ab$ is connected. Then
+$\pr(B)\le\pr(B')+1$. In particular RE$^*(B',r)$ implies RE$^*(B,r)$ when $n$ is odd.
+\end{proposition}
+
+\begin{proof}
+$B'$ is connected, Eulerian, and has $n-1\ge3$ vertices, so $d_{B'}(a)>0$. Apply Lemma~\ref{lem:ins} with
+$C=a\,b\,v\,a$ ($c_1=b$, $c_2=v$) to an optimal rooted decomposition of $B'$. For odd $n$,
+$\lceil (n-1)/2\rceil+1=\lceil n/2\rceil$.
+\end{proof}
+
+\begin{proposition}[ears at a cut]\label{prop:earcut}
+Let $v\ne r$ be an ear with $N(v)=\{a,b\}$, and suppose $B-v-ab$ is disconnected. Then $B-v$ is
+connected, and $B-v-ab$ has exactly two components $B_a\ni a$ and $B_b\ni b$. Each is Eulerian, and is
+either a single vertex or has at least $3$ vertices. Choose the labels so that $r\in V(B_a)$.
+\begin{enumerate}[label=(\roman*)]
+\item If $|B_a|,|B_b|\ge3$, then $\pr(B)\le p_r(B_a)+p_b(B_b)$.
+\item If $B_b=\{b\}$, then $\pr(B)\le p_r(B_a)+1$.
+\item If $B_a=\{a\}$, so that $r=a$, then $\pr(B)\le p_b(B_b)+1$.
+\end{enumerate}
+In every case RE$^*$ for the smaller graphs gives RE$^*(B,r)$.
+\end{proposition}
+
+\begin{proof}
+$B-v$ is connected because $a$ and $b$ are adjacent. Deleting the edge $ab$ leaves at most two
+components. An Eulerian connected graph on two vertices does not exist.
+
+(i) Take optimal decompositions $D_a$ (rooted at $r$) and $D_b$ (rooted at $b$), and a path $P_b=P_b'\,b\in
+D_b$ ending at $b$.
+\begin{itemize}[leftmargin=*]
+\item If $a$ is interior to some $Q=Q_1\,a\,Q_2\in D_a$, replace $Q,P_b$ by $Q_1\,a\,v\,b$ and
+$P_b'\,b\,a\,Q_2$.
+\item Otherwise $a$ is an end of some $P_a=a\,P_a'\in D_a$. Replace $P_a,P_b$ by $P_b'\,b\,a\,P_a'$ and
+add $a\,v\,b$.
+\end{itemize}
+These are paths since $V(B_a)\cap V(B_b)=\emptyset$ and $v$ is new. The number of paths is
+$|D_a|+|D_b|$, and every old vertex keeps its number of ends.
+
+(ii) Here $b$ has neighbours $a,v$ only. Apply Lemma~\ref{lem:ins} to $D_a$ with $C=a\,b\,v\,a$.
+
+(iii) Apply Lemma~\ref{lem:ins} to $D_b$ with $C=b\,v\,a\,b$. The new vertex $a=r$ is $c_l$, so it gets
+two ends.
+
+Bounds: $n=|B_a|+|B_b|+1$. In (i), $\lceil|B_a|/2\rceil+\lceil|B_b|/2\rceil\le\lceil n/2\rceil$ by
+parity. In (ii) and (iii), $\lceil (n-2)/2\rceil+1=\lceil n/2\rceil$.
+\end{proof}
+
+\begin{proposition}[twins]\label{prop:twin}
+Let $u\ne v$, both different from $r$, have degree $2$ and $N(u)=N(v)=\{a,b\}$. Then RE$^*$ for smaller
+graphs gives RE$^*(B,r)$.
+\end{proposition}
+
+\begin{proof}
+If $ab\notin E$, use Lemma~\ref{lem:supp}. If $ab\in E$, then $B''=B-u-v$ is connected (it contains $ab$),
+Eulerian, and has at least $3$ vertices: $d(a)\ge 4$, since $a$ has neighbours $u,v,b$ and even degree.
+Lemma~\ref{lem:ins} with $C=a\,u\,b\,v\,a$ ($c_2=b$ is the one old vertex) gives
+$\pr(B)\le\pr(B'')+1\le\lceil(n-2)/2\rceil+1=\lceil n/2\rceil$.
+\end{proof}
+
+\begin{proposition}[the root of degree two, odd order]\label{prop:root}
+Let $n$ be odd, $d(r)=2$ and $N(r)=\{a,b\}$. If $ab\notin E$, or if $ab\in E$ and $B-r-ab$ is connected,
+then RE$^*$ for smaller graphs gives RE$^*(B,r)$.
+\end{proposition}
+
+\begin{proof}
+If $ab\notin E$: $B/r$ is connected Eulerian of even order $n-1$, so $p(B/r)\le\lceil(n-1)/2\rceil$.
+Subdivide $ab$ by $r$ and split the path through $r$ at $r$. This gives
+$\pr(B)\le (n-1)/2+1=\lceil n/2\rceil$.
+If $ab\in E$: apply Lemma~\ref{lem:ins} to $B-r-ab$ at $a$ with $C=a\,b\,r\,a$. The vertex $r=c_l$ gets two
+ends, so $\pr(B)\le p(B-r-ab)+1\le\lceil n/2\rceil$.
+\end{proof}
+
+\begin{theorem}[a smallest counterexample]\label{thm:min}
+Let $(B,r)$ be a counterexample to RE$^*$ with $|V(B)|+|E(B)|$ minimum. Then:
+\begin{enumerate}[label=(\alph*)]
+\item every vertex $v\ne r$ of degree $2$ is an ear, with $N(v)=\{a,b\}$ and $B-v-ab$ connected;
+\item no two vertices other than $r$ of degree $2$ have the same neighbourhood;
+\item if $n$ is odd, every vertex other than $r$ has degree at least $4$. If moreover $d(r)=2$, then
+$N(r)=\{a,b\}$ is an edge and $B-r-ab$ is disconnected;
+\item $n\ge 11$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+RE$^*$ holds for $K_3$, so $n\ge4$. Each of Lemma~\ref{lem:supp} and Propositions~\ref{prop:ear}--\ref{prop:root}
+produces smaller connected Eulerian graphs, with at least $3$ vertices or trivial, that satisfy
+RE$^*$ by minimality, and it gives RE$^*(B,r)$:
+\begin{itemize}[leftmargin=*]
+\item (a): Lemma~\ref{lem:supp} with $\lceil(n-1)/2\rceil\le\lceil n/2\rceil$, and
+Proposition~\ref{prop:earcut};
+\item (b): Proposition~\ref{prop:twin};
+\item (c): Proposition~\ref{prop:ear} and (a), and Proposition~\ref{prop:root};
+\item (d): computation (\S\ref{sec:comp}): RE$^*$ holds for every connected Eulerian graph of order
+$3\le n\le10$, at every root.
+\end{itemize}
+\end{proof}
+
+\begin{remark}[what is left at degree two]\label{rem:even}
+The remaining case is an ear $v$ at even order with $B'=B-v-ab$ connected. Then $B'$ has odd order,
+and RE$^*(B')$ allows $n/2$ paths, so Lemma~\ref{lem:ins} gives $n/2+1$, one too many. The insertion
+is free in either of two situations:
+\begin{itemize}[leftmargin=*]
+\item $a$ is an end of two paths $P_1,P_2$ of $D'$ with $b\notin P_1$: replace them by $P_1\,a\,b\,v$
+and $P_2\,a\,v$;
+\item $a,b$ are ends of vertex-disjoint paths $P_a,P_b$: merge them through $ab$ and add $a\,v\,b$.
+\end{itemize}
+These are avoidance conditions of the kind that the project's open core (L1$^*$, DL) is about. On the
+data the bound $n/2+1$ is actually needed: in $56$ of the $1{,}225$ even-order ear instances of order
+at most $9$, the optimal rooted decomposition of $B'$ already has $n/2$ paths. Yet $\pr(B)\le n/2$
+always held. Remark~\ref{rem:degn2} gives another formulation of the hard case.
+\end{remark}
+
+\emph{Data check.} \texttt{scripts/reductions\_check.py} executes every construction of this section
+on optimal decompositions produced by the solver, and verifies each output independently: partition
+into paths, sizes, ends at every old vertex, end at $r$.
+\begin{itemize}[leftmargin=*]
+\item Every connected Eulerian graph of order $4$ to $9$, every root and every applicable vertex:
+$15{,}776$ suppressions, $13{,}827$ ear insertions, $2{,}537$ ears at a cut, $3{,}559$ twin
+insertions, $2{,}024$ root suppressions and $1{,}763$ root-ear insertions, with no failure
+(\texttt{data/out/reductions\_check\_le9.txt}).
+\item At order $10$: the first $3{,}000$ of the $2$-connected graphs and all $972$ connected graphs
+that are not $2$-connected. That is $62{,}838$ suppressions, $54{,}306$ ear insertions,
+$16{,}002$ ears at a cut and $19{,}472$ twin insertions, with no failure
+(\texttt{reductions\_check\_10.txt}).
+\end{itemize}
+
+\section{Computation}\label{sec:comp}
+
+\subsection{The solver and its validation}
+\texttt{scripts/re.c} decides $\pr(B)\le t$ by depth-first search over paths. The first path starts at
+$r$. Afterwards, a vertex of odd degree in the remaining edge set $R$ must be an end of some path, so
+the search branches over the paths starting there; if there is none, it branches over the paths
+through the lowest edge of $R$. Both branchings are complete. Components of $R$ are solved separately,
+and failures are memoised.
+
+The lower bound used for pruning is $\max(1,\mathrm{odd}/2,\max_v\lceil d_v/2\rceil,\lceil
+|E|/(|V|-1)\rceil)$ per component. All of its terms are valid bounds for arbitrary graphs.
+The validation has four parts:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Brute force.} \texttt{scripts/bf.py} enumerates all paths and all exact covers. On all
+$473$ connected graphs of order $3$ to $7$ with at most $10$ edges it agrees with \texttt{re.c} on all
+$3{,}622$ values of $\pr$ (every root) and $p$.
+\item \textbf{Witnesses.} Every positive answer comes with a witness, and \texttt{scripts/verify\_witness.py}
+checks it independently.
+\item \textbf{Lower bounds.} Every lower bound used below is either the counting bound of
+Proposition~\ref{prop:cb}, which is a proof, or was re-decided by CP-SAT. The CP-SAT model is the
+project's circuit model \texttt{tools/pathnum2.py}, which shares no code with \texttt{re.c}. It agrees on
+all $219$ roots with $\pr>\CB$ (\texttt{data/out/above\_cb\_cpsat.txt}).
+\item \textbf{Generation.} The graphs come from nauty's \texttt{geng} (Debian package). The counts of
+connected Eulerian graphs of orders $3,\dots,10$ are $1,1,4,8,37,184,1782,31026$.
+\end{itemize}
+
+\subsection{Exhaustive results}
+\begin{table}[h]
+\begin{tabular}{@{}rrrrrrr@{}}
+\toprule
+$n$ & graphs & roots & $\pr\le n/2$ & tight ($\pr=n/2$) & $\pr=\CB$ & $\pr>\CB$ \\
+\midrule
+4 & 1 & 4 & 4 & 4 & 4 & 0\\
+6 & 7 & 42 & 42 & 23 & 42 & 0\\
+8 & 162 & 1{,}296 & 1{,}296 & 242 & 1{,}289 & 7\\
+10 & 30{,}054 & 300{,}540 & 300{,}540 & 14{,}156 & 300{,}328 & 212\\
+\bottomrule
+\end{tabular}
+\caption{All $2$-connected Eulerian graphs of even order $n\le10$. Every tight root has
+$\CB(B,r)=n/2$.}\label{tab:ex}
+\end{table}
+
+At order $10$ the solver's budget left $8$ minima uncertified, although RE was witnessed at each of
+them. Seven have $\CB=5=n/2$, so they are tight. At the eighth (\texttt{ITzvn\^{}nzw}, $r=4$),
+$\CB=4$; an unbudgeted run and CP-SAT both found $4$ paths, so $\pr=\CB=4$.
+
+At order $10$ the $14{,}156$ tight roots are tight for three counting reasons:
+\begin{itemize}[leftmargin=*]
+\item $14{,}131$ have $d(r)=n-2$, so the bound $d(r)/2+1$ is already $n/2$;
+\item $20$ others meet the edge bound $\lceil m/9\rceil=5$;
+\item the remaining $5$ need the full bound $\CB$, as in Example~\ref{ex:ds}. They are the roots
+$0,1,2$ of \texttt{IEl\}\}\~{}\^{}vw} and $1,7$ of \texttt{ITm||\~{}\}\~{}g}, with $m=35,36$.
+\end{itemize}
+At order $8$, two tight roots need the full bound: those of Example~\ref{ex:ds}.
+
+\emph{All connected Eulerian graphs, both parities.} RE$^*$ holds at all $17{,}844$ roots of the
+connected Eulerian graphs of orders $3$ to $9$. It also holds at all $9{,}720$ roots of the $972$
+connected but not $2$-connected Eulerian graphs of order $10$. Together with Table~\ref{tab:ex} this
+gives Theorem~\ref{thm:min}(d).
+
+\subsection{Families of order 12 to 16}
+\begin{table}[h]
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+family ($2$-connected Eulerian) & graphs & roots & result\\
+\midrule
+order $12$, $m\ge46$ (complement $\le20$ edges, all odd) & 124{,}004 & 1{,}488{,}048 & RE; UC \\
+order $12$, $4$-, $6$-, $8$-, $10$-regular & 1{,}542; 7{,}849; 94; 1 & 113{,}832 & RE \\
+order $14$, $4$-regular & 88{,}126 & 1{,}233{,}764 & RE \\
+order $14$, $10$-regular & 540 & 7{,}560 & RE \\
+complete multipartite, even parts, $n\le16$ & 58 & 760 & RE \\
+random, orders $12$, $14$, $16$ & 2{,}100 each & 88{,}200 & RE \\
+\bottomrule
+\end{tabular}
+\caption{Families. RE was decided at every root (witness verified). For the dense order-$12$ family
+UC (\S\ref{sec:uc}) was also decided at every root. $29$ roots needed CP-SAT, and all have
+$\pr=\CB=5$.}\label{tab:fam}
+\end{table}
+
+Families with maximum degree $4$ are covered by Theorem~\ref{thm:lit}(e). They serve here as a solver
+check. The dense family contains every $2$-connected Eulerian graph of order $12$ with at least $46$
+edges, so it contains every graph of that order whose edge bound $\lceil m/11\rceil$ is at least
+$5=n/2-1$. Tight roots also occur in sparse graphs: for instance $K_{2,10}$ is tight at its two roots of
+degree $10=n-2$.
+
+\section{Tightness and a strengthened conjecture}\label{sec:uc}
+
+\begin{conjecture}[UC]\label{conj:uc}
+For every $2$-connected Eulerian graph $B$ and every $r\in V(B)$,
+\[
+\pr(B)\le\max\bigl(\CB(B,r),\ \lceil |B|/2\rceil-1\bigr).
+\]
+\end{conjecture}
+
+For even order, UC strengthens RE. Since $\CB\le n/2$ always, UC says that one path is to spare
+unless counting forbids it. For odd order, UC is a rooted Eulerian analogue of Bonamy and
+Perrett's question \cite[Question~1.1]{BP}, whether every connected graph that is not an odd
+semi-clique has $p\le\lfloor n/2\rfloor$. The counting bound takes the place of the odd
+semi-cliques, and it explains $K_3$ and $K_5$.
+
+\emph{Evidence.} UC holds at every root of every $2$-connected Eulerian graph of order $3$ to $10$,
+odd orders included, and at every root of the dense order-$12$ family. It needs $2$-connectivity: it
+fails at $6$ roots of connected graphs with a cut vertex ($1$ at order $8$, $5$ at order $10$). An
+example is \texttt{GCXnbW}: a triangle attached at a cut vertex to a $6$-vertex block, rooted at the
+cut vertex, where $\pr=4=n/2>\CB=3$. RE$^*$ still holds there.
+
+\begin{remark}[roots of degree $n-2$]\label{rem:degn2}
+At order $10$, $99.8\%$ of the tight roots have $d(r)=n-2$.
+\begin{itemize}[leftmargin=*]
+\item Then every one of the $n/2$ paths meets $r$, and exactly two end there.
+\item $B-r$ has exactly one even vertex, the non-neighbour $s$ of $r$.
+\item Deleting $r$ cuts each path into one or two \emph{pieces}, possibly trivial. There is one piece for
+each neighbour $x$ of $r$, the part of the path containing $rx$ on the side of $x$.
+\end{itemize}
+So RE at such a root is a statement about $B-r$, a graph with one even vertex. It asks for a
+decomposition of $B-r$ into $n-2$ pieces, one attached at each neighbour of $r$, that group into
+$n/2-2$ vertex-disjoint pairs and two singletons. Conversely, every such system reassembles into a
+rooted decomposition of $B$ with $n/2$ paths.
+This is a constrained Lov\'asz decomposition problem with prescribed attachments, of the
+terminal-matching type studied elsewhere in the project. It is the natural next target for the cone
+case of (T1).
+\end{remark}
+
+\section*{Files}
+\begin{itemize}[leftmargin=*]
+\item Lean: \texttt{lean/GallaiLean/EulerianCone.lean} (\S\ref{sec:cones}, Lemmas~\ref{lem:leaf}, \ref{lem:dbl}) and
+\texttt{lean/GallaiLean/CycleInsert.lean} (Lemma~\ref{lem:ins}, the insertion step of Proposition~\ref{prop:ear}). No \texttt{sorry}. Every theorem named above
+depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the full
+library builds.
+\item Scripts: \texttt{scripts/run\_all.sh} regenerates every number above.
+\begin{itemize}
+\item \texttt{re.c} is the solver; compile with \texttt{-DWIDE} for up to $128$ edges.
+\item \texttt{bf.py}, \texttt{compare\_bf.py}, \texttt{verify\_witness.py}, \texttt{cpsat\_check.py},
+\texttt{cpsat\_decide.py}: validation.
+\item \texttt{countbound.py}, \texttt{uc\_check.py}, \texttt{summary.py}: the bound $\CB$ and the
+tables.
+\item \texttt{reductions\_check.py}: \S\ref{sec:red}.
+\item \texttt{mcut.c}, \texttt{evenfilter.c}, \texttt{oddfilter.c}, \texttt{random\_euler.py},
+\texttt{multipartite.py}: generation.
+\end{itemize}
+\item Data: input graph6 files, and per-root tables \texttt{data/out/*.tab.gz} (graph6, root, $\pr$,
+$n/2$, status). The witness dumps are regenerated by \texttt{run\_all.sh}.
+\end{itemize}
+
+\begin{thebibliography}{99}
+\bibitem{AB} N.~Anto, M.~Basavaraju, Gallai's path decomposition for $2$-degenerate graphs,
+\emph{Discrete Math.\ Theor.\ Comput.\ Sci.} 25:1 (2023); arXiv:2211.07159.
+\bibitem{BBB} A.~Blanch\'e, M.~Bonamy, N.~Bonichon, Gallai's path decomposition in planar graphs,
+arXiv:2110.08870v2 (2022); extended abstract in \emph{Extended Abstracts EuroComb 2021}, Trends in
+Mathematics 14, 758--764.
+\bibitem{BP} M.~Bonamy, T.~Perrett, Gallai's path decomposition conjecture for graphs of small maximum
+degree, \emph{Discrete Math.} 342 (2019) 1293--1299; arXiv:1609.06257.
+\bibitem{BS} F.~Botler, M.~Sambinelli, Towards Gallai's path decomposition conjecture, \emph{J.\ Graph
+Theory} 97 (2021) 161--184; arXiv:1911.04546.
+\bibitem{BSCL} F.~Botler, M.~Sambinelli, R.~S.~Coelho, O.~Lee, Gallai's path decomposition conjecture for
+graphs with treewidth at most 3, \emph{J.\ Graph Theory} 93 (2020) 328--349; arXiv:1706.04334
+(theorem numbers as in arXiv v1).
+\bibitem{CW} Y.~Chu, Y.~Wang, Path decompositions of Eulerian graphs, \emph{Discrete Math.} 349 (2026)
+114830; arXiv:2510.12806.
+\bibitem{FHZ} G.~Fan, J.~Hou, C.~Zhou, Gallai's conjecture on path decompositions, \emph{J.\ Oper.\
+Res.\ Soc.\ China} 11 (2023) 439--449.
+\bibitem{Xie} M.~Xie, On Gallai's path decomposition conjecture, \emph{Filomat} 37:17 (2023) 5829--5834.
+\bibitem{ZLH} J.~Zhang, Q.~Liu, Y.~Hong, Gallai's path decomposition conjecture for $K_5$-minor-free
+graphs, arXiv:2611.21673 (2026).
+\end{thebibliography}
+
+\end{document}

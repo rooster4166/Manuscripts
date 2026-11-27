@@ -35,6 +35,16 @@ This short argument was worked out for this note. It is not quoted from any pape
 2. A theorem with only the **ceiling** bound ⌈n'/2⌉ gives nothing through this route, because |V(B^r)| = n+1 is odd and ⌈(n+1)/2⌉ = n/2 + 1.
 3. An odd semi-clique on 2k+1 vertices has minimum degree ≥ 2k − (k−1) = k+1 ≥ 2, so B^r is never an odd semi-clique. Hence a positive answer to Bonamy–Perrett's Question 1.1 (§3) implies RE in full. So do BSCL's Conjecture 3 (§7) and BS's Conjecture 4 (§6), which state the same thing.
 
+### 0′. The double (added by the eulerian-cone session; Lean `rootedDecomp_of_dbl`)
+
+Let B ⊕_r B be two disjoint copies of B joined by a bridge between the two copies of r (Lean `dbl`). Then 2 p(B^r) ≤ p(B ⊕_r B) + 1 (Lean `two_mul_pathNumber_addLeaf_le`: cut the path through the bridge). So if |B| is even and p(B ⊕_r B) ≤ |B|, then RE holds at r.
+
+The double has even order 2|B|, so for it a **ceiling** bound is enough; this removes consequence 2's obstruction. The class must, however, contain the double.
+
+**Bonamy–Perrett Thm 1.3** ("Let G be a connected graph on n vertices. If Δ(G) ≤ 5, then G admits a path decomposition into ⌈n/2⌉ paths."; re-checked on arXiv v1 by the eulerian-cone session) applies to B ⊕_r B whenever Δ(B) ≤ 4, because then Δ(B ⊕_r B) = max(Δ(B), d(r) + 1) ≤ 5. Hence **RE holds at every root of every connected Eulerian B of even order with Δ(B) ≤ 4.** This closes the gap left by BSCL Thm 4.1 (§7) without Chu–Fan–Liu.
+
+The Blanché–Bonamy–Bonichon floor statement (§9) was also re-checked on the arXiv v2 abstract: "every connected planar graph except K_3 and K_5^- (K_5 minus one edge) can be decomposed into ⌊n/2⌋ paths".
+
 ---
 
 ## 1. Y. Chu, Y. Wang, "Path decompositions of Eulerian graphs"
@@ -362,7 +372,7 @@ Here $\mathcal{G}$ = {connected triangle-free graphs with odd distance ≥ 3}. T
 |---|---|---|---|---|
 | Δ ≤ 4 (degrees 2 and 4) | ⌈n/2⌉ (as restated; exact form unseen) | Favaron–Kouider 1988 | restatements (CW, BP, BJ, BJS, BS, JW, BBB, Xie) | unknown: no end condition in any restatement |
 | Δ ≤ 4, except K3 and K5 | ⌊n/2⌋ | BSCL Thm 4.1 | full (arXiv) | partial: §0 gives roots of degree 2 only (B^r has Δ = 5 when d(r) = 4) |
-| Δ ≤ 5 | ⌈n/2⌉ | Bonamy–Perrett Thm 1.3 | full (arXiv v1) | no: ceiling bound, no rooted lemma or stronger induction |
+| Δ ≤ 5 | ⌈n/2⌉ | Bonamy–Perrett Thm 1.3 | full (arXiv v1) | not through the leaf (ceiling bound), **but yes through the double (§0′) for Eulerian B with Δ(B) ≤ 4, every root** |
 | Δ ≤ 6, degree-6 vertices independent, except K3 and K5 | ⌊n/2⌋ (as restated by Anto–Basavaraju) | Chu–Fan–Liu 2021 | abstract only | partial: §0 gives roots with d(r) ≤ 4, which would cover all of Eulerian Δ ≤ 4, if the hypothesis is Δ ≤ 6 (inferred, unverified) |
 | planar, except K3 | ⌊n/2⌋ | Blanché–Bonamy–Bonichon Thm 1.2 | full (arXiv v2) | **yes** (§0; B^r planar, not K3 or K5^-) |
 | K5-minor-free, except K3 | ⌊n/2⌋ | Zhang–Liu–Hong 2026, Thm 1.1 | full (arXiv) | **yes** (§0; the leaf device also appears in their Lemma 2.2) |

@@ -75,3 +75,4 @@ import GallaiLean.DirectTest1
 import GallaiLean.TriangleBase
 import GallaiLean.ForestLift
 import GallaiLean.EulerianCone
+import GallaiLean.CycleInsert

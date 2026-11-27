@@ -1,5 +1,14 @@
 # GallaiLean
 
+## Cones: Test1 at the apex is rooted Gallai for Eulerian graphs (cloud session, branch `claude/eulerian-cone`)
+
+Manuscript `manuscripts/eulerian-cone`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,406 jobs).
+
+| File | Content |
+|---|---|
+| `EulerianCone.lean` | `fullCone B` (the apex `none` joined to every vertex; equal to `cone B univ` of `Marked.lean`), `fullCone_degree_none/some`, **`fullCone_onlyEven_iff`** (the apex is the only even vertex iff `|B|` is even and `B` Eulerian), **`fullConeDelIso`** (`B ≃g cone − z`), `PathDecomp.exists_of_iso`. `RootedDecomp B r` (at most `|B|/2` paths, at least two ends at `r`). **`test1At_fullCone_iff`**, **`test1_fullCone_iff`**: Test1 at the apex ⇔ `RootedDecomp B r` for every `r` when `B` is Eulerian of even order. **`kConnected_three_fullCone_iff`** (cone 3-connected ⇔ `B` 2-connected), `HasMatchingCut.of_iso`, **`hasMatchingCut_delVert_fullCone_iff`**. Vacuous tests: `test2_fullCone_apex`, `test1_fullCone_some`, `test2_fullCone_some_of_even` (via `not_unique_odd`). **`rootedDecomp_of_spineTestsNMC`** (the cone instances of `SpineTestsNMC` are RE for 2-connected Eulerian graphs of even order without a matching cut), **`fullConeTests_iff`**, **`rootedDecomp_of_gallai`** (Gallai ⇒ RE for connected Eulerian graphs of even order), **`rootedDecomp_iff_addLeaf`** (RE ⇔ `p(B + leaf at r) ≤ |B|/2`), **`rootedDecomp_of_dbl`** (Gallai's bound for the double gives RE). |
+| `CycleInsert.lean` | **`PathDecomp.cycle_insert`** (manuscript Lemma 5.2, both cases): a cycle `a c₁ ⋯ c_l a`, given as a path `R : a → c` plus the edge `ca`, edge-disjoint from `K`, with `c` and all `cᵢ` but one designated vertex without `K`-edges, is inserted into any decomposition of `K` at the cost of one path, with unchanged ends except `+2` at `c`. **`PathDecomp.ear_insert`** (the triangle ear, Prop. 5.3). Tools: `PathDecomp.replaceList` (replace a path by a list of paths in a larger graph), `GPath.exists_split_avoid` (split at `a` with the piece ending at `a` avoiding `b`), `GPath.liftTo`, `GPath.adj_of_mem_support`. |
+
 ## Direct lift to Test1 through triangles at z (cloud session, branch `claude/triangle-base`)
 
 Manuscript `manuscripts/direct-test1`. Three files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,404 jobs).

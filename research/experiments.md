@@ -1577,3 +1577,47 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
   - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
 - **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
+
+## E30. Rooted Gallai for Eulerian graphs: the two-end test on cones (cloud session `claude/eulerian-cone`)
+
+Manuscript `manuscripts/eulerian-cone` (§6); scripts and data in `manuscripts/eulerian-cone/{scripts,data}`; `scripts/run_all.sh` regenerates everything.
+
+**Question.** On a cone J = B + z, Test1 at the apex is RE: a 2-connected Eulerian B of even order n has, at every root r, a decomposition into at most n/2 paths with an end at r (Lean `test1_fullCone_iff`). RE* is the parity-free form p_r(B) ≤ ⌈n/2⌉ for connected Eulerian B.
+
+**Solver and validation.**
+- `re.c`: DFS over paths (the first path starts at r; then paths from an odd vertex of the rest, else through its lowest edge), memoised failures, per-component lower bounds.
+- Brute force `bf.py` (all exact covers): agrees on all 473 connected graphs of order 3–7 with ≤ 10 edges, 3,622 values (p_r at every root, and p), 0 mismatches.
+- Every positive answer is witness-verified (`verify_witness.py`). Every lower bound is either the counting bound CB (a proof, manuscript Prop. 4.1) or was re-decided by CP-SAT (`tools/pathnum2.py`). CP-SAT agrees on all 219 roots with p_r > CB.
+
+**(A) Exhaustive, 2-connected Eulerian, even order ≤ 10: RE holds at every root.**
+
+| n | graphs | roots | RE | tight (p_r = n/2) | p_r = CB | p_r > CB |
+|---|---|---|---|---|---|---|
+| 4 | 1 | 4 | 4 | 4 | 4 | 0 |
+| 6 | 7 | 42 | 42 | 23 | 42 | 0 |
+| 8 | 162 | 1,296 | 1,296 | 242 | 1,289 | 7 |
+| 10 | 30,054 | 300,540 | 300,540 | 14,156 | 300,328 | 212 |
+
+- **Every tight root has CB = n/2.** At n = 10: 14,131 have d(r) = n − 2, 20 meet the edge bound ⌈m/9⌉, and 5 need the full counting bound. At n = 8, two (K8 minus a double star, `GTm~vs`) need the full bound.
+- 8 order-10 minima were budget-undecided (RE witnessed). 7 have CB = 5 = n/2. `ITzvn^nzw` at r = 4 has p_r = CB = 4 (unbudgeted re.c and CP-SAT).
+- RE* holds for all connected Eulerian graphs of order 3–9 (17,844 roots) and for the 972 non-2-connected ones of order 10 (9,720 roots).
+
+**(B) Families of order 12–16** (RE decided at every root, witnesses verified):
+- all 124,004 2-connected Eulerian graphs of order 12 with ≥ 46 edges (complement ≤ 20 edges, all degrees odd): 1,488,048 roots;
+- all 2-connected 4/6/8/10-regular graphs of order 12: 1,542 / 7,849 / 94 / 1 graphs, 113,832 roots;
+- all 88,126 4-regular graphs of order 14 (1,233,764 roots) and all 540 10-regular graphs of order 14 (7,560 roots);
+- all 58 complete multipartite graphs with even parts, n ≤ 16 (760 roots);
+- 2,100 random 2-connected Eulerian graphs each of orders 12, 14, 16 (88,200 roots).
+
+**(C) Conjecture UC: p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected Eulerian B.**
+- It holds at every root of order 3–10, both parities.
+- It holds on the whole dense order-12 family. 29 critical roots (CB = 5) were undecided at budget 2·10⁶ and CP-SAT found 5 paths at each (`out/uc12_unk_cpsat.txt`, verified).
+- **False without 2-connectivity:** 1 root at order 8 (`GCXnbW`, a triangle at a cut vertex, rooted there) and 5 at order 10.
+
+**(D) Reduction constructions executed** (`reductions_check.py`). Every connected Eulerian graph of order 4–9, every root, every applicable vertex:
+- 15,776 suppressions, 13,827 ear insertions, 2,537 ears at a cut, 3,559 twin insertions, 2,024 root suppressions and 1,763 root-ear insertions;
+- every output was verified, with 0 failures.
+
+In 56 of the 1,225 even-order ear instances the +1 of the insertion exceeds n/2. These are the hard case (manuscript Remark 5.8).
+
+**(E) Matching cuts.** 2-connected Eulerian graphs of orders 4/6/8/10 without a matching cut number 0/5/130/27,933 (of 1/7/162/30,054). Only these cones are needed by `SpineTestsNMC`.

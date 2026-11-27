@@ -1,0 +1,2 @@
+/tmp/claude-0/e10_head.g6 {'SUPPRESS': 49995, 'ROOT2-SUPPRESS': 5555, 'TWIN': 16376, 'EAR': 45828, 'EAR-even-ok': 45593, 'ROOT2-EAR': 5092, 'EAR-even-over': 235}
+../data/euler_conn_not2c_10.g6 {'SUPPRESS': 62838, 'ROOT2-SUPPRESS': 6982, 'TWIN': 19472, 'EAR': 54306, 'EAR-even-ok': 54039, 'ROOT2-EAR': 6034, 'EAR-even-over': 267, 'EAR-CUT': 16002, 'ROOT2-EAR-CUT-skip': 1778, 'TWIN-skip': 976}
