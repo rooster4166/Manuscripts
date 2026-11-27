@@ -1,0 +1,5 @@
+DEk z=0 x=3 y=1 {'y_in_Nz': False, 'dist_xz': 1, 'rev': 1, 'reach': False, 'dx': 3, 'dz': 2}
+DEk z=0 x=4 y=2 {'y_in_Nz': False, 'dist_xz': 1, 'rev': 1, 'reach': False, 'dx': 3, 'dz': 2}
+DTw z=3 x=0 y=4 {'y_in_Nz': False, 'dist_xz': 1, 'rev': 1, 'reach': False, 'dx': 3, 'dz': 2}
+DTw z=3 x=2 y=4 {'y_in_Nz': False, 'dist_xz': 1, 'rev': 1, 'reach': False, 'dx': 3, 'dz': 2}
+DTw z=3 x=4 y=1 {'y_in_Nz': False, 'dist_xz': 2, 'rev': 1, 'reach': False, 'dx': 3, 'dz': 2}

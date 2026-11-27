@@ -1,0 +1,48 @@
++ nauty-geng -cq 9
++ ./peeall l1p all
++ nauty-geng -cq 5
++ ./peeall l1p all
++ nauty-geng -cq 7
++ ./peeall l1p all
++ nauty-geng -cq 5
++ ./peeall sepee
++ grep -v SEPFAIL
++ nauty-geng -cq 7
++ ./peeall sepee
++ grep -v SEPFAIL
++ nauty-geng -cq 5
++ python3 tri_sep.py
++ python3 tri_sep.py
++ nauty-geng -cq 7
++ nauty-geng -cq 5
++ ./peeall l1s2
++ nauty-geng -cq 6
++ ./peeall l1s2
++ nauty-geng -cq 7
++ ./peeall l1s2
++ nauty-geng -cq 8
++ ./peeall l1s2
++ nauty-geng -cq 7
++ ./peeall g6 w
++ python3 sharp.py
++ nauty-geng -cq 9
++ ./peeall g6 w
++ python3 sharp.py
++ python3 feat.py out/exh9.txt
++ python3 analyze_fail.py out/exh9.txt
++ + nauty-gengpython3 -cq brute.py
+ 4
++ + python3nauty-geng -cq 5 brute.py
+
++ + python3nauty-geng brute.py
+ -cq 6
++ python3+ nauty-geng brute.py
+ -cq 7
++ + ./peeallnauty-geng g6
+ -cq 4
++ + ./peeall g6
+nauty-geng -cq 6
++ + nauty-geng./peeall -cq g6
+ 8
++ nauty-geng+ python3 -cq 9 xcheck_route_ext.py
+ ./route_ext

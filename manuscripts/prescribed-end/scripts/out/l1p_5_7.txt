@@ -1,0 +1,2 @@
+SUMMARY l1p tests=42 fail=14 (of which g~a: tests=32 fail=14)
+SUMMARY l1p tests=1894 fail=158 (of which g~a: tests=1102 fail=158)

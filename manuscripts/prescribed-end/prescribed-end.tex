@@ -38,23 +38,24 @@ terminal at $x$ in no Lov\'asz decomposition. Computation finds $1{,}410$ such e
 $330{,}449$ edges $xy$ ($y\ne z$, $d(x)\ge3$) of the $11{,}936$ connected graphs of order~$9$ with one
 even vertex.
 \item \emph{At $z$ we conjecture that it does} (Conjecture~EE: every edge $uz$ is terminal at $u$),
-with no counterexample among all graphs of order at most $9$, more than $30$ million edges of graphs of
-order $11$, and random graphs of orders $11$--$17$. We prove EE whenever $u$ and $z$ have at most one
+with no counterexample among all connected graphs of order at most $11$ with one even vertex
+($59{,}688{,}458$ pairs $(z,u)$ at order $11$) and random graphs of orders $11$--$17$. We prove EE whenever $u$ and $z$ have at most one
 common neighbour, for every degree of $u$. This contains all earlier partial results (no triangle on
 $uz$; $d(u)=3$ outside two configurations) and the whole case $d(z)=2$.
-\item \emph{A protected-end lemma.} Fan's transfer lemma never moves the end of a vertex $x$ not
-adjacent to the target, nor of a vertex whose end edge goes to the target. With it, Lov\'asz's
+\item \emph{A protected-end lemma.} A Fan transfer from $t$ to a target $g$ can be made to keep the end
+edge of any vertex $x\ne t$ that is not adjacent to $g$ or whose end edge goes to $g$. With it, Lov\'asz's
 Case~I step reduces a prescription away from $z$ to EE at another vertex. Hence: if some $z$--$y$
 path has all interior vertices outside $N[x]$, then EE implies that $xy$ is terminal at $x$.
 Unconditionally, $xy$ is terminal at $x$ when $y\in N(z)$ and $x,y$ have at most one common
-neighbour other than $z$. Every one of the failures found by computation lies outside the reach of
-this reduction.
+neighbour other than $z$. All failures found by computation (exhaustively to order $9$, in parts of
+order $11$, and in random graphs) lie outside the reach of this reduction.
 \item \emph{The remaining case of EE} ($u,z$ with two or more common neighbours) reduces, through a
 triangle $uzw$, to an avoidance statement of $L_1$ type, which we isolate as a conjecture ($L_1^*$)
 together with its computational evidence.
 \end{itemize}
-The main results are formalised in Lean~4 with Mathlib, with no \texttt{sorry} and only the standard
-axioms. Computations are in a separate, labelled section; no proof depends on them.
+The results on EE, the case $y\in N(z)$, and the reduction of EE to $L_1^*$ are formalised in Lean~4
+with Mathlib, with no \texttt{sorry} and only the standard axioms; the protected-end lemma enters the
+formalisation through its instances. Computations are in a separate, labelled section; no proof depends on them.
 \end{abstract}
 \maketitle
 
@@ -76,8 +77,9 @@ Let $xy$ be an edge with $d(x)$ odd. Then $xy$ is \emph{terminal at $x$} in a Lo
 decomposition $\cD$ if $xy$ is the edge of $Q_x$ at $x$, equivalently if $xy\in E(Q_x)$.
 \end{definition}
 
-\begin{theorem}[prescribed end edge~\cite{MS}]\label{thm:endedge}
-If all degrees of $K$ are odd, every edge $xy$ is terminal at $x$ in some Lov\'asz decomposition.
+\begin{theorem}[prescribed end edge~{\cite[Theorem~14]{MS}}]\label{thm:endedge}
+If $K$ has no vertex of positive even degree, every edge $xy$ is terminal at $x$ in some Lov\'asz
+decomposition.
 \end{theorem}
 
 The question of this paper is what remains of Theorem~\ref{thm:endedge} when $K$ has one vertex $z$
@@ -89,18 +91,18 @@ In every graph with at most one vertex of positive even degree, every edge $xy$ 
 terminal at $x$ in some Lov\'asz decomposition.
 \end{conjecture}
 
-\begin{conjecture}[EE~\cite{MS}]\label{conj:ee}
+\begin{conjecture}[EE~{\cite[Conjecture~17]{MS}}]\label{conj:ee}
 Let $z$ be the only vertex of positive even degree of $K$, and let $u\in N(z)$. Then $uz$ is terminal
 at $u$ in some Lov\'asz decomposition of $K$.
 \end{conjecture}
 
 Conjecture~\ref{conj:ee} is the case $y=z$ of Conjecture~\ref{conj:pee}. It is the step of
-Lov\'asz's induction at the even vertex with a trivial Fan chain~\cite[Proposition~EE]{MS}, and it is
+Lov\'asz's induction at the even vertex with a trivial Fan chain~\cite[Proposition~16]{MS}, and it is
 the one-transition case of the star-terminal programme for the spine tests of Gallai's
-conjecture~\cite{STL}. The multi-pair separation manuscript~\cite{MS} proves it when $uz$ is in no
-triangle, and when $d(u)=3$ outside two local configurations; the star-terminal
-manuscript~\cite{STL} adds the case $d(z)=2$ with $u$ and the other neighbour of $z$ having no second
-common neighbour.
+conjecture~\cite[Proposition~4.3]{STL}. The multi-pair separation manuscript proves it when $uz$ is in
+no triangle, and when $d(u)=3$ outside two local configurations~\cite[Proposition~18]{MS}; the
+star-terminal manuscript adds the case $d(z)=2$ with $u$ and the other neighbour of $z$ having no
+second common neighbour~\cite[Theorem~5.1]{STL}.
 
 \subsection*{Results}
 \begin{enumerate}
@@ -109,8 +111,8 @@ smallest counterexample has five vertices.
 \item Conjecture~\ref{conj:ee} holds whenever $u$ and $z$ have at most one common neighbour
 (Theorem~\ref{thm:common}). In particular it holds whenever $d(z)=2$ (Corollary~\ref{cor:deg2}),
 which completes the star-terminal conjecture at $d(z)=2$.
-\item A \emph{protected-end lemma} (Lemma~\ref{lem:protect}): Fan's transfer with target $g$ keeps a
-terminal edge $xy$ at $x$ when $x\notin N(g)$ or $y=g$. Consequences
+\item A \emph{protected-end lemma} (Lemma~\ref{lem:protect}): a Fan transfer from $t$ to $g$ can keep
+a terminal edge $xy$ at $x\ne t$ when $x\notin N(g)$ or $y=g$. Consequences
 (Theorem~\ref{thm:path}, Corollary~\ref{cor:adj}): EE reaches every edge $xy$ away from $z$ for which
 some $z$--$y$ path has its interior outside $N[x]$; and $xy$ is terminal at $x$ unconditionally when
 $y\in N(z)$ and $x,y$ have at most one common neighbour other than $z$. If $z$ has a pendant
@@ -119,9 +121,11 @@ neighbour, Conjecture~\ref{conj:pee} holds for $K$ (Proposition~\ref{prop:pendan
 (Theorem~\ref{thm:triangle}, Proposition~\ref{prop:moveA}), unified as Conjecture~\ref{conj:L1star}.
 \item Computations (Section~\ref{sec:comp}): an exact oracle, validated against brute force and an
 independent oracle; exhaustive results to order $9$ (EE to order $11$); random graphs to order~$17$.
-In the data, the failures of PEE are exactly confined to the edges that the reduction of item~3
-cannot reach.
-\item Lean formalisation of Theorem~\ref{thm:common}, Corollary~\ref{cor:deg2}, the case $k=1$ of Corollary~\ref{cor:adj}, and Theorem~\ref{thm:triangle} (Section~\ref{sec:lean}).
+In the data, the failures of PEE are confined to the edges that the reduction of item~3 cannot
+reach (they are a small fraction of those edges).
+\item Lean formalisation of Theorem~\ref{thm:common}, Corollary~\ref{cor:deg2}, the first statement of
+Corollary~\ref{cor:adj}, Proposition~\ref{prop:moveA}, Theorem~\ref{thm:triangle}, and
+Corollary~\ref{cor:EEfromL1} (Section~\ref{sec:lean}).
 \end{enumerate}
 
 \section{Preliminaries}\label{sec:prelim}
@@ -140,7 +144,7 @@ If $K$ has at most one vertex of positive even degree and $c,a$ are at distance 
 some Lov\'asz decomposition of $K$ has no path containing both $c$ and $a$.
 \end{theorem}
 
-\begin{proposition}[{\cite[Proposition~EE]{MS}, no classes}]\label{prop:EEequiv}
+\begin{proposition}[{\cite[Proposition~16]{MS}, no classes}]\label{prop:EEequiv}
 Let $z$ be the only vertex of positive even degree, $u\in N(z)$ and $K'=K-uz$. Then $uz$ is terminal at
 $u$ in some Lov\'asz decomposition of $K$ if and only if $K'$ has a Lov\'asz decomposition whose path
 $Q_z$ avoids $u$. (Append $zu$ to $Q_z$; conversely delete $uz$.)
@@ -149,7 +153,7 @@ $Q_z$ avoids $u$. (Append $zu$ to $Q_z$; conversely delete $uz$.)
 \emph{The leaf graph.} For an edge $xy$ let $H(K;x,y)$ be $K-xy$ together with a new vertex $\ell$ and
 the edge $y\ell$. Identifying $\ell$ with $x$ maps $H(K;x,y)$ onto $K$, bijectively on edges.
 
-\begin{lemma}[leaf merge~\cite{MS}]\label{lem:merge}
+\begin{lemma}[leaf merge~{\cite[Lemma~12]{MS}}]\label{lem:merge}
 Let $\cD_H$ be a path decomposition of $H=H(K;x,y)$ in which no path contains both $x$ and $\ell$.
 Identifying $\ell$ with $x$ gives a path decomposition $\cD$ of $K$ with $b_\cD(x)=b_{\cD_H}(x)+
 b_{\cD_H}(\ell)$ and $b_\cD(w)=b_{\cD_H}(w)$ otherwise. The path through $y\ell$ becomes a path through
@@ -171,7 +175,7 @@ $\ell$ since $\ell$ is a leaf, becomes a path ending at $x$ through $yx$.
 \end{proof}
 
 In the leaf graph, ``$xy$ is terminal at $x$'' has become a property of vertex sets, and
-Lemma~\ref{lem:fan} preserves it whenever the target is neither $x$ nor $\ell$. This is the engine of
+Lemma~\ref{lem:fan} preserves it whenever the target is neither $x$ nor $\ell$ and $t\ne\ell$. This is the engine of
 everything below.
 
 \section{Away from the even vertex, PEE fails}\label{sec:counter}
@@ -190,9 +194,10 @@ $t$. In the example the degrees are $d(x)=d(t)=d(y)=3$, $d(z)=2$, $d(p)=1$.
 \end{proof}
 
 So Conjecture~\ref{conj:pee} fails for edges away from $z$. The computations of
-Section~\ref{sec:comp} show many more failures, of several local types, with $d(x)\in\{3,5,7\}$ and
-$d(z)\in\{2,4,6\}$. In every failure found, $y\notin N(z)$, $\mathrm{dist}(x,z)\le2$, and $xy$ is
-terminal at $y$ in some Lov\'asz decomposition. Section~\ref{sec:away} explains the first property.
+Section~\ref{sec:comp} show many more failures, of several local types: at order $9$ with
+$d(x)\in\{3,5,7\}$ and $d(z)\in\{2,4,6\}$, at order $11$ also with $d(x)=9$ and $d(z)=8$. In every
+failure found (exhaustively to order $9$, in the order-$11$ runs, and in random graphs), $y\notin
+N(z)$, $\mathrm{dist}(x,z)\le2$, and $xy$ is terminal at $y$ in some Lov\'asz decomposition. Section~\ref{sec:away} explains the first property.
 The other two remain conjectural (Question~\ref{q:away}).
 
 \section{The protected-end lemma}\label{sec:protect}
@@ -263,15 +268,15 @@ $d(z)=2$, including the configuration with two triangles $zuw$, $tuw$ left open 
 
 \begin{proof}
 If $N(z)=\{u,w\}$, the only possible common neighbour of $u$ and $z$ is $w$. For the second
-statement: by~\cite{STL}, STL at $d(z)=2$ is EE at the other neighbour.
+statement: by~\cite[Proposition~4.3]{STL}, STL at $d(z)=2$ is EE at the other neighbour.
 \end{proof}
 
 \begin{remark}\label{rem:covers}
 Theorem~\ref{thm:common} contains the earlier partial results on EE without classes: $uz$ in no
 triangle; $N(u)=\{z,a,b\}$ with $ab,zb\notin E$ (then the common neighbours lie in $\{a\}$); and
 $N(u)=\{z,a,b\}$, $ab\in E$, with $u$ the only common neighbour of $a,b$ (then $z$ is not adjacent to
-both $a$ and $b$)~\cite[Proposition~EE3]{MS}. It also contains the two degree-two cases
-of~\cite{STL}. It does not depend on $d(u)$. By Theorem~\ref{thm:common} the
+both $a$ and $b$)~\cite[Proposition~18]{MS}. It also contains the two degree-two cases
+of~\cite[Theorem~5.1]{STL}. It does not depend on $d(u)$. By Theorem~\ref{thm:common} the
 remaining configurations of EE are those where $u$ and $z$ have at least two common neighbours,
 which forces $d(z)\ge4$.
 \end{remark}
@@ -323,9 +328,14 @@ If Conjecture~\ref{conj:ee} holds, then every reachable edge $xy$ away from $z$ 
 some Lov\'asz decomposition. In particular this holds for every edge $xy$ with $y\in N(z)$.
 \end{corollary}
 
+\begin{proof}
+Theorem~\ref{thm:path}, with Conjecture~\ref{conj:ee} applied to $K_k$, whose only vertex of
+positive even degree is $y$.
+\end{proof}
+
 Proposition~\ref{prop:counter} is an unreachable edge: the only routes from $z$ to $y$ pass through
-$x$ or $t\in N(x)$. By computation (Section~\ref{sec:comp}), all $1{,}410$ failures at order $9$ and all
-$56{,}739$ failures found at order $11$ are unreachable; no reachable edge failed. Not every
+$x$ or $t\in N(x)$. By computation (Section~\ref{sec:comp}), all $1{,}410$ failures at order $9$, all failures found at
+order $11$, and all $99$ failures in the random sample are unreachable; no reachable edge failed. Not every
 unreachable edge fails: at order~$9$, $1{,}410$ of the $59{,}574$ unreachable edges do.
 
 \begin{proposition}\label{prop:pendant}
@@ -349,8 +359,9 @@ $\mathrm{dist}(x,z)\ge3$ terminal at $x$? Both hold in all our data. The first i
 \section{The remaining case of EE}\label{sec:rest}
 
 By Theorem~\ref{thm:common}, EE is open only when $u$ and $z$ have at least two common neighbours. Two
-reductions cover this case. Both follow the pattern of Theorem~\ref{thm:common}: delete edges at $u$,
-find a decomposition with an avoidance property, restore by Fan's lemma.
+reductions cover this case. Both follow the pattern of Theorem~\ref{thm:common}: delete edges at $u$
+(and, in Theorem~\ref{thm:triangle}, also $wz$), find a decomposition with an avoidance property,
+restore by Fan's lemma.
 
 \begin{proposition}[an outside neighbour]\label{prop:moveA}
 Let $z$ be the only vertex of positive even degree, $u\in N(z)$ and $w\in N(u)\setminus N[z]$. If
@@ -396,7 +407,8 @@ Proposition~\ref{prop:EEequiv}, is the case $c=z$, $A=\{g\}=\{u\}$ in $K-uz$.
 
 \begin{conjecture}[$L_1^*$]\label{conj:L1star}
 Let $G$ have at most one vertex $g$ of positive even degree, let $c$ be odd, and let $A$ be a set of at
-most two vertices with $A\cap(N[c]\cup N(g))=\emptyset$ ($g\in A$ allowed). Then some Lov\'asz
+most two vertices with $A\cap(N[c]\cup N(g))=\emptyset$ ($g\in A$ allowed; $N(g)=\emptyset$ if there
+is no such vertex). Then some Lov\'asz
 decomposition of $G$ has $Q_c\cap A=\emptyset$.
 \end{conjecture}
 
@@ -437,13 +449,15 @@ separation would make $c$ a second even vertex.
 \texttt{pee.c} decides whether $xy$ is terminal at $x$ in some Lov\'asz decomposition. It builds $Q_x$
 first, as $x,y,\dots$ ending at an odd vertex, and then searches exactly for a decomposition of the rest
 with the remaining end counts. It branches on the paths starting at an odd vertex of least remaining
-degree, memoises failures, and prunes by two necessary conditions: every non-trivial component has an
-end, and $d(v)\le2P-b(v)$ with $P$ the number of paths still to choose. Further modes decide avoidance
+degree, memoises failures, and prunes by three necessary conditions: every non-trivial component has an
+end, $d(v)\le2P-b(v)$, and $|E|\le P(m-1)$, where $P$ is the number of paths still to choose and $m$ the
+number of non-isolated vertices. Further modes decide avoidance
 ($Q_c\cap A=\emptyset$) and separation. Validation:
 \begin{itemize}
 \item against \texttt{brute.py}, an independent enumeration of all transition systems (at each
-vertex a pairing of the incident edges, the unpaired edge being the end edge): all graphs of order
-$\le7$ with at most one even vertex, $2{,}279$ queries, $0$ disagreements;
+vertex a pairing of the incident edges, the unpaired edge being the end edge): all connected graphs of
+order $4$--$7$ with at most one vertex of positive even degree (all-odd graphs included), except $11$
+dense ones with more than $2\cdot10^6$ transition systems; $2{,}279$ queries, $0$ disagreements;
 \item against \texttt{tools/route\_ext.c}, through Proposition~\ref{prop:EEequiv} (query \texttt{X}) and
 Lemma~\ref{lem:leafequiv} (query \texttt{S}): order $9$, $47{,}688$ EE and $47{,}738$ away queries,
 $0$ disagreements;
@@ -463,21 +477,36 @@ $n$ & graphs & EE tests & EE failures & away tests & away failures \\
 5 & 7 & 14 & 0 & 37 & 5 \\
 7 & 130 & 401 & 0 & 1{,}910 & 54 \\
 9 & 11{,}936 & 47{,}688 & 0 & 330{,}449 & 1{,}410 \\
-11 & \multicolumn{5}{l}{EE only: see \texttt{scripts/out/ee11\_*.txt} and below} \\
+11 & 11{,}959{,}367 & 59{,}688{,}458 & 0 & --- & --- \\
+11, part & $84{,}002$ & $409{,}360$ & 0 & $3{,}694{,}899$ & $1{,}079$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-At order $11$ the EE run covers every connected graph with one even vertex. The final counts are in
-\texttt{research/experiments.md} (E23); at the time of writing more than $30$ million $(z,u)$ pairs had
-been tested, with no failure. A partial order-$11$ run on all edges (an initial segment of the
-enumeration) found $56{,}739$ away failures and no EE failure.
+The order-$11$ EE row covers every connected graph of order $11$ with exactly one even vertex
+(\texttt{nauty-geng -c 11} in three residue classes, EE edges only; \texttt{out/ee11\_*.txt}). The
+row ``$11$, part'' is, with all edges, the first $84{,}002$ graphs (in \texttt{geng} order) of the
+residue class $0$ modulo $100$ of the same enumeration; the rest of that class (graphs of higher
+density) was not run (\texttt{out/exh11\_slice0of100\_prefix.txt.gz}). A further order-$11$ run on all edges was stopped early; it
+covered an initial segment of each of three residue classes modulo $3$, of unrecorded size, and found
+$56{,}739$ away failures and no EE failure (\texttt{out/exh11\_away\_partial\_fails.txt.gz}).
 
-\emph{The structure of the away failures.} Every failure at orders $5$, $7$, $9$ has $y\notin N(z)$ and
-$\mathrm{dist}(x,z)\le2$, and in every one $xy$ is terminal at $y$. Every failure at orders $7$, $9$ and in the partial
-order-$11$ run is unreachable in the sense of Section~\ref{sec:away}. At order $9$ the reachable away
-edges number $270{,}875$, with no failure; the unreachable ones number $59{,}574$, of which $1{,}410$
-fail.
+\emph{The structure of the away failures.} In every failure at orders $5$, $7$, $9$, in both order-$11$
+runs, and in the random sample, $y\notin N(z)$, $\mathrm{dist}(x,z)\le2$, $xy$ is terminal at $y$, and
+$xy$ is unreachable in the sense of Section~\ref{sec:away}. The degrees are $d(x)\in\{3,5,7\}$,
+$d(z)\in\{2,4,6\}$ at order $9$, and $d(x)\in\{3,5,7,9\}$, $d(z)\in\{2,4,6,8\}$ at order $11$.
+Reachable and unreachable away edges:
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & reachable (fail) & unreachable & unreachable failing \\
+\midrule
+order $7$ & $1{,}451$ (0) & $459$ & $54$ \\
+order $9$ & $270{,}875$ (0) & $59{,}574$ & $1{,}410$ \\
+order $11$, part & $3{,}266{,}268$ (0) & $428{,}631$ & $1{,}079$ \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \emph{$L_1^*$.} At order $9$ (all graphs with one even vertex): $L_1$ with an even vertex $g\not\sim a$ (and $a$ odd), $161{,}652$
 tests, $0$ failures; with $g\sim a$, $6{,}423$ failures in $170{,}782$ tests. The case $|A|=2$ of
@@ -488,7 +517,8 @@ $w$).
 \subsection*{Random graphs}
 \texttt{rand\_test.py 6000 101 5000000 11 13 15 17}: $6{,}000$ connected graphs of orders
 $11$--$17$ with one even vertex ($G(n,p)$, $p\in[0.15,0.5]$, parities repaired by toggling edges),
-node budget $5\cdot10^6$ per query.
+node budget $5\cdot10^6$ per query. A second run with the same seed (\texttt{out/rand\_A2.txt})
+reproduces every count and also prints each away failure with its reachability.
 
 \begin{center}
 \begin{tabular}{lrrr}
@@ -498,7 +528,7 @@ statement & tests & failures & undecided \\
 EE, $|N(u)\cap N(z)|\le1$ & $13{,}200$ & 0 & 120 \\
 EE, $|N(u)\cap N(z)|\ge2$ & $12{,}762$ & 0 & 112 \\
 away edges (sample of $12$ per graph) & $71{,}965$ & 99 & 457 \\
-\quad of which $y\in N(z)$, or $\mathrm{dist}(x,z)\ge3$, or both ends fail & & 0 & \\
+\quad reachable, $y\in N(z)$, $\mathrm{dist}(x,z)\ge3$, or failing at both ends & & 0 & \\
 $L_1^*$, $A=\{a\}$, $a\ne g$ & $42{,}315$ & 0 & 276 \\
 $L_1^*$, $A=\{g\}$ & $5{,}669$ & 0 & 27 \\
 hypothesis of Theorem~\ref{thm:triangle} & $44{,}892$ & 0 & 383 \\
@@ -506,11 +536,24 @@ hypothesis of Theorem~\ref{thm:triangle} & $44{,}892$ & 0 & 383 \\
 \end{tabular}
 \end{center}
 
+{\raggedright\emph{Output files} (\texttt{scripts/out/}): \texttt{exh5/7/9.txt} (all edges),
+\texttt{ee11\_*.txt}, \texttt{exh11\_slice0of100\_prefix.txt.gz},
+\texttt{exh11\_away\_partial\_fails.txt.gz}; \texttt{analyze\_fail\_9.txt},
+\texttt{analyze\_fail\_11partial.txt}, \texttt{analyze\_fail\_11slice.txt}, \texttt{feat\_9.txt},
+\texttt{feat\_11partial.txt}, \texttt{feat\_11slice.txt}, \texttt{sharp\_7\_9.txt},
+\texttt{sharp\_11slice.txt} (failure structure, reachability);
+\texttt{l1p\_5\_7.txt}, \texttt{l1p\_9.txt}, \texttt{l1s2\_5\_8.txt}, \texttt{l1s2\_9.txt},
+\texttt{sepee\_5\_7.txt}, \texttt{tri\_sep\_5\_7.txt} (Section~\ref{sec:rest});
+\texttt{brute\_4\_7.txt}, \texttt{xcheck\_route\_ext\_9.txt}, \texttt{allodd\_4\_8.txt} (validation);
+\texttt{rand\_A.txt}, \texttt{rand\_A2.txt}. The script \texttt{regen.sh} regenerates the validation
+and Section~\ref{sec:rest} outputs. An independent recount by the auditor is in
+\texttt{research/audit/A21-pee.md}.\par}
+
 \section{Formalisation}\label{sec:lean}
 
-\texttt{lean/GallaiLean/PrescribedEnd.lean} (Lean~4, Mathlib, no \texttt{sorry}; \texttt{\#print
-axioms} shows only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; the full library
-builds). A Lov\'asz decomposition is a \texttt{PathDecomp} with \texttt{ends v = degree v \% 2}, and
+\texttt{lean/GallaiLean/PrescribedEnd.lean} and \texttt{PrescribedEndOutside.lean} (Lean~4, Mathlib,
+no \texttt{sorry}; \texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}; the full library builds). A Lov\'asz decomposition is a \texttt{PathDecomp} with \texttt{ends v = degree v \% 2}, and
 ``$xy$ terminal at $x$'' is $\exists P\in D,\ (P.\mathtt{src}=x\lor P.\mathtt{tgt}=x)\land
 s(x,y)\in P.\mathtt{edges}$.
 \begin{itemize}
@@ -522,9 +565,15 @@ and~\ref{lem:merge}).
 \item \texttt{pee\_adjEven}: Corollary~\ref{cor:adj}, case $k=1$, proved as in Lemma~\ref{lem:protect}
 inside the leaf graph.
 \item \texttt{ee\_of\_triangle}: Theorem~\ref{thm:triangle}.
+\item \texttt{ee\_of\_outside} (in \texttt{PrescribedEndOutside.lean}): Proposition~\ref{prop:moveA}.
+\item \texttt{L1Star}, \texttt{ee\_of\_L1Star}: Conjecture~\ref{conj:L1star} as a proposition, and
+Corollary~\ref{cor:EEfromL1}. The formal proof uses only the triangle case ($|A|=2$) when $u$ and $z$
+have a common neighbour.
 \end{itemize}
-Theorem~\ref{thm:path} for $k\ge2$, Proposition~\ref{prop:pendant}, Proposition~\ref{prop:moveA}
-and Proposition~\ref{prop:counter} are proved here only. The library supplies Lov\'asz's theorem, the
+Not formalised: Lemma~\ref{lem:protect} in its general form (its instances inside
+\texttt{pee\_adjEven}, \texttt{ee\_of\_triangle} and \texttt{ee\_of\_outside} are formal),
+Theorem~\ref{thm:path} as a conditional statement, the second statement of Corollary~\ref{cor:adj},
+Corollary~\ref{cor:EEimplies}, Proposition~\ref{prop:pendant} and Proposition~\ref{prop:counter}. The library supplies Lov\'asz's theorem, the
 separation theorem (\texttt{separation}), Fan's lemma with vertex sets (\texttt{fan\_single\_supp}),
 the leaf merge (\texttt{leaf\_merge}) and Proposition~\ref{prop:EEequiv} (\texttt{ee\_of\_avoid}).
 

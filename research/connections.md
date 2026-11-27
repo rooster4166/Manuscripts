@@ -1247,7 +1247,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 - **PEE is false away from the even vertex z.** On five vertices: d(z) = 2, N(z) = {x, t}, N(x) = {z, t, y}. If xy is terminal at x, then x pairs xz with xt and z pairs zx with zt, which repeats t.
   - At n = 9, 1,410 of 330,449 away edges fail.
   - Every failure found (n ≤ 9, and 56,739 in a partial n = 11 run) is *unreachable*: every z–y path has an interior vertex in N[x].
-- **EE (at z) has no counterexample.** Exhaustive to n = 9; the exhaustive EE-only run at n = 11 had 37.9M tests with 0 failures at the time of writing (see E23 for the final count); 25,962 random tests at n = 11–17.
+- **EE (at z) has no counterexample.** Exhaustive to n = 11: all 11,959,367 connected graphs of order 11 with one even vertex, 59,688,458 pairs (z, u), 0 failures. Plus 25,962 random tests at n = 11–17.
 - So the right statement is: EE at z, and PEE at reachable edges away from z. Two further conjectures fit all the data (manuscript Question 6.5): every away edge is terminal at one of its two ends, and every edge with dist(x, z) ≥ 3 is terminal at x.
 
 ### Y.2 Proved (Lean unless noted)
@@ -1263,15 +1263,26 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
   - Unconditional when y ∈ N(z) and x, y have at most one common neighbour other than z (`pee_adjEven`).
   - Also unconditional when z has a pendant neighbour (Proposition 6.4, manuscript only).
 - **Triangle reduction** (`ee_of_triangle`). For w ∈ N(u) ∩ N(z), EE at u follows if K − {uz, uw, wz} has a Lovász decomposition whose path ending at w avoids u and z. That hypothesis held for *every* triple at n ≤ 9 (88,356) and in 44,892 random ones.
-- **Outside neighbour** (Proposition 7.1, manuscript only). For w ∈ N(u) ∖ N[z], EE at u follows from "K − uz − uw has a Lovász decomposition with u ∉ Q_z".
+- **Outside neighbour** (`ee_of_outside`, file `PrescribedEndOutside.lean`). For w ∈ N(u) ∖ N[z], EE at u follows from "K − uz − uw has a Lovász decomposition with u ∉ Q_z".
+- **L1\* ⇒ EE, formally** (`L1Star`, `ee_of_L1Star`). EE is reduced, in Lean, to one explicit avoidance conjecture.
 
 ### Y.3 The open case and the unifying conjecture
 - EE is open exactly when |N(u) ∩ N(z)| ≥ 2 (so d(z) ≥ 4).
 - **Conjecture L1\*.** Let G have ≤ 1 positive even vertex g, let c be odd, and let A be a set of at most two vertices with A ∩ (N[c] ∪ N(g)) = ∅ (g ∈ A allowed). Then some Lovász decomposition has Q_c ∩ A = ∅.
-  - **L1\* ⇒ EE** (Corollary 7.4).
+  - **L1\* ⇒ EE** (Corollary 7.4; Lean `ee_of_L1Star`).
   - It contains L1 (no even vertex), EE (A = {g}), and L1 with an even vertex not adjacent to the avoided vertex.
   - Data: at n = 9 every one of the 6,423 failures of L1 with an even vertex has g ~ a, and the case g ≁ a never fails (161,652 tests). |A| = 2 never fails (203,658 tests at n = 9).
 - What does not work: full separation of u and z in K − uz (fails for |T| ≥ 2), and separating w from {u, z} after removing the triangle (267/622 fail at n = 7). The needed avoidance is one-sided, like L1, and the leaf trick that proves L1 from separation would create a second even vertex.
+
+### Y.3a Audit A21
+- A fresh subagent audited the manuscript, `PrescribedEnd.lean` and the data (`research/audit/A21-pee.md`). No ERROR or GAP in any proof; the Lean statements are faithful and the axioms standard; an independent solver reproduced every recounted number.
+- Five statement-level fixes, all applied:
+  - F1: reachability of the random failures was checked and recorded (99/99 unreachable);
+  - F2: the final n = 11 count is now in the paper, and the order-11 all-edge data have a denominator;
+  - F3: the degree ranges are corrected at n = 11, and the reverse prescription was checked on all 56,739 order-11 failures;
+  - F4: Theorem 1.3 is stated with "no vertex of positive even degree";
+  - F5: the list of what is formalised is completed.
+- `PrescribedEndOutside.lean` was added during the audit and was not audited. It follows the same leaf-graph template as `pee_adjEven`.
 
 ### Y.4 For STL (§X) and the composition problem
 - The protected-end lemma is the composition tool §X.4 asked for. A prescribed end edge xy survives every Fan transfer whose target is not adjacent to x, or is y itself.

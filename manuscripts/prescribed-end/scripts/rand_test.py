@@ -95,6 +95,15 @@ def main():
             if res == 1:
                 continue
             C["away:fail"] += 1
+            # reachability (manuscript Section 6): some z-y path with interior outside N[x]
+            Nx = set(G[x]) | {x}
+            H = G.subgraph([v for v in G if v not in Nx] + [z])
+            comp = nx.node_connected_component(H, z)
+            reach = G.has_edge(z, y) or any(G.has_edge(v, y) for v in comp if v != z)
+            if reach:
+                C["away:fail_REACHABLE"] += 1
+            print("AWAYFAIL", nx.to_graph6_bytes(G, header=False).decode().strip(), z, x, y,
+                  "reachable" if reach else "unreachable", flush=True)
             if y in Nz:
                 C["away:fail_with_y~z(P1 violated)"] += 1
                 print("P1FAIL", nx.to_graph6_bytes(G, header=False).decode().strip(), z, x, y, flush=True)

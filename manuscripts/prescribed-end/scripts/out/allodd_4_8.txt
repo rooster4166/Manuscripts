@@ -1,0 +1,3 @@
+SUMMARY graphs=2 with_even=0 tests_at_z=0 fail_at_z=0 tests_away=15 fail_away=0 graphs_failing=0 graphs_all_z_edges_fail=0
+SUMMARY graphs=13 with_even=0 tests_at_z=0 fail_at_z=0 tests_away=210 fail_away=0 graphs_failing=0 graphs_all_z_edges_fail=0
+SUMMARY graphs=224 with_even=0 tests_at_z=0 fail_at_z=0 tests_away=6359 fail_away=0 graphs_failing=0 graphs_all_z_edges_fail=0
