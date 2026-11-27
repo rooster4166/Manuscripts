@@ -38,9 +38,9 @@ Exceptional vertices enter the slots only through prebuilt partner blocks u x u'
 ## What remains for full Target D
 
 - **Problem 7.1.** Two-sided removal: extend SP Thm 14.33 so that removed vertices may have neighbours in both shores.
-  - **Counting half: proved in full in §8.**
+  - **Counting half: proved in §8 under (B1).** Condition (B1) asks that every exceptional vertex has at most D healthy neighbours in each shore. It excludes intermediate vertices (Remark 8.4 gives the precise form).
     - Lemma 8.1 (exact balancing) uses a mirror symmetry; Lemma 8.2 is its robust form.
-    - Proposition 8.3, due to audit A19, is a two-sided exact sweep with nested removed sets and a zero-stage fallback. It meets the one-apex window e_X(I) − e_X(K∖W) ∈ [D(t−1)/2, D(t+1)/2] exactly, for every |X|. It needs the degree window D + |Δ| + 2|X| + 2 ≤ d_x ≤ 5D/4 and |Δ| + 5|X| + 1 < D.
+    - Proposition 8.3, due to audit A19, is a two-sided exact sweep with nested removed sets and a zero-stage fallback. It meets the one-apex window e_X(I) − e_X(K∖W) ∈ [D(t−1)/2, D(t+1)/2] exactly, for every |X|, under (B1). It also needs the degree window D + |Δ| + 2|X| + 2 ≤ d_x ≤ 5D/4 and |Δ| + 5|X| + 1 < D.
   - **Scheduling half: open.** It is stated precisely as the **Scheduling Hypothesis SH** (Def. 9.1, not proved). With X = ∅, SH is the regime of the penultimate sentence of SP 14.37's proof, together with Thm 1.1 at equal shores.
   - **Theorem 9.3 (conditional, proved).** Assume SH. Then every failure sequence with Δ ≤ (1/2 + o(1))n must, at all large n and for every maximum cut, contain an intermediate vertex: λ_n ≤ own(v) < d(v) − D_n + σ_n (Problem 9.4).
 

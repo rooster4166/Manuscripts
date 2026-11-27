@@ -39,7 +39,12 @@ EMM sufficiency work is **stopped**.
     - RR for star forests.
   - Its paper proofs are under audit A16.
   - Original brief: the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
-- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
+- **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): **finished** at 413233e.
+  - **Unconditional:** Thm 1.1 (balanced return), Cors 1.2/1.3, and Prop 8.3 = A19 Prop P (the counting half of Problem 7.1 under (B1)).
+  - **Under SH:** Thm 9.3 — Target D reduces to SH + Problem 9.4 (intermediate vertices).
+  - **Open:** SH (re-derive SP 14.31/14.33 with weak sites), 9.4 and 7.2.
+  - The session saw no concrete route to SH or 9.4.
+  - Original brief: Target D, the exact Gallai bound below Dirac.
   - **Delivered:** the *balanced return theorem* (`manuscripts/near-dirac/`, 15 pp.). It returns a linear-size exceptional set X under a balance condition; it contains SP Thm 14.27, and its Corollary 1.2 is an exact class.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). **AUDITED (A17): Theorem 1.1 correct.** All CKLOT hypotheses are verified and the constants are consistent; there are wording gaps (N10, N29, N30, N26, N36, N24, N32, N33) and one statement gap (N25, already fixed). The author is fixing the wording.
@@ -53,7 +58,8 @@ EMM sufficiency work is **stopped**.
   - Sound: Lemmas 8.1–8.2 and SH as stated.
   - Fixes: a GAP in Prop 8.3(i)'s proof (the conclusion survives) and a sign ERROR in Problem 8.5's identity.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
-  - The fixes were sent to near-dirac.
+  - The fixes were sent to near-dirac and applied in 8535af5.
+  - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
 - **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
@@ -429,3 +435,14 @@ Candidate uniform mechanisms (`research/connections.md`):
   - RR1/RR2 compatibility.
   - L1 (`lovasz_avoid_nonadj`) is the one-pair instance and is proved.
   - **Open:** the L∞ residual (z at distance 3), L_N for 2 pairs, and RR in general.
+- **multi-sep interim (2026-11-27, 05:20; Lean merged at 7e05af7 after the 14dbc55 revert was undone, build green).**
+  - **MSEP is not proved, and no counterexample is known.** The checks are all distance-3 perfect pairings of all 4,060 connected cubic graphs of order 16 (36M pairings), 8.26M random pairings at order 18, and random all-odd graphs to n = 20, 5-regular to n = 40.
+  - **Stronger conjecture CSEP:** partition V into packed classes (a proper colouring of G²); some Lovász decomposition has every path rainbow.
+  - **Proved in MultiSep.lean, standard axioms (verified):**
+    - `lovasz_endEdge`: in an all-odd graph, any edge xu can be the terminal edge of the path ending at x;
+    - `lovasz_endEdge_set`: the same, with a packed set met at most once;
+    - leaf merge;
+    - `caseII_lift`: CSEP reduces to graphs with one even vertex;
+    - a certified Case I step;
+    - sparse-class separation.
+  - **Exact obstruction:** "L1 at the even vertex", i.e. prescribing uz as the terminal edge at a neighbour u of the even vertex z. It holds in about 3,300 tests, but the leaf trick does not apply.

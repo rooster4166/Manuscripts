@@ -235,6 +235,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | endpoint-min-max: cut selection Thm 21; hardness §5 (A13) | **sound**; Remark 28 (EMM₃ open) is out of date, since EMM₃ is false |
 | Lean proof of MR Thm 59 (A14) | **no gap in MR**; formal deviations listed |
 | near-dirac balanced return theorem (A17) | **Theorem 1.1 correct**; CKLOT hypotheses verified exactly; wording gaps and one false heuristic sentence (R2) are being fixed |
+| near-dirac §§8–9 (A19 + §R) | **Prop 8.3 (A19 Prop P) and Thm 9.3 (conditional on SH) sound**; Problem 8.5 solved by the auditor |
 | spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
