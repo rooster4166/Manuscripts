@@ -56,8 +56,8 @@ have a second common neighbour.
 
 Computationally, STL never fails when $J-z$ is connected. We checked all $54{,}336$ such pairs
 $(J,r)$ with $|J|\le9$, and on these graphs STL is \emph{equivalent} to the first test. We also
-checked all $25{,}210$ pairs from $3$-connected graphs of order~$9$, $8{,}808$ random
-$3$-connected pairs of orders $11$--$15$, and structured families (wheels; a universal vertex over
+checked all $25{,}210$ pairs from $3$-connected graphs of order~$9$, $9{,}146$ random
+$3$-connected pairs of orders $11$--$17$, and structured families (wheels; a universal vertex over
 random $4$-regular graphs). The Test~2 analogue holds in every $3$-connected instance, exhaustively
 to order~$8$ and on samples to order~$14$. On $3$-connected graphs of order $7$ and $9$ every
 pairing of $N(z)$ is realisable (all $54{,}213$ pairings); the wheel $W_4$ is the only exception
@@ -466,7 +466,7 @@ $3$ or~$5$. \emph{Dense}: $G(n,p)$ with $p\in[0.25,0.6]$, with parities repaired
 random pairing of the wrong-parity vertices.
 
 \subsection{Results}
-\begin{table}[h]
+\begin{table}[!ht]
 \centering\footnotesize
 \begin{tabular}{@{}lrrr@{}}
 \toprule
@@ -479,9 +479,11 @@ all connected, $n=9$ & 11{,}936 & 48{,}850 & 48\\
 random $3$-connected, $n=11$ & 600 & 3{,}256 & 0\\
 random $3$-connected, $n=13$ & 600 & 3{,}470 & 0\\
 random $3$-connected, $n=15$ & 350 & 2{,}082 & 0\\
+random $3$-connected (sparse), $n=17$ & 60 & 338 & 0\\
 random, $J-z$ connected, not $3$-connected, $n=11,13$ & 250 & 780 & 0\\
+random, $J-z$ disconnected, $n=11$ & 300 & 1{,}282 & 4$^\dagger$\\
 wheels $W_{2k}$, $2\le k\le 9$ & 8 & 8 & 0\\
-$J=H+$ universal $z$, $H$ random $4$-regular, $|H|=10,12,14$ & 90 & 1{,}040 & 0\\
+$J=H+$ universal $z$, $H$ random $4$-regular, $|H|=10,\dots,16$ & 102 & 1{,}232 & 0\\
 \bottomrule
 \end{tabular}
 \caption{STL. Every failure has $J-z$ disconnected, and (T1) fails there too. BAL fails exactly
@@ -489,11 +491,11 @@ where STL fails. So on all graphs of order $\le9$,
 $\STL(J,z,r)\Leftrightarrow\mathrm{BAL}(J,z,r)\Leftrightarrow\text{(T1) at }r$. Among the
 $3$-connected graphs of order~$9$, $4{,}699$ have $J-z\in\mathcal C$ (no matching cut). In the last
 row $J-z$ is Eulerian and $d(z)=|H|$. ``ST'' (some star-terminal Lov\'asz decomposition exists)
-fails on $0$, $1$ and $2$ graphs for $n=5,7,9$.}
+fails on $0$, $1$ and $2$ graphs for $n=5,7,9$. $^\dagger$(T1) fails at the same four pairs.}
 \label{tab:stl}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering\footnotesize
 \begin{tabular}{@{}lrr@{}}
 \toprule
@@ -521,7 +523,7 @@ On $3$-connected $J$ we also asked:
 \item PAIR($M$): are the transitions exactly $M$, for every perfect matching $M$ of $N(z)$?
 \end{itemize}
 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering\footnotesize
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
@@ -530,12 +532,13 @@ class & graphs & EE and STS & HALF & PAIR\\
 $n=5$ ($W_4$) & 1 & 4/4 & 2/6 & 2/3\\
 $n=7$ & 28 & 126/126 & 244/266 & 168/168\\
 $n=9$ & 5{,}231 & 25{,}210/25{,}210 & 66{,}818/67{,}220 & 54{,}045/54{,}045\\
-random, $n=11$, $d(z)\le8$ & NG11 & NE11 & NH11 & NP11\\
+random, $n=11$, $d(z)\le8$ & 240 & 1{,}290/1{,}290 & 4{,}691/4{,}702$^*$ & 5{,}196/5{,}196\\
 random, $n=13$, $d(z)\le6$ & 120 & 586/586 & 1{,}462/1{,}462 & 996/996\\
 \bottomrule
 \end{tabular}
 \caption{Flexibility on $3$-connected graphs. HALF fails for some half-sets; PAIR fails only for the
-diagonal pairing of $W_4$ (Example~\ref{ex:W4}).}
+diagonal pairing of $W_4$ (Example~\ref{ex:W4}). $^*$Decided half-sets only; $200$ HALF queries on
+dense graphs stayed undecided and were not re-run.}
 \label{tab:flex}
 \end{table}
 
@@ -558,6 +561,15 @@ equivalent, and both fail exactly when $J-z$ is disconnected. Proving the implic
 (T1)$\Rightarrow$STL would make STL an equivalent form of the spine tests; by
 Proposition~\ref{prop:J-z} it amounts to tightening a (T1) decomposition and solving the avoidance
 system.
+
+\begin{conjecture}[STL $=$ (T1)]\label{conj:eq}
+If $z$ is the only even vertex of $J$ and $r\in N(z)$ has $d(r)\ge3$, then $\STL(J,z,r)$ holds if
+and only if \textup{(T1)} holds at~$r$. Likewise $\STL2(J,z,r)\Leftrightarrow$\textup{(T2)} when
+$d(r)\ge4$.
+\end{conjecture}
+Only ``$\Leftarrow$'' is open (Theorem~\ref{thm:criterion}). The evidence: all graphs of order
+$\le9$ for STL and $\le8$ for STL2, and the $1{,}282$ random pairs of order $11$ with $J-z$
+disconnected, where (T1) can fail and STL fails exactly when it does.
 
 \begin{conjecture}[STL-P]\label{conj:stlp}
 If $J$ is $3$-connected with unique even vertex $z$ and $J\ne W_4$, then every perfect matching of

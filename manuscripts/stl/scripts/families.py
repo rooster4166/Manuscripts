@@ -39,6 +39,37 @@ def instances():
                 continue
             J = nx.relabel_nodes(H, {v: v + 1 for v in H}); J.add_edges_from((0, v) for v in range(1, arg + 1))
             yield J, 0, sorted(J[0])
+    elif fam == 'zdisc':
+        made = 0
+        while made < count:
+            n = arg
+            p = rng.uniform(0.25, 0.6)
+            k1 = rng.randrange(2, n - 2)          # sizes of the two sides of J - z
+            G = nx.Graph(); G.add_nodes_from(range(n))
+            A = list(range(1, 1 + k1)); B = list(range(1 + k1, n))
+            for X in (A, B):
+                for i in range(len(X)):
+                    for j in range(i + 1, len(X)):
+                        if rng.random() < p: G.add_edge(X[i], X[j])
+            for v in range(1, n):
+                if rng.random() < 0.5: G.add_edge(0, v)
+            bad = [v for v in G if (G.degree(v) % 2 == 0) != (v == 0)]
+            bad = [v for v in bad if v != 0]
+            # repair parities inside each side only (keeps J - z disconnected)
+            for X in (A, B):
+                bx = [v for v in bad if v in X]
+                rng.shuffle(bx)
+                for i in range(0, len(bx) - 1, 2):
+                    u, v = bx[i], bx[i + 1]
+                    if G.has_edge(u, v): G.remove_edge(u, v)
+                    else: G.add_edge(u, v)
+            if [v for v in G if G.degree(v) % 2 == 0] != [0]:
+                continue
+            H = G.subgraph(set(G) - {0})
+            if nx.is_connected(H) or not nx.is_connected(G):
+                continue
+            made += 1
+            yield G, 0, [r for r in sorted(G[0]) if G.degree(r) >= 3]
     elif fam == 'zconn':
         made = 0
         while made < count:

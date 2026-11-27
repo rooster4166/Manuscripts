@@ -1192,11 +1192,11 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 - **No failure when J − z is connected.** This covers:
   - all 54,336 pairs (J, r) up to order 9;
   - all 25,210 pairs from 3-connected graphs of order 9;
-  - 8,808 random 3-connected pairs, n = 11–15;
+  - 9,146 random 3-connected pairs, n = 11–17;
   - 780 pairs with J − z connected but J not 3-connected;
   - wheels;
   - universal z over 4-regular H (J − z Eulerian).
-- **STL is equivalent to Test1 to order 9.** On all graphs of order ≤ 9, STL(r) ⇔ BAL(r) ⇔ Test1(r): all 58 failures have J − z disconnected, and Test1 fails there too. So the data cannot separate STL from Test1.
+- **STL is equivalent to Test1 to order 9 and in the random disconnected samples.** On all graphs of order ≤ 9, STL(r) ⇔ BAL(r) ⇔ Test1(r): all 58 failures have J − z disconnected, and Test1 fails there too. So the data cannot separate STL from Test1.
 - **STL2** holds in every 3-connected instance: exhaustive to n = 8; random samples at n = 10–14.
 - **Flexibility (3-connected).**
   - EE and STS hold at every neighbour; STS means "u short in a *star-terminal* decomposition".
@@ -1220,5 +1220,5 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
 
 ### X.6 Open (in order of promise)
 1. **STL-P for 3-connected J ≠ W₄**, i.e. the terminal-matching property for matchings of virtual edges on N(z). This is the form suited to induction: lifting a pair lowers d(z) by 2, and the base case is `lovasz_endEdge`. The obstruction is carrying two pending terminal edges.
-2. Test1 ⇒ STL. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
+2. Test1 ⇒ STL (manuscript Conjecture "STL = (T1)"). Supported by all graphs to order 9 and by 1,282 random pairs with J − z disconnected, where STL fails exactly when Test1 does. This would make STL an equivalent form of the spine. By the J − z view, it amounts to tightening a Test1 decomposition and solving the avoidance system.
 3. The d(z) = 2 two-triangle configuration (EE at distance 2).

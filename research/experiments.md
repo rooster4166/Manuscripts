@@ -876,7 +876,7 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 - A "perfect" decomposition with β = b(r) = 0 exists in only 748 of the 958; STL2 then uses β = 2.
 
 **(C) Random 3-connected samples** (`sample_run.py`, with every budget-undecided entry re-decided by `resolve.py` / `resolve2.py`). 0 failures throughout.
-- STL: n = 11 (600 graphs, 3,256 pairs), n = 13 (600, 3,470), n = 15 (350, 2,082).
+- STL: n = 11 (600 graphs, 3,256 pairs), n = 13 (600, 3,470), n = 15 (350, 2,082), n = 17 (60 sparse, 338).
 - STL2: n = 10 (1,200 instances), n = 12 (1,000), n = 14 (500).
 
 **(D) Flexibility on 3-connected graphs** (`flex_run.py`).
@@ -886,7 +886,7 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 | n = 5 (only W₄) | 1 | 4/4 | 2/6 | 2/3 |
 | n = 7 | 28 | 126/126 | 244/266 | 168/168 |
 | n = 9 | 5,231 | 25,210/25,210 | 66,818/67,220 | 54,045/54,045 |
-| random, n = 11, d(z) ≤ 8 | see README | all | ≥ 99% | all |
+| random, n = 11, d(z) ≤ 8 | 240 | 1,290/1,290 | 4,691/4,702 decided (200 undecided) | 5,196/5,196 |
 | random, n = 13, d(z) ≤ 6 | 120 | 586/586 | 1,462/1,462 | 996/996 |
 
 - STS(u): u is short in some star-terminal Lovász decomposition.
@@ -897,8 +897,9 @@ Manuscript: `manuscripts/stl/stl.tex`. Scripts: `manuscripts/stl/scripts/` (see 
 
 **(E) Families** (`families.py`). 0 failures throughout.
 - Wheels W₄ … W₁₈.
-- J = H + universal z, with H random 4-regular of order 10, 12, 14 (90 graphs, 1,040 pairs; J − z Eulerian, d(z) up to 14).
+- J = H + universal z, with H random 4-regular of order 10, 12, 14, 16 (102 graphs, 1,232 pairs; J − z Eulerian, d(z) up to 16).
 - Random non-3-connected J with J − z connected, n = 11 and 13 (250 graphs, 780 pairs).
+- Random J with J − z **disconnected**, n = 11 (`families.py zdisc`; 300 graphs, 1,282 pairs). STL fails at 4 pairs, and Test1 fails at exactly those 4. So STL ⇔ Test1 persists beyond order 9.
 
 **Negative results.**
 - STL-P (every pairing realisable) is false on W₄.
