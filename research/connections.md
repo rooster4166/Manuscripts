@@ -1337,9 +1337,14 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 ### Z.4 Open (in order of promise)
 0. **Degree six (the first open rung, T(6)-i).** PTM_3 for the perfect matchings of N(z) at d(z) = 6, J 3-connected.
    - **Data (E24(J)):** every pairing satisfies PTM_3(r), parallel pairs included. This is exhaustive at orders 7 and 9 (27,390 instances, 164,340 end tests) and holds on random samples at orders 11–17; 0 failures. The prism-with-rungs failure has J − z disconnected.
-   - **Chained walk theorem (manuscript Thm 8.2, paper proof):** leaf x1y1, walk y3 → x2 and y2 → x1. It reduces PTM(G, F; x_i terminal) to one base decomposition of M (one even vertex x3) separating {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2}, {ℓ1,y3}, {y2,y3}.
+   - **Chained walk theorem (manuscript Thm 8.2; Lean `ptm3_of_base`):** leaf x1y1, walk y3 → x2 and y2 → x1. It reduces PTM(G, F; x_i terminal) to one base decomposition of M (one even vertex x3) separating {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2}, {ℓ1,y3}, {y2,y3}.
    - **Reach:** the base exists for 77% of simple instances at order 9 and 99.4–99.97% at random orders 11–17. Every r is covered for 199/200, 200/200, 300/300 and 300/300 random J. It is cross-checked against the oracle (9,457 base configurations, 0 contradictions with PEE).
-   - **Missing:** a proof of the base hypothesis (a sparse form: six special vertices sparse, the four sets {x1,ℓ1}, {x2,y2}, {x3,y3}, {ℓ1,y2,y3} packed).
+   - **Far-apart form (Prop 8.3, Cor 8.4; Lean `ptm3_of_far`, `stl3_of_far`, `test1_of_chains3`):** if N(z) is pairwise at distance ≥ 3 in J − z, the base hypothesis is automatic (sparse separation, no exceptional vertex).
+     - So **Test1 at d(z) = 6 (T(6)-i) holds whenever, for every r ∈ N(z), some labelled pairing with r long has an admissible chain.**
+     - Far-apart N(z) occurs in 0, 1, 15, 69 and 99 of 200 random graphs at orders 21, 31, 51, 101 and 201.
+     - In all 184 such graphs chains were found for every r.
+     - Chain existence is not proved.
+   - **Missing:** the base hypothesis when N(z) is not far apart (local girth / exceptional-vertex forms as at d = 4), and a proof that chains exist.
    - Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 m = 2 instances with no admissible walk. Not checked here.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
