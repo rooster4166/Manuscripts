@@ -544,7 +544,7 @@ Scripts: `tools/gemm_test.py` and `tools/emm_template.py`, with the exact oracle
   - on the n = 8 sample, at every p.
 - At n = 8 the bound cannot be lowered to p = 3.
 
-**Reductions (proved; missing-move Lemma 7.4).** A minimal counterexample to EMM⁺:
+**Reductions (proved; missing-move Lemma 7.7).** A minimal counterexample to EMM⁺:
 - is connected;
 - has no degree-2 vertex with b = 0 and non-adjacent neighbours;
 - has no leaf at an unsaturated neighbour (Lean `cutOK_leaf`, `ach_of_leaf`, `leaf_step`);
@@ -558,7 +558,7 @@ Before the proof, the last reduction was checked to keep cut-feasibility on all 
 |---|---|---|---|
 | all; NP, T, C | 2/52 | 15/767 | 56/13,897 |
 | reduced; NP, T, C | 0/35 | 9/600 | 12/10,866 |
-| reduced; with path insertion of length ≤ 3 | – | 0/600 | 4/10,866 |
+| reduced; with path insertion of length ≤ 3 | 0/35 | 0/600 | 4/10,866 |
 | EMM⁺ class, reduced; NP, T, C | 0/35 | 4/589 | 14/10,847 |
 | EMM⁺ class, reduced; with path insertion of length ≤ 5 | 0/35 | 2/589 | 6/10,847 (all with p = ⌈n/2⌉) |
 
@@ -604,3 +604,23 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
 - Also measured:
   - the number of per-vertex families F_v needed to cut out F at n = 8 is 1 in 10,798 graphs, 2 in 75, and 3, 4, 5, 6 in 11, 5, 3, 1;
   - the union of the transversal families of good pairings equals the complement-closed part of F in all but 2 graphs at n ≤ 8.
+
+**E17 addendum: EMM is false (counterexamples of order 12).** Manuscript: missing-move Example 7.4, Theorem 7.5 and Remark 7.6.
+- **Padding (EMM⁺ false).** In FqJBo, vertex 3 is saturated (b = d). Attach t leaves to 3 and raise b(3) by t; each new edge is then a forced one-edge path.
+  - t = 3 gives `IqJBo_OC?`: n = 10, p = 5 = n/2, b = (1,0,1,5,0,0,0,1,1,1).
+  - t = 4 gives n = 11, p = 6 = ⌈n/2⌉.
+  - Both are cut-feasible, by `gemm_test.feasible` and by `cut_test.cut_ok`, and not realisable, by `realis.c` and by a brute-force enumeration.
+- **Gluing (EMM false).**
+  - Construction: a core that is a below-budget failure with a leaf is glued to a realisable gadget with a leaf, identifying the two leaves. The glued vertex c has degree 2 and b = 2, so no path crosses it. The gadget's surplus of ends makes the profile a simple half-set, and the cut slacks grow.
+  - `tools/emm_glue_search.py` uses the cores GsOeBW (b = 0,0,1,1,2,0,0,0) and GqGUDg (b = 0,1,1,1,1,0,0,0) from the n = 8 failure list, with all gadgets of order 5. It gives 14 glued instances, all cut-feasible and not realisable: 12 distinct graphs of order 12.
+  - **`tools/cut_test.py` (the EMM test of the synthesis) on them: "tested 12 graphs, 1932 half-sets (269 non-realisable): 12 EMM failures, 0 unsound"** (`emm_counterexamples12_cut_test.log`).
+  - Example: KsOeBW??G`?A, edges 01,02,03,06,14,16,17,25,27,47,57,3-10,10-8,8-9,9-11, M = {3,4,8,9,10}. It is confirmed non-realisable by an independent brute force, which agrees with the oracle on 40 realisable half-sets of the same graph.
+- **No failure in a targeted search of simple lifts.** FqJBo plus three vertices attached to the terminals 0, 2, 3 (199 graphs, 10,327 cut-feasible half-sets) gives no failure (`emm_lift_search.log`).
+- **Splitting off** (the coordinator's Lovász–Cherkassky pointer; `tools/emm_split.py`).
+  - Cut side: every degree-4 vertex with b = 0 in the 14 stuck EMM⁺ instances at n = 6 has a cut-preserving split, 39 in all. But 26/35 (n = 4) and 267/589 (n = 5) reduced instances have no split at all.
+  - Lift side: in 10 of the 14 instances some split lifts for every partition (`split_lift6.log`).
+- **Template variants** (Prop 7.8):
+  - guarded splits give 0/35, 1/589, 4/10,847;
+  - with path insertion as well: 0, 0, 4;
+  - in the simple class (b ≤ 2): 0/6, 14/68, 38/456, or 0, 10, 28 with splits and path insertion.
+

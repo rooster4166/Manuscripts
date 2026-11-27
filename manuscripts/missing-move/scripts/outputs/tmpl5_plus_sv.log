@@ -1,0 +1,2 @@
+STUCK Du{ [(0, 1), (0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (2, 4), (3, 4)] b (0, 3, 0, 3, 0)  fan_equality 4 concat_1_1 3 np_leaves_class 1
+{'instances': 589, 'stuck': 1, 'reducible': 132, 'NP': 46, 'NP+T': 44, 'C+NP+T': 222, 'NP+S+T': 52, 'NP+S+T+V': 2, 'C+S+T+V': 13, 'S': 3, 'C+NP+S+T+V': 40, 'C+T+V': 18, 'C+NP+S+T': 56, 'C+T': 24, 'S+T': 4, 'C+S': 2, 'diag:eqccnpout': 1, 'NP+S': 4, 'C+NP+T+V': 52, 'C+NP': 6}

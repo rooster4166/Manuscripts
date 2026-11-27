@@ -11,6 +11,16 @@ For an edge uv put H = G - uv. The single-edge moves re-insert uv into a partiti
   NP_L   path insertion (option "peelL", L >= 2): delete the edges of a path P of length 2..L
          with ends a != z, b(a), b(z) >= 1; b' = b - e_a - e_z on G - E(P) (p' = p - 1).
          It always succeeds: P is added as a new path.
+  S      guarded split (option "split"): replace ux, uy (xy not an edge) by xy, keeping b and p.
+         A partition of the split graph lifts (xy -> x u y) when the path through xy avoids u.
+         This is guaranteed if x and y are saturated (b = d: the path through xy is the edge xy),
+         or if d(u) = 4, b(u) = 0 and the other two neighbours of u are saturated (the path through
+         u is a u c), or if d(u) = 2 and b(u) = 0 (smoothing).
+  V      saturated vertex (option "vertex"): x with b(x) = d(x); delete its star, b' = b on V - N[x],
+         b'(z) = b(z) + 1 on N(x), b'(x) = 0, same p. Re-insert the star by d(x) grouped receipts at
+         x; this is guaranteed when Fan's count holds for every choice of donors by the opponent
+         (computed exactly from the multiset of b' on N(x); a receipt from a donor with one end
+         makes it a blank neighbour of x).
 A move is *valid* if b' is cut-feasible on H. By Fan's lemma a valid move succeeds for every
 partition of H with profile b'. So if every cut-feasible (G, b) with E(G) nonempty has a valid
 move, cut-feasibility is an invariant and EMM (general profiles) follows by induction on |E|.
@@ -32,7 +42,11 @@ Option "diag": for each stuck instance, count the moves that are cut-feasible (a
 but lack only their profile-level guarantee: transfers at Fan's equality (b'(u) = |Z(v)|),
 concatenations with b'(u) = b'(v) = 1, and (with atleasthalf) path insertions that leave the class.
 
-Usage: python3 tools/emm_template.py FILE.g6 [maxshow] [reduced] [peelL] [atleasthalf] [diag]
+Option "simpleclass" (with atleasthalf): instances and outcomes must also be simple (b <= 2, i.e.
+b = 1 on odd vertices and b in {0, 2} on even ones). EMM+ with arbitrary b is false (missing-move
+Example 7.4: padding the order-7 obstruction with leaves at its saturated vertex).
+
+Usage: python3 tools/emm_template.py FILE.g6 [maxshow] [reduced] [peelL] [atleasthalf] [diag] [split] [vertex] [simpleclass]
 Prints the instances with no valid single-edge move ("STUCK") and a tally.
 """
 import sys
@@ -67,12 +81,51 @@ def in_class(H, b1):
     return True
 
 
-def moves(G, bb, peel=1, pmin=0):
+def guarded_splits(G, bb):
+    """Pairs (u, x, y) for the guarded split move S (see the module docstring)."""
+    from itertools import combinations
+    sat = {v for v in G if bb[v] == G.degree(v)}
+    for u in G:
+        for x, y in combinations(sorted(G[u]), 2):
+            if G.has_edge(x, y):
+                continue
+            rest = [v for v in G[u] if v not in (x, y)]
+            if ({x, y} <= sat or (G.degree(u) == 4 and bb[u] == 0 and set(rest) <= sat)
+                    or (G.degree(u) == 2 and bb[u] == 0)):
+                yield u, x, y
+
+
+def receipts_ok(vals, blanks=0):
+    """All |vals| grouped receipts succeed against every choice of donors (vals: ends at donors)."""
+    if not vals:
+        return True
+    if sum(vals) <= blanks:
+        return False
+    return all(receipts_ok(vals[:i] + vals[i + 1:], blanks + (vals[i] == 1))
+               for i in range(len(vals)) if vals[i] >= 1 and vals[i] not in vals[:i])
+
+
+def moves(G, bb, peel=1, pmin=0, split=False, vertex=False, simple=False):
     """Yield (edge, kind) for every valid move of the cut-feasible profile bb.
-    pmin > 0 selects the class EMM+ (see the module docstring)."""
+    pmin > 0 selects the class EMM+ (see the module docstring); simple adds b' <= 2."""
     def ok(H, b1):
-        return (not pmin or in_class(H, b1)) and feasible(prepare(H), b1)[0]
+        return ((not pmin or in_class(H, b1)) and (not simple or max(b1) <= 2)
+                and feasible(prepare(H), b1)[0])
     can_np = True
+    if vertex:
+        for x in G:
+            if bb[x] == G.degree(x) and bb[x] >= 1:
+                H = G.copy(); H.remove_edges_from([(x, z) for z in G[x]])
+                b1 = list(bb); b1[x] = 0
+                for z in G[x]:
+                    b1[z] += 1
+                if receipts_ok(tuple(sorted(b1[z] for z in G[x]))) and ok(H, b1):
+                    yield (x,), "V"
+    if split:
+        for u, x, y in guarded_splits(G, bb):
+            H = G.copy(); H.remove_edge(u, x); H.remove_edge(u, y); H.add_edge(x, y)
+            if ok(H, list(bb)):
+                yield (u, x, y), "S"
     if peel >= 2 and can_np:
         for P in paths_upto(G, peel):
             a, z = P[0], P[-1]
@@ -142,6 +195,9 @@ def main():
     peel = max([int(a[4:]) for a in sys.argv[3:] if a.startswith("peel")] or [1])
     half = "atleasthalf" in sys.argv[3:]
     diag = "diag" in sys.argv[3:]
+    split = "split" in sys.argv[3:]
+    vertex = "vertex" in sys.argv[3:]
+    simple = "simpleclass" in sys.argv[3:]
     graphs = nx.read_graph6(path)
     if not isinstance(graphs, list):
         graphs = [graphs]
@@ -152,13 +208,14 @@ def main():
         prep = prepare(G)
         for bb in profiles(prep[1]):
             n = G.number_of_nodes()
-            if sum(bb) == 0 or (half and sum(bb) < n) or not feasible(prep, list(bb))[0]:
+            if (sum(bb) == 0 or (half and sum(bb) < n) or (simple and max(bb) > 2)
+                    or not feasible(prep, list(bb))[0]):
                 continue
             if reduced and reducible(G, bb):
                 tally["reducible"] = tally.get("reducible", 0) + 1
                 continue
             tally["instances"] += 1
-            kinds = {k for _, k in moves(G, bb, peel, 1 if half else 0)}
+            kinds = {k for _, k in moves(G, bb, peel, 1 if half else 0, split, vertex, simple)}
             if not kinds:
                 tally["stuck"] += 1
                 extra = ""

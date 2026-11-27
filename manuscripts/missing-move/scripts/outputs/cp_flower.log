@@ -1,0 +1,8 @@
+cp4 [0 hubs]: 1 graphs, 1 with a losing root (kmax=0, hubs)
+cp4 [0 flower hubs]: 1 graphs, 0 with a losing root (kmax=0, hubs, flower)
+cp5 [0 hubs]: 1 graphs, 1 with a losing root (kmax=0, hubs)
+cp5 [0 flower hubs]: 1 graphs, 0 with a losing root (kmax=0, hubs, flower)
+cp4 [0 np hubs]: 1 graphs, 1 with a losing root (kmax=0, np, hubs)
+cp4 [0 np flower hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, flower)
+cp5 [0 np hubs]: 1 graphs, 1 with a losing root (kmax=0, np, hubs)
+cp5 [0 np flower hubs]: 1 graphs, 0 with a losing root (kmax=0, np, hubs, flower)
