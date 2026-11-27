@@ -1,5 +1,15 @@
 # GallaiLean
 
+## Route descent and separation (cloud session, branch `claude/route-descent`)
+
+Manuscript `manuscripts/route-descent`. Three files, no `sorry`; every main theorem depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
+
+| File | Content |
+|---|---|
+| `RouteDescent.lean` | **`gallai_of_pairingTRC`**: abstract TRC ⇒ Gallai. If every connected even-order graph has a pairing of its even vertices (`IsEvenPairing`, a fixed-point-free involution of `evenSet`) all of whose transversals are realisable, Gallai holds. **`gallai_of_pairingTRCExists`**: it suffices to have, for each even `y`, one realisable transversal containing `y`. Via `gallai_of_rootedHalfSets` / `branchBase_of_rootedHalfSets`: a realisable `M ∋ y` with `2|M| ≤ |Ev|` gives `Desc H k y ∅` for every `k`, hence `BranchBase k` without its side hypotheses. `exists_transversal`, `two_mul_card_transversal`. `IsEvenPairing.of_isPairing`: the pairings of `cs_all` qualify, so `cs_all` supplies the cut-feasibility half of TRC. T-joins: `IsTJoin`, `IsMinTJoin`; **`isMinTJoin_sdiff`** (deleting a subset of a minimum T-join leaves a minimum join of `G − R`: heredity of minimality under route deletion); `card_le_two_mul_of_isTJoin`, `isMinTJoin_of_two_mul_card_le` (a matching T-join is minimum). |
+| `FanSupport.lean` | **Fan's lemma with vertex sets.** `fan_single_supp`, `fan_grouped_supp`, `fan_exec_supp`: as `fan_single` etc., plus *every path of the new decomposition lies in a path of the old one, together with the target vertex `u`*. Supporting copies `replace_supp`, `append_move_supp`, `reroute_core_supp`, `reroute_move_supp` (re-routing keeps vertex sets; the append adds `u`). The originals are untouched. |
+| `Separation.lean` | **`separation`**: if `(evenSet G).card ≤ 1` and `FarApart G c a` (distinct, non-adjacent, no common neighbour), then `G` has a decomposition with `ends v = deg v % 2` in which no path contains both `c` and `a` (`Separates`). **`lovasz_avoid`**: the path ending at `c` avoids `a`. Proof: Lovász's induction (cases I–IV of `Lovasz.lean`) with the invariant carried by `fan_single_supp`, `Retract.delete_supp` (leaf deletion with supports, from `project_full`'s pieces and `PathDecomp.eq_of_mem_edges`) and `PathDecomp.add_edge_supp`. Case III of Lovász's proof is replaced by deleting a leaf outside `{c, a}`. |
+
 ## Theorem 59 (cloud session, branch `claude/lean-thm59`)
 
 **`thm59 : Thm59Statement`** is proved, so Theorem 114 now holds with no hypothesis:

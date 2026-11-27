@@ -1024,8 +1024,14 @@ L_N would give **Gallai for every graph whose even vertices induce a subgraph wi
 
 Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant through, because of one observation about **Fan's lemma**. Its proof (a chain of re-routings and one append) keeps the vertex set of every path, except that one path gains the target vertex g. So any Fan transfer with g ∉ {c, a} preserves separation. At distance ≥ 3, every case of Lovász's induction can choose its target outside {c, a}. Corollary: **L1 holds when c and a have no common neighbour.** At distance 2, separation can fail (7-vertex example with an even vertex), while L1 survives. So the right inductive invariant there is still to be found.
 
+**Lean (done).** `lean/GallaiLean/Separation.lean`: **`separation`** and **`lovasz_avoid`**, sorry-free, standard axioms, full build green. They rest on `FanSupport.lean` (**`fan_single_supp`**: Fan's lemma with vertex sets) and on support-tracking copies of `Retract.delete` and `PathDecomp.add_edge`.
+
+**Multi-pair version (conjecture, strong evidence).** If all degrees are odd and disjoint pairs are each at distance ≥ 3, some Lovász decomposition separates every pair. E20: 2,892 instances (n = 8–16, 925 of them perfect matchings), 0 failures. At distance 2 the symmetric version is false (about 22% of instances fail).
+- It would give Gallai, with every orientation realisable, for every graph whose even subgraph has a perfect matching none of whose edges lies in a triangle. This includes all triangle-free Eulerian graphs with a perfect matching.
+- The proof of the one-pair theorem does not extend: when every vertex is paired, every Fan target is paired, and the path gaining the target may contain its partner.
+
 ### V.5 Existential version and BranchBase
-- A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used.
+- A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).
 - Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.
 
 ### V.6 Classes (honest comparison)
