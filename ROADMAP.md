@@ -605,3 +605,12 @@ Candidate uniform mechanisms (`research/connections.md`):
   - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
   - **So Test1, and with it the two-end half of Gallai via the spine, now reduces in Lean to the triangle base conjecture wherever N(z) − r has a near-perfect matching.**
   - Audit A28 is next.
+- **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
+  - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.
+  - **E28 hard graphs, head to head:** the triangle base certifies 42/48 roots where Conj 5.1 / STL-P left 46 undecided. **Better target confirmed.**
+  - **Clean conjecture DL:** in a graph with ≤ 1 even vertex, any disjoint non-adjacent odd pairs, none of which are universal twins of their component, admit one Lovász decomposition satisfying all the disjunctions. Every failure to order 9 is a universal-twin pair.
+  - **Lean:**
+    - `triangleBase_of_packed` (any m);
+    - `triangleBase_of_farApart` (m = 2);
+    - `triangleBase_of_L1Star` / `_of_L1Blocked` (m = 2, needing a ≁ w or b ≁ w);
+    - **`test1At_of_disjL1`: DL ⇒ Test1 at every root with data whenever M is connected.**
