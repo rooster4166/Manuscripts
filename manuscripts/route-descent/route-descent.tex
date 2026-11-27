@@ -610,7 +610,11 @@ $a$, and every neighbour of $z$ in $N[c]\cup N[a]$.
 \item For $m\ge2$ pairs the leaf trick produces $m$ even vertices, one at each tail. So
 Conjecture~\ref{conj:LN} is equivalent to separating each leaf from its head in a graph whose even
 vertices all carry pendant leaves. Neither Theorem~\ref{thm:sep} nor the multi-pair Conjecture~\ref{conj:msep}
-(which assumes all degrees odd) covers this.
+(which assumes all degrees odd) covers this. Nor does the packed-set form of the trick extend to
+several leaves. Asking that every path meet a packed set containing all the leaves at most once fails
+already when the leaves hang at the three leaves of a star $K_{1,3}$, since some path joins two of them.
+With leaves at two non-adjacent vertices and one further packed vertex, it failed in $2$ of $221$
+random instances.
 \end{itemize}
 Whether both sides can be had at distance two, that is, $a\notin V(Q_c)$ and $c\notin V(Q_a)$ in the
 same Lov\'asz decomposition, is open. It held in all $998$ decided random instances at distance two
@@ -776,7 +780,7 @@ $\ell$ at $c$ and take $s=\ell$), Conjecture~\ref{conj:ball} implies that in a g
 odd some Lov\'asz decomposition has $V(Q_c)\subseteq N[c]$. For a minimum Thm-21 system the tail $c$ of
 a route has no neighbour in $F$ on its route, because routes have no chords
 (Lemma~\ref{lem:min}(3)). So this would give (RR1) for any single route. Conjecture~\ref{conj:ball}
-held in all $1{,}984$ random instances with one even vertex (orders $7$--$11$).
+held in all $3{,}195$ random instances with one even vertex (orders $7$--$15$).
 
 Theorem~\ref{thm:sep} is the case of Conjecture~\ref{conj:msep} in which the union of the pairs is
 packed. Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
