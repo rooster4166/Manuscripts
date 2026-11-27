@@ -449,7 +449,7 @@ int main(int argc, char **argv) {
           uint32_t all = (n == 32 ? 0xffffffffu : (1u << n) - 1);
           uint32_t Am = all & ~adj0[c] & ~(1u << c) & ~(w >= 0 ? adj0[w] : 0);
           if (w != g && g >= 0 && !((adj0[c] >> g) & 1) && g != c) Am |= 1u << g;
-          if (w == g) Am &= ~(1u << g);
+          /* w = g: the local form of L1*, V(Q(c)) in N[c] u N(g); g itself is avoided when g is not in N[c] */
           /* drop isolated vertices */
           for (int v = 0; v < n; v++) if (deg(E, v) == 0) Am &= ~(1u << v);
           if (!Am) continue;
