@@ -1,0 +1,2 @@
+mode sep: 1438 instances, all outputs checked; case counts {'I': 15889, 'II-b0': 1164, 'II-b2': 1337, 'II-single': 1164, 'III': 6068, 'IV': 1438}
+Lemma 3 calls: 17226 chain lengths {0: 15217, 1: 1576, 2: 320, 3: 79, 4: 24, 5: 7, 6: 2, 7: 1}

@@ -1,0 +1,2 @@
+packed: route system with a 4-cycle v1v2v3v4 in J and V(J) packed in F (n = 16): G[Ev] = J is not a forest; one decomposition of F realises all 16 transversals
+packed: Corollary 23 verified on 13 random minimum Thm-21 systems with V(J) packed
