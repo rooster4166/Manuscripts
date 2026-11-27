@@ -114,7 +114,13 @@ EMM sufficiency work is **stopped**.
   - Literature, verified: RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free and Δ ≤ 4.
   - Open: RE in general, the ear case at even order, and conjecture UC.
 - **ptm**: order-10 exhaustive PTM₂ **complete** (be6f6c9). 3,474,599 classes and 13.9M end tests with 0 failures, so K₄ is the only PTM₂ failure on ≤ 10 vertices.
-- **re-tight** (session_01FxXpVhoVc4PLGoUX13pape, branch `claude/re-tight`, new): RE at roots of degree n − 2 (99.8% of tight RE roots), using eulerian-cone Rem 7.2 and the Lovász + matching method.
+- **re-tight** (session_01FxXpVhoVc4PLGoUX13pape, branch `claude/re-tight`): RE at roots of degree n − 2, which are 99.8% of tight RE roots.
+  - **Milestone 1 (37fa901, merged; build green; axioms checked).** **Lean `rootedDecomp_of_degStar`:** if all degrees are even, d(r) = n − 2, and the degree-distribution condition (\*) holds on N(r), then RE holds at r. Corollaries:
+    - at most 5 neighbours of r have degree ≥ 6;
+    - n ≥ 10 and every neighbour of r has degree ≤ 6.
+  - **Method:** a Lovász decomposition of B − r, followed by Hall's condition with defect 2.
+  - **Data:** all 14,131 degree-(n − 2) roots at order 10 satisfy RE. The method fails only in the dense range, which is inside MR Thm 170, starting from m ≥ 2k² − 3k + 4.
+  - **Next:** a coverage table, the manuscript and the audit.
 - **dl-one** (session_01FxXpVh4BN9SrSpwFmDpN4y, branch `claude/dl-one`): **finished** (98d805e). Manuscript `manuscripts/dl-one`; audit A29 applied.
   - **DL(1) is NOT proved.**
   - **Lean (`DLOne.lean`):** the twin exception is needed, Lemma NP (leaf exchange), DL(1) for a leaf at g, DL(1) for d(g) = 2 with a single common neighbour, and the free-target transfer.
