@@ -447,3 +447,9 @@ Candidate uniform mechanisms (`research/connections.md`):
     - a certified Case I step;
     - sparse-class separation.
   - **Exact obstruction:** "L1 at the even vertex", i.e. prescribing uz as the terminal edge at a neighbour u of the even vertex z. It holds in about 3,300 tests, but the leaf trick does not apply.
+- **Conjecture EE ("L1 at the even vertex"): partial results in Lean (multi-sep 5498405, MultiSepEE.lean; standard axioms, verified).** z is the only even vertex and u ∈ N(z). EE asks for a Lovász decomposition in which uz is the terminal edge at u.
+  - `ee_noTriangle`: EE holds whenever uz lies in no triangle.
+  - `ee_split` and `ee_triangle`: EE holds whenever deg u = 3, except when u's other two neighbours a, b are adjacent and have a common neighbour other than u.
+  - `separation_sparse_set`: holds as well.
+  - Audit A18 of the multi-sep manuscript found every result sound; only wording and count fixes were needed, and they are applied.
+  - EE is the one-transition case of STL (synthesis §19). The remaining EE cases are uz in a triangle with deg u ≥ 5, and that one deg-3 configuration.
