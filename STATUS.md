@@ -258,7 +258,9 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
   - the five-even floor bound (`FiveEven.five_even_local`, `five_even_bowtie`; 131 kernel-checked certificates), which replaces Shaik in MR Cor 106 (audit A11 running);
   - **the reduction of Gallai to one named statement** (`gallai_of_branchBase3`);
   - **the barrier theorems** for Fan moves on cocktail party graphs;
-  - **cut selection** (`cs_all`): every connected even-order graph has a pairing whose transversals all satisfy the cut inequality.
+  - **cut selection** (`cs_all`): every connected even-order graph has a pairing whose transversals all satisfy the cut inequality;
+  - **the separation theorem** (`separation`, `lovasz_avoid`): Lovász decompositions can keep two vertices at distance ≥ 3 off a common path;
+  - **route descent** (`gallai_of_pairingTRC`, `isMinTJoin_sdiff`): TRC for some pairing implies Gallai, and minimum T-joins are inherited by route deletion.
 
 **Open risks:**
 
