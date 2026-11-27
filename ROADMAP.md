@@ -30,7 +30,15 @@ EMM sufficiency work is **stopped**.
 
 **Sessions, re-assigned 2026-11-27 02:25.** Sessions that finished their task do not take large follow-ups from a peer session, so new tasks go to fresh sessions.
 - **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy): **DONE** at 81dbc63. `thm59 : Thm59Statement` and `gallai_iff_spineTests'` are proved, with standard axioms (audit A14: no gap in MR).
-- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9, branch `claude/route-descent`, new): the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
+- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9): **finished** at 60adf00.
+  - Proved (paper and Lean): separation (pair and set forms), Fan's lemma with vertex sets, L1 (leaf trick), route_append, Gallai ⇐ RR (`gallai_of_routeRR`), min-T-join heredity.
+  - Open items it leaves:
+    - the L∞ residual (z at distance 3; 1,531 tests, 0 failures). L∞ would give RR1 for any single route of a min T-join, since routes are geodesics and the first edge lies in J.
+    - L_N for 2+ pairs (owned by multi-sep);
+    - S1 at distance 2;
+    - RR for star forests.
+  - Its paper proofs are under audit A16.
+  - Original brief: the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
 - **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
   - **Delivered:** the *balanced return theorem* (`manuscripts/near-dirac/`, 15 pp.). It returns a linear-size exceptional set X under a balance condition; it contains SP Thm 14.27, and its Corollary 1.2 is an exact class.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
