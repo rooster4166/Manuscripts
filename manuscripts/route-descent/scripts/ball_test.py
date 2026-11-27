@@ -1,7 +1,7 @@
 """One-sided separation: K with at most one positive-even vertex, s of odd degree.  Is there a
 Lovasz decomposition whose path at s stays in the ball B_2(s)?  (For s a leaf at c this is the
 statement Q_c within N[c] for K - s.)  Also the leaf case directly: F all odd, c, Q_c within N[c].
-Usage: python3 ball_test.py trials budget mode   (mode: z | leaf)"""
+Usage: python3 ball_test.py trials budget mode [nmin nmax]   (mode: z | leaf)"""
 import random
 import sys
 
@@ -15,10 +15,12 @@ from lovasz_matching import make_all_odd
 def main():
     trials, L.BUDGET, L.FINAL = int(sys.argv[1]), int(sys.argv[2]), False
     mode = sys.argv[3]
-    rng = random.Random(31337)
+    nmin = int(sys.argv[4]) if len(sys.argv) > 4 else 6
+    nmax = int(sys.argv[5]) if len(sys.argv) > 5 else 12
+    rng = random.Random(31337 + nmin)
     tot = bad = und = 0
     for it in range(trials):
-        n = rng.randint(6, 12)
+        n = rng.randint(nmin, nmax)
         F = nx.gnp_random_graph(n, rng.uniform(0.15, 0.6), seed=rng.randrange(10 ** 9))
         if mode == "z":
             if n % 2 == 0 or not fix_parity_except(F, rng, 0) or F.degree(0) == 0:

@@ -1061,10 +1061,11 @@ What L1 does and does not give:
 - It gives **no new realisability class by itself**. The first pair of any Fan schedule is always free, and one-edge "mixed schedules" (one pair appended last via L1, the rest by Fan) need the special pair to be a sink of the schedule digraph, so they are already acyclic.
 - **Limits** (E20):
   - L1 is false in graphs that already have an even vertex z (e.g. the path c z a). In 5,399 random pairs it failed 648 times, always with dist(c, a) = 2, z ~ a, and N(z) ⊆ N[c] ∪ N[a].
+  - Multi-leaf *packed* separation is false: with leaves at three pairwise non-adjacent vertices, the star K_{1,3} already fails. With two leaves plus one packed extra vertex, it fails in about 1% of instances. So any extension must be pair-by-pair.
   - For m ≥ 2 pairs, the leaf trick creates m even vertices, one per tail. So L_N ⇔ separating each leaf from its head in a graph whose even vertices all carry pendant leaves. MSEP (all-odd) is the analogue without even vertices. A proof of MSEP that tolerates even vertices with pendant leaves would give L_N at distance ≥ 2, hence Gallai for every graph whose even subgraph has a perfect matching.
 - **Open, with evidence.**
   - **S1**: both a ∉ Q_c and c ∉ Q_a at distance 2, in one decomposition. 998 decided instances, 0 failures.
-  - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 1,984 instances, 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
+  - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 3,195 instances (n ≤ 15), 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
 
 ### V.4b Lean: Gallai ⟸ RR (formal)
 `RouteSystem.lean`: **`gallai_of_routeRR`** and **`gallai_of_routeRRExists`**. If every connected graph of even order has a pairing of its even vertices, routed by edge-disjoint paths, such that for every transversal (resp. one through each even vertex) the free graph has an M-compatible Lovász decomposition (RR1 + RR2), then Gallai holds.
