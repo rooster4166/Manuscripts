@@ -24,12 +24,15 @@ from `x`, `a` and the leaves, so the separations survive.
 `separation_sparse` when the four vertices `x, y, a, ℓ₁` are sparse and the three pairs packed,
 in `M` or in `M − xv` for one neighbour `v` of `x` (one more Fan transfer restores `xv`).
 
-**Girth five** (`ptm2_girth5`): with no triangle and no 4-cycle, a shortest path between the two
-edges is an admissible walk satisfying the sparse hypotheses.
+**Local girth five** (`NoShortCycleAt`, `ptm2_localgirth`, `ptm2_girth5`): when no triangle
+and no 4-cycle passes through an end of the two edges, a shortest path between the two edges is
+an admissible walk satisfying the sparse hypotheses. Global girth five is the special case.
 
-**STL** (`swapG`, `liftJ`, `unlift`, `stl_of_ptm2`, `stl_of_girth5`, `test1_of_girth5`): for `z`
-of degree four with `N(z) = {a, b, c, d}` and `ab, cd ∉ E(J)`, PTM₂ in `(J − z) + ab + cd` gives
-`STL J z b` and `STL J z d`; at girth five every neighbour, and `Test1 J z` by `test1_of_stl`.
+**STL** (`swapG`, `liftJ`, `unlift`, `stl_of_ptm2`, `stl_of_localgirth`, `stl_of_girth5`,
+`test1_of_localgirth`, `test1_of_girth5`): for `z` of degree four with `N(z) = {a, b, c, d}` and
+`ab, cd ∉ E(J)`, PTM₂ in `(J − z) + ab + cd` gives `STL J z b` and `STL J z d`; when no cycle of
+length at most four of `(J − z) + ab + cd` passes through `a, b, c, d`, every neighbour, and
+`Test1 J z` by `test1_of_stl`.
 -/
 
 open SimpleGraph

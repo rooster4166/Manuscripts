@@ -2,7 +2,7 @@
 
 Manuscript: `terminal-matching.tex` (compile with `pdflatex` twice). Lean: `lean/GallaiLean/TerminalMatching.lean`;
 axiom check `PTMAxioms.lean` (`cd lean && lake env lean ../manuscripts/terminal-matching/PTMAxioms.lean`).
-Experiment log: `research/experiments.md`, E24. Conclusions: `research/connections.md`, §Z. Audit: `research/audit/A22-ptm.md`.
+Experiment log: `research/experiments.md`, E24. Conclusions: `research/connections.md`, §Z. Audits: `research/audit/A22-ptm.md`, `research/audit/A22b-localgirth.md` (local girth five).
 
 ## Status
 - **Proved and formalised** (sorry-free; only propext, Classical.choice, Quot.sound; full `lake build` green):
@@ -12,6 +12,7 @@ Experiment log: `research/experiments.md`, E24. Conclusions: `research/connectio
   - `ptm2_girth5`: PTM₂ with one prescribed end for every all-odd graph of girth ≥ 5 (reachability between the edges suffices).
   - `stl_of_ptm2`, `stl_of_girth5`, `test1_of_girth5`: the STL / Test1 consequences at d(z) = 4, through `test1_of_stl`.
 - **Audit A22**: no error in any proof; corrections to claims applied (STL citation numbers, K₄ caveats, the base problem has genuine NOBASE failures, EE needs a non-adjacent complementary pair).
+- **Audit A22b** (local girth five, Theorem 6.1 and Corollary 7.2 local forms): sound, no error; every excluded short cycle passes through an end of the two edges; `NoShortCycleAt` proved equivalent to Mathlib's cycle-length form (`A22b-scripts/A22bSemantics.lean`). Statement-level wording fixes applied.
 - **Open.** PTM₂ beyond the sparse case (the base problem alone is not enough: 832 NOBASE instances at n = 8); PTM_m for m ≥ 3; the multigraph case (Conjectures 2.3, 2.4).
 - **Counterexamples.** K₄ with a perfect matching (PTM₂); the prism with its rungs (PTM₃, G − F disconnected).
 

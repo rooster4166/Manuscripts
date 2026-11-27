@@ -143,6 +143,7 @@ def run_graph(n, A, st, use_bf, tag):
     if any(sum(r) % 2 == 0 and sum(r) > 0 for r in A):
         return
     st['graphs'] += 1
+    st['_bf_this_graph'] = 0
     bad = on_short_cycle(n, A)
     if not any(bad):
         st['graphs_girth5'] += 1
@@ -201,10 +202,12 @@ def run_graph(n, A, st, use_bf, tag):
                             st['exceptional_v'] += 1
                             if bad[v]:
                                 st['exceptional_v_on_short_cycle'] += 1
-            if use_bf:
+            if use_bf and n <= int(os.environ.get('BF_MAXN', '99')) and \
+                    st.get('_bf_this_graph', 0) < int(os.environ.get('BF_PER_GRAPH', '1000000')):
+                st['_bf_this_graph'] = st.get('_bf_this_graph', 0) + 1
                 from bf import ptm_assign
                 G = [row[:] for row in A]
-                signal.alarm(60)
+                signal.alarm(int(os.environ.get('BF_TLIM', '60')))
                 try:
                     res = (ptm_assign(n, G, [(a, b), (c, d)], [a, c]) or
                            ptm_assign(n, G, [(a, b), (c, d)], [a, d]))
@@ -229,7 +232,9 @@ def new_stats():
 
 def random_odd_graph(rng, n):
     """random simple graph with all degrees odd in {1,3,5} (configuration model, simple kept),
-    possibly disconnected; then a few isolated vertices appended."""
+    possibly disconnected; then a few isolated vertices appended.  n is rounded up to even (an
+    all-odd graph has even order)."""
+    n += n % 2
     while True:
         degs = [rng.choice((1, 3, 3, 3, 3, 5)) for _ in range(n)]
         if sum(degs) % 2:

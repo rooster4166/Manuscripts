@@ -55,8 +55,8 @@ consequence, a graph with all degrees odd has the property for a pair of disjoin
 component, even with one end prescribed, whenever no cycle of length at most four passes through
 an end of the two edges; in particular for every pair when the girth is at least five. Lifting
 back gives the star-terminal condition, hence the first deletion test, for every vertex $z$ of
-degree four with a pairing $ab,cd$ of $N(z)$ such that no cycle of length at most four of the
-lifted graph $(J-z)+ab+cd$ passes through a neighbour of $z$. All theorems are formalised in Lean~4 with
+degree four with a pairing $ab,cd$ of $N(z)$ into pairs non-adjacent in $J$ such that no cycle of
+length at most four of the lifted graph $(J-z)+ab+cd$ passes through a neighbour of $z$. All theorems are formalised in Lean~4 with
 Mathlib, without \texttt{sorry} and with only the standard axioms.
 \end{abstract}
 \maketitle
@@ -137,10 +137,11 @@ exceptional vertex, which is removed by one more Fan transfer (Lemma~\ref{lem:fi
 pair of disjoint edges in one component, and no triangle and no $4$-cycle passes through an end
 of an edge of $F$, then $\PTM(G,F;e@x)$ holds for every choice of $e\in F$ and of its end $x$. In
 particular this holds for every $F$ when $G$ is connected and has girth at least five.
-\item \emph{STL and the first test} (Theorem~\ref{thm:stl}, Corollary~\ref{cor:test1}). If $z$ has
-degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and no triangle and no $4$-cycle of
-$(J-z)+ab+cd$ passes through $a$, $b$, $c$ or $d$ (and $c$ is reachable from $a$ in it), then
-$\STL(J,z,r)$ holds for every $r\in N(z)$, and the first deletion test holds at $z$.
+\item \emph{STL and the first test} (Theorem~\ref{thm:stl}, Corollary~\ref{cor:test1}). If $z$ is
+the only even vertex of $J$, has degree four, $N(z)=\{a,b,c,d\}$ with $ab,cd\notin E(J)$, and no
+triangle and no $4$-cycle of $(J-z)+ab+cd$ passes through $a$, $b$, $c$ or $d$ (and $c$ is
+reachable from $a$ in it), then $\STL(J,z,r)$ holds for every $r\in N(z)$; if moreover every
+neighbour of $z$ has degree at least three, the first deletion test holds at $z$.
 \item \emph{Lean} (Section~\ref{sec:lean}). Items (2)--(5) are formalised in
 \texttt{lean/GallaiLean/TerminalMatching.lean}, sorry-free with only the standard axioms, and
 connected to \texttt{test1\_of\_stl}.
@@ -152,8 +153,9 @@ in $93.6\%$ of all instances on eight vertices when only shortest walks are used
 (Section~\ref{sec:comp}); the sparse form that we can prove covers local girth five, and
 $17.6\%$ of the (mostly dense) eight-vertex instances. The consequence for the spine needs sparse
 graphs: for random $3$-connected graphs with degrees $4,3,\dots,3$ the local hypothesis of
-Corollary~\ref{cor:test1} holds for some pairing in $2\%$ of the graphs of order $11$ and $70\%$
-of those of order $51$ (global girth five: $2\%$ and $5\%$; Section~\ref{sec:comp}). Its value
+Corollary~\ref{cor:test1} holds for some pairing in $5$ of $300$ graphs of order $11$ (about
+$0.6\%$ in a sample of $3000$) and in $70\%$ of those of order $51$ (global girth five: $5$ of
+$300$, and $5\%$; Section~\ref{sec:comp}). Its value
 is that it is the first unconditional two-prescription result in this programme, and that the
 mechanism (walk the even vertex, restore inside the leaf graph) is general.
 
@@ -374,7 +376,7 @@ $x$ is the only possible vertex of positive even degree of $M$, and $d_M(x)$ is 
 Theorem~\ref{thm:sparsesep} or Lemma~\ref{lem:fix}, then Theorem~\ref{thm:walk}.
 \end{proof}
 
-\section{Girth five}\label{sec:girth}
+\section{Local girth five}\label{sec:girth}
 
 \begin{theorem}[local girth five]\label{thm:girth}
 Let $G$ have no vertex of positive even degree. Let $ab$ and $cd$ be disjoint edges, with $c$
@@ -388,8 +390,9 @@ which $r$ is the long end of its edge: apply the theorem to $(b,a)$ or to $(a,b)
 of the two edges exchanged if $r\in\{c,d\}$. In the language of Definition~\ref{def:ptm}:
 \emph{$\PTM_2$ and $\PTM_2(r)$ hold for all graphs of girth at least five with all degrees odd},
 when the two edges lie in one component; otherwise apply Theorem~\ref{thm:endedge} in each
-component. More generally $\PTM(G,F;e@x)$ holds for every pair $F$ none of whose ends lies on a
-cycle of length three or four.
+component. More generally $\PTM(G,F;e@x)$ holds for every pair $F$ of disjoint edges none of whose
+ends lies on a cycle of length three or four (Theorem~\ref{thm:girth} when the edges lie in one
+component, Theorem~\ref{thm:endedge} componentwise otherwise).
 
 \begin{proof}
 Choose $u\in\{a,b\}$, $w\in\{c,d\}$ and a walk from $w$ to $u$ of least possible length $k$ over
@@ -560,6 +563,10 @@ $J^\ast$ of girth $\ge5$ & $5$ & $3$ & $6$ & $11$ & $14$\\
 \bottomrule
 \end{tabular}
 \end{center}
+An independent re-run with $3000$ graphs per order (audit A22b, \texttt{stat\_check.py}) gives
+$0.6\%$ at order $11$ (both forms), $68.1\%$ local and $3.7\%$ global at order $51$, and $83.6\%$
+and $3.5\%$ at order $101$: the local form applies to most large sparse instances, the global
+form to few.
 
 \subsection*{How far the walk theorem reaches}
 \texttt{walk.c} tests, for every instance with $|F|=2$, all eight choices of which edge is $ab$
@@ -612,7 +619,7 @@ separable (audit~A22).
 \section{What remains}\label{sec:open}
 
 \begin{enumerate}
-\item \emph{$\PTM_2$ beyond girth five.} The walk theorem reduces it to the base separation
+\item \emph{$\PTM_2$ beyond local girth five.} The walk theorem reduces it to the base separation
 problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
 alone does not suffice (Section~\ref{sec:comp}). At order eight its failures are local copies of
 the $K_4$ obstruction (at least three edges between $ab$ and $xy$) and instances without an

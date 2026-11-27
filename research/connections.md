@@ -1291,7 +1291,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ## Z. Two terminal edges at once: the terminal-matching property (cloud session `claude/ptm`, 2026-11-27)
 
-*Experiments: E24. Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Lean: `lean/GallaiLean/TerminalMatching.lean`. Audit: `research/audit/A22-ptm.md`. Origin: §X.4a, §X.6(1), synthesis §19.*
+*Experiments: E24. Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Lean: `lean/GallaiLean/TerminalMatching.lean`. Audits: `research/audit/A22-ptm.md`, `research/audit/A22b-localgirth.md`. Origin: §X.4a, §X.6(1), synthesis §19.*
 
 ### Z.1 Verdict on the statement
 - **PTM₂ as stated is false**: K₄ with a perfect matching. This is W₄ with its diagonal pairing. The pairs are *not* adjacent in J, so this is a simple-graph failure, not a parallel-edge one.
@@ -1327,6 +1327,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
   - d_{J−z}(a,b), d_{J−z}(c,d) ≥ 4;
   - d(a,c) + d(b,d) ≥ 3 and d(a,d) + d(b,c) ≥ 3.
 - **Reach on random 3-connected graphs** with degrees 4, 3, …, 3 (E24(I)): some pairing qualifies in 5/300 graphs at order 11 and 210/300 at order 51. With global girth 5 the counts are 5/300 and 14/300.
+  - With 3000 graphs per order (audit A22b): 0.6% at order 11, 68.1% (local) vs 3.7% (global) at order 51, 83.6% vs 3.5% at order 101. The local form is what makes the corollary reach most large sparse instances.
 - This still needs sparse graphs around z. Its value is the mechanism, and that it is the first unconditional two-prescription result.
 
 ### Z.4 Open (in order of promise)
