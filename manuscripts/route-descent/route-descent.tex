@@ -106,7 +106,7 @@ decompositions} of the free graph $G-J$ (Proposition~\ref{prop:rr}). This turns 
 graphs with all degrees odd.
 \item \emph{Separation theorem} (Theorem~\ref{thm:sep}): Lov\'asz decompositions can separate any two
 vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
-(Lemma~\ref{lem:fan}), proved in full.
+(Lemma~\ref{lem:fan}), proved in full. Both are formalised in Lean (Section~\ref{sec:lean}).
 \item TRC holds for \emph{Fan-isolated} route systems, and every orientation of a unique perfect matching
 of $G[\Ev]$ is realisable (Section~\ref{sec:classes}). Both are proved with Fan's lemma alone.
 \end{enumerate}
@@ -604,7 +604,8 @@ sampled transversals of the order-$28$ graph built from the Petersen graph in~\c
 the marks automatically fall inside the forcing gadgets, as they must for transversals.
 \item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
 $4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
-\emph{minimum} $T$-joins it never failed, in about $210{,}000$ pairs $(M,p)$.
+\emph{minimum} $T$-joins it never failed, in about $220{,}000$ pairs $(M,p)$, including $8{,}896$ on
+$80$ random graphs of order $14$.
 \item \emph{RR.} An $M$-compatible decomposition was found for every transversal tested with minimum
 $T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph). A
 single decomposition compatible with every transversal at once fails to exist in two of the twelve
@@ -613,8 +614,10 @@ order-$12$ graphs, even with minimum $T$-joins.
 the stronger statement that $Q_c\subseteq N[c]$ can be achieved ($19{,}040$ vertices). No failure of
 $L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs.
 \item \emph{Separation.} The symmetric version of $L_N$ (no path contains both vertices of any pair) is
-false when some pair is at distance two, failing in about a fifth of random instances. It held in every
-tested instance in which all pairs are at distance at least three.
+false when some pair is at distance two, failing in about a fifth of random instances. It held in all
+$2{,}892$ tested instances of orders $8$--$16$ in which all pairs are at distance at least three,
+including $925$ perfect matchings of the vertex set ($102$ further instances were undecided within the
+search budget).
 \end{itemize}
 
 \begin{conjecture}[multi-pair separation]\label{conj:msep}
@@ -649,14 +652,32 @@ route descent avoid the only obstruction ever observed.
 
 \section{Formalisation}\label{sec:lean}
 
-See \texttt{lean/GallaiLean/RouteDescent.lean}. It is sorry-free and uses only the standard axioms.
+The following are proved in Lean~4 with Mathlib, in the project library \texttt{lean/GallaiLean}. The
+files are sorry-free, and each theorem listed depends only on the standard axioms (\texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}).
 \begin{itemize}
-\item \texttt{gallai\_of\_rootedHalfSets}: if every connected graph of even order has, for each even
-vertex $y$, a realisable set containing $y$ of size at most half the even vertices, then Gallai's
-conjecture holds (Proposition~\ref{prop:spine}).
-\item \texttt{realisable\_of\_uniquePM}-type statements and the Fan descent of Corollary~\ref{cor:upm}.
+\item \texttt{RouteDescent.lean}.
+  \begin{itemize}
+  \item \texttt{gallai\_of\_pairingTRC}: if every connected graph of even order has a pairing of its
+  even vertices all of whose transversals are realisable, Gallai's conjecture holds. The variant
+  \texttt{gallai\_of\_pairingTRCExists} needs only one realisable transversal through each even vertex.
+  Both go through \texttt{branchBase\_of\_rootedHalfSets}, which is Proposition~\ref{prop:spine}.
+  \item \texttt{IsEvenPairing.of\_isPairing}: the pairings of the formalised cut-selection theorem
+  (\texttt{cs\_all}) are pairings in this sense, with the same transversals.
+  \item \texttt{isMinTJoin\_sdiff} is Lemma~\ref{lem:min}(4), and
+  \texttt{isMinTJoin\_of\_two\_mul\_card\_le} is Lemma~\ref{lem:min}(5).
+  \end{itemize}
+\item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
+\texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
+\item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation}) and
+Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}). The formal proof follows the cases of the proof
+above. Case~III is replaced by an induction step that deletes a leaf outside $\{c,a\}$ and restores it
+as a one-edge path. The leaf of Case~II lives on the type \texttt{Option W} and is removed by a
+projection lemma; a strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets.
 \end{itemize}
-The status of each item is recorded in \texttt{lean/README.md}.
+Not formalised: Lemmas~\ref{lem:hered} and~\ref{lem:ext} (routes as walks), Lemma~\ref{lem:min}(1)--(3),
+Proposition~\ref{prop:rr}, and Theorem~\ref{thm:isolated} and Corollary~\ref{cor:upm}. The latter are
+close to the existing \texttt{realisable\_transfer} and \texttt{realisable\_of\_fanSchedule}.
 
 \section{Open problems}\label{sec:open}
 \begin{enumerate}
