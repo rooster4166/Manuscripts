@@ -3,7 +3,7 @@
 Splitting a pair ux, uy (x, y non-adjacent neighbours of u) replaces them by the edge xy. The
 profile b and the number of paths p are unchanged, so the class EMM+ is preserved. A partition of
 the split graph G' lifts to G (replace xy by x u y) unless the path through xy also visits u. The
-lift is automatic only when u is isolated in G' (d(u) = 2, b(u) = 0: smoothing, Lemma 7.7(b)).
+lift is automatic only when u is isolated in G' (d(u) = 2, b(u) = 0: smoothing, Lemma 7.8(b)).
 
 This script tests the cut side, an analogue of Mader's splitting lemma. For every cut-feasible
 instance of the class EMM+ (p >= ceil(n/2)) and every vertex u, does some pair at u split off

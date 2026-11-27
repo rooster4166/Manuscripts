@@ -544,7 +544,7 @@ Scripts: `tools/gemm_test.py` and `tools/emm_template.py`, with the exact oracle
   - on the n = 8 sample, at every p.
 - At n = 8 the bound cannot be lowered to p = 3.
 
-**Reductions (proved; missing-move Lemma 7.7).** A minimal counterexample to EMM⁺:
+**Reductions (proved; missing-move Lemma 7.8).** A minimal counterexample to EMM⁺:
 - is connected;
 - has no degree-2 vertex with b = 0 and non-adjacent neighbours;
 - has no leaf at an unsaturated neighbour (Lean `cutOK_leaf`, `ach_of_leaf`, `leaf_step`);
@@ -606,8 +606,19 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
 - **Splitting off** (the coordinator's Lovász–Cherkassky pointer; `tools/emm_split.py`).
   - Cut side: every degree-4 vertex with b = 0 in the 14 stuck EMM⁺ instances at n = 6 has a cut-preserving split, 39 in all. But 26/35 (n = 4) and 267/589 (n = 5) reduced instances have no split at all.
   - Lift side: in 10 of the 14 instances some split lifts for every partition (`split_lift6.log`).
-- **Template variants** (Prop 7.8):
+- **Template variants** (Prop 7.9):
   - guarded splits give 0/35, 1/589, 4/10,847;
   - with path insertion as well: 0, 0, 4;
   - in the simple class (b ≤ 2): 0/6, 14/68, 38/456, or 0, 10, 28 with splits and path insertion.
+
+**E17 addendum 2: EMM₃** (minimum degree ≥ 3; the coordinator's corrected target; missing-move Remark 7.7).
+- Mechanism: a bridge, or any edge cut δ(K), decouples like a saturated degree-2 vertex does. A partition of G restricts to K plus one pendant leaf per cut edge, with one end at each leaf. So an EMM₃ counterexample by gluing needs a **core**: pendant leaves, all other degrees ≥ 3, and a simple profile that is cut-feasible but not realisable.
+- Cores:
+  - exhaustive up to order 8 (`tools/emm3_core_search.py`, `emm3_cores.log`, `emm3_cores_one.log`): 1,146 graphs with this degree pattern, 11,832 cut-feasible simple profiles, **0 cores**;
+  - random (`tools/emm3_random.py cores`): order 9, 2,000 graphs, 41,295 cut-feasible profiles; order 10, 2,000 graphs, 52,482. **0 cores.**
+- EMM₃ directly (`tools/emm3_random.py emm3`):
+  - order 10: 3,000 random connected graphs, δ ≥ 3, m ∈ [15, 30], 48,784 half-sets, **0 failures**;
+  - order 12: 300 graphs, m ∈ [18, 30], 8,396 half-sets, **0 failures**.
+  - Every sampled half-set was cut-feasible, so these runs test realisability, not the sharpness of (1).
+- Toughness-type Hamiltonicity obstructions are cut-detected. At slack 0, (C) for the complements of the components of G − S gives #components ≤ |S| + 1.
 

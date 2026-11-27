@@ -776,7 +776,7 @@ hub) and Corollary 6.6 (two hubs), i.e. the graph-level statements; their profil
 | `cutCount_insert_leaf` | for a leaf `w` at `x ∈ W`: `cutCount (insert w W) + 1 = cutCount W` |
 | **`cutOK_leaf`** | leaf `w` at `x`, `b w = 1`, `b x + 2 ≤ d x`: `CutOK G b p → CutOK (delEdge G x w) (leafProfile b x w) p` |
 | **`ach_of_leaf`** | `Ach (G − xw) (leafProfile b x w) → Ach G b` (`Ach.transfer`; `w` isolated) |
-| **`leaf_step`** | the minimal-counterexample step: the leaf reduction (Lemma 7.7(c)) |
+| **`leaf_step`** | the minimal-counterexample step: the leaf reduction (Lemma 7.8(c)) |
 
 No `sorry`; `#print axioms`: `propext`, `Classical.choice`, `Quot.sound`.
 
