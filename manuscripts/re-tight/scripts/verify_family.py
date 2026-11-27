@@ -1,4 +1,4 @@
-"""verify_family.py [-z]: independent check of the witnesses printed by ret.c (stdin).
+"""verify_family.py [-z] [-L]: independent check of the witnesses printed by ret.c (stdin).
 
 For every YES line 'g6 r YES q | att:v0,...,vl ; ... | x-y ... | ...' it checks:
   * d(r) = n - 2; G = B - r;
@@ -9,6 +9,9 @@ For every YES line 'g6 r YES q | att:v0,...,vl ; ... | x-y ... | ...' it checks:
     at least k - 2 pairs (with -z: exactly k - 1);
   * the reassembled family is a decomposition of B into at most k paths (k - 1 with -z) with
     at least two ends at r (with -z: every path through r), checked from scratch.
+With -L it also checks that the family is a Lovasz family (ret.c -L): k - 1 nontrivial members,
+every vertex of N(r) an end of exactly one nontrivial member, s an end of none, and the trivial
+members exactly the far (non-attachment) ends.
 Prints a summary; exits with status 1 on any failure.
 """
 import sys
@@ -16,7 +19,7 @@ import sys
 import networkx as nx
 
 
-def check(line, zmode):
+def check(line, zmode, lmode=False):
     g6, rest = line.split(None, 1)  # graph6 may contain '|'
     head, fam, pairs, _ = rest.split("|", 3)
     r, st, q = head.split()
@@ -49,6 +52,18 @@ def check(line, zmode):
             assert e not in used, "edge used once"
             used.add(e)
     assert len(used) == G.number_of_edges(), "all edges of G covered"
+    if lmode:
+        nontriv = {a: seq for a, seq in mem.items() if len(seq) > 1}
+        assert len(nontriv) == k - 1, "k - 1 nontrivial members"
+        endcount = {}
+        for seq in nontriv.values():
+            for v in (seq[0], seq[-1]):
+                endcount[v] = endcount.get(v, 0) + 1
+        assert all(endcount.get(x, 0) == 1 for x in N), "every x in N an end exactly once"
+        assert all(v in N for v in endcount), "no other ends (s is not an end)"
+        far = {seq[-1] for seq in nontriv.values()}
+        triv = {a for a, seq in mem.items() if len(seq) == 1}
+        assert far == triv, "trivial members are the far ends"
     pl = [tuple(int(x) for x in t.split("-")) for t in pairs.split()]
     seen = set()
     for x, y in pl:
@@ -95,6 +110,7 @@ def check(line, zmode):
 
 def main():
     zmode = "-z" in sys.argv
+    lmode = "-L" in sys.argv
     ok = bad = other = 0
     for line in sys.stdin:
         f = line.split()
@@ -104,7 +120,7 @@ def main():
             other += 1
             continue
         try:
-            check(line, zmode)
+            check(line, zmode, lmode)
             ok += 1
         except AssertionError as e:
             bad += 1

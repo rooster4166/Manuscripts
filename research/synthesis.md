@@ -744,3 +744,40 @@ This supersedes §23 as the orientation summary. Everything listed as proved is 
 - Merges go through the build gate (`mbp.sh`).
 - Each milestone gets an independent audit.
 - Every forwarded or peer claim is checked by the coordinator before anything is built on it (§25).
+
+## 29. Roots of degree n − 2: the Lovász-plus-matching method (re-tight session, 2026-11-27)
+
+Manuscript `manuscripts/re-tight`, Lean `RETight.lean`, experiments E32, audit A31.
+
+**Proved (Lean, standard axioms; `lake build` green).**
+
+*Theorem 3.1.* Let B have order 2k, every degree even, and d(r) = 2k − 2. No connectivity is needed, and d(s) is free. Let h_t be the number of neighbours of r of degree ≥ 2t. Suppose that for every 3 ≤ t ≤ k − 1, ⌊h_t/2⌋ ≤ k + 1 − t or ⌊h_{t+1}/2⌋ ≤ k + 1 − 2t. Then B has exactly k paths with exactly two ends at r (`exists_decomp_of_degStar`). In particular p(B) ≤ n/2 and RE(B, r) holds.
+
+The proof is the coordinator's idea, completed:
+- take a Lovász decomposition of B − r;
+- every x ∈ N(r) lies on exactly d(x)/2 of its paths;
+- the trivial end of each path is its end of smaller degree;
+- apply Hall with defect 2.
+
+The second disjunct comes from the *own path*: a trivial end that lies on all t paths of S, while its own path is outside S, lies on t + 1 paths.
+
+*Corollaries.*
+- RE at r if at most 5 neighbours of r have degree ≥ 6.
+- RE at r if n ≥ 10 and every neighbour of r has degree ≤ 6.
+
+Example: two non-adjacent apexes joined to a 4-regular expander. This lies outside every literature class and outside MR Thm 170.
+
+**Limits (proved).** If m(B) ≥ 2k² − 3k + 4, then ≥ 3 Lovász paths are Hamiltonian in B − r, so the method fails for every D. Such a B has ≥ k + 4 vertices of degree n − 2, which puts it inside MR Cor 168. Example: K₂ₖ − M for k ≥ 4.
+
+**Data** (validated exact checker; scope in E32).
+- Order 10: Theorem 3.1 covers 13,507 of the 14,131 degree-(n − 2) roots (95.6%). With Thm 170 and the literature it covers 13,984.
+- The method with the best D succeeds at 14,054. The rest lie in 10 near-complete graphs inside Cor 168; 19 of those roots are provable failures.
+- Order 12 samples: the method succeeds at every root run outside Thm 170 (1,912 roots).
+- Order 16, k = 8, with u vertices of degree 14 and the rest of degree 12: the method is undecided for u = 5, 6, still below Thm 170.
+
+**Where this leaves the cone residual (item 4 of the §28 open core).** Roots of degree n − 2 split three ways:
+- sparse N(r): proved here;
+- near-complete: MR 168/170, unrefereed;
+- the rest, unproved: (∗∗) fails and fewer than k − 1 vertices have degree n − 2. This includes near-regular graphs where only r has degree n − 2, and there the method works at once in all tests. The method struggles only in its dense part, with all degrees ≈ n − 4 and 3 … k − 2 vertices of degree n − 2.
+
+In the middle, a trivial end of degree n − 4 is compatible with exactly one Lovász path, so Lovász families need a near-permutation structure. General families with more pieces exist; the checker finds them. The missing tool is a Lovász theorem with control of which vertices each path misses, of terminal-matching type, or a detachment lemma with a single high-degree vertex.
