@@ -23,7 +23,7 @@
 \newcommand{\DLNINE}{$170$}
 \newcommand{\DLTWONINE}{A $1$-in-$20$ sample of order $9$ with one even vertex ($597$ graphs, $31{,}701$ instances) also has no compatibility failure. Each of its $45$ failures contains a failing single pair.}
 \newcommand{\DLRANDOM}{There were $4{,}420$ instances at orders $11$, $13$, $15$, edge densities $0.4$ to $0.8$, and $k=1,2,3$ pairs, and none failed. $129$ were budget-undecided; of the $24$ rechecked exactly, $23$ have a base and $1$ timed out. One orientation alone fails in $6\%$ (order $11$, density $0.4$) to $58\%$ (order $11$, density $0.8$) of the single-pair instances, so the free choice of end is used.}
-\newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. The run at $d(z)=8$ was stopped after a few graphs and the order-$13$ runs did not start. The only roots the budgeted search left undecided, $7$ roots of one graph with $d(z)=8$, all have a base by exact search at the first data choice.}
+\newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. At $d(z)=8$ the run was stopped after a few graphs; the only roots it left undecided, $7$ roots of one graph, all have a base by exact search at the first data choice. At order $13$ with $d(z)=8$, the coordinator's run (\texttt{scripts/out/d8/}) certifies all $71$ roots of $9$ graphs. $28$ of them were budget-undecided and were settled by clt's local search, each witness checked independently and its lift executed.}
 
 \title{A direct lift to the two-end test through triangles at the even vertex}
 \author{Gallai project}
@@ -225,6 +225,9 @@ Data need not exist. For example, $J=K_{3,4}+x_1x_2$ is $3$-connected, its even 
 independent neighbourhood, and no root admits data. At order~$9$, $354$ of the $1{,}819$
 $3$-connected instances with $d(z)=6$ have a root without data (A28).
 
+On cones, Conjecture~\ref{conj:base} is a case of rooted Gallai for Eulerian graphs
+(Remark~\ref{rem:cones}); its difficulty should be judged accordingly.
+
 By Theorem~\ref{thm:lift}, Conjecture~\ref{conj:base} implies $\texttt{Test1}\ J\ z$ for every
 $3$-connected $J$ in which every root admits data (Lean \texttt{test1\_of\_triangleBaseConj}). This
 reaches about $80\%$ of the $3$-connected instances with $d(z)=6$ at order~$9$. By
@@ -415,6 +418,31 @@ where $d(z)=6$ and $N(z)$ is independent. Yet (T1) holds at all three roots.
 Over all $2{,}438$ roots without triangle data of $3$-connected graphs of order $9$
 (\texttt{fb\_nodata.py}), the forest base exists, and its lift verifies, at the other $2{,}435$.
 \end{example}
+
+\begin{remark}[cones; coordinator, synthesis \S26]\label{rem:cones}
+Let $B$ have even order $2k$, and let $J=B+z$ be the cone over $B$. Then $z$ is the only even
+vertex of $J$ iff $B$ is Eulerian, and $J$ is $3$-connected iff $B$ is $2$-connected. Since
+$N(z)=V(B)$, the test (T1) at $(J,z,r)$ says exactly that $B$ has a decomposition into at most
+$|B|/2$ paths with at least two ends at $r$. So (T1) on cones is the rooted form of Gallai's
+conjecture for $2$-connected Eulerian graphs of even order, which is open in general.
+\begin{itemize}[leftmargin=*]
+\item Every lift here removes a $T$-join of $B$, takes a Lov\'asz decomposition and re-appends
+terminal edges. A base statement at \emph{every} root would therefore settle that case of Gallai's
+conjecture. Example~\ref{ex:forestfail} shows that the forest form already fails on a cone.
+\item On a cone, triangle data exist at $r$ iff $B-r$ has a near-perfect matching. So
+Conjecture~\ref{conj:base} restricted to cones is rooted Eulerian Gallai at those roots. It should not
+be expected to be easier than that case.
+\item The three roots of order $9$ without a forest base have one shape. At the root $r$, $B$ looks
+like $K_{2,t}$ with $r$ a hub, and many degree-$2$ vertices of $B$ (degree $3$ in $J$, adjacent to
+$z$) hang between $r$ and a second hub.
+\begin{itemize}
+\item The cone over $K_{2,6}$: $d(z)=8=n-1$, $B$ Eulerian, at both hubs.
+\item \texttt{HsaAD\textasciitilde\}}: a near-cone with $d(z)=6$, where $z$ misses $2$ of the $8$ vertices
+of $B$. The second hub has odd degree $7$, and the even subgraph of $B$ is a star with four leaves at
+$r$, plus an isolated vertex.
+\end{itemize}
+\end{itemize}
+\end{remark}
 
 \begin{remark}[a single pair is not settled by one-sided avoidance]\label{rem:onepair}
 Take $m=2$, so that $M=J-\{zw,za_1,zb_1,a_1b_1\}$. Assume $J$ is $2$-connected on at least $5$ vertices.

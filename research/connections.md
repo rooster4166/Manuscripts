@@ -1722,7 +1722,12 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
 
 ### AF.4″ DL versus clt's CLT-B1 (coordinator's question)
-*Based on the coordinator's summary of CLT-B1: pairwise disjoint avoid-sets A_j at constrained vertices c_j, with cross-locality A ∩ (N[C] ∪ N(g)) = ∅. The clt branch is not on the remote, so the exact statement was not checked.*
+*CLT-B1, as clt stated it to this session (Lean `CLTB1`, `ConstrainedLovasz.lean`):*
+- *G has ≤ 1 even vertex g and distinct odd tails c_i;*
+- *the avoid-sets A_i are pairwise disjoint and contain no tail;*
+- *A_i ∩ (N[c_i] ∪ N(g)) = ∅, and cross-locality A_i ∩ N(c_j) = ∅ for all i, j.*
+
+*Conclusion: some Lovász decomposition has Q(c_i) ∩ A_i = ∅ for every i.*
 - **Resolving the disjunctions.** Choosing an orientation turns a DL instance into constraints "Q(v_i) avoids {u_i}". The avoid-sets are pairwise disjoint, because M0 is a matching.
 - **When DL is a special case of CLT-B1.** Exactly when some orientation satisfies cross-locality: every u_i ≁ g (= w) and u_i ∉ N[v_j] for all j. That is the sparse, L1\*-admissible regime of Props 7.1–7.2.
 - **The dense T(6)-i regime.** Every pair lies in N(w), so **every orientation violates cross-locality**, and DL there is outside CLT-B1.
@@ -1731,7 +1736,11 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **The failures are of different kinds.**
   - DL's only failures are universal twins: N(a) = N(b) = C − {a, b}, so a, b ∈ N(g) and d(a) = |C| − 2, and *both* orientations fail.
   - clt's boundary examples (in-degree 2, chains/cycles, or dropped cross-locality with d(g) = 2 in a triangle) are fixed-orientation failures. Universal twins with d(g) = 2 force |C| ≤ 4, so on the face of it the two lists do not overlap.
-  - A precise match needs clt's instance list.
+  - **clt's reply** (18:53):
+    - With an orientation fixed, DL is a matching constraint system (in-degree 1), but a non-local one when the heads lie in N(g). That is exactly where clt's data show fixed-orientation joint failures (18 graphs at n = 7, e.g. `FCdcw`), and the free orientation removes them.
+    - Universal twins violate locality at the tail, so they never arise inside CLT-B.
+    - **The forest-base counterexample (Example 4.7) is clt's in-degree-2 obstruction**: a parent avoided by the end paths of two children (the minimal all-odd example is `EEiW`, n = 6).
+    - clt also reports that on its 30 residual graphs a triangle base exists for *every* root, data choice and orientation (8,016 instances, E30(G)).
 
 ### AF.5 For the clt session (§AE)
 - DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.

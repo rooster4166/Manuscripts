@@ -1572,7 +1572,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - n = 11, d(z) = 6: 25 graphs, 150 roots, 150 bases.
 - Every lift was verified.
 - n = 11, d(z) = 8: stopped after a few graphs. The only roots it left undecided, 7 roots of `Jev}~nZ\u~_` (κ = 3), all have a base by exact search with no budget, at the first data choice, with the lift verified. The budgeted search's random vertex order was unlucky there.
-- n = 13: not run (stopped at the end of the session).
+- n = 13, d(z) = 8 (the coordinator's run, `scripts/out/d8/`): all 71 roots of 9 graphs have a base. 28 were budget-undecided; they were settled by clt's local search (`tb_ls.py`), each witness checked and its lift executed (`verify13.log`, 28/28).
 
 **(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
 - **The triangle base certifies all 48 of their roots.**
@@ -1600,6 +1600,10 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - **The counterexamples.**
   - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
   - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
+- **Classification of the three roots** (coordinator's question): both graphs are cones or near-cones of K_{2,t} type at the root.
+  - `HsaCB~~`: a cone (d(z) = 8 = n − 1) over the Eulerian B = K_{2,6}, at either hub.
+  - `HsaAD~}`: a near-cone (d(z) = 6; z misses 2 of the 8 vertices of B). B has hubs r (degree 6) and a second hub of odd degree 7. The even subgraph of B is a star with four leaves at r, plus an isolated vertex.
+  - In all three, many degree-2 vertices of B hang between r and a second hub, and they become siblings at r.
 - **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
 
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
