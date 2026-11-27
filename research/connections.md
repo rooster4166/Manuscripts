@@ -140,10 +140,12 @@ Open:
 - (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores.
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
-Two ideas tried this session do not work:
+Two observations from this session (heuristic, not proved in the manuscript):
 
 - Bounded |X| is *not* easier than |X| = o(n). Each exceptional vertex individually needs about n/4 integrated visits, and the healthy shores can be unbalanced regardless of |X|.
-- An "X-in-J with one-sided labels" scheme cannot balance more than about two two-sided vertices.
+- An "X-in-J with one-sided labels" scheme appears unable to balance more than about two two-sided vertices.
+
+An independent referee pass on the manuscript found no error in the proof of Thm 1.1. It found one gap, now fixed: Cor 1.3 needed |X| ≤ cm. It also flagged attribution points, now credited: SP 14.30 already threads exceptional vertices through rows as u, x, v, and SP §14.18 contains the bipartite case of the counting identity.
 
 ---
 
