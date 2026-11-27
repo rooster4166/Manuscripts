@@ -71,4 +71,5 @@ def main(n, ngraphs, per, seed):
                 fail += 1
                 if fail <= 3: print("KOTZIG-FAIL", s, P, flush=True)
     print(f"n={n}: tested {tot}, Kotzig fails {fail}, graphs without PM {nopm}")
-main(*map(int, sys.argv[1:5]))
+if __name__ == '__main__':
+    main(*map(int, sys.argv[1:5]))

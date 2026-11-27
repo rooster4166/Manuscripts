@@ -55,4 +55,5 @@ def main(n, ngraphs, seed, mode):
         if not o: stuck += 1
     print(f"n={n}: Case I at the Case II vertex: total {tot}, stuck {stuck}")
 
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4] if len(sys.argv) > 4 else 'pair')
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4] if len(sys.argv) > 4 else 'pair')

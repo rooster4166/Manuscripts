@@ -42,4 +42,5 @@ def main(n, r, ngraphs, per, seed, budget):
             elif res == 2: unk += 1
     print(f"n={n} r={r}: total {tot} fail {fail} unknown {unk}")
 
-main(*map(int, sys.argv[1:7]))
+if __name__ == '__main__':
+    main(*map(int, sys.argv[1:7]))

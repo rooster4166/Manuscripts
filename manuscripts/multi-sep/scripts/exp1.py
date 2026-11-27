@@ -58,4 +58,5 @@ def main():
             print("   K", {v: sorted(K[v]) for v in K})
     print("total", tot, "A", A, "B", B, "C", C)
 
-main()
+if __name__ == '__main__':
+    main()

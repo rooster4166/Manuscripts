@@ -23,4 +23,5 @@ def main(n, ngraphs, per, seed, budget):
             if res == 0: fail += 1
             elif res == 2: unk += 1
     print(f"n={n}: total {tot} fail {fail} unknown {unk}")
-main(*map(int, sys.argv[1:6]))
+if __name__ == '__main__':
+    main(*map(int, sys.argv[1:6]))

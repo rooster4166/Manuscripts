@@ -32,4 +32,5 @@ def main(trials, seed, budget, kmax):
             if fail <= 3: print("FAIL", S, {v: sorted(K[v]) for v in K}, flush=True)
         elif r == 2: unk += 1
     print(f"prescribed end edges at k<= {kmax} packed vertices: total {tot} fail {fail} unknown {unk}")
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
