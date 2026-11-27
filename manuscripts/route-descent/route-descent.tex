@@ -614,6 +614,41 @@ two routes, which is impossible. So every even vertex has at most one even neigh
 along a one-edge route. Hence these graphs lie in Pyber's class, and Theorem~\ref{thm:isolated} is new
 only as a statement about \emph{all} transversals.
 
+The same argument works along any order of the routes, provided each route is clean at the moment it
+is put back. This is the mechanism behind the existential form of route descent.
+
+\begin{definition}[route schedule]
+Let $(P,\cR)$ be a route system with free graph $F$. A \emph{route schedule} is an ordering
+$p_1,\dots,p_m$ of $P$ together with a choice of a tail $c_j$ and a head $a_j$ in each $p_j$, with the
+following property. Put $G_0=F$ and $G_j=G_{j-1}\cup R_{p_j}$, and let $U_j=\{c_1,\dots,c_j\}$. Then for
+every $j$, no vertex $x\neq c_j$ of $R_{p_j}$ has a neighbour in $G_{j-1}$ that lies in $U_{j-1}\cup\{c_j\}$.
+\end{definition}
+
+\begin{theorem}[route schedules]\label{thm:schedule}
+If $(P,\cR)$ has a route schedule, then $\{a_1,\dots,a_m\}$ is realisable.
+\end{theorem}
+
+\begin{proof}
+We show by induction on $j$ that $G_j$ has a path partition with two ends at $a_1,\dots,a_j$, none at
+$c_1,\dots,c_j$, and $d_{G_j}(v)\bmod2$ ends at every other vertex. For $j=0$ this is
+Theorem~\ref{thm:lovasz}, since $F$ has all degrees odd (Lemma~\ref{lem:basic}). Every vertex of a later
+pair is odd in $G_j$, because each route through it contributes two edges. For the step, write
+$R_{p_j}=r_0r_1\cdots r_t$ with $r_0=c_j$ and $r_t=a_j$, and add its edges one at a time by
+Lemma~\ref{lem:fan}, moving an end from $r_{i-1}$ to $r_i$, exactly as in the proof of
+Theorem~\ref{thm:isolated}. At step $i$ the vertex $r_{i-1}$ has at least one end. The vertices without
+ends are those of $U_{j-1}$, together with $c_j$ when $i\ge2$. The neighbours of $r_i$ in the current
+graph are its neighbours in $G_{j-1}$, since its two edges on $R_{p_j}$ are not yet present. By the
+schedule property none of them has zero ends, so the transfer is legal.
+\end{proof}
+
+Theorem~\ref{thm:isolated} is the case in which every order and every orientation is a schedule. For
+one-edge routes the condition says that each head $a_j$ is not adjacent to the earlier tails
+$c_1,\dots,c_{j-1}$. These are exactly the Fan schedules (semi-induced matchings) of the
+endpoint-structure manuscript. For minimum $T$-joins the condition at $c_j$ itself is automatic, since
+routes have no chords (Lemma~\ref{lem:min}(3)), so it reduces to the earlier tails. A schedule whose
+heads include a prescribed vertex $y$ gives the existential form at $y$
+(Proposition~\ref{prop:spine}).
+
 \begin{corollary}\label{cor:upm}
 If $G[\Ev]$ has a unique perfect matching $N$, then every orientation of $N$ (choice of one vertex of
 each edge) is realisable.
