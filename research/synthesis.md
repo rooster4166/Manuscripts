@@ -445,3 +445,8 @@ Recursive certificates fail at CP(3) + apex and at double-K₄. The same cocktai
 - **∅:** two protected steps.
 
 ptm is testing these on random J with B[U] = K6 − D. tight-fan's protected-blank lemma is the shared tool.
+
+**Obstruction found (ptm, 14:04).** The chained walk's base hypothesis (Thm 8.2: one Lovász decomposition of M separating six pairs) is **unsatisfiable** for K2/P3/K3/∅.
+- **Why the separation fails.** In M every edge lies on a path, so separated pairs must be non-adjacent in M. A parallel pair in role e2 or e3 keeps its B-edge in M, so the separation of {x_i, y_i} is impossible. This holds whatever Fan lemma is used; `walk_step_protected` repairs the walk-back step, not the base.
+- **What the scheme can handle.** Only D = C4, with the parallel pair in role e1 and y2y3 ∈ D. Data are running.
+- **What is needed for the rest.** The six separations come from vertex-set tracking ("every path through y_i"). What is actually needed is that the path *ending* at y_i avoids x_i. So an **end-path-tracking refinement** of walk_back / leaf_walk is required, or a chain design whose walks use the B-edges, before K2/P3/K3/∅ can be attacked.
