@@ -1,0 +1,687 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Ev}{\mathrm{Ev}}
+\newcommand{\Od}{\mathrm{Od}}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cD}{\mathcal D}
+
+\title[Route descent]{Route descent: transversal realisability, minimum $T$-joins,\\ and Lov\'asz
+decompositions that separate two vertices}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ be a connected graph of even order $n$. The cut-selection theorem of the endpoint min-max
+manuscript pairs the even-degree vertices of $G$ along edge-disjoint \emph{routes} in a forest $T$-join, so
+that every \emph{transversal} (one vertex from each pair) satisfies all cut conditions for a partition of
+$E(G)$ into $n/2$ paths with two ends at each chosen vertex. The conjecture that every transversal is
+realisable (TRC) implies Gallai's conjecture. We study the natural induction for TRC, which deletes
+one route and puts it back.
+\begin{itemize}
+\item \emph{Route descent.} The class of route systems is closed under deleting a route, its base case is
+Lov\'asz's theorem, and the inductive step is equivalent to finding a realisation in which the deleted
+route is a terminal segment of a path. We show that TRC for some root-containing transversal implies
+every level of the branching hypothesis of the Lean spine, hence Gallai.
+\item \emph{Minimum $T$-joins.} If the $T$-join is minimum, every segment of every route is a geodesic,
+minimality survives route deletion, and the only obstruction ever met with spanning-tree $T$-joins
+(an unmarked end of degree two whose route runs through its other neighbour) cannot occur. Then a
+realisation in which \emph{all} routes are terminal segments is equivalent to a \emph{constrained
+Lov\'asz decomposition} of the free graph, in which every vertex is the end of exactly one path and the
+paths at the unmarked ends avoid their routes.
+\item \emph{Separation.} We prove a strengthening of Lov\'asz's theorem. If a graph has at most one vertex
+of positive even degree, and $c$ and $a$ are at distance at least three, then it has a path
+decomposition with the parity-forced ends in which no path contains both $c$ and $a$. The proof runs
+Lov\'asz's induction and uses that Fan's addible-edge lemma changes the vertex set of only one path, by
+one vertex. We show by example that distance three cannot be replaced by two.
+\end{itemize}
+We also prove TRC for two classes reachable by Fan's lemma, state the constrained Lov\'asz conjectures that
+would give TRC for minimum $T$-joins, and record what we know of their status. One of them would imply
+Gallai's conjecture for every graph whose even vertices induce a subgraph with a perfect matching. The
+proofs use no computation. Computations (an exact oracle, about $2\times10^5$ transversals and
+$3\times10^5$ constrained queries) are reported separately and only guided the statements.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path partition} (or decomposition) of a graph $G$ is a partition
+of $E(G)$ into paths, each with at least one edge. Gallai conjectured that every connected graph on $n$
+vertices has a path partition into at most $\lceil n/2\rceil$ paths. Lov\'asz~\cite{L68} proved this when
+at most one vertex has even degree. Pyber~\cite{Pyb96} proved it when the even vertices induce a forest,
+Fan~\cite{Fan05} when every block of that subgraph is triangle-free of maximum degree at most three,
+and Botler and Sambinelli~\cite{BS21} extended Fan's theorem. The conjecture is also known for maximum
+degree at most five~\cite{BP19}, among other classes.
+
+This manuscript belongs to a programme that reduces Gallai's conjecture to statements about where path
+ends can be placed. For a graph $G$ of even order $n=2k$, write $\Ev$ and $\Od$ for its sets of
+vertices of positive even degree and of odd degree. For $S\subseteq\Ev$ the \emph{simple profile} $b_S$ is
+$1$ on $\Od$, $2$ on $S$ and $0$ on $\Ev\setminus S$, and $S$ is \emph{realisable} if $E(G)$ has a path
+partition with exactly $b_S(v)$ ends at every vertex $v$. Such a partition has $|\Od|/2+|S|$ paths. So a
+realisable $S$ with $|S|=|\Ev|/2$ gives Gallai's bound.
+
+The cut-selection theorem~\cite[Theorem~21]{EMM} constructs a pairing $P$ of $\Ev$ by edge-disjoint
+paths, the \emph{routes}, inside a forest $T$-join for $T=\Ev$. Every transversal of $P$ then satisfies
+all the cut inequalities necessary for realisability. Since cut inequalities are not sufficient, and
+since realisability of a prescribed half-set is NP-complete~\cite[\S\S5--6]{EMM}, the right statement
+concerns the transversals of these pairings only:
+
+\begin{conjecture}[TRC, transversal realisability~\cite{EMM}]\label{conj:trc}
+For every connected graph $G$ of even order, every pairing $P$ produced by the cut-selection construction,
+and every transversal $M$ of $P$, the set $M$ is realisable.
+\end{conjecture}
+
+TRC implies Gallai's conjecture (Proposition~\ref{prop:spine}). This manuscript studies the induction
+that deletes one route and puts it back, which we call \emph{route descent}.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Route descent is well founded: the class is closed under deleting a route, the base case is
+Lov\'asz's theorem, and the inductive step at a route $R$ succeeds exactly when some realisation has $R$
+as a terminal segment of a path (Section~\ref{sec:descent}). A realisable transversal containing a
+prescribed vertex gives all levels of the branching hypothesis $\mathrm{BranchBase}_k$ of the Lean spine
+at once (Proposition~\ref{prop:spine}).
+\item For minimum $T$-joins, route segments are geodesics, minimality is hereditary, and the
+\emph{trivial obstruction} (the unmarked end has no edge leaving its route) is impossible
+(Section~\ref{sec:min}).
+\item Realisations in which every route is terminal are exactly the \emph{constrained Lov\'asz
+decompositions} of the free graph $G-J$ (Proposition~\ref{prop:rr}). This turns TRC into a problem about
+graphs with all degrees odd.
+\item \emph{Separation theorem} (Theorem~\ref{thm:sep}): Lov\'asz decompositions can separate any two
+vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
+(Lemma~\ref{lem:fan}), proved in full.
+\item TRC holds for \emph{Fan-isolated} route systems, and every orientation of a unique perfect matching
+of $G[\Ev]$ is realisable (Section~\ref{sec:classes}). Both are proved with Fan's lemma alone.
+\end{enumerate}
+Section~\ref{sec:conj} states the conjectures that would complete the programme for minimum $T$-joins,
+and records their computational status. Section~\ref{sec:compare} compares the results with the known
+classes.
+
+\section{Preliminaries}\label{sec:prelim}
+
+For a path partition $\cD$ of a graph $K$ and a vertex $v$, $b_\cD(v)$ is the number of paths of $\cD$
+having $v$ as an end; a path has two distinct ends. Then $b_\cD(v)\equiv d_K(v)\pmod 2$, since each path
+through $v$ uses two edges at $v$ and each path ending at $v$ uses one. We call $\cD$ a \emph{Lov\'asz
+decomposition} of $K$ if $b_\cD(v)=d_K(v)\bmod 2$ for every vertex $v$. So every odd vertex is the end of
+exactly one path, and every even vertex is the end of none. For a vertex $c$ of odd degree, $Q_c$ denotes
+the unique path of a Lov\'asz decomposition having $c$ as an end.
+
+\begin{theorem}[Lov\'asz~\cite{L68}, strong form]\label{thm:lovasz}
+If at most one vertex of $K$ has positive even degree, then $K$ has a Lov\'asz decomposition.
+\end{theorem}
+
+This form is proved in the Lean library (\texttt{lovasz\_ends}); the proof of
+Theorem~\ref{thm:sep} below reproves it.
+
+For vertices $t\neq u$ with $tu\notin E(K)$ we write $K+tu$ for the graph with the edge $tu$ added. For a
+path partition $\cD$ of $K$ let $Z_\cD(u)=\{w\in N_K(u): b_\cD(w)=0\}$.
+
+\begin{lemma}[Fan's lemma with vertex sets; cf.~\cite[Lemma~3.4]{Fan05}]\label{lem:fan}
+Let $\cD$ be a path partition of $K$, and let $t\neq u$ be vertices with $tu\notin E(K)$ and
+$b_\cD(t)>|Z_\cD(u)|$. Then $K+tu$ has a path partition $\cD^+$ with $|\cD^+|=|\cD|$,
+$b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$, and a bijection $\varphi:\cD\to\cD^+$ with $V(\varphi(Q))=V(Q)$
+for all $Q\in\cD$ except one, $Q_0$, for which $V(\varphi(Q_0))=V(Q_0)\cup\{u\}$.
+\end{lemma}
+
+\begin{proof}
+For a vertex $x\neq u$ and a path $Q\in\cD$ having $x$ as an end and containing $u$, read $Q$ from $x$ and
+let $\pi(x,Q)$ be the vertex just before $u$; it is a neighbour of $u$ different from $u$. A \emph{chain}
+is a sequence of distinct vertices $t=x_0,x_1,\dots,x_k$ together with paths $Q_0,\dots,Q_{k-1}\in\cD$ such
+that $Q_i$ has $x_i$ as an end, contains $u$, and $\pi(x_i,Q_i)=x_{i+1}$, and such that some path
+$Q^\ast\in\cD$ having $x_k$ as an end does not contain $u$.
+
+\emph{A chain exists.} Let $X$ be the set of vertices reachable from $t$ by steps $x\mapsto\pi(x,Q)$. Then
+$u\notin X$, because $t\neq u$ and $\pi$ never takes the value $u$. A shortest sequence of steps from $t$ to
+a vertex of $X$ consists of distinct vertices. So if no chain exists, then every path having an end in $X$
+contains $u$. Map each pair $(x,Q)$ with $x\in X$ and $Q$ a path ending at $x$ to the edge
+$\pi(x,Q)u$ of $Q$. This map is injective: edges of distinct paths are distinct, and if $Q$ has both
+ends in $X$, reading $Q$ from its two ends meets the two different neighbours of $u$ on $Q$. Its image
+consists of edges $yu$ with $y\in X\cap N_K(u)$. Hence
+\[
+\sum_{x\in X}b_\cD(x)\le|X\cap N_K(u)|.
+\]
+On the other hand $t\in X\setminus N_K(u)$, and every vertex of $X\cap N_K(u)$ outside $Z_\cD(u)$ has at
+least one end, so the left side is at least $b_\cD(t)+|X\cap N_K(u)|-|Z_\cD(u)|$. Thus
+$b_\cD(t)\le|Z_\cD(u)|$, a contradiction.
+
+\emph{Executing a chain.} Write $K_i=K+x_iu-x_{i+1}u$ for $i<k$ and $K_k=K+tu$. We construct partitions
+$\cD_0=\cD$ of $K$ and $\cD_{i+1}$ of $K_i$ as follows.
+
+\emph{Re-routing} at step $i<k$: the path $Q_i$, read from $x_i$, is $x_i\cdots x_{i+1}\,u\cdots y$.
+Replace it by $x_{i+1}\cdots x_i\,u\cdots y$, that is, reverse the segment from $x_i$ to $x_{i+1}$, and
+trade the edge $x_{i+1}u$ for the edge $x_iu$. This is again a path, with the \emph{same vertex set}. Its
+ends are $x_{i+1}$ and $y$. So the end at $x_i$ moves to $x_{i+1}$, and the edge $x_{i+1}u$ becomes free.
+Read from its other end $y$, the path is unchanged up to $u$.
+
+\emph{Appending} at step $k$: replace $Q^\ast$ by $Q^\ast+x_ku$, which is a path, since $u\notin V(Q^\ast)$.
+Its vertex set gains exactly $u$, and the end at $x_k$ moves to $u$.
+
+It remains to check that each step acts on the intended path. The paths $Q_i$ are pairwise distinct
+except possibly when $Q_i=Q_j$ with $j<i$. In that case $x_i$ is the other end of $Q_j$, since
+$x_i\neq x_j$. The re-routing at step $j$ left $Q_j$ unchanged when read from that end up to $u$, so
+$\pi(x_i,\cdot)$ is still $x_{i+1}$, and step $i$ applies to the current form of $Q_j$. A path cannot be
+used three times, because it has only two ends and the $x_i$ are distinct. The path $Q^\ast$ avoids $u$,
+so it is none of the $Q_i$, and it is untouched until step $k$. Also, at step $i$ the edge $x_iu$ is
+absent from $K_{i-1}$ and the edge $x_{i+1}u$ lies on $Q_i$, so every step is legal. Finally, the ends
+change only at $t$, which loses one, and at $u$, which gains one; every $x_i$ with $0<i\le k$ gains one
+end at step $i-1$ and loses it at step $i$. The vertex sets change only at step $k$.
+\end{proof}
+
+This is Fan's proof, formalised in the Lean library as \texttt{fan\_exists\_chain},
+\texttt{reroute\_move}, \texttt{append\_move} and \texttt{fan\_exec}. The statement of
+Lemma~\ref{lem:fan} records the extra information that the vertex sets change only at the final
+append. This observation is the engine of Theorem~\ref{thm:sep}.
+
+\section{Route systems and route descent}\label{sec:descent}
+
+Throughout, $G$ is a graph without isolated vertices whose components have even order. Then $|\Ev|$ is
+even (it is $n$ minus the even number $|\Od|$).
+
+\begin{definition}\label{def:routes}
+A \emph{route system} for $G$ is a pairing $P$ of $\Ev$ together with pairwise edge-disjoint paths
+$R_p$ ($p\in P$) of $G$, where $R_p$ joins the two vertices of $p$. Its \emph{union} is
+$J=\bigcup_pE(R_p)$, and $F=G-J$ is the \emph{free graph}. A \emph{passage} at $v$ is a pair $\{x,y\}$ such
+that $x,v,y$ are consecutive on a route, and if $v\in\Ev$ the \emph{end edge} at $v$ is the edge of the
+route ending at $v$. For a vertex $v$, $F^v$ is $F$ with the edges at $v$ deleted and $v$ joined to every
+vertex of $V-v-N_G(v)$. The route system is a \emph{Thm-21 system} if $J$ is a forest and, for every $v$,
+there are pairwise edge-disjoint paths of $F^v$, one joining $x$ to $y$ for each passage $\{x,y\}$ at $v$,
+and one joining $z$ to $v$ for the end edge $vz$ if $v\in\Ev$ (\emph{linked transitions}).
+\end{definition}
+
+Theorem~21 of~\cite{EMM} produces a Thm-21 system on every connected graph of even order, from any
+forest $T$-join, and every transversal of its pairing is cut-feasible. TRC asserts that these
+transversals are realisable.
+
+\begin{lemma}[basic facts]\label{lem:basic}
+For a route system, $J$ is a $T$-join for $T=\Ev$, and every vertex has odd degree in $F$. An interior
+vertex of a route has degree at least three.
+\end{lemma}
+
+\begin{proof}
+A vertex of $\Ev$ is the end of exactly one route and may be interior to others; an odd vertex is interior
+only. So $d_J(v)$ is odd exactly on $\Ev$, and $d_F(v)=d_G(v)-d_J(v)$ is odd for every $v$. An interior
+vertex $v$ has $d_J(v)\ge2$. If $d_G(v)=2$, then $v\in\Ev$, so $v$ is also an end of a route and
+$d_J(v)\ge3>d_G(v)$, which is impossible.
+\end{proof}
+
+\begin{lemma}[upward closure]\label{lem:up}
+If $S\subseteq\Ev$ is realisable and $x\in\Ev\setminus S$, then $S\cup\{x\}$ is realisable.
+\end{lemma}
+
+\begin{proof}
+In a realisation of $S$ the vertex $x$ has no end and positive degree, so it is interior to some path.
+Splitting that path at $x$ gives two paths with an end at $x$ each, and changes nothing else.
+\end{proof}
+
+Hence TRC is equivalent to: every $S\subseteq\Ev$ meeting every pair of $P$ is realisable.
+
+\begin{lemma}[heredity]\label{lem:hered}
+Let $(P,\cR)$ be a route system for $G$, let $p=\{a,c\}\in P$, and let $G'=G-E(R_p)$. Then $G'$ has no
+isolated vertex, every component of $G'$ has even order, $\Ev(G')=\Ev\setminus\{a,c\}$, and
+$(P-p,\cR-R_p)$ is a route system for $G'$ with union $J-E(R_p)$ and the same free graph $F$. If
+$(P,\cR)$ is a Thm-21 system, so is $(P-p,\cR-R_p)$.
+\end{lemma}
+
+\begin{proof}
+Deleting $E(R_p)$ lowers the degrees of the interior vertices of $R_p$ by two and those of $a,c$ by one.
+So parities change only at $a$ and $c$, which become odd. Since $a,c\in\Ev$ have degree at least two, they
+keep positive degree. An interior vertex keeps degree at least one, by Lemma~\ref{lem:basic}. Hence
+$\Ev(G')=\Ev\setminus\{a,c\}$, which is paired by $P-p$ through the remaining routes, and $J'=J-E(R_p)$
+satisfies $G'-J'=G-J$. Each component $C$ of $G'$ contains an even number of odd vertices of $G'$, by the
+handshake lemma, and an even number of vertices of $\Ev(G')$, since routes lie inside components and pair
+them. So $|C|$ is even.
+
+For the Thm-21 property: $J'$ is a forest. For each vertex $v$ we have $N_{G'}(v)\subseteq N_G(v)$, so
+$F'^v$, the graph $F^v$ computed in $G'$, contains $F^v$. The transitions at $v$ of the new system are
+those of the old one except the transition of $R_p$, and their old linking paths are edge-disjoint paths
+of $F^v\subseteq F'^v$.
+\end{proof}
+
+\begin{lemma}[base]\label{lem:base}
+If $\Ev=\emptyset$, then $\emptyset$ is realisable, with $n/2$ paths.
+\end{lemma}
+
+\begin{proof}
+All degrees are odd and positive, so Theorem~\ref{thm:lovasz} gives a partition with exactly one end at
+each vertex, which is $b_\emptyset$.
+\end{proof}
+
+\begin{lemma}[extension]\label{lem:ext}
+Let $M$ be a transversal of $P$, let $p=\{a,c\}$ with $a\in M$, and let $G'=G-E(R_p)$. In $G'$ both $a$ and
+$c$ are odd, and $M-a$ is a transversal of $P-p$. The following are equivalent.
+\begin{enumerate}
+\item[(i)] $G'$ has a realisation of $M-a$ in which the path $Q_c$ ending at $c$ satisfies
+$V(Q_c)\cap V(R_p)=\{c\}$.
+\item[(ii)] $G$ has a realisation of $M$ in which $R_p$ is a terminal segment, ending at $a$, of some
+path.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i)$\Rightarrow$(ii). $Q_c$ and $R_p$ share only $c$, which is an end of both, so $Q_c\cup R_p$ is a path.
+Its ends are $a$ and the far end of $Q_c$. Replacing $Q_c$ by it removes the only end at $c$ and adds a
+second end at $a$. On all other vertices the profiles of $M-a$ in $G'$ and of $M$ in $G$ agree.
+
+(ii)$\Rightarrow$(i). Let $Q^\ast$ have $R_p$ as a terminal segment ending at $a$. Since $c\notin M$ has no
+end, $Q^\ast$ continues beyond $c$. Deleting the edges of $R_p$ leaves a path $Q$ ending at $c$, with
+$V(Q)\cap V(R_p)=\{c\}$. Now $c$ has one end and $a$ has one, which is the profile of $M-a$ in $G'$. Since
+$b(c)=1$, $Q$ is the path $Q_c$.
+\end{proof}
+
+So route descent proves TRC for $(G,P)$ at $M$ if, for some $p$, the induction hypothesis on
+$G-E(R_p)$ can be strengthened to deliver (i). The order of deletion, the choice of realisation, and
+the route system producing a given pairing are all free.
+
+\begin{proposition}[existential form and the Lean spine]\label{prop:spine}
+Let $G$ be connected of even order and $y\in\Ev$. If some realisable $M\subseteq\Ev$ with $y\in M$ and
+$|M|\le|\Ev|/2$ exists, then for every $k\le|\Ev|/2$ there is $R\subseteq\Ev$ with $|R|=k$, $y\notin R$,
+and $\Ev\setminus R$ realisable. In particular, if every connected graph of even order has, for each of
+its even vertices $y$, a realisable transversal of a Thm-21 pairing containing $y$, then Gallai's
+conjecture holds.
+\end{proposition}
+
+\begin{proof}
+$\Ev\setminus M$ has at least $|\Ev|/2\ge k$ elements and avoids $y$. Choose $R\subseteq\Ev\setminus M$
+with $|R|=k$. Then $\Ev\setminus R\supseteq M$ is realisable by Lemma~\ref{lem:up}. This is the statement
+$\mathrm{Desc}\,H\,k\,y\,\emptyset$ of the Lean library, so the hypothesis $\mathrm{BranchBase}_k$ holds
+for every $k$, without its side conditions on $y$. The Lean theorem \texttt{gallai\_of\_branchBase}
+gives Gallai's conjecture. The last claim applies this to the transversal containing $y$; Thm-21
+systems exist by~\cite[Theorem~21]{EMM}.
+\end{proof}
+
+So for Gallai's conjecture we need only an \emph{existential} TRC. At each deletion we may choose
+which end of $p$ to extend, except at the pair containing the root.
+
+\section{Minimum $T$-joins}\label{sec:min}
+
+A $T$-join of $G$ is \emph{minimum} if it has the fewest edges among all $T$-joins.
+
+\begin{lemma}\label{lem:min}
+Let $J$ be a minimum $T$-join of $G$ for $T=\Ev$, and let $\cR$ be any decomposition of $J$ into
+edge-disjoint paths pairing $\Ev$.
+\begin{enumerate}
+\item $J$ is a forest. Hence Theorem~21 of~\cite{EMM} applies to $J$, and $J$ carries a Thm-21 system.
+\item For every cycle $C$ of $G$, $|E(C)\cap J|\le|E(C)\setminus J|$.
+\item Every segment $R[x,y]$ of every route $R\in\cR$ is a shortest $x$--$y$ path of $G$. In particular
+every route is an induced path of $G$.
+\item If $p=\{a,c\}$ and $G'=G-E(R_p)$, then $J-E(R_p)$ is a minimum $T'$-join of $G'$, where
+$T'=\Ev(G')$.
+\item A $T$-join that is a matching is minimum.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For any even subgraph (edge set with all degrees even) $E$, the symmetric difference $J\triangle E$ is again
+a $T$-join, of size $|J|-|J\cap E|+|E\setminus J|$. Minimality gives $|J\cap E|\le|E\setminus J|$.
+Taking $E=E(C)$ gives (2), and if $C\subseteq J$ it gives $|E(C)|\le0$, so (1). For (3), let $Q$ be an
+$x$--$y$ path and $E=E(R[x,y])\triangle E(Q)$, an even subgraph. Then
+$|J\cap E|\ge|E(R[x,y])\setminus E(Q)|$ and $|E\setminus J|\le|E(Q)\setminus E(R[x,y])|$. So
+$|E(R[x,y])\setminus E(Q)|\le|E(Q)\setminus E(R[x,y])|$, that is, $|R[x,y]|\le|Q|$. A chord of a route
+would give a shorter path between two of its vertices. For (4), if $K'$ were a $T'$-join of $G'$ with
+$|K'|<|J|-|R_p|$, then $K'\cup E(R_p)$, a disjoint union, would be a $T$-join of $G$: the parities of
+$K'$ and $R_p$ add up to $T'\triangle\{a,c\}=T$. It would have fewer edges than $J$. For (5), every
+$T$-join has at least $|T|/2$ edges, since every vertex of $T$ needs an edge and an edge covers at most
+two vertices.
+\end{proof}
+
+By (1) and (4) and Lemma~\ref{lem:hered}, the class of \emph{minimum Thm-21 systems}, those built on a
+minimum $T$-join, is closed under route deletion, and route descent can stay inside it.
+
+\begin{corollary}[no trivial obstruction]\label{cor:triv}
+In a route system on a minimum $T$-join, let $p=\{a,c\}$ and $G'=G-E(R_p)$. Then $c$ has a neighbour in
+$G'$ outside $V(R_p)$, and so does $a$.
+\end{corollary}
+
+\begin{proof}
+$c$ has degree at least two and exactly one edge on $R_p$. Any other neighbour of $c$ on $R_p$ would give a
+chord of $R_p$, against Lemma~\ref{lem:min}(3).
+\end{proof}
+
+\begin{remark}\label{rem:triv}
+With spanning-tree $T$-joins the extension (i) of Lemma~\ref{lem:ext} fails in a few percent of cases.
+Most failures are of the trivial kind excluded by Corollary~\ref{cor:triv}: $c$ has degree two and the
+route runs through its other neighbour, so $Q_c$ cannot leave the route. The only instances in which no
+route at all admits the extension were all of this kind. With minimum $T$-joins no failure of (i) was
+found, for any route or any transversal (Section~\ref{sec:conj}).
+\end{remark}
+
+\section{Route-respecting realisations}\label{sec:rr}
+
+\begin{definition}
+Let $M$ be a transversal of $P$. For $p\in P$ write $a_p\in M$ and $c_p\notin M$ for its two vertices
+(head and tail). A realisation of $M$ is \emph{route-respecting} if every route $R_p$ is a terminal
+segment, ending at $a_p$, of some path. A Lov\'asz decomposition $\cD$ of the free graph $F$ (which has all
+degrees odd, by Lemma~\ref{lem:basic}) is \emph{$M$-compatible} if, for every path $Q\in\cD$:
+\begin{enumerate}
+\item[(RR1)] if an end $s$ of $Q$ is a tail $c_p$, then $V(Q)\cap V(R_p)=\{s\}$;
+\item[(RR2)] if both ends of $Q$ are tails $c_p,c_q$, then $V(R_p)\cap V(R_q)=\emptyset$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}\label{prop:rr}
+Route-respecting realisations of $M$ correspond bijectively to $M$-compatible Lov\'asz decompositions of
+$F$: append every route at its tail. In particular, if $F$ has an $M$-compatible Lov\'asz decomposition,
+then $M$ is realisable.
+\end{proposition}
+
+\begin{proof}
+Let $\cD$ be $M$-compatible. For $Q\in\cD$ attach $R_p$ at every end of $Q$ that is a tail $c_p$. By
+(RR1) and (RR2) the result is a path: the attached routes meet $Q$ only at its ends, and two attached
+routes are disjoint. Every edge of $J$ is used exactly once, since every route has exactly one tail and
+that tail is the end of exactly one path of $\cD$. As for ends: a tail loses its unique end, so it has
+none; a head $a_p$ keeps its end in $\cD$ and gains the end of $R_p$, so it has two; every odd vertex of
+$G$ keeps one. This is $b_M$. Conversely, in a route-respecting realisation each path contains at most two
+routes as terminal segments, one at each end. Every edge of $J$ lies in such a segment, so deleting all
+routes leaves only edges of $F$. A path does not end at a tail, so each path properly extends its
+terminal routes, and deleting them leaves a nonempty path. The pieces have one end at every vertex and
+satisfy (RR1) and (RR2), since they came from paths.
+\end{proof}
+
+By Proposition~\ref{prop:rr}, TRC for minimum Thm-21 systems would follow from the following
+conjecture, which concerns only graphs with all degrees odd.
+
+\begin{conjecture}[RR]\label{conj:rr}
+For every minimum Thm-21 system and every transversal $M$, the free graph has an $M$-compatible
+Lov\'asz decomposition.
+\end{conjecture}
+
+The decomposition must depend on $M$. There are minimum Thm-21 systems, already among the order-$12$
+counterexamples to EMM, for which no single Lov\'asz decomposition of $F$ is compatible with all
+transversals at once (Section~\ref{sec:conj}).
+
+When every route is a single edge, $J=N$ is a perfect matching of $G[\Ev]$. It is minimum by
+Lemma~\ref{lem:min}(5), and every vertex of $\Ev$ has $J$-degree one, so the transitions are linked
+trivially: the end edge $vz$ is linked in $F^v$, whose only odd vertices are $v$ and $z$. Condition (RR2)
+is automatic, because distinct edges of a matching are disjoint. So Conjecture~\ref{conj:rr} becomes:
+
+\begin{conjecture}[$L_N$]\label{conj:LN}
+Let $F$ have all degrees odd, and let $c_1a_1,\dots,c_ma_m$ be pairwise disjoint pairs of non-adjacent
+vertices of $F$. Then $F$ has a Lov\'asz decomposition in which, for every $i$, the path ending at $c_i$
+does not contain $a_i$.
+\end{conjecture}
+
+\begin{proposition}\label{prop:LN}
+Conjecture~\ref{conj:LN} implies Gallai's conjecture for every connected graph $G$ of even order whose
+even vertices induce a subgraph with a perfect matching. Moreover, it implies that every orientation of
+such a matching is realisable.
+\end{proposition}
+
+\begin{proof}
+Let $N$ be a perfect matching of $G[\Ev]$, oriented $c_i\to a_i$, and let $F=G-N$. Every vertex has odd
+degree in $F$, and the pairs $c_ia_i$ are disjoint and non-adjacent in $F$. Apply Conjecture~\ref{conj:LN}
+and Proposition~\ref{prop:rr} with the single-edge routes $c_ia_i$. The realisation of $\{a_i\}$ has
+$|\Od|/2+|\Ev|/2=n/2$ paths.
+\end{proof}
+
+This class contains every Eulerian graph with a perfect matching. For such graphs Gallai's conjecture is
+open. The case $m=1$ of Conjecture~\ref{conj:LN} is:
+
+\begin{conjecture}[$L_1$]\label{conj:L1}
+If $F$ has all degrees odd and $c,a$ are non-adjacent, then some Lov\'asz decomposition of $F$ has
+$a\notin V(Q_c)$.
+\end{conjecture}
+
+The next section proves $L_1$ when $c$ and $a$ have no common neighbour.
+
+\section{Lov\'asz decompositions that separate two vertices}\label{sec:sep}
+
+Say that a path partition \emph{separates} $c$ and $a$ if no path contains both.
+
+\begin{theorem}[separation]\label{thm:sep}
+Let $K$ have at most one vertex of positive even degree, and let $c,a$ be vertices with
+$\mathrm{dist}_K(c,a)\ge3$ (possibly in different components). Then $K$ has a Lov\'asz decomposition that
+separates $c$ and $a$.
+\end{theorem}
+
+\begin{proof}
+Induction on $\nu(K)=2|E(K)|+[\text{$K$ has no vertex of positive even degree}]$. If $E(K)=\emptyset$ the
+empty partition works. Let $X=\{c,a\}$. Throughout, a graph obtained from $K$ by deleting edges and adding
+pendant edges at new vertices has distance at least $\mathrm{dist}_K(c,a)$ between $c$ and $a$, since a
+new pendant vertex lies on no $c$--$a$ path. The key observation is this. If $\cD$ separates $c$ and $a$
+and $\cD^+$ is obtained by Lemma~\ref{lem:fan} with target $u\notin X$, then $\cD^+$ separates $c$ and $a$.
+Indeed, all vertex sets are preserved except one, which gains $u$; a set containing both $c$ and $a$
+after adding $u\notin X$ contained both before.
+
+\emph{Case I: $K$ has a vertex $z$ of positive even degree.} If $N(z)\subseteq X$, then $|N(z)|\ge2$
+forces $N(z)=X$. If $z\notin X$, then $z$ is a common neighbour of $c$ and $a$; if $z\in X$, then $z$ is
+adjacent to itself or to the other vertex of $X$. Both contradict $\mathrm{dist}(c,a)\ge3$. So we may
+choose $u\in N(z)\setminus X$. Let
+$K'=K-uz$. In $K'$ the vertex $z$ is odd. The vertex $u$ was odd, since $z$ is the only even vertex, so
+it is now even or isolated. All other degrees are unchanged. So $K'$ has at most one vertex of positive
+even degree, and $\nu(K')<\nu(K)$. By induction $K'$ has a Lov\'asz decomposition $\cD'$ separating $c$
+and $a$. Then $b_{\cD'}(z)=1$ and $b_{\cD'}(u)=0$. Every neighbour of $u$ in $K'$ has odd degree, hence
+one end, so $Z_{\cD'}(u)=\emptyset$. Lemma~\ref{lem:fan} with $t=z$ and target $u$ gives a decomposition of
+$K$ with ends $b_{\cD'}-\mathbf 1_z+\mathbf 1_u=d_K\bmod2$. It separates $c$ and $a$ since $u\notin X$.
+
+\emph{Case II: all degrees are odd or zero, and some $x\notin X$ has degree at least $3$.} Choose any
+$u\in N(x)$, and let $H$ be $K-ux$ together with a new vertex $\ell$ and the edge $u\ell$. In $H$ the vertex
+$x$ has positive even degree $d(x)-1$, and every other vertex has odd degree or degree zero. Since $H$ has
+as many edges as $K$ but has an even vertex, $\nu(H)<\nu(K)$. By induction $H$ has a Lov\'asz
+decomposition $\cD_H$ separating $c$ and $a$. The leaf $\ell$ is an end of its path $Q_\ell$. Delete
+$\ell$. If $Q_\ell=u\ell$, delete this path; then $u$ loses its only end. Otherwise $u$ was interior to
+$Q_\ell$ and becomes an end of $Q_\ell-\ell$, while keeping its own end; so it has two. The result
+$\cD'$ is a partition of $K'=K-ux$ that still separates $c$ and $a$. It has $b_{\cD'}(x)=0$,
+$b_{\cD'}(u)\in\{0,2\}$, and $b_{\cD'}(w)=d_K(w)\bmod2$ for $w\ne u,x$.
+\begin{itemize}
+\item If $b_{\cD'}(u)=0$, add the one-edge path $ux$. It contains both $c$ and $a$ only if $\{u,x\}=X$,
+which fails as $x\notin X$.
+\item If $b_{\cD'}(u)=2$, use Lemma~\ref{lem:fan} with $t=u$ and target $x$. Every neighbour of $x$ in
+$K'$ has odd degree in $K'$ and one end; $u$ itself is not a neighbour of $x$ in $K'$. So
+$Z_{\cD'}(x)=\emptyset<2$. The result has one end at $u$ and at $x$, and separates $c$ and $a$ as
+$x\notin X$.
+\end{itemize}
+
+\emph{Case III: all degrees are odd or zero, and every vertex outside $X$ has degree at most one.} Then
+no vertex outside $X$ can be interior to a path. As $c,a$ are not adjacent, no path of $K$ joins
+them, so they lie in different components. Every path of any Lov\'asz decomposition, which exists by
+Theorem~\ref{thm:lovasz}, lies in one component.
+
+These cases are exhaustive, which completes the induction.
+\end{proof}
+
+\begin{corollary}[$L_1$ at distance three]\label{cor:L1}
+If all degrees of $F$ are odd and $c,a$ are non-adjacent with no common neighbour, then $F$ has a
+Lov\'asz decomposition in which $Q_c$ avoids $a$ and $Q_a$ avoids $c$.
+\end{corollary}
+
+\begin{corollary}\label{cor:onepair}
+Let $G$ have exactly two even vertices $a$ and $c$, and suppose $ac\in E(G)$ lies in no triangle. Then
+$\{a\}$ has a realisation in which $ca$ is a terminal edge at $a$, and $\{c\}$ has one in which $ac$ is a
+terminal edge at $c$.
+\end{corollary}
+
+\begin{proof}
+In $F=G-ac$ all degrees are odd, and $c,a$ are non-adjacent with no common neighbour. Apply
+Corollary~\ref{cor:L1} and Proposition~\ref{prop:rr} with the single route $ca$.
+\end{proof}
+
+\begin{example}[distance two]\label{ex:dist2}
+Separation can fail at distance two in the presence of an even vertex. Let $K$ have vertices
+$z,u_1,u_2,c,a,\ell_c,\ell_a$ and edges $zu_1,zu_2$, $u_ic$, $u_ia$ ($i=1,2$), $c\ell_c$, $a\ell_a$.
+Then $z$ is the only even vertex, and $\mathrm{dist}(c,a)=2$. Suppose a Lov\'asz decomposition
+separates $c$ and $a$. The vertex $z$ has no end, so some path $Q$ contains $u_1zu_2$. Each $u_i$ has
+degree three and exactly one end, hence exactly one passage. If $u_i$ were an end of $Q$, its end edge would
+be $u_iz$ and its passage would be $\{c,a\}$, and the path through that passage would contain both $c$ and
+$a$. So $Q$ continues beyond $u_1$ to some $w_1\in\{c,a\}$ and beyond $u_2$ to some $w_2\in\{c,a\}$.
+If $w_1=w_2$, then $Q$ repeats a vertex; otherwise $Q$ contains both $c$ and $a$. Either way we have a
+contradiction, so no Lov\'asz decomposition of $K$ separates $c$ and $a$. Yet $L_1$ holds here. The
+paths $c\,u_1$, $\ \ell_c\,c\,u_2\,z\,u_1\,a$ and $u_2\,a\,\ell_a$ partition the eight edges, have one end
+at each odd vertex and none at $z$, and the path ending at $c$ is $c\,u_1$, which avoids $a$. Adding a
+leaf at $z$ makes all degrees odd, and then a separating decomposition exists again (found by computation;
+not used).
+\end{example}
+
+\section{Classes reachable by Fan's lemma}\label{sec:classes}
+
+\begin{theorem}[Fan-isolated routes]\label{thm:isolated}
+Let $(P,\cR)$ be a route system for $G$ such that every vertex $x$ of every route $R_p$ satisfies
+\[
+N_G(x)\cap\Ev\subseteq N_{R_p}(x).
+\]
+Then every transversal of $P$ is realisable.
+\end{theorem}
+
+\begin{proof}
+Induction on $|P|$, with Lemma~\ref{lem:base} as the base. The hypothesis passes to
+$G'=G-E(R_p)$ with the remaining routes, because $N_{G'}(x)\cap\Ev(G')\subseteq N_G(x)\cap\Ev$
+(Lemma~\ref{lem:hered}). Let $M$ be a transversal, $p=\{a,c\}$ with $a\in M$, and write
+$R_p=r_0r_1\cdots r_t$ with $r_0=c$ and $r_t=a$. By induction there is a realisation $\cD_0$ of $M-a$ in
+$G'$. Put the edges $r_{i-1}r_i$ back one at a time, for $i=1,\dots,t$. At step $i$, use
+Lemma~\ref{lem:fan} in $G_{i-1}=G'+r_0r_1+\dots+r_{i-2}r_{i-1}$ with $t=r_{i-1}$ and target $r_i$. This
+moves one end from $r_{i-1}$ to $r_i$. So after step $i-1$ the ends are $b_{i-1}=b_0-\mathbf
+1_c+\mathbf 1_{r_{i-1}}$ (with $b_0$ the profile of $M-a$ in $G'$).
+\begin{itemize}
+\item $b_{i-1}(r_{i-1})\ge1$: for $i=1$ because $c$ is odd in $G'$, and for $i\ge2$ because $r_{i-1}$
+received an end.
+\item A vertex with no end in $\cD_{i-1}$ is an unmarked vertex of $\Ev$ (here $c$ counts, for $i\ge2$).
+So $Z(r_i)\subseteq N_{G_{i-1}}(r_i)\cap\Ev\subseteq N_{R_p}(r_i)$. But neither $R_p$-neighbour of
+$r_i$ is adjacent to $r_i$ in $G_{i-1}$: the edges $r_{i-1}r_i$ and $r_ir_{i+1}$ have not yet been added.
+So $Z(r_i)=\emptyset$.
+\end{itemize}
+Thus each transfer is legal, and after step $t$ the ends are $b_0-\mathbf 1_c+\mathbf 1_a$, which is the
+profile of $M$ in $G$.
+\end{proof}
+
+The hypothesis forces $G[\Ev]$ to be a matching. Indeed, an even neighbour of a route end $e$ must be
+its neighbour along its own route; if that neighbour is itself a route end, it is the other end of a
+one-edge route; if it were a busy even vertex, it would be an end of another route $R_q$, and $e$ would
+have to be its neighbour on $R_q$ as well, so the edge would lie on two routes. Hence these graphs lie in
+Pyber's class, and Theorem~\ref{thm:isolated} is new only as a statement about \emph{all} transversals.
+
+\begin{corollary}\label{cor:upm}
+If $G[\Ev]$ has a unique perfect matching $N$, then every orientation of $N$ (choice of one vertex of
+each edge) is realisable.
+\end{corollary}
+
+\begin{proof}
+Fix an orientation $c_i\to a_i$. Call $i\to j$ if $a_i$ is adjacent to $c_j$ with $j\neq i$. A directed
+cycle $i_1\to\cdots\to i_r\to i_1$ would give the cycle $c_{i_1}a_{i_1}c_{i_2}a_{i_2}\cdots$ in $G[\Ev]$,
+alternating between edges of $N$ and edges outside $N$. Switching $N$ along it gives a second perfect
+matching. So the relation is acyclic, and some $i$ has no successor: $a_i$ has no even neighbour other
+than $c_i$ among the unmarked vertices $c_j$. Delete the edge $c_ia_i$. In $G'=G-c_ia_i$ the induced
+subgraph on $\Ev(G')=\Ev\setminus\{a_i,c_i\}$ is $G[\Ev]-\{a_i,c_i\}$, whose perfect matching
+$N-c_ia_i$ is again unique. By induction $\{a_j:j\ne i\}$ is realisable in $G'$. In that realisation the
+zero-end vertices are the $c_j$ with $j\neq i$, none of which is adjacent to $a_i$, while $c_i$ has one
+end. Lemma~\ref{lem:fan} with $t=c_i$ and target $a_i$ restores $c_ia_i$ and moves the end of $c_i$ to $a_i$.
+The base case $N=\emptyset$ is Lemma~\ref{lem:base}.
+\end{proof}
+
+Corollary~\ref{cor:upm} is the acyclic-ordering form of the Fan schedules of the endpoint-structure
+manuscript (\texttt{realisable\_of\_fanSchedule}). Uniqueness of the matching is exactly the condition
+that every orientation admits such an order. Gallai's conjecture for these graphs already follows from
+those schedules.
+
+\section{Conjectures and their status}\label{sec:conj}
+
+The following computations guided the statements above; no proof uses them. An exact oracle extends the
+depth-first search of the project's realisability oracle to constrained queries. It was validated
+against an independent enumeration of all path partitions of small graphs. All realisations it reports
+are re-checked by an independent partition checker.
+
+\begin{itemize}
+\item \emph{TRC.} No counterexample. All transversals of $3{,}600$ Thm-21 pairings of the twelve order-$12$
+counterexamples to EMM ($86{,}400$ transversals) are realisable. So are the transversals of
+random graphs of orders $10$ and $12$ (about $60{,}000$ transversals), all $1{,}280$ transversals of $20$
+minimum Thm-21 pairings of the order-$18$ graph of minimum degree three~\cite[Thm~41]{EMM}, and $128$
+sampled transversals of the order-$28$ graph built from the Petersen graph in~\cite{EMM}. In these graphs
+the marks automatically fall inside the forcing gadgets, as they must for transversals.
+\item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
+$4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
+\emph{minimum} $T$-joins it never failed, in about $210{,}000$ pairs $(M,p)$.
+\item \emph{RR.} An $M$-compatible decomposition was found for every transversal tested with minimum
+$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph). A
+single decomposition compatible with every transversal at once fails to exist in two of the twelve
+order-$12$ graphs, even with minimum $T$-joins.
+\item \emph{$L_1$, $L_N$.} No failure of $L_1$ in $70{,}978$ non-adjacent pairs (orders $\le10$), nor of
+the stronger statement that $Q_c\subseteq N[c]$ can be achieved ($19{,}040$ vertices). No failure of
+$L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs.
+\item \emph{Separation.} The symmetric version of $L_N$ (no path contains both vertices of any pair) is
+false when some pair is at distance two, failing in about a fifth of random instances. It held in every
+tested instance in which all pairs are at distance at least three.
+\end{itemize}
+
+\begin{conjecture}[multi-pair separation]\label{conj:msep}
+If $K$ has all degrees odd and $\{s_1,t_1\},\dots,\{s_m,t_m\}$ are pairwise disjoint pairs at distance at
+least three, then some Lov\'asz decomposition of $K$ separates every pair.
+\end{conjecture}
+
+Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
+would give Gallai's conjecture, with every orientation realisable, for every graph whose even vertices
+induce a subgraph having a perfect matching none of whose edges lies in a triangle of $G$. This includes
+every triangle-free Eulerian graph with a perfect matching. The proof of Theorem~\ref{thm:sep} does not
+extend directly: when every vertex lies in a pair, as for an Eulerian graph, every Fan target is
+paired, and the path that gains the target may contain its partner.
+
+\section{Comparison with known results}\label{sec:compare}
+
+\begin{itemize}
+\item Lov\'asz's theorem~\cite{L68} is the base of route descent. Theorem~\ref{thm:sep} strengthens its
+strong form: the decomposition can be chosen to separate two prescribed vertices at distance at least
+three. We have not found this in the literature.
+\item Pyber~\cite{Pyb96} (even subgraph a forest), Fan~\cite{Fan05} (blocks triangle-free of maximum
+degree at most three) and Botler and Sambinelli~\cite{BS21} prove Gallai's conjecture under structural
+conditions on $G[\Ev]$. Theorem~\ref{thm:isolated} lies inside Pyber's class. Corollary~\ref{cor:upm}
+follows from the Fan schedules of the endpoint-structure manuscript. Both are new only as statements that
+\emph{every} transversal is realisable.
+\item Conjectures~\ref{conj:LN} and~\ref{conj:msep} would give new classes: graphs whose even subgraph has
+a perfect matching (respectively one avoiding triangles). These are not covered by the results above,
+because the even subgraph may have large degrees and many cycles.
+\item The heredity of minimum $T$-joins (Lemma~\ref{lem:min}(4)) is elementary. Its use here is to make
+route descent avoid the only obstruction ever observed.
+\end{itemize}
+
+\section{Formalisation}\label{sec:lean}
+
+See \texttt{lean/GallaiLean/RouteDescent.lean}. It is sorry-free and uses only the standard axioms.
+\begin{itemize}
+\item \texttt{gallai\_of\_rootedHalfSets}: if every connected graph of even order has, for each even
+vertex $y$, a realisable set containing $y$ of size at most half the even vertices, then Gallai's
+conjecture holds (Proposition~\ref{prop:spine}).
+\item \texttt{realisable\_of\_uniquePM}-type statements and the Fan descent of Corollary~\ref{cor:upm}.
+\end{itemize}
+The status of each item is recorded in \texttt{lean/README.md}.
+
+\section{Open problems}\label{sec:open}
+\begin{enumerate}
+\item Prove $L_1$ (Conjecture~\ref{conj:L1}) at distance two. The separation invariant of
+Theorem~\ref{thm:sep} is too strong there (Example~\ref{ex:dist2}), so a weaker invariant is needed. It
+must still survive Fan transfers whose chains pass through $c$.
+\item Prove Conjecture~\ref{conj:msep}, or Conjecture~\ref{conj:LN}, for two pairs.
+\item Is Conjecture~\ref{conj:rr} true for routes of length two, that is, for star-forest $T$-joins?
+\item Does every \emph{minimum} Thm-21 system admit route descent in every order of deletion, as the
+computations suggest?
+\end{enumerate}
+
+\begin{thebibliography}{99}
+\bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
+maximum degree, Discrete Math.\ 342 (2019) 1293--1299.
+\bibitem{BS21} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.~Graph
+Theory 97 (2021) 161--184.
+\bibitem{EMM} J.~Williams, Prescribed ends in path decompositions: a cut inequality, cut selection, and
+hardness, manuscript (\texttt{manuscripts/endpoint-min-max}), 2026; together with the project's
+\texttt{research/synthesis.md}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
+117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, New York, 1968, 231--236.
+\bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, J.~Combin.\ Theory Ser.~B 66
+(1996) 152--159.
+\end{thebibliography}
+\end{document}
