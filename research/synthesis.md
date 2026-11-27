@@ -712,3 +712,35 @@ Suppression, cycle insertion and ear gluing are proved, and the constructions we
 - The "fat theta" (many degree-2 vertices between two hubs, the shape that defeats every terminal lift) is reducible in the RE* induction: degree-2 twins (Thm 5.7(b)), whichever hub is the root.
 
 So the cone case does not escape the open core. It lands on the same constrained-Lovász targets, and the n − 2 formulation is a clean new instance of them.
+
+## 28. State of the programme (coordinator, 2026-11-27 20:20)
+
+This supersedes §23 as the orientation summary. Everything listed as proved is in Lean, with standard axioms only, and has been audited (A25–A30).
+
+**Machine-checked reductions of Gallai.**
+1. **Spine:** Gallai ⇔ Test1 ∧ Test2 on 3-connected J with J − z free of matching cuts (`gallai_iff_spineTests'`).
+2. Gallai ⇐ STL + STL2 (`gallai_of_stl`), and Gallai ⇐ RR (`gallai_of_routeRR`).
+3. **Test1 ⇐ lifts** (`test1At_of_triangleBase`, `test1At_of_forestBase`). The lifts are reversible (direct-test1 Props 2.2 and 4.3), so each base condition is Test1 plus a terminal matching, or Test1 plus a terminal forest.
+4. **Test1 ⇐ DL** at every root whose data have M connected (`test1At_of_disjL1`).
+5. **Cones:** Test1 at a cone apex ⇔ RE(B) (`test1_fullCone_iff`). The spine needs RE exactly for 2-connected Eulerian B of even order with no matching cut (`rootedDecomp_of_spineTestsNMC`), and Gallai ⇒ RE.
+
+**What the data say (exhaustive unless stated otherwise).**
+- The triangle base holds at every root with data. This covers order ≤ 9, all 2-connected J, apart from universal-twin failures that occur only when κ = 1. It also covers the residual families, the E28 hard graphs, d(z) = 8 at order 13 (71/71), and random graphs to order 15.
+- DL(1) fails exactly at universal-twin pairs, at orders ≤ 9.
+- CLT-B and CLT-B1 have 0 failures over all systems at order ≤ 9.
+- RE has 0 failures at even order ≤ 10, and on the dense order-12 family (3.1M roots).
+- The forest base is FALSE (cone over K_{2,6}). That case is covered by RE for planar B (literature).
+
+**THE OPEN CORE.** Every line now ends here. Each item is a Lovász decomposition of a graph with ≤ 1 even vertex g, with end-path constraints.
+1. **L1Blocked.** This is the k = 1 residual of CLT-B1. It implies L1*, EE and L∞ (Lean `l1starGen_of_blocked`, `ee_of_l1Blocked`, `l1StarGen_of_cltB1`).
+2. **DL(1) when a, b ∈ N(g) share a common neighbour.** This is the free-orientation case outside L1*. It is under attack in session `dl-one`.
+3. **The multi-constraint versions:** DL(k), CLT-B1 with k = 2 (contains L_N for two pairs), and PTM₃ dense.
+4. **The cone residuals:** the even-order ear, which is (1)/(2) type, and roots of degree n − 2, which are terminal-matching type on B − r with one even vertex.
+
+**Shared obstruction.** In every case it is the same one: the even vertex g adjacent to the constrained vertices (tight Fan, §21), plus universal-twin or K_{2m}-type exceptions where the statements genuinely fail.
+
+**Process.**
+- Each core item gets a fresh session with a precise brief.
+- Merges go through the build gate (`mbp.sh`).
+- Each milestone gets an independent audit.
+- Every forwarded or peer claim is checked by the coordinator before anything is built on it (§25).
