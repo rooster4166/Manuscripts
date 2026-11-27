@@ -1288,3 +1288,44 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 - The protected-end lemma is the composition tool §X.4 asked for. A prescribed end edge xy survives every Fan transfer whose target is not adjacent to x, or is y itself.
 - This matches E22(F), where PEE_m fails only with *adjacent* prescribed ends. A Fan transfer whose target is adjacent to neither prescribed end (or is the other end of a prescribed edge) keeps both prescriptions. What remains is to choose the Case I targets that way.
 - Not attempted here: STL's multi-transition work, which belongs to §X.
+
+## Z. Two terminal edges at once: the terminal-matching property (cloud session `claude/ptm`, 2026-11-27)
+
+*Experiments: E24. Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Lean: `lean/GallaiLean/TerminalMatching.lean`. Audit: `research/audit/A22-ptm.md`. Origin: §X.4a, §X.6(1), synthesis §19.*
+
+### Z.1 Verdict on the statement
+- **PTM₂ as stated is false**: K₄ with a perfect matching. This is W₄ with its diagonal pairing. The pairs are *not* adjacent in J, so this is a simple-graph failure, not a parallel-edge one.
+- **Simple G.** Exhaustive to n = 8 (and n = 10 up to isomorphism, see E24(B)):
+  - PTM₂ fails only at K₄;
+  - PTM₃ fails twice (the prism with its rungs, one graph of order 8), both with G − F disconnected;
+  - PTM(e@x) never fails when G − F is connected.
+- **Multigraph** (F-edges parallel to G'-edges): every failure except K₄ has a cut vertex in G − F. 2-connected G − F, i.e. 3-connected J, never fails at n ≤ 8.
+- **Clean conjectures** (manuscript Conj. 2.3 and 2.4):
+  - PTM_m(e@x) for simple G with G − F connected, except K₄;
+  - in the multigraph case, PTM_m(e@x) whenever G − F is 2-connected and G ≠ K₄. The latter implies STL-P, hence STL and Test1, on 3-connected J ≠ W₄.
+
+### Z.2 The mechanism: the walk theorem (proved, Lean)
+- **The composition problem, solved in the leaf graph.** Leafify ab at a, which makes a even. Walk the even vertex along a path P from a to the long end y of xy, deleting the edges of P, so that only the short end x stays even. Separate three pairs there. Then restore P edge by edge with Fan's lemma *inside the two-leaf graph*, where both prescriptions are vertex-set separations, and merge both leaves.
+- The intermediate graphs have two endless even vertices, outside Lovász's setting. Fan's lemma does not care about parity, only that the target has no endless neighbour. That is exactly the condition "the walk avoids N(x)".
+- So the pending-edge problem of §X.4a disappears. The pending edge is frozen as the separation {x, ℓ₂}, which Fan transfers preserve automatically.
+- **Base hypothesis.** In M = (G − ab + ℓ₁b) − xy − E(P), whose only even vertex is x, a Lovász decomposition separating {x, y}, {a, ℓ₁} and {ℓ₁, y}. These three pairs form a path of constraints, a two-matching class family as in §W.
+  - It holds in 12,193/13,025 instances at n = 8 with shortest walks only (E24(F)).
+- **Sparse form.** The base hypothesis follows from separation_sparse, possibly after one Fan transfer for an exceptional vertex v adjacent to x (sep_sparse_fix, the mechanism of ee_atMostOneCommon isolated as a lemma).
+- **Girth five** (ptm2_girth5): every connected all-odd graph without triangles and 4-cycles satisfies PTM₂, with one end prescribed. The sparse hypotheses hold along a shortest e1–e2 path; the only exception is a 5-cycle, handled by the fix.
+
+### Z.3 For STL and the spine (proved, Lean)
+- stl_of_ptm2: un-lifting both pairs turns PTM2At((J − z) + ab + cd; a, c) into STL J z b and STL J z d.
+- stl_of_girth5, test1_of_girth5: if d(z) = 4, N(z) = {a, b, c, d}, ab, cd ∉ E(J), and (J − z) + ab + cd has girth ≥ 5, then STL holds at every neighbour and Test1 J z holds (through test1_of_stl).
+- This is narrow: 3-connected J rarely has a lifted graph of girth 5. Its value is the mechanism, and that it is the first unconditional two-prescription result.
+
+### Z.4 Open (in order of promise)
+1. **The base separation problem beyond sparseness.**
+   - K₄ shows some short-cycle configurations are genuinely bad.
+   - The data say the base hypothesis almost always holds for *some* orientation and walk.
+   - A proof would be a "separation for a path of three pairs with one even vertex" theorem, close to CSEP for the union of two matchings (§W.2).
+2. **PTM_m by chaining walks** (manuscript §8). It is routine under large girth and mutual distance, but not yet written or formalised.
+3. **The multigraph case**, needed when every pairing of N(z) contains adjacent pairs.
+4. **Relation to EE (§Y).**
+   - PTM₂(e@x) at d(z) = 4 contains EE for neighbours that can be paired with a non-neighbour.
+   - The walk theorem's last step is EE-like.
+   - So a full PTM₂(e@x) would close the open case of EE at d(z) = 4.

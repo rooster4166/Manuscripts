@@ -1002,3 +1002,49 @@ None of the 99 away failures is reachable, has y ∈ N(z) or dist(x, z) ≥ 3, o
 - Separation of u, z in K − uz fails when |T| ≥ 2.
 - Separation of w from {u, z} after triangle removal fails.
 - L1 with an even vertex adjacent to the avoided vertex fails (known: RD Remark 6.7). Here the adjacency is shown to be exactly the obstruction at n ≤ 9.
+
+## E24. Two terminal edges at once: the terminal-matching property PTM (cloud session `claude/ptm`)
+
+Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Scripts and outputs: `manuscripts/terminal-matching/scripts/` (README in the manuscript directory). Conclusions: connections §Z. Lean: `lean/GallaiLean/TerminalMatching.lean`.
+
+**Statement tested.** PTM(G, F): G has all degrees odd, F a matching; some Lovász decomposition has every F-edge terminal at one of its ends, no two on one path. PTM(G, F; e@x): additionally e terminal at x. PEE: all ends prescribed. Tested through J = (G − F) + z V(F): a star-terminal Lovász decomposition of J with transitions F at z (STL-P, stl.tex Prop 3.4). In the multigraph case an F-edge may be parallel to an edge of G' = G − F (a pair of the pairing adjacent in J).
+
+**Oracle.** `ptm.c`: the search engine of `tools/stl.c` (validated in E22 against brute force), verbatim except for generation-stamped memo reset; every positive answer is re-checked by an independent verifier (edge partition, path property, end counts, star condition, allowed transitions, prescribed ends). 0 bad witnesses in all runs. Modes: `s` (all matchings of M edges of all-odd G), `p` (G' given, F all perfect matchings of the even vertices of G'), `f` (instances given). Budget mode re-runs undecided instances 6 times with growing budgets and shuffled orders.
+
+**(A) Exhaustive, simple G** (all connected all-odd graphs, `nauty-geng -c`; every matching, not up to isomorphism):
+
+| n | m | instances | PTM fail | PTM(e@x) tests / fail | PEE tests / fail |
+|---|---|---|---|---|---|
+| 4 | 2 | 3 | 3 (K4) | — | — |
+| 6 | 2 | 206 | 0 | 824 / 0 | 824 / 36 |
+| 8 | 2 | 13,025 | 0 | 52,100 / 0 | 52,100 / 420 |
+| 6 | 3 | 47 | 1 (prism) | 276 / 2 | 368 / 122 |
+| 8 | 3 | 14,077 | 1 | 84,456 / 13 | 112,608 / 3,259 |
+| 8 | 4 | 1,955 | 0 | 15,640 / 14 | 31,280 / 2,787 |
+
+Every PTM failure with m ≥ 3 and every PTM(e@x) failure has G − F disconnected. PTM_2 fails only at K4 (even with G − F disconnected allowed).
+
+**(B) Exhaustive, n = 10, up to isomorphism.** `encode.c` (each F-edge subdivided by a vertex with two pendant leaves, the only even vertices) → `nauty-labelg` → `sort -u` → `decode.py` → `ptm f`. The 32,851 connected all-odd graphs of order 10 give 3,474,599 classes (G, F) with |F| = 2 (validated at n = 8: 13,025 instances → 3,913 classes, all pass). Run `run_n10.sh 2`; result: **pending** (see the update below).
+
+**(C) Multigraph case** (`ptm p 0`, all connected G' of order ≤ 8, F any perfect matching of Ev(G') with G' + F connected):
+
+| n | instances | with a parallel pair | PTM fail | PTM(e@x) fail |
+|---|---|---|---|---|
+| 4 | 6 | 4 | 1 (K4) | 0 |
+| 6 | 299 | 236 | 0 | 16 |
+| 8 | 76,327 | 65,712 | 28 | 1,926 |
+
+Every failure other than K4 has a cut vertex in G' = G − F, and J of connectivity ≤ 2 (`analyze.py`). So 2-connected G − F (3-connected J) never fails.
+
+**(D) Girth ≥ 5** (`nauty-geng -ctf`, all-odd): n = 6, 8, 10, 12: 4 + 20 + 221 + 1,252 instances (m = 2), 5,988 PTM(e@x) tests, 0 failures, as Theorem 6.1 of the manuscript requires.
+
+**(E) Random, n = 12, 14, 16** (`gen_random.py`, `run_random.sh`; G(n,p), p ∈ [0.15, 0.5], parities repaired; m = 2, 3, 4; F chosen at random, or "close" (each new F-edge adjacent to an earlier one), or "share" (each new F-edge at distance exactly two, sharing neighbourhoods); 150 instances per cell, budget 2·10⁵ nodes per attempt). 0 PTM failures, 0 PTM(e@x) failures; undecided counts in `out/random.log` (re-run with larger budgets below).
+
+**(F) Reach of the walk theorem** (`walk.c`, all 2-matchings of all connected all-odd graphs; all 8 orientations; all admissible walks of least length):
+
+| n | instances | no admissible walk | base hypothesis holds | sparse hypotheses hold (proved theorem applies) |
+|---|---|---|---|---|
+| 6 | 206 | 1 | 160 | 31 |
+| 8 | 13,025 | 68 | 12,193 | 2,288 (3,093 with walks up to 3 longer) |
+
+The base hypothesis is decided exactly (the stl.c engine with a separation constraint).
