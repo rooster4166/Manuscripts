@@ -11,9 +11,10 @@ even-degrees §12.4 (inequality (1)), extended from half-sets to general profile
 * (C) `b(W) + d v + b v ≤ |δ(W)| + 2p` for every `v` and every `W ⊆ V − v`.
 `CutOK G b p` packages them, with `|δ(W)|` counted as `cutCount G W = ∑_{u ∈ W} #{y ∉ W : uy ∈ E}`.
 
-The conjecture EMM⁺ (manuscript, Conjecture 7.3) says that for connected `G` and `p ≥ ⌈n/2⌉`
-these conditions are also sufficient. In a counterexample with the fewest edges, a leaf `w` whose
-neighbour `x` has `b x + 2 ≤ d x` cannot exist:
+The statement EMM⁺ (manuscript, Definition 7.3) says that for connected `G` and `p ≥ ⌈n/2⌉`
+these conditions are also sufficient; it is false (Example 7.4), and so is EMM (Theorem 7.5). In a
+cut-feasible non-realisable instance with the fewest edges, a leaf `w` whose neighbour `x` has
+`b x + 2 ≤ d x` cannot exist (Lemma 7.7(c)):
 * **`cutOK_leaf`**: deleting the leaf edge and moving the end of `w` to `x` keeps (L) and (C);
 * **`ach_of_leaf`**: a partition of `G − xw` with that profile gives one of `G`, by appending `xw`
   to a path ending at `x` (`Ach.transfer`; `w` is isolated, so it has no blank neighbour);

@@ -1,0 +1,71 @@
+progress 0
+LOSE GsaCB{ [0, 1, 2, 3, 4, 5, 6, 7]
+progress 500
+progress 1000
+progress 1500
+LOSE GsbEJ{ [2, 3, 4]
+progress 2000
+progress 2500
+LOSE Gs`vvs [1, 2, 3]
+LOSE Gsbvnk [1, 2, 3]
+LOSE Gsbvj{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gsbvn{ [4]
+progress 3000
+LOSE Gs`~~w [0, 1, 2, 3, 4, 5, 6, 7]
+progress 3500
+progress 4000
+LOSE Gs`zro [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gs`~vs [0, 1, 2, 3, 4, 5, 6, 7]
+progress 4500
+progress 5000
+progress 5500
+progress 6000
+LOSE GsQfnk [1]
+progress 6500
+progress 7000
+progress 7500
+progress 8000
+progress 8500
+LOSE GsRvl{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE GsRvn{ [4]
+LOSE GsQ~vs [0, 1]
+LOSE GsQ~~w [0, 1, 2, 3, 4, 5, 6, 7]
+progress 9000
+LOSE Gsqf^[ [1, 2, 4, 5]
+LOSE GsqfZ{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gsqf^{ [3]
+LOSE Gsovvs [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gsov^[ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gsqv^[ [3]
+progress 9500
+LOSE Gsov~w [0, 1, 2, 3, 4, 5, 6, 7]
+progress 10000
+LOSE GsZvnk [4]
+progress 10500
+LOSE GsZu|{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE GqHzz{ [0]
+LOSE Gsz\z{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqqf^[ [4]
+LOSE GqjV^[ [3]
+progress 11000
+LOSE Gqrvnk [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqrn^[ [1]
+LOSE GqjVt{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqzvn[ [4]
+LOSE Gqzvm{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqz~vw [3]
+LOSE GujTR{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqzn^[ [1]
+LOSE Gqzn]{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqzm}{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqzl|{ [1]
+LOSE Gqzn~w [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gqz^~w [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gr~v~w [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gut~~w [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Gu^v~w [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Guv]}{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Guv]z{ [0, 1, 2, 3, 4, 5, 6, 7]
+LOSE Guv]~{ [2]
+LOSE Gut~vs [0, 1, 2, 3, 4, 5, 6, 7]
+11117 graphs 47 with a losing root

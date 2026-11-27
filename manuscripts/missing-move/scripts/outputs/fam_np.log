@@ -1,0 +1,12 @@
+A44 k=0 np hubs: LOSE I~{Nfbo{? Ev [0, 1, 2, 3, 6, 7, 8, 9] roots [6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=0, np, hubs) 
+A44 k=1 np hubs: LOSE I~{Nfbo{? Ev [0, 1, 2, 3, 6, 7, 8, 9] roots [6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=1, np, hubs) 
+A44 k=2 np hubs: 1 graphs, 0 with a losing root (kmax=2, np, hubs) 
+A62 k=0 np hubs: LOSE I~~~wF{~? Ev [0, 1, 2, 3, 4, 5, 8, 9] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=0, np, hubs) 
+A62 k=1 np hubs: LOSE I~~~wF{~? Ev [0, 1, 2, 3, 4, 5, 8, 9] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=1, np, hubs) 
+A62 k=2 np hubs: LOSE I~~~wF{~? Ev [0, 1, 2, 3, 4, 5, 8, 9] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=2, np, hubs) 
+B k=0 np hubs: LOSE I~~~~~_F? Ev [0, 1, 2, 3, 4, 5] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=0, np, hubs) 
+B k=1 np hubs: 1 graphs, 0 with a losing root (kmax=1, np, hubs) 
+B2 k=0 np hubs: LOSE I~~~wF{~G Ev [0, 1, 2, 3, 4, 5] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=0, np, hubs) 
+B2 k=1 np hubs: LOSE I~~~wF{~G Ev [0, 1, 2, 3, 4, 5] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=1, np, hubs) 
+B2 k=2 np hubs: LOSE I~~~wF{~G Ev [0, 1, 2, 3, 4, 5] roots [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 1 graphs, 1 with a losing root (kmax=2, np, hubs) 
+DONE

@@ -1,0 +1,5 @@
+STUCK EsRo [(0, 1), (0, 2), (0, 3), (0, 5), (1, 4), (1, 5), (2, 5), (3, 5)] b (0, 3, 0, 2, 1, 0)  fan_equality 4 concat_1_1 3 np_leaves_class 1
+STUCK EsRo [(0, 1), (0, 2), (0, 3), (0, 5), (1, 4), (1, 5), (2, 5), (3, 5)] b (0, 3, 2, 0, 1, 0)  fan_equality 4 concat_1_1 3 np_leaves_class 1
+STUCK Eqzo [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (2, 5), (3, 5)] b (0, 0, 3, 0, 3, 0)  fan_equality 4 concat_1_1 5 np_leaves_class 1
+STUCK Eu^o [(0, 1), (0, 2), (0, 3), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 0, 3, 0, 3, 0)  fan_equality 4 concat_1_1 6 np_leaves_class 1
+{'instances': 10847, 'stuck': 4, 'reducible': 2912, 'NP': 183, 'NP+T': 256, 'C+NP+T': 3839, 'NP+S+T': 802, 'C+NP+S+T': 2301, 'S': 10, 'NP+S+T+V': 36, 'C+T+V': 139, 'C+NP+S+T+V': 1573, 'C+NP+T+V': 1315, 'diag:eqccnpout': 4, 'NP+S': 87, 'T': 2, 'C+S+T+V': 26, 'C+S': 9, 'C+NP+S': 73, 'C+T': 128, 'C+NP': 48, 'C': 16}

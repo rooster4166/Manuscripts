@@ -700,7 +700,7 @@ Contribution from the missing-move session, 2026-11-27. Details: E17, missing-mo
 - **Class.** The induction needs general profiles. The general-profile cut criterion is **false**: n = 7, p = 2 (FqJBo, a 2-linkage obstruction), and 17 failures at n = 8 with p ≤ 3. Proposed class: **EMM⁺**, p ≥ ⌈n/2⌉ per component.
   - EMM⁺ holds for all profiles at n ≤ 7, for all profiles with p = 4 at n = 8, and on the n = 8 sample at every p.
   - EMM is the special case of half-sets.
-- **Minimal counterexample (proved).** It is connected, and has no reducible leaf or degree-2 vertex (Lemma 7.4).
+- **Minimal counterexample (proved).** It is connected, and has no reducible leaf or degree-2 vertex (Lemma 7.7).
   - The leaf case is in Lean, `EmmTemplate.lean`.
   - Names used there: `cutCount`, `CutOK` (conditions (L), (C) for general profiles), `cutOK_leaf`, `ach_of_leaf`, `leaf_step`. C1 may want to reuse or rename `CutOK`.
 - **Template test.** Moves are new path, Fan transfer, concatenation and path insertion.
@@ -708,4 +708,12 @@ Contribution from the missing-move session, 2026-11-27. Details: E17, missing-mo
   - Each one is at **Fan's equality**, or is a concatenation with one end at each endpoint.
   - So step (2) of the template needs an equality lemma producing a tight cut. The stuck instances, which include the butterfly, the octahedron and `Eqzo`, are the test cases.
 - Not done here: 2-connectivity of a minimal counterexample through TVS Thm 7 / SP §2 gluing.
+- **Update, same day: EMM is false** (missing-move Theorem 7.5; E17 addendum).
+  - Construction: glue an n = 8 below-budget linkage failure that has a leaf to a realisable gadget through a degree-2 vertex with b = 2, which no path crosses. This gives simple half-set counterexamples of order 12: 12 graphs, all confirmed by `tools/cut_test.py`.
+  - The budget version EMM⁺ already fails by padding (Example 7.4).
+  - Open repairs (Remark 7.6):
+    - (a) EMM when no vertex with b = d is a cut vertex. All counterexamples have such a cut vertex; a 2-connected version needs two saturated separators.
+    - (b) Cut conditions plus linkage conditions for the pieces below their budgets.
+  - Consequence for the programme: Gallai ⇐ EMM + CS no longer stands as stated. CS and EMC remain as before.
+
 

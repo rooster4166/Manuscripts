@@ -1,0 +1,39 @@
+STUCK Es`w [(0, 1), (0, 2), (0, 3), (0, 4), (1, 5), (2, 5), (3, 5), (4, 5)] b (0, 2, 2, 2, 2, 0)  fan_equality 8 concat_1_1 0 np_leaves_class 0
+STUCK Eqro [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 5), (3, 5)] b (0, 0, 2, 2, 2, 0)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Eqro [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 5), (3, 5)] b (0, 2, 0, 2, 0, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK Eqro [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 5), (3, 5)] b (2, 0, 2, 0, 0, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK Eqro [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 5), (3, 5)] b (2, 2, 0, 0, 0, 2)  fan_equality 6 concat_1_1 0 np_leaves_class 0
+STUCK Eqro [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 5), (3, 5)] b (2, 2, 0, 0, 2, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (0, 2, 0, 0, 2, 2)  fan_equality 6 concat_1_1 1 np_leaves_class 0
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (0, 2, 0, 2, 0, 2)  fan_equality 4 concat_1_1 3 np_leaves_class 1
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (0, 2, 2, 0, 0, 2)  fan_equality 4 concat_1_1 1 np_leaves_class 1
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (2, 0, 0, 0, 2, 2)  fan_equality 6 concat_1_1 1 np_leaves_class 0
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (2, 0, 0, 2, 2, 0)  fan_equality 4 concat_1_1 1 np_leaves_class 1
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (2, 0, 2, 0, 2, 0)  fan_equality 4 concat_1_1 3 np_leaves_class 1
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (2, 2, 0, 0, 0, 2)  fan_equality 6 concat_1_1 1 np_leaves_class 0
+STUCK EqzW [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 4), (3, 5), (4, 5)] b (2, 2, 0, 0, 2, 0)  fan_equality 6 concat_1_1 1 np_leaves_class 0
+STUCK Eutw [(0, 1), (0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (1, 5), (2, 5), (3, 4), (3, 5), (4, 5)] b (0, 0, 2, 2, 2, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK Eutw [(0, 1), (0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (1, 5), (2, 5), (3, 4), (3, 5), (4, 5)] b (0, 2, 2, 0, 2, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK Eutw [(0, 1), (0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (1, 5), (2, 5), (3, 4), (3, 5), (4, 5)] b (0, 2, 2, 2, 0, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 1
+STUCK Eutw [(0, 1), (0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (1, 5), (2, 5), (3, 4), (3, 5), (4, 5)] b (2, 0, 2, 0, 0, 2)  fan_equality 0 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 0, 0, 2, 2, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 0, 2, 0, 2, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 0, 2, 2, 0, 2)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 0, 2, 2, 2, 0)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 0, 0, 2, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 0, 2, 0, 2)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 0, 2, 2, 0)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 2, 0, 0, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 2, 0, 2, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (0, 2, 2, 2, 0, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 0, 0, 2, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 0, 2, 0, 2)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 0, 2, 2, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 2, 0, 0, 2)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 2, 0, 2, 0)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 0, 2, 2, 0, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 2, 0, 0, 0, 2)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 2, 0, 0, 2, 0)  fan_equality 6 concat_1_1 3 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 2, 0, 2, 0, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+STUCK Er~o [(0, 1), (0, 2), (0, 4), (0, 5), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)] b (2, 2, 2, 0, 0, 0)  fan_equality 4 concat_1_1 2 np_leaves_class 0
+{'instances': 456, 'stuck': 38, 'reducible': 499, 'diag:eq': 2, 'NP+T': 96, 'NP': 19, 'C+T': 136, 'C+NP+T': 126, 'T': 35, 'C': 6, 'diag:eqcc': 25, 'diag:eqccnpout': 10, 'diag:cc': 1}
