@@ -704,7 +704,10 @@ transitions, without the linking condition, $4$ of $1{,}834$ transversals in ran
 were not realisable.
 \item \emph{$L_1$, $L_N$.} No failure of $L_1$ in $70{,}978$ non-adjacent pairs (orders $\le10$), nor of
 the stronger statement that $Q_c\subseteq N[c]$ can be achieved ($19{,}040$ vertices). No failure of
-$L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs.
+$L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs. When the pairs form a perfect matching $N$ of $V(F)$ (the Eulerian case: $F+N$ has all
+degrees even), no failure in $2{,}332$ decided
+instances of orders $8$--$20$ ($157$ more were undecided within the search budget). In $2{,}421$ of the
+$2{,}489$ instances some pair is at distance two, where the symmetric version below fails.
 \item \emph{Separation.} The symmetric version of $L_N$ (no path contains both vertices of any pair) is
 false when some pair is at distance two, failing in about a fifth of random instances. It held in all
 $2{,}892$ tested instances of orders $8$--$16$ in which all pairs are at distance at least three,
@@ -761,6 +764,10 @@ files are sorry-free, and each theorem listed depends only on the standard axiom
   \texttt{isMinTJoin\_of\_two\_mul\_card\_le} is Lemma~\ref{lem:min}(5).
   \item \texttt{realisable\_of\_even\_matching} is Theorem~\ref{thm:isolated} when every route is a
   single edge, that is, when $G[\Ev]$ is a perfect matching.
+  \item \texttt{PathDecomp.route\_append} is Lemma~\ref{lem:ext}, (i)$\Rightarrow$(ii), the inductive
+  step of route descent: for a path $R$ of $G$ from $c$ to $a$ and a decomposition of $G-E(R)$ whose path
+  at $c$ meets $R$ only in $c$, it gives a decomposition of $G$ of the same size whose end counts are
+  those of the old one with one end moved from $c$ to $a$.
   \end{itemize}
 \item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
 \texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
@@ -769,7 +776,7 @@ files are sorry-free, and each theorem listed depends only on the standard axiom
 proof follows Cases I--IV above. The leaf of Case~II lives on the type \texttt{Option W} and is removed
 by a projection lemma; a strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets.
 \end{itemize}
-Not formalised: Lemmas~\ref{lem:hered} and~\ref{lem:ext} (routes as walks), Lemma~\ref{lem:min}(1)--(3),
+Not formalised: Lemma~\ref{lem:hered}, Lemma~\ref{lem:ext} (ii)$\Rightarrow$(i), Lemma~\ref{lem:min}(1)--(3),
 Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
 Corollary~\ref{cor:upm}, which is close to the existing \texttt{realisable\_of\_fanSchedule}.
 
