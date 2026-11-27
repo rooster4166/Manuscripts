@@ -241,6 +241,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | STL: star-terminal decompositions ⇒ spine tests, `gallai_of_stl` (A20) | **mathematics sound; Lean matches the paper**; one wrong count (44,336, not 54,336) and one overstated "STL ⇔ BAL ⇔ (T1) to n = 9" claim (needs d(r) ≥ 3) are being fixed |
 | prescribed-end: EE cases, PEE at neighbours of z, reductions (A21) | **no ERROR or GAP**; statement-level fixes applied (PrescribedEndOutside.lean postdates the audit) |
 | terminal-matching: ptm2_girth5, walk theorem, STL lift, test1_of_girth5 (A22) | **mathematics correct; Lean matches**; claim-level corrections (n = 10 still pending, citations, the K4 exception, "3-connected") are applied |
+| l1star: local form, reduction to blocked instances, EE from the blocked case (A23) | **headline theorems correct and faithfully formalised**; one degenerate-case statement ERROR in Thm 4.2(b) (Lean already had the fix) and one wrong remark; fixes applied; order-11 exhaustive run complete (119.6M pairs, 0 failures) |
 | spine paper (A15) | **no mathematical error**; one expository error, one GAP (self-containedness) and the Lean-pointer mismatches are fixed |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
