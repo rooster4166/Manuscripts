@@ -29,4 +29,5 @@
 \contentsline {section}{\numberline {8}The balancing step of the one-apex route}{15}{section.8}%
 \contentsline {paragraph}{The route.}{16}{section*.13}%
 \contentsline {paragraph}{The abstract problem.}{16}{section*.14}%
-\contentsline {section}{\numberline {9}Lean formalisation}{18}{section.9}%
+\contentsline {section}{\numberline {9}A conditional reduction of the near-regular case}{18}{section.9}%
+\contentsline {section}{\numberline {10}Lean formalisation}{21}{section.10}%
