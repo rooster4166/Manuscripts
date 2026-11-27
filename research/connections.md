@@ -1291,7 +1291,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ## Z. Two terminal edges at once: the terminal-matching property (cloud session `claude/ptm`, 2026-11-27)
 
-*Experiments: E24. Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Lean: `lean/GallaiLean/TerminalMatching.lean`. Audit: `research/audit/A22-ptm.md`. Origin: §X.4a, §X.6(1), synthesis §19.*
+*Experiments: E24. Manuscript: `manuscripts/terminal-matching/terminal-matching.tex`. Lean: `lean/GallaiLean/TerminalMatching.lean`. Audits: `research/audit/A22-ptm.md`, `research/audit/A22b-localgirth.md`. Origin: §X.4a, §X.6(1), synthesis §19.*
 
 ### Z.1 Verdict on the statement
 - **PTM₂ as stated is false**: K₄ with a perfect matching. This is W₄ with its diagonal pairing. The pairs are *not* adjacent in J, so this is a simple-graph failure, not a parallel-edge one.
@@ -1327,9 +1327,15 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
   - d_{J−z}(a,b), d_{J−z}(c,d) ≥ 4;
   - d(a,c) + d(b,d) ≥ 3 and d(a,d) + d(b,c) ≥ 3.
 - **Reach on random 3-connected graphs** with degrees 4, 3, …, 3 (E24(I)): some pairing qualifies in 5/300 graphs at order 11 and 210/300 at order 51. With global girth 5 the counts are 5/300 and 14/300.
+  - With 3000 graphs per order (audit A22b): 0.6% at order 11, 68.1% (local) vs 3.7% (global) at order 51, 83.6% vs 3.5% at order 101. The local form is what makes the corollary reach most large sparse instances.
 - This still needs sparse graphs around z. Its value is the mechanism, and that it is the first unconditional two-prescription result.
+- **Orientation (coordinator, from tight-fan; checked).** Test1 at d(z) = 4 was already known for every 3-connected J. J − z has exactly four even vertices, and the rooted test for four even vertices (endpoint-structure Cor 22, `rooted_four'`: Lovász + Fan, via two-step descent and `emc_four`; also Botler–Sambinelli Thm 13) gives it by the leaf argument (manuscript Remark 7.3).
+  - So test1_of_localgirth re-derives a known case, by a new mechanism (composition).
+  - What is new: the pairing-prescribed STL (STL-P) for the given pairing, and the method.
+  - d(z) = 4 is the base of the composition method. **The first open rung is d(z) = 6**: PTM_3 for G = (J − z) + F, F a perfect matching of the six neighbours, gives STL-P with three transitions, hence Test1 at d = 6. That is T(6)-i (ROADMAP; `rooted_six_of_bstmt3`; D6Frontier.lean).
 
 ### Z.4 Open (in order of promise)
+0. **Degree six (the first open rung, T(6)-i).** PTM_3 for the perfect matchings of N(z) at d(z) = 6, J 3-connected. Needed: data on these matchings, then a walk theorem with two pending edges. Some matchings fail (prism with rungs); STL-P needs only one good pairing. Tight-fan's refined Fan lemma ("a blank never reached as a predecessor does not count") is reported to close the 68 instances with no admissible walk.
 1. **The base separation problem beyond sparseness.**
    - K₄ shows some short-cycle configurations are genuinely bad.
    - With shortest walks the base hypothesis holds for some orientation in 93.6% of the instances at n = 8, but not in all of them (832 NOBASE).

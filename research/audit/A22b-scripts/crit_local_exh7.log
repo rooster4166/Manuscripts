@@ -1,0 +1,8 @@
+n<=4 {'tests': 16, 'lhs_true': 5, 'mismatch': 0, 'g_true': 5, 'g_mismatch': 0, 'local_not_global': 0}
+n<=5 {'tests': 272, 'lhs_true': 38, 'mismatch': 0, 'g_true': 38, 'g_mismatch': 0, 'local_not_global': 0}
+n<=6 {'tests': 8464, 'lhs_true': 348, 'mismatch': 0, 'g_true': 348, 'g_mismatch': 0, 'local_not_global': 0}
+n<=7 {'tests': 532752, 'lhs_true': 4632, 'mismatch': 0, 'g_true': 4447, 'g_mismatch': 0, 'local_not_global': 185}
+
+real	0m12.204s
+user	0m12.016s
+sys	0m0.008s

@@ -1,0 +1,2 @@
+adversarial 20000 2 {'k1': 3926, 'k3double': 3411, 'k3': 3749, 'k2five': 3883, 'k2path': 3869} {'graphs': 18838, 'graphs_girth5': 542, 'instances': 1720732, 'inst_G_not_girth5': 1712060, 'cases': 1888628, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 645384, 'M_nbr_of_X_on_short_cycle': 1035838, 'exceptional_v': 47008, 'exceptional_v_on_short_cycle': 18942, 'bf_ok': 0, 'bf_timeout': 0, 'BF_FAIL': 0, '_bf_this_graph': 0}
+elapsed 79 s

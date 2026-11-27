@@ -60,6 +60,7 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
+- **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`, new): applies the flower / receipt-or-flower moves (Flower.lean) to the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21).
 - **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`): **finished**.
   - **Lean:** `l1starGen_of_blocked`, `ee_of_l1Blocked`. So EE ⇐ L1* on *blocked* instances: g even, c ∉ N(g), every neighbour of g adjacent to A ∖ {g}.
   - **Data:** the local form V(Q_c) ⊆ N[c] ∪ N(g) (L1* for every A at once) holds exhaustively to n = 11, with 0 failures.
@@ -514,7 +515,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Audit A23: the theorems hold as stated, except that Theorem 4.2(b) was missing the hypothesis c ∉ N(g). That fix and all the others are applied; the Lean is unaffected.
 - **Local girth five (ptm 7df9b9c; standard axioms, verified).**
   - `ptm2_localgirth`: PTM2 with a prescribed end holds whenever no triangle or 4-cycle passes through an end of the two edges.
-  - `test1_of_localgirth`: spine Test1 at d(z) = 4 holds whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
+  - `test1_of_localgirth`: spine Test1 at d(z) = 4 (z the only even vertex, every neighbour of degree ≥ 3) holds for a pairing ab, cd of N(z) into pairs non-adjacent in J whenever no cycle of length ≤ 4 of (J − z) + ab + cd passes through N(z).
+  - Test1 at d(z) = 4 was already known (`rooted_four'`, endpoint-structure Cor 22), so this re-derives it by composition. New: STL-P for the given pairing. First open rung: PTM_3 at d(z) = 6 (T(6)-i).
   - It applies to 210/300 random 3-connected (4,3,…,3)-graphs at order 51; global girth 5 covered 14/300.
   - Audit A22 of the terminal-matching paper: no error in any proof, and its corrections are applied.
   - Data: all cubic graphs at n = 12, 14 have 0 failures; the n = 10 exhaustive run is at 11/24 chunks with 0 failures.

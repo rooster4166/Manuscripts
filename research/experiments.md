@@ -1104,6 +1104,11 @@ Supports Conjecture 2.4.
 | 31 | 300 | 815 | 216 | 17 | 138 | 11 |
 | 51 | 300 | 856 | 438 | 32 | 210 | 14 |
 
+Audit A22b re-derived these with an independent script (`research/audit/A22b-scripts/stat_check.py`). With 3000 graphs per order (`stat_check_3000.log`):
+- order 11: 19/3000 = 0.6% for both forms (the 5/300 above is a small-sample high);
+- order 51: 68.1% local, 3.7% global;
+- order 101: 83.6% local, 3.5% global.
+
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
 
 Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l1star/scripts/` (README there). Conclusions: connections §AA.

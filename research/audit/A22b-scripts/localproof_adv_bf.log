@@ -1,0 +1,2 @@
+adversarial 1500 1 {'k2five': 288, 'k1': 292, 'k3double': 277, 'k2path': 281, 'k3': 285} {'graphs': 1423, 'graphs_girth5': 46, 'instances': 132096, 'inst_G_not_girth5': 131360, 'cases': 145304, 'INADMISSIBLE': 0, 'NOT_SPARSE': 0, 'inner_P_on_short_cycle': 51608, 'M_nbr_of_X_on_short_cycle': 78712, 'exceptional_v': 3392, 'exceptional_v_on_short_cycle': 1444, 'bf_ok': 274, 'bf_timeout': 0, 'BF_FAIL': 0, '_bf_this_graph': 0}
+exit 0
