@@ -1,0 +1,15 @@
+K4               |V(H)|= 4 n(G)=10 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=True | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 16) | realisable=True
+prism            |V(H)|= 6 n(G)=16 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=True | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 36) | realisable=True
+K33              |V(H)|= 6 n(G)=16 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=True | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 48) | realisable=True
+cube             |V(H)|= 8 n(G)=22 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 100) | realisable=None
+Petersen         |V(H)|=10 n(G)=28 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=False, L(H) Ham-decomposable=False (Ham cycles 160) | realisable=None
+bridged10        |V(H)|=10 n(G)=28 lambda(L(H))=2 bridgeless=False | cut-feasible: flow=False brute=None | H Hamiltonian=False, L(H) Ham-decomposable=False (Ham cycles 0) | realisable=None
+random cubic 8   |V(H)|= 8 n(G)=22 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 82) | realisable=None
+random cubic 10  |V(H)|=10 n(G)=28 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 264) | realisable=None
+random cubic 10  |V(H)|=10 n(G)=28 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 296) | realisable=None
+random cubic 12  |V(H)|=12 n(G)=34 lambda(L(H))=4 bridgeless=True | cut-feasible: flow=True brute=None | H Hamiltonian=True, L(H) Ham-decomposable=True (Ham cycles 530) | realisable=None
+L(Petersen): Hamiltonian cycles 160 | Hamiltonian decomposition: False
+
+real	0m3.215s
+user	0m3.175s
+sys	0m0.111s
