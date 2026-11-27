@@ -645,4 +645,4 @@ Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgra
 - So every K2-residual root tested so far has a triangle base.
 - clt's two further witnesses are for the ∅ residual graph `M~~zRz{~m~~lX|j~_` at B-roots 0 and 3. The coordinator also re-checked these (`verify_clt_witness_resid.py`): both are Lovász, satisfy the disjunctions and lift to (T1).
 - clt's E30(G) further reports that on the 30 residual graphs a base exists for *every* root, data choice and orientation: 8,016 instances, all found, none proved absent and none undecided.
-- **No budget-undecided triangle-base instance remains.**
+- **No budget-undecided triangle-base instance remains among the d(z) = 6 runs.** The coordinator's d(z) = 8, n = 13 recheck at 3·10⁷ still has undecided roots (n = 13, m = 49, r = 1, and others pending). They are being rerun.
