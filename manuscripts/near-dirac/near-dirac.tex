@@ -129,8 +129,8 @@ Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
 \subsection{The one-apex route: what \S\S\ref{sec:balance}--\ref{sec:conditional} add}
 These sections work on (R1) with every exceptional vertex kept in the Hamilton graph and a single apex.
 \begin{itemize}[nosep]
-\item \textbf{Counting (proved).} Lemma~\ref{lem:bal-exact} is an exact balancing lemma; its proof rests on a mirror symmetry $(S,\Gamma)\mapsto(-S,-\Gamma)$ between the two choices of bin shore. Lemma~\ref{lem:bal-robust} is its robust form. Proposition~\ref{prop:bal-app} meets the one-apex counting window \emph{exactly}, for every size of $X$, under the degree window $D+|\Delta|+2|X|+2\le d_x\le5D/4$. Its proof is the two-sided sweep with nested removed sets found in audit A19.
-\item \textbf{Scheduling (not proved).} The scheduling half is isolated as the Scheduling Hypothesis~SH (Definition~\ref{def:SH}). With $X=\emptyset$ it lies in the regime of the last sentence of SP's proof of 14.37.
+\item \textbf{Counting (proved).} Lemma~\ref{lem:bal-exact} is an exact balancing lemma; its proof rests on a mirror symmetry $(S,\Gamma)\mapsto(-S,-\Gamma)$ between the two choices of bin shore. Lemma~\ref{lem:bal-robust} is its robust form. Proposition~\ref{prop:bal-app} meets the one-apex counting window \emph{exactly}, for every size of $X$, provided every exceptional vertex has at most $D$ healthy neighbours in each shore (condition~\eqref{eq:B1}, which excludes intermediate vertices) and the degree window $D+|\Delta|+2|X|+2\le d_x\le5D/4$ holds. Its proof is the two-sided sweep with nested removed sets found in audit A19.
+\item \textbf{Scheduling (not proved).} The scheduling half is isolated as the Scheduling Hypothesis~SH (Definition~\ref{def:SH}). With $X=\emptyset$ it lies in the regime of the penultimate sentence of SP's proof of 14.37.
 \item \textbf{Conditional reduction (proved).} Theorem~\ref{thm:conditional}: assuming SH, a failure sequence with $\Delta\le(1/2+o(1))n$ must, at all large orders, and for every maximum cut, contain an intermediate vertex (Problem~\ref{prob:intermediate}). Failures with larger maximum degree fall under Problem~\ref{prob:high}.
 \end{itemize}
 
@@ -560,7 +560,7 @@ A \emph{configuration} is a triple $(\nu,M,t)$ with $M\subseteq X$, the vertices
 \[
 S=\sum_{x\in M}\iota_x-\sum_{x\notin M}\kappa_x,\qquad \Gamma=\Delta_\nu+|X\setminus M|-|M| .
 \]
-It is \emph{valid} if $\Gamma+t\ge0$ and $S\in[D(t-1)/2,D(t+1)/2]$. These are, to first order, the conditions $|W|=\Gamma+t\ge0$ and \eqref{eq:window}. The imbalance $S$ ignores two things, which are treated as errors below: edges between exceptional vertices, and the edges from $X_K$ to $W$, which leave $R$ when $W$ is removed.
+It is \emph{valid} if $\Gamma+t\ge0$ and $S\in[D(t-1)/2,D(t+1)/2]$. These are, to first order, the conditions $|W|=\Gamma+t\ge0$ and \eqref{eq:window}. The imbalance $S$ ignores two things: edges between exceptional vertices, and the edges from $X_K$ to $W$, which leave $R$ when $W$ is removed. Lemma~\ref{lem:bal-robust} treats them as errors. Proposition~\ref{prop:bal-app} accounts for them exactly, via~\eqref{eq:exactvalue}.
 
 \begin{lemma}[Balancing, exact form]\label{lem:bal-exact}
 Under \eqref{eq:B1} a valid configuration exists.
@@ -696,7 +696,7 @@ Put $q=\lfloor n/2\rfloor-D$. Let $h$ be the maximum of $\own(v)+\mis(v)$ over $
 \begin{remark}[Status and meaning of SH]\label{rem:SH}
 SH is \emph{not proved} here.
 
-With $X=\emptyset$, hypotheses \ref{H2} and \ref{H4} are vacuous, and SH asks for the realisation of a bounded profile with $o(q)$ entries different from~$1$ on a bipartite-like graph with $o(q)$ size and degree errors. This is the regime of SP Theorems~14.33 and 14.37. The penultimate sentence of SP's proof of 14.37 says that ``the same construction realizes any cap-two profile of the degree parity on unequal shores when the number of even-degree sites and the three size and degree errors are $o(m)$''. At equal shores ($|K\setminus W|=|I|$), SH with $X=\emptyset$ allows $|b(I)-b(K)|\le e=o(q)$. That case is covered instead by Theorem~\ref{thm:main} with $X=\emptyset$ and $\rho=0$. For $X=\emptyset$ the conclusion of SH does not involve $W$.
+With $X=\emptyset$, hypotheses \ref{H2} and \ref{H4} are vacuous, and SH asks for the realisation of a bounded profile with $o(q)$ entries different from~$1$ on a bipartite-like graph with $o(q)$ size and degree errors. This is the regime of SP Theorems~14.33 and 14.37. The penultimate sentence of SP's proof of 14.37 says that ``the same construction realizes any cap-two profile of the degree parity on unequal shores when the number of even-degree sites and the three size and degree errors are $o(m)$''. At equal shores ($|K|=|I|$, i.e.\ $|W|=t$), SH with $X=\emptyset$ allows $|b(I)-b(K)|\le e=o(q)$. That case is covered instead by Theorem~\ref{thm:main} with $X=\emptyset$ and $\rho=0$. For $X=\emptyset$ the conclusion of SH does not involve $W$.
 
 The intended proof of SH runs SP's one-apex construction (Theorems~14.31 and 14.33) on $I\cup(K\setminus W)$, with the healthy internal edges first cleared as in SP~14.37. In that construction:
 \begin{itemize}[nosep]

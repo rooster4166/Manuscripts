@@ -137,9 +137,9 @@ Manuscript: `manuscripts/near-dirac`.
 
 Open:
 
-- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is **proved in full** (§8), for the "keep X in J" route.
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is **proved** (§8) for the "keep X in J" route, under (B1): every exceptional vertex has at most D healthy neighbours in each shore, which excludes intermediate vertices (Remark 8.4).
   - Lemmas 8.1 and 8.2: mirror-symmetry balancing.
-  - Prop 8.3: an exact two-sided sweep, due to audit A19. It meets the window for every |X|, under the degree window.
+  - Prop 8.3: an exact two-sided sweep, due to audit A19. It meets the window for every |X|, under (B1) and the degree window.
   - Open: the scheduling half, stated as the Scheduling Hypothesis SH (§9).
   - Thm 9.3 (proved, conditional on SH): near-regular failures must contain an intermediate vertex (Problem 9.4).
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
