@@ -117,7 +117,14 @@ EMM sufficiency work is **stopped**.
   - **Conjecture UC:** p_r ≤ max(CB, ⌈n/2⌉ − 1) for 2-connected B. It is exhaustive to order 10 and holds on the dense order-12 family; it is false without 2-connectivity.
   - **Reductions** (proved, constructions verified; the cycle-insertion lemma is in Lean as `PathDecomp.cycle_insert`, `ear_insert`): in a smallest counterexample to RE*, every degree-2 vertex other than r is a connected ear, no two are twins, and odd order has none. The open case is the even-order ear, an avoidance condition.
   - **Audit A30:** pending.
-- **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
+- **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`): **finished** (732e075). Manuscript `manuscripts/clt` (9 pp.); audit A27 applied.
+  - **Master conjectures CLT-B / CLT-B1** (Lean `CLTB`, `CLTB1`). CLT-B1 ⇒ L1*, L∞ and EE; CLT-B ⇒ L_N.
+  - **Data:** 0 failures over all systems in all 12,312 graphs of order ≤ 9, and 0 in 6,600 random maximal systems at n = 11–16.
+  - **Boundary:** every relaxation fails, with small examples.
+  - **Lean:** Fan's lemma with end paths (`fan_single_track`); the transfers `csys_caseI`, `csys_case_adj`, `csys_case_leaf`; the packed and sparse cases.
+  - **Where the induction stops:** for k = 1 it is exactly L1Blocked. For k ≥ 2 the new residuals are adjacent tails and tails with a common neighbour in N(g).
+  - **Outside CLT:** ST, and DL, the free-orientation non-local condition. Both still hold on all residual data.
+  - **Open:** CLT-B1 at k = 2; a free-orientation CLT containing DL.
 - **t6-dense**: **finished** (ec9fcc4).
   - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
   - **Audit A26:** sound; fixes F1–F10 applied. Conj 5.1's (E7) branch is equivalent to STL-P plus two terminal edges, a strengthening of STL.
