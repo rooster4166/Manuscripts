@@ -1,0 +1,1 @@
+upm: Corollary 29 proof executed on 164 orientations (all outputs checked)

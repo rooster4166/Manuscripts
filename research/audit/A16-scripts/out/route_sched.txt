@@ -1,0 +1,1 @@
+sched: Theorem 28 proof executed on 198 schedules (all outputs checked); 50 Fan-isolated systems: every order/orientation a schedule and G[Ev] a matching

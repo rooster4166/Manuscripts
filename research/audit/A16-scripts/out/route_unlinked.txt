@@ -1,0 +1,5 @@
+unlinked: Ev = [0, 2, 6, 7, 8, 9], |J| = 5, minimum T-join size = 5
+  vertices whose transitions cannot be linked in F^v: [8]
+  transversal [8, 2, 9]: 0 realisations (exhaustive enumeration)
+  transversal [8, 6, 9]: 0 realisations (exhaustive enumeration)
+  pairing [(0, 8), (2, 6), (7, 9)]

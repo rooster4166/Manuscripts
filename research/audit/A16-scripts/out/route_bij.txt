@@ -1,0 +1,1 @@
+bij: Lemma 9 bijection verified for 1906 (G, P, M, p) (1475 with a nonempty side, 58876 realisations matched); Proposition 15 bijection verified for 1125 (G, P, M) (697 nonempty, 12066 route-respecting realisations matched)
