@@ -1,5 +1,13 @@
 # GallaiLean
 
+## Prescribed end edges (cloud session, branch `claude/ee`)
+
+Manuscript `manuscripts/prescribed-end`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
+
+| File | Content |
+|---|---|
+| `PrescribedEnd.lean` | **`sep_atMostOneCommon`**, **`ee_atMostOneCommon`**: if `z` is the only vertex of positive even degree and `u ∈ N(z)` has at most one common neighbour with `z`, then `G − uz` has a Lovász decomposition separating `u` and `z`, and `uz` is the terminal edge at `u` of some Lovász decomposition of `G` (separation in `G − uz − uw`, Fan with target `w`, append). **`ee_deg_two`**: EE whenever `d(z) = 2`. Leaf-graph infrastructure: **`PathDecomp.append_move_exact`**, **`PathDecomp.liftLeaf`** (lift to `apex K {r}`, extending one path by the leaf edge, with exact supports), **`endEdge_of_leafSep`** (a decomposition of `apex (G − xy) {y}` separating `x` from the leaf gives `xy` terminal at `x`). **`pee_adjEven`**: if `y ∈ N(z)`, `x ≠ z` and `x, y` have at most one common neighbour besides `z`, then `xy` is terminal at `x` (EE at `y` in `G − zy`, then Fan with target `y` in the leaf graph). **`ee_of_triangle`**: for a common neighbour `w`, EE at `u` follows from a Lovász decomposition of `G − {uz, uw, wz}` whose path ending at `w` avoids `u` and `z`. |
+
 ## Multi-pair separation (cloud session, branch `claude/multi-sep`)
 
 Manuscript `manuscripts/multi-sep`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.

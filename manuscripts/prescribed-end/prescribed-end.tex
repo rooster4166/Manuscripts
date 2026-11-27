@@ -1,0 +1,556 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+
+\title[Prescribed end edges]{Prescribed end edges in Lov\'asz decompositions\\ with one even vertex}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $K$ be a graph with at most one vertex $z$ of positive even degree. A \emph{Lov\'asz
+decomposition} of $K$ is a partition of $E(K)$ into paths in which every vertex $v$ is the end of
+exactly $d(v)\bmod 2$ paths; Lov\'asz proved that one exists. For an edge $xy$ with $d(x)$ odd, say
+that $xy$ is \emph{terminal at $x$} if the path ending at $x$ has $xy$ as its last edge. When all
+degrees are odd, every edge is terminal at either end in some Lov\'asz decomposition. We ask
+whether this survives one even vertex.
+
+\begin{itemize}
+\item \emph{Away from $z$ it does not.} On five vertices there is an edge $xy$, $y\ne z$, that is
+terminal at $x$ in no Lov\'asz decomposition. Computation finds $1{,}410$ such edges among the
+$330{,}449$ edges $xy$ ($y\ne z$, $d(x)\ge3$) of the $11{,}936$ connected graphs of order~$9$ with one
+even vertex.
+\item \emph{At $z$ we conjecture that it does} (Conjecture~EE: every edge $uz$ is terminal at $u$),
+with no counterexample among all graphs of order at most $9$, more than $30$ million edges of graphs of
+order $11$, and random graphs of orders $11$--$17$. We prove EE whenever $u$ and $z$ have at most one
+common neighbour, for every degree of $u$. This contains all earlier partial results (no triangle on
+$uz$; $d(u)=3$ outside two configurations) and the whole case $d(z)=2$.
+\item \emph{A protected-end lemma.} Fan's transfer lemma never moves the end of a vertex $x$ not
+adjacent to the target, nor of a vertex whose end edge goes to the target. With it, Lov\'asz's
+Case~I step reduces a prescription away from $z$ to EE at another vertex. Hence: if some $z$--$y$
+path has all interior vertices outside $N[x]$, then EE implies that $xy$ is terminal at $x$.
+Unconditionally, $xy$ is terminal at $x$ when $y\in N(z)$ and $x,y$ have at most one common
+neighbour other than $z$. Every one of the failures found by computation lies outside the reach of
+this reduction.
+\item \emph{The remaining case of EE} ($u,z$ with two or more common neighbours) reduces, through a
+triangle $uzw$, to an avoidance statement of $L_1$ type, which we isolate as a conjecture ($L_1^*$)
+together with its computational evidence.
+\end{itemize}
+The main results are formalised in Lean~4 with Mathlib, with no \texttt{sorry} and only the standard
+axioms. Computations are in a separate, labelled section; no proof depends on them.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path decomposition} of $K$ partitions $E(K)$ into paths,
+each with at least one edge. For a decomposition $\cD$ and a vertex $v$, $b_\cD(v)$ is the number of
+paths of $\cD$ with an end at $v$; always $b_\cD(v)\equiv d(v)\pmod 2$. A vertex has \emph{positive
+even degree} if $d(v)>0$ is even. Following~\cite{RD} we call $\cD$ a \emph{Lov\'asz decomposition}
+if $b_\cD(v)=d(v)\bmod 2$ for every $v$: every odd vertex ends exactly one path and every even vertex
+ends none. For an odd vertex $x$ we write $Q_x$ for the path ending at $x$.
+
+\begin{theorem}[Lov\'asz~\cite{L68}]\label{thm:lovasz}
+A graph with at most one vertex of positive even degree has a Lov\'asz decomposition.
+\end{theorem}
+
+\begin{definition}
+Let $xy$ be an edge with $d(x)$ odd. Then $xy$ is \emph{terminal at $x$} in a Lov\'asz
+decomposition $\cD$ if $xy$ is the edge of $Q_x$ at $x$, equivalently if $xy\in E(Q_x)$.
+\end{definition}
+
+\begin{theorem}[prescribed end edge~\cite{MS}]\label{thm:endedge}
+If all degrees of $K$ are odd, every edge $xy$ is terminal at $x$ in some Lov\'asz decomposition.
+\end{theorem}
+
+The question of this paper is what remains of Theorem~\ref{thm:endedge} when $K$ has one vertex $z$
+of positive even degree. There are two kinds of edges $xy$ with $d(x)$ odd: those at $z$ ($y=z$), and
+those away from $z$ ($y\ne z$, so $d(y)$ is odd too).
+
+\begin{conjecture}[PEE, prescribed end edge]\label{conj:pee}
+In every graph with at most one vertex of positive even degree, every edge $xy$ with $d(x)$ odd is
+terminal at $x$ in some Lov\'asz decomposition.
+\end{conjecture}
+
+\begin{conjecture}[EE~\cite{MS}]\label{conj:ee}
+Let $z$ be the only vertex of positive even degree of $K$, and let $u\in N(z)$. Then $uz$ is terminal
+at $u$ in some Lov\'asz decomposition of $K$.
+\end{conjecture}
+
+Conjecture~\ref{conj:ee} is the case $y=z$ of Conjecture~\ref{conj:pee}. It is the step of
+Lov\'asz's induction at the even vertex with a trivial Fan chain~\cite[Proposition~EE]{MS}, and it is
+the one-transition case of the star-terminal programme for the spine tests of Gallai's
+conjecture~\cite{STL}. The multi-pair separation manuscript~\cite{MS} proves it when $uz$ is in no
+triangle, and when $d(u)=3$ outside two local configurations; the star-terminal
+manuscript~\cite{STL} adds the case $d(z)=2$ with $u$ and the other neighbour of $z$ having no second
+common neighbour.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Conjecture~\ref{conj:pee} is false away from the even vertex (Proposition~\ref{prop:counter}). The
+smallest counterexample has five vertices.
+\item Conjecture~\ref{conj:ee} holds whenever $u$ and $z$ have at most one common neighbour
+(Theorem~\ref{thm:common}). In particular it holds whenever $d(z)=2$ (Corollary~\ref{cor:deg2}),
+which completes the star-terminal conjecture at $d(z)=2$.
+\item A \emph{protected-end lemma} (Lemma~\ref{lem:protect}): Fan's transfer with target $g$ keeps a
+terminal edge $xy$ at $x$ when $x\notin N(g)$ or $y=g$. Consequences
+(Theorem~\ref{thm:path}, Corollary~\ref{cor:adj}): EE reaches every edge $xy$ away from $z$ for which
+some $z$--$y$ path has its interior outside $N[x]$; and $xy$ is terminal at $x$ unconditionally when
+$y\in N(z)$ and $x,y$ have at most one common neighbour other than $z$. If $z$ has a pendant
+neighbour, Conjecture~\ref{conj:pee} holds for $K$ (Proposition~\ref{prop:pendant}).
+\item The remaining case of EE reduces to $L_1$-type avoidance statements
+(Theorem~\ref{thm:triangle}, Proposition~\ref{prop:moveA}), unified as Conjecture~\ref{conj:L1star}.
+\item Computations (Section~\ref{sec:comp}): an exact oracle, validated against brute force and an
+independent oracle; exhaustive results to order $9$ (EE to order $11$); random graphs to order~$17$.
+In the data, the failures of PEE are exactly confined to the edges that the reduction of item~3
+cannot reach.
+\item Lean formalisation of Theorem~\ref{thm:common}, Corollary~\ref{cor:deg2}, the case $k=1$ of Corollary~\ref{cor:adj}, and Theorem~\ref{thm:triangle} (Section~\ref{sec:lean}).
+\end{enumerate}
+
+\section{Preliminaries}\label{sec:prelim}
+
+For a decomposition $\cD$ and a vertex $g$ let $Z_\cD(g)=\{w\in N(g):b_\cD(w)=0\}$.
+
+\begin{lemma}[{Fan's lemma with vertex sets~\cite{Fan05},~\cite[Lemma~2.2]{RD}}]\label{lem:fan}
+Let $\cD$ be a path decomposition of $K$, let $t\ne g$ be non-adjacent, and suppose
+$b_\cD(t)>|Z_\cD(g)|$. Then $K+tg$ has a path decomposition $\cD^+$ with
+$b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_g$ in which every path has its vertex set inside $V(Q)\cup\{g\}$
+for some path $Q$ of $\cD$.
+\end{lemma}
+
+\begin{theorem}[{separation~\cite[Theorem~6.1]{RD}}]\label{thm:sep}
+If $K$ has at most one vertex of positive even degree and $c,a$ are at distance at least three, then
+some Lov\'asz decomposition of $K$ has no path containing both $c$ and $a$.
+\end{theorem}
+
+\begin{proposition}[{\cite[Proposition~EE]{MS}, no classes}]\label{prop:EEequiv}
+Let $z$ be the only vertex of positive even degree, $u\in N(z)$ and $K'=K-uz$. Then $uz$ is terminal at
+$u$ in some Lov\'asz decomposition of $K$ if and only if $K'$ has a Lov\'asz decomposition whose path
+$Q_z$ avoids $u$. (Append $zu$ to $Q_z$; conversely delete $uz$.)
+\end{proposition}
+
+\emph{The leaf graph.} For an edge $xy$ let $H(K;x,y)$ be $K-xy$ together with a new vertex $\ell$ and
+the edge $y\ell$. Identifying $\ell$ with $x$ maps $H(K;x,y)$ onto $K$, bijectively on edges.
+
+\begin{lemma}[leaf merge~\cite{MS}]\label{lem:merge}
+Let $\cD_H$ be a path decomposition of $H=H(K;x,y)$ in which no path contains both $x$ and $\ell$.
+Identifying $\ell$ with $x$ gives a path decomposition $\cD$ of $K$ with $b_\cD(x)=b_{\cD_H}(x)+
+b_{\cD_H}(\ell)$ and $b_\cD(w)=b_{\cD_H}(w)$ otherwise. The path through $y\ell$ becomes a path through
+$yx$ with the same ends, $\ell$ replaced by $x$.
+\end{lemma}
+
+\begin{lemma}\label{lem:leafequiv}
+Let $d(x)$ be odd. Then $xy$ is terminal at $x$ in some Lov\'asz decomposition of $K$ if and only if
+$H(K;x,y)$ has a decomposition $\cD_H$ with $b_{\cD_H}(x)=0$, $b_{\cD_H}(\ell)=1$ and
+$b_{\cD_H}(w)=d_K(w)\bmod 2$ for $w\ne x,\ell$, in which no path contains both $x$ and $\ell$. We call
+such a $\cD_H$ a \emph{leaf witness} for $xy$.
+\end{lemma}
+
+\begin{proof}
+Given $\cD$, write $Q_x=Ryx$; $x$ occurs on $Q_x$ only at its end. Replace $Q_x$ by $Ry\ell$. The
+other paths do not contain $\ell$, and $Ry\ell$ does not contain $x$. The end counts are as stated.
+Conversely apply Lemma~\ref{lem:merge}: $b_\cD(x)=0+1$, and the path through $y\ell$, which ends at
+$\ell$ since $\ell$ is a leaf, becomes a path ending at $x$ through $yx$.
+\end{proof}
+
+In the leaf graph, ``$xy$ is terminal at $x$'' has become a property of vertex sets, and
+Lemma~\ref{lem:fan} preserves it whenever the target is neither $x$ nor $\ell$. This is the engine of
+everything below.
+
+\section{Away from the even vertex, PEE fails}\label{sec:counter}
+
+\begin{proposition}\label{prop:counter}
+Let $z$ be the only vertex of positive even degree of $K$. Suppose $d(z)=2$ with $N(z)=\{x,t\}$ and
+$d(x)=3$ with $N(x)=\{z,t,y\}$. Then $xy$ is terminal at $x$ in no Lov\'asz decomposition. Such graphs
+exist on five vertices: $x,t,z,y,p$ with edges $xt,xz,xy,tz,ty,yp$.
+\end{proposition}
+
+\begin{proof}
+Suppose $xy$ is terminal at $x$. Then $x$ has its only end on $Q_x$, through $xy$; the other two edges
+$xz$, $xt$ at $x$ are consecutive on one path $P$. Since $z$ has no end and degree two, $zx$ and $zt$
+are consecutive on a path; this is $P$, which contains $zx$. So $P$ contains $t\,x\,z\,t$, which repeats
+$t$. In the example the degrees are $d(x)=d(t)=d(y)=3$, $d(z)=2$, $d(p)=1$.
+\end{proof}
+
+So Conjecture~\ref{conj:pee} fails for edges away from $z$. The computations of
+Section~\ref{sec:comp} show many more failures, of several local types, with $d(x)\in\{3,5,7\}$ and
+$d(z)\in\{2,4,6\}$. In every failure found, $y\notin N(z)$, $\mathrm{dist}(x,z)\le2$, and $xy$ is
+terminal at $y$ in some Lov\'asz decomposition. Section~\ref{sec:away} explains the first property.
+The other two remain conjectural (Question~\ref{q:away}).
+
+\section{The protected-end lemma}\label{sec:protect}
+
+\begin{lemma}[protected end]\label{lem:protect}
+Let $\cD$ be a decomposition of $K$, let $t\ne g$ be non-adjacent, and let $x\notin\{t,g\}$ have
+$b_\cD(x)=1$, with $Q_x$ ending at $x$ through the edge $xy$. Suppose that either $x\notin N(g)$ or
+$y=g$, and that $b_\cD(t)>|Z_\cD(g)|$. Then $K+tg$ has a decomposition $\cD^+$ with
+$b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_g$ whose path ending at $x$ goes through $xy$.
+\end{lemma}
+
+\begin{proof}
+Pass to the leaf graph $H=H(K;x,y)$ as in the proof of Lemma~\ref{lem:leafequiv}: replace $Q_x=Ryx$ by
+$Ry\ell$. This gives a decomposition $\cD_H$ of $H$ with $b_{\cD_H}(x)=0$, $b_{\cD_H}(\ell)=1$ and the
+other end counts of $\cD$, in which no path contains both $x$ and $\ell$. In $H$ the vertex $x$ is not
+adjacent to $g$: either $x\notin N_K(g)$, or $y=g$ and the edge $xg$ has been removed. The leaf $\ell$
+has an end. Hence $Z_{\cD_H}(g)\subseteq Z_\cD(g)$ and $b_{\cD_H}(t)=b_\cD(t)$ (as $t\ne x$), so
+Lemma~\ref{lem:fan} applies in $H$ to $t$ and $g$ (non-adjacent in $H$, since $H-\ell\subseteq K$).
+It gives a decomposition of $H+tg=H(K+tg;x,y)$ with $b=b_{\cD_H}-\mathbf 1_t+\mathbf 1_g$ in which every
+path lies in an old path together with $g$. Since $g\notin\{x,\ell\}$, still no path contains both $x$
+and $\ell$. Lemma~\ref{lem:merge} gives $\cD^+$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:protect} can also be read off the chain in the proof of Fan's lemma~\cite[Lemma~2.2]{RD}.
+Every chain vertex after $t$ is a vertex $\pi$ immediately before $g$ on a path read from one of its
+ends. A vertex $x\notin N(g)$ is never one. Neither is a vertex whose end path has $xg$ as its end
+edge: on that path $x$ comes after $g$ when it is read from its other end. A re-routing changes a path
+only near the end it is read from, and the append happens at a chain vertex, so the end at $x$ and its
+edge are untouched. The leaf proof uses only the statement of Lemma~\ref{lem:fan}, and it is the one
+formalised.
+\end{remark}
+
+\section{EE when \texorpdfstring{$u$}{u} and \texorpdfstring{$z$}{z} have at most one common
+neighbour}\label{sec:common}
+
+\begin{theorem}\label{thm:common}
+Let $z$ be the only vertex of positive even degree of $K$ and $u\in N(z)$. If $u$ and $z$ have at
+most one common neighbour, then $K-uz$ has a Lov\'asz decomposition in which no path contains both
+$u$ and $z$. Consequently $uz$ is terminal at $u$ in some Lov\'asz decomposition of $K$.
+\end{theorem}
+
+\begin{proof}
+If $u$ and $z$ have no common neighbour they are at distance at least three in $K'=K-uz$, and
+Theorem~\ref{thm:sep} applies ($K'$ has at most one vertex of positive even degree, namely $u$).
+
+Let $w$ be the unique common neighbour, and let $K_0=K-uz-uw$. Degrees: $d_{K_0}(u)=d(u)-2$, which is
+odd as $d(u)$ is odd and at least $3$; $d_{K_0}(w)=d(w)-1$, which is even and positive, as $w\ne z$
+has odd degree at least two; $d_{K_0}(z)=d(z)-1$ is odd; all other degrees are as in $K$. So $w$ is the
+only vertex of $K_0$ of positive even degree. In $K_0$ the vertices $u,z$ are non-adjacent, and a
+common neighbour would be a common neighbour in $K$ other than $w$; so they are at distance at least
+three. Theorem~\ref{thm:sep} gives a Lov\'asz decomposition $\cD_0$ of $K_0$ with no path containing
+both $u$ and $z$.
+
+Now apply Lemma~\ref{lem:fan} to $K_0$, $t=u$, target $w$. Every neighbour of $w$ in $K_0$ has odd
+degree, hence an end, so $Z_{\cD_0}(w)=\emptyset$, while $b_{\cD_0}(u)=1$. The result is a
+decomposition $\cD_1$ of $K_0+uw=K-uz$ with $b_{\cD_1}(u)=0$, $b_{\cD_1}(w)=1$ and the other end counts
+of $\cD_0$; these are the Lov\'asz end counts of $K-uz$. Every path of $\cD_1$ lies in a path of
+$\cD_0$ together with $w\notin\{u,z\}$, so no path of $\cD_1$ contains both $u$ and $z$. In particular
+$Q_z$ avoids $u$, and Proposition~\ref{prop:EEequiv} finishes the proof.
+\end{proof}
+
+\begin{corollary}\label{cor:deg2}
+If the even vertex $z$ has degree two, both of its edges are terminal at their other ends in suitable
+Lov\'asz decompositions. In particular, the star-terminal conjecture of~\cite{STL} holds whenever
+$d(z)=2$, including the configuration with two triangles $zuw$, $tuw$ left open there.
+\end{corollary}
+
+\begin{proof}
+If $N(z)=\{u,w\}$, the only possible common neighbour of $u$ and $z$ is $w$. For the second
+statement: by~\cite{STL}, STL at $d(z)=2$ is EE at the other neighbour.
+\end{proof}
+
+\begin{remark}\label{rem:covers}
+Theorem~\ref{thm:common} contains the earlier partial results on EE without classes: $uz$ in no
+triangle; $N(u)=\{z,a,b\}$ with $ab,zb\notin E$ (then the common neighbours lie in $\{a\}$); and
+$N(u)=\{z,a,b\}$, $ab\in E$, with $u$ the only common neighbour of $a,b$ (then $z$ is not adjacent to
+both $a$ and $b$)~\cite[Proposition~EE3]{MS}. It also contains the two degree-two cases
+of~\cite{STL}. It does not depend on $d(u)$. By Theorem~\ref{thm:common} the
+remaining configurations of EE are those where $u$ and $z$ have at least two common neighbours,
+which forces $d(z)\ge4$.
+\end{remark}
+
+\section{Edges away from the even vertex}\label{sec:away}
+
+\begin{theorem}\label{thm:path}
+Let $z$ be the only vertex of positive even degree of $K$, and let $xy$ be an edge with $x\ne z$ and
+$y\ne z$. Suppose $z=e_0,e_1,\dots,e_k=y$ ($k\ge1$) is a path in $K$ with $e_1,\dots,e_{k-1}\notin
+N[x]$, and let $K_k=K-\{e_0e_1,\dots,e_{k-1}e_k\}$. Then $y$ is the only vertex of $K_k$ of positive
+even degree, $x\in N_{K_k}(y)$, and if $xy$ is terminal at $x$ in some Lov\'asz decomposition of $K_k$
+(Conjecture~\ref{conj:ee} for $K_k$, $y$, $x$), then $xy$ is terminal at $x$ in some Lov\'asz
+decomposition of $K$.
+\end{theorem}
+
+\begin{proof}
+Let $K_i=K-\{e_0e_1,\dots,e_{i-1}e_i\}$. The path visits distinct vertices, so in $K_i$ the vertex
+$e_i$ has lost one edge, $e_0,\dots,e_{i-1}$ have lost one ($e_0$) or two edges, and the others none.
+So $e_i$ is the only vertex of $K_i$ of positive even degree: for $0<i$, $e_i\ne z$ is odd in $K$ and has
+degree at least two (two path neighbours for $i<k$; $e_{k-1}$ and $x\ne e_{k-1}$ for $i=k$). The edge
+$xy$ is not on the path, and $x$ is not a path vertex: $x\ne z,y$, and $e_1,\dots,e_{k-1}\notin N[x]$.
+
+Let $\cD_k$ be a Lov\'asz decomposition of $K_k$ in which $xy$ is terminal at $x$. For $i=k,\dots,1$
+apply Lemma~\ref{lem:protect} to $K_i$ with $t=e_{i-1}$ and target $g=e_i$. In $K_i$ we have
+$b(e_{i-1})=1$, and every neighbour of $e_i$ has odd degree, so $Z(e_i)=\emptyset$. Also
+$x\notin\{t,g\}$. For $i<k$ the target $e_i$ is not adjacent to $x$, and for $i=k$ the target is $y$. So
+the lemma applies and gives a Lov\'asz decomposition of $K_{i-1}$ in which $xy$ is terminal at $x$.
+After the step $i=1$ we reach $K_0=K$.
+\end{proof}
+
+Call an edge $xy$ away from $z$ \emph{reachable} if a path as in Theorem~\ref{thm:path} exists, that
+is, if $y\in N(z)$ or $y$ has a neighbour in the component of $z$ in $K-(N[x]\setminus\{z\})$.
+
+\begin{corollary}\label{cor:adj}
+Let $z$ be the only vertex of positive even degree, let $y\in N(z)$, and let $xy$ be an edge with
+$x\ne z$. If $x$ and $y$ have at most one common neighbour other than $z$, then $xy$ is terminal at
+$x$ in some Lov\'asz decomposition. More generally, $xy$ is terminal at $x$ whenever it is reachable
+through a path with $k\ge2$ and $x,y$ have at most one common neighbour.
+\end{corollary}
+
+\begin{proof}
+Apply Theorem~\ref{thm:path} with $k=1$. In $K_1=K-zy$ the common neighbours of $x$ and $y$ are those of
+$K$ other than $z$, so Theorem~\ref{thm:common} gives the hypothesis for $K_1$, $y$, $x$. For $k\ge2$ we
+have $N_{K_k}(x)=N(x)$ and $N_{K_k}(y)=N(y)\setminus\{e_{k-1}\}$ with $e_{k-1}\notin N(x)$.
+\end{proof}
+
+\begin{corollary}\label{cor:EEimplies}
+If Conjecture~\ref{conj:ee} holds, then every reachable edge $xy$ away from $z$ is terminal at $x$ in
+some Lov\'asz decomposition. In particular this holds for every edge $xy$ with $y\in N(z)$.
+\end{corollary}
+
+Proposition~\ref{prop:counter} is an unreachable edge: the only routes from $z$ to $y$ pass through
+$x$ or $t\in N(x)$. By computation (Section~\ref{sec:comp}), all $1{,}410$ failures at order $9$ and all
+$56{,}739$ failures found at order $11$ are unreachable; no reachable edge failed. Not every
+unreachable edge fails: at order~$9$, $1{,}410$ of the $59{,}574$ unreachable edges do.
+
+\begin{proposition}\label{prop:pendant}
+If the even vertex $z$ has a neighbour $v$ of degree one, then every edge $xy$ with $d(x)$ odd is
+terminal at $x$ in some Lov\'asz decomposition of $K$.
+\end{proposition}
+
+\begin{proof}
+If $x=v$ there is nothing to prove: the path ending at $v$ contains its only edge. Otherwise $K-zv$
+has all degrees odd or zero, and Theorem~\ref{thm:endedge} gives a Lov\'asz decomposition of $K-zv$
+in which $xy$ is terminal at $x$. Append $zv$ to the path ending at $z$; this is a path because $v$ is
+isolated in $K-zv$. Now $z$ has no end and $v$ has one. The path ending at $x$ is unchanged, or, if
+it was the path ending at $z$, it was extended at its other end $z\ne x$.
+\end{proof}
+
+\begin{question}\label{q:away}
+Is every edge $xy$ away from $z$ terminal at $x$ or at $y$? Is every edge $xy$ with
+$\mathrm{dist}(x,z)\ge3$ terminal at $x$? Both hold in all our data. The first is trivial when $d(y)=1$.
+\end{question}
+
+\section{The remaining case of EE}\label{sec:rest}
+
+By Theorem~\ref{thm:common}, EE is open only when $u$ and $z$ have at least two common neighbours. Two
+reductions cover this case. Both follow the pattern of Theorem~\ref{thm:common}: delete edges at $u$,
+find a decomposition with an avoidance property, restore by Fan's lemma.
+
+\begin{proposition}[an outside neighbour]\label{prop:moveA}
+Let $z$ be the only vertex of positive even degree, $u\in N(z)$ and $w\in N(u)\setminus N[z]$. If
+$K_0=K-uz-uw$ has a Lov\'asz decomposition whose path ending at $z$ avoids $u$, then $uz$ is terminal
+at $u$ in some Lov\'asz decomposition of $K$.
+\end{proposition}
+
+\begin{proof}
+In $K_0$ the vertex $w$ is the only one of positive even degree (or there is none), $u$ and $z$ are odd.
+Attach a leaf $\ell$ at $z$ and extend $Q_z$ by $z\ell$; in the resulting decomposition of $K_0+z\ell$
+no path contains both $\ell$ and $u$, and $b(z)=0$. Apply Lemma~\ref{lem:fan} with $t=u$ and target $w$:
+in $K_0+z\ell$ the vertex $z$, which now has no end, is not adjacent to $w$, and every other neighbour of
+$w$ is odd; so $Z(w)=\emptyset<1=b(u)$. The separation of $\ell$ and $u$ survives ($w\ne\ell,u$).
+Delete $\ell$: the path through $\ell$ becomes the path ending at $z$ in a Lov\'asz decomposition of
+$K-uz$, and it avoids $u$. Proposition~\ref{prop:EEequiv} finishes the proof.
+\end{proof}
+
+\begin{theorem}[triangle reduction]\label{thm:triangle}
+Let $z$ be the only vertex of positive even degree, $u\in N(z)$, and $w\in N(u)\cap N(z)$. If
+$K_1=K-\{uz,uw,wz\}$ has a Lov\'asz decomposition whose path ending at $w$ avoids $u$ and $z$, then
+$uz$ is terminal at $u$ in some Lov\'asz decomposition of $K$.
+\end{theorem}
+
+\begin{proof}
+In $K_1$ the degrees of $u,z,w$ drop by two, so the parities are those of $K$, and $w$, $u$ are odd.
+Let $\cD_1$ be as in the hypothesis. Let $F=K-uz$ and $H=H(F;z,w)$: here the leaf $\ell$ hangs at $w$
+and stands for $z$. Extending $Q_w$ by $w\ell$ gives a decomposition $\cD_3$ of $H-uw=K_1+w\ell$ in
+which no path contains $\ell$ together with $u$ or with $z$. Its end counts are those of $\cD_1$,
+except that $w$ has none and $\ell$ has one. In $H-uw$ every neighbour of $w$ other than $\ell$ has odd
+degree; $u$ and $z$ are not neighbours. So Lemma~\ref{lem:fan} with $t=u$ and target $w$ restores $uw$.
+The result, $\cD_H$, decomposes $H$, keeps both separations, has $b(u)=0$ and $b(w)=1$, and has the
+other end counts of $\cD_3$. By Lemma~\ref{lem:merge} (with $x=z$), $\cD_H$ gives a decomposition $\cD$
+of $F$ with $b_\cD(z)=0+1$, which is a Lov\'asz decomposition of $F$. Its path ending at $z$ is the
+image of the path through $\ell$; the latter avoids $u$, so the former does too. As $b_\cD(z)=1$, no
+other path ends at $z$. Proposition~\ref{prop:EEequiv} finishes the proof.
+\end{proof}
+
+The hypotheses of Proposition~\ref{prop:moveA} and Theorem~\ref{thm:triangle} are avoidance statements
+in graphs with at most one even vertex $g$, for a path $Q_c$ and a set $A$ that contains no vertex of
+$N[c]$ and none of $N(g)$. In Proposition~\ref{prop:moveA}: $c=z$, $A=\{u\}$, $g=w$. In
+Theorem~\ref{thm:triangle}: $c=w$, $A=\{u,z\}$, $g=z$. EE itself, through
+Proposition~\ref{prop:EEequiv}, is the case $c=z$, $A=\{g\}=\{u\}$ in $K-uz$.
+
+\begin{conjecture}[$L_1^*$]\label{conj:L1star}
+Let $G$ have at most one vertex $g$ of positive even degree, let $c$ be odd, and let $A$ be a set of at
+most two vertices with $A\cap(N[c]\cup N(g))=\emptyset$ ($g\in A$ allowed). Then some Lov\'asz
+decomposition of $G$ has $Q_c\cap A=\emptyset$.
+\end{conjecture}
+
+For $|A|=1$ and no even vertex this is $L_1$~\cite[Theorem~6.3]{RD}. For $A=\{g\}$ it is EE. For
+$A=\{a\}$ with $a\ne g$ it is $L_1$ in the presence of an even vertex. This fails when $g\sim a$ (on the
+path $c\,g\,a$, say)~\cite[Remark~6.7]{RD}. The condition $a\notin N(g)$ is exactly what our
+computations show to be needed: every one of the $6{,}423$ failures of $L_1$ with an even vertex at
+order $9$ has $g\sim a$.
+
+\begin{corollary}\label{cor:EEfromL1}
+Conjecture~\ref{conj:L1star} implies Conjecture~\ref{conj:ee}.
+\end{corollary}
+
+\begin{proof}
+Let $T=N(u)\cap N(z)$. If $|T|\le1$, use Theorem~\ref{thm:common}. If some $w\in N(u)$ lies outside
+$N[z]$, apply Conjecture~\ref{conj:L1star} to $K-uz-uw$, $c=z$, $A=\{u\}$, and then
+Proposition~\ref{prop:moveA}. Here $u\notin N[z]$, $u\notin N(w)$, and $w$ is the even vertex.
+Otherwise take $w\in T$ and apply the conjecture to $K_1=K-\{uz,uw,wz\}$, $c=w$, $A=\{u,z\}$; then use
+Theorem~\ref{thm:triangle}. Here $u,z\notin N_{K_1}[w]$, the even vertex is $z$ (or there is none),
+and $u\notin N_{K_1}(z)$.
+\end{proof}
+
+\begin{remark}
+Two stronger invariants fail. First, separation of $u$ and $z$ in $K-uz$, which Theorem~\ref{thm:common}
+provides when $|T|\le1$: it fails for most configurations with $|T|\ge2$ (at order $7$: $99$ of $135$
+with $|T|=2$, and all $65$ with $|T|\ge3$). Second, separation of $w$ from $\{u,z\}$ in $K_1$: it fails
+in $267$ of $622$ triangles at order~$7$. So the avoidance in Conjecture~\ref{conj:L1star} is one-sided,
+like $L_1$, and the separation theorem cannot supply it directly. The leaf trick that derives $L_1$ from
+separation would make $c$ a second even vertex.
+\end{remark}
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational. No proof above depends on it.} Scripts are in
+\texttt{scripts/}, outputs in \texttt{scripts/out/}.
+
+\subsection*{Oracle and validation}
+\texttt{pee.c} decides whether $xy$ is terminal at $x$ in some Lov\'asz decomposition. It builds $Q_x$
+first, as $x,y,\dots$ ending at an odd vertex, and then searches exactly for a decomposition of the rest
+with the remaining end counts. It branches on the paths starting at an odd vertex of least remaining
+degree, memoises failures, and prunes by two necessary conditions: every non-trivial component has an
+end, and $d(v)\le2P-b(v)$ with $P$ the number of paths still to choose. Further modes decide avoidance
+($Q_c\cap A=\emptyset$) and separation. Validation:
+\begin{itemize}
+\item against \texttt{brute.py}, an independent enumeration of all transition systems (at each
+vertex a pairing of the incident edges, the unpaired edge being the end edge): all graphs of order
+$\le7$ with at most one even vertex, $2{,}279$ queries, $0$ disagreements;
+\item against \texttt{tools/route\_ext.c}, through Proposition~\ref{prop:EEequiv} (query \texttt{X}) and
+Lemma~\ref{lem:leafequiv} (query \texttt{S}): order $9$, $47{,}688$ EE and $47{,}738$ away queries,
+$0$ disagreements;
+\item no failure on the $224$ connected all-odd graphs of order $8$ ($6{,}359$ queries), as
+Theorem~\ref{thm:endedge} requires.
+\end{itemize}
+
+\subsection*{Exhaustive results}
+All connected graphs with exactly one vertex of positive even degree (\texttt{nauty-geng -c}; such
+graphs have odd order). ``Away'' counts the ordered edges $(x,y)$ with $y\ne z$ and $d(x)\ge3$.
+
+\begin{center}
+\begin{tabular}{rrrrrr}
+\toprule
+$n$ & graphs & EE tests & EE failures & away tests & away failures \\
+\midrule
+5 & 7 & 14 & 0 & 37 & 5 \\
+7 & 130 & 401 & 0 & 1{,}910 & 54 \\
+9 & 11{,}936 & 47{,}688 & 0 & 330{,}449 & 1{,}410 \\
+11 & \multicolumn{5}{l}{EE only: see \texttt{scripts/out/ee11\_*.txt} and below} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At order $11$ the EE run covers every connected graph with one even vertex. The final counts are in
+\texttt{research/experiments.md} (E23); at the time of writing more than $30$ million $(z,u)$ pairs had
+been tested, with no failure. A partial order-$11$ run on all edges (an initial segment of the
+enumeration) found $56{,}739$ away failures and no EE failure.
+
+\emph{The structure of the away failures.} Every failure at orders $5$, $7$, $9$ has $y\notin N(z)$ and
+$\mathrm{dist}(x,z)\le2$, and in every one $xy$ is terminal at $y$. Every failure at orders $7$, $9$ and in the partial
+order-$11$ run is unreachable in the sense of Section~\ref{sec:away}. At order $9$ the reachable away
+edges number $270{,}875$, with no failure; the unreachable ones number $59{,}574$, of which $1{,}410$
+fail.
+
+\emph{$L_1^*$.} At order $9$ (all graphs with one even vertex): $L_1$ with an even vertex $g\not\sim a$ (and $a$ odd), $161{,}652$
+tests, $0$ failures; with $g\sim a$, $6{,}423$ failures in $170{,}782$ tests. The case $|A|=2$ of
+Conjecture~\ref{conj:L1star}: $203{,}658$ tests, $0$ failures. The hypothesis of
+Theorem~\ref{thm:triangle} held for every one of the $88{,}356$ triples $(z,u,w)$ (not merely for some
+$w$).
+
+\subsection*{Random graphs}
+\texttt{rand\_test.py 6000 101 5000000 11 13 15 17}: $6{,}000$ connected graphs of orders
+$11$--$17$ with one even vertex ($G(n,p)$, $p\in[0.15,0.5]$, parities repaired by toggling edges),
+node budget $5\cdot10^6$ per query.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+statement & tests & failures & undecided \\
+\midrule
+EE, $|N(u)\cap N(z)|\le1$ & $13{,}200$ & 0 & 120 \\
+EE, $|N(u)\cap N(z)|\ge2$ & $12{,}762$ & 0 & 112 \\
+away edges (sample of $12$ per graph) & $71{,}965$ & 99 & 457 \\
+\quad of which $y\in N(z)$, or $\mathrm{dist}(x,z)\ge3$, or both ends fail & & 0 & \\
+$L_1^*$, $A=\{a\}$, $a\ne g$ & $42{,}315$ & 0 & 276 \\
+$L_1^*$, $A=\{g\}$ & $5{,}669$ & 0 & 27 \\
+hypothesis of Theorem~\ref{thm:triangle} & $44{,}892$ & 0 & 383 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/PrescribedEnd.lean} (Lean~4, Mathlib, no \texttt{sorry}; \texttt{\#print
+axioms} shows only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; the full library
+builds). A Lov\'asz decomposition is a \texttt{PathDecomp} with \texttt{ends v = degree v \% 2}, and
+``$xy$ terminal at $x$'' is $\exists P\in D,\ (P.\mathtt{src}=x\lor P.\mathtt{tgt}=x)\land
+s(x,y)\in P.\mathtt{edges}$.
+\begin{itemize}
+\item \texttt{sep\_atMostOneCommon}, \texttt{ee\_atMostOneCommon}: Theorem~\ref{thm:common};
+\texttt{ee\_deg\_two}: Corollary~\ref{cor:deg2} (first statement).
+\item \texttt{PathDecomp.append\_move\_exact}, \texttt{PathDecomp.liftLeaf},
+\texttt{endEdge\_of\_leafSep}: the passage to the leaf graph and back (Lemmas~\ref{lem:leafequiv}
+and~\ref{lem:merge}).
+\item \texttt{pee\_adjEven}: Corollary~\ref{cor:adj}, case $k=1$, proved as in Lemma~\ref{lem:protect}
+inside the leaf graph.
+\item \texttt{ee\_of\_triangle}: Theorem~\ref{thm:triangle}.
+\end{itemize}
+Theorem~\ref{thm:path} for $k\ge2$, Proposition~\ref{prop:pendant}, Proposition~\ref{prop:moveA}
+and Proposition~\ref{prop:counter} are proved here only. The library supplies Lov\'asz's theorem, the
+separation theorem (\texttt{separation}), Fan's lemma with vertex sets (\texttt{fan\_single\_supp}),
+the leaf merge (\texttt{leaf\_merge}) and Proposition~\ref{prop:EEequiv} (\texttt{ee\_of\_avoid}).
+
+\section{Open problems}\label{sec:open}
+\begin{enumerate}
+\item Conjecture~\ref{conj:ee} when $u$ and $z$ have at least two common neighbours; by
+Corollary~\ref{cor:EEfromL1} it suffices to prove Conjecture~\ref{conj:L1star}.
+\item The case $|A|=1$, $A\ne\{g\}$, of Conjecture~\ref{conj:L1star} ($L_1$ with an even vertex not adjacent
+to the avoided vertex). It is the hypothesis of Proposition~\ref{prop:moveA}.
+\item Question~\ref{q:away}, and a characterisation of the unreachable edges that fail.
+\item Several prescriptions at once (the star-terminal programme~\cite{STL}): every path through $z$
+of the form $x\,z\,y\cdots$ with $x$ an end. Theorem~\ref{thm:common} prescribes one end edge at $z$.
+Lemma~\ref{lem:protect} is the tool for keeping it while others are added: a prescription survives
+every Fan transfer whose target is not adjacent to its end, or is its other end.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93 (2005)
+117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany, 1966),
+Academic Press, New York, 1968, 231--236.
+\bibitem{MS} J.~Williams, Separating many pairs in Lov\'asz decompositions: classes, the leaf merge, and
+the Case~I step, manuscript (\texttt{manuscripts/multi-sep}), 2026.
+\bibitem{RD} J.~Williams, Route descent: transversal realisability, minimum $T$-joins, and Lov\'asz
+decompositions that separate two vertices, manuscript (\texttt{manuscripts/route-descent}), 2026.
+\bibitem{STL} J.~Williams, Star-terminal Lov\'asz decompositions and the spine tests, manuscript
+(\texttt{manuscripts/stl}), 2026.
+\end{thebibliography}
+\end{document}
