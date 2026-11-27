@@ -99,7 +99,12 @@ EMM sufficiency work is **stopped**.
   - **Audit A28:** applied.
   - **Data:** the triangle base holds at every root with data, with no undecided root left.
   - **Forest base:** refuted (cone over K_{2,6}). The open target is DL.
-- **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`, new): Test1 on cones is rooted Gallai for 2-connected even-order Eulerian graphs (synthesis §26). Tasks: the Lean correspondence, the literature (including MR Thm 166 and separating-pairs Cor 13.12), exhaustive RE data, and reductions.
+- **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): **finished** (56c6523). Manuscript `manuscripts/eulerian-cone` (11 pp.); audit A30 applied.
+  - **Lean:** `EulerianCone.lean` (the cone correspondence, SpineTestsNMC ⇒ RE, Gallai ⇒ RE) and `CycleInsert.lean` (cycle and ear insertion).
+  - **Data:** RE holds on all 301,882 roots at even order ≤ 10 and on all 3.1M roots of the dense order-12 family (m ≥ 45).
+  - **Literature:** RE for planar, tw ≤ 3, 2-degenerate, K5-minor-free, Δ(B − r) ≤ 3 and Δ ≤ 4.
+  - **Reductions:** in a smallest counterexample, degree-2 vertices are non-twin ears (this covers the fat theta), and n ≥ 11.
+  - **Open:** (a) the even-order ear, which is L1*/DL type; (b) roots of degree n − 2, which are 99.8% of tight roots and give a terminal-matching constrained Lovász problem on B − r. Also conjecture UC.
 - **eulerian-cone milestone 1 (7081f70, merged; build green; axioms checked):**
   - Lean, `EulerianCone.lean`:
     - `test1_fullCone_iff` and `fullConeTests_iff` (Test1 on cones ⇔ RE);
