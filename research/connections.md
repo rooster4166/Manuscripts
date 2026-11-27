@@ -907,6 +907,7 @@ Tools: `tools/emm_glue_search.py`, `tools/emm3_core_search.py`, `tools/emm3_sep_
 This is the Lean route: the T-join (paths + symmetric difference), the pairing lemma (edge deletion), B with its parity and cut identity, and the CutOK algebra. It will also go into the manuscript as the main proof after A13's edits land; the transition proof becomes a remark.
 
 **Lean: `cs_all` is done** (`lean/GallaiLean/CutSelection.lean`, `PairingLemma.lean`; standard axioms; full build OK). The statement matches §U: `CutOK G (profile G M) (card V / 2)` for every transversal M of a pairing P of `evenSet G`, for connected G of even order. The proof is the auxiliary-graph proof, so Thm 21 now has a machine-checked proof independent of audit A13.
+
 #### T.result-3 (emm3-gadgets session, 2026-11-27): forcing gadgets exist; EMM₃ is false; hardness at even degrees ≥ 4
 
 Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 45). Branch `claude/emm3-gadgets`, merged with the coordinator branch at 5976455.
@@ -928,3 +929,12 @@ Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 
 - **TRC (synthesis §15) survives every construction here.** All failing half-sets starve the gadget, so they need N > |δ(D_r)| = 2r pairs across the cut, while Thm 21 routes are edge-disjoint. Refuting TRC with gadgets would need a forcing gadget with about half its even vertices marked. None exists with |X| ≤ 9, of any kind.
   - Suggested test of TRC: G_r and G′(H) with marks moved inside the gadget, using Thm 21 pairings from random spanning trees. Realisability at n > 16 needs `tools/realis_wide.c`, which is slow on dense S, or a sparse S.
 - **Lean (task item 3) not applicable.** Gadgets exist, so the positive structural lemma it would formalise is false. A Lean proof of Thm 41 would need path-partition infrastructure for the closing lemma (Lemmas 29, 31), plus the Hamiltonian-decomposition argument for D₂ (Lemmas 33, 34, 36). The cut-feasibility half is a finite check, too large for `decide` at n = 18. Not attempted.
+
+**Manuscript sync (emc-four, 2026-11-27).** I merged `claude/emm3-gadgets` (§6, `sec:gadgets`) into `claude/emc-four-even`, keeping both texts in this section. I kept its fix of Remark 28 and open problem 1, which settles EMM₃ and points to §6. Added on top:
+- **Thm 21 now has the B-graph proof as its main proof** (valid for any T-join; it also proves the explicit construction by lifting each route to a path of B). For a forest J, the pairings obtained from B are exactly the Thm-21 (constructible) pairings. The linked-transitions argument (Lemma 20) is kept as the second proof of the construction.
+- §4.4 "Transversals of the constructed pairings" (`sec:trc`). It contains A13's remark on good pairings, the A13 evidence on the twelve order-12 graphs, the starving argument, and **Conjecture TRC** (unnumbered, so the numbering of §6, Lemmas 29–40 and Thms 41–45, is unchanged). It also gives TRC ⇒ Gallai (odd order via a pendant edge) and TRC ⇒ (R_s) at every even r.
+- Rem 9 (`rem:converse`) points to TRC.
+- The abstract mentions TRC.
+- Formalisation (`sec:lean`) records `cs_all`.
+- TRC is open problem 1, the main one.
+- One correction to the gadgets text: open problem 2, bullet 2 now says "constructible pairing" instead of "good pairing". A13's n = 12 witness is a failing transversal of a *good* pairing that needs no gadget.
