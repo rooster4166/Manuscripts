@@ -751,12 +751,18 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
 - New **Prop 24** (proved; numbered 22 before the C2 update): completely splitting off any vertex v in G_b (Mader) preserves the EMM conditions at every other vertex. What splitting loses is only the "each path passes v once" constraint: the cycles through t may use at most one split edge from v. So a splitting proof of EMM must choose Mader pairs compatibly with this, which is the same equality phenomenon as in §T.
 - Lovász–Cherkassky is recorded as an analogy of proof structure (simultaneous Menger numbers), not as a reduction. With pendant terminals, the slot-respecting packing is trivial here; the content of EMM is covering all edges.
 
-**C2 closed (later the same day): CS holds for every connected graph of even order** (manuscript Thm 21; Lemmas 19–20; Cor 22: EMM ⇒ Gallai).
+**C2 closed (later the same day): CS holds for every connected graph of even order** (manuscript Thm 21; Lemmas 19–20; Cor 22 as revised after EMM was refuted: EMM₃ at δ ≥ 5 ⇒ every Gallai failure is an SP 10.16(1) witness).
 - *Construction.* J = the T-join (T = Ev) of a spanning tree, and F = G − J. F^v is F − (edges at v) + (v joined to its non-neighbours).
   - Lemma 19 (parity): F has all degrees odd. The odd vertices of F^v are exactly the J-neighbours of v, plus v itself iff v is even.
   - At each v, pair those odd vertices by edge-disjoint paths of F^v (T-join pairing lemma), and use the pairs as J's transitions at v; v's partner gives v's end edge.
   - J is a forest, so the transitions decompose J into paths pairing Ev.
 - *Why it is good* (Lemma 20). For v and Y ∌ v, a split pair is either charged to its own J-edge of δ_{G−v}(Y), or it is bad. A bad pair has a transition at v split by Y, and it is charged to the edge of δ_{F^v}(Y) on that transition's linking path. Since |δ_{G^v}(Y)| = |δ_{J−v}(Y)| + |δ_{F^v}(Y)|, the pairing criterion (Lemma 13) holds.
 - *Key point.* Once J is fixed, vertex v's cut system depends only on v's transitions, and in a forest those can be chosen independently. That is how the simultaneity is resolved.
-- *Lean.* Lemmas 13, 19, 20 and Thm 21 are elementary. With them, `gallai_of_emm : EMM → GallaiConjecture` needs no CS hypothesis. This is suggested to lean-d6-frontier in place of `gallai_of_emm_cs0`.
+- *Lean.* Lemmas 13, 19, 20 and Thm 21 are elementary. With them, the reduction to EMM needs no CS hypothesis. Since EMM is false, the Lean target should be `cs_all` (Thm 21) plus the SP 10.16 bookkeeping of Prop 9, with the hypothesis EMM₃ restricted to δ ≥ 5. Without a Lean SP 10.16, a cleaner standalone target is `cs_all` by itself.
 - *Matroid side* (coordinator's question). Edmonds' intersection theorem gives CS for any two vertices' conditions, because each I_v has rank ≥ ⌈|A|/2⌉ on every A. Three such matroids can fail (the three partition matroids on {1,2,3,4}), and F needs up to 6 of the F_v at n = 8. So matroid intersection does not give CS; Thm 21 does.
+
+**EMM refuted; corrected to EMM₃** (after missing-move Thm 7.5; manuscript revised).
+- KsOeBW??G`?A with M = {3,4,8,9,10} is cut-feasible but not realisable. I re-verified this here with cutfeas.c and realis.c. The mechanism is saturated degree-2 vertices.
+- The manuscript now states **EMM₃** (δ ≥ 3) as Conjecture 4, with the example. Prop 9 and Cor 22 are rephrased: EMM₃ at δ ≥ 5 plus CS (Thm 21) excludes SP 10.16(2). Hence any Gallai failure is an SP 10.16(1) witness: odd order 2h+1, 2-connected, no matching cut, ≥ h+1 missing edges, p > h.
+- **Evidence caveat.** At n = 6, 8 and in the n = 10 random sample, every half-set of a δ ≥ 3 graph is realisable (19,422/19,422 at n = 8), so EMM₃ holds vacuously there. Binding cuts at δ ≥ 3 occur in the bottleneck families (22 graphs, 62 cut-excluded half-sets, 0 failures) and in the two-blob samples (`evidence.py blobs`). EMM₃ needs larger tests with binding cuts.
+- CS (Thm 21) is unaffected: it concerns cut-feasibility only.
