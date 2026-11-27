@@ -1030,6 +1030,13 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 - It would give Gallai, with every orientation realisable, for every graph whose even subgraph has a perfect matching none of whose edges lies in a triangle. This includes all triangle-free Eulerian graphs with a perfect matching.
 - The proof of the one-pair theorem does not extend: when every vertex is paired, every Fan target is paired, and the path gaining the target may contain its partner.
 
+**L1 at distance 2: how far the induction goes.** The L1 invariant (Q_c ∌ a) survives a Fan transfer towards g ≠ a when c ∉ N(g). The chain lies in N(g) ∪ {t}, and re-routings keep vertex sets. When c ∈ N(g) it survives provided the path through the edge cg avoids a: if c enters the chain, c's end moves onto exactly that path.
+- So Lovász's induction proves L1 except in two residual configurations:
+  - (R-I) the even vertex z has N(z) ⊆ N[c] ∪ {a};
+  - (R-II) all degrees are odd and the non-isolated vertices are c, N(c) and a, with N(a) ⊆ N(c) and every vertex of N(c) of degree ≥ 3.
+- In addition, leaves adjacent to c finish at once (Q_c = cv), and leaves outside N[c] are deleted.
+- Separation itself fails at distance 2 in about 15% of all-odd instances (E20), so the residual cases need an invariant strictly between L1 and separation.
+
 ### V.5 Existential version and BranchBase
 - A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).
 - Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.
