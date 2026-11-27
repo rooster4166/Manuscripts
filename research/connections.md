@@ -1082,6 +1082,10 @@ What L1 does and does not give:
 - **III, a leaf v ≠ ℓ.** Delete vw and add the path vw back. Safe.
 
 **Residual (the only gap).** z is the even vertex with d(z) = 3, and **every neighbour of z is at distance exactly 2 from c**. Deleting uz (u ∈ N(z)) fails if the ℓ-path ends at y ∈ N(u) ∩ N(c) and Fan's chain from z ends at y. Counting shows this is a tight case of Fan's inequality: every vertex reachable from z is a neighbour of u, and the only u-avoiding path with an end there is the ℓ-path.
+- **Partial fix.** If deg z = 2 and its two neighbours u, u′ are non-adjacent, lift: K° = K − z + uu′.
+  - K° has no even vertex and fewer edges. The ℓ-path avoids uu′, since u ∉ B. Replacing uu′ by u z u′ is safe, because z is isolated in K°.
+  - So the residual needs deg z ≥ 4, or deg z = 2 with z in a triangle.
+  - For deg z ≥ 4, lifting one pair fails when the lifted path already passes through z.
 - Lifting z–u–w to zw does not close it: the lifted path may already pass through u.
 - The leaf-at-u variant gives b(z) = 2.
 - The even vertex cannot be kept near c either: after deleting cu at z = c, the new even vertex u may lie far from c in the smaller graph.

@@ -788,7 +788,10 @@ interior to paths. So a Fan transfer towards $u$ changes the path through $\ell$
 only when the chain ends at the far end of that path. Choosing every target in $N[c]$ where possible, or
 at distance at least three from $c$ when the even vertex is far, every case of the induction is safe
 except one: the even vertex $z$ is at distance three from $c$ and all its neighbours are at distance
-two. This is a tight case of Fan's inequality, and we do not know how to handle it.
+two. If moreover $z$ has degree two with non-adjacent neighbours $u,u'$, replacing $u\,z\,u'$ by the edge
+$uu'$ removes the even vertex. The path through $uu'$ cannot be the path through $\ell$, since $u\notin
+N[c]$, and re-inserting $z$ is safe because it is isolated. The remaining cases, $z$ of degree at least
+four or on a triangle, are a tight case of Fan's inequality, and we do not know how to handle them.
 
 Theorem~\ref{thm:sep} is the case of Conjecture~\ref{conj:msep} in which the union of the pairs is
 packed. Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
