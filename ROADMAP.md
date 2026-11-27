@@ -545,3 +545,9 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Negative lemmas: flower outputs are never Lovász decompositions.
   - **Data:** in the tight case, the forced chain avoiding the protected end is necessary and sufficient. Every L∞ residual at n = 9 closes for some (u, D′). All 68 PTM no-walk instances close.
   - **Open:** L1Blocked, specifically its hypothesis side: an induction class containing the good-but-inadmissible instances.
+- **First proved case at d(z) = 6, the T(6)-i frontier (ptm 31eadcb, TerminalMatching3.lean; standard axioms, verified).**
+  - `test1_of_chains3`: Test1 J z holds when N(z) is pairwise at distance ≥ 3 in J − z (`FarNbrs`) and, for every r ∈ N(z), some labelled pairing with r long has an admissible chain (`AdmChain`).
+  - Engine: `ptm3_of_base`, the chained walk theorem, and `ptm3_of_far`, where the base is automatic by sparse separation.
+  - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
+  - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
+  - Audit A22c of the paper proofs is running.
