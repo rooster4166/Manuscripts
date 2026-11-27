@@ -1,0 +1,3 @@
+good D' at tight targets: 34778  AV=24738 EX=375 REST=9665 (REST with good Fan image 824)
+exchange performed: ok 375, failed 0; intermediate-claim failures 0
+static condition (TF Thm 3.3) holds for 18058 D'; of these with chain through c: 0

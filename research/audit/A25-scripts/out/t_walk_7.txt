@@ -1,0 +1,9 @@
+FANROUTE F?q_w c=3 g=0 d(c)=1 prop33walk=1
+FANROUTE F?re_ c=2 g=4 d(c)=1 prop33walk=1
+FANROUTE F?re_ c=3 g=4 d(c)=1 prop33walk=1
+FANROUTE FCRvg c=4 g=2 d(c)=1 prop33walk=0
+blocked Amax instances 83 (d(c)=1: 37)
+Prop 3.3 walk (w_i notin A+N[c], unbounded): 26; structural check failures 0
+l1star Prop 5.3 Fan route (paths): 4 (d(c)=1: 4, d(c)>=3: 0)
+tight allowed (walk2 mode 1 / walkadm): split 67, Fan trail 24, either 71
+tight allowed, TR-valid only: split 37, Fan trail 12, either 41

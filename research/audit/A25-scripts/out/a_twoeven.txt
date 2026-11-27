@@ -1,0 +1,5 @@
+  of these: y in N(g) (in G) 0
+d(c)=1 bad targets 476
+target u = y (the neighbour of c) 442
+u != y, Q_c = cy forced, dist_(G-gu-c)(y,u) = 2 5
+u != y, Q_c = cy not forced in the child 29
