@@ -279,3 +279,19 @@ The Theorem 21 class is closed under deleting a route, and the base case is Lov�
 3. strengthen the invariant;
 4. compare with the existential version;
 5. bank the special classes (single-edge routes, star-forest J, linkages) as a manuscript plus Lean.
+## 16. Gadget section written; hardness at even degrees ≥ 4; TRC versus gadgets (emm3-gadgets session, 2026-11-27)
+
+- **Manuscript.** endpoint-min-max §6, "Minimum degree three and beyond: forcing gadgets", follows the hardness section. It contains:
+  - the restriction and closing lemmas (Lemmas 29, 31);
+  - Hamiltonian realisations and K_{2r} blocks (Lemmas 33, 34);
+  - the cycle multigraph M_r and the gadgets D_r (Lemma 36, Prop 38);
+  - arms across a cut and substitution (Lemmas 39, 40);
+  - Thm 41 (G₁₈, δ = 3), Thm 42 (G_r, δ = λ = 2r) and Thm 45.
+
+  Remark 28 and the open problems are updated, so EMM₃ is no longer listed as open. All proofs are oracle-free.
+- **Thm 45 (new).** Replace the saturated tail of the Kotzig graph G(H) by a clique S of N marked vertices joined to u₁…u₄. The resulting G′(H) is 4-edge-connected, with all degrees even and ≥ 4. The half-set S is cut-feasible, and it is realisable iff H is Hamiltonian. So **NP-completeness holds at δ ≥ 4 and λ ≥ 4**, as §12 predicted. G′(Petersen) has n = 28.
+- **Smallest gadget.** No two-leaf forcing gadget has order ≤ 9 (exhaustive, 1.46 × 10⁸ profiles at order 9). D₂ (order 10) is smallest. The first 4-regular graphs with a forced transition have order 11.
+- **TRC.**
+  - None of the failing half-sets is a transversal of a Thm 21 pairing. They starve the gadget, and edge-disjoint routes allow only |δ(D_r)| = 2r crossing pairs.
+  - On G₁₈ itself, the Thm 21 pairings tested have no pair crossing δ(D₂). So every transversal puts 4 marks into D₂, and all transversals tested are realisable (`tools/realis_wide.c`).
+  - A gadget attack on TRC needs a *balanced* forcing gadget, with about half its even vertices marked. None exists at order ≤ 9.
