@@ -184,7 +184,10 @@ of degree $2$.
 For a simple profile, $b\le 2$, so a vertex can be saturated only if its degree is at most $2$. This
 is why EMM$_3$ asks for minimum degree $3$. Section~\ref{sec:evidence} gives the evidence. It is
 thinner than for EMM: at order $\le 8$, every half-set of a graph of minimum degree $\ge 3$ is
-realisable, so there the cut inequality never binds.
+realisable, so there the cut inequality never binds. \emph{EMM$_3$ is false as well}: \texttt{research/synthesis.md}~\S14
+gives a cut-feasible, non-realisable half-set in a graph of order $18$ with minimum degree $3$
+(\texttt{scripts/emm3\_counterexample.py}). Corollary~\ref{cor:gallai_emm} assumes minimum degree at
+least $5$, and that example does not reach it. So EMM$_3$ is used below only as a hypothesis.
 
 \begin{remark}[Eulerian form]\label{rem:euler}
 Let $G_b$ be $G$ together with a new vertex $t$ joined to each $z$ by $b(z)$ parallel edges. For a
@@ -947,8 +950,8 @@ Theorem~10.16 is formalised.
 
 \section{Open problems}
 \begin{enumerate}
-\item EMM$_3$ (Conjecture~\ref{conj:emm}): sufficiency at minimum degree $\ge3$, or at least
-$\ge5$ (Corollary~\ref{cor:gallai_emm}). An inductive proof passes through graphs with low-degree
+\item EMM$_3$ (Conjecture~\ref{conj:emm}) is false at minimum degree $3$ (Section~\ref{sec:emm}).
+Does sufficiency hold at minimum degree $\ge5$ (Corollary~\ref{cor:gallai_emm})? An inductive proof passes through graphs with low-degree
 vertices, so it needs a corrected general statement. That statement would decompose at saturated
 vertices, give each piece its own budget, and add linkage conditions for pieces below their budget
 (\texttt{research/synthesis.md}~\S10).

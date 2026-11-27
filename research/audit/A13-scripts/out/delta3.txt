@@ -1,0 +1,2 @@
+data/conn6.g6 delta>=3, e>0: graphs 13 half-sets 60 cut-infeasible 0
+data/conn8.g6 delta>=3, e>0: graphs 2475 half-sets 19422 cut-infeasible 0
