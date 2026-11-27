@@ -149,6 +149,14 @@ Here, a \emph{Hamilton decomposition} of a graph~$G$ consists of a set of edge-d
 \end{itemize}
 No upper bound on $D$ is required, and there is no condition on individual vertices. Throughout, $\epsex$ denotes the constant of this theorem.
 
+\noindent\emph{Not used: the robust-expander decomposition.} CKLOT Theorem~1.3.4 (source label \texttt{undir\_decomp}), which is derived from K\"uhn and Osthus, reads:
+\begin{quote}
+Given $0<\nu \leq \tau<1$, we say that a graph $G$ on $n$ vertices is a \emph{robust $(\nu, \tau)$-expander}, if for all $S\subseteq V(G)$ with $\tau n\le |S|\le (1-\tau)n$ the number of vertices that have at least $\nu n$ neighbours in $S$ is at least $|S|+\nu n$.
+
+For every $ \alpha >0$ there exists $\tau>0$ such that for every $\nu> 0$ there exists $n_0=n_0 (\alpha,\nu,\tau)$ for which the following holds. Suppose that (i) $G$ is an $r$-regular graph on $n \ge n_0$ vertices, where $r\ge \alpha n$ is even; (ii) $G$ is a robust $(\nu,\tau)$-expander. Then $G$ has a Hamilton decomposition.
+\end{quote}
+SP uses robust-expander decompositions (through Pfenninger's multigraph version) in its Theorems~14.1 and 14.8, and hence in Corollaries~14.24 and 14.26. The present proofs do not use them. Near-bipartite graphs are not robust expanders: a shore $S$ of size $n/2$ has only about $|S|$ robust neighbours.
+
 \subsection{Gir\~ao, Granet, K\"uhn and Osthus}
 From the LaTeX source of \cite{GGKO} (arXiv:1911.05501v2, \S1):
 \begin{quote}
