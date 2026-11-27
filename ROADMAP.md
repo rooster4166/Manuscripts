@@ -26,7 +26,14 @@ This is the single source of truth for the proof architecture. Every node is a s
 
 ## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
 
-EMM sufficiency work is **stopped**. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+EMM sufficiency work is **stopped**. Sessions:
+- emc-four: the endpoint-prescription paper, covering necessity, Thm 21, the counterexamples and the NP-hardness;
+- emm3-gadgets: hardness at δ ≥ 3;
+- two-even: pairing-guided descent;
+- lean-d6-frontier: Lean for MR Thms 38/175 and Cor 39 (flowers);
+- dense-near-dirac (session_01FxXpVhsyyw9pbAoqda1H6h, new): Target D;
+- spine: Thm 59;
+- missing-move: finished, handoff in connections §T. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
 
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
