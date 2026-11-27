@@ -634,6 +634,11 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
   - order 12: 300 graphs, m ∈ [18, 30], 8,396 half-sets, **0 failures**.
   - Every sampled half-set was cut-feasible, so these runs test realisability, not the sharpness of (1).
 - Toughness-type Hamiltonicity obstructions are cut-detected. At slack 0, (C) for the complements of the components of G − S gives #components ≤ |S| + 1.
+- **Cores at vertex 2-separators** (`tools/emm3_sep_core.py`, `emm3_sep_core.log`). A core here has no end-record at the terminals that is realisable, though some record is cut-feasible. 8,774 graphs up to order 8, 101,524 terminal pairs, 976,339 profiles: **0 cores**.
+- **Binding test** (`tools/emm3_binding.py`, `emm3_binding.log`). 47 structured δ ≥ 3 graphs with n ≤ 12, 1,063 half-sets.
+  - **8 cut-infeasible**, all in K5+K5 with 3 or 4 concentrated joins.
+  - 1,055 cut-feasible, all realisable: **0 failures**.
+  - Weakly discriminating: at n ≤ 12 the cones over two cycles never bind.
 
 **E18 addendum 2: the Kotzig reduction** (`manuscripts/endpoint-min-max/scripts/kotzig.py`). The script builds G(H) for each test graph H. It checks cut-feasibility of the gadget by max-flow (Lemma 1(d)), cross-checks by brute force where n ≤ 10, and checks the following.
 - λ(L(H)) ≥ 4 ⟺ H is bridgeless ⟺ the gadget is cut-feasible (Lemma 23, Prop 24).

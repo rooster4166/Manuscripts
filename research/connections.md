@@ -785,3 +785,53 @@ The exact cone criterion (Thm 15) needs Gale's theorem. It is not needed for CS.
   - Thm 27: NP-completeness.
 - Note: bridgeless suffices; the synthesis's "essentially 4-edge-connected" is stronger than needed.
 - Lean: Lemma 23 and Props 24–25 are elementary. Kotzig would be imported.
+### T.handoff (missing-move session → fresh session on the equality lemma), 2026-11-27
+
+**Exact current target: EMM₃.** Let G be connected, of even order n = 2k and minimum degree ≥ 3. Let M be a half-set of Ev(G), with the simple profile b (1 on odd vertices, 2 on M, 0 on Ev − M). Then b is realised by k paths **iff** (L) and ED inequality (1) hold for every v and every W ⊆ V − v. Lean predicate: `CutOK G b k` in `EmmTemplate.lean`.
+
+**What is known to fail, so the statement must not claim it** (missing-move §7):
+- **General profiles.** One failure at n = 7 (FqJBo, p = 2, a 2-linkage), and 17 at n = 8 with p ≤ 3 (Prop 7.1).
+- **The budget class EMM⁺.** Padding FqJBo with leaves at its saturated vertex gives a failure at n = 10 with p = 5 (Ex 7.4).
+- **EMM.** Gluing a below-budget failure with a leaf to a gadget through a degree-2 vertex with b = 2 gives 12 graphs of order 12 (Thm 7.5).
+- **Common mechanism.** A vertex with b = d is never crossed, and an edge cut restricts exactly to its side plus temporary leaves. The decomposition can therefore isolate a **below-budget piece**, where a linkage obstruction is invisible to (1).
+
+**What a general inductive statement must add.** Edge deletion leaves δ ≥ 3 and simple profiles, creating degree-2 vertices and b up to 3. So the induction needs a general class. Proposed shape, untested:
+- Decompose (G, b) at every saturated vertex (b = d), at every edge cut, and along forced one-edge paths (both ends saturated). Assign each piece its own budget p_piece = Σ_piece b / 2.
+- Assert: if every piece has p_piece ≥ ⌈n_piece/2⌉, then cut-feasible ⇒ realisable.
+- For pieces below their budget, a separate **linkage condition** is needed, in the spirit of the Seymour–Shiloach–Thomassen 2-linkage theorem. FqJBo is the planar square with two doubled sides.
+- Test set for that condition: the 17 n = 8 failures (`gemm8_lowp.log`) and FqJBo (`gemm7.log`).
+- Checks still to make: that the decomposition is well defined, and that the padding and gluing counterexamples are exactly the below-budget-piece cases.
+
+**Equality lemma, (c′) form** (the target of the next session). Setting: (G, b) is in the class and cut-feasible, uv is an edge, H = G − uv, and D is a partition of H with the adjusted profile b′. Suppose the re-insertion move is at equality: a Fan transfer with b′(u) = |Z_H(v)|, or a concatenation with b′(u) = b′(v) = 1. Then one of the following holds:
+- (a) the move succeeds for D;
+- (b) another move succeeds: a concatenation, a rotation then append, a guarded split, or a path insertion;
+- (c′) D exhibits a set W with uv ∈ δ(W) on which (1) is **tight**, or a saturated separator that splits G into pieces one of which is below its budget.
+
+(c) with a *violated* cut is impossible in any class that contains the counterexamples above, by minimality. The force behind (c′) should be `hub_cycles`: at equality every path ending at u passes v, entering through distinct blank neighbours.
+
+**Test cases (stuck instances, all n = 6, reduced).**
+- EMM⁺ class, single-edge moves: 14 stuck (`tmpl6_plus.log`, with diagnosis in `tmpl6_plus_diag.log`). Every one has a cut-feasible move that fails only at equality.
+- With guarded splits and path insertion (L ≤ 5): 4 stuck, namely EsRo with b = (0,3,0,2,1,0) and (0,3,2,0,1,0), Eqzo with (0,0,3,0,3,0), and Eu^o with (0,0,3,0,3,0) (`tmpl6_plus_split_peel5.log`).
+  - Eqzo reduces exactly to a below-budget piece: the edge 24 between two saturated vertices is a forced path, which leaves 2 paths on G − 24.
+- The simple class (b ≤ 2) has more: 38/456 stuck, 28 with splits and path insertion (`tmpl6_simple*.log`).
+- Further test cases: the butterfly, the octahedron with four ends at antipodes, and C4 with b = (0,2,2,0) (`tmpl6_red_diag.log`).
+
+**EMM₃ evidence so far: no counterexample.**
+- Cores (pendant leaves, all other degrees ≥ 3, cut-feasible but not realisable): none up to order 8, exhaustively; none in 4,000 random cores at orders 9–10.
+- Cores at a vertex 2-separator (no end-record at the terminals realisable, though some record is cut-feasible): none among 8,774 graphs, 101,524 terminal pairs and 976,339 profiles up to order 8 (`emm3_sep_core.log`).
+- Random EMM₃ at n = 10 and 12: no failure, but no half-set was cut-infeasible, so the test is non-discriminating.
+- Binding test (`tools/emm3_binding.py`, `emm3_binding.log`): 47 structured δ ≥ 3 graphs (cliques K4–K6 joined by 3–5 edges, spread or concentrated; K4 chains and triangles; cones over two cycles joined by 1–3 edges, ED Thm 46 type, n ≤ 12).
+  - 1,063 half-sets, of which only **8 are cut-infeasible**, all in K5+K5 with 3 or 4 concentrated join edges. The other 1,055 are realisable: **0 failures**.
+  - So the test discriminates only weakly. At n ≤ 12 these cones never bind.
+  - A sharper binding test needs sparse δ = 3 graphs with small edge cuts and many marks on one shore (cubic-like shores). Larger n needs `tools/cutfeas.c`.
+- Forcing gadgets (proposed next, not done): δ ≥ 3 blocks with two temporary leaves whose every realisation joins, or always separates, the leaves. They would replace the degree-2 vertices of a below-budget core (n ≈ 25–35).
+
+**Tools.** All take graph6 input. The logs are in `manuscripts/missing-move/scripts/outputs/` and are reproduced by `emm_runs.sh`.
+- `tools/gemm_test.py`: the cut criterion, general profiles.
+- `tools/emm_template.py`: the template moves, with options reduced, atleasthalf, simpleclass, split, vertex, peelL and diag.
+- `tools/emm_split.py`: splitting off, with exact lifting.
+- `tools/emm_glue_search.py`, `tools/emm_lift_search.py`: the counterexample constructions.
+- `tools/emm3_core_search.py`, `tools/emm3_sep_core.py`, `tools/emm3_random.py`, `tools/emm3_binding.py`: the EMM₃ searches.
+- `tools/emm_reduction_check.py`.
+- Lean: `lean/GallaiLean/EmmTemplate.lean` (`CutOK`, `cutCount`, `leaf_step`). No sorry.
+

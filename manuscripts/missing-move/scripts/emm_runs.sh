@@ -41,4 +41,6 @@ python3 tools/emm3_random.py cores 9 2000 12 22 2 > $O/emm3_cores9_random.log
 python3 tools/emm3_random.py cores 10 2000 14 26 3 > $O/emm3_cores10_random.log
 python3 tools/emm3_random.py emm3 10 3000 15 30 1 > $O/emm3_random10.log
 python3 tools/emm3_random.py emm3 12 300 18 30 4 > $O/emm3_random12.log
+python3 tools/emm3_sep_core.py data/conn6.g6 data/conn7.g6 data/conn8.g6 > $O/emm3_sep_core.log
+python3 tools/emm3_binding.py > $O/emm3_binding.log
 echo DONE
