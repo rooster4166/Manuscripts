@@ -412,12 +412,18 @@ violations of Theorem~\ref{thm:main} (\texttt{check\_star.py}).
 So, on this data, the degree condition is exactly what the method guarantees when $D$ is arbitrary.
 Below $(\ast\ast)$ one must choose $D$.
 
-\emph{Order $12$ (samples).} On the $711$ random $2$-connected Eulerian graphs of eulerian-cone with a
-vertex of degree $10$, the method succeeds at RAND12YES of the RAND12TOT degree-$10$ roots. Among
-them are RAND12MID roots outside both $(\ast\ast)$ and Theorem~170. All RAND12UNK undecided roots
-(budget $2\cdot10^7$) lie in the range of Theorem~170. A random sample of $400$ graphs of the dense
-order-$12$ family ($m\ge45$) with one to four vertices of degree $10$ gives 793 successes out of
-793 roots, with none undecided.
+\emph{Order $12$ (samples).}
+\begin{itemize}[leftmargin=*]
+\item \emph{Random graphs.} The $711$ random $2$-connected Eulerian graphs of eulerian-cone
+(\texttt{rand\_12.g6}) with a vertex of degree $10$ have $2{,}135$ roots of degree $10$. The method was
+run at all $1{,}119$ of them outside the range of Theorem~170 ($\le4$ vertices of degree $10$), and it
+succeeds at every one. At $848$ of these, $(\ast\ast)$ fails. Inside the range of Theorem~170 it was
+run at $514$ roots: $385$ successes, and $129$ undecided at $2\cdot10^7$ nodes. The other $502$ roots
+there were not run.
+\item \emph{Dense graphs.} We took a random sample of $400$ graphs from the dense order-$12$ family
+($m\ge45$) with one to four vertices of degree $10$. The method succeeds at all $793$ of their roots
+of degree $10$.
+\end{itemize}
 
 \emph{Order $16$, near-regular (\texttt{near\_regular.py}).}
 \begin{itemize}[leftmargin=*]
@@ -428,7 +434,9 @@ of orders $12$, $14$ and $16$, in at most $320$ nodes.
 ($k=8$, six graphs per $u$), the method succeeds for $u=2,3$. For $u=4$ it succeeds at one of six. For
 $u=5,6$ it stays undecided at $2\cdot10^7$ nodes, although these graphs are still outside the range
 of Theorem~170 ($u\ge7$). The general checker finds families for $22$ of the $30$ graphs, with $8$
-to $12$ nontrivial pieces, more than the $k-1=7$ of a Lov\'asz family. M16TEXT
+to $12$ nontrivial pieces, more than the $k-1=7$ of a Lov\'asz family. Two runs of $3\cdot10^9$
+nodes, at one graph with $u=4$ and one with $u=6$, were still undecided when this version was
+written.
 \end{itemize}
 The reason is visible in the counts. When every degree is $n-2$ or $n-4$, a trivial end of degree
 $n-4$ lies on $k-2$ of the $k-1$ Lov\'asz paths, so it is compatible with exactly one path. A trivial

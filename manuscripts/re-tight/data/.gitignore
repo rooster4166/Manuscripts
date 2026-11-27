@@ -5,3 +5,8 @@ out/retz_10_partial.txt
 out/retL_rand12.txt
 out/retL_m16_u4.txt
 out/retL_m16_u6.txt
+out/remR_0.txt
+out/remR_1.txt
+out/retL_rand12_rem_0.txt
+out/retL_rand12_rem_1.txt
+out/retL_rand12_all.txt

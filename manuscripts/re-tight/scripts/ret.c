@@ -398,6 +398,7 @@ static void solve(em R) {
 
 static int parse_g6(const char *g) {
     int nn = g[0] - 63, p = 1, bit = 0, x = 0;
+    if (nn < 1 || nn > MAXN || (int)strlen(g) != 1 + (nn * (nn - 1) / 2 + 5) / 6) return -1;
     memset(A, 0, sizeof A);
     for (int j = 1; j < nn; j++)
         for (int i = 0; i < j; i++) {
@@ -426,6 +427,7 @@ int main(int argc, char **argv) {
         line[strcspn(line, "\r\n ")] = 0;
         if (!line[0]) continue;
         n = parse_g6(line);
+        if (n < 0) { fprintf(stderr, "malformed graph6: %s\n", line); continue; }
         if (n % 2 || n > MAXN) continue;
         k = n / 2;
         for (r = 0; r < n; r++) {
