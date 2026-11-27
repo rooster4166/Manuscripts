@@ -16,7 +16,7 @@ Consequences:
 
 - **SP Theorem 14.27** is the special case X = ∅, ρ = 0.
 - **Corollary 1.2.** Near-regular graphs near K_{n/2,n/2} whose degree excess over ⌊n/2⌋ balances across a bisection satisfy the floor bound at both parities and the rooted private-leaf bound at even order.
-- **Corollary 1.3.** In every failure sequence (SP Cor 14.24), every admissible partition and exceptional set violates the balance condition.
+- **Corollary 1.3.** In every failure sequence (SP Cor 14.24), every admissible partition and exceptional set with |X| ≤ cm violates the balance condition.
 
 ## Proof
 
@@ -27,7 +27,7 @@ The proof extends SP Theorem 14.27:
 - a weaving lemma (Lemma 3.2, by Hall);
 - a two-apex Hamilton finish via CKLOT Theorem 1.3.5 (Lemma 4.2).
 
-Exceptional vertices enter the slots only through prebuilt partner blocks u x u'. Their internal edges are kept for the Hamilton phase, and the imbalance is absorbed exactly by kept healthy internal edges and by the slot end patterns. Lemma 4.1 is the counting identity that makes the balance condition necessary for this two-apex architecture (Remark 4.3).
+Exceptional vertices enter the slots only through prebuilt partner blocks u x u'. Their internal edges are kept for the Hamilton phase, and the imbalance is absorbed exactly by kept healthy internal edges and by the slot end patterns. Lemma 4.1 is the counting identity behind the balance condition (Remark 4.3). Its bipartite case is SP's counting obstruction in §14.18. The u x u' threading device is SP's own (Thm 14.30). Balance is sufficient for the construction, not claimed necessary.
 
 ## Relation to SP §14 (manuscript §7)
 

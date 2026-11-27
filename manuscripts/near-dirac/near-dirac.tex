@@ -32,12 +32,12 @@ Let $G$ be a large graph whose minimum degree is close to $n/2$ and which is clo
 
 We return exceptional sets of linear size, with arbitrary two-sided neighbourhoods, whenever a single counting condition holds: the \emph{balance condition}. It asks that the internal edges at exceptional vertices on each side be matched by internal edges on the other side.
 
-Under the balance condition we realise every bounded endpoint profile of the right parity whose shore imbalance is at most a small linear amount. This is Theorem~\ref{thm:main}. It contains SP Theorem~14.27 as the case $X=\emptyset$, and it also covers odd order. Consequences:
+Under the balance condition we realise every bounded endpoint profile of the right parity whose shore imbalance is at most a small linear amount. This is Theorem~\ref{thm:main}. It contains SP Theorem~14.27 as the case $X=\emptyset$, $\rho=0$, $|b(A)-b(B)|\le2$, and it also covers odd order. Consequences:
 \begin{itemize}[nosep]
 \item an exact Gallai theorem, with the floor at both parities and the rooted private-leaf bound at even order, for near-regular graphs near $K_{n/2,n/2}$ whose degree excess is balanced across a bisection (Corollary~\ref{cor:class});
 \item a structural restriction on any counterexample sequence to the full ``Target~D'' (Corollary~\ref{cor:failures}).
 \end{itemize}
-An exact counting identity (Lemma~\ref{lem:identity}) shows that the balance condition is precisely what the Hamilton-decomposition finish of SP~14.27 requires. It therefore isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$. Two finite lemmas used in the proof are formalised in Lean.
+An exact counting identity (Lemma~\ref{lem:identity}), whose bipartite case is SP's counting obstruction at unequal shores (SP \S14.18), explains why some balance condition of this kind is needed by the Hamilton-decomposition finish of SP~14.27. It also isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$. Two finite lemmas used in the proof are formalised in Lean.
 \end{abstract}
 
 \tableofcontents
@@ -95,10 +95,10 @@ There are $\gamma>0$ and $n_0$ with the following property. Let $G$ have order $
 Then $p(G)\le\lfloor n/2\rfloor$. If $n$ is even, then also $p(G^t)\le n/2$ for every vertex $t$.
 \end{corollary}
 
-No connectivity assumption is needed. For a $D$-regular graph, the left-hand side of the third condition equals $\rho\,|D-\lfloor n/2\rfloor|$, where $\rho=n-2\lfloor n/2\rfloor$. So the third condition holds at both parities whenever $|D-n/2|\le\gamma n/2$ and $n\ge1/\gamma$. Corollary~\ref{cor:class} contains graphs with linearly many vertices of own-shore degree up to about $3n/8$. That is the regime of SP Corollary~14.39 that SP leaves open.
+No connectivity assumption is needed. For a $D$-regular graph, the left-hand side of the third condition equals $\rho\,|D-\lfloor n/2\rfloor|$, where $\rho=n-2\lfloor n/2\rfloor$. So the third condition holds at both parities whenever $|D-n/2|\le\gamma n/2$ and $n\ge1/\gamma$. Corollary~\ref{cor:class} contains graphs with linearly many vertices (a small linear number) of own-shore degree up to about $3n/8$. This goes beyond the $o(n)$ exceptional sets of SP Corollary~14.39, which SP leaves unreturned.
 
 \begin{corollary}[Restriction on counterexamples to Target D]\label{cor:failures}
-Let $(G_n)$ be a failure sequence as in SP Corollary~14.24. For all sufficiently large $n$ the following holds. Take any partition of $V(G_n)$ with $|A|=\lfloor n/2\rfloor$ and any set $X$ satisfying hypotheses \ref{h:healthy} and \ref{h:exc} of Theorem~\ref{thm:main}, with $m=\lfloor n/2\rfloor$ and the constant $c$ of that theorem. Then the balance condition \ref{h:bal} fails.
+Let $(G_n)$ be a failure sequence as in SP Corollary~14.24. For all sufficiently large $n$ the following holds. Take any partition of $V(G_n)$ with $|A|=\lfloor n/2\rfloor$ and any set $X$ with $|X|\le cm$ satisfying hypotheses \ref{h:healthy} and \ref{h:exc} of Theorem~\ref{thm:main}, with $m=\lfloor n/2\rfloor$ and the constant $c$ of that theorem. Then the balance condition \ref{h:bal} fails.
 \end{corollary}
 
 The proof of Theorem~\ref{thm:main} follows the architecture of SP Theorem~14.27:
@@ -106,20 +106,20 @@ The proof of Theorem~\ref{thm:main} follows the architecture of SP Theorem~14.27
 \item a small number $q=\Theta(m)$ of preliminary paths, built slot by slot from a membership matrix and a weaving lemma;
 \item then a Hamilton decomposition of the residual graph with two apices, by Csaba, K\"uhn, Lo, Osthus and Treglown \cite{CKLOT}, Theorem~1.3.5.
 \end{itemize}
-The new points are these.
+The changes relative to SP~14.27 are these.
 \begin{itemize}[nosep]
-\item Exceptional vertices enter the preliminary paths only through prebuilt three-vertex blocks $u\,x\,u'$ whose ends are healthy. They therefore never meet the weaving step's degree requirement.
+\item Exceptional vertices enter the preliminary paths only through prebuilt three-vertex blocks $u\,x\,u'$ whose ends are healthy. They therefore never meet the weaving step's degree requirement. The device of threading an exceptional vertex through a preliminary row as $u,x,v$ is SP's own: SP Theorem~14.30 uses it for low-degree exceptional vertices with neighbours on one shore. Here the exceptional vertices have degree about $m$ and stay in the Hamilton phase as well.
 \item Their internal edges are kept for the Hamilton phase. CKLOT Theorem~1.3.5 tolerates $\epsex N^2$ internal edges and has no per-vertex condition.
 \item The resulting unbalance of internal edges is absorbed exactly by retaining a suitable number of healthy internal edges and by the end pattern of the preliminary slots.
 \end{itemize}
-Lemma~\ref{lem:identity} is the exact identity behind the last point, and the balance condition is what makes it solvable.
+Lemma~\ref{lem:identity} is the exact identity behind the last point, and the balance condition is what makes it solvable in our construction. For bipartite residuals the identity is SP's counting obstruction $|t(A)-t(B)-D(a-b)|\le2q$ (SP \S14.18, ``The two auxiliary vertices and unequal shores'').
 
 \subsection{What remains for Target D}\label{sec:remains}
 Theorem~\ref{thm:main} leaves two kinds of configuration that a failure sequence may still contain.
 
 \begin{enumerate}[label=(R\arabic*)]
 \item \textbf{Unbalanced configurations.} The maximum-cut shores of a failure differ in size by $o(n)$, but possibly by much more than $|X|$, and the degree excess need not balance. Rebalancing the shores then needs vertex \emph{removal}: SP Theorems~14.31 and 14.33 delete vertices of the larger shore and reinsert them as labelled internal edges of the other shore, in a \emph{one-apex} scheme with about $n/4$ short preliminary paths. SP does this only for removed vertices whose neighbours all lie in one shore. Exceptional vertices have linear degree into both shores, so their labelled pairs live on both shores. Scheduling pairs on the shore whose sites are placed by SP's ``bin'' construction is the missing technical step (Problem~\ref{prob:twosided}).
-\item \textbf{Exceptional vertices of high degree.} A vertex of degree $(1/2+\beta)n$ with fixed $\beta>0$ must lie on almost every path. In a Hamilton-decomposition finish it must lie on both halves of a positive proportion of the cycles. NH achieves this for at most two vertices by splitting, under exact regularity. For three or more split pairs, the cyclic order of the copies on a Hamilton cycle is not controlled by CKLOT used as a black box.
+\item \textbf{Exceptional vertices of high degree.} A vertex of degree $(1/2+\beta)n$ with fixed $\beta>0$ must lie on at least $(1/4+\beta/2)n$ of the at most $n/2$ paths, a $(1/2+\beta)$-fraction of them. In a Hamilton-decomposition finish it must lie on both halves of a positive proportion of the cycles. NH achieves this for at most two vertices by splitting, under exact regularity. For three or more split pairs, the cyclic order of the copies on a Hamilton cycle is not controlled by CKLOT used as a black box.
 \end{enumerate}
 
 Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
@@ -149,6 +149,14 @@ Here, a \emph{Hamilton decomposition} of a graph~$G$ consists of a set of edge-d
 \end{itemize}
 No upper bound on $D$ is required, and there is no condition on individual vertices. Throughout, $\epsex$ denotes the constant of this theorem.
 
+\noindent\emph{Not used: the robust-expander decomposition.} CKLOT Theorem~1.3.4 (source label \texttt{undir\_decomp}), which is derived from K\"uhn and Osthus, reads:
+\begin{quote}
+Given $0<\nu \leq \tau<1$, we say that a graph $G$ on $n$ vertices is a \emph{robust $(\nu, \tau)$-expander}, if for all $S\subseteq V(G)$ with $\tau n\le |S|\le (1-\tau)n$ the number of vertices that have at least $\nu n$ neighbours in $S$ is at least $|S|+\nu n$.
+
+For every $ \alpha >0$ there exists $\tau>0$ such that for every $\nu> 0$ there exists $n_0=n_0 (\alpha,\nu,\tau)$ for which the following holds. Suppose that (i) $G$ is an $r$-regular graph on $n \ge n_0$ vertices, where $r\ge \alpha n$ is even; (ii) $G$ is a robust $(\nu,\tau)$-expander. Then $G$ has a Hamilton decomposition.
+\end{quote}
+SP uses robust-expander decompositions (through Pfenninger's multigraph version) in its Theorems~14.1 and 14.8, and hence in Corollaries~14.24 and 14.26. The present proofs do not use them. Near-bipartite graphs are not robust expanders: a shore $S$ of size $n/2$ has only about $|S|$ robust neighbours.
+
 \subsection{Gir\~ao, Granet, K\"uhn and Osthus}
 From the LaTeX source of \cite{GGKO} (arXiv:1911.05501v2, \S1):
 \begin{quote}
@@ -168,15 +176,19 @@ The following are copied from the archive PDF \texttt{gallai/02-november-25/sepa
 
 \textbf{SP Theorem 14.27.} There are constants $c>0$ and $m_0$ with the following property. Let $m\ge m_0$ and let $A,B$ partition $V(G)$ with $|A|=|B|=m$. At every site suppose there are at most $cm$ missing neighbors across the partition and at most $cm$ neighbors within its own part. Then $p(G^t)\le m$ for every $t$. More precisely, let $b:V(G)\to\{0,1,2\}$ have the parity of the degree at each site, with $b(A)+b(B)=2m$ and $|b(A)-b(B)|\le 2$. There is a partition into $m$ paths with these exact endpoint multiplicities.
 
+\textbf{SP Theorem 14.37.} There exist constants $c>0$ and $m_0$ with the following property. Let $G$ have shores $A,L$ of sizes $m,m+d$, with $m\ge m_0$ and $0\le d\le cm$. Suppose each old site has at most $cm$ neighbors in its own shore and at most $cm$ missing neighbors in the other shore. Then $G$ has a partition into at most $\lfloor|V(G)|/2\rfloor$ nonempty simple paths. At even order the same bound holds after adding one true leaf to any prescribed site.
+
+\textbf{SP Corollary 14.38.} There is $\kappa>0$ such that if a sufficiently large graph $G$ has $\delta(G)\ge(1/2-\kappa)n$ and its vertices can be colored with two colors so that each vertex has at most $\kappa n$ neighbors of its own color, then $p(G)\le\lfloor n/2\rfloor$. At even order the same bound holds after adjoining a private leaf at any prescribed vertex.
+
 \textbf{SP Corollary 14.39.} Consider a failure sequence as in Corollary 14.24 and any maximum cut of each graph. Write $d_{\rm in}(v)$ and $d_{\rm out}(v)$ for the two degrees relative to that cut, and put $X=\{v:d_{\rm in}(v)\ge\kappa n\}$ for the constant above. For sufficiently large $n$, $X$ is nonempty, $|X|=o(n)$, and each $v\in X$ has $d_{\rm out}(v)\ge n/4-o(n)$. The induced graph $G-X$ obeys the floor bound at its own order and the private-leaf bound at each of its vertices when that order is even.
 \end{quote}
 Here $\kappa$ is the constant of SP Corollary~14.38.
 
-SP Theorem~14.27 is quoted only for comparison: Theorem~\ref{thm:main} reproves and extends it. Corollaries~14.24, 14.26 and 14.39 are quoted to place the results. Corollary~\ref{cor:failures} uses only the \emph{definition} of a failure sequence from Corollary~14.24. The proofs below use, from outside this paper, only CKLOT Theorem~1.3.5, Hall's theorem and the max-flow min-cut theorem.
+SP Theorems~14.27 and 14.37 and Corollary~14.38 are quoted only for comparison: Theorem~\ref{thm:main} reproves and extends it. Corollaries~14.24, 14.26 and 14.39 are quoted to place the results. Corollary~\ref{cor:failures} uses only the \emph{definition} of a failure sequence from Corollary~14.24. The proofs below use, from outside this paper, only CKLOT Theorem~1.3.5, Hall's theorem and the max-flow min-cut theorem.
 
 \section{Two lemmas: membership and weaving}\label{sec:tools}
 
-The first lemma is SP Lemma~14.28, stated for an arbitrary number of rows; we include its proof for completeness. The second is a form of SP Lemma~14.29 in which blocks may be arbitrary short paths.
+The first lemma is SP Lemma~14.28 in our notation; we include its proof for completeness. The second is a form of SP Lemma~14.29 in which blocks may be arbitrary short paths.
 
 \begin{lemma}[Membership matrix]\label{lem:matrix}
 Let $r,q\ge1$. Consider an $r\times q$ array in which some entries are \emph{forbidden}: at most $0.03q$ in each row and at most $0.03r$ in each column. Let row sums $\alpha_1,\dots,\alpha_r\in[0.4q,0.6q]$ and column sums $\beta_1,\dots,\beta_q\in[0.4r,0.6r]$ be integers with $\sum\alpha_i=\sum\beta_j$. Then there is a $0/1$ matrix with these margins whose support avoids the forbidden entries.
@@ -272,7 +284,7 @@ while $|l(A)-l(B)|\le 2q$.
 
 When $\rho=0$ and the profile is nearly balanced, the internal edges kept for the Hamilton phase must therefore balance to within about $q$. When $\rho=1$, $B$ must keep about $D/2$ more internal edges than $A$. Near $K_{m,m+1}$ with few internal edges this is impossible. That is why SP switches to a one-apex scheme with vertex removal at unequal shores (SP Theorems~14.31 and 14.33), and why Theorem~\ref{thm:main} at $\rho=1$ needs hypothesis~\ref{h:bal}.
 
-In the proof below, hypothesis~\ref{h:bal} is exactly what allows the kept internal edges to be chosen so that the right-hand side of \eqref{eq:forced} lies in $[-1.2q,1.2q]$.
+In the proof below, hypothesis~\ref{h:bal} is what allows the kept internal edges to be chosen so that the right-hand side of \eqref{eq:forced} lies in $[-1.2q,1.2q]$. It is sufficient, not necessary. The proof only needs $|\Lambda|\le0.6q$, so the slack $cm$ in~\ref{h:bal} could be raised to about $\theta m/20$. It also relies on the choice to keep every internal edge at $X$.
 \end{remark}
 
 \section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
@@ -308,7 +320,7 @@ As $R_A,R_B$ vary, $\Lambda$ takes every integer value in $[\Lambda_0-e_H(B),\,\
 \Lambda_0-e_H(B)&=I_X(A)-e(B)+\beta'\le cm-\tfrac{\rho m}2+\tfrac{b(A)-b(B)}2+\tfrac{\rho(m-q)}2\le\tfrac32cm\le0.6q,\\
 \Lambda_0+e_H(A)&=e(A)-I_X(B)+\beta'\ge-\tfrac{\rho m}2-cm+\tfrac{b(A)-b(B)}2+\tfrac{\rho(m-q)}2\ge-\tfrac q2-\tfrac32cm\ge-0.6q .
 \end{align*}
-Hence we may fix $R_A,R_B$ with $|\Lambda|\le0.6q$. These are the healthy internal edges kept for the Hamilton phase. Put $F_A=E(G[H_A])\setminus R_A$ and $F_B=E(G[H_B])\setminus R_B$. These will be consumed by the preliminary paths. Edges inside a part with an end in $X$ are never used in the preliminary paths.
+The endpoints of this integer interval are integers. Its lower endpoint is at most $0.6q$ and its upper endpoint is at least $-0.6q$. So either an endpoint lies in $[-0.6q,0.6q]$ or the interval contains $0$. Hence we may fix $R_A,R_B$ with $|\Lambda|\le0.6q$. These are the healthy internal edges kept for the Hamilton phase. Put $F_A=E(G[H_A])\setminus R_A$ and $F_B=E(G[H_B])\setminus R_B$. These will be consumed by the preliminary paths. Edges inside a part with an end in $X$ are never used in the preliminary paths.
 
 \paragraph{Step 2: ends and end patterns.} Put $l_A=q+\Lambda$ and $l_B=q-\Lambda$; both lie in $[0.4q,1.6q]$. Since $b(A)\ge m-cm/2$, at least $\tfrac12(b(A)-2|X|)\ge0.45m\ge2q$ vertices of $H_A$ have $b\ge1$, and likewise in $H_B$. Choose $L_A\subseteq\{v\in H_A:b(v)\ge1\}$ of size $l_A$ and $L_B\subseteq\{v\in H_B:b(v)\ge1\}$ of size $l_B$. Put $l_v=1$ on $L_A\cup L_B$ and $l_v=0$ elsewhere, so $b'=b-l$ takes values in $\{0,1,2\}$ and $b'(V)=2m-2q=2D$.
 
@@ -325,7 +337,7 @@ Put $\tau_i=1,0,-1$ for types $AA,AB,BB$, so that $\sum_i\tau_i=\Lambda$. A slot
 \item each slot receives at most $m/100$ edges;
 \item no edge meets an end-site of its slot.
 \end{itemize}
-Do this greedily. We have $|F_A|+|F_B|\le(2m+1)cm/2\le1.01cm^2$, so at most $101cm$ slots are ever full. When an edge $uv$ is processed, at most $2cm$ slots already hold an edge at $u$ or $v$ (as $\own\le cm$ on $H$), and at most $2$ slots have $u$ or $v$ as an end-site. Since $103cm+2<q$, a slot is available. Orient each assigned edge arbitrarily, from entry to exit. Let $k^A_i$ and $k^B_i$ be the numbers of edges of $F_A$ and $F_B$ in slot $i$.
+Do this greedily. We have $|F_A|+|F_B|\le(2m+1)cm/2\le1.01cm^2$, so at most $1.01cm^2/\lfloor m/100\rfloor\le102cm$ slots are ever full. When an edge $uv$ is processed, at most $2cm$ slots already hold an edge at $u$ or $v$ (as $\own\le cm$ on $H$), and at most $2$ slots have $u$ or $v$ as an end-site. Since $104cm+2<q$, a slot is available. Orient each assigned edge arbitrarily, from entry to exit. Let $k^A_i$ and $k^B_i$ be the numbers of edges of $F_A$ and $F_B$ in slot $i$.
 
 \paragraph{Step 4: exceptional vertices and their partners.} For each $x\in X$ fix any set $T_x\subseteq[q]$ of size $p_x$. Then, for the pairs $(x,i)$ with $i\in T_x$ in some order, choose two distinct \emph{partners} $u_{x,i},u'_{x,i}$ such that:
 \begin{enumerate}[label=(P\arabic*),nosep]
@@ -424,7 +436,7 @@ In both cases $b(V)=n-1=2m$.
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{cor:class}]
-Let $c,m_0$ be as in Theorem~\ref{thm:main}, put $\gamma=c^2/20$, and let $n\ge n_0:=2m_0+2$ be large. Put $m=\lfloor n/2\rfloor$ and $\rho=n-2m$, so $|A|=m$ and $|B|=m+\rho$.
+Let $c,m_0$ be as in Theorem~\ref{thm:main}, put $\gamma=c^2/20$, and choose $n_0\ge2m_0+2$ so large that, for $n\ge n_0$ and $m=\lfloor n/2\rfloor$, we have $m\ge17$, $1+\gamma n+cm/2\le cm$ and $(1/2+\gamma)n\le(1+c)m$. Let $n\ge n_0$. Put $m=\lfloor n/2\rfloor$ and $\rho=n-2m$, so $|A|=m$ and $|B|=m+\rho$.
 
 Let $X=\{v:\own(v)>cm/2\}$. Since $\sum_v\own(v)=2(e(A)+e(B))\le2\gamma n^2$, we get $|X|\le4\gamma n^2/(cm)\le17\gamma m/c\le cm$.
 
@@ -443,7 +455,7 @@ Take the profile $b$ of Lemma~\ref{lem:profiles}, with $|b(A)-b(B)|\le2\le cm$. 
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{cor:failures}]
-Suppose the conclusion fails for infinitely many $n$. For such $n$, take the partition and the set $X$ provided, and let $t$ be a failing root if $n$ is even. Then $G_n$ satisfies \ref{h:healthy}--\ref{h:bal} with $m=\lfloor n/2\rfloor\ge m_0$. With the profile of Lemma~\ref{lem:profiles}, Theorem~\ref{thm:main} gives $p(G_n)\le\lfloor n/2\rfloor$, and $p(G_n^t)\le n/2$ when $n$ is even. This contradicts the defining failure of $G_n$: the even-order private-leaf bound at $t$, or the odd-order floor.
+Let $n$ satisfy $\lfloor n/2\rfloor\ge m_0$, and suppose a partition and a set $X$ as in the statement satisfy~\ref{h:bal}. Let $t$ be a failing root if $n$ is even. Then $G_n$ satisfies \ref{h:healthy}--\ref{h:bal} with $m=\lfloor n/2\rfloor\ge m_0$. With the profile of Lemma~\ref{lem:profiles}, Theorem~\ref{thm:main} gives $p(G_n)\le\lfloor n/2\rfloor$, and $p(G_n^t)\le n/2$ when $n$ is even. This contradicts the defining failure of $G_n$: the even-order private-leaf bound at $t$, or the odd-order floor.
 \end{proof}
 
 \begin{remark}[The maximum-cut exceptional set]\label{rem:maxcut}
@@ -455,24 +467,30 @@ Let $(A,B)$ be a maximum cut of a member $G$ of a failure sequence. Fix $\kappa'
 \end{itemize}
 So hypotheses \ref{h:healthy} and \ref{h:exc} hold as soon as two further things hold: the cut is balanced, $|A|=\lfloor n/2\rfloor$, and the exceptional vertices have degree at most $(1+c)m$. Corollary~\ref{cor:failures} then says that every such failure violates the balance condition~\ref{h:bal}.
 
-In particular, take a failure of Target~D that has a balanced maximum cut and $\Delta\le(1/2+c/3)n$. Then the internal edges at exceptional vertices on one side exceed all internal edges on the other side by more than $cm$, after the correction $\rho m/2$.
+In particular, let $(G_n)$ be a failure sequence as in SP Corollary~14.24. Suppose $G_n$ has a balanced maximum cut and every vertex of the set $X$ above has degree at most $(1+c)m$. Then, for all large $n$, the internal edges at exceptional vertices on one side exceed all internal edges on the other side by more than $cm$, after the correction $\rho m/2$. Note that $X$ here is defined with the threshold $\kappa'\le c/3$, not with SP's $\kappa$ of Corollary~14.38. Both sets have size $o(n)$, and $X_{\kappa'}\supseteq X_\kappa$ when $\kappa'\le\kappa$.
 \end{remark}
 
 \section{Relation to SP \S14 and what remains}\label{sec:sp}
 
 \subsection{Precise relation}
 \begin{enumerate}[label=(\arabic*)]
-\item \textbf{SP Theorem 14.27} is the case $X=\emptyset$, $\rho=0$, $|b(A)-b(B)|\le2$ of Theorem~\ref{thm:main}. Hypothesis~\ref{h:bal} is then vacuous.
+\item \textbf{SP Theorem 14.27} is the case $X=\emptyset$, $\rho=0$, $|b(A)-b(B)|\le2$ of Theorem~\ref{thm:main}. Hypothesis~\ref{h:bal} is then automatically satisfied.
 
 The proof of Theorem~\ref{thm:main} follows SP's proof: preliminary slots, Lemma~\ref{lem:matrix}, which is SP Lemma~14.28, Lemma~\ref{lem:weave}, which generalises SP Lemma~14.29, and the two-apex Hamilton finish through CKLOT Theorem~1.3.5. It departs from SP's proof in four places:
 \begin{enumerate}[label=(\alph*),nosep]
-\item exceptional vertices are threaded through prebuilt partner blocks, never woven directly;
+\item exceptional vertices are threaded through prebuilt partner blocks, never woven directly (the threading device is that of SP Theorem~14.30);
 \item internal edges at $X$, and a chosen set $R_A\cup R_B$ of healthy internal edges, are left for the Hamilton phase instead of being consumed;
 \item the slot end patterns are chosen to absorb the imbalance $\Lambda$ (Step~2);
 \item odd order $\rho=1$ is allowed, which SP's two-apex scheme excludes. SP handles odd order near $K_{m,m+1}$ by a different, one-apex argument (Theorem~14.31).
 \end{enumerate}
-\item \textbf{SP Theorems 14.31, 14.33 and 14.37 and Corollary 14.38} treat unequal shores (sizes $m$ and $m+d$ with $1\le d\le cm$) with \emph{no} exceptional set. They are not implied by Theorem~\ref{thm:main}. By Remark~\ref{rem:forces}, a two-apex construction for $d\ge1$ needs the larger shore to keep about $dD/2$ more internal edges, which a graph near $K_{m,m+d}$ need not have. Conversely, Theorem~\ref{thm:main} is not implied by those results. It allows $|X|$ linear and $\own(x)$ up to $3m/4$, where SP~14.37 requires $\own\le cm$ at every vertex with $c\le10^{-6}$.
-\item \textbf{SP Corollary 14.39.} Theorem~\ref{thm:main} returns the exceptional set of Corollary~14.39 whenever the configuration is balanced (Remark~\ref{rem:maxcut}). What remains open is described next.
+\item \textbf{SP Theorems 14.31, 14.33 and 14.37 and Corollary 14.38.}
+\begin{itemize}[nosep]
+\item SP Theorems~14.31 and 14.33 treat bipartite graphs on shores of sizes $m$ and $m+1+r$, with $r$, the maximum missing degree and the number of even-degree vertices all $o(m)$.
+\item SP Theorem~14.37 (quoted in \S\ref{sec:cited}) allows shores $m$ and $m+d$, $0\le d\le cm$, with at most $cm$ own-part neighbours and at most $cm$ missing cross neighbours at \emph{every} vertex.
+\item SP Corollary~14.38 deduces the bound for two-coloured graphs of minimum degree $(1/2-\kappa)n$ in which every vertex has at most $\kappa n$ neighbours of its own colour.
+\end{itemize}
+None of them has an exceptional set. They are not implied by Theorem~\ref{thm:main}. By Remark~\ref{rem:forces}, a two-apex construction with $d\ge1$ needs the larger shore to keep about $dD/2$ more internal edges, which a graph near $K_{m,m+d}$ need not have. Conversely, Theorem~\ref{thm:main} is not implied by those results. It allows $|X|$ up to $cm$ and $\own(x)$ up to $3m/4$ at exceptional vertices, whereas SP~14.37 bounds $\own$ by $cm$ at every vertex. The constant $c$ of SP~14.37 is not explicit: its proof argues by contradiction along a sequence.
+\item \textbf{SP Corollary 14.39.} Theorem~\ref{thm:main} returns an exceptional set of the kind in Corollary~14.39, taken with a threshold $\kappa'\le c/3$, whenever three conditions hold: the maximum cut is balanced ($|A|=\lfloor n/2\rfloor$), every exceptional vertex has degree at most $(1+c)m$, and the balance condition~\ref{h:bal} holds (Remark~\ref{rem:maxcut}). The degree cap matters, because SP Corollary~14.26 allows $\max\{\Delta,\odd\}=n-o(n)$. What remains open is described next.
 \item \textbf{NH} returns one or two mixed vertices of degree $2D$ when all healthy degrees equal $D$. Those vertices have degree about $n$, so they lie outside hypothesis~\ref{h:exc}. Theorem~\ref{thm:main} and NH cover disjoint regimes.
 \end{enumerate}
 
@@ -497,12 +515,12 @@ Two pieces of the solution are in place:
 What is missing is only the scheduling of the two-sided pairs.
 
 \begin{problem}[High-degree exceptional vertices]\label{prob:high}
-Return exceptional vertices of degree at least $(1/2+\beta)n$ for a fixed $\beta>0$. Such a vertex lies on more than $n/4+\beta n/2$ of the at most $n/2$ paths. In a Hamilton-decomposition finish it must therefore lie on both arcs of a positive proportion of the Hamilton cycles.
+Return exceptional vertices of degree at least $(1/2+\beta)n$ for a fixed $\beta>0$. Such a vertex lies on at least $n/4+\beta n/2$ of the at most $n/2$ paths. In a Hamilton-decomposition finish it must therefore lie on both arcs of a positive proportion of the Hamilton cycles.
 
 NH achieves this for at most two vertices by splitting each into two copies of degree $D$, when the healthy degrees all equal $D$. With three or more split pairs, the cyclic order of the copies on a Hamilton cycle would have to admit two arcs that each contain exactly one copy of every split vertex. CKLOT Theorem~1.3.5, used as a black box, does not control this order.
 \end{problem}
 
-By SP Corollary~14.26, a failure has $\max\{\Delta,\odd\}=n-o(n)$. So Problem~\ref{prob:high} cannot be avoided when the failure has a near-universal vertex. When instead $\odd(G)=n-o(n)$ and $\Delta\le(1/2+o(1))n$, only Problem~\ref{prob:twosided} remains, and only in the unbalanced case.
+By SP Corollary~14.26, a failure has $\max\{\Delta,\odd\}=n-o(n)$. So Problem~\ref{prob:high} cannot be avoided when the failure has a near-universal vertex. It also arises when $\odd(G)=n-o(n)$ and some vertex has degree above $(1+c)m$. When $\odd(G)=n-o(n)$ and $\Delta\le(1+c)\lfloor n/2\rfloor$, only Problem~\ref{prob:twosided} remains, and only in the unbalanced case.
 
 \section{Lean formalisation}\label{sec:lean}
 
@@ -513,7 +531,7 @@ Two finite lemmas used above are cleanly separable from the asymptotic argument.
 0.6x+0.6y-0.4-xy+0.03\min(x,y)<0 .
 \]
 This is the inequality closing the proof of Lemma~\ref{lem:matrix}.
-\item \texttt{dense\_bipartite\_hall}: let $L,R$ be finite types with $|L|=|R|=k$ and $r$ a relation, with $4M\le k$. Suppose every $\ell\in L$ is related to at least $k-2M$ elements of $R$, and every $\rho\in R$ to at least $k-2M$ elements of $L$. Then there is an injection $f:L\to R$ with $r(\ell,f(\ell))$ for all $\ell$. This is the Hall step of Lemma~\ref{lem:weave}, derived from Mathlib's form of Hall's theorem.
+\item \texttt{dense\_bipartite\_hall}: let $L,L'$ be finite types with $|L|=|L'|=k$ and $\sim$ a relation between them, with $4M\le k$. Suppose every $\ell\in L$ is related to at least $k-2M$ elements of $L'$, and every $\ell'\in L'$ to at least $k-2M$ elements of $L$. Then there is an injection $f:L\to L'$ with $\ell\sim f(\ell)$ for all $\ell$. This is the Hall step of Lemma~\ref{lem:weave}, derived from Mathlib's form of Hall's theorem.
 \end{enumerate}
 The asymptotic parts (CKLOT Theorem~1.3.5, the slot construction and the Hamilton finish) are not formalised.
 
