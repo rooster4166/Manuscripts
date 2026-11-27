@@ -1,0 +1,1 @@
+data/conn8.g6 {'graphs': 11117, 'e0': 224, 'runs': 22234, 'Fv_disconnected': 28158, 'Fv_odd_component_sizes': 27697, 'v_even_paired': 88016} failures: 0

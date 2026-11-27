@@ -1,0 +1,1 @@
+data/conn6.g6 graphs 112 (M, v) pairs: 3186 satisfied at v: 3168 violated at v: 18 | forms (a), (c), signed agree, and (d), Lemma 6 flow ; Lemma 7 holds on every (v, Y)

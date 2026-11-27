@@ -1,0 +1,8 @@
+all connected, order 6: 99 graphs, 297 constructions, 0 not good   [0s]
+all connected, order 8: 10893 graphs, 32679 constructions, 0 not good   [31s]
+random G(10,p), seed 20261127: 250 graphs, 750 constructions, 0 not good   [1s]
+bottleneck families: 82 graphs, 246 constructions, 0 not good   [0s]
+trees, order 8: 20 graphs, 20 constructions, 0 not good   [0s]
+trees, order 10: 99 graphs, 99 constructions, 0 not good   [0s]
+trees, order 12: 538 graphs, 538 constructions, 0 not good   [1s]
+random G(12,p), seed 12: 150 graphs, 300 constructions, 0 not good   [1s]
