@@ -516,29 +516,52 @@ conditions of a smallest failure imposed:
 \subsection*{Results}
 Every root of every graph is tested, not only the roots allowed by the shape theorem. A root
 counts as certified if some labelling has a base and the executed construction verifies.
+
+\emph{Exhaustive, order $9$.} Among the $1{,}819$ $3$-connected graphs $J$ of order $9$ in which
+$z$ is the only even vertex and $d(z)=6$ (the list of \cite[\S8]{TM}), $28$ have a dense core.
+They split as $2$ $\emptyset$, $6$ $K_2$, $8$ $P_3$, $5$ $K_3$ and $7$ $C_4$. With exact search
+(no node budget) in mode \texttt{lean}:
+\begin{itemize}
+\item every one of the $168$ roots is certified at the first labelling tried, through (E7);
+\item of all $42{,}432$ pairs (root, labelling with $x_1y_2,x_2y_3\in E(B)$), $42{,}384$ have a
+base with (E7) and $24$ more with (E6);
+\item $24$, all of shape $C_4$, have none;
+\item every root has a base for at least $96.7\%$ of its labellings;
+\item no executed construction failed.
+\end{itemize}
+
+\emph{Random, residual-style and sparse} (node budget $2\cdot10^6$ to $5\cdot10^6$ per search,
+two to four seeds):
 \begin{center}\footnotesize
 \begin{tabular}{@{}llrrrr@{}}
 \toprule
-graphs & mode & $J$ & roots & certified & bases executed, failures\\
+graphs & mode & $J$ & roots & certified & failures\\
 \midrule
-\texttt{gen\_core} $C_4$, $|B|=14$ & all six-separation / end / endA & 10 & 40 & 40 / 40 / 40 & 0\\
+\texttt{gen\_core} $C_4$, $|B|=14$ & six-separation / end / endA & 10 & 40 & 40 / 40 / 40 & 0\\
 \texttt{gen\_core} $\emptyset,K_3,C_4$, $|B|=14$ & endA & 18 & 108 & 108 & 0\\
-residual $C_4$, $|O|=8$ & endZ & 20 & 120 & 120 & 0\\
+residual, all shapes, $|O|=8$ & endA and endZ & 15 & 90 & 90 & 0\\
+residual $C_4$ (twins), $|O|=8$ & endZ & 20 & 120 & 120 & 0\\
 residual $K_3$, $|O|=8$ & endZ & 20 & 120 & 120 & 0\\
 residual $P_3$, $|O|=8$ & endZ & 20 & 120 & 114 & 0\\
-residual, all shapes, $|O|=8$ & endA, endZ & 15 & 90 & 90 & 0\\
+residual $C_4$ (twins), $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $K_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
+residual $P_3$, $|O|=8$ & lean & 8 & 48 & 48 & 0\\
 \bottomrule
 \end{tabular}
 \end{center}
-The six uncertified roots in the $P_3$ row all belong to a single graph, where every search hit
-the budget. The table is completed in E28 with the runs of mode \texttt{lean} (Section~\ref{sec:comp}
-of the log).
+``Failures'' counts bases satisfying the theorem's conditions whose executed construction did not
+verify; there were none, in any mode. In mode \texttt{lean} almost every certificate uses (E7),
+that is, all seven steps are appends; (E6) was needed for $2$ of the $144$ roots. The six
+uncertified roots of the endZ $P_3$ row belong to a single graph, in which every search hit the
+budget. They are not counterexamples. Further cells ($K_2$, $\emptyset$, $|O|=10$) are logged
+in E28.
 
 For comparison, the six-separation base of \cite[Thm~8.2]{TM}, with the same chains, was tried on
-five residual $C_4$ graphs ($|O|=8$, all $160$ labellings with a root on the cycle, two seeds,
+five residual $C_4$ graphs ($|O|=8$; all $160$ labellings with a root on the cycle; two seeds;
 budget $5\cdot10^6$). Every search hit the budget and no base was found. On the sparse
-\texttt{gen\_core} graphs the six-separation base exists in $304$ of the $320$ configurations,
-and the protected step then succeeds for $834$ of $1050$ bases found (forced chain).
+\texttt{gen\_core} graphs the six-separation base exists for $304$ of the $320$
+configurations, and the protected step then succeeds for $834$ of the $1{,}050$ bases found
+(forced chain).
 
 \section{Relation to the known reductions of T(6)-i}\label{sec:novelty}
 
