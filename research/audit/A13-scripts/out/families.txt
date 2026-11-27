@@ -1,0 +1,1 @@
+families checked: 1033 {'C': 5, 'Kab etc': 31, 'wheel': 5, 'ladder': 5, 'path': 5, 'petersen': 1, 'Q': 1, 'tree': 680, 'gnp': 260, '4reg': 40} failures: 0
