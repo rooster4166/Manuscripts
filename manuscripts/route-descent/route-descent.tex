@@ -782,6 +782,14 @@ a route has no neighbour in $F$ on its route, because routes have no chords
 (Lemma~\ref{lem:min}(3)). So this would give (RR1) for any single route. Conjecture~\ref{conj:ball}
 held in all $3{,}195$ random instances with one even vertex (orders $7$--$15$).
 
+For the leaf case ($s=\ell$ a leaf at $c$) the induction of Theorem~\ref{thm:sep} nearly goes through.
+A leaf is never a chain vertex in Lemma~\ref{lem:fan}, because the chain vertices after the first are
+interior to paths. So a Fan transfer towards $u$ changes the path through $\ell$ only by adding $u$, and
+only when the chain ends at the far end of that path. Choosing every target in $N[c]$ where possible, or
+at distance at least three from $c$ when the even vertex is far, every case of the induction is safe
+except one: the even vertex $z$ is at distance three from $c$ and all its neighbours are at distance
+two. This is a tight case of Fan's inequality, and we do not know how to handle it.
+
 Theorem~\ref{thm:sep} is the case of Conjecture~\ref{conj:msep} in which the union of the pairs is
 packed. Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
 would give Gallai's conjecture, with every orientation realisable, for every graph whose even vertices

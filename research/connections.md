@@ -1067,6 +1067,27 @@ What L1 does and does not give:
   - **S1**: both a ∉ Q_c and c ∉ Q_a at distance 2, in one decomposition. 998 decided instances, 0 failures.
   - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 3,195 instances (n ≤ 15), 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
 
+### V.4c L∞ via the leaf: Lovász's induction leaves one residual configuration
+**Target.** L∞ (synthesis §18 priority 1): in an all-odd F, some Lovász decomposition has V(Q_c) ⊆ N[c]. Attaching a leaf, this is GL: if K has ≤ 1 positive even vertex and ℓ is a leaf with neighbour c, some Lovász decomposition has the path through ℓ inside B = {ℓ} ∪ N[c]. That is one-sided separation (BALL) at a leaf.
+
+**Key observation.** A leaf is never a chain vertex of Fan's lemma. Chain vertices after x₀ are of the form π(x, Q), which lies strictly inside Q. Fan's lemma keeps every vertex set except that of Q*, the path ending at the last chain vertex. So a Fan move with t ≠ ℓ and target u changes the ℓ-path only if Q* is the ℓ-path: then the last chain vertex is the other end y of the ℓ-path, and the ℓ-path gains u. That is harmless when u ∈ B.
+
+**Case analysis** (Lovász's induction, in its current graph; d = distance from c):
+- **I, even vertex z.**
+  - z = c: delete cu for some u ∈ N(c) ∖ ℓ. The target u ∈ B. Safe.
+  - z ∈ N(c): delete zc. Then c becomes the even vertex, and the target c is already on the ℓ-path, so Q* is not the ℓ-path. Safe.
+  - d(z) = 2: delete zw for w ∈ N(z) ∩ N(c). Target w ∈ B. Safe.
+  - d(z) ≥ 4, or d(z) = 3 with a neighbour u at d ≥ 3: every vertex of N(u) has d ≥ 2, so none is in B. So y ∉ N(u), and z ∉ B. Safe.
+- **II, all odd.** Take x = c if deg c ≥ 3, with u ∈ N(c) ∖ ℓ. The Fan target is x = c ∈ B, or the new path ux is added. Safe. If deg c = 1, the component of c is the edge ℓc, which is trivial.
+- **III, a leaf v ≠ ℓ.** Delete vw and add the path vw back. Safe.
+
+**Residual (the only gap).** z is the even vertex with d(z) = 3, and **every neighbour of z is at distance exactly 2 from c**. Deleting uz (u ∈ N(z)) fails if the ℓ-path ends at y ∈ N(u) ∩ N(c) and Fan's chain from z ends at y. Counting shows this is a tight case of Fan's inequality: every vertex reachable from z is a neighbour of u, and the only u-avoiding path with an end there is the ℓ-path.
+- Lifting z–u–w to zw does not close it: the lifted path may already pass through u.
+- The leaf-at-u variant gives b(z) = 2.
+- The even vertex cannot be kept near c either: after deleting cu at z = c, the new even vertex u may lie far from c in the smaller graph.
+
+So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n ≤ 15) shows no failure.
+
 ### V.4b Lean: Gallai ⟸ RR (formal)
 `RouteSystem.lean`: **`gallai_of_routeRR`** and **`gallai_of_routeRRExists`**. If every connected graph of even order has a pairing of its even vertices, routed by edge-disjoint paths, such that for every transversal (resp. one through each even vertex) the free graph has an M-compatible Lovász decomposition (RR1 + RR2), then Gallai holds.
 - The core is **`append_routes`** (Prop. rr, ⇐): routes are appended one at a time, and compatibility passes to each intermediate decomposition (the new path ends at a head, which is no tail).
