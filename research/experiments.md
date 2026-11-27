@@ -374,6 +374,24 @@ On the core roots without `orbit`: the opponent can make the root a donor, and t
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
 
 **E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).
+**E14 addendum 3 (missing-move, hub-strategy conjecture; manuscript §6, Prop 6.8).** Game: `np rf orbit hubs`. Roots: even y with ≥ 3 even neighbours and no bridge yt with d(t) ≥ 2 (the root hypotheses of BranchBase3), one per automorphism orbit. X = held edges besides the star. lb(y) = ⌊e(y)/2⌋, where e(y) counts the non-leaf odd neighbours of y and the even vertices outside N[y] (parity lower bound for |X| when the star is at y). Scripts are in `manuscripts/missing-move/scripts/`, outputs in `outputs/`.
+- **n = 8**, all 11117 connected graphs (`data/conn8.g6`), 9268 root orbits.
+  - Star at y (`hubroot`), least \|X\| = 0/1/2/3 for 3100/5375/787/6 root orbits, identical with the simple target (`hs8_R_root.log`, `hs8_simple_root.log`).
+  - lb ≤ 1 always. \|X\| − lb = 0/1/2 for 8475/783/10 (`hs8_root_parity.txt`), so the conjecture holds at n = 8 with c = 2.
+  - Star at any vertex: 0/1/2 for 7000/2256/12 (R target) and 6997/2259/12 (simple) (`hs8_R.log`, `hs8_simple.log`).
+  - Shapes of one winning X (lexicographic first; `hs8_root_shapes.txt`).
+    - \|X\| = 1: relay O–n 2468, n–n 1495, O–O 1332, other 80.
+    - \|X\| = 2: 757 paths (611 through an even neighbour of y) and 30 matchings.
+    - \|X\| = 3: 4 paths, 2 triangles.
+- **Proved theorems alone at n = 8** (`relay_cover.py`). The relay-hub Theorem 6.4 covers 2556 root orbits, the two-hub Corollary 6.6 covers 379, and one of them covers 2757 of the 9268. Each replays as a game win with the theorem's own held set (`relay_cover8.txt`).
+- **n = 10**: the 10 graphs of Prop 5.10 plus 40 new critical graphs (`sample10.py 23 40`, `sample10_50.g6`). 30 of them have a root, 108 root orbits in all, lb = 0/1/2 for 2/39/67.
+  - Star at y (KMAX 4, R target): least \|X\| = 0/1/2/3/4 for 1/35/68/3/1 (`hs10_R_root.log`).
+  - \|X\| − lb = 0/1/2/3 for 102/3/1/2. **lb + 3 is needed** at Inv~|~zbw root 7 (d = 8, lb 0, \|X\| 3) and root 9 (d = 6, lb 1, \|X\| 4). So the c = 2 form of the conjecture is **false** (`hs10_root_parity.txt`).
+  - Simple target: the same, except Inv~|~zbw root 2 needs 4 instead of 3 (`hs10_simple_root.log`).
+  - Star anywhere: 0/1/2/3 for 3/93/10/2, both targets (`hs10_R.log`, `hs10_simple.log`).
+  - The proved theorems cover **0 of 108** (`relay_cover10.txt`). For the relay theorem, 99 root orbits have no partners z_i, 4 fail (iii) and 5 fail (ii). Only 3 roots have d = 4 (`relay_cover10_reasons.txt`).
+  - 54 of the 57 degree-8 root orbits win with \|X\| = lb ≤ 2, below the 3 relays Theorem 6.4 would need, so the game wins there by moves outside the receipts-only lemmas.
+
 ## E15. Oracle seeds, the last-edge barrier, and EMC at n = 8 (cloud session `claude/emc-four-even`, route (H))
 
 Tools:

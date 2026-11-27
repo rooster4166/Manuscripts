@@ -1,0 +1,15 @@
+k=1 35
+     24  edge       n-n
+     11  edge       O-n
+k=2 68
+     31  matching   On,nn
+     20  matching   nn,nn
+      9  matching   On,On
+      6  matching   OO,nn
+      2  path2      O-N-n
+k=3 3
+      1  P1+P2      NO,Nn,On
+      1  path3      n-N-N-n
+      1  path3      N-N-N-n
+k=4 1
+      1  cycle4     NN,NO,NO,On

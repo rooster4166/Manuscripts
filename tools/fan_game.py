@@ -65,7 +65,8 @@ CACHE_CAP = 3_000_000  # states kept in the memo table before it is flushed
 
 
 def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, alt=0, hubs=False,
-                kmin=0, flower=False, rf=False, orbit=False, simple=False, hubroot=False):
+                kmin=0, flower=False, rf=False, orbit=False, simple=False, hubroot=False,
+                fixedF=None):
     n = G.number_of_nodes()
     nodes = sorted(G.nodes())
     idx = {v: i for i, v in enumerate(nodes)}
@@ -427,7 +428,13 @@ def solve_graph(G, kmax=4, roots=None, inductive=False, newpath=False, rot=0, al
     for r in roots:
         found = None
         for k in range(kmin, kmax + 1):
-            for F in (hub_sets(k, [r] if hubroot else range(n)) if hubs else combinations(E, k)):
+            Fs = (hub_sets(k, [r] if hubroot else range(n)) if hubs else combinations(E, k))
+            if fixedF is not None:
+                # a single prescribed held set (labels of G), tried once
+                if k > kmin:
+                    break
+                Fs = [tuple(sorted(tuple(sorted((idx[a], idx[c]))) for a, c in fixedF))]
+            for F in Fs:
                 for b0 in starts(F):
                     if win(frozenset(F), b0, r, rot, alt):
                         found = (F, b0)

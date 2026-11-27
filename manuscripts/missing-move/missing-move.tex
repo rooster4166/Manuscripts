@@ -14,6 +14,7 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{question}[theorem]{Question}
+\newtheorem{conjecture}[theorem]{Conjecture}
 
 \newcommand{\Ev}{\mathrm{Ev}}
 \newcommand{\Od}{\mathrm{Od}}
@@ -50,8 +51,15 @@ flower of cycles. We give a profile-level receipt-or-flower move with such a cou
 the symmetry of the root's orbit, the game wins our hard cases of orders $8$ and $10$ with a
 single held star. On a random sample of order $10$ every graph is won with a star plus at most
 three held edges. These include the cocktail party graphs $K_{2m}$ minus a perfect matching for
-$m=4,5$, where the move attains the insertion barrier. The hub lemmas, the degree-four theorems,
-the critical instance and Fan's alternative are formalised in Lean~4.
+$m=4,5$, where the move attains the insertion barrier. Their rooted test is already known for
+every $m$, by explicit Hamiltonian flowers, so on these graphs our results are re-derivations
+inside the game. For every degree we prove the hub lemma
+under a supply condition, a version with relays into the hub, and a version with two hubs that
+share one new path. We test a hub-strategy conjecture: at a root with the hypotheses of the
+branching base case, the root's star, a parity repair and a bounded number of further held
+edges suffice. At order $8$ two further edges suffice at all $9268$ root orbits. A sample of order
+$10$ needs three, and there the proved theorems apply at no root. The hub lemmas of every degree,
+the degree-four theorems, the critical instance and Fan's alternative are formalised in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -166,10 +174,17 @@ three receipts of a pure star, and four are needed. The fourth sits at Fan's equ
 arguments settle it there. On the order-$10$ analogue of \texttt{GsRvnk} the receipt is forced by
 an append-or-through argument and a count of edges (Proposition~\ref{prop:A62}). On $K_8$ minus a
 perfect matching it always fails, and the rigid configuration is a flower of three Hamiltonian
-cycles, which recombines (Proposition~\ref{prop:K8M}). The game compensates instead by holding
+cycles, which recombines (Proposition~\ref{prop:K8M}; a re-derivation of the case $m=4$
+of~\cite[Thm.~10.21]{SP}). The game compensates instead by holding
 more edges and routing the inserted path through the hub along them. A profile-level
 receipt-or-flower move with an edge count (Lemma~\ref{lem:rfcount}), together with the symmetry
 of the root's orbit, wins all these graphs with a single held star.
+\item \emph{Arbitrary degree} (Section~\ref{sec:general}). A hub of degree $d$ whose neighbours
+carry $\sum b\ge2d-5$ ends costs one path (Lemma~\ref{lem:genhub}). Relays from even
+non-neighbours raise the supply (Theorem~\ref{thm:relayhub}). Two hubs with one common neighbour
+share one new path (Lemma~\ref{lem:twohub}). The profile-level lemmas are formalised. The
+hub-strategy conjecture (Conjecture~\ref{conj:hub}) holds at order $8$ with $c=2$. A sample of
+order $10$ needs $c\ge3$, and the proved theorems cover none of its roots.
 \end{enumerate}
 For the programme this corrects connections~\S R. Lov\'asz seeds with Fan transfers were
 incomplete at order $8$ because the game could not spend Lov\'asz's spare path on a path of length
@@ -470,6 +485,15 @@ goes wrong. A hub of degree six with $b\ge1$ on its neighbours absorbs three rec
 adversary. Closing it with the spare path needs four receipts and one new path. The fourth receipt
 has supply $3$ against three blank neighbours: it is exactly at Fan's equality.
 
+Degree-six hubs are treated at the level of paths in~\cite[\S\S12.14, 13]{SP}. Let $y$ have degree
+six and five even neighbours. Suppose (R) fails at a root near $y$ (Thm.~12.29) or at distance at
+least three (Thm.~13.9). Then $G-y$ (or a slight modification of it) has more than $h$ paths and
+misses at least $h+1$ edges, where $n=2h+2$. The proofs assign ending paths of a partition of
+$G-y$ to the neighbours of $y$ and append the spokes. Doubly assigned paths close into cycles
+through $y$, which a short path reopens, by the short-path-and-cycles lemma of Chu, Fan and Zhou.
+These are the path-level forms of the receipts and flowers below. The profile game does not see
+the assignments.
+
 The game gets around this by holding further edges. Relays then feed the hub, and the new path is
 routed through the hub along the extra held edges. For $M_8$ (Theorem~\ref{thm:complete8}) the
 inserted path is $1\,4\,2\,0\,7$. We first give two hand arguments that close the pure star
@@ -571,6 +595,16 @@ The paths are $C_i-e_i$ for $i\le j$, and $L$. The path $C_i-e_i$ ends at the tw
 An interior vertex of $L$ lies on two of the $e_i$ and is interior to $L$. An end of $L$ lies on
 one $e_i$ and ends $L$.
 \end{proof}
+Lemma~\ref{lem:flower} is elementary and not new. The cycle-opening results of the archive go
+much further for the conclusion that matters for (R), namely two ends at the common vertex.
+\begin{itemize}
+\item Any $j\le7$ edge-disjoint cycles through a vertex $x$ partition into at most $j+1$ paths,
+two of them ending at $x$~\cite[Thm.~38]{MR}. This extends Chu, Fan and Zhou's $j+1$ count.
+\item The same holds for twelve nearly spanning cycles~\cite[Thm.~1]{CC}.
+\item Larger families are treated under intersection conditions~\cite[Thm.~13.18]{SP}.
+\end{itemize}
+The Hamiltonian flowers below are special cases. What our version adds is only the prescribed
+ends at the vertices of a transversal path.
 
 \begin{proposition}\label{prop:K8M}
 Let $M_8$ be $K_8$ minus a perfect matching. Then (R) holds at every vertex of $M_8$, by
@@ -592,6 +626,15 @@ through $w$. Its two edges there avoid $a$, because $aw\in C_2$, and at most one
 $s$. Choose $e_3=wz$ with $z\ne s$. Then $s,a,w,z$ are distinct and $L=s\,a\,w\,z$ is a path.
 Lemma~\ref{lem:flower} gives $4=n/2$ paths with $b(s)=2$.
 \end{proof}
+
+Proposition~\ref{prop:K8M} is a re-derivation. (R) at every root of every cocktail party graph
+$\mathrm{CP}(m)=K_{2m}$ minus a perfect matching, $m\ge4$, is~\cite[Thm.~10.21]{SP}. Its proof
+opens the $m-1$ Walecki Hamilton cycles, each detoured through the mate of the root, along the
+path $Q=(t,1,\dots,m-1)$. This is a flower with a transversal path, for every $m$. The same theorem
+shows that Fan's numerical test fails in every partition within the budget, after any edge is
+deleted. The Lean theorem \texttt{cocktail\_fan\_barrier} is a formal counterpart of that half.
+New here is only that the flower arises from a Lov\'asz seed, three receipts and an edge count,
+i.e.\ inside the game.
 
 With the pure star the fourth receipt \emph{always} fails: all three paths end at the hub, so Fan's
 chain from $t\in T$ stops at a blank donor. The spare path is spent on recombining the flower. (The
@@ -663,8 +706,9 @@ edges.
 For $\mathrm{CP}(m)$ the argument is uniform up to the transversal. Lov\'asz on $\mathrm{CP}(m)-s$
 gives $m-1$ paths with $b=1$ on $N(s)$. Then $m-1$ receipts follow (supplies $1>0$, $2m-3>1$,
 $\dots$), and the flower with $j=m-1$ Hamiltonian cycles finishes. Lemma~\ref{lem:transversal}
-covers $m\le5$, and a transversal lemma for every $j$ would give (R) for every $\mathrm{CP}(m)$,
-each vertex of which is an instance of \texttt{BranchBase3} with $k=m$.
+covers $m\le5$, and a transversal lemma for every $j$ would give the flower move in the game for
+every $\mathrm{CP}(m)$, each vertex of which is an instance of \texttt{BranchBase3} with $k=m$.
+(R) itself holds for every $\mathrm{CP}(m)$ by~\cite[Thm.~10.21]{SP}.
 
 \subsection*{Receipt or flower, with a count}
 Proposition~\ref{prop:A62}, Proposition~\ref{prop:K8M} and the closure of $B'$ are three outcomes
@@ -735,6 +779,18 @@ hub's donor is $4$, the new path is $2\,6\,3$ or $3\,6\,2\,7$ and single transfe
 $2$ and $3$, so it also wins at the root $3$. So in this sample the miss is again a matter of
 held-set size: a second hub along the inserted path does what the count cannot.
 
+\texttt{Inv\char126|\char126zbw} is dense ($\delta=0.6n$), and it lies in a regime that the archive
+treats at the level of paths. Its vertex $9$ has degree $6$, and $6$ is its only odd neighbour.
+Deleting $9$ leaves $K_9$ minus $\{02,17,24,58\}$, with $h=4$ missing edges. By the rainbow
+Hamiltonian decomposition theorem~\cite{JM} (repaired in~\cite{JMR}) this graph has a partition into
+$4$ Hamilton paths. So~\cite[Thm.~12.29]{SP} with $y=9$ gives (R) at the roots $9$ (distance $0$,
+$s=6$) and $6$ (distance $1$, $s=t=6$). At the roots $1,2,3$ (distance two, through $6$) the graph
+$W$ of that theorem misses $h+1=5$ edges, and the theorem does not decide. The roots $0,4,5,7,8$ are
+not of its form, because a neighbour other than $6$ would have to be the exceptional site. So the
+large held sets this graph needs (here, and in Proposition~\ref{prop:hubtest}(c)) measure how the
+end budgets of the profile game starve at high density, as for $\mathrm{CP}(4)$. They do not point
+to a sparse obstruction, and we did not raise the held-edge caps further.
+
 \begin{question}\label{q:count}
 \begin{enumerate}[label=(\alph*)]
 \item Is the game with path insertion, receipt or flower, and the orbit rule complete at order
@@ -743,9 +799,227 @@ $10$? \texttt{Inv\char126|\char126zbw} is the test case.
 bound, for instance one that uses the degrees of the remaining ends, that decides the rigid case
 more often?
 \item Does Lemma~\ref{lem:transversal} hold for every $j$ (with $N\ge2j+1$)? That would give a
-flower move for every $j$ and the rooted test for every $\mathrm{CP}(m)$.
+profile-level flower move for every $j$. The rooted test for every $\mathrm{CP}(m)$ is already
+known~\cite[Thm.~10.21]{SP}.
 \end{enumerate}
 \end{question}
+
+\section{Hubs of arbitrary degree}\label{sec:general}
+
+The certificates of Sections~\ref{sec:hub}--\ref{sec:six} have one shape. Hold the star of a hub
+$s$ and a few further edges. Take a Lov\'asz seed of the rest, which has a spare path because $s$
+is isolated. Let $s$ receive, and spend the spare path on a new path through $s$. This section
+proves that shape for every degree, in three forms (one hub, relays into the hub, two hubs), and
+states the conjecture that it always suffices with a bounded number of further held edges.
+Path-level versions of the shape are older. In~\cite[Cor.~39]{MR}, a new vertex $x$ is joined to
+$d$ ends of a partition into $s$ paths. If $q$ of the spokes cannot be matched to distinct paths,
+then $s+\lceil q/7\rceil$ paths suffice, with at least $d-2q+2\lceil q/7\rceil$ ends at $x$. The proofs
+of~\cite[Thms.~12.29, 13.9]{SP} and the hub phases of~\cite{D6} have the same shape. What is new
+below is the profile-level form, which the game can use, with Lov\'asz's spare path as the
+payment.
+
+\begin{lemma}[Receipts]\label{lem:receipts}
+Let $D$ be a partition of $H$, let $s$ be a vertex, and let $T$ be a set of non-neighbours of $s$
+with $s\notin T$ and $1\le b_D\le2$ on $T$. If $r\le|T|$ and $|Z_D(s)|+2r\le\sum_Tb_D+1$, then for
+some $R\subseteq T$ with $|R|=r$ the graph $H+sR$ has a partition into $|D|$ paths with profile
+$b_D+r\,e_s-\mathbf 1_R$.
+\end{lemma}
+\begin{proof}
+Induction on $r$. Let $r\ge1$. Then $\sum_Tb\ge|Z(s)|+2r-1>|Z(s)|$, so by~(B) some $t\in T$ with
+$b(t)\ge1$ gives an end to $s$. The only new neighbour of $s$ is $t$, and it is blank exactly when
+$b(t)=1$. No other vertex of $N(s)$ changes its value. So the new partition has
+$|Z'(s)|\le|Z(s)|+[b(t)=1]$, and $\sum_{T-t}b=\sum_Tb-b(t)$. Since $b(t)+[b(t)=1]=2$, the hypothesis
+holds for $T-t$ and $r-1$.
+\end{proof}
+So each receipt lowers $\sum_Tb-|Z(s)|$ by at most two. For $b=1$ on $T$ this is the receipt
+schedule of~\cite[Remark~3.5]{D6}.
+
+\begin{lemma}[General hub lemma]\label{lem:genhub}
+Let $D$ be a partition of $H$, let $s$ be isolated in $H$, and let $N$ be a set of $d\ge2$
+vertices, $s\notin N$, with $1\le b_D\le2$ on $N$ and $\sum_Nb_D\ge2d-5$. Then $H+sN$ has a
+partition into $|D|+1$ paths with profile $b_D+(d-2)e_s-\mathbf 1_R+e_y+e_{y'}$, where
+$N=R\sqcup\{y,y'\}$.
+\end{lemma}
+\begin{proof}
+Apply Lemma~\ref{lem:receipts} with $T=N$ and $r=d-2$. Here $Z(s)=\emptyset$, and
+$2(d-2)\le\sum_Nb+1$. The two remaining edges $sy,sy'$ form the new path $y\,s\,y'$.
+\end{proof}
+If $d\le5$, the supply condition holds as soon as $b\ge1$ on $N$. At $d=6$ one neighbour needs
+two ends. A pure-star Lov\'asz seed has $b=1$ on $N$, so it is short by exactly one: this is the
+missing receipt of Section~\ref{sec:six}. For $d=4$, Lemma~\ref{lem:hub} is stronger, because
+there the fourth neighbour needs no end.
+
+A held edge $xz$ from an odd neighbour $x$ of the hub to an even vertex $z$ fixes the parity of
+both, and it can be returned first, so that $x$ has two ends when the hub receives.
+
+\begin{lemma}[Relays]\label{lem:relays}
+Let $D$ be a partition of $H$, let $X$ be a set of vertices, and let $z$ be an injective map from
+$X$ to vertices outside $X$ with $b_D(z(x))=1$ and $z(x)x\notin E(H)$ for $x\in X$. Suppose that
+no $x\in X$ is adjacent in $H$ to a blank vertex or to a vertex of $z(X)$. Then
+$H+\{z(x)x:x\in X\}$ has a partition into $|D|$ paths with profile
+$b_D+\mathbf 1_X-\mathbf 1_{z(X)}$.
+\end{lemma}
+\begin{proof}
+Apply the single transfers $z(x)\to x$ in any order. Earlier transfers raise $b$ on $X$ and lower
+it on $z(X)$, and $x$ sees no vertex of $z(X)$. The edges added before also avoid $x$. So $x$ has
+no blank neighbour, and its supply $b(z(x))=1$ exceeds $|Z(x)|=0$.
+\end{proof}
+These are forward relays of length one~\cite[Lemma~2.3(a)]{D6}, done side by side.
+
+\begin{theorem}[Relay hub]\label{thm:relayhub}
+Let $G$ have even order $n$, and let $s$ be a vertex of degree $d\ge3$. Let $x_1,\dots,x_q$ be the
+odd neighbours of $s$, and let $z_1,\dots,z_q$ be distinct even vertices outside $N[s]$ with
+$x_iz_i\in E(G)$. Put $F=\mathrm{star}(s)\cup\{x_iz_i:i\le q\}$. Suppose the following hold.
+\begin{enumerate}[label=(\roman*)]
+\item $G-F-s$ has at most one vertex $w$ of even degree (degree $0$ counts as even).
+\item No $x_i$ is adjacent to $w$, or to a $z_j$ with $j\ne i$.
+\item $q\ge d-5$.
+\end{enumerate}
+Then $G$ has a partition into $n/2$ paths in which $s$ is an end of $d-2$ paths. In particular
+(R) holds at $s$.
+\end{theorem}
+\begin{proof}
+$G-F-s$ has odd order $n-1$ and an even number of odd vertices, so it has exactly one even vertex
+$w$. By~(A) it has a partition into $(n-2)/2=n/2-1$ paths with $b=1$ on the odd vertices and
+$b(w)=0$. Regard it as a partition of $H=G-F$, in which $s$ is isolated. The even neighbours of
+$s$, the $x_i$ and the $z_i$ are odd in $H-s$, so $b=1$ there. In $H$ the blank vertices are
+$s$ and $w$, and $x_is\in F$. So by~(ii) Lemma~\ref{lem:relays} applies with $X=\{x_i\}$ and
+$z(x_i)=z_i$. Afterwards $b=2$ on $X$ and $b=1$ on the other neighbours of $s$. So
+$\sum_{N(s)}b=d+q\ge2d-5$ by~(iii). Now Lemma~\ref{lem:genhub} inserts the star at the cost of
+one path, and $s$ gets $d-2\ge1$ ends.
+\end{proof}
+
+\begin{lemma}[Two hubs]\label{lem:twohub}
+Let $D$ be a partition of $H$, let $s_1\ne s_2$ be isolated in $H$, let $N_1,N_2$ be disjoint sets
+avoiding $s_1,s_2$, and let $m\notin N_1\cup N_2\cup\{s_1,s_2\}$. Suppose $1\le b_D\le2$ on
+$N_1\cup N_2$, $|N_i|\ge1$ and $\sum_{N_i}b_D\ge2|N_i|-3$ for $i=1,2$. Then the graph
+$H+s_1(N_1\cup\{m\})+s_2(N_2\cup\{m\})$ has a partition into $|D|+1$ paths with profile
+$b_D+\sum_{i=1,2}\bigl((|N_i|-1)e_{s_i}-\mathbf 1_{R_i}+e_{y_i}\bigr)$, where
+$N_i=R_i\sqcup\{y_i\}$.
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lem:receipts} at $s_1$ with $T=N_1$ and $r=|N_1|-1$ changes $b$ only at $s_1$ and on
+$N_1$, and keeps $s_2$ isolated. Then the same at $s_2$ with $T=N_2$. The four remaining edges
+form the new path $y_1\,s_1\,m\,s_2\,y_2$. Its vertices are distinct by the disjointness
+hypotheses.
+\end{proof}
+
+\begin{corollary}\label{cor:twohub}
+Let $G$ have even order $n$, and let $s_1,s_2$ be non-adjacent vertices with $2\le d(s_i)\le4$ and
+exactly one common neighbour. Suppose that every vertex of $G-s_1-s_2$ has odd degree. Then $G$
+has a partition into $n/2$ paths with $d(s_i)-2$ ends at $s_i$ ($i=1,2$). In particular (R) holds
+at $s_i$ if $d(s_i)\ge3$.
+\end{corollary}
+\begin{proof}
+By~(A), $G-s_1-s_2$ has a partition into $(n-2)/2$ paths with $b=1$ everywhere. Apply
+Lemma~\ref{lem:twohub} with $m$ the common neighbour and $N_i=N(s_i)-m$. The supply condition
+$|N_i|\ge2|N_i|-3$ holds because $|N_i|\le3$.
+\end{proof}
+Two hubs cost one path, the same as one. So a second hub is a way to repair parity: it removes the
+even vertices that the first hub leaves among the neighbours of the second.
+
+In Lean, Lemmas~\ref{lem:receipts}, \ref{lem:genhub}, \ref{lem:relays} and~\ref{lem:twohub} are
+\texttt{Ach.hub\_receipts}, \texttt{Ach.hub\_general}, \texttt{Ach.relays} and
+\texttt{Ach.two\_hub}. The step of Theorem~\ref{thm:relayhub} after the seed is
+\texttt{Ach.relay\_hub}. The wrappers with Lov\'asz's theorem, which \texttt{hub\_four\_ends} provides
+at degree four, are not formalised for Theorem~\ref{thm:relayhub} and Corollary~\ref{cor:twohub}.
+
+\subsection*{The hub-strategy conjecture}
+With $F=\mathrm{star}(y)\cup X$ the seed is always Lov\'asz's, since $y$ is isolated. So $G-F$ may
+have at most one even vertex of positive degree. In $G-\mathrm{star}(y)$ the even vertices of
+positive degree other than $y$ are the odd neighbours of $y$ that are not leaves, and the even
+vertices outside $N[y]$. Let $e(y)$ be their number. An edge of $X$ changes the parity of its two
+ends, so $|X|\ge\mathrm{lb}(y)=\lfloor e(y)/2\rfloor$.
+
+\begin{conjecture}[Hub strategy]\label{conj:hub}
+Let $G$ be a connected graph of even order, and let $y$ be an even vertex with at least three
+even neighbours and no bridge $yt$ with $d(t)\ge2$ (the hypotheses on the root in
+\texttt{BranchBase3}). Then the game with path insertion, receipt or flower, and the orbit rule
+wins at $y$, with the simple target, for $F=\mathrm{star}(y)\cup X$ and some set $X$ of at most
+$\mathrm{lb}(y)+c$ edges, where $c$ is an absolute constant.
+\end{conjecture}
+The point is that $c$ does not depend on $G$. Without a bound the statement says no more than
+(R), since with $F=E(G)$ path insertion can insert any partition. At order $8$ the conjecture holds with $c=2$,
+and $c=2$ is needed. At order $10$ our sample needs $c\ge3$
+(Proposition~\ref{prop:hubtest}). So the form with $c=2$, which we first conjectured from the
+order-$8$ data, is false.
+The \emph{simple target} (option \texttt{simple}) is the profile of a realisable set containing
+$y$: $b=1$ on odd vertices, $b\in\{0,2\}$ on even ones, $b(y)=2$, or $b(y)=0$ when the split rule
+applies. This is what \texttt{Desc} and \texttt{BranchBase3} ask for. The conclusion of
+Lemma~\ref{lem:genhub} is not simple when $d\ge6$, since then $b(s)=d-2\ge4$. A play that passes
+through it and wins with the simple target must afterwards move ends away from the hub
+(donations, in the language of~\cite{D6}). In
+\texttt{Inv\char126|\char126zbw} (Proposition~\ref{prop:rfgame}) the second hub $3$ is the vertex
+$N$ of a path $O\!-\!N\!-\!n$ (notation below), and the relay $01$ is an edge $O\!-\!n$.
+
+\begin{proposition}[computation]\label{prop:hubtest}
+The following holds for the game with path insertion, receipt or flower, and the orbit rule
+(\texttt{scripts/hs\_test.py}).
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Order $8$.} The $11117$ connected graphs of order $8$ have $9268$ automorphism orbits
+of roots satisfying the hypotheses of Conjecture~\ref{conj:hub}. With $F=\mathrm{star}(y)\cup X$,
+the least $|X|$ is $0$ for $3100$ of them, $1$ for $5375$, $2$ for $787$ and $3$ for $6$, both
+with the target of (R) and with the simple target. Always $\mathrm{lb}(y)\le1$, and
+$|X|=\mathrm{lb}(y)$ for $8475$ root orbits, $\mathrm{lb}(y)+1$ for $783$ and $\mathrm{lb}(y)+2$
+for $10$. So Conjecture~\ref{conj:hub} holds at order $8$ with $c=2$. If the star may be centred at any
+vertex, the least number of further edges is $0$, $1$ or $2$ for $7000$, $2256$ and $12$ root
+orbits ($6997$, $2259$ and $12$ with the simple target).
+\item \emph{The proved theorems alone.} Theorem~\ref{thm:relayhub} applies at $2556$ of these
+$9268$ root orbits, Corollary~\ref{cor:twohub} at $379$, and one of them at $2757$. At each of
+them the game, with path insertion alone, wins with the theorem's own held set
+(\texttt{scripts/relay\_cover.py}).
+\item \emph{Order $10$.} We take the ten critical graphs of Proposition~\ref{prop:rfgame} and $40$
+more sampled in the same way (\texttt{scripts/sample10.py}, seed $23$): critical connected graphs
+of order $10$ with a vertex of degree $6$. Thirty of the $50$ have a root satisfying the
+hypotheses, with $108$ root orbits in all, and $\mathrm{lb}(y)=0,1,2$ for $2$, $39$ and $67$ of
+them. With $F=\mathrm{star}(y)\cup X$ and the target of (R), the least $|X|$ is $0$, $1$, $2$, $3$,
+$4$ for $1$, $35$, $68$, $3$, $1$ root orbits. Then $|X|-\mathrm{lb}(y)$ is $0$ for $102$ root
+orbits, $1$ for $3$, $2$ for $1$ and $3$ for $2$. The two with $|X|=\mathrm{lb}(y)+3$ are the roots
+$7$ ($d=8$, $\mathrm{lb}=0$, $|X|=3$) and $9$ ($d=6$, $\mathrm{lb}=1$, $|X|=4$) of
+\texttt{Inv\char126|\char126zbw}. The simple target gives the same values, except at the root $2$
+of \texttt{Inv\char126|\char126zbw}, which needs $|X|=4=\mathrm{lb}(y)+2$ instead of $3$. If the star
+may be centred at any vertex, the least number of further edges is $0$, $1$, $2$, $3$ for $3$,
+$93$, $10$, $2$ root orbits, with either target. Neither Theorem~\ref{thm:relayhub} nor
+Corollary~\ref{cor:twohub} applies at any of the $108$ root orbits.
+\end{enumerate}
+\end{proposition}
+\begin{sloppypar}
+The files in \texttt{scripts/outputs/} are \texttt{hs8\_R.log}, \texttt{hs8\_simple.log},
+\texttt{hs8\_R\_root.log}, \texttt{hs8\_simple\_root.log}, \texttt{hs8\_root\_parity.txt} and
+\texttt{relay\_cover8.txt} for order $8$. For order $10$ they are \texttt{hs10\_R.log},
+\texttt{hs10\_simple.log}, \texttt{hs10\_R\_root.log}, \texttt{hs10\_simple\_root.log},
+\texttt{hs10\_root\_parity.txt}, \texttt{hs10\_root\_parity\_simple.txt}, \texttt{relay\_cover10.txt}
+and \texttt{relay\_cover10\_reasons.txt}. The graphs are in \texttt{sample10\_50.g6}.
+\end{sloppypar}
+
+The shapes of $X$ at order $8$ are small parity repairs (\texttt{scripts/hs\_shapes.py}, output
+\texttt{hs8\_root\_shapes.txt}). Write $N$ and $O$ for an
+even vertex in or outside $N(y)$, and $n$, $o$ for an odd one. The solver reports the first
+winning $X$ in lexicographic order, so these counts describe one winning shape per root, not all
+of them. For $|X|=1$ the edge is a relay $O\!-\!n$ in $2468$ cases, joins two odd neighbours in
+$1495$, joins two vertices $O$ in $1332$, and is of another type in $80$. For $|X|=2$ it is a path
+of length two in $757$ cases and a matching in $30$. Of the paths, $611$ have an even neighbour
+of $y$ as the middle vertex, which then carries three held edges, like the second hub of
+\texttt{Inv\char126|\char126zbw}. The other $146$ have an odd vertex outside $N[y]$ as the middle
+vertex. For $|X|=3$ there are four paths of length three and two triangles.
+
+\subsection*{Negative results}
+\begin{enumerate}[label=(\arabic*)]
+\item The bound $|X|\le\mathrm{lb}(y)+2$ fails at order $10$, at the roots $7$ and $9$ of
+\texttt{Inv\char126|\char126zbw} (Proposition~\ref{prop:hubtest}(c)). The value $c=3$ is not
+excluded by our data. The sample is small, though, and this graph is the only one in it that
+needs more than $\mathrm{lb}(y)+1$. It is a dense graph, and (R) at its root $9$ follows
+from~\cite[Thm.~12.29]{SP} (see after Proposition~\ref{prop:rfgame}).
+\item The proved theorems are far from the computed wins. They cover $2757$ of the $9268$ root
+orbits of order $8$, and none of the $108$ of order $10$. At order $10$ the relay theorem fails for
+lack of even partners outside $N[y]$ for the odd neighbours ($99$ root orbits), by~(iii) ($4$)
+or by~(ii) ($5$). Corollary~\ref{cor:twohub} needs $d(y)\le4$, which only $3$ of the $108$ have.
+\item The game does not win the order-$10$ roots by the receipts-only pattern of
+Lemma~\ref{lem:genhub}. At a root of degree $8$ a pure-star seed has $b\le1$ on $N(y)$, so
+Theorem~\ref{thm:relayhub} would need $q\ge3$ relays. Yet $54$ of the $57$ root orbits of degree
+$8$ win with $|X|=\mathrm{lb}(y)\le2$. Their plays must use other moves, such as donations from
+the hub or receipt or flower, which our lemmas do not cover.
+\end{enumerate}
 
 \section{Consequences}\label{sec:conseq}
 
@@ -770,6 +1044,11 @@ $B'$ and $\mathrm{CP}(4),\mathrm{CP}(5)$. It is not sharp enough on \texttt{Inv\
 where a second hub along the inserted path closes the case instead.
 Otherwise the configuration is bypassed by holding more edges and inserting a longer path through
 the hub.
+\item Lemmas~\ref{lem:receipts}--\ref{lem:twohub} are the receipts-only part of the hub calculus
+of~\cite{D6} (receipts, donations, paybacks, batteries), with the spare path of~(A) as the payment.
+They explain the order-$8$ certificates of the simplest shapes, but not the order-$10$ wins
+(Section~\ref{sec:general}, negative results). A proof of \texttt{BranchBase3} along these lines
+needs the donation and payback steps as well, and a simple final profile.
 \end{enumerate}
 
 \section{Formalisation and scripts}\label{sec:scripts}
@@ -790,6 +1069,12 @@ Lov\'asz's theorem from the library (\texttt{lovasz\_ends}).
 \item \texttt{Ach.hub\_four\_tail}, \texttt{hub\_four\_odd\_ends}, \texttt{hub\_four\_odd\_rooted}:
 Theorem~\ref{thm:hub4odd}. \texttt{gqz\_rooted\_three}: Corollary~\ref{cor:gqz}, with the
 hypotheses checked by \texttt{decide}.
+\item \texttt{Ach.hub\_receipts}, \texttt{Ach.hub\_general}, \texttt{Ach.relays},
+\texttt{Ach.relay\_hub} and \texttt{Ach.two\_hub}: Lemmas~\ref{lem:receipts}, \ref{lem:genhub},
+\ref{lem:relays}, the step of Theorem~\ref{thm:relayhub} after the seed, and
+Lemma~\ref{lem:twohub}. Profiles are again stated without subtraction, e.g.\ for
+\texttt{Ach.hub\_general}:
+$b'(v)+[v\in R]=b(v)+(d-2)[v=s]+[v=y]+[v=y']$.
 \item \texttt{fan\_alternative}: Lemma~\ref{lem:alt}. Its two halves are
 \texttt{fan\_reroute\_exec} and \texttt{fan\_alt\_count}. The first executes a partial chain; it is
 the reroute part of \texttt{fan\_exec} from \texttt{Fan.lean}, without the final append. The second
@@ -805,14 +1090,16 @@ lemmas \texttt{rainbowTransversal\_three} and \texttt{rainbowTransversal\_four} 
 $j=3$ on $8$ vertices and $j=4$ on $10$ vertices, in the weaker form of a path \emph{through} $u$.
 Lemma~\ref{lem:transversal} in the form used here, a path \emph{starting} at $u$, is not
 formalised.
+The Lov\'asz wrappers of Theorem~\ref{thm:relayhub} and Corollary~\ref{cor:twohub} are not formalised either.
 
 \subsection*{Scripts} In \texttt{scripts/}:
 \begin{itemize}
 \item \texttt{fan\_game.py}: the game solver, a copy of \texttt{tools/fan\_game.py}. Its options
 are \texttt{np} (path insertion), \texttt{rotR} (at most $R$ rotations), \texttt{altR} (at most $R$
 uses of Fan's alternative), \texttt{ind} (inductive seeds), \texttt{hubs} (held sets of the
-form ``full star plus $k$ edges''), \texttt{flower} (Lemma~\ref{lem:flowermove}), \texttt{rf}
-(Lemma~\ref{lem:rfcount}) and \texttt{orbit} (the orbit rule). The split rule is always on; it
+form ``full star plus $k$ edges''), \texttt{hubroot} (the same, with the star at the root),
+\texttt{flower} (Lemma~\ref{lem:flowermove}), \texttt{rf} (Lemma~\ref{lem:rfcount}), \texttt{orbit} (the
+orbit rule) and \texttt{simple} (the simple target). The split rule is always on; it
 does not change the results of Section~\ref{sec:eight}.
 \item \texttt{orbit\_run.py}, \texttt{single\_root.py}, \texttt{fam\_hub34.py},
 \texttt{miss\_k3.py}: runs at one root per automorphism orbit, at a single root and held-set size,
@@ -824,6 +1111,12 @@ root.
 \item \texttt{stepper.sh}: for each graph, raises $|F|$ from $5$ to $8$ until every root wins.
 \item \texttt{families.py}: the order-$10$ test graphs $A_{4,4}$, $A_{6,2}$, $B$, $B'$.
 \item \texttt{rootcheck.py}, with \texttt{pathnum2.py}: an independent CP-SAT check of (R).
+\item \texttt{hs\_test.py}: the test of Conjecture~\ref{conj:hub}, per root orbit (options
+\texttt{hubroot}: star at the root; \texttt{simple}: simple target). \texttt{hs\_parity.py} compares
+the least $|X|$ with $\mathrm{lb}(y)$, \texttt{hs\_shapes.py} classifies $X$, and
+\texttt{relay\_cover.py} checks the hypotheses of Theorem~\ref{thm:relayhub} and
+Corollary~\ref{cor:twohub} and replays their held sets. \texttt{sample10.py} samples critical
+graphs of order $10$.
 \item \texttt{run\_all.sh}: reproduces every table. The outputs are in \texttt{scripts/outputs/}.
 The graph lists (\texttt{.g6}) and certificates (\texttt{certificate*.txt}) are committed. The
 \texttt{.log} files that \texttt{run\_all.sh} writes, such as \texttt{crit47.log},
@@ -831,7 +1124,7 @@ The graph lists (\texttt{.g6}) and certificates (\texttt{certificate*.txt}) are 
 \texttt{.gitignore} and must be regenerated.
 \end{itemize}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq.\
 Tihany 1966), Academic Press, 1968, 231--236.
 \bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J.\ Combin.\ Theory Ser.\
@@ -841,6 +1134,18 @@ B} 93 (2005) 117--125.
 \bibitem{D6} The $d=6$ frontier: transfers, relays and the terminal step, working draft,
 \texttt{manuscripts/d6-frontier}.
 \bibitem{EXP} Project experiment log, \texttt{research/experiments.md}, entry E13.
+\bibitem{SP} J.~Williams, Separators and endpoint exchange in the rooted Gallai problem, working
+draft, 25 November 2026, \texttt{gallai/02-november-25/separating-pairs.pdf}.
+\bibitem{MR} J.~Williams, Cut vertices and cycle intersections in Gallai's path decomposition
+problem, working draft, 24 November 2026,
+\texttt{gallai/01-original-manuscripts/marked-reduction.pdf}.
+\bibitem{CC} J.~Williams, Nearly spanning cycles and long intersections in Gallai's path
+decomposition problem, working draft, 26 November 2026,
+\texttt{gallai/03-november-26-papers/cycle-and-contact.pdf}.
+\bibitem{JM} R.~Javadi, M.~Miralaei, A conjecture on rainbow Hamiltonian cycle decomposition,
+\emph{Discrete Math.} 349 (2026) 114676; arXiv:2403.17290.
+\bibitem{JMR} Repairing the extension step of Javadi--Miralaei, working draft,
+\texttt{manuscripts/jm-repair}.
 \end{thebibliography}
 
 \end{document}
