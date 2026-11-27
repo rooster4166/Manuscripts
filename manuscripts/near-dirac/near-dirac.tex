@@ -54,13 +54,13 @@ Write $p(G)$ for the least number of paths into which the edges of $G$ can be pa
 The published state of the art in this range is $p(G)\le n/2+o(n)$ (Gir\~ao, Granet, K\"uhn and Osthus \cite{GGKO}, Theorem~1.10).
 
 \subsection{What SP \S14 provides}
-SP proves the exact statements above the Dirac threshold (SP Theorem~14.1, Corollary~14.2, Theorem~14.5) and for robust expanders. It then analyses a hypothetical \emph{failure sequence}: graphs $G_n$ with $\delta(G_n)\ge n/2-o(n)$ that fail the even-order private-leaf bound, or fail the odd-order floor while missing at least $\lfloor n/2\rfloor$ edges. SP shows:
+SP~\cite{SP} proves the exact statements above the Dirac threshold (SP Theorem~14.1, Corollary~14.2, Theorem~14.5) and for robust expanders. The reading packet~\cite{DEC} derives exact path and cycle numbers above the Dirac threshold from them. It then analyses a hypothetical \emph{failure sequence}: graphs $G_n$ with $\delta(G_n)\ge n/2-o(n)$ that fail the even-order private-leaf bound, or fail the odd-order floor while missing at least $\lfloor n/2\rfloor$ edges. SP shows:
 \begin{enumerate}[nosep]
 \item failures are $o(n^2)$-close to $K_{n/2,n/2}$ and satisfy $\max\{\Delta,\odd\}=n-o(n)$ (SP Corollaries~14.24 and 14.26);
 \item bipartite-like graphs satisfy the bounds (SP Theorems~14.27, 14.33 and 14.37, Corollary~14.38);
 \item for every maximum cut of a failure, the set $X$ of vertices with own-shore degree at least $\kappa n$ is nonempty and sublinear, and $G-X$ satisfies the bounds (SP Corollary~14.39).
 \end{enumerate}
-The missing step is the \emph{return of $X$}. The note \emph{near-half-mixed-vertices} (NH) returns $s\in\{1,2\}$ such vertices when every healthy vertex has degree exactly $D$ and every mixed vertex has degree exactly $2D$, by splitting the mixed vertices and decomposing the split graph into Hamilton cycles.
+The missing step is the \emph{return of $X$}. The note \emph{near-half-mixed-vertices} (NH,~\cite{NH}) returns $s\in\{1,2\}$ such vertices when every healthy vertex has degree exactly $D$ and every mixed vertex has degree exactly $2D$, by splitting the mixed vertices and decomposing the split graph into Hamilton cycles.
 
 \subsection{Results}
 All graphs are finite and simple. For a partition $V(G)=A\cup B$ and a vertex $v$, write $\own(v)$ for the number of neighbours of $v$ in its own part and $\cro(v)=d(v)-\own(v)$ for the number in the other part. Write $\mis(v)$ for the number of non-neighbours of $v$ in the other part, and $e(S)$ for the number of edges inside $S$.
@@ -344,15 +344,15 @@ Do this greedily. We have $|F_A|+|F_B|\le(2m+1)cm/2\le1.01cm^2$, so at most $1.0
 \item they are healthy, lie in the part not containing $x$, and are adjacent to $x$;
 \item the edges $xu_{x,i}$ and $xu'_{x,i}$ were not chosen for an earlier pair $(x,i')$;
 \item they are not end-sites of slot $i$, not covered by the matching of slot $i$, and not partners of another exceptional vertex in slot $i$;
-\item every healthy vertex is a partner at most $q/100$ times in total.
+\item every healthy vertex is a partner at most $\lfloor q/100\rfloor$ times in total.
 \end{enumerate}
-This is possible. By \ref{h:exc}, $x$ has at least $m/4-cm$ healthy neighbours across. Rule (P2) excludes at most $2p_x\le1.02q$ of them, and rule (P3) at most $2+m/50+2cm$. The total number of partner choices is at most $1.02q|X|$, so at most $102|X|\le102cm$ vertices ever reach the cap in (P4). The excluded total is at most $0.032m+2<m/4-cm$.
+This is possible. By \ref{h:exc}, $x$ has at least $m/4-cm$ healthy neighbours across. Rule (P2) excludes at most $2p_x\le1.02q$ of them, and rule (P3) at most $2+m/50+2cm$. The total number of partner choices is at most $1.02q|X|$, so at most $1.02q|X|/\lfloor q/100\rfloor\le103.1|X|\le104cm$ vertices ever reach the cap in (P4); here $q\ge10^4$ for $m\ge m_0$. The excluded total is at most $0.032m+2<m/4-cm$.
 
 For $x\in X_B$ and $i\in T_x$, the \emph{$x$-block} of slot $i$ is the path $u_{x,i}\,x\,u'_{x,i}$, a block on $A$ with entry $u_{x,i}$ and exit $u'_{x,i}$. For $x\in X_A$ it is a block on $B$. Put $x^A_i=|\{x\in X_A:i\in T_x\}|$ and $x^B_i=|\{x\in X_B:i\in T_x\}|$.
 
 \paragraph{Step 5: forced memberships.} Call a healthy $v$ \emph{forced} in slot $i$ if it is an end-site of slot $i$, an end of an $F$-edge assigned to slot $i$, or a partner in slot $i$. By Step~3 and (P3), a forced vertex has exactly one of these roles in that slot.
 
-In each healthy row $v$ the number of forced slots is at most $1+\own(v)+q/100\le0.02q$. In each slot $i$ the number of forced vertices of $H_A$ is at most $2+2k^A_i+2x^B_i\le0.021m\le0.03|H_A|$, and likewise for $H_B$.
+In each healthy row $v$ the number of forced slots is at most $1+\own(v)+\lfloor q/100\rfloor\le0.02q$. In each slot $i$ the number of forced vertices of $H_A$ is at most $2+2k^A_i+2x^B_i\le0.021m\le0.03|H_A|$, and likewise for $H_B$.
 
 \paragraph{Step 6: slot sizes and memberships.} Put $P_A=\sum_{v\in H_A}p_v$ and $P_B=\sum_{v\in H_B}p_v$. Choose integers $h^A_i\in\{\lfloor P_A/q\rfloor,\lceil P_A/q\rceil\}$ with $\sum_ih^A_i=P_A$, and define
 \begin{equation}\label{eq:hB}
