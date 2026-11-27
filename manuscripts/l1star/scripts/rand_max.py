@@ -14,6 +14,7 @@ usage: python3 rand_max.py N_GRAPHS SEED BUDGET n1 [n2 ...]
 import sys, random, subprocess, os, collections
 import networkx as nx
 
+PLO, PHI = float(os.environ.get("PLO", "0.15")), float(os.environ.get("PHI", "0.6"))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -63,7 +64,7 @@ def main():
     C = collections.Counter()
     for it in range(N):
         n = rng.choice(ns)
-        r = random_graph(n, rng.uniform(0.15, 0.6), rng)
+        r = random_graph(n, rng.uniform(PLO, PHI), rng)
         if r is None:
             continue
         G, g = r
