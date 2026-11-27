@@ -23,6 +23,7 @@ static int n, m;
 static int adj[MAXN][3], eidx[MAXN][3];
 static int eu[3 * MAXN / 2 + 2], ev_[3 * MAXN / 2 + 2];
 static int partner[MAXN];
+static int use_cls, ncls; static uint32_t clsmask[MAXN];
 static int order[MAXN];
 static int dist[MAXN][MAXN];
 
@@ -44,7 +45,8 @@ static int link(int e1, int e2, int v) {
   if (a == b) return 0;
   if ((msk[a] & msk[b]) != (1u << v)) return 0;
   uint32_t M = msk[a] | msk[b];
-  if (M & pmap(M)) return 0;
+  if (use_cls) { for (int c = 0; c < ncls; c++) if (__builtin_popcount(M & clsmask[c]) >= 2) return 0; }
+  else if (M & pmap(M)) return 0;
   if (rnk[a] < rnk[b]) { int t = a; a = b; b = t; }
   ustack[usp].a = a; ustack[usp].b = b; ustack[usp].ra = rnk[a]; ustack[usp].ma = msk[a]; usp++;
   par[b] = a; msk[a] = M; if (rnk[a] == rnk[b]) rnk[a]++;
@@ -79,6 +81,12 @@ static int dfs(int i) {
 
 static int solve(void) {
   for (int e = 0; e < m; e++) { par[e] = e; rnk[e] = 0; msk[e] = (1u << eu[e]) | (1u << ev_[e]); }
+  /* a single edge is a path segment: its two ends must not conflict */
+  for (int e = 0; e < m; e++) {
+    uint32_t M = msk[e];
+    if (use_cls) { for (int c = 0; c < ncls; c++) if (__builtin_popcount(M & clsmask[c]) >= 2) return 0; }
+    else if (M & pmap(M)) return 0;
+  }
   usp = 0; nodes = 0;
   return dfs(0);
 }
@@ -172,6 +180,16 @@ int main(int argc, char **argv) {
     G++;
     tested = failed = undecided = 0;
     for (int v = 0; v < n; v++) pm[v] = -1;
+    if (!strcmp(mode, "classes")) {
+      /* one colour per vertex follows the graph */
+      use_cls = 1; ncls = 0;
+      for (int c = 0; c < MAXN; c++) clsmask[c] = 0;
+      for (int v = 0; v < n; v++) { int c; if (scanf("%d", &c) != 1) return 1; clsmask[c] |= 1u << v; if (c + 1 > ncls) ncls = c + 1; }
+      int r = solve(); tested++; Ttot++;
+      if (r == 0) { Ftot++; printf("FAIL %s", g6); for (int v = 0; v < n; v++) printf(" %d", __builtin_ctz(clsmask[0]) * 0 + 0); printf("\n"); }
+      else if (r < 0) Utot++;
+      continue;
+    }
     if (!strcmp(mode, "given")) {
       int k; if (scanf("%d", &k) != 1) return 1;
       for (int v = 0; v < n; v++) pm[v] = v;
