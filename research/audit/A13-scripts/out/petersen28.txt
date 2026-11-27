@@ -1,0 +1,1 @@
+n = 28 example: constructions 400 | L a transversal: 0 | least number of L-L pairs: 5

@@ -1,0 +1,16 @@
+K4                 n= 10 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True  L realisable=True
+prism              n= 16 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True  L realisable=True
+K33                n= 16 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True  L realisable=True
+cube               n= 22 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+Petersen           n= 28 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=False L(H) Ham-decomposable=False
+bridged            n= 28 bridgeless=False lambda(L(H))>=4=False L cut-feasible=False H Hamiltonian=False L(H) Ham-decomposable=False
+random cubic 8     n= 22 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+random cubic 10    n= 28 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+random cubic 12    n= 34 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+random cubic 14    n= 40 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+random cubic 16    n= 46 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True  H Hamiltonian=True  L(H) Ham-decomposable=True 
+random cubic 18    n= 52 bridgeless=True  lambda(L(H))>=4=True  L cut-feasible=True 
+
+real	0m5.081s
+user	0m5.000s
+sys	0m0.048s

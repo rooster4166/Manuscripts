@@ -1,0 +1,6 @@
+order 6: 99 graphs, 0 pairings not good
+order 8: 10893 graphs, 0 pairings not good
+
+real	0m18.481s
+user	0m18.260s
+sys	0m0.154s

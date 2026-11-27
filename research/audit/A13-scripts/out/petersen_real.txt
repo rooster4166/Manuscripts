@@ -1,0 +1,3 @@
+prism n = 16 gadget realisable: True [0s]
+cube n = 22 gadget realisable: True [0s]
+Petersen n = 28 gadget realisable: False [2s]

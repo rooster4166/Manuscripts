@@ -1,0 +1,5 @@
+/tmp/claude-0/-home-user-Manuscripts/a40c9215-4484-5bc3-a3e1-2bba3a808810/scratchpad/conn8_every10.g6 graphs 1112 (M, v) pairs: 78928 satisfied at v: 78729 violated at v: 199 | forms (a), (c), signed agree, and (d), Lemma 6 flow ; Lemma 7 holds on every (v, Y)
+
+real	0m37.982s
+user	0m37.386s
+sys	0m0.400s

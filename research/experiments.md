@@ -592,6 +592,7 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
   - The global cap is non-submodular in 1,063 graphs at n = 8, and the cap system is a non-matroid in 70.
   - F is not a matroid basis family in 48 graphs at n = 8 (all non-critical, e.g. GsaAD{) and in 1 at n = 6.
   - Critical graphs at n = 8: all 1,082 have matroid F. F = F_v for one v in 1,071; the cap is submodular in 1,057; 4 are explained by neither.
+
 **E18 addendum: the cut-selection construction** (`construction.py`). Each check uses a random spanning tree, takes its T-join and chooses the transitions by T-join pairings in F^v; the resulting pairing is then checked against the enumeration.
 - Coverage:
   - all 99 graphs at n = 6 and all 10,893 at n = 8, with 3 trees each (32,679 constructions at n = 8);
@@ -633,4 +634,15 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
   - order 12: 300 graphs, m ∈ [18, 30], 8,396 half-sets, **0 failures**.
   - Every sampled half-set was cut-feasible, so these runs test realisability, not the sharpness of (1).
 - Toughness-type Hamiltonicity obstructions are cut-detected. At slack 0, (C) for the complements of the components of G − S gives #components ≤ |S| + 1.
+- **Cores at vertex 2-separators** (`tools/emm3_sep_core.py`, `emm3_sep_core.log`). A core here has no end-record at the terminals that is realisable, though some record is cut-feasible. 8,774 graphs up to order 8, 101,524 terminal pairs, 976,339 profiles: **0 cores**.
+- **Binding test** (`tools/emm3_binding.py`, `emm3_binding.log`). 47 structured δ ≥ 3 graphs with n ≤ 12, 1,063 half-sets.
+  - **8 cut-infeasible**, all in K5+K5 with 3 or 4 concentrated joins.
+  - 1,055 cut-feasible, all realisable: **0 failures**.
+  - Weakly discriminating: at n ≤ 12 the cones over two cycles never bind.
 
+**E18 addendum 2: the Kotzig reduction** (`manuscripts/endpoint-min-max/scripts/kotzig.py`). The script builds G(H) for each test graph H. It checks cut-feasibility of the gadget by max-flow (Lemma 1(d)), cross-checks by brute force where n ≤ 10, and checks the following.
+- λ(L(H)) ≥ 4 ⟺ H is bridgeless ⟺ the gadget is cut-feasible (Lemma 23, Prop 24).
+- Hamiltonian decomposability of L(H) ⟺ H is Hamiltonian (Kotzig; searched where |V(L(H))| ≤ 24).
+- Realisability by the oracle where n ≤ 16 (Prop 25).
+
+Test graphs: K4, the prism, K33, the cube, Petersen, six random cubic graphs of orders 8–18, and a cubic graph with a bridge. All are consistent. Petersen gives cut-feasible but not realisable, and the bridged graph is not cut-feasible.

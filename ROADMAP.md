@@ -24,6 +24,17 @@ This is the single source of truth for the proof architecture. Every node is a s
 | `comp(n≤N)` | exhaustive computation in `tools/` |
 | `—` | none |
 
+## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
+
+EMM sufficiency work is **stopped**. Sessions:
+- emc-four: the endpoint-prescription paper, covering necessity, Thm 21, the counterexamples and the NP-hardness;
+- emm3-gadgets: hardness at δ ≥ 3;
+- two-even: pairing-guided descent;
+- lean-d6-frontier: Lean for MR Thms 38/175 and Cor 39 (flowers);
+- dense-near-dirac (session_01FxXpVhsyyw9pbAoqda1H6h, new): Target D;
+- spine: Thm 59;
+- missing-move: finished, handoff in connections §T. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
 **Main line: the endpoint min-max programme (EMM).** Conjecture: a half-set of even vertices is realisable in n/2 paths iff it satisfies the cut inequality of even-degrees §12.4 for every vertex v and every W ⊆ V − v. It is **exact on every connected graph of order ≤ 8 and on n = 10 samples** (2,368 non-realisable half-sets, all cut-excluded). Gallai ⇐ EMM + **CS (cut selection)**, where CS is a pure cut/flow statement that the T-join lemma already settles for cones. Tracks:
@@ -32,7 +43,9 @@ This is the single source of truth for the proof architecture. Every node is a s
   - Take the T-join J (T = Ev) of a spanning tree. F = G − J has all degrees odd, so the odd vertices of F^v are exactly v's J-neighbours (plus v if even).
   - At each v, choose J's transitions by a T-join pairing in F^v. J is a forest, so any transitions give paths pairing Ev.
   - Every bad split at v is paid by its own edge of δ_{F^v}(Y).
-  - **Hence EMM ⇒ Gallai (Cor 22); the programme reduces to EMM sufficiency (C4).** Checked against enumeration on all n ≤ 8 and samples. Lean definitions: connections §U;
+  - **EMM itself is false** (missing-move Thm 7.5, n = 12, saturated degree-2 vertices). The corrected EMM₃ needs δ ≥ 3.
+  - The earlier Cor 22 (a conditional reduction of Gallai) is **removed**. Thm 21 now stands alone; its use in the descent route is synthesis §13.
+  - Checked against enumeration on all n ≤ 8 and samples. Lean definitions: connections §U;
 - C3: EMM in classes (e ≤ 4, cones, κ-connected with e ≤ 2κ, 2-separator gluing, dense);
 - C4: EMM sufficiency through tight cuts.
 
@@ -200,6 +213,7 @@ Candidate uniform mechanisms (`research/connections.md`):
 | session_01FxXpVhzpjnfPb4S9qT66Vk | `claude/bs-prescribed` | **remove Shaik**: Botler–Sambinelli Thm 13 with a prescribed end, then the corrected MR Cor 106 one-exception case (connections §L) |
 | session_01FxXpViByhUwk1GmmqirzRR | `claude/lean-d6-frontier` | Lean for d6-frontier: relay/carry, root hub, full hub, and the all-d versions (Thm 6.1) |
 | session_01FxXpVhnjxm4QuHi67Kwvfz | `claude/missing-move` | **the move beyond Fan's inequality** (connections §R, E13). Lovász + Fan certificates are incomplete at n = 8 (full-vertex obstruction). Candidates: rotation at equality, a stronger induction hypothesis, certified joins. Target: a lemma with manuscript and Lean, which makes the n = 8 losers winnable |
+| session_01FxXpViBXRQG6c4V7bSYHsM | `claude/emm3-gadgets` | **forcing gadgets**: δ ≥ 3 blocks that simulate degree-2 behaviour (pass-through or double end). They either refute EMM₃ by gluing a below-budget core, or show by a structural lemma that no such gadget exists |
 | session_01FxXpVf7LprJAyrCeEgPQZp | `claude/lean-spine-113-114` | Lean: MR Thm 113 (separator) and Thm 114 (3-connected reduction) |
 | session_01FxXpVg1tRbERYwJkzvwvow | `claude/emc-four-even` | conceptual proof and Lean of EMC for four even vertices (non-realisable pairs form parallel classes) |
 | session_01FxXpVhJQ8wYEAygbxxgUKY | `claude/lean-six-clique` | Lean: six-clique Thm 1 via fan_grouped, plus a reusable insertion-schedule lemma |
@@ -225,7 +239,16 @@ Candidate uniform mechanisms (`research/connections.md`):
 
 ## Log
 
-- 2026-11-27 (cloud, `claude/emc-four-even`, track C2 completed): **cut selection is a theorem** (endpoint-min-max Thm 21, `scripts/construction.py`). Every connected even-order graph has an explicit good pairing; it comes from a spanning-tree T-join with transitions chosen by T-join pairings in F^v. So EMM ⇒ Gallai unconditionally (Cor 22).
+- 2026-11-27 (cloud, `claude/emc-four-even`, post-pivot): **endpoint-min-max rewritten as a paper on prescribed ends** (17 pp.). The paper now covers:
+  - the cut inequality: necessary, with its four forms;
+  - **cut selection** (Thm 21, unchanged numbering);
+  - sufficiency at n ≤ 8 and in the dense range (Prop 29 with SP 14.1);
+  - failure at n = 12 (missing-move Thm 7.5) and n = 28;
+  - **Thm 27 (hardness; construction due to the project lead, with full proofs).** For connected **bridgeless** cubic H (essential 4-edge-connectivity is not needed), the gadget half-set of G(H) is cut-feasible and is realisable iff H is Hamiltonian. The proof uses Lemma 23: cuts of L(H) have size 2·(mixed vertices), so λ(L(H)) ≥ 4 iff H is bridgeless; and Prop 24: cut-feasible ⟺ λ(L(H)) ≥ 4. Then Prop 25 (realisation ⟺ Hamiltonian decomposition of L(H)), Kotzig 1957, and Garey–Johnson–Tarjan. So half-set realisability is NP-complete, even for cut-feasible half-sets with degrees in {2,4}.
+  - Removed: all claims that Gallai reduces to EMM (Prop 9, Cor 22). EMM is now Question 4; EMC is Conjecture 10.
+  - Script: `scripts/kotzig.py`.
+
+- 2026-11-27 (cloud, `claude/emc-four-even`, track C2 completed): **cut selection is a theorem** (endpoint-min-max Thm 21, `scripts/construction.py`). Every connected even-order graph has an explicit good pairing; it comes from a spanning-tree T-join with transitions chosen by T-join pairings in F^v. (Its Gallai corollary was later removed; see the next entry.)
   - Also: the per-vertex matroids are now Thm 11.
   - Edmonds' intersection gives CS for any two vertices' conditions, but not for three (example in the remark).
   - The guarded-routes conjecture is superseded.
@@ -350,3 +373,6 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **EMM template (track C4)**, missing-move §7: the general-profile cut criterion fails at n = 7 (linkage), which suggests EMM⁺ (p ≥ ⌈n/2⌉). Minimal-counterexample reductions are proved (leaf case in Lean). Single-edge and path-insertion moves get stuck exactly at Fan's equality.
   - **EMM is false at n = 12** (missing-move Thm 7.5): gluing a below-budget linkage failure through a vertex with b = d = 2. The budget version EMM⁺ also fails (padding, Ex 7.4). Splitting off is tested: cut-preserving splits exist on the stuck instances, but lifting paths needs a guarantee.
 - **EMM is FALSE** (missing-move Thm 7.5; independently confirmed). In KsOeBW??G`?A (n = 12), saturated degree-2 vertices isolate a below-budget core carrying a 2-linkage obstruction. **Corrected target: EMM₃** (minimum degree ≥ 3, so no saturated vertices for simple profiles), which is what the least-counterexample setting (δ ≥ 6) needs. See synthesis §10.
+- **EMM₃ is FALSE** (emm3-gadgets session; verified). A joined-forcing gadget of two K4 blocks glued to K_{4,4} gives n = 18 with δ = 3. The characterisation direction is closed (synthesis §14).
+- Process incident: a checkpoint commit (328eb52) captured audit A13's in-progress merge, with conflict markers in endpoint-min-max.tex. A13 was notified to resolve it. A rule was added to research/WORKFLOW.md.
+- **Audit A13: cut selection (endpoint-min-max Thm 21) SOUND**, as is the hardness section. **New conjecture TRC**: every transversal of a Thm-21 pairing is realisable. TRC implies Gallai and holds on all known EMM counterexamples (synthesis §15). Next step: try to refute it.

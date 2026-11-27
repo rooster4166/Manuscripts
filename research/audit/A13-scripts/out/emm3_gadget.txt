@@ -1,0 +1,3 @@
+D+ (leaves at p, b0) realisable: True
+D + w, b(w) = 2 realisable: False
+D + w, b(w) = 0 realisable: False
