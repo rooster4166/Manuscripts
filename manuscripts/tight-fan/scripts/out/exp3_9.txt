@@ -1,0 +1,18 @@
+('blocked', 'u not free', 'u in N(c)', 'BAD') 633
+('blocked', 'u not free', 'u in N(c)', 'good') 72081
+('blocked', 'u not free', 'u out', 'BAD') 130
+('blocked', 'u not free', 'u out', 'good') 64308
+('unblocked', 'u free', 'u in N(c)', 'good') 218553
+('unblocked', 'u free', 'u out', 'good') 227271
+('unblocked', 'u not free', 'u in N(c)', 'BAD') 1162
+('unblocked', 'u not free', 'u in N(c)', 'good') 116593
+('unblocked', 'u not free', 'u out', 'BAD') 333
+('unblocked', 'u not free', 'u out', 'good') 108226
+per instance: all u good 265406
+per instance: some u good 2258
+EX-bad ('H???E?~', 8, 0, [1], 7)
+EX-bad ('H???E?~', 8, 0, [1, 8], 7)
+EX-bad ('H???E?~', 8, 1, [0], 7)
+EX-bad ('H???E?~', 8, 1, [0, 8], 7)
+EX-bad ('H???FA]', 0, 1, [2], 7)
+EX-bad ('H???FA]', 0, 1, [0, 2], 7)
