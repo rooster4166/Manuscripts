@@ -12,7 +12,8 @@ All files are in `lean/GallaiLean/`. They are sorry-free, use only the standard 
   - `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists`, `branchBase_of_rootedHalfSets` (Prop. "existential form and the Lean spine");
   - `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify);
   - `isMinTJoin_sdiff`, `isMinTJoin_of_two_mul_card_le` (Lemma "minimum T-joins" (4), (5));
-  - `realisable_of_even_matching` (Theorem "Fan-isolated routes", one-edge routes).
+  - `realisable_of_even_matching` (Theorem "Fan-isolated routes", one-edge routes);
+  - `PathDecomp.route_append` (Lemma "extension", (i) ⇒ (ii): the inductive step of route descent).
 - `FanSupport.lean`: `fan_single_supp`, `fan_grouped_supp`, `fan_exec_supp` (Lemma "Fan's lemma with vertex sets").
 - `Separation.lean`: `separation_set` (Theorem "separation", packed sets), `separation` (two vertices), `lovasz_avoid` (Corollary "L₁ at distance three").
 
