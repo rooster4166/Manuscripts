@@ -458,3 +458,21 @@ ptm is testing these on random J with B[U] = K6 − D. tight-fan's protected-bla
   - (a) Thm 8.2 without y2 ∉ V(P2), via end-path tracking at y2;
   - (b) the chained walk with one protected step at the start of P1.
   - (b) covers C4; (a) + (b) might reach K2/P3/K3.
+
+**t6-dense, report 1 (15:24).** In the dense residual the chains are free. Label so that x1y2 and x2y3 are B-edges. Then both walks are single B-edges, P2 = y3x2 and P1 = y2x1, so chain conjecture 8.6 is not needed.
+
+**The base D0.** The whole construction can be read off one base, D0, a Lovász decomposition of M = (B − x1y2 − x2y3) + ℓ1y1, in which x3 is the only even vertex. Only end-path conditions are needed:
+- (E1) the ℓ1-path avoids x1 and does not end at y2 or y3;
+- (E2) P_{y2} ∌ x2;
+- (E3) P_{y3} ∌ x3;
+- (E4) P_{y2} ≠ P_{y3};
+- (E5) P_{x2} ∌ y3;
+- (E6) the static predecessor condition on D0.
+
+This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruction disappears. **The construction covers every dense shape (∅/K2/P3/K3/C4)**, because it uses only x1y2, x2y3 ∈ B.
+
+**Data.** Every certificate was executed and checked edge by edge.
+- C4 sparse, |B| = 14: 1280/1280.
+- Residual-style graphs, |B| = 14: every root of every shape certified (90/90).
+
+**What remains for the whole dense T(6)-i residual:** the existence of a base D0 satisfying (E1)–(E6). That is a constrained-Lovász statement with one even vertex, the project's home territory. The reduction is being formalised (T6Dense.lean).
