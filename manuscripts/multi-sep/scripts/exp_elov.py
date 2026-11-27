@@ -47,4 +47,5 @@ def main(trials, seed, budget):
             if fail <= 3: print("FAIL", S, {v: sorted(K[v]) for v in K}, flush=True)
         elif res == 2: unk += 1
     print(f"ELOV: total {tot} fail {fail} unknown {unk}")
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))

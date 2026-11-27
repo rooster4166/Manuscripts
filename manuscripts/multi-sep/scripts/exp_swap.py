@@ -51,4 +51,5 @@ def main(trials, seed):
                     if len(examples) < 3: examples.append((z, u, {v: sorted(K1[v]) for v in K1}, P, D))
     print("bad D' (Q_z meets [u]):", nD, "fixable by one option-1 swap:", nfix, "not:", nbad)
     for e in examples: print("  ex", e)
-main(int(sys.argv[1]), int(sys.argv[2]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]))

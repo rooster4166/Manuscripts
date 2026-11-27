@@ -29,4 +29,5 @@ def main(n, ngraphs, per, seed, budget, frac, mind):
             if res == 0: fail += 1
             elif res == 2: unk += 1
     print(f"n={n} frac={frac} mind={mind}: total {tot} fail {fail} unknown {unk}")
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), float(sys.argv[6]), int(sys.argv[7]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), float(sys.argv[6]), int(sys.argv[7]))

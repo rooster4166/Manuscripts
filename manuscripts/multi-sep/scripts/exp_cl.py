@@ -36,4 +36,5 @@ def main(n, ngraphs, per, seed, budget):
                 else: okany = True
             if not okany: fail_all += 1; print("NO w WORKS", s, P, x, u, flush=True)
     print(f"n={n}: (instance,w) total {tot} CL-fail {fail_w} unknown {unk}; instances with no good w: {fail_all}")
-main(*map(int, sys.argv[1:6]))
+if __name__ == '__main__':
+    main(*map(int, sys.argv[1:6]))

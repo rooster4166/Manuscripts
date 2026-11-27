@@ -41,4 +41,5 @@ def main(n, count, seed):
         else: bad.append((z, u, K1, sep))
     print(f"n={n}: configs {tot}, all minimisers avoid [u]: {good}; min |V(Q_z)| distribution {dict(dist)}")
     for b in bad[:3]: print("  BAD", b)
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))

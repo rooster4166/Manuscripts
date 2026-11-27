@@ -36,4 +36,5 @@ def run(trials, seed):
                 pos = 'end' if up in (Qs[0], Qs[-1]) else 'int'
                 stats[(k, ok, pos if not ok else '-')] += 1
     for key in sorted(stats): print(key, stats[key])
-run(int(sys.argv[1]), int(sys.argv[2]))
+if __name__ == '__main__':
+    run(int(sys.argv[1]), int(sys.argv[2]))

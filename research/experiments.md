@@ -790,7 +790,7 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 | 18 | 41,301 | 8,260,200 (200 random per graph) | 30 s |
 
 **(B) MSEP on other graphs.** 0 failures in every run.
-- `search_general.py 3000 11 pair 12 20 2000000`: random all-odd graphs of orders 12–20 (edge density 0.12–0.5, at most 120 edges), with a random maximal pairing at distance ≥ 3, exact oracle with budgets of 2M, 8M, 32M and 128M nodes. Dense instances are often undecided within the budget. All undecided instances listed in `out/gen_pair.txt` were certified by `randlov.py` (first batch: 26/26).
+- `search_general.py 3000 11 pair 12 20 2000000`: random all-odd graphs of orders 12–20 (edge density 0.12–0.5, at most 120 edges), with a random maximal pairing at distance ≥ 3, exact oracle with budgets of 2M, 8M, 32M and 128M nodes. Dense instances are often undecided within the budget. All undecided instances listed in `out/gen_pair.txt` were certified by `randlov.py` (26/26 in a first batch, then 182/182, `out/gen_pair_cert.txt`).
 - Random regular graphs (`dense_search.py`), perfect pairings at distance ≥ 3, all certified: 5-regular of order 30 (10/10) and 40 (30/30), cubic of order 26 (200/200). For 7-regular graphs of order 40 and 9-regular graphs of order 60, no perfect pairing at distance 3 exists in the samples.
 - *Hardest instances* (`hardness.py`): rank instances by the fraction of random runs of Lovász's induction that separate. Minimum 0.067 for cubic graphs (orders 12–20) and 0.000 for random graphs (order 18). Every one of the hardest eight in each family has a separating decomposition.
 
@@ -811,6 +811,7 @@ Manuscript: `manuscripts/multi-sep/multi-sep.tex`. Scripts: `manuscripts/multi-s
 - **(EE) / CL holds in every test.** (EE) says: z is the only positive even vertex, u ∈ N(z), and uz is the terminal edge at u of some rainbow decomposition.
   - `exp_ee.py`: 869 decided pairs (z, u) without classes, and 788 with pairings, 0 failures (51 undecided).
   - `exp_cl.py`: Case I configurations obtained from cubic graphs with perfect pairings by one Case II step (the leaf joins the class of x). Every neighbour w was tested: 456 (n = 12), 796 (n = 14) and 400 (n = 16), 0 failures. `exp_cl_big.py` (random cubic graphs): 300 (n = 18), 200 (n = 20) and 120 (n = 22), 0 failures, 0 undecided.
+- `exp_swap.py`: of 206,068 separating D′ of K − uz whose Q_z meets u's class, only 84,315 are repaired by a single end-swap at a vertex of Q_z before the class vertex. So one local switch does not suffice.
 - `exp_extremal.py`, `exp_min2.py`: among separating D′ of K − uz, those minimising |V(Q_z)| always avoid u's class (228/228, and all cubic-derived configurations). But the minimum is usually a single edge, so this is weak evidence.
 
 **(E) Natural strengthenings that are false.**

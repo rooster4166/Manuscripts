@@ -27,4 +27,5 @@ def main(n, r, per, seed, budget):
             elif res == 2: unk += 1
     print(f"n={n} r={r}: total {tot} fail {fail} unknown {unk}")
 
-main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))

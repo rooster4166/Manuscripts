@@ -33,4 +33,5 @@ def main(trials, seed):
             elif len(bad) < 3: bad.append((z, u, {v: sorted(K[v]) for v in K}, P, m))
     print("total", tot, "some D' good", ok_any, "all minimisers of |Q_z| good", ok_min)
     for b in bad: print("  min-fails", b)
-main(int(sys.argv[1]), int(sys.argv[2]))
+if __name__ == '__main__':
+    main(int(sys.argv[1]), int(sys.argv[2]))
