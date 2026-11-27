@@ -20,8 +20,9 @@ single pair; the disjunction is `TriangleDisj D [(a, b)]`.
   vertex `g` (outside universal twins), with `Q(b)` avoiding `a`.
 * **`avoid_deg_two`** (Theorem 6.1), **`disjL1_deg_two`** (Corollary 6.2): DL for one pair when
   `N(g) = {a, b}` and `g` is the only common neighbour of `a, b`.
-* **`disjL1_free_target`** (Proposition 7.1, the transfer): Lovász's Case I across a target adjacent to
-  neither `a` nor `b` carries the disjunction (via `csys_caseI`).
+* **`avoid_free_target`**, **`disjL1_free_target`** (Proposition 7.1, the transfer): Lovász's Case I
+  across a target outside `N[b] ∪ {a}` carries `Q(b) ∌ a` (via `csys_caseI`); so a target adjacent to
+  neither `a` nor `b` carries the disjunction, with the same disjunct.
 * **`univTwins_every_path`**, **`not_triangleDisj_of_twins`** (Proposition 3.1, connected form):
   universal twins lie on every path of every Lovász decomposition, so the exception is needed.
 -/
@@ -1183,9 +1184,37 @@ theorem disjL1_deg_two (hev : (evenSet G).card ≤ 1) (hg : g ∈ evenSet G)
       · rintro rfl; exact hga.symm
     exact disjL1_leaf hev hg hag hb hab htw
 
-/-- **Free targets carry both orientations** (Lovász's Case I, `csys_caseI`). If `u ∈ N(g)` is
-neither `a`, `b` nor adjacent to either, a decomposition of `G − gu` satisfying the disjunction for
-`(a, b)` gives one of `G`. -/
+/-- **A target outside `N[b] ∪ {a}` carries `Q(b) ∌ a`** (Lovász's Case I, `csys_caseI`). If
+`u ∈ N(g)` is neither `a` nor `b` nor adjacent to `b`, a Lovász decomposition of `G − gu` whose path
+ending at `b` avoids `a` gives one of `G` with the same property. -/
+theorem avoid_free_target (hev : (evenSet G).card ≤ 1) (hg : g ∈ evenSet G) {u : V}
+    (hgu : G.Adj g u) (hua : u ≠ a) (hub : u ≠ b) (hbu : ¬ G.Adj b u) (hbg : b ≠ g)
+    (hchild : ∃ D' : PathDecomp (delEdge G g u),
+      (∀ v, D'.ends v = (delEdge G g u).degree v % 2) ∧
+      ∀ P ∈ D'.paths, (P.src = b ∨ P.tgt = b) → a ∉ P.walk.support) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+      ∀ P ∈ D.paths, (P.src = b ∨ P.tgt = b) → a ∉ P.walk.support := by
+  obtain ⟨D', hD', hb'⟩ := hchild
+  have hgood : CSys.Good G ⟨[(b, {a})], []⟩ := by
+    refine csys_caseI G hev hg hgu ⟨[(b, {a})], []⟩ ?_ ?_ ?_
+    · rintro w (⟨cA, hcA, rfl⟩ | ⟨pq, hpq, -⟩)
+      · rw [List.mem_singleton] at hcA; subst hcA
+        exact ⟨Ne.symm hub, hbg, hbu⟩
+      · simp at hpq
+    · rintro ⟨cA, hcA, hu⟩
+      rw [List.mem_singleton] at hcA; subst hcA
+      exact hua (Finset.mem_singleton.mp hu)
+    · refine ⟨D', hD', fun cA hcA P hP hend x hx => ?_, fun pq hpq => by simp at hpq⟩
+      rw [List.mem_singleton] at hcA; subst hcA
+      rw [Finset.mem_singleton.mp hx]
+      exact hb' P hP hend
+  obtain ⟨D, hD, hsat, -⟩ := hgood
+  exact ⟨D, hD, fun P hP hend => hsat (b, {a}) (List.mem_singleton_self _) P hP hend a
+    (Finset.mem_singleton_self _)⟩
+
+/-- **Free targets carry both orientations** (Lovász's Case I). If `u ∈ N(g)` is neither `a`, `b`
+nor adjacent to either, a decomposition of `G − gu` satisfying the disjunction for `(a, b)` gives
+one of `G`, with the same disjunct (`avoid_free_target` applied to that disjunct). -/
 theorem disjL1_free_target (hev : (evenSet G).card ≤ 1) (hg : g ∈ evenSet G) {u : V}
     (hgu : G.Adj g u) (hua : u ≠ a) (hub : u ≠ b) (hau : ¬ G.Adj a u) (hbu : ¬ G.Adj b u)
     (hag : a ≠ g) (hbg : b ≠ g)
@@ -1194,42 +1223,15 @@ theorem disjL1_free_target (hev : (evenSet G).card ≤ 1) (hg : g ∈ evenSet G)
     ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ TriangleDisj D [(a, b)] := by
   obtain ⟨D', hD', hdisj⟩ := hchild
   rcases hdisj (a, b) (List.mem_singleton_self _) with hb' | ha'
-  · have hgood : CSys.Good G ⟨[(b, {a})], []⟩ := by
-      refine csys_caseI G hev hg hgu ⟨[(b, {a})], []⟩ ?_ ?_ ?_
-      · rintro w (⟨cA, hcA, rfl⟩ | ⟨pq, hpq, -⟩)
-        · rw [List.mem_singleton] at hcA; subst hcA
-          exact ⟨Ne.symm hub, hbg, hbu⟩
-        · simp at hpq
-      · rintro ⟨cA, hcA, hu⟩
-        rw [List.mem_singleton] at hcA; subst hcA
-        exact hua (Finset.mem_singleton.mp hu)
-      · refine ⟨D', hD', fun cA hcA P hP hend x hx => ?_, fun pq hpq => by simp at hpq⟩
-        rw [List.mem_singleton] at hcA; subst hcA
-        rw [Finset.mem_singleton.mp hx]
-        exact hb' P hP hend
-    obtain ⟨D, hD, hsat, -⟩ := hgood
+  · obtain ⟨D, hD, h⟩ := avoid_free_target hev hg hgu hua hub hbu hbg ⟨D', hD', hb'⟩
     refine ⟨D, hD, fun p hp => ?_⟩
     rw [List.mem_singleton] at hp; subst hp
-    exact Or.inl fun P hP hend => hsat (b, {a}) (List.mem_singleton_self _) P hP hend a
-      (Finset.mem_singleton_self _)
-  · have hgood : CSys.Good G ⟨[(a, {b})], []⟩ := by
-      refine csys_caseI G hev hg hgu ⟨[(a, {b})], []⟩ ?_ ?_ ?_
-      · rintro w (⟨cA, hcA, rfl⟩ | ⟨pq, hpq, -⟩)
-        · rw [List.mem_singleton] at hcA; subst hcA
-          exact ⟨Ne.symm hua, hag, hau⟩
-        · simp at hpq
-      · rintro ⟨cA, hcA, hu⟩
-        rw [List.mem_singleton] at hcA; subst hcA
-        exact hub (Finset.mem_singleton.mp hu)
-      · refine ⟨D', hD', fun cA hcA P hP hend x hx => ?_, fun pq hpq => by simp at hpq⟩
-        rw [List.mem_singleton] at hcA; subst hcA
-        rw [Finset.mem_singleton.mp hx]
-        exact ha' P hP hend
-    obtain ⟨D, hD, hsat, -⟩ := hgood
+    exact Or.inl h
+  · obtain ⟨D, hD, h⟩ := avoid_free_target (a := b) (b := a) hev hg hgu hub hua hau hag
+      ⟨D', hD', ha'⟩
     refine ⟨D, hD, fun p hp => ?_⟩
     rw [List.mem_singleton] at hp; subst hp
-    exact Or.inr fun P hP hend => hsat (a, {b}) (List.mem_singleton_self _) P hP hend b
-      (Finset.mem_singleton_self _)
+    exact Or.inr h
 
 end disj
 

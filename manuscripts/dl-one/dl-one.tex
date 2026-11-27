@@ -21,10 +21,6 @@
 \newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
 \emergencystretch=3em
 
-% data cells
-\newcommand{\NELEVEN}{\emph{pending}}
-\newcommand{\NELEVENPAIRS}{\emph{pending}}
-\newcommand{\NELEVENTW}{\emph{pending}}
 
 \title[DL for one pair]{The disjunctive avoidance conjecture for one pair:\\
 the exact boundary to order eleven, four proved cases,\\ and where Lov\'asz's induction stops}
@@ -39,34 +35,38 @@ $v$ is an end of exactly $d(v)\bmod 2$ of them; $Q(v)$ is the path ending at an 
 Conjecture DL(1) asks for a Lov\'asz decomposition with $a\notin V(Q(b))$ or $b\notin V(Q(a))$
 unless $a,b$ are \emph{universal twins} of their component ($N(a)=N(b)=V(C)-\{a,b\}$). By the
 direct lift of~\cite{DT}, its multi-pair form gives the two-end test (T1) at every root with
-connected triangle data, including the dense T(6)-i residual. The open core is $a,b\in N(g)$
-with a common neighbour, where both fixed orientations fall outside the avoidance conjecture
-$L_1^*$.
+connected triangle data, including the dense T(6)-i residual. The open core is $a,b\in N(g)$,
+where both fixed orientations fall outside the avoidance conjecture $L_1^*$ (when $a\notin N(g)$ or
+$b\notin N(g)$, DL(1) follows from $L_1^*$, which is itself open).
 
 \begin{itemize}
 \item \emph{Proved and formalised in Lean} (no \texttt{sorry}, standard axioms):
   \begin{itemize}
-  \item the exception is needed: universal twins lie on every path of every Lov\'asz decomposition;
-  \item Lemma NP: in a graph with all degrees odd, two adjacent vertices need not be the two ends
-  of one path;
+  \item the exception is needed: universal twins lie on every path of every Lov\'asz decomposition
+  (in Lean for connected $G$);
+  \item Lemma NP: in a graph with all degrees odd, two adjacent vertices, one of degree at least
+  three, need not be the two ends of one path;
   \item DL(1) when $a$ is a leaf at $g$;
   \item DL(1) when $d(g)=2$ and $g$ is the only common neighbour of $a$ and $b$;
   \item Lov\'asz's Case~I carries the disjunction across a target $u\in N(g)$ adjacent to neither
   $a$ nor $b$ (the child is never a pair of universal twins; this part is on paper only).
   \end{itemize}
 \item \emph{Computation} (exact solver, validated against an independent brute force).
-  Over every connected graph of order $5$, $7$, $9$ \NELEVEN{} with one even vertex and every
-  non-adjacent odd pair, DL(1) fails \emph{exactly} at the universal twins. Through order $9$ every
-  non-twin pair also has a certificate built only from proved transfers.
-\item \emph{Structure in the data.} A fixed orientation ``$Q(y)$ avoids $x$'' fails only if
-  $x\sim g$, $N(y)\setminus\{g\}\subseteq N(x)$ and $N(g)\subseteq N[x]\cup N[y]$. When $g$ is the
-  only common neighbour and $d(a),d(b)\ge3$, both orientations hold, and indeed in one
-  decomposition.
+  Over every connected graph of order $5$, $7$, $9$, $11$ with one even vertex and every
+  non-adjacent odd pair ($268{,}990{,}425$ pairs at order $11$), DL(1) fails \emph{exactly} at the
+  universal twins. Through order $9$ every non-twin pair also has a certificate built only from
+  proved transfers.
+\item \emph{Structure in the data} (orders $\le9$). A fixed orientation ``$Q(y)$ avoids $x$'' fails
+  only if $x\sim g$, $N(y)\setminus\{g\}\subseteq N(x)$ and $N(g)\subseteq N[x]\cup N[y]$. When $g$
+  is the only common neighbour and $d(a),d(b)\ge3$, both orientations hold, and indeed in one
+  decomposition. In that case the single missing step of a proof (Conjecture~\ref{conj:sf}, which
+  implies DL(1) there) held in all $10{,}916$ ordered pairs of order $9$.
 \item \emph{Where the induction stops.} DL(1) is not an inductive hypothesis for Lov\'asz's
   Case~I: already at order $7$, with $g$ the only common neighbour and $d(g)=4$, no target carries
   every good child decomposition to a good one. The natural fixed-orientation strengthening
   (Conjecture~\ref{conj:n}) would settle the blocked case of $L_1^*$ for $|A|=1$, except where
-  $N(b)\setminus\{g\}\subseteq N(a)$, so it is not an easier target. We record the minimal counterexamples to each strategy.
+  $N(b)\setminus\{g\}\subseteq N(a)$, so it is not an easier target. We record a smallest-order
+  counterexample to each strategy.
 \end{itemize}
 DL(1) itself is not proved here.
 \end{abstract}
@@ -133,16 +133,17 @@ and $d(a)\ge3$, then $S_a$ holds. With item~3 this gives DL(1) whenever $d(g)=2$
 only common neighbour.
 \item \emph{Reductions} (Section~\ref{sec:red}): free targets carry DL(1), with a child that is
 never twin, and the structure of a smallest counterexample.
-\item \emph{Computation} (Section~\ref{sec:comp}): the exact boundary to order \NELEVEN{}, certificates
+\item \emph{Computation} (Section~\ref{sec:comp}): the exact boundary to order $11$, certificates
 from proved moves to order $9$, and the structural statistics behind the conjectures of
 Section~\ref{sec:conj}.
-\item \emph{The residual} (Section~\ref{sec:residual}): minimal counterexamples to each inductive
-strategy we tried.
+\item \emph{The residual} (Section~\ref{sec:residual}): counterexamples of smallest order to each
+inductive strategy we tried.
 \end{enumerate}
 
 \subsection*{Status}
-Proved means: proved here on paper and, for items 1--5, also in Lean (file
-\texttt{DLOne.lean} of the project library; Section~\ref{sec:lean}). Verified means: by exact computation,
+Proved means: proved here on paper and, for items 2--4, the connected form of item 1 and the
+transfer of item 5, also in Lean (file \texttt{DLOne.lean} of the project library;
+Section~\ref{sec:lean}). Verified means: by exact computation,
 in the stated range. Conjectured means: supported by the data quoted, not proved. No proof uses a
 computation.
 
@@ -161,7 +162,10 @@ Let $g$ be the even vertex of $G$, $u\in N(g)$, and $\cD'$ a Lov\'asz decomposit
 $G$ has a Lov\'asz decomposition $\cD$ obtained by a Fan chain $g=x_0,x_1,\dots,x_k$ (every $x_i$
 with $i\ge1$ adjacent to $u$) followed by one append. Every path of $\cD$ lies in a path of $\cD'$
 together with $u$, and the path of $\cD$ ending at a vertex $w\notin\{g,u\}\cup N(u)$ comes from the
-path of $\cD'$ ending at $w$.
+path of $\cD'$ ending at $w$. More precisely, since every vertex has at most one end in $\cD'$, the
+chain is forced: $x_{i+1}$ is the vertex before $u$ on the path of $\cD'$ ending at $x_i$. Only the paths
+of $\cD'$ ending at $x_0,\dots,x_k$ change (the first $k$ are re-routed, keeping their vertex sets,
+and $u$ is appended to the last); every other path of $\cD'$ is a path of $\cD$.
 \end{lemma}
 
 \emph{Leaf graphs.} For an edge $xy$ of $H$, $H(x;y)$ denotes $H-xy$ together with a new vertex
@@ -249,7 +253,7 @@ $x,y$ has degree at least three).
 \section{A leaf at the even vertex}\label{sec:leaf}
 
 \begin{theorem}\label{thm:leaf}
-Let $G$ have at most one even vertex $g$, let $N(a)=\{g\}$, and let $b\ne a$ be odd. If $a,b$ are not
+Let $G$ have exactly one even vertex $g$, let $N(a)=\{g\}$, and let $b\ne a$ be odd. If $a,b$ are not
 universal twins, some Lov\'asz decomposition of $G$ has $a\notin V(Q(b))$.
 \lean{avoid\_leaf, disjL1\_leaf}
 \end{theorem}
@@ -308,7 +312,7 @@ $R$. It avoids $b$.
 \begin{corollary}\label{cor:deg2}
 DL(1) holds when $d(g)=2$ and $g$ is the only common neighbour of $a$ and $b$.
 \lean{disjL1\_deg\_two}
-More generally DL(1) holds when $d(g)=2$ and $N(g)$ is an independent set other than $\{a,b\}$.
+Also, DL(1) holds when $d(g)=2$ and $N(g)$ is an independent set other than $\{a,b\}$.
 \end{corollary}
 
 \begin{proof}
@@ -324,8 +328,9 @@ not formalised.)
 \begin{proposition}[free targets]\label{prop:free}
 Let $g$ be the even vertex, and let $u\in N(g)$ be neither $a$, $b$ nor adjacent to either. If
 $G-gu$ has a Lov\'asz decomposition satisfying~\eqref{eq:disj}, so does $G$, with the same disjunct.
-Moreover $a,b$ are not universal twins in $G-gu$.
-\lean{disjL1\_free\_target} (the transfer)
+Moreover $a,b$ are not universal twins in $G-gu$; the same holds for a target adjacent to at most
+one of $a,b$.
+\lean{avoid\_free\_target, disjL1\_free\_target} (the transfer)
 \end{proposition}
 
 \begin{proof}
@@ -333,16 +338,19 @@ Apply Lemma~\ref{lem:fan}. Since $a,b\notin\{g,u\}\cup N(u)$, the new paths endi
 from the old ones, with $u$ possibly added; $u\notin\{a,b\}$. For the second claim, suppose $a,b$ are
 universal twins of a component $C'$ of $G-gu$. If $u\in C'$, then $u\in N(a)$, which is excluded. So
 $u\notin C'$. Every vertex of $C'$ is odd in $G-gu$: the only even vertex of $G-gu$ is $u$. Then
-$|C'|$ is even, while $d(a)=|C'|-2$ is odd. This is a contradiction.
+$|C'|$ is even, so $d(a)=|C'|-2$ would be even; but $a$ is odd. This is a contradiction. The same
+argument applies when $u$ is adjacent to one of $a,b$ but not both: if $u\in C'$, then $u$ is
+adjacent to both twins.
 \end{proof}
 
 The same argument shows that a target $u\notin N[b]\cup\{a\}$ carries $S_b$ (Fan's lemma with end
-paths; this is \texttt{csys\_caseI} of~\cite{CLT}). It need not carry $S_a$ when $u\sim a$, because
+paths; this is \texttt{csys\_caseI} of~\cite{CLT}; Lean \texttt{avoid\_free\_target}). It need not
+carry $S_a$ when $u\sim a$, because
 $a$ may then be a chain vertex.
 
 \begin{corollary}\label{cor:mincex}
-Let $(G,a,b)$ be a counterexample to DL(1) with $|E(G)|$ smallest. Then $G$ is connected, $G$ has an
-even vertex $g$, $a$ and $b$ have a common neighbour, and:
+Let $(G,a,b)$ be a counterexample to DL(1) with $|E(G)|$ smallest. Then $G$ has exactly one
+non-trivial component, $G$ has an even vertex $g$, $a$ and $b$ have a common neighbour, and:
 \begin{enumerate}
 \item every neighbour of $g$ other than $a,b$ is adjacent to $a$ or to $b$;
 \item if $a\in N(g)$ then $d(a)\ge3$, and if $b\in N(g)$ then $d(b)\ge3$;
@@ -375,12 +383,14 @@ The brute force \texttt{brute.py} is independent. It enumerates every transition
 the edges at each vertex, with $d(v)\bmod2$ ends), keeps those whose trails are all paths, and reads
 off $Q(a)$ and $Q(b)$. The two agree on every orientation of every pair, with $0$ mismatches:
 \begin{itemize}
-\item $942$ pairs of the connected graphs of orders $5$ and $7$ with one even vertex;
-\item $2{,}204$ pairs of all graphs (connected or not) of order $6$, and sparse graphs of orders $7$,
-$8$, with at most one even vertex.
+\item $942$ of the $968$ pairs of the connected graphs of orders $5$ and $7$ with one even vertex (the
+other $26$ pairs, in $8$ graphs, exceed the brute force's cap of $3\cdot10^6$ transition systems);
+\item $2{,}204$ pairs of the graphs with at most one even vertex among all graphs of order $6$
+(connected or not) and the graphs of orders $7$ and $8$ with at most $9$, resp.\ $10$, edges
+(\texttt{nauty-geng 6}, \texttt{7 0:9}, \texttt{8 0:10}).
 \end{itemize}
 The decomposition enumerator \texttt{enum.c} agrees with the brute force on the number of Lov\'asz
-decompositions of all $129$ graphs compared.
+decompositions of all $129$ graphs of orders $5$, $7$ that the brute force completes.
 
 \subsection*{The exact boundary}
 Every connected graph with exactly one even vertex (\texttt{nauty-geng -c}, filtered), and every pair
@@ -394,28 +404,36 @@ order & graphs & pairs & DL(1) fails & universal twins\\
 $5$ & $7$ & $21$ & $3$ & $3$\\
 $7$ & $130$ & $947$ & $14$ & $14$\\
 $9$ & $11{,}936$ & $166{,}217$ & $170$ & $170$\\
-$11$ & \NELEVEN & \NELEVENPAIRS & \NELEVENTW & \NELEVENTW\\
+$11$ & $11{,}959{,}367$ & $268{,}990{,}425$ & $12{,}516$ & $12{,}516$\\
 \bottomrule
 \end{tabular}
 \end{center}
 
 In every case the failures are \emph{exactly} the universal-twin pairs. Orders $5$--$9$ reproduce
-E29 of~\cite{DT}. A component with exactly one even vertex has odd order, and a component with none
+E29 of~\cite{DT}. Order $11$ was run as the $2{,}000$ \texttt{geng} slices
+\texttt{nauty-geng -c 11 i/2000}, every connected graph filtered to exactly one even vertex; the
+count $11{,}959{,}367$ agrees with~\cite{L1S}. The per-slice summaries are in
+\texttt{manuscripts/dl-one/data/n11\_slices.txt}. At order $11$ a positive answer is a decomposition
+found by the search and a negative one is exhaustive (with the counting shortcut); the two
+orientations are tried alternately under doubling node budgets. A component with exactly one even vertex has odd order, and a component with none
 is covered by $L_1$. So the rows through order $9$ decide DL(1) for every graph on at most $10$
 vertices, and the order-$11$ row extends this to $12$ vertices.
 
 \subsection*{Certificates from proved moves}
 \texttt{dlrec.cpp} uses the move generator of the l1-induction session~\cite[\S3]{L1I}. Every move
 there transfers goodness of an avoidance instance $(G,c,A)$ from a smaller instance, unconditionally
-(\cite[Theorem~3.1]{L1I}). The base cases are: $A$ misses the component of $c$; no even vertex and
-$d(c)=1$; separation (Theorem~\ref{thm:sep}); and $L_1$ in set form. A DL(1) pair is
+(\cite[Theorem~3.1]{L1I}). The base cases are: $A$ misses the component of $c$; no even vertex,
+$d(c)=1$ and the neighbour of $c$ not in $A$; separation (Theorem~\ref{thm:sep}); and $L_1$ in set
+form. A DL(1) pair is
 \emph{certified} if $(G,b,\{a\})$ or $(G,a,\{b\})$ is. Through order $9$ every one of the
 $166{,}047+933+18$ non-twin pairs is certified. This is a second, independent computation; it uses
-only the proved transfers and not the exact solver. On four slices of order $11$ (\emph{pending}) every
-non-twin pair is certified.
+only the proved transfers and not the exact solver (audit A29 also checked that no certified
+orientation is contradicted by the solver: $327{,}634$ orientations). On the order-$11$ slices $17$
+and $517$ (of $2{,}000$) all $85{,}222+93{,}533$ non-twin pairs are certified
+(\texttt{data/n11\_certificates.txt}).
 
 \subsection*{Structure}
-Orders $5$--$9$, all pairs (both orientations).
+Orders $5$--$9$, all pairs (both orientations; \texttt{stats.py} on \texttt{dl -m pairs} output).
 \begin{itemize}
 \item One orientation fails in $6{,}221$ of the $333{,}996$ orientations of the $166{,}998$ non-twin pairs. In
 \emph{every} failure of $S_y$ (``$Q(y)$ avoids $x$''): $x\in N(g)$; $N(y)\setminus\{g\}\subseteq
@@ -441,7 +459,8 @@ form also held. If $y$ has a neighbour $w\ne g$ with $N(w)\cap A\subseteq\{g\}$,
 $N[y]$ (and may contain $g$), then $Q(y)$ can avoid $A$. This held in $675{,}641$ queries with $|A|\le2$
 and in $300{,}644$ queries with $A$ maximal at order $9$. In the maximal form it says
 $V(Q(y))\subseteq N[y]\cup(N(w)\setminus\{g\})$ for every neighbour $w\ne g$ of $y$; with $w=g$ this
-would be the local form of $L_1^*$, which held in $79{,}598$ further queries.
+would be the local form of $L_1^*$, $V(Q(y))\subseteq N[y]\cup N(g)$, which held in $86{,}882$
+further queries at order $9$.
 
 \begin{proposition}\label{prop:nreduces}
 Conjecture~\ref{conj:n} reduces DL(1) to \emph{near twins}, pairs with $N(a)\setminus\{g\}=N(b)\setminus\{g\}$.
@@ -453,12 +472,13 @@ $N(a)\setminus\{g\}\subseteq N(b)$; since $a\notin N(b)$ and $b\notin N(a)$, the
 \end{proof}
 
 \begin{conjecture}[CN1]\label{conj:cn1}
-If $g$ is the only common neighbour of $a,b\in N(g)$ and $d(a),d(b)\ge3$, some Lov\'asz decomposition
-has both $a\notin V(Q(b))$ and $b\notin V(Q(a))$.
+Let $g$ be the only even vertex, let $a,b\in N(g)$ be non-adjacent with $g$ their only common
+neighbour, and $d(a),d(b)\ge3$. Then some Lov\'asz decomposition has both $a\notin V(Q(b))$ and $b\notin V(Q(a))$.
 \end{conjecture}
 
 \begin{conjecture}[SF, protected separation]\label{conj:sf}
-Let $g$ be the only common neighbour of $a,b\in N(g)$, with $d(a),d(b)\ge3$. Then $G-ga$ has a
+Let $g$ be the only even vertex, let $a,b\in N(g)$ be non-adjacent with $g$ their only common
+neighbour, and $d(a),d(b)\ge3$. Then $G-ga$ has a
 Lov\'asz decomposition in which no path contains both $a$ and $b$, and the path ending at $b$ does
 not end at a neighbour of $a$ in $G$.
 \end{conjecture}
@@ -472,8 +492,8 @@ In $G'=G-ga$ the only even vertex is $a$, and $g$ is odd. Let $\cD'$ be as in
 Conjecture~\ref{conj:sf}, and let $\beta$ be the far end of $Q'(b)$. Restore $ga$ by
 Lemma~\ref{lem:fan} with target $a$. The chain vertices are $g$ and neighbours of $a$ in $G'$, so
 neither $b$ (not adjacent to $a$) nor $\beta$ (not in $N_G(a)=N_{G'}(a)\cup\{g\}$) is a chain vertex.
-Hence $Q'(b)$ is neither re-routed nor the path to which $a$ is appended (that path ends at a chain
-vertex), and the new $Q(b)$ is $Q'(b)$, which avoids $a$. With Corollary~\ref{cor:deg2}'s leaf
+By the last sentence of Lemma~\ref{lem:fan}, only paths of $\cD'$ ending at chain vertices change;
+$Q'(b)$ has ends $b$ and $\beta$, so the new $Q(b)$ is $Q'(b)$, which avoids $a$. With Corollary~\ref{cor:deg2}'s leaf
 cases (Theorem~\ref{thm:leaf}) this covers every non-twin pair with $g$ the only common neighbour.
 \end{proof}
 
@@ -502,11 +522,12 @@ Robustness of a target $u\in N(g)\setminus\{a,b\}$ means: every Lov\'asz decompo
 that satisfies~\eqref{eq:disj} transfers to one of $G$ that does. If some target were always robust,
 DL(1) would follow by induction on $|E|$, using Proposition~\ref{prop:free} for the twin issue. Among
 the $334$ core pairs of order at most $7$, $115$ have no robust target. Of these, $22$ have $g$ as the only
-common neighbour, $d(g)\ge4$ and $d(a),d(b)\ge3$. Yet every one of the $334$ has \emph{some} child
+common neighbour, $d(g)\ge4$ and $d(a),d(b)\ge3$ (the one of fewest edges is \texttt{FqGV\_}, with
+$9$ edges). Yet every one of the $334$ has \emph{some} child
 decomposition, at $u=a$ or $u=b$, that transfers to a good one.
 
-\begin{example}[\texttt{FsOrg}]\label{ex:fsorg}
-Vertices $0,\dots,6$, edges $01,02,03,14,16,25,26,35,36,56$; $g=6$, $a=1$, $b=5$. Here $N(g)=\{1,2,3,5\}$,
+\begin{example}[\texttt{FsOrg}, of minimum order]\label{ex:fsorg}
+Vertices $0,\dots,6$, edges $01$, $02$, $03$, $14$, $16$, $25$, $26$, $35$, $36$, $56$; $g=6$, $a=1$, $b=5$. Here $N(g)=\{1,2,3,5\}$,
 $N(a)=\{0,4,6\}$, $N(b)=\{2,3,6\}$, so $g$ is the only common neighbour, and the targets $2,3$ are
 adjacent to $b$ only. For $u=2$, the decomposition $\{0\,3\,5,\ 1\,0\,2\,5\,6,\ 3\,6\,1\,4\}$ of
 $G-62$ satisfies $S_b$, as $Q(5)=0\,3\,5$. The forced chain is $6\to5$: $b$ is a chain vertex, the
@@ -520,32 +541,43 @@ vertex $u$ is adjacent to $b$.
 If $g$ is the only common neighbour, $a,b$ are at distance at least three in $G-ga$, where $a$ is the
 even vertex, so Theorem~\ref{thm:sep} separates them. Restoring $ga$ needs Fan's lemma with target
 $a$. The result fails~\eqref{eq:disj} exactly when the chain stops at the far end $\beta$ of $Q'(b)$.
-A sufficient condition, that $\beta\notin N(a)\cup\{g\}$, exists in all $76$ such pairs of order
-$\le7$ (\texttt{exp4.py}) but is not supplied by the separation theorem. For an arbitrary separating
-decomposition the transfer is bad in $1{,}224$ of $3{,}284$ cases. A second restoration, which splits
-a path through $a$ and joins one half to $Q'(g)$, does not rescue $2{,}668$ of $7{,}442$ cases. One
-exchange at $a$ or $b$ after the transfer does not rescue $453$ of the $1{,}224$ (\texttt{FsPzw},
-$g=1$, $a=0$, $b=4$: the separating $\{1\,5\,2\,6\,4,\ 2\,0\,3\,5\,6,\ 3\,6\,1\,4\,5\}$ of $G-01$ has
-$Q'(g)=Q'(b)$).
+Indeed $Q'(b)$ avoids $a$, so it is not re-routed (every re-routed path contains $a$), and it changes
+only if it is the path to which $a$ is appended, that is, if the chain stops at $\beta$; then
+$Q(a)=Q(b)=Q'(b)+\beta a$ and both disjuncts fail. Otherwise $Q(b)=Q'(b)$ avoids $a$. The
+sufficient condition $\beta\notin N(a)\cup\{g\}$ (Conjecture~\ref{conj:sf}) exists in all $76$ ordered
+pairs of order $\le7$ with $g$ the only common neighbour and $d(a),d(b)\ge3$ (\texttt{exp4.py}), but
+is not supplied by the separation theorem. On those $76$ pairs (\texttt{exp3.py}), the transfer of an
+arbitrary separating decomposition is bad in $1{,}224$ of $3{,}284$ cases, and one exchange at $a$ or
+$b$ after the transfer does not rescue $453$ of the $1{,}224$. An example of minimum order is
+\texttt{FsPzw}, $g=1$, $a=0$, $b=4$: the separating $\{1\,5\,2\,6\,4,\ 2\,0\,3\,5\,6,\
+3\,6\,1\,4\,5\}$ of $G-01$ has $Q'(g)=Q'(b)$. On the $169$ ordered pairs with only $d(a)\ge3$
+required (\texttt{exp5.py}), a second restoration, which splits a path through $a$ and joins one half
+to $Q'(g)$, together with the chain, fails on $2{,}668$ of $7{,}442$ separating decompositions.
 
 \subsection{The class of Conjecture~\ref{conj:n} does not close}
 Using the moves (a)--(d), (i) of~\cite[Theorem~3.1]{L1I}, $4$ instances of order $5$ and $594$ of order
 $7$ in the class of the set form have no move into the class or a base case. The smallest is
-\texttt{DEk}: edges $03,04,13,24,34$, $g=0$, $c=3$, $A=\{2\}$, witness $w=1$. Move (a) leads to tail
-$0$ with $A=\{2,3\}$, where the only neighbour $4$ of the tail is adjacent to $2$. Move (c) at $4$
-leads to tail $4$ adjacent to $2\in A$. The instance is good ($Q(3)=3\,4$). This mirrors the
+\texttt{DCw}: edges $03,04,14,24$, $g=0$, $c=4$, $A=\{3\}$, witness $w=1$. Move (a) leads to tail $0$,
+whose only neighbour $3$ lies in $A$; moves (b), (c) have no target, and (i) does not shrink $A$. The
+instance is good ($Q(4)=2\,4$, with $1\,4\,0\,3$). Another of the four is \texttt{DEk}: edges
+$03,04,13,24,34$, $g=0$, $c=3$, $A=\{2\}$, witness $w=1$; move (a) leads to tail $0$ with
+$A=\{2,3\}$, where the only neighbour $4$ of the tail is adjacent to $2$, and move (c) at $4$ leads to
+tail $4$ adjacent to $2\in A$; it is good ($Q(3)=3\,4$). This mirrors the
 non-closure of $L_1^*$'s admissible class~\cite[\S5]{L1I}.
 
 \subsection{Full separation}
 Separation of $a$ and $b$ (no path through both) fails in every instance of order $\le7$ with exactly
-one common neighbour and $d(a),d(b)\ge3$ ($118$ instances; checked against full enumeration). The
-reason is local: a vertex of degree two adjacent to $a$ and $b$ (or to $b$ and the common neighbour)
-forces a path through both. So the symmetric statement of Conjecture~\ref{conj:cn1} is the right
-strengthening, not separation.
+one common neighbour and $d(a),d(b)\ge3$ ($118$ instances; checked against full enumeration). In
+only $14$ of them is there a simple local reason (a vertex of degree two adjacent to $a$ and $b$, or
+to $b$ and the common neighbour, forcing a path through both); in $72$ the graph has no vertex of
+degree two at all (for example \texttt{FsPIW}: edges $01,02,03,14,15,16,45,46,56$, $g=1$, $a=0$,
+$b=4$, $18$ Lov\'asz decompositions, none separating; \texttt{sep1\_reason.py}). So separation is the
+wrong strengthening, and the symmetric statement of Conjecture~\ref{conj:cn1} is the natural one.
 
 \subsection{Summary of the residual}
-The open configuration is the core: $a,b\in N(g)$, a common neighbour, $d(a),d(b)\ge3$, and every
-neighbour of $g$ adjacent to $a$ or $b$ (Corollary~\ref{cor:mincex}). In it, the targets adjacent to
+Modulo $L_1^*$ (which would give $S_b$ when $a\notin N(g)$ and $S_a$ when $b\notin N(g)$), the open
+configuration is the core: $a,b\in N(g)$, $d(a),d(b)\ge3$, every neighbour of $g$ adjacent to $a$ or
+$b$, and, if $d(g)=2$, a second common neighbour (Corollary~\ref{cor:mincex}). In it, the targets adjacent to
 one of $a,b$ carry only one orientation, and the targets $a,b$ need control of Fan's chain (a
 tight-Fan configuration: the chain must not stop at the partner of the protected end). A proof
 along these lines needs, in the child, either a fixed orientation (Conjecture~\ref{conj:n}, which
@@ -567,7 +599,7 @@ Lemma~\ref{lem:np} & \texttt{not\_paired\_adj}\\
 Theorem~\ref{thm:leaf} & \texttt{avoid\_leaf}; DL form \texttt{disjL1\_leaf}\\
 Theorem~\ref{thm:deg2} & \texttt{avoid\_deg\_two} (core \texttt{avoid\_deg\_two\_core}, \texttt{splitOff\_facts})\\
 Corollary~\ref{cor:deg2}, first part & \texttt{disjL1\_deg\_two}\\
-Proposition~\ref{prop:free}, transfer & \texttt{disjL1\_free\_target}\\
+Proposition~\ref{prop:free}, transfer & \texttt{avoid\_free\_target} (one orientation), \texttt{disjL1\_free\_target}\\
 Proposition~\ref{prop:twins}, connected $G$ & \texttt{univTwins\_every\_path}, \texttt{not\_triangleDisj\_of\_twins}\\
 \bottomrule
 \end{tabular}
@@ -583,9 +615,13 @@ Corollary~\ref{cor:mincex}, and the component form of Proposition~\ref{prop:twin
 
 \section{What remains}\label{sec:open}
 \begin{enumerate}
-\item DL(1) in the core with $d(g)\ge4$, starting with $g$ the only common neighbour. There the
-single missing step is Conjecture~\ref{conj:sf}: a separating decomposition of $G-ga$ whose path at
-$b$ does not end next to $a$ (Proposition~\ref{prop:sf}).
+\item DL(1) in the core $a,b\in N(g)$ with $d(g)\ge4$, starting with $g$ the only common neighbour.
+There the single missing step is Conjecture~\ref{conj:sf}: a separating decomposition of $G-ga$
+whose path at $b$ does not end next to $a$ (Proposition~\ref{prop:sf}).
+\item The core with $d(g)=2$ and a second common neighbour of $a$ and $b$ (by audit A29, $1{,}108$ of
+the $1{,}430$ non-twin core pairs with $d(g)=2$ through order $9$; all satisfy DL(1)).
+\item The pairs with $a\notin N(g)$ or $b\notin N(g)$, which DL(1) leaves to $L_1^*$ (open in its
+blocked case).
 \item Near twins, if Conjecture~\ref{conj:n} is the route.
 \item The multi-pair form DL$(k)$; in the data there is no compatibility failure~\cite{DT}.
 \end{enumerate}

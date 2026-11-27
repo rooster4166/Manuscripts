@@ -1,0 +1,2 @@
+slice 17: DLREC pairs=85231 twins=9 certified=85222 uncertified=0 (core 0, cn1 0)
+slice 517: DLREC pairs=93540 twins=7 certified=93533 uncertified=0 (core 0, cn1 0)
