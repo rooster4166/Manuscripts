@@ -329,7 +329,8 @@ is short.
 \end{proof}
 
 By~\cite[Prop.~EE]{MS}, EE at $u$ is the step of Lov\'asz's induction at $z$ with a trivial Fan
-chain, i.e.\ ``$L_1$ at the even vertex''. So STL contains multi-sep's crux as its one-transition
+chain, i.e.\ ``$L_1$ at the even vertex''. It is proved when $uz$ lies in no triangle and in most
+configurations with $d(u)\le3$~\cite[Prop.~EE3]{MS}, and open in general. So STL contains multi-sep's crux as its one-transition
 case, and for $d(z)\ge4$ it asks for $k$ such transitions at once.
 
 \subsection{Prescribing the pairing}
@@ -381,7 +382,7 @@ $b(v)=d(v)\bmod2$ for all $v$ in which no path contains both $c$ and $a$.
 \begin{theorem}[$d(z)=2$]\label{thm:dz2}
 Let $z$ be the only even vertex of $J$ and $N(z)=\{u,w\}$. If $uw\notin E(J)$, or if $uw\in E(J)$
 and $u,w$ have no common neighbour other than $z$, then $\STL(J,z,w)$ and $\STL(J,z,u)$ hold.
-\lean{stl\_of\_deg\_two (case $uw\notin E$)}
+\lean{stl\_of\_deg\_two, stl\_of\_deg\_two\_tri}
 \end{theorem}
 
 \begin{proof}
@@ -415,8 +416,12 @@ $w$), avoids $u$. In particular $Q_u\ne P_z$.
 All ends are now $d_J\bmod2$.
 \end{proof}
 
-The remaining configuration for $d(z)=2$ is two triangles $z\,u\,w$ and $t\,u\,w$. It is exactly
-EE in the configuration where the separation theorem is not available, and we did not resolve it.
+Case $uw\notin E$ is the instance $d(z)=2$ of~\cite[Prop.~EE3(a)]{MS} (\texttt{ee\_noTriangle}:
+EE holds whenever $uz$ lies in no triangle, for any $d(z)$), obtained there by the same method. Case
+$uw\in E$ is, by Proposition~\ref{prop:EE}, a new case of EE: $d(z)=2$, $uz$ in the triangle $u\,z\,w$,
+$d(u)$ arbitrary, and $z$ the only common neighbour of $u$ and $w$. (The cases of EE proved
+in~\cite{MS} with $uz$ in a triangle have $d(u)=3$.) The remaining configuration for $d(z)=2$ is
+two triangles $z\,u\,w$ and $t\,u\,w$, which we did not resolve.
 
 \begin{remark}[one prescription is the limit of the present tools]\label{rem:limit}
 Each tool we have makes one terminal edge or one separation by creating at most one even vertex,
@@ -587,14 +592,14 @@ $P$ and $i_P$ is the number of edges of $P$ at $v$;
 $\#LL=0$;
 \item \texttt{gallai\_of\_stl}: Corollary~\ref{cor:gallai}, via
 \texttt{gallai\_iff\_spineTests'};
-\item \texttt{stl\_of\_deg\_two}: Theorem~\ref{thm:dz2} in the case $uw\notin E$, via
-\texttt{separation} and \texttt{append\_move\_new}, a version of \texttt{append\_move} that
-exposes the new path.
+\item \texttt{stl\_of\_deg\_two}, \texttt{stl\_of\_deg\_two\_tri}: Theorem~\ref{thm:dz2}, both
+cases, via \texttt{separation} and \texttt{append\_move\_new}, a version of \texttt{append\_move}
+that exposes the new path and the old ones.
 \end{itemize}
-The full library builds, and \texttt{manuscripts/stl/STLAxioms.lean} prints for all five main
+The full library builds, and \texttt{manuscripts/stl/STLAxioms.lean} prints for all six main
 theorems only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. The general
 criterion with $LL$ transitions (a path may then have two pieces) and the results of
-Section~\ref{sec:strength}, and the case $uw\in E$ of Theorem~\ref{thm:dz2}, are not formalised.
+Section~\ref{sec:strength} are not formalised.
 
 \subsection*{Reproduction}
 See \texttt{manuscripts/stl/README.md}. All scripts are in \texttt{manuscripts/stl/scripts/};

@@ -10,13 +10,13 @@ axiom check `STLAxioms.lean`. Experiment log: `research/experiments.md`, E22. Co
   - `test1_of_stl`: STL ⇒ Test1.
   - `test2_of_stl2`: STL2 ⇒ Test2.
   - `gallai_of_stl`: STL + STL2 on 3-connected graphs ⇒ Gallai, via `gallai_iff_spineTests'`.
+  - `stl_of_deg_two`, `stl_of_deg_two_tri`: STL for d(z) = 2, except the two-triangle configuration. The triangle case is a new case of EE.
 - **Proved in the manuscript only:**
   - the general criterion #LL − #SS + [r short] ≤ 0 (BAL / BAL2);
   - the J − z characterisation of STL;
   - the cone proposition: "some star-terminal Lovász decomposition exists" for all J with J − z connected ⇒ Gallai;
   - d(z) = 2 ⇔ EE;
   - pairing ⇔ terminal matching;
-  - STL for d(z) = 2 except the two-triangle configuration;
   - Examples W₄ (STL-P fails) and the K₄-bowtie (ST fails).
 - **Open.** STL (Conjecture), STL2, STL-P for 3-connected J ≠ W₄. No counterexample with J − z connected is known (E22).
 

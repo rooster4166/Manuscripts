@@ -1204,9 +1204,9 @@ So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n 
   - Not every short half-set is realisable.
 
 ### X.4 Proved partial results
-- **STL for d(z) = 2**, unless the two neighbours u, w are adjacent and have a second common neighbour.
-  - If uw ∉ E: separation in J − uz, where z is a leaf.
-  - If uw ∈ E with no other common neighbour: separation in J − uz − uw, then re-attach uw.
+- **STL for d(z) = 2**, unless the two neighbours u, w are adjacent and have a second common neighbour. Both cases are in Lean (`stl_of_deg_two`, `stl_of_deg_two_tri`).
+  - If uw ∉ E: separation in J − uz, where z is a leaf. This is the d(z) = 2 instance of multi-sep's `ee_noTriangle`.
+  - If uw ∈ E with no other common neighbour: separation in J − uz − uw, then re-attach uw. This is a **new case of EE** (uz in a triangle, d(u) arbitrary); multi-sep's triangle cases have d(u) = 3.
 - The remaining d(z) = 2 configuration, two triangles z u w and t u w, is exactly EE where separation is unavailable.
 - **Why d(z) ≥ 4 is out of reach of the current tools.**
   - Each tool creates at most one even vertex per prescription: L₁ attaches a leaf, the end-edge theorem detaches an edge, the d(z) = 2 proof deletes edges.
