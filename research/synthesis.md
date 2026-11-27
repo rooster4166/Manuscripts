@@ -166,3 +166,21 @@ The refined conjecture is **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, a pro
 3. add conditions for pieces below their budget.
 
 The last item is a *linkage* condition, beyond cuts; compare the two-paths theorem of Seymour, Shiloach and Thomassen. That makes EMM₃ a genuinely harder target than it looked. CS remains valid and useful: it is a statement about cut-feasibility only.
+
+## 11. Cut selection is a theorem, pending audit (endpoint-min-max Thm 21)
+
+**Thm 21.** Every connected graph of even order has a *good pairing*: a pairing of Ev all of whose transversal half-sets satisfy every cut inequality (1). Hence CS, and even PS, holds unconditionally.
+
+**Construction.**
+1. Take a forest T-join J of Ev and the free graph F = G − J.
+2. At each vertex v, pair the odd vertices of F^v (F with v's edges deleted and v joined to its non-neighbours) by edge-disjoint paths, using the T-join lemma.
+3. Use these pairings as the transitions of J at v.
+4. Follow the transitions. Since J is a forest, the result is a set of paths pairing Ev. Lemma "linked transitions" charges every end to a distinct cut edge.
+
+Audit A13 is running.
+
+**Status of the reduction.** "EMM ⇒ Gallai" (Cor 22) is vacuous, since EMM is false. The live question is the exact corrected statement:
+- Gallai ⇐ EMM₃ + CS needs SP's odd alternative handled separately.
+- Better: Gallai ⇐ **EMM_ns** (EMM for half-sets with no marked vertex of degree 2), provided the cut-selection construction can avoid marking degree-2 vertices. Under simple profiles, marked degree-2 vertices are exactly the saturated separators.
+
+The emc-four session is settling this. The emm3-gadgets session is testing whether EMM₃ or EMM_ns fails via forcing gadgets.
