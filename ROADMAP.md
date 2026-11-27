@@ -61,7 +61,14 @@ EMM sufficiency work is **stopped**.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
 - **ptm** (session_01FxXpVfTiRg4Rw9WF2sD3Rk, branch `claude/ptm`, new): terminal matchings PTM_m. This is the composition step that gives STL-P, hence STL, hence Gallai (synthesis §20).
-- **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
+- **ee**: **finished** (463aa4c).
+  - **EE has no counterexample:** exhaustive over all 11,959,367 one-even graphs at n = 11 (59.7M pairs).
+  - **Lean:** `ee_atMostOneCommon`, `ee_deg_two`, `pee_adjEven`, the reductions `ee_of_triangle` / `ee_of_outside`, and `ee_of_L1Star`.
+  - **PEE is false away from z**; it holds at all reachable edges, given EE (manuscript Thm 6.1).
+  - **Open:** EE with ≥ 2 common neighbours, which reduces exactly to the avoidance conjecture L1*.
+  - **Audit A21:** no ERROR or GAP; fixes applied.
+  - **Composition tool for ptm:** the protected-end lemma.
+- (original entry) **ee** (session_01FxXpVdj65wms1rYNywwarX, branch `claude/ee`): conjecture PEE. In a graph with ≤ 1 even vertex, every edge xy with x odd is terminal at x in some Lovász decomposition. It completes EE (the base case of STL) and is a strengthening of Lovász.
 - **multi-sep**: **finished** (04207b3). MSEP is open, with 36M+ cubic pairings and 0 failures. EE3 is proved in Lean. Audit A18 is sound.
 - (original entry) **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
