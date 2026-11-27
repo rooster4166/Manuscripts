@@ -393,3 +393,24 @@ A star-type analogue for Test2 (two adjacent even vertices) together with STL wo
 - **ee** (connections §Y): the last EE case, the manuscript, and audit A21.
 
 **Skeptic's note.** STL, and hence PTM_m for the relevant matchings, is Gallai-strength (STL session, §19). The ladder concentrates the difficulty; it does not remove it.
+
+## 21. One obstruction, four faces (coordinator, 2026-11-27 11:10)
+
+After a day of descent along the STL / PTM ladder, four lines stall at what looks like the same configuration:
+- **L∞ residual (§V.4c).** The even vertex sits at distance 3, all its neighbours at distance 2, and it has degree ≥ 4 or lies on a triangle.
+- **L1\* blocked instances (§AA).** In Lean, `l1starGen_of_blocked` reduces general L1\* to them.
+- **EE with ≥ 2 common neighbours (§Y).** `ee_of_l1Blocked` reduces it to the blocked case.
+- **PTM base failures (§Z).** Local copies of the K₄ / W₄ obstruction: ≥ 3 edges between the two F-edges.
+
+Recursive certificates fail at CP(3) + apex and at double-K₄. The same cocktail-party configuration was the subject of the Fan barrier theorems (FanBarrier.lean) and of the flower move at Fan's equality (Flower.lean: `hub_cycles`, `flower_decomp_rest`; missing-move and endpoint-structure §7).
+
+**Hypothesis.** Each residual is the equality case of Fan's inequality, and the flower / receipt-or-flower moves built earlier for that equality are the missing tool. Assigned to the tight-fan session (connections §AB).
+- **If it works:** it closes L1\* and hence EE, closes L∞, and removes the girth condition from PTM₂, giving Test1 at d(z) = 4 in general.
+- **If it fails:** the precise new obstruction is the next target.
+
+**Status of the ladder (all Lean, standard axioms).**
+- Gallai ⇐ `gallai_of_stl` ⇐ STL + STL2.
+- STL is proved at d(z) = 2. Test1 is proved at d(z) = 4 under local girth 5 (`test1_of_localgirth`).
+- EE is proved when the two vertices share at most one common neighbour.
+- L1\* and EE reduce to the blocked case.
+- No counterexample to any conjecture on the ladder: STL, STL2, PTM₂ (except K₄), EE, L1\* local form. The exhaustive ranges are n ≤ 9 to 11, with millions of instances.

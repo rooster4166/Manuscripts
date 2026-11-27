@@ -1,5 +1,7 @@
-"""Counts of L1* instances (|A| <= K, A admissible, A of positive-degree vertices) by the first
-reduction of Theorem 3.5 that applies, in graphs with exactly one even vertex (l1star session).
+"""Counts of L1* instances (1 <= |A| <= K, A admissible, A of positive-degree vertices) in graphs
+with exactly one even vertex, by the reduction of Theorem 4.2 used in the proof of Theorem 4.3
+(l1star session).  Priority: (a) c in N(g); then (c) a free u in N(c); then (b) a free u not in N(c);
+otherwise blocked.
 usage: nauty-geng -cq n | python3 blocked_count.py K
 """
 import sys, itertools, collections

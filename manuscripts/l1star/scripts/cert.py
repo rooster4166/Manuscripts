@@ -6,9 +6,11 @@ A disjoint from N[c] and N(g).  cert(G, c, A) searches for a tree of proved redu
 (fewer edges, or the same edges and one fewer even... see Lovász's measure).
 Base cases: no vertex of A in the component of c; {c} u A packed (separation theorem);
 all-odd with A packed (lovasz_avoid_set); all-odd with d(c) = 1.
-Moves: M1 (Case I at g with target u, three variants), M2 (route g..c appended), M2' (route
-g..y, y in N(c), via Fan transfers), M3 (all-odd leaf graph), M7 (d(g) = 2 splitting at g),
-M8 (d(c) = 3 splitting at c), M9 (route from g to a vertex with no neighbour in A, via Fan).
+Moves (manuscript numbering): M1 = Theorem 4.2(a)-(c); M3 = Theorem 4.2(d); B = Lemma 5.1;
+M2 = Proposition 5.2; M9 = Proposition 5.3; M7 = Proposition 5.4(i); M13 = Proposition 5.4(ii);
+M8 = Proposition 5.5; M2' = a route g..y to a neighbour y of c with N[y] & A empty and interior
+outside A u N[c], restored by Fan transfers, giving (G - E(R) - yc, y, A u {c}) (Theorem 4.2(c)
+composed with Proposition 5.3; not stated in the manuscript, and not needed for the counts there).
 usage: nauty-geng -cq n | python3 cert.py K [moves]
 """
 import sys, itertools, collections, functools
