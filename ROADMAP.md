@@ -24,6 +24,10 @@ This is the single source of truth for the proof architecture. Every node is a s
 | `comp(n≤N)` | exhaustive computation in `tools/` |
 | `—` | none |
 
+## PIVOT (2026-11-27, later): EMM is false at n = 28, and characterising all realisable half-sets is NP-hard (Kotzig); synthesis §§12–13
+
+EMM sufficiency work is **stopped**. The main line is **existential descent** (FD / `BranchBase3`), guided by the good pairings of endpoint-min-max Thm 21. The theorems are banked: the cut-condition paper and the hardness result. The dense track D (Target D) runs in parallel. The spine continues with Thm 59.
+
 ## Architecture (2026-11-27, after the full archive pass): see `research/synthesis.md`
 
 **Main line: the endpoint min-max programme (EMM).** Conjecture: a half-set of even vertices is realisable in n/2 paths iff it satisfies the cut inequality of even-degrees §12.4 for every vertex v and every W ⊆ V − v. It is **exact on every connected graph of order ≤ 8 and on n = 10 samples** (2,368 non-realisable half-sets, all cut-excluded). Gallai ⇐ EMM + **CS (cut selection)**, where CS is a pure cut/flow statement that the T-join lemma already settles for cones. Tracks:
