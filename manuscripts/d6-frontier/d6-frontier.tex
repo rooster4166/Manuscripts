@@ -51,7 +51,8 @@ closures of the open test T(8)-i at roots adjacent to all other even vertices.
 We also show by an exhaustive (small) search that no single-stage program inserts a pair of full
 vertices in the six-clique stage framework. This explains why that method stops at five contacts.
 All certificates were replayed on concrete graphs by an independent implementation of Fan's
-construction.
+construction. The relay lemma, the root hubs (2) of Theorem~\ref{thm:roothub}, the full hub (3) and both
+uniform theorems (4) are also formalized in Lean, with no fixed $d$ (Remark~\ref{rem:lean}).
 \end{abstract}
 
 \maketitle
@@ -91,11 +92,11 @@ collection as summarised in the status map and audit A6.
 Result & Statement (informal) & Status\\
 \midrule
 Thm.~\ref{thm:terminal}, \ref{thm:terminalW} & if all held edges are local, the last Fan step ends at a hub profile, never at the standard profile & proved\\
-Thm.~\ref{thm:roothub} & (i) $r$ adjacent to all of $T$ (so $D=\emptyset$, or $r\notin V(D)$), with an odd $y\in N(r)$ and $|N(y)\cap T|\le2$; (ii), (iii) $r$ has one or two core non-neighbours and a triangle $rab$ with a small-contact $a$ & proved; new for $|S(y)|=3$ and for (ii), (iii)\\
+Thm.~\ref{thm:roothub} & (i) $r$ adjacent to all of $T$ (so $D=\emptyset$, or $r\notin V(D)$), with an odd $y\in N(r)$ and $|N(y)\cap T|\le2$; (ii), (iii) $r$ has one or two core non-neighbours and a triangle $rab$ with a small-contact $a$ & proved; new for $|S(y)|=3$ and for (ii), (iii); Lean\\
 Thm.~\ref{thm:tworesources} & $D=\emptyset$: any odd $y\in N(r)$ plus a triangle $rab$, under mild contact conditions & proved\\
 Thm.~\ref{thm:relay} & $D=\emptyset$: a relay path from a non-$T$-full neighbour of $r$ to a vertex with no core neighbour & proved\\
-Thm.~\ref{thm:fullhub} & a full vertex with two quiet batteries closes every root & proved\\
-Thm.~\ref{thm:general} & hub closures for every deletion degree $d$, incl.\ T(8)-i at universal roots & proved\\
+Thm.~\ref{thm:fullhub} & a full vertex with two quiet batteries closes every root & proved; Lean\\
+Thm.~\ref{thm:general} & hub closures for every deletion degree $d$, incl.\ T(8)-i at universal roots & proved; Lean\\
 Prop.~\ref{prop:stage} & no single-stage full-pair program in the six-clique framework & exhaustive small search\\
 \midrule
 Q2 & $D=\emptyset$ with full vertices, in general & \textbf{open}; residual in Cor.~\ref{cor:residual}\\
@@ -107,10 +108,11 @@ Q2 & $D=\emptyset$ with full vertices, in general & \textbf{open}; residual in C
 \subsection*{Inputs} Only three facts are used.
 \begin{enumerate}[label=(\Alph*)]
 \item Lov\'asz~\cite{L68}: a graph on $N$ vertices with at most one even vertex has a partition into
-$\lfloor N/2\rfloor$ paths. In Lean this is the explicit hypothesis \texttt{LovaszStatement}.
+$\lfloor N/2\rfloor$ paths. In Lean this is the theorem \texttt{lovaszStatement} (proved from Fan's lemma,
+\texttt{manuscripts/lovasz-fan}), so the formalized results of this paper are unconditional.
 \item Endpoint-structure Lemma~3~\cite{ES}, a consequence of (A). If $G$ has even order and no
 isolated vertex and $u\in\Ev(G)$, then $G$ has a partition with $b=2$ on $\Ev(G)-u$, $b=0$ at $u$ and
-$b=1$ on $\Od(G)$. In Lean this is \texttt{realisable\_evenSet\_erase}.
+$b=1$ on $\Od(G)$. In Lean this is \texttt{realisable\_evenSet\_erase'}.
 \item Fan's Lemmas 3.3 and 3.4~\cite{Fan}, stated below. In Lean these are
 \texttt{fan\_grouped} and \texttt{fan\_single}.
 \end{enumerate}
@@ -292,9 +294,9 @@ Let $B$ have even order $2k$, $U=\Ev(B)$, $|U|=6$, $r\in U$, $T=U-r$, $Q=T-N(r)$
 \begin{enumerate}[label=(\roman*)]
 \item If $Q=\emptyset$, $d(r)\ge8$, and $r$ has an odd neighbour $y$ with $d(y)\ge3$ and
 $|N(y)\cap T|\le2$, then $r$ passes.
-\item If $Q=\{q\}$, $d(r)\ge8$, and $r$ has two adjacent odd neighbours $a,b$ with
+\item If $Q=\{q\}$, $q$ is not isolated, $d(r)\ge8$, and $r$ has two adjacent odd neighbours $a,b$ with
 $|N(a)\cap T|\le2$ and $bq\notin E(B)$, then $r$ passes.
-\item If $Q=\{q_1,q_2\}$ and $r$ has two adjacent odd neighbours $a,b$ with
+\item If $Q=\{q_1,q_2\}$, neither $q_i$ is isolated, and $r$ has two adjacent odd neighbours $a,b$ with
 $|N(a)\cap N_T(r)|\le1$ and $bq_2\notin E(B)$, then $r$ passes.
 \end{enumerate}
 In each case the partition has exactly $k$ paths, one end at every odd vertex, and three doubled
@@ -331,7 +333,7 @@ $Z$ alone, and $y$ sees at most $p,p'$ of them. Every step satisfies Lemma~\ref{
 edges are restored, and the final counts are $b(r)=2$, $b(s_1)=b(s_2)=2$, $b=0$ on $Z$ and $b(y)=1$.
 
 (ii) Hold $H=\{rt:t\in T-q\}\cup\{ra,rb,ab\}$. In $B_0$, $r$ has even degree $d(r)-6\ge2$, $q$ is
-untouched and even, $T-q$, $a$ and $b$ are odd. Lemma~\ref{lem:seeds}(b) gives $b(r)=2$, $b(q)=0$,
+untouched and even (and not isolated), $T-q$, $a$ and $b$ are odd. Lemma~\ref{lem:seeds}(b) gives $b(r)=2$, $b(q)=0$,
 and $b=1$ elsewhere. The blank vertex $q$ is adjacent neither to $r$ nor to $b$. Let $z_1$ be a
 vertex of $N(a)\cap(T-q)$ if this set is nonempty, and any vertex of $T-q$ otherwise.
 
@@ -356,8 +358,8 @@ adjacent to the parked vertex $a$. Order it first. The final counts are $b(r)=2$
 receivers and $Z$ blank.
 
 (iii) Let $N_T(r)=\{t_1,t_2,t_3\}$ and hold $H=\{rt_1,rt_2,rt_3,ra,rb,ab\}$. In $B_0$, $r$ has odd
-degree $d(r)-5$, $q_1,q_2$ are untouched and even, and the rest is odd. So $\Ev(B_0)=\{q_1,q_2\}$,
-and Lemma~\ref{lem:seeds}(b) gives $b(q_1)=2$, $b(q_2)=0$, $b(r)=1$ and $b=1$ elsewhere. Let $z_1$
+degree $d(r)-5$, $q_1,q_2$ are untouched and even (and not isolated), and the rest is odd. So
+$\Ev(B_0)=\{q_1,q_2\}$, $B_0$ has no isolated vertex, and Lemma~\ref{lem:seeds}(b) gives $b(q_1)=2$, $b(q_2)=0$, $b(r)=1$ and $b=1$ elsewhere. Let $z_1$
 be the vertex of $N(a)\cap N_T(r)$ if there is one, and any $t_i$ otherwise.
 
 \begin{center}\small
@@ -557,8 +559,8 @@ Lemma~\ref{lem:seeds}(b).
 \begin{remark}
 For $d=4$ the root hub needs no battery and no quietness. The single donation has supply $4$
 against at most $3$ blank neighbours, and the payback has supply $3$ against at most $2$. This
-recovers T(4)-i at every universal root with at least three odd neighbours, one of them of degree
-at least $3$, consistently with
+recovers T(4)-i at every universal root with at least three odd neighbours, one of which has
+degree at least $3$ (so that it is not isolated in the seed graph), consistently with
 Fan--Hou--Zhou. For $d=8$, (a) needs
 one battery and (b) needs three batteries (or two and a pendant). These are, to our knowledge, the
 first closures of the open test T(8)-i at roots adjacent to all other even vertices. The gap
@@ -633,37 +635,63 @@ full vertices (orders $10$ and $12$), \emph{every} 3-subset of $U$ was realisabl
 false-twin example. This is consistent with uniformity of the endpoint matroid
 (connections~\S M(a)) in this class. It is evidence only.
 
-\section{Formalization notes}\label{sec:lean}
+\section{Formalization}\label{sec:lean}
 \sloppy
 
-All results except Proposition~\ref{prop:stage} are finite compositions of three formalized
-statements: \texttt{realisable\_evenSet\_erase} (or \texttt{LovaszStatement} with
-\texttt{PathDecomp.ends\_eq\_of\_tight}) for the seed, and \texttt{fan\_single} /
-\texttt{fan\_grouped} for each row of a step table. The intended Lean shape is described below.
+\begin{remark}[Formalization]\label{rem:lean}
+Lemma~\ref{lem:relay}, Lemma~\ref{lem:seeds}, Theorem~\ref{thm:roothub},
+Theorem~\ref{thm:fullhub} and Theorem~\ref{thm:general} are formalized in Lean~4 with Mathlib
+(\texttt{lean/GallaiLean/Relay.lean}, \texttt{HubPhases.lean}, \texttt{D6Frontier.lean}), with no
+\texttt{sorry}; \texttt{\#print axioms} shows only \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}. Input (A) is the Lean theorem \texttt{lovaszStatement}, so no result rests on
+an unproved hypothesis. Every row of every step table is one application of \texttt{fan\_single}
+or \texttt{fan\_grouped}, so the kernel checks each (supply, bound) pair.
 
-\begin{itemize}
-\item \emph{Statements.} \texttt{G : SimpleGraph V}, \texttt{[Fintype V] [DecidableEq V]
-[DecidableRel G.Adj]}, \texttt{evenSet G = U}, \texttt{U.card = 6}, and adjacency hypotheses as
-\texttt{G.Adj}/\texttt{\textasciitilde{} G.Adj} facts and \texttt{Finset} cardinality bounds on
-\texttt{(G.neighborFinset y $\cap$ T)}. Conclusion:
-\texttt{$\exists$ D : PathDecomp G, D.size $\le$ Fintype.card V / 2 $\wedge$ 2 $\le$ D.ends r}, under
-\texttt{LovaszStatement}.
-\item \emph{Seed.} \texttt{G0 := G.deleteEdges H}. Prove \texttt{evenSet G0 = \{r, y\}} from
-degree bookkeeping, then apply \texttt{realisable\_evenSet\_erase}. \texttt{Realises.size\_eq}
-gives the size $k$.
-\item \emph{Steps.} Each row is one call. The hypothesis
-\texttt{\#\{w $\in$ N(u) : ends w = 0\} < supply} follows from an explicit description of the blank set
-(for example $Z\cup\{y\}$) and an inclusion of finsets. Grouped rows existentially introduce the
-donor, as in \texttt{fan\_grouped}'s conclusion. The proof then continues uniformly in the donor,
-with no case split on its identity, only on membership facts such as $p\in Z$. A reusable
-\emph{schedule lemma}, ``a list of rows each satisfying its inequality yields the final
-decomposition'', would make all certificates one-liners. This dovetails with the insertion-schedule
-lemma planned in the \texttt{claude/lean-six-clique} workstream.
-\item \emph{Terminal theorem.} Pure counting on \texttt{D.ends}, using \texttt{sum\_ends},
-\texttt{ends\_mod\_two} and the clique adjacency. It needs no path surgery and is the easiest
-target.
-\item \emph{Relay lemma.} Induction on the path length with \texttt{fan\_single}.
-\end{itemize}
+\smallskip
+\begin{center}\footnotesize
+\begin{tabular}{ll}
+\toprule
+result & Lean name\\
+\midrule
+Lemma~\ref{lem:relay}(a), forward relay & \texttt{Ach.forwardRelay}\\
+Lemma~\ref{lem:relay}(b), carry & \texttt{Ach.carry}\\
+Lemma~\ref{lem:seeds}(a), (b) & \texttt{seed\_odd}, \texttt{seed\_pair}\\
+Remark~\ref{rem:capacity}: grouped receipts, donations & \texttt{Ach.receiveMany}, \texttt{Ach.giveAll}\\
+step-table rows (receipt, donation, payback, battery) & \texttt{hub\_take}, \texttt{hub\_receive}, \texttt{hub\_give},\\
+ & \texttt{hub\_payback}, \texttt{hub\_pay\_one}, \texttt{hub\_batteries}\\
+the common run of \S\S\ref{sec:fullhub}--\ref{sec:general} & \texttt{hub\_run}\\
+Theorem~\ref{thm:roothub}(i) & \texttt{root\_hub\_six}, \texttt{root\_hub\_six\_passes}\\
+Theorem~\ref{thm:roothub}(ii), (iii) & \texttt{root\_hub\_six\_Q1}, \texttt{root\_hub\_six\_Q2} (and \texttt{\_passes})\\
+Theorem~\ref{thm:fullhub}, two batteries & \texttt{full\_hub\_six}\\
+Theorem~\ref{thm:fullhub}, battery and pendant & \texttt{full\_hub\_six\_pendant}\\
+Theorem~\ref{thm:general}(a) & \texttt{root\_hub\_uniform}, \texttt{root\_hub\_uniform\_passes}\\
+Theorem~\ref{thm:general}(b), batteries & \texttt{full\_hub\_uniform}, \texttt{full\_hub\_uniform\_passes}\\
+Theorem~\ref{thm:general}(b), pendant & \texttt{full\_hub\_pendant\_uniform},\\
+ & \texttt{full\_hub\_pendant\_uniform\_passes}\\
+\bottomrule
+\end{tabular}
+\end{center}
+\smallskip
+
+The statements are at the generality of the text. Theorem~\ref{thm:general} is stated for an
+arbitrary $d=|U|$, with no lower bound (the proofs never use $d\ge4$, and $d$ is even by the
+handshake lemma). $U$ is given by $v\in U\iff d(v)$ even, the order is even, and the conclusion
+is the rooted test \texttt{PassesAt G r} (a partition into at most $|V|/2$ paths with $b(r)\ge2$).
+Each theorem is first proved in the stronger form ``some $S\subseteq U$ with $r\in S$ and
+$|S|=d/2$ is realisable'' (one end at every odd vertex, two on $S$, none on $U-S$), and
+\texttt{passesAt\_of\_realisable} converts it. Batteries are a list of pairs $(a_i,b_i)$, carried
+in list order, and ``$a_ib_j\notin E$ for $i<j$'' is a \texttt{List.Pairwise} hypothesis. The
+carry is formalized under a weaker hypothesis than in Lemma~\ref{lem:relay}(b): a receiver may be
+adjacent to a blank $v_0$, and only adjacency in $H$ matters.
+
+Theorem~\ref{thm:roothub}(ii), (iii) are formalized with the hypothesis that the vertices of $Q$
+are not isolated, which the seed needs (see the audit note
+\texttt{research/audit/d6-frontier-lean-audit.md}).
+Not formalized: Theorems~\ref{thm:terminal} and~\ref{thm:terminalW} (pure counting),
+Theorems~\ref{thm:tworesources} and~\ref{thm:relay}
+(each a finite composition of the lemmas above), Corollary~\ref{cor:residual}, and
+Proposition~\ref{prop:stage} (an exhaustive search).
+\end{remark}
 
 \fussy
 \section*{Computational checks}

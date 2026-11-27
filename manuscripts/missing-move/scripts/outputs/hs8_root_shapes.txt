@@ -1,0 +1,31 @@
+k=1 5375
+   2468  edge       O-n
+   1495  edge       n-n
+   1332  edge       O-O
+     35  edge       N-O
+     24  edge       N-n
+     14  edge       n-o
+      7  edge       O-o
+k=2 787
+    266  path2      O-N-O
+    169  path2      O-N-n
+    164  path2      n-N-n
+     61  path2      O-o-n
+     60  path2      n-o-n
+     25  matching   NO,OO
+     22  path2      O-o-O
+      6  path2      N-N-O
+      4  path2      N-N-n
+      2  path2      N-o-n
+      2  matching   NO,NO
+      2  path2      n-N-o
+      1  matching   NO,no
+      1  path2      N-o-O
+      1  matching   Nn,no
+      1  matching   NO,Nn
+k=3 6
+      2  path3      O-N-o-O
+      1  path3      O-N-N-n
+      1  path3      n-N-o-n
+      1  triangle   NN,NO,NO
+      1  triangle   Nn,No,no

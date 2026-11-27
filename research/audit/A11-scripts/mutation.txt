@@ -1,0 +1,7 @@
+match    drop p~z          : 3840 illegal certificates (must be > 0)
+match    drop p'~z         : 3840 illegal certificates (must be > 0)
+match    drop p'~q         : 3840 illegal certificates (must be > 0)
+oddstar  drop p-condition  : 720 illegal certificates (must be > 0)
+unistar  drop c isolated   : 8400 illegal certificates (must be > 0)
+unistar  drop a-condition  : 240 illegal certificates (must be > 0)
+A = T: outward moves have supply 4 then 3 and at most 2 blanks, in both orders

@@ -1,0 +1,1 @@
+112 graphs, 0 with a losing root (k <= 4; opts ['nonp'])

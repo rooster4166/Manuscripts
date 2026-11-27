@@ -1,0 +1,48 @@
+GsaCB{ noncritical [(1, 0, 4, 7, 2), (1, 7, 5, 0, 3), (2, 0, 6, 7, 3)]
+GsbEJ{ noncritical [(2, 0, 1, 5, 6, 7, 3), (2, 7, 4, 0, 6, 1), (1, 7, 5, 0, 3)]
+Gs`vvs noncritical [(4, 0, 1, 5, 3, 6, 7, 2), (5, 2, 0, 3, 7, 4, 6, 1), (1, 7, 0, 6, 2)]
+Gsbvnk critical
+Gsbvj{ noncritical [(1, 0, 2, 5, 6, 7, 3), (2, 6, 0, 3, 5, 7, 1), (2, 7, 4, 0, 5, 1, 6, 3)]
+Gsbvn{ critical
+Gs`~~w noncritical [(1, 0, 2, 5, 6, 4, 7, 3), (2, 6, 0, 3, 5, 7, 1), (2, 7, 0, 4, 5, 1, 6, 3)]
+Gs`zro noncritical [(0, 1, 5, 2), (1, 6, 2, 7, 3, 5, 4, 0), (1, 7, 4, 6, 3, 0, 2)]
+Gs`~vs noncritical [(1, 0, 2, 5, 4, 6, 7, 3), (2, 6, 0, 4, 7, 1, 5, 3), (1, 6, 3, 0, 7, 2)]
+GsQfnk noncritical [(4, 1, 0, 2, 5, 6, 7, 3), (1, 6, 0, 5, 7, 2), (1, 7, 0, 3, 6, 2)]
+GsRvl{ noncritical [(1, 0, 2, 5, 6, 7, 3), (2, 6, 0, 3, 5, 7, 4, 1), (2, 7, 0, 5, 1, 6, 3)]
+GsRvn{ critical
+GsQ~vs noncritical [(1, 0, 2, 5, 4, 6, 7, 3), (2, 6, 3, 0, 7, 1), (2, 7, 4, 1, 6, 0, 5, 3)]
+GsQ~~w noncritical [(1, 0, 2, 5, 6, 4, 7, 3), (2, 6, 0, 3, 5, 7, 1), (2, 7, 0, 5, 4, 1, 6, 3)]
+Gsqf^[ critical
+GsqfZ{ noncritical [(3, 0, 1, 4, 6, 5, 7, 2), (3, 7, 4, 0, 2, 6, 1), (1, 7, 6, 0, 5, 2)]
+Gsqf^{ critical
+Gsovvs noncritical [(1, 0, 2, 6, 4, 7, 3), (2, 5, 3, 0, 6, 7, 1), (2, 7, 0, 4, 1, 6, 3)]
+Gsov^[ noncritical [(3, 0, 1, 4, 6, 5, 7, 2), (3, 5, 2, 0, 4, 7, 6, 1), (1, 7, 0, 6, 2)]
+Gsqv^[ critical
+Gsov~w noncritical [(1, 0, 2, 5, 6, 4, 7, 3), (2, 6, 0, 3, 5, 7, 1), (2, 7, 0, 4, 1, 6, 3)]
+GsZvnk noncritical [(4, 1, 0, 2, 5, 6, 7, 3), (4, 2, 6, 0, 3, 5, 7, 1), (2, 7, 0, 5, 1, 6, 3)]
+GsZu|{ noncritical [(1, 0, 2, 4, 6, 5, 7, 3), (2, 5, 0, 3, 6, 7, 4, 1), (2, 7, 0, 6, 1, 5, 3)]
+GqHzz{ noncritical [(0, 1, 3, 5, 4, 6, 7, 2), (0, 2, 4, 7, 1, 5, 6, 3), (1, 6, 2, 5, 7, 3)]
+Gsz\z{ noncritical [(1, 0, 2, 4, 5, 6, 7, 3), (2, 6, 0, 3, 5, 7, 4, 1), (2, 7, 1, 5, 0, 4, 6, 3)]
+Gqqf^[ noncritical [(3, 1, 0, 2, 5, 6, 7, 4), (2, 6, 0, 5, 7, 1, 4), (1, 6, 4, 0, 7, 2)]
+GqjV^[ noncritical [(3, 1, 0, 2, 4, 6, 7, 5), (3, 5, 0, 4, 7, 1, 6, 2), (1, 5, 6, 0, 7, 2)]
+Gqrvnk noncritical [(4, 0, 1, 3, 5, 6, 7, 2), (4, 1, 5, 2, 6, 0, 7, 3), (2, 0, 5, 7, 1, 6, 3)]
+Gqrn^[ critical
+GqjVt{ noncritical [(1, 0, 2, 4, 6, 7, 3), (2, 6, 0, 4, 7, 5, 1, 3), (1, 6, 3, 5, 0, 7, 2)]
+Gqzvn[ noncritical [(3, 1, 0, 2, 5, 6, 7, 4), (3, 5, 0, 6, 2, 7, 1, 4), (2, 4, 0, 7, 5, 1, 6, 3)]
+Gqzvm{ noncritical [(2, 0, 1, 3, 5, 6, 7, 4), (3, 6, 0, 4, 1, 7, 5, 2), (3, 7, 0, 5, 1, 6, 2, 4)]
+Gqz~vw critical
+GujTR{ noncritical [(1, 0, 2, 4, 6, 7, 3), (2, 6, 0, 3, 5, 7, 1), (2, 7, 4, 0, 5, 1, 3)]
+Gqzn^[ critical
+Gqzn]{ critical
+Gqzm}{ noncritical [(2, 0, 1, 4, 5, 6, 7, 3), (2, 4, 0, 7, 5, 1, 6, 3), (2, 5, 0, 6, 4, 7, 1, 3)]
+Gqzl|{ noncritical [(3, 1, 0, 4, 5, 6, 7, 2), (1, 4, 2, 5, 7, 0, 6, 3), (1, 5, 0, 2, 6, 4, 7, 3)]
+Gqzn~w critical
+# remaining graphs (run stopped): a graph on 8 vertices with >= 22 edges is critical, since 3 paths cover at most 3*7 = 21 edges
+Gqz^~w critical (edge count 22 >= 22)
+Gr~v~w critical (edge count 24 >= 22)
+Gut~~w critical (edge count 23 >= 22)
+Gu^v~w critical (edge count 23 >= 22)
+Guv]}{ critical (edge count 22 >= 22)
+Guv]z{ critical (edge count 22 >= 22)
+Guv]~{ critical (edge count 23 >= 22)
+Gut~vs critical (edge count 22 >= 22)

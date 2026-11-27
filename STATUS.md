@@ -26,7 +26,7 @@ Detailed reader notes, with theorem numbers, are in `research/notes/`.
 - **The main risk is verification, not ideas.**
   - None of the code, Lean files or certificate banks the papers cite is in the collection.
   - Several load-bearing steps rest on large enumerations.
-  - One load-bearing citation is an unrefereed 2026 preprint (Shaik), and another is a very recent theorem (Javadi–Miralaei).
+  - One formerly load-bearing citation, an unrefereed 2026 preprint (Shaik), has been removed (`manuscripts/bs-prescribed`). Another is a very recent theorem (Javadi–Miralaei).
   - The index's readiness caveat understates what depends on unreplayed computation (§6).
 
 ---
@@ -203,7 +203,7 @@ The spine is a genuine reduction, but it reduces Gallai to statements that are, 
    - The paper itself claims an "independent replay" that the index says does not exist.
 3. **External dependencies to confirm.**
    - **Javadi–Miralaei** (rainbow Hamilton decomposition, DM 349, 2026) is used more than 40 times, including the equality case of separating-pairs Thm 10.16. OSB cites a "Theorem 3.8" that does not exist in arXiv v1; it is Theorem 8.
-   - **Shaik** (Hexagon preprint, Oct 2026, unrefereed) is load-bearing for MR Thm 144 and Cor 106. Botler–Sambinelli may suffice instead.
+   - **Shaik** (Hexagon preprint, Oct 2026, unrefereed) is **no longer needed**. MR uses Cor 106 only with ≤ 5 unmarked even vertices. That case (BP_5 with one universal vertex) is proved from Lovász + Fan in `manuscripts/bs-prescribed`, with Lean `five_even_floor`.
    - Check the Zhang–Liu–Hong and Chu–Fan–Liu ≤ 5-contact exception lists against the sources.
 4. **Large-n results rest on an in-paper sketch.** The OSB §11.1 random degree-partition lemma is a sketch, and it is applied at √N log N discrepancy.
 5. **Notation and extraction issues.**
@@ -230,6 +230,8 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
 | block-degree Thm 3 (Δ ≤ 7) and Thm 2 (A5) | **sound**; **every enumeration independently replayed**; cited five-contact lemmas re-proved exhaustively |
 | d6-frontier; endpoint-structure §§5–6, including the bridge reduction to BranchBase (A9) | **sound**: no error in any theorem or proof; 13 gaps fixed; one abstract error fixed |
 | JM repair: new proof of JM Thm 8, transfer lemma, Thm 7 (A10) | **sound**: no error, no substantive gap; independent brute-force checks agree |
+| bs-prescribed: five-even floor bound, Shaik removal (A11) | **sound**: scope verified against every Cor 106 use; certificates independently checked |
+| missing-move; endpoint-structure §7 (flower, barriers, receipt-or-flower) (A12) | **sound**: no mathematical error; key computations independently reproduced |
 | external statements (A7) | Fan–Hou–Zhou, Botler–Sambinelli, Lu–Yi, Pfenninger, CKLOT match; see risks below |
 
 **Formally verified in Lean** (`lean/`, 30+ files, sorry-free, standard axioms only; state on 2026-11-26, night):
@@ -238,7 +240,7 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
   - Gallai ⇔ the rooted private-leaf test (`gallai_iff_rootedTest`);
   - Gallai ⇔ the marked bound;
   - **MR Thm 1** (`gallai_iff_tests`: Gallai ⇔ marked 2-connected test ∧ three-end test);
-  - MR Thm 114 setup and Gallai ⇒ both 3-connected tests, together with large parts of Thm 113 (separator; odd and even component cases).
+  - **MR Thm 113 in full** (`separatorStatement`), and **MR Thm 114 modulo Thm 59** (`gallai_iff_spineTests`). Only Thm 59 (node N3) of the spine is not yet formalized.
 - **Classical theorems, proved from first principles:**
   - Fan's addible-edge lemmas (single and grouped);
   - **Lovász's theorem**, by an original induction from Fan's lemma;
@@ -251,14 +253,20 @@ Independent adversarial audits, with reports in `research/audit/` and fixes in `
   - k-step descent infrastructure, with three-step descent reduced to two base cases;
   - Fan descent, Fan transfer, E-twins, Fan certificates;
   - **six-clique Thm 1** (prescribed ends at a clique of six even vertices).
+  - the d6-frontier certificates: Lemma 2.3, Thm 4.1, Thm 5.2, and Thm 6.1 at every deletion degree;
+  - the five-even floor bound (`FiveEven.five_even_local`, `five_even_bowtie`; 131 kernel-checked certificates), which replaces Shaik in MR Cor 106 (audit A11 running);
+  - **the reduction of Gallai to one named statement** (`gallai_of_branchBase3`);
+  - **the barrier theorems** for Fan moves on cocktail party graphs.
 
 **Open risks:**
 
 1. ~~Javadi–Miralaei (Wu's conjecture)~~: **repaired and audited** (`manuscripts/jm-repair`, audit A10: sound). The new proof of JM Thm 8 holds under r ≤ 2t − 1, which covers both uses in the semi-clique manuscript. It relies on Hilton, Hoffman and Liu–Chen (Liu–Chen not re-checked).
 2. ~~Chu–Fan–Zhou Lemma 2.4~~: **resolved** (`manuscripts/cfz-lemma`). The common-vertex form with sum ≤ 7 is proved.
-3. **Shaik [25]** (unrefereed) is still needed for MR Cor 106 in one case, and hence for Thm 144. The missing lemma is Botler–Sambinelli Thm 13 with one prescribed end; a cloud session is working on it. At n = 8, Lovász–Fan certificates win every root whenever Δ(EV) ≤ 3.
+3. **Shaik [25]** (unrefereed) is **removed** from MR Cor 106 and Thm 144 (`manuscripts/bs-prescribed`; corrigenda). The proposed lemma, Botler–Sambinelli Thm 13 with one prescribed end, is false; the counterexamples include the family G_{t,t'}. What Cor 106 needs is the five-even one-universal floor bound. It is proved from Lovász + Fan alone and formalized in Lean (`five_even_floor`). Still open without Shaik, and unused by MR: Cor 106 with ≥ 7 unmarked even vertices in the one-exception odd case.
 
 **Formal reduction of the whole conjecture (Lean, `gallai_of_branching`).** Gallai's conjecture follows from the statements `BStmt j` (j ≥ 3): j-step descent at an even vertex that has two even neighbours. No other hypotheses are needed.
+
+**Endpoint matroid conjecture: complete check at n = 8.** All 1,082 connected critical graphs of order 8 satisfy EMC. 1,030 have uniform matroids, including all 476 three-connected ones. The 52 non-uniform ones have connectivity ≤ 2 (E15). **Route (H) verdict.** A stronger induction hypothesis cannot close BranchBase through Fan moves alone. The Lean barrier theorems (`cocktail_fan_barrier`, `cocktail_insertion_barrier`) show that for CP(m) the last move must be a new path of ≥ m − 1 held edges, a flower-type move at Fan's equality.
 
 **Frontier, conceptual** (connections §R, experiments E13). Lovász's theorem with Fan's transfers is a finite game on end profiles. It proves the rooted test for every graph at n = 6, but not at n = 8. The single critical failure is Gqz~vw (4-connected) at a degree-4 root. **So full Gallai needs either a move beyond Fan's inequality or a stronger induction hypothesis.** This is now the central open problem of the programme (cloud session "missing-move").
 

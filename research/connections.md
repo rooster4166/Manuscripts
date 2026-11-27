@@ -249,6 +249,20 @@ So the bound transfers for free when n − |S| is odd. When n − |S| is even, t
 
 **Conclusion.** Every gadget costs exactly one unit of budget. The missing ingredient is the floor with one prescribed even vertex when Δ(EV) ≤ 3, i.e. Botler–Sambinelli Thm 13 with a prescribed end. That is a natural lemma to aim for.
 
+**Outcome (2026-11-26, cloud session `claude/bs-prescribed`; manuscript `manuscripts/bs-prescribed`).**
+- **The prescribed-end lemma is false.**
+  - Lemma (forcing): a cycle whose vertices other than one have degree 2 contains an end of every partition.
+  - Family G_{t,t'}: y has degree 2 between two odd vertices s, s′, and s, s′ carry t, t′ pendant triangles. For every odd N ≥ 5, y cannot be an end of a floor partition. This is precisely the x–y–x′ gadget's configuration.
+  - Exact census at n = 7, Δ(EV) ≤ 3: 6 failures with e = 5, 101 with e = 3, and all 130 with e = 1 (E14).
+- **The gadget cannot be rescued by restricting the class.** Take the order-9 graph L in which x carries two pendant triangles. Its even subgraph is a bowtie, it has a leaf at an odd support, and p(L) = 4. Its 17-vertex double D still has no 8-path partition with an end at y: four forced triangle ends plus y.
+- **What Cor 106 needs is BP_5 with one universal vertex**: every MR use has ≤ 5 unmarked even vertices. This is now **proved from Lovász + Fan**.
+  - Six cores need no leaf. Three local lemmas cover them: two disjoint even edges, the odd star, and the universal star.
+  - The bowtie needs adjacent odd u, v with N(u)∩T ≠ ∅ = N(v)∩T. A leaf at an odd support plus connectivity supplies them through a shortest path.
+  - The bowtie is closed by 11 orbit certificates. All 131 labelled certificates are in Lean (`FiveEvenCerts.lean`).
+- **Lesson for the uniform programme (§R).**
+  - At odd order with a prescribed end, Lovász–Fan certificates are far from complete even for subcubic E-subgraphs: 58 of the 64 game losses with e = 5 at n = 7 are search failures.
+  - The useful prescriptions are those that are not forced against. Theorem 1 prescribes nothing at all: it realises a 2-set in W directly.
+
 ## M. A 2-sum picture for the endpoint matroid (conjecture, being tested)
 
 **Observation.** Every non-uniform endpoint matroid found so far (at n = 6 with a cut vertex; at n = 8 with κ = 2) has its non-bases exactly equal to the sides of a 2-separation. Example: GsaFC{ is a sparse paving matroid whose two circuit-hyperplanes are the two sides of the separations at the universal vertex.
@@ -533,7 +547,7 @@ A winning play is a short certificate that can be checked without exhibiting pat
 - At n = 8 it does not. The obstruction is a clique of even vertices with full exterior vertices, two of them false twins (GsRvnk, E13). d6-frontier Thm 3.1 is the local form of the same phenomenon: if every held edge lies in U ∪ {full vertices}, the last Fan step cannot produce the standard profile.
 - Inductive seeds that use only (R) do not repair this. The adversary keeps the freedom to place zeros next to the re-inserted edges.
 
-> **Correction (§S, cloud session missing-move).** The incompleteness at n = 8 is an artefact of the game allowing only one-edge new paths. With *path insertion* (a new path of any length made of held edges) the game wins every root of every connected graph of order 8 with |F| ≤ 6. Pósa moves at the profile level repair none of the losers. The paragraph below stands as originally written. Read "Lovász + Fan transfers alone" as "with one-edge new paths only".
+> **Correction (§S, cloud session missing-move).** The incompleteness at n = 8 is an artefact of the game allowing only one-edge new paths. With *path insertion* (a new path of any length made of held edges) the game wins every root of every connected graph of order 8 with |F| ≤ 9 (9 is needed for K8 minus a perfect matching). Pósa moves at the profile level repair none of the losers. The paragraph below stands as originally written. Read "Lovász + Fan transfers alone" as "with one-edge new paths only".
 
 **Consequence for the programme.** Full Gallai cannot come from Lovász + Fan transfers alone, even with (R) as the induction hypothesis. One of two ingredients is needed:
 - **(M) a move beyond Fan's inequality.** Fan's lemma is iterated Pósa rotation. When the inequality is tight, a rotation still moves the missing edge from uv to uw and moves an end from v to w. A two-end transfer at equality, as the d6-frontier agent suggests, is of this kind.
@@ -629,7 +643,9 @@ The cost is exactly one path. The profile changes by +2 at s, −1 at a and at t
 
 **Completeness at n = 8** (E14). *Not reproduced: see the correction in §R. An independent run leaves 6 critical losers, including K_{2,2,2,2}.* The session reported that, with path insertion, the game wins every root of every connected graph of order 8:
 - |F| ≤ 4 suffices for all but 47 graphs;
-- the 47 win with |F| ∈ {5, 6}.
+- of the 47: 35 need |F| = 5, 6 need 6, 4 need 7, Guv]~{ needs 8, and K8 − perfect matching needs 9 (every held set of size ≤ 8 loses).
+
+The certificate for K8 − PM holds the star at the root plus three edges. Its play is a relay into the hub, receipts, one donation, and a new path 1–4–2–0–7 of length four through the hub.
 
 All the certificates found for the five §R losers are hub-shaped: an isolated hub, receipts, then one new path through the hub, sometimes extended along a further held edge. A hub of degree d with b ≥ 1 on its neighbours absorbs ⌈d/2⌉ adversarial receipts. So the spare path closes it iff d ≤ 5.
 
@@ -641,7 +657,7 @@ Neither repairs any losing root: rotation with ≤ 2 uses and |F| ≤ 4; the alt
 
 Why: the losers need the spare path to be spent on a 2-edge path c–s–d through the hub. Imitating it with a one-edge path cs plus a transfer of sd needs to know that one of the three paths ending at s is cs, which avoids d. The profile forgets this. *Path insertion is the memory of one explicit path.* The obstruction at n = 8 is budget allocation, not exchange.
 
-**Degree six: one receipt short** (manuscript §5). A degree-6 hub absorbs 3 adversarial receipts. Closing it with one spare path needs 4, and the 4th is exactly at Fan's equality (supply 3, three blanks).
+**Degree six: the pure star is one receipt short** (manuscript §5). A degree-6 hub absorbs 3 adversarial receipts. Closing it with one spare path needs 4, and the 4th is exactly at Fan's equality (supply 3, three blanks).
 
 On A_{6,2} (K6 core of degree-8 vertices, a full vertex x with a leaf ℓ, two false twins on the core; n = 10) the 4th receipt is forced by **append-or-through plus an edge count**:
 - if every path ending at T = the remaining core neighbours passed through s, then, since b(s) = d_H(s), the three s-paths would join T to s;
@@ -652,11 +668,27 @@ This is the d6 frontier's "short by one" (Remark 3.5), and the "two-end transfer
 
 On K8 minus a perfect matching (n = 8, 6-regular) the 4th receipt *always* fails: all three Lovász paths of G − s end at the hub. The count then makes the three paths plus the held edges three Hamiltonian cycles through s, a **flower**. Cutting one edge from each so that the three cut edges form a path s–a–w–z spends the spare path and gives (R) (manuscript Lemma 5.4, Prop 5.5). This is a genuine two-end move at equality: the ends move from T to the transversal path. It too is invisible in the profile.
 
-The extended game (path insertion, F = full star plus ≤ 2 edges) loses A_{6,2} at every root, odd roots included. It also loses the Q2-type graph B′ (K6 core, a full vertex with a leaf, two adjacent full vertices) at every root with a star plus ≤ 1 edge; see E14 for k = 2.
+**In the game** the pure-star deficit is bypassed by holding more edges: relays feed the hub, and the inserted path runs through the hub along the extra held edges.
+- K8 − PM needs |F| = 9.
+- The Q2-type graph B′ (K6 core, a full vertex x1 with a leaf, two adjacent full vertices; n = 10) loses with a star plus ≤ 2 edges. It wins at every root with a star plus 3: the star at x1 plus a core triangle, then a relay, receipts, and the new path 0–2–1–x1–5.
+- **A_{6,2} loses at every root with a star plus ≤ 3 edges.** This is the resistant case we know of. The count above closes its twins and odd roots by hand with the pure star, so a sound count move would let the game do the same. Its core roots are covered by neither the game nor the count; (R) holds there by CP-SAT.
+
+**Follow-up (missing-move, after the coordinator's notes).**
+- *Criticality.* The five E13 losers are non-critical (p = 3) and fall to the split rule. Of the 47 `np`-losers at \|F\| ≤ 4, 19 are critical, and path insertion wins them all (\|F\| ≤ 9).
+- *The critical Gqz~vw at root 3* is closed by the **odd-neighbour hub** (Thm 2.5): s = 3 has degree 4 and one odd neighbour x = 6. Holding xz (z = 0) extends the new path to y′–s–x–z. In Lean: `hub_four_odd_ends`, and `gqz_rooted_three` by `decide`. It is an instance of BranchBase3 (k = 3), with a simple final profile {0, 3, 7}.
+- *Profile-level flower move* (Lemma 5.7; Question 5.6(b) of the earlier draft) for Hamiltonian flowers, j ≤ 4 (transversal Lemma 5.6). With it the game wins CP(4) and CP(5) at every root with one held star, attaining `cocktail_insertion_barrier` (m − 1 inserted edges). It adds nothing on A_{6,2}, B′, the other dense n = 8 graphs, or a sample of 5 critical n = 10 graphs.
+- *Correction:* A_{6,2} is closed at every root (Prop 5.2 + Sym(Q)); B′ is closed by hand (endpoint-structure Prop 68).
+- *Receipt or flower with a count* (manuscript Lemma 5.9; option `rf`), plus the orbit rule, wins A_{6,2}, B′, CP(4) and CP(5) at every root with one held star. On a sample of ten random critical n = 10 graphs it changes nothing. The first miss is **Inv~|~zbw** (K10 − {02, 17, 19, 24, 29, 39, 58}, roots 2 and 3, star + ≤ 2). There the count 33 < 35 decides neither case: a degree-6 hub with two odd neighbours. With a star plus 3 edges (\|F\| = 9) it wins without `rf`, via a second hub along the inserted path 4–3–6–2–8. So every sampled graph is won.
+- *Hubs of arbitrary degree* (manuscript §6; Lean `Ach.hub_receipts`, `Ach.hub_general`, `Ach.relays`, `Ach.relay_hub`, `Ach.two_hub`). A degree-d hub whose neighbours carry Σb ≥ 2d − 5 costs one path. Relays z → x from even non-neighbours raise the supply (relay-hub Thm 6.4). Two isolated hubs with one common neighbour share one new path (Lemma 6.5). This is the receipts-only half of the d6-frontier hub calculus, with the spare path as payment.
+- *Hub-strategy conjecture* (Conj 6.7): at a BranchBase3 root, star(y) + X wins with \|X\| ≤ lb(y) + c. It holds at n = 8 with c = 2 (all 9268 root orbits). At n = 10 it **needs c ≥ 3**: Inv~|~zbw roots 7 and 9 (E14 addendum 3). The proved theorems cover 2757/9268 root orbits at n = 8 and **none** of the 108 in the n = 10 sample. At high degree the game wins by moves (donations, rf) that the lemmas do not cover.
+- *Re-derivations (archive integration).* missing-move Prop 5.5, (R) for K8 − PM, is the case m = 4 of separating-pairs Thm 10.21. That theorem gives (R) for every CP(m), m ≥ 4, by Walecki Hamilton cycles opened along Q = (t, 1, …, h). It also proves the failure of Fan's test, which `cocktail_fan_barrier` formalises. The flower lemmas are special cases of marked-reduction Thm 38 (j ≤ 7 cycles) and cycle-and-contact Thm 1 (12 nearly spanning cycles). The hub shape at path level is marked-reduction Cor 39. On Inv~|~zbw, separating-pairs Thm 12.29 with y = 9 (G − 9 = K9 − 4 edges, rainbow Hamilton decomposition of Javadi–Miralaei, repaired in jm-repair) gives (R) at the roots 9 and 6. It does not decide 1, 2, 3, and the other roots are not of its form. Inv~|~zbw is a density boundary, so held-edge caps are not raised further.
+- Still open: a sharper count than Lemma 5.9 (Inv~|~zbw); a transversal lemma for every j, which would give a flower for every CP(m) (emc-four session); completeness at n = 10 (manuscript Question 5.11); donations and paybacks after the spare-path hub, to reach a simple profile (needed for BranchBase3 when d ≥ 6).
 
 **Consequences.**
 - §R's "Lovász + Fan is incomplete" is corrected: at n = 8 the missing move was path insertion, which is already in the Lean insertion library (`Ach.addPath`).
-- Inductive seeds have Σb = n and so no spare path. The spare path is the floor ⌊N/2⌋ at odd order. An induction that keeps it needs the floor bounds BP_t, and the hub lemma converts them into (R) at degree-four vertices.
-- The first genuine gap is at n = 10, at degree-six hubs. The next ingredient is a non-profile count at Fan's equality: Question 5.6 of the manuscript.
+- Inductive seeds have Σb = n and so no spare path. The spare path is the floor ⌊N/2⌋ at odd order. An induction that keeps it needs floor bounds at odd order, which hold only in special classes: Lovász's, and the BP_t. The hub lemma turns any such floor partition of G − s with ends on N(s) into (R) at a degree-four vertex s.
+- The next difficulty is the degree-six hub. At Fan's equality the rigid configuration (Fan's alternative plus append-or-through) must be refuted by an edge count, recombined as a flower, or bypassed by longer inserted paths. The open questions are Question 5.9 of the manuscript: (a) is the game with path insertion complete at n = 10, with A_{6,2} as the test; (b) is there a profile-level move capturing the count or the flower.
 
 **Reconciliation (n = 8).** The six critical graphs that lose with \|F\| ≤ 6 are closed as follows. Five win with \|F\| = 7–8 (missing-move E14, orbit runs; Guv]}{ root 0 independently confirmed at \|F\| = 7). K8 − perfect matching is settled by the flower lemma (missing-move Prop 5.5): when the fourth Fan receipt at a degree-6 hub fails at equality, the three paths close into Hamiltonian cycles through the hub, and cutting them along a transversal path gives the two ends. So at n = 8 the rooted test follows from Lovász + Fan + path insertion + the flower move. The open question is a *profile-level* version of the equality move (missing-move Question 5.6), which would make the game self-contained at n = 10.
+
+**Barrier theorem (Lean, FanBarrier.lean).** For CP(m) = K_{2m} − perfect matching (m ≥ 4), every decomposition of CP(m) − ut has ≥ m paths, and > m when Fan's condition holds. So *no* argument whose final step re-inserts one edge by a Fan transfer or as a one-edge path can prove the bound for CP(m), whatever came before: Lovász seed, induction hypothesis, or oracle. The cocktail party graphs are therefore a certified test family for any proposed missing move. The flower recombination (missing-move Prop 5.5) passes this test at m = 4. A uniform flower argument for all CP(m), and then a profile-level form of it, is the natural next target.

@@ -1,0 +1,9 @@
+Part A: eleven bowtie certificates
+  group order 8, 31 contact sets in 11 orbits, the 11 printed representatives hit all 11
+  all 11 representatives legal with the printed (supply>blanks), seeds and pairs; 25 leaves (A=T counted in both orders of s1,s2)
+  transported certificates verified on 93 labelled cases (3 bowties x 31 contact sets)
+Part B: Lemmas 10-12 on every graph on five labelled even vertices
+  Lemma match    sound on all 3840 (graph, labelling) pairs meeting its hypotheses
+  Lemma oddstar  sound on all 6000 (graph, labelling) pairs meeting its hypotheses
+  Lemma unistar  sound on all 1200 (graph, labelling) pairs meeting its hypotheses
+  Proposition 13 assignments valid on all 38 labelled non-bowtie rims: {'4K1': 1, 'K2+2K1': 6, 'P3+K1': 12, 'K3+K1': 4, 'P4': 12, 'C4': 3}

@@ -1,0 +1,8 @@
+Section 3 counterexamples (exact.py)
+  G_2: N=9, no partition into 4 paths with an end at y; p(G_2) <= 4 (witness of 4 paths)
+  G_4: N=15, no partition into 7 paths with an end at y; p(G_4) <= 7 (witness of 7 paths)
+  order 5 (triangle ypq, leaves r, s at y): floor 2 holds, but no 2-path partition ends at y
+  L: printed 4-path partition valid, no 3-path partition, so p(L) = 4 (the odd vertices ['l', 's', 'w', 'z'] alone only force 2 paths)
+  D: order 17, even subgraph 4K2 + K1, 8 odd vertices; p(D) <= 8 but no 8-path partition ends at y
+  N=5: tested (G,y) by e: {1: 7, 3: 30, 5: 5}; failures by e: {1: 7, 3: 9}; of which SET: {3: 5}
+  N=7: tested (G,y) by e: {1: 130, 3: 1236, 5: 845, 7: 7}; failures by e: {1: 130, 3: 101, 5: 6}; of which SET: {3: 29}

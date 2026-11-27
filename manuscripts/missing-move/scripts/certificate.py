@@ -1,15 +1,16 @@
 """Print a winning certificate (strategy tree) of the Fan game with path insertion.
 
-Usage: python3 certificate.py GRAPH6 ROOT KMAX [nonp]
+Usage: python3 certificate.py GRAPH6 ROOT KMAX [nonp] [F="((a,b),...)"]
 The moves are those of fan_game.py with option np: single and grouped Fan transfers, and new
-paths of any length made of held edges ("nonp" restricts new paths to single edges). Grouped
+paths of any length made of held edges ("nonp" restricts new paths to single edges). With
+F=... only that held set is tried. Grouped
 transfers branch over the adversary's donor; every branch is printed."""
 import sys
 from functools import lru_cache
 from itertools import combinations
 import networkx as nx
 
-def certify(G, r, kmax, newpath=True):
+def certify(G, r, kmax, newpath=True, fixed=None):
     n = G.number_of_nodes()
     E = sorted(tuple(sorted(e)) for e in G.edges())
     nbr = [0] * n
@@ -86,7 +87,8 @@ def certify(G, r, kmax, newpath=True):
         return out
 
     for k in range(kmax + 1):
-        for F in combinations(E, k):
+        for F in ([tuple(sorted(tuple(sorted(e)) for e in fixed))] if fixed is not None and
+                  k == len(fixed) else [] if fixed is not None else combinations(E, k)):
             for kind, b0 in starts(F):
                 c = win(frozenset(F), b0)
                 if c: return F, kind, b0, c
@@ -111,7 +113,11 @@ if __name__ == "__main__":
     G = nx.from_graph6_bytes(sys.argv[1].encode())
     r = int(sys.argv[2]); kmax = int(sys.argv[3])
     d = dict(G.degree()); print("deg", d)
-    res = certify(G, r, kmax, newpath=len(sys.argv) < 5)
+    fixed = None
+    for a in sys.argv[4:]:
+        if a.startswith("F="):
+            fixed = eval(a[2:])
+    res = certify(G, r, kmax, newpath="nonp" not in sys.argv[4:], fixed=fixed)
     if not res: print("no certificate"); sys.exit()
     F, kind, b0, c = res
     print("held F =", F, "seed", kind, b0); show(c)

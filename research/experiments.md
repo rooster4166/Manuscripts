@@ -283,12 +283,14 @@ Tool: `tools/fan_game.py`, with new options. Manuscript `manuscripts/missing-mov
 | Test | Outcome |
 |---|---|
 | `np`, all 11,117 connected graphs, \|F\| ≤ 4 | 47 graphs with a losing root (base game: 50) |
-| the 47, `np`, \|F\| raised from 5 | every root wins. 35 graphs at \|F\| = 5 and 5 at \|F\| = 6 (all roots); the 7 dense graphs (complements of ≤ 6 edges), one root per automorphism orbit (`orbit_run.py`): Gut~vs at \|F\| = 6; Gut~~w, Gu^v~w, Guv]}{, Guv]z{ at 7; Guv]~{ at 8 (root 2); K8 − perfect matching (Gr~v~w) PENDING |
+| the 47, `np`, \|F\| raised from 5 | every root wins. Of the 40 sparser graphs (`stepper.sh`, all roots), 35 need \|F\| = 5 and 5 need 6. The 7 dense graphs (complements of ≤ 6 edges) were run one root per automorphism orbit (`orbit_run.py`): Gut~vs needs 6; Gut~~w, Gu^v~w, Guv]}{ and Guv]z{ need 7; Guv]~{ needs 8 (root 2); **K8 − perfect matching (Gr~v~w) needs 9**. Every held set of size 8 loses there; the star plus three edges wins, with a new path of length 4 through the hub |
 | the five §R losers, `np` | win; every certificate found is hub-shaped (`outputs/certificates.txt`) |
 | the five losers, `rot2` \|F\| ≤ 4; `alt2` \|F\| ≤ 4; `alt1` \|F\| ≤ 6 | **no losing root repaired** (GsRvnk 2, 3; GsZvnk 4; Gqrvn[ 2; Gqzvn[ 4; Gqzl\|{ 1) |
 | (R) by CP-SAT on the five losers | holds at every root |
 
-So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S). The certificate for GsRvnk, root 2, is the following:
+So **the Fan game with path insertion wins every root of every connected graph of order 8** (connections §S).
+
+*Correction to E13.* K8 − perfect matching loses with path insertion at every \|F\| ≤ 8, so it also loses the original game there. The E13 list of five genuine losers at \|F\| ≤ 8 is therefore incomplete: K8 − PM is a sixth. With path insertion it wins at \|F\| = 9. The certificate for GsRvnk, root 2, is the following:
 - hold the star at 2;
 - take Lovász on G − 2 (3 paths, one spare);
 - single transfer 0 → 2;
@@ -301,9 +303,9 @@ Theorem `hub_four_ends` (Lean) is the general form.
 
 | Graph | Description | Outcome |
 | A_{4,4} | K4 core, full vertex with a leaf, four false twins | wins at k = 2 |
-| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root** (k ≤ 2) |
+| A_{6,2} | K6 core, full vertex with a leaf, two false twins (the degree-6 analogue of GsRvnk) | **loses at every root with k ≤ 3** (k = 3: one root per orbit; the odd root x loses, so no play wins) |
 | B | K6 core, two adjacent full vertices, two half-contact vertices | wins at k = 1 |
-| B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | **loses at every root** (k ≤ 2) |
+| B′ | K6 core, a full vertex with a leaf, two adjacent full vertices (Q2 type) | loses at every root with k ≤ 2; **wins at every root with k = 3** (star at x1 + a core triangle; new path 0–2–1–x1–5) |
 
 (R) holds at every root of all four (CP-SAT).
 
@@ -316,11 +318,79 @@ So the receipt succeeds and (R) holds at the twins. On B′ the same count is ti
 
 **K8 − perfect matching by hand** (manuscript Prop 5.5). Here the 4th receipt at the degree-6 hub always fails, because all three paths end at the hub. The rigid configuration is a flower of three Hamiltonian cycles through s, and a transversal path of cut edges closes it (Lemma 5.4).
 
+**Follow-up (cloud session missing-move, after the coordinator's notes).**
+
+Criticality (`scripts/crit.py`, CP-SAT):
+- The five E13 losers are non-critical (p = 3). The split rule Σb ≤ n − 2, now in `fan_game.py`, settles them trivially.
+- Of the 47 graphs that lose with `np` at \|F\| ≤ 4, **19 are critical**: Gqz~vw, the seven dense graphs, and 11 others. All 47 win with `np` (\|F\| ≤ 9).
+- A_{6,2} and B′ are critical; A_{4,4} and B are not.
+
+**Gqz~vw** (critical, 4-connected; the original game loses it at root 3) is won by the odd-neighbour hub (manuscript Thm 2.5, Cor 2.6):
+- held set F = star(3) + 06, with the Lovász seed;
+- single transfer 1 → 3;
+- grouped transfer {5, 7} → 3;
+- new path 0–6–3–7 (or 0–6–3–5).
+
+The final profile is simple: it realises {0, 3, 7} or {0, 3, 5}. The Lean version is `gqz_rooted_three`, checked by `decide`.
+
+**The flower move** (option `flower`; manuscript Lemmas 5.6–5.7). At a saturated hub with b(u) = d_H(u) = j = |T| ≤ 4, b = 1 on T, Σb = 2j and |E(H)| + j = j·|V′|, the paths close into j Hamiltonian cycles. A transversal path L from u, chosen by the opponent, gives j + 1 paths with b = 2 on L.
+
+| Test | Without flower | With flower |
+|---|---|---|
+| CP(4), F = one star (\|F\| = 6), all roots | loses (`np` needs \|F\| = 9) | **wins** |
+| CP(5) = K10 − PM, F = one star (\|F\| = 8) | loses (with `np` too) | **wins** |
+| A_{6,2}, B′ (star + ≤ 1) | loses | loses |
+| the 7 dense n = 8 graphs, `np`, \|F\| ≤ 6 | 5 lose | 5 still lose (CP(4) and Gut~vs win) |
+| 5 random critical n = 10 graphs with a degree-6 vertex (`sample10.py`) | win at star + ≤ 2 | win at the same size |
+
+The flower's last step is the insertion of the path L, which has m − 1 held edges. This attains `cocktail_insertion_barrier` (FanBarrier.lean).
+
+**Receipt or flower with a count** (option `rf`, manuscript Lemma 5.9, after endpoint-structure Thm 67), and the **orbit rule** (option `orbit`: an end anywhere in the root's automorphism orbit wins).
+
+*Correction:* A_{6,2} is closed at **every** root by hand. In Prop 5.2 two core vertices end with two ends each, and Sym(Q) acts by automorphisms. The earlier "core roots open" was wrong; the emc-four session pointed this out. B′ is closed by hand in endpoint-structure Prop 68.
+
+| Test (F = one star, `np rf`) | Without `orbit` | With `orbit` |
+|---|---|---|
+| A_{6,2} | wins except at the core roots | **wins every root** |
+| B′ | wins except at the core roots | **wins every root** |
+| CP(4), CP(5) | wins every root | wins every root |
+
+On the core roots without `orbit`: the opponent can make the root a donor, and the hand proofs also use symmetry.
+
+**Sample** (`rf_sample.sh`): ten random critical n = 10 graphs with a degree-6 vertex, held sets = a star plus k ≤ 2 edges, `np orbit` with and without `rf`.
+- Nine win, at k = 1 or 2, and `rf` changes nothing.
+- **First miss: Inv~|~zbw**, i.e. K10 − {02, 17, 19, 24, 29, 39, 58}: 6-connected, 8 even vertices, critical. It loses at roots 2 and 3 with or without `rf`; (R) holds by CP-SAT.
+- At root 2 (a degree-6 hub with two odd neighbours), holding star(2) + 10 + 64 gives a Lovász seed. At the 4th receipt the count is |E(H)| = 33 < 3·9 + 8 = 35, so neither case of Lemma 5.9 is decided.
+- With a star plus 3 held edges (F = star(2) + 01, 34, 36, so \|F\| = 9) Inv~|~zbw **wins** at roots 2 and 3, with or without `rf`. The play: a relay 0 → 1 → 2, receipts at 2, a second hub at 3, and a new path through both hubs (4–3–6–2–8). The miss is a held-set-size artefact (`outputs/certificate_miss1.txt`).
+
+
+
 **Reading.**
 - At n = 8 the incompleteness of E13 was budget allocation: Lovász's spare path could only buy a one-edge path.
 - Pósa moves at the profile level add nothing at n = 8. The rotation adversary and Fan's alternative both lose the memory that one of the paths ending at the hub is the fresh path cs.
-- The first gaps of the extended game we know of are degree-six hubs at n = 10, one receipt short. There a non-profile count at Fan's equality can close the gap (A_{6,2}) or be tight (B′).
+- Degree-six hubs: with a pure star they are one receipt short at Fan's equality. By hand the gap closes by an edge count (A_{6,2} twins) or a flower (K8 − PM); the count is tight on B′.
+- The game bypasses the deficit with more held edges and a longer inserted path through the hub: K8 − PM at \|F\| = 9, and B′ with a star plus 3.
+- The resistant case we know of is A_{6,2}, which loses at every root with a star plus ≤ 3 held edges. Prop 5.2 closes its twins and odd roots by hand with the pure star: a sound count at Fan's equality would let the game do the same. Its core roots are covered by neither. General held sets at n = 10 are out of the solver's reach.
 - Inductive seeds have Σb = n and no spare path, so `np` does not change the `ind` variant.
+
+**E14 addendum (independent).** `fan_game.py Gr~v~w 8 np`: K8 − perfect matching = K_{2,2,2,2} **loses at every root with path insertion and \|F\| ≤ 8** (23 CPU-min). This is consistent with the Lean barrier theorem `cocktail_fan_barrier`, which says that no last step by a Fan transfer or a one-edge path can work. The game also finds no path-insertion finish within \|F\| ≤ 8. The rooted test for K_{2,2,2,2} is settled only by the flower recombination (missing-move Prop 5.5).
+**E14 addendum 3 (missing-move, hub-strategy conjecture; manuscript §6, Prop 6.8).** Game: `np rf orbit hubs`. Roots: even y with ≥ 3 even neighbours and no bridge yt with d(t) ≥ 2 (the root hypotheses of BranchBase3), one per automorphism orbit. X = held edges besides the star. lb(y) = ⌊e(y)/2⌋, where e(y) counts the non-leaf odd neighbours of y and the even vertices outside N[y] (parity lower bound for |X| when the star is at y). Scripts are in `manuscripts/missing-move/scripts/`, outputs in `outputs/`.
+- **n = 8**, all 11117 connected graphs (`data/conn8.g6`), 9268 root orbits.
+  - Star at y (`hubroot`), least \|X\| = 0/1/2/3 for 3100/5375/787/6 root orbits, identical with the simple target (`hs8_R_root.log`, `hs8_simple_root.log`).
+  - lb ≤ 1 always. \|X\| − lb = 0/1/2 for 8475/783/10 (`hs8_root_parity.txt`), so the conjecture holds at n = 8 with c = 2.
+  - Star at any vertex: 0/1/2 for 7000/2256/12 (R target) and 6997/2259/12 (simple) (`hs8_R.log`, `hs8_simple.log`).
+  - Shapes of one winning X (lexicographic first; `hs8_root_shapes.txt`).
+    - \|X\| = 1: relay O–n 2468, n–n 1495, O–O 1332, other 80.
+    - \|X\| = 2: 757 paths (611 through an even neighbour of y) and 30 matchings.
+    - \|X\| = 3: 4 paths, 2 triangles.
+- **Proved theorems alone at n = 8** (`relay_cover.py`). The relay-hub Theorem 6.4 covers 2556 root orbits, the two-hub Corollary 6.6 covers 379, and one of them covers 2757 of the 9268. Each replays as a game win with the theorem's own held set (`relay_cover8.txt`).
+- **n = 10**: the 10 graphs of Prop 5.10 plus 40 new critical graphs (`sample10.py 23 40`, `sample10_50.g6`). 30 of them have a root, 108 root orbits in all, lb = 0/1/2 for 2/39/67.
+  - Star at y (KMAX 4, R target): least \|X\| = 0/1/2/3/4 for 1/35/68/3/1 (`hs10_R_root.log`).
+  - \|X\| − lb = 0/1/2/3 for 102/3/1/2. **lb + 3 is needed** at Inv~|~zbw root 7 (d = 8, lb 0, \|X\| 3) and root 9 (d = 6, lb 1, \|X\| 4). So the c = 2 form of the conjecture is **false** (`hs10_root_parity.txt`).
+  - Simple target: the same, except Inv~|~zbw root 2 needs 4 instead of 3 (`hs10_simple_root.log`).
+  - Star anywhere: 0/1/2/3 for 3/93/10/2, both targets (`hs10_R.log`, `hs10_simple.log`).
+  - The proved theorems cover **0 of 108** (`relay_cover10.txt`). For the relay theorem, 99 root orbits have no partners z_i, 4 fail (iii) and 5 fail (ii). Only 3 roots have d = 4 (`relay_cover10_reasons.txt`).
+  - 54 of the 57 degree-8 root orbits win with \|X\| = lb ≤ 2, below the 3 relays Theorem 6.4 would need, so the game wins there by moves outside the receipts-only lemmas.
 
 ## E15. Oracle seeds, the last-edge barrier, and EMC at n = 8 (cloud session `claude/emc-four-even`, route (H))
 
@@ -380,6 +450,45 @@ Gqz~vw at root 3 wins with |F| = 1 in two ways:
 - K8 − PM is critical with uniform endpoint matroid U_{4,8}, so the failure lies in the moves.
 - Its only possible finish is a ≥ 3-edge spare path into a 3-path partition, i.e. three Hamiltonian paths. That is the flower of missing-move Prop 5.5.
 
+**E14 addendum 2 (independent).** `one_root.py Gr~v~w 0 9` (path insertion, \|F\| ≤ 9): **WIN** at root 0, and hence at every root by vertex-transitivity. F is the full star at 0 together with {13, 14, 24}. The Lovász seed is b = (0,1,0,1,1,1,1,1). Together with Guv]}{ (root 0, \|F\| = 7; checked independently above), this confirms the missing-move session's claim: **the extended game (Lovász + Fan + path insertion) wins every root of every connected graph of order 8 with \|F\| ≤ 9.** The flower lemma (Prop 5.5) gives a shorter proof for K8 − PM, but at n = 8 it is not needed.
+## E14. Prescribed ends at odd order; five even vertices with one universal vertex (cloud session `claude/bs-prescribed`)
+
+Scripts: `manuscripts/bs-prescribed/scripts/`.
+
+**Prescribed-end lemma** (odd N, Δ(EV) ≤ 3, even y, partition into (N−1)/2 paths with an end at y). Exact with `exact_prescribed.py` (CP-SAT); game with `odd_fan_game.py` (Lovász seeds, plus Lemma 3 seeds at any order, plus Fan transfers; at most 4 held edges).
+
+| N | e | pairs (G, y) | no floor partition ending at y | lost by the game |
+|---|---|---|---|---|
+| 5 | 1 | 7 | 7 (forced by counting) | 7 |
+| 5 | 3 | 30 | 9 (5 SET) | 14 |
+| 5 | 5 | 5 | 0 | 0 |
+| 7 | 1 | 130 | 130 | 130 |
+| 7 | 3 | 1236 | 101 (29 SET) | 230 |
+| 7 | 5 | 845 | **6** | 64 (63 still lost with ≤ 8 held edges) |
+| 7 | 7 | 7 | 0 | 0 |
+
+- The six e = 5 failures at N = 7:
+  - FqHPO = G_{1,1} and FsQc_ = G_{2,0} (the forcing family);
+  - FsQaO and FsPL_ (pendant triangle, or K4 − e, at y plus a pendant triangle elsewhere);
+  - Fs`Do and FqilW (y between a leaf and a K_{1,1,3} or a K5).
+- **Random N = 9** (`sample_prescribed.py 9 150 3 1`, exact by `tools/pathnum2.py`): 596 pairs.
+  - Genuine exceptions: 6 with e = 1 and 3 with e = 3; none with e ≥ 5.
+  - Game search failures: 1 with e = 3, 7 with e = 5, 2 with e = 7.
+- **Conclusion.**
+  - The lemma is false, with exceptions built from forcing gadgets (manuscript Prop. 5).
+  - The odd-order prescribed game is far from complete. This contrasts with even order: E13 found that Δ(EV) ≤ 3 makes every root winnable at n = 8.
+
+**Five even vertices, one universal vertex** (`certgen.py`, `verify_certs.py`, `sevensite_cert.py`):
+- **Seven-site bank (A6) re-derived independently**: all 7 cores × 31 contact sets are certified, with held sets of 2–6 edges and depth ≤ 6.
+- **Local certificates** (model = T only, no leaf): all cores except the bowtie M. The bowtie has none (exhaustive over held sets).
+- **Bowtie with u only** (no v): 25 of 31 contact sets. The exceptions are A ⊇ {a, b} with A ∩ {c, d} ∈ {∅, {c, d}}, and symmetrically.
+- **Labelled tables for Lean**: 38 local rims and 3 × 31 bowtie cases, all verified (46 and 129 leaves).
+
+**End-to-end random hosts** (`random_hosts.py`, circuit solver):
+- all 60 + 40 hosts with a leaf, of orders 9 and 11, over all one-universal cores;
+- all 60 + 40 + 20 bowtie hosts without a leaf, of orders 9, 11 and 13.
+
+Every host satisfies the floor bound. So the leaf is probably not needed for the bowtie either, but the local certificates need it.
 ## E16. Rainbow transversals of Hamiltonian decompositions (the flower move; cloud session `claude/emc-four-even`)
 
 Tool: `tools/rainbow_transversal.py MMAX SAMPLES [seed]`.

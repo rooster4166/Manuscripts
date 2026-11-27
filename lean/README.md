@@ -2,30 +2,77 @@
 
 ## Spine 113/114 (cloud session)
 
-Branch `claude/lean-spine-113-114`. New file `GallaiLean/ThreeConnected.lean` (sorry-free;
-`#print axioms` shows only `propext`, `Classical.choice`, `Quot.sound`).
+Branch `claude/lean-spine-113-114`. Marked-reduction Theorems 113 and 114 (ROADMAP node N4).
+Every file below is sorry-free. `#print axioms` on `separatorStatement`, `gallai_iff_spineTests`,
+`spineTests_of_gallai` and `rootedAt_evenComp_evenPorts` shows only `propext`,
+`Classical.choice` and `Quot.sound`.
 
-**Status (interim):** (a) Gallai ⇒ both tests: **proved**. (b) apex construction and its
-3-connectivity: **proved**. (d) converse: **proved modulo explicit hypotheses** `LovaszStatement`,
-`Thm59Statement`, `SeparatorStatement`. (c) Theorem 113 (`SeparatorStatement`): in progress.
+**Bottom line.**
 
-| Lean name | Statement |
+* **Theorem 113 (separator theorem) is proved outright:** `separatorStatement : SeparatorStatement`.
+  It uses Lovász's theorem as proved in `GallaiLean/Lovasz.lean` (`lovaszStatement`).
+* **Theorem 114 is proved modulo Theorem 59 alone:**
+  `gallai_iff_spineTests (h59 : Thm59Statement) : (Gallai ↔ SpineTests) ∧ (Gallai ↔ SpineTestsNMC)`.
+  * The forward direction, `spineTests_of_gallai`, uses no hypothesis.
+  * The converse needs the single explicit hypothesis `Thm59Statement`.
+* All four priorities are done: (a) Gallai ⇒ both tests, (b) the apex construction is
+  3-connected, (c) the separator theorem, (d) the converse.
+
+**The remaining hypothesis.** `Thm59Statement` is Theorem 59 in the finite-order form recommended
+by audit A2 (finding F1). It says: if both rooted assertions (`RootedAt`) hold for every member of
+`C` (two-connected, no matching cut) with at most `m + 1` vertices, then the marked bound (1) holds
+on every connected graph whose two-connected blocks have order at most `m` (`MarkedBoundUpTo m`).
+
+* `MarkedBlocks.lean` (base branch) proves Theorem 1 (`gallai_iff_tests`): the 2-connected marked
+  bound plus the three-end test.
+* What Theorem 59 still needs on top of that is
+  * the matching-cut reduction (Thms 7, 57), and
+  * the step from the rooted tests to the marked tests.
+
+**Statements and faithfulness.**
+
+* **k-connectivity.** `KConnected k G` means `k + 1 ≤ |V|` and `G.induce Xᶜ` is connected for
+  every `|X| < k`. `J − z` is `delVert J z`, the graph induced on `{v | v ≠ z}`.
+* **`Test1 J z`.** If `z` is the only even vertex, then for each `r ∈ N(z)` some decomposition of
+  `J − z` has `≤ (|J| − 1)/2` paths and `D.ends r ≥ 2`. A path has at most one end at `r`, so this
+  is "at least two paths ending at `r`".
+* **`Test2 J z`.** If `z, r` are the only even vertices and are adjacent, then some decomposition
+  has `≤ |J|/2` paths and `D.ends r ≥ 3`.
+* **`SpineTests` / `SpineTestsNMC`.** Both tests for every 3-connected `J`. The `NMC` version adds
+  the hypothesis that `J − z` has no matching cut (`HasMatchingCut`).
+* **Theorem 113 in the A2 audit's F7 form (`SeparatorStatement`).** This is stronger than the
+  manuscript's statement.
+  * The hypotheses are: `B` two-connected, and the marked bound on graphs whose blocks have order
+    `≤ n − 2`. At a least-order failure, Theorem 59 provides the latter.
+  * Neither minimality nor the absence of a matching cut is assumed.
+  * The conclusion: if `C` is a component of `B − {x, y}` (`IsSepComponent`, with `{x, y}`
+    separating), `r ∉ C`, and every vertex of `C` is odd, then `RootedAt B r`.
+* **Blocks.** `SmallBlocks F m` means every two-connected induced subgraph has at most `m`
+  vertices, i.e. the two-connected blocks have order `≤ m`.
+
+**Files.**
+
+| File | Content |
 |---|---|
-| `KConnected k G` | `k + 1 ≤ \|V\|` and `G.induce Xᶜ` is connected for every `X` with `\|X\| < k` |
-| `delVert J z` | `J − z` (induced on `{v \| v ≠ z}`) |
-| `HasMatchingCut`, `InClassC` | matching cut; the class `C` (2-connected, no matching cut) |
-| `Test1 J z`, `Test2 J z` | assertions 1 and 2 of marked-reduction Thm 114 |
-| `SpineTests`, `SpineTestsNMC` | both tests on every 3-connected `J` (resp. only when `J − z` has no matching cut) |
-| **`spineTests_of_gallai`** | `GallaiConjecture → SpineTests` (forward direction of Thm 114) |
-| `PathDecomp.trim_ends` | trimming the private leaf: same size and `+1` end at `x`, or one path less and `−1` end |
-| `exists_two_ends`, `exists_three_ends` | `F₂` from leaf cost, `F₃` from any decomposition (split at an internal visit) |
-| **`apex_kConnected_three`** | `B` 2-connected, `\|S\| ≥ 3`, every component of `B − {x,y}` meets `S` ⇒ `apex B S` is 3-connected |
-| `RootedAt B x` | the two rooted assertions of Thm 59 at `x` |
-| `SmallBlocks F m`, `MarkedBoundUpTo m` | blocks of order `≤ m` (2-connected induced subgraphs); marked bound (1) on such graphs |
-| `Thm59Statement` | **hypothesis**: Thm 59, finite-order form (audit F1) |
-| `IsSepComponent`, `SeparatorStatement` | Thm 113 in the audit's F7 form (hypothesis until proved) |
-| `rootedAt_of_few_even` | `\|{even} ∪ {r}\| ≤ 2` ⇒ rooted test at `r` (Lovász) |
-| **`gallai_of_spineTestsNMC`** | `LovaszStatement → Thm59Statement → SeparatorStatement → SpineTestsNMC → GallaiConjecture` |
+| `ThreeConnected.lean` | definitions above; **`spineTests_of_gallai`**; `PathDecomp.trim_ends`, `exists_two_ends`, `exists_three_ends`; **`apex_kConnected_three`** (`B` 2-connected, `\|S\| ≥ 3`, every component of `B − {x,y}` meets `S` ⇒ `B + z(S)` 3-connected); statements `Thm59Statement`, `SeparatorStatement`; `rootedAt_of_few_even`; **`gallai_of_spineTestsNMC`** (Lovász + Thm 59 + Thm 113 + tests ⇒ Gallai, by strong induction on the order of a failure in `C`) |
+| `PathSurgery.lean` | paths of the complete graph (`TPath`), edge multisets `edgesM`, `endsL`, `exists_decomp_of_edgesM`, `plusEdge`, `joinT`, `exists_subst_list` (substitute a path for an edge), `exists_graft` (cut at a vertex, attach two paths), `exists_cut_edge` |
+| `SmallBounds.lean` | `lovasz_on` / `lovasz_tight` on a vertex set; a single mark is a private leaf; `R2_on`, `R3_on`, `floor_on`: the smaller rooted bounds of the proof of Thm 113, from `MarkedBoundUpTo` |
+| `SeparatorSetup.lean` | sides `sideA` (= `B[C ∪ {x,y}]` + `xy`) and `sideE` (= `B − C − xy`); `E` connected on `V ∖ C`; port degrees positive on both sides; parity of `A`; **`rootedAt_of_lift`** (the root analysis shared by all cases, including the floor-plus-split when an odd root drops to degree one) |
+| `SeparatorOdd.lean` | `rootedAt_oddComp`: odd `\|C\|`, `W = E + xc` (or `E + xy + yc` when the `x`-ended local path visits `y`) |
+| `SeparatorEvenOdd.lean` | `rootedAt_evenComp_oddPorts`: `W = E + xy`, substitute or cut and attach |
+| `SeparatorEvenEven.lean` | `rootedAt_evenComp_evenPorts`: `W = E`; graft with the two `x`-ended local paths, or the subdivided-edge Lovász decomposition and up to two grafts. Written by a sub-agent of this session and verified here. |
+| `Separator.lean` | `separator_theorem`, **`separatorStatement`**, **`gallai_iff_spineTests`** |
+
+**Deviations from the manuscript proof (the mathematics is unchanged).**
+
+* All graphs live on the vertex type of `B`. Exterior graphs `W` reuse a vertex `c ∈ C` as the
+  private leaf (`W = E + xc`), so no new vertex is created.
+* Every case supplies a "lift" (each decomposition of `W` gives one of `B` with `s` more paths and
+  the same ends at `r`). The root analysis is then done once, in `rootedAt_of_lift`.
+* In the even/even case with `y` on the chosen row, the four sub-cases of the manuscript are
+  realised as at most two successive grafts. The sub-case `X = Y` needs no separate argument.
+* The local decomposition with two ends at `x` and none at `y` comes from Lovász on
+  `A + leaf at x` via the private-leaf formula, with counting replacing the trimming argument.
 
 Lean 4 + Mathlib (v4.36.0) formalization of foundational lemmas for the Gallai path
 decomposition program. Everything listed below is proved with no `sorry`; `#print axioms`
@@ -699,11 +746,25 @@ leaves when `G − F` has an isolated vertex. Manuscript `manuscripts/missing-mo
 | **`Ach.hub_four`** | **Hub lemma** (Lemma 2.1). If `s` meets no edge of `E`, and `a, c, d` have ends, then inserting `sa, sc, sd, sx` costs one extra path. For some `{y, y'} = {c, d}`: `b' v + [v=a] + [v=y] = b v + 2[v=s] + [v=y'] + [v=x]`. The steps are `Ach.transfer`, then `Ach.grouped`, then `Ach.addPath`. |
 | **`hub_four_ends`** | **Degree-four hubs** (Thm 2.2). Even order, `d(s) = 4`, all neighbours of `s` even, `#{v ∈ Ev : v ≠ s, sv ∉ E} ≤ 1` ⇒ for every neighbour `x` there is a decomposition with `2·size ≤ n`, `ends s = 2`, `ends x = 2`. Lovász is `lovasz_ends`, so this is unconditional. |
 | **`hub_four_rooted`** | the same hypotheses ⇒ `pathNumber (addLeaf G r) ≤ n/2` for `r = s` and for every neighbour `r` of `s` |
+| `Ach.hub_close_tail`, **`Ach.hub_four_tail`** | the hub lemma with one more held edge `xz`: the new path is `y' s x z`; profile `+2` at `s`, `−1` at `a, y`, `+1` at `y', z` |
+| **`hub_four_odd_ends`**, `hub_four_odd_rooted` | **degree-four hub with one odd neighbour** (Thm 2.5): `d(s) = 4`, neighbours `a, c, d` even, `x` odd, `z ∉ N[s]` an even neighbour of `x`, ≤ 1 even vertex outside `N[s] ∪ {z}` ⇒ ≤ n/2 paths with `ends s = ends z = 2` |
+| **`gqz_rooted_three`** | the critical order-8 graph `Gqz~vw` (`gqzGraph` on `Fin 8`) satisfies `pathNumber (addLeaf gqzGraph 3) ≤ 4`; hypotheses by `decide` |
+| `blankNbrs_insert_le` | receiving `ts` at `s` creates at most one new blank neighbour of `s` (only when `b t = 1`) |
+| **`Ach.hub_receipts`** | **receipts at a hub, any number** (Lemma 6.1) (generalises `Ach.receiveMany` of `Relay.lean`, which has `b = 1` on the donors). `s ∉ T`, no edge `ts` in `E`, `1 ≤ b ≤ 2` on `T`, `r ≤ |T|`, `blankNbrs E b s + 2r ≤ ∑_T b + 1` ⇒ some `R ⊆ T`, `|R| = r`, with `Ach (E ∪ {ts : t ∈ R}) b'` and `b' v + [v∈R] = b v + r[v=s]` (induction on `r`; each step is `Ach.grouped`) |
+| **`Ach.hub_general`** | **general hub lemma** (Lemma 6.2). `s` isolated in `E`, `s ∉ N`, `1 ≤ b ≤ 2` on `N`, `|N| ≥ 2`, `2|N| ≤ ∑_N b + 5` ⇒ `Ach (E ∪ sN) b'` with `b' v + [v∈R] = b v + (|N|−2)[v=s] + [v=y] + [v=y']`, `R ⊆ N`, `|R| = |N| − 2`, `N \ R = {y, y'}`: one extra path |
+| **`Ach.two_hub`** | **two-hub lemma** (Lemma 6.5). `s₁ ≠ s₂` isolated, `N₁, N₂` disjoint, common neighbour `m ∉ N₁ ∪ N₂`, `1 ≤ b ≤ 2` on `N_i`, `|N_i| ≥ 1`, `2|N_i| ≤ ∑_{N_i} b + 3` ⇒ `Ach (E ∪ s₁N₁ ∪ s₂N₂ ∪ {s₁m, s₂m}) b'` with `b' v + [v∈R₁] + [v∈R₂] = b v + (|N₁|−1)[v=s₁] + (|N₂|−1)[v=s₂] + [v=y₁] + [v=y₂]`: one extra path for both stars, the path `y₁ s₁ m s₂ y₂` |
+| **`Ach.relays`** | **forward relays** (Lemma 6.3). `z` injective on `X`, `z x ∉ X`, `b (z x) = 1`, `s(z x, x) ∉ E`, and no `x ∈ X` has an `E`-neighbour `w` with `b w = 0` or `w = z x'` ⇒ the single transfers `z x → x` succeed in any order: `b' v + [v ∈ z(X)] = b v + [v ∈ X]` |
+| **`Ach.relay_hub`** | **relays, then a hub** (the step of Theorem 6.4 after the seed). `s` isolated, `b = 1` on `N ∌ s`, relays into `X ⊆ N` from `z x ∉ N ∪ {s}`, `|N| ≤ |X| + 5` ⇒ the star `sN` and the relay edges cost one path; profile `+[v∈X] − [v∈z(X)] + (|N|−2)[v=s] − [v∈R] + [v=y] + [v=y']` |
+| `fanPre_transport`, **`fan_reroute_exec`** | executing a partial chain: along a duplicate-free predecessor sequence `t = x₀, …, x_k = z` (`k ≥ 1`), `K + tu − zu` has a decomposition of the same size with an end moved from `t` to `z` (the reroutes of `fan_exec` without its final append) |
+| `fan_alt_count` | either some chain from `T` terminates, or `∑_T ends ≤ #{blank neighbours of u reachable from T}` (the counting of `fan_exists_chain`, stopped before the contradiction) |
+| **`fan_alternative`** | **Fan's alternative** (Lemma 4.2): either some `t ∈ T` gives an end to `u`, or a set `W` of blank neighbours of `u` with `∑_T ends ≤ |W|` can each be activated (`K + tu − zu`, end `t → z`) |
 
 `#print axioms`: `propext`, `Classical.choice`, `Quot.sound`. No `sorry`. Not formalized:
-Lemmas 4.1–4.2 (rotation; Fan's alternative), which are a single step and partial chains of
-`fan_exec` / `fan_exists_chain` and do not help in the game; Proposition 5.2 (degree-six hub of
-`A_{6,2}`).
+Lemma 4.1 (rotation; it is the one-step case of `fan_reroute_exec` plus `append_move`), the
+hand arguments of §5 (Proposition 5.2, the degree-six hub of `A_{6,2}`; the flower Lemma 5.4 and
+Proposition 5.5, `K₈` minus a perfect matching), and the Lovász wrappers of Theorem 6.4 (relay
+hub) and Corollary 6.6 (two hubs), i.e. the graph-level statements; their profile-level steps are
+`Ach.relay_hub` and `Ach.two_hub`.
 
 ## Open / not formalized
 
@@ -723,3 +784,71 @@ special-case restriction. Not formalized: an `ℕ∞`/`iInf` form of the formula
 at a vertex `o`. If induction returns `b(o) = 0`, the second restored edge can fail Fan's
 zero-end test at the cycle neighbour. So Fan's proof needs a stronger inductive invariant than
 "some realisable `S` with `|S| ≤ ⌊e/2⌋`".
+
+## d6-frontier hub closures (cloud session, branch `claude/lean-d6-frontier`)
+
+Manuscript `manuscripts/d6-frontier`: Lemma 2.3, Lemma 3.2, Theorem 4.1(i), Theorem 5.2 and
+**Theorem 6.1 at every deletion degree `d`**. Sorry-free; `#print axioms` on every main result
+shows only `propext`, `Classical.choice`, `Quot.sound`. Lovász enters through the theorem
+`lovaszStatement`, so the results are unconditional. Audit notes:
+`research/audit/d6-frontier-lean-audit.md`.
+
+### `GallaiLean/Relay.lean`: relays, carries and hub transfers (in `Ach` form)
+
+| Lean name | Statement |
+|---|---|
+| **`Ach.forwardRelay`** | Lemma 2.3(a): along `v₀ v₁ ⋯ v_m` with new edges, `v₀ → v₁ → ⋯ → v_m` moves one end from `v₀` to `v_m`, if `b(v₀) > bl(v₁)`, internal vertices have an end, and later receivers have `≤ 1` blank neighbour (for `mv b v₀ v₁`, which is the partition current at that moment) |
+| **`Ach.carry`** | Lemma 2.3(b): `v₁ → v₀, …, v_m → v_{m-1}` moves one end from `v_m` to `v₀`, if `v₁..v_m` have ends and no receiver is adjacent in `E` to a blank vertex other than `v₀` (weaker than the paper) |
+| `mv_mv_back`, `blankNbrs_eq_zero` | bookkeeping |
+| `hubSpokes h Z`, `recvEnds`, `giveEnds` | the spokes from a hub; end vectors after receipts / donations |
+| **`Ach.receiveMany`** | `m` grouped receipts at `h` from a set `S` of non-neighbours with one end each, if `bl(h) + j < |S| − j` for `j < m`; the donor set `Z` is existential |
+| **`Ach.giveAll`** | donations from `h` to every vertex of `R`, in any order, if every receiver has `≤ c` blank neighbours outside `R` and `c + |R| ≤ b(h)` (covers donations and paybacks) |
+
+### `GallaiLean/HubPhases.lean`: held edges, seeds, phases
+
+* `hubHeld h X C` (spokes `h–X` plus edges `C`), `hst h N B D` (hub `N`, blank `B`, doubled `D`,
+  one elsewhere), `batChords L`, **`PassesAt G r`** (a decomposition with `≤ |V|/2` paths and
+  `≥ 2` ends at `r`).
+* `mem_hubE`, `hubE_union_spokes` (inserting spokes un-holds them), `ach_of_deleteEdges`,
+  `pathDecomp_of_ach`.
+* **`seed_pair`**, **`seed_odd`**: Lemma 3.2(b), (a) (from `realisable_evenSet_erase'`,
+  `lovasz_ends`). **`degree_hubDel`**: degrees after deleting the held spokes and battery chords.
+* Phases, each keeping the form `Ach (G.edgeSet \ hubHeld h X C) (hst h N B D)`:
+  `hub_take` (single receipt), `hub_receive` (grouped receipts), `hub_give` (donations),
+  `hub_payback` (paybacks to quiet blank vertices), `hub_pay_one` (one payback with a blank
+  count), `blankNbrs_hub_le`.
+
+### `GallaiLean/D6Frontier.lean`: the theorems
+
+| Lean name | Statement |
+|---|---|
+| `hub_batteries` | carry a list of batteries `(a, b)` in order (`b → h`, `a → b`) |
+| **`hub_run`** | seed → batteries → `m` receipts from `T` → donations to `Q ∪ (T \ Z)` → paybacks to the pendant and parked vertices; ends with all edges, `Z` blank, `Q ∪ (T \ Z)` doubled |
+| `hub_seed_deg`, `card_hubX`, `root_hub_seed` | seed degrees and parities |
+| `passesAt_of_realisable` | realisable `S ∋ r` with `2|S| ≤ #even` ⇒ `r` passes |
+| **`root_hub_uniform`** (`_passes`) | **Thm 6.1(a)**, every `d`: `r` adjacent to `T = U − r`, quiet odd pendant `y` (`d(y) ≥ 3`), `β ≥ d/2 − 3` quiet batteries (`L.Pairwise`: `a_i b_j ∉ E` for `i < j`; `b_i ∉ N(y)`), `d(r) ≥ d + 2 + 2β` ⇒ some `S ∋ r`, `|S| = d/2`, is realisable |
+| **`full_hub_uniform`** (`_passes`) | **Thm 6.1(b)**, every `d`: `x` adjacent to all of `U`, `β ≥ d/2 − 1` quiet batteries ⇒ every `r ∈ U` |
+| **`full_hub_pendant_uniform`** (`_passes`) | **Thm 6.1(b)** with `β ≥ d/2 − 2` batteries, a quiet pendant and a further neighbour of `x` |
+| **`full_hub_six`**, **`full_hub_six_pendant`** | **Thm 5.2** (`d = 6`), in the paper's wording |
+| **`root_hub_six`** (`_passes`) | **Thm 4.1(i)** (`d = 6`): `r` adjacent to `T`, `d(r) ≥ 8`, odd `y ∈ N(r)` with `d(y) ≥ 3`, `|N(y) ∩ T| ≤ 2` ⇒ some `S ∋ r`, `|S| = 3`, realisable. Controlled first receipt `p → r`, two grouped receipts, receivers ordered after the fact |
+| **`root_hub_six_Q1`**, **`root_hub_six_Q2`** (`_passes`) | **Thm 4.1(ii), (iii)** (`d = 6`): one or two core non-neighbours `q` of `r` (assumed non-isolated, audit F1), a triangle `r a b` of odd vertices with `|N(a) ∩ T| ≤ 2` and `bq ∉ E` (resp. `|N(a) ∩ N_T(r)| ≤ 1` and `bq₂ ∉ E`) |
+
+No lower bound on `d` is assumed in Theorem 6.1 (the paper's `d ≥ 4` is not used). Not
+formalized from the manuscript: Theorems 3.1/3.2 (terminal step), 4.2, 4.4, Corollary 4.5,
+Proposition 7.1.
+## `GallaiLean/FiveEven.lean`, `GallaiLean/FiveEvenCerts.lean`: five even vertices, one universal vertex
+
+Manuscript `manuscripts/bs-prescribed` (Theorem 1). This removes Shaik's preprint from marked-reduction
+Cor 106 and Thm 144. The work was done in a cloud session on branch `claude/bs-prescribed`.
+`FiveEvenCerts.lean` is generated by `manuscripts/bs-prescribed/scripts/gen_lean.py`.
+
+| `FiveEven.okS`, `FiveEven.soundS` | the `Prog.ok` checker with free leaf vectors; soundness by `Ach.grouped`; the sum of ends is preserved |
+| `FiveEven.seed` | the Lovász seed of a certificate: `W − H` has no end at the unique even model vertex and one elsewhere (`lovasz_ends`, `delE`) |
+| `FiveEven.floor_of_cert` | a checked program on an exact model of `W` gives `D` with `2|D| + 1 = |V|` |
+| `FiveEven.local_ok`, `FiveEven.bow_ok` | the 38 local and 93 bowtie certificates check (`decide +kernel`) |
+| `FiveEven.five_even_local` | five even vertices `ι 0..4`; `ι 0` is adjacent to the others; no other is universal; the rim is not a perfect matching ⇒ floor |
+| `FiveEven.five_even_bowtie` | the bowtie, given odd adjacent `u = ι 5`, `v = ι 6` with `N(u) ∩ T ≠ ∅ = N(v) ∩ T` ⇒ floor |
+| `FiveEven.exists_uv` | a shortest walk from a leaf with an odd neighbour to `T` gives such `u, v` |
+| **`FiveEven.five_even_floor`** | `W` connected, even set `T` with `|T| = 5`, exactly one vertex of `T` adjacent to the rest, and a leaf at an odd support ⇒ `∃ D : PathDecomp W, 2 * D.size + 1 = card V` |
+
+Sorry-free. `#print axioms` shows only `propext`, `Classical.choice` and `Quot.sound`.
