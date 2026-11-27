@@ -1,0 +1,10 @@
+PARTIAL graphs=200000 tests_at_z=803086 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=400000 tests_at_z=1695521 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=600000 tests_at_z=2584101 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=800000 tests_at_z=3566417 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=1000000 tests_at_z=4418754 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=1200000 tests_at_z=5302793 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=1400000 tests_at_z=6241716 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=1600000 tests_at_z=7189519 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=1800000 tests_at_z=8157277 fail_at_z=0 tests_away=0 fail_away=0
+PARTIAL graphs=2000000 tests_at_z=9141524 fail_at_z=0 tests_away=0 fail_away=0

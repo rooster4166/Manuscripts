@@ -1,0 +1,1 @@
+SUMMARY l1s2 tests=203658 fail=0 | triangle-lemma (z,u,w) tests=88356 fail=0 ; (z,u) with a triangle: 41594, some w works: 41594
