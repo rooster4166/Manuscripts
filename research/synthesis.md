@@ -555,6 +555,12 @@ In M, z is a leaf at r and w is the only even vertex.
 - **New single-vertex target: Conjecture DL** (disjunctive avoidance, `DisjL1`). DL ⇒ triangle base whenever M is connected.
 - **Isolated roots** (refining the next paragraph). Data at r depend only on J[N(z) − r]: they exist iff ν(J[N(z) − r]) ≥ 2 (d(z) = 6). So they exist at every root of the five dense shapes, and at an isolated root whenever the other five core vertices carry two disjoint edges (e.g. D = K_{1,5}). For "triangle base ⇒ T(6)-i", isolated roots therefore need MR Thm 144 only when ν(J[N(z) − r]) ≤ 1.
 
+- **Forest base (§25) refuted as stated** (triangle-base, E29 (G); direct-test1 Example 4.7).
+  - Counterexample: the cone over K_{2,6} at a degree-7 root, plus one more 3-connected graph of order 9. There no w, forest T-join or rooting works, yet Test1 holds.
+  - Evidence: an exhaustive check and an independent brute force.
+  - At order 9 the forest base still exists at 2,435 of the 2,438 roots without triangle data.
+  - Lean: `test1At_of_forestBase` (ForestLift.lean) is banked; it is the lift, not the conjecture.
+
 **Correction to §§22–23 (audit A26, F1).**
 - Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
 - t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.
@@ -568,26 +574,64 @@ The project lead forwarded three claims from another agent and asked that each b
    - Statement: the result is a decomposition into the same number of paths iff (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
    - Hand proof: each path receives at most one edge per end, and the appends commute.
    - Computation: 101,282/101,282 iff agreements on 40 graphs of order 6 and 8.
-   - Manuscript: direct-test1, Lemma 3.1.
+   - Manuscript: direct-test1, Lemma 4.1.
 2. **Forest lift to Test1: TRUE, as a sufficient condition.**
    - Setting: T = N(z) − {r, w}, Φ a forest T-join of H = J − {z, r}, M = J − zw − zT − Φ, with w's component rooted at w.
    - The parities are as claimed: z is a leaf at r, r is unchanged (r ∉ H), w is even (possibly 0), and every other vertex is odd.
-   - Step 1 is unchanged. Step 2 is Lemma 3.1 on D1. Conditions (i) and (ii) transfer from Q0 to D1 because every D1 path is a subpath of a unique Q0 path.
+   - Step 1 is unchanged. Step 2 is Lemma 4.1 on D1. Conditions (i) and (ii) transfer from Q0 to D1 because every D1 path is a subpath of a unique Q0 path.
    - Computation: 192/192 parity checks hold, 253,834 lifts all valid (T1), and 84 instances have a tree component with ≥ 3 vertices.
-   - Manuscript: direct-test1, Thm 3.2.
-   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 3.4) is formally weaker than the triangle base.
+   - Manuscript: direct-test1, Thm 4.2.
+   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 4.5) is formally weaker than the triangle base.
    - Lean has only the matching case (`test1At_of_triangleBase`).
 3. **"A25 (L1*) gives the single-pair OR unconditionally": FALSE as argued.**
    - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
    - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
    - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
-   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 3.5.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 4.7.
 
 **Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 3.1 these are single-vertex avoidances plus a sibling condition.
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
 
 **Addendum (18:45).**
 - **The forest lift is reversible.** For fixed (r, w, Φ, rooting), the forest base holds iff J − z has a (T1) decomposition at r in which every Φ-edge p(v)v is the end edge of its path at p(v). The proof is end counting; the lower bounds sum to exactly 2k (sent to triangle-base for the tex).
-  - So Conj 3.4 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
+  - So Conj 4.5 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
   - It is still weaker than the terminal-matching form.
 - **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
   - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 4.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (19:40): forest base refuted as stated; independent check; r-through variant also fails.**
+- triangle-base found the counterexample (direct-test1 Ex 4.7): J = cone over K_{2,6}, 3-connected, d(z) = 8, at the roots r and r′.
+- I checked it with my own code. `scripts/verify/fb_k26.py` enumerates every w, every forest T-join of J − {z, r} and every rooting, and finds no base at r or r′; there are bases at the y_i. A separate exhaustive search confirms that Test1 holds at r and r′.
+- **Variant tested.** Let Φ be a forest T-join of J − z through r, with r a root. The lift stays valid:
+  - r ∉ T, so d_Φ(r) is even and r is still odd in M;
+  - appends at the children of r add c(r) = d_Φ(r) ≥ 2 ends at r;
+  - if Q0(z) = zr and d_M(r) = 1, D1 simply has k − 1 paths.
+- It also fails on the cone at r and r′ (`scripts/verify/fbr.py`, exhaustive).
+- So the terminal-structure lifts (triangle, forest, forest through r) do not cover Test1 on their own. The cone over K_{2,6}, where B = J − z is all-even and every T1 decomposition has ends at only 4 vertices, needs a different mechanism.
+- At order 9, three roots without triangle data are left uncovered (triangle-base `fb_nodata.py`: 2,435/2,438).
+
+## 26. Cones: Test1 contains rooted Gallai for Eulerian graphs (coordinator, 2026-11-27 19:50)
+
+**Observation.** Let B be any graph of even order 2k, and let J = B + z be the cone, with z joined to every vertex of B. Then:
+- z is the only even vertex of J if and only if B is Eulerian (every degree even); d_J(z) = 2k;
+- J is 3-connected if and only if B is 2-connected;
+- N(z) = V(B), so Test1(J, z, r) says exactly: *B has a decomposition into at most k = |B|/2 paths with at least two ends at r.*
+
+So **Test1 on cones is the rooted Gallai statement for 2-connected Eulerian graphs of even order.** It implies Gallai's conjecture for that class.
+
+Gallai for Eulerian graphs is open in general. Known cases:
+- Δ ≤ 4 (Favaron–Kouider 1988);
+- Δ ≤ 5 (Bonamy–Perrett);
+- some planar classes (Botler–Jiménez–Sambinelli).
+
+Pyber and Fan cover graphs whose even subgraph is a forest, or whose even subgraph has triangle-free blocks of max degree ≤ 3, i.e. the opposite extreme. (These citations are from memory and must be checked against the literature before any manuscript uses them.)
+
+**Consequences for the programme.**
+1. No local lift can settle Test1 by itself. The triangle, forest and forest-through-r lifts all have the form "remove a T-join forest of B, take a Lovász decomposition, re-append terminal edges". On a cone this is the classical heuristic for Eulerian Gallai, and it fails on the cone over K_{2,6} (§25 addendum).
+2. Cones and near-cones (d(z) close to n − 1) are where the difficulty sits. The lifts settle 2,435 of the 2,438 no-data roots at order 9, and the triangle base holds at every root that has data.
+3. The direction worth pursuing is an **inductive** argument on B, for Eulerian B with a root, rather than a single base. Possible tools:
+   - reduction at vertices of degree 2 of B, which are the degree-3 vertices of J adjacent to z, as for the y_i in K_{2,6};
+   - the Eulerian Gallai literature.
+
+   A useful exact target is rooted Gallai for 2-connected Eulerian B of even order ≤ 10 (exhaustive), together with the reducible configurations it exposes.

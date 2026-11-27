@@ -1643,6 +1643,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 - **ST**: the child (G − gx, c, A) is non-local at the new even vertex x. "L1\* + EE at *every* x ∈ N(g)" fails (39/2,210 at n = 7, always N(x) ∩ A ≠ ∅); "for *some* x" (= L1E, which implies ST) never fails to n = 7. So ST is an *existential* statement outside the local region, as l1-induction found.
 - **t6 base (E7)**: a chain z → x1 → y2 → x2 → y3 → x3 = g with ne on {z, y2, y3}, non-local in the dense shapes (agrees with A26/§AD.4). **But in the dense residual it holds for every labelling**: 30 residual graphs (all five shapes, |O| = 8), all 16,032 labellings with x1y2, x2y3 ∈ B have an (E7) base, witnesses checked (E30(F)). The exact DFS stalls on these (UND at 10⁷ nodes on graphs where the unconstrained decomposition is instant); the local search `lsls.py` finds the bases at once.
 - **Triangle base / DL / forest base** (§24–25): free-orientation matchings, non-local (pairs inside N(g)); forest base: in-forest (in-degree = number of children) plus ne on siblings. Our non-local compatibility failures (AE.1, last item) have *fixed* orientations; DL's free orientation removes them in the triangle-base data. This is consistent with DL being the right non-local generalisation of the matching case of CLT-B.
+- **The forest base failure (E29(G)) is the in-degree obstruction.** A parent avoided by the end paths of two children has in-degree two in the constraint digraph, the first relaxation of CLT-B that fails (`EEiW`); the triangle-base session finds that its 3 forest-base counterexamples are caused exactly by the sibling condition (ii). Matchings (in-degree one) survive; in-forests with branching do not.
 
 ### AE.3 Proved (Lean, sorry-free, standard axioms; full build green)
 - **`fan_single_track`: Fan's lemma with end paths** (t6-dense Lemma 4.1, until now paper only), in the stronger one-path form: every new path comes from *one* old path, its vertex set lies in that path plus the target u, and each of its ends outside {u, v} ∪ N(u) is an end of that path. Pieces: `Tracks`, `append_move_track`, `reroute_core_track`, `reroute_move_track`, `fan_exec_track`, `FanPre.adj_of_mem`.
@@ -1665,3 +1666,57 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 1. CLT-B1 for two tails (k = 2), even with |A_i| = 1 (this contains L_N with two pairs; still open).
 2. Formalise (M2)–(M5) for several tails and Prop 6.1 (the multi-tail analogue of `l1starGen_of_blocked`).
 3. A non-local CLT with free orientation containing DL and the forest base: in the data the free choice removes every compatibility failure.
+
+## AF. The triangle base and the disjunctive avoidance conjecture DL (cloud session `claude/triangle-base`, 2026-11-27)
+
+*Experiments: E29. Manuscript: `manuscripts/direct-test1/direct-test1.tex` (§2 lift and converse, §3 conjecture, §6 evidence, §7 toward the conjecture; §4 is the coordinator's forest lift). Lean: `lean/GallaiLean/DirectTest1.lean`, `TriangleBase.lean`. Audit: `research/audit/A28-direct-test1.md`.*
+
+### AF.1 Banked (Lean, sorry-free, standard axioms; full build 18,402 jobs)
+- **`test1At_of_triangleBase`** is the direct lift for every m (manuscript Thm 2.1).
+  - Hypotheses: z is the only even vertex, d(r) ≥ 3, triangle data (`TriangleData`: w, and pairs that are J-edges partitioning N(z) − r − w), and a Lovász decomposition of `triM` = J − zw − {za_i, zb_i, a_ib_i} with a_i ∉ Q(b_i) ∨ b_i ∉ Q(a_i) for every i.
+  - Conclusion: `Test1At`.
+  - Proof: append first (`append_pairs`, which carries the disjunctions through `avoid_of_append`). Then identify J − zw − {za_i, zb_i} with `addLeaf (J − z) r` and finish with `trim_ends` + `exists_two_ends`.
+  - Packaging: `test1_of_triangleBases`, `TriangleBaseConj`, `test1_of_triangleBaseConj`.
+- **Cases of the base** (`TriangleBase.lean`):
+  - `triangleBase_of_packed`: any m, by `separation_set`.
+  - `triangleBase_of_farApart`: one pair, by `separation`.
+  - `triangleBase_of_L1Star` / `_of_L1Blocked`: one pair with a ≁ w or b ≁ w.
+  - `triangleBase_of_E5_E7` (from audit A28): every (E7)-branch base of t6-dense Conj 5.1 is a triangle base at y1, because the base graphs coincide.
+- **DL ⇒ Test1.** `DisjL1` (Conjecture DL), `TriangleData.not_univTwins` and **`test1At_of_disjL1`**: DL gives Test1 at every root whose data have M connected.
+- **The forest lift** (coordinator's §4) is in Lean too: **`test1At_of_forestBase`** (`ForestLift.lean`).
+  - Φ is given as (child, parent) pairs in parent-first order, and the T-join parity is a hypothesis.
+  - `append_forest` carries three invariants: (i), the sibling condition (ii), and ends at the children.
+  - `test1At_of_leafDecomp` is the generic deletion step. Acyclicity is not needed.
+
+### AF.2 What the audit changed (A28)
+- **The conjecture.** The note's Conj 3.1 asserted that data exist at every root. That is false: K_{3,4} + x1x2 has none. It is now restricted to roots with data, as in Lean. Data exist at r iff J[N(z) − r] has a matching of size m − 1; the adjacency of r inside N(z) is irrelevant.
+- **The lift is an equivalence** (Prop 2.2). For fixed data, the triangle base holds iff Test1 holds with every M0 edge terminal. So the conjecture is a PTM-type strengthening of Test1, not a statement of a weaker kind. This is the same lesson as A26 for t6-dense, one level lower.
+- **The comparison with t6-dense is an implication on one branch.** At m = 3, M is t6-dense's base graph, and (E5), (E7) are disjuncts of (2.1). The triangle base drops (E1)–(E4) and weakens (E5), (E7) to disjunctions.
+
+### AF.3 What the data say (E29)
+- **Exhaustive, order ≤ 9, exact.**
+  - The triangle base holds at every root with data of every **2-connected** J: 25,316 roots in 5,849 graphs.
+  - All 59 failures have a cut vertex, and Test1 itself fails at 35 of them.
+  - First data choice: 36,779 of the 36,781 roots with a base at n = 9 have one at the first data choice tried.
+- **Every failure, single-pair or not, is a pair of universal twins** (N(a) = N(b) = C − {a, b}) in a component C of M missing z. This holds for all 243 failing data choices at n = 9, and for the 4 failing data choices among the 88,526 of the 3-connected order-9 graphs.
+- **Multi-pair compatibility: none needed in the data.** There are 0 instances where each pair is satisfiable alone but not jointly. This covers 3-connected TB at n = 9, arbitrary one-even graphs at n = 7, all-odd graphs at n = 8, and random graphs at n = 11 with k ≤ 3 pairs.
+- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. 322 of 324 roots are certified; 2 are still running, and none is proved absent.
+- **Head-to-head with t6-dense.** On the 8 E28 graphs where Conj 5.1 / STL-P was undecided at 46 roots, the triangle base certifies **all 48 roots**. 42 are certified at budget 2·10⁶, the last 6 at 2·10⁷ with five seeds. Every lift was verified. So the triangle base is weaker in form and much easier for the search.
+
+### AF.4 Conjecture DL, and where it sits
+- **DL** (manuscript Conj 7.3). Let G have ≤ 1 even vertex, and let (a_i, b_i) be disjoint pairs of non-adjacent odd vertices, none of them universal twins of its component. Then some Lovász decomposition has a_i ∉ Q(b_i) or b_i ∉ Q(a_i) for every i.
+- **The exception is necessary** (Prop 7.5). In K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition is Hamiltonian. It never applies to M when M is connected, because a_i ≁ z.
+- **Versus L1\*.** With a fixed orientation, one pair is L1\* with |A| = 1, which is admissible iff a ≁ g. For a, b ∈ N(g), the fixed orientation is false in general (`DTw`). In random instances one orientation alone fails in 6% (p = 0.4) to 58% (p = 0.8) of cases, but the disjunction held in every decided instance. In the dense T(6)-i regime every pair lies in N(w): this is the new territory.
+- **Skeptic's note.** DL ⇒ Test1 wherever data exist with M connected, which includes the dense T(6)-i residual. So DL is at least as hard as that frontier. It concentrates the difficulty into one free-orientation single-vertex statement; it does not remove it.
+- **Not proved.** DL(1) when a, b ∈ N(g) and a, b have a common neighbour. The natural attack is the L1\* induction (`l1_strong`) with the disjunction as invariant: a minimal counterexample would have to be blocked for both orientations at once.
+- **Forest lift (coordinator, §4 / synthesis §25).** Its condition (i) p(v) ∉ Q0(v) is a fixed-orientation avoidance on each tree, up to the choice of root. For one-edge trees that choice is exactly DL's disjunction. A forest version of DL would need the root choice as its only freedom. The data above do not test it.
+
+### AF.4′ The forest base is false as stated (E29 (G))
+- At 3 of the 2,438 roots without triangle data in 3-connected graphs of order 9, no forest base exists. Test1 holds at all three. Two independent exact checks agree.
+- The cleanest instance is the cone over K_{2,6} at a degree-7 root (manuscript Example 4.7). There H = J − {z, r} is a star, so the T-join is unique and its leaves are siblings. The 7 branches at r force two siblings onto one path, which violates (ii).
+- Elsewhere the forest lift is very effective: 2,435 of the 2,438 roots have a forest base, and all 12 at order 7 do.
+- A corrected forest conjecture would need a different freedom at such roots, for example forests outside J − {z, r}, or non-forest joins with a modified (ii). It is not proposed here.
+
+### AF.5 For the clt session (§AE)
+- DL is the T(6) test case in its sharpest form. The constraint is a per-pair disjunction of two end-path avoidances, with the universal-twin exception, at one even vertex.
+- The hardest instances found are the residual ∅ graphs and E28's K2 |O| = 8 graphs. Graph6 strings are in E29 and in `t6-dense` E28.

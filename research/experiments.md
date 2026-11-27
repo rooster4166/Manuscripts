@@ -1514,6 +1514,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - 88,522 data choices have a base.
   - The other 4 (d(z) = 8, two graphs) each contain a universal-twin pair in a component of M not containing z.
 - **0 compatibility failures**: whenever each pair's disjunction is satisfiable alone, all of them are jointly.
+- Hence **every data choice with M connected has a base**, which is the strong form predicted by DL (Prop 7.4).
 - Orientations:
   - m = 2: both orientations hold in all 20,052 data choices.
   - m = 3: all four in 45,576 of 45,644.
@@ -1534,6 +1535,14 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
 - **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
 
+**(C′) Reach of the proved cases** (`TriangleBase.lean`): 3-connected J of order 7 and 9, roots with data.
+- m = 2 (11,463 roots):
+  - far-apart (Prop 7.1(b), unconditional): 2,491;
+  - a ≁ w or b ≁ w (Prop 7.2, conditional on L1\*): 9,575, which includes all the far-apart roots;
+  - left over: 1,888 roots where every data choice has a, b ∈ N(w).
+- m = 3: packed pairs (Prop 7.1(a)) at 12 of 10,158 roots.
+- m = 4: at 0 of 1,265 roots.
+
 **(D) Residual families of T(6)-i** (`t6-dense/scripts/gen_resid.py`, budget 2·10⁶, seeds 7, 11, 13).
 
 | family | graphs | roots | certified | undecided | proved absent |
@@ -1542,8 +1551,32 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
 
 **(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
-- The triangle base certifies 42 of their 48 roots at budget 2·10⁶. Every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs is certified.
-- The 6 roots left undecided were rerun at budget 2·10⁷ with five seeds; see below.
+- **The triangle base certifies all 48 of their roots.**
+  - 42 roots are certified at budget 2·10⁶ with seed 7. This covers every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs.
+  - The other 6 are certified at budget 2·10⁷ with seeds 7, 11, 13, 17, 19: the ∅ graph at r = 1, 3; K2 |O|=10 at r = 5; `M^~~Zxv^N~RJZujl_` at r = 1, 3, 5. Each took 23–270 s.
+- Every lift was verified edge by edge.
+- So on the instances where the dense-residual base was out of reach, the triangle base is decided by the same oracle. It is weaker in form, and much easier to find.
+- On order-9 dense cores the two bases coexist at every root and data choice, as far as checked: the auditor's `e7dense.py` compared 18 of the 28 cores (108 of 168 roots) before it was stopped (A28).
+
+**(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
+- n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
+- n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
+- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28) and at 2·10⁸. An exact run with no budget is pending; see the final status below.
+
+**(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
+- **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.
+  - Test1 was decided exactly at each root.
+  - Forest base search: for each w, up to 30 forest T-joins of J − {z, r} (the T-join inside a spanning tree) and up to 8 rootings.
+  - Conditions (i) and (ii) together are exactly route_ext's query C with r_v = {v, p(v)}.
+- **Results.**
+  - Test1 holds at all 2,438 roots.
+  - A forest base was found, and its lift verified, at 2,435.
+  - At the remaining 3 roots, the exhaustive check (every w, every forest T-join via T-join + cycle space, every rooting, exact) finds **no forest base**. An independent brute force over all Lovász decompositions of M agrees (735 and 2,100 decompositions).
+  - Condition (i) alone is satisfiable at every rooting, so the obstruction is the sibling condition (ii).
+- **The counterexamples.**
+  - J = `HsaCB~~`, the cone over K_{2,6}, at both degree-7 roots. Hand proof in manuscript Example 4.7: H is a star, the T-join is unique, and sibling leaves are forced onto one path through r.
+  - J = `HsaAD~}` (d(z) = 6, N(z) independent), at r = 0.
+- **So the forest base conjecture (manuscript Conj 4.5) is false as stated, although Test1 holds at those roots.** At order 7 all 12 roots without triangle data have a forest base.
 
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`), exact search with no budget:
 - n = 13, d(z) = 8, r = 1: base found (184 s);
