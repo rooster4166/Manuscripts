@@ -617,4 +617,85 @@ theorem test1_deg_four (J : SimpleGraph V) [DecidableRel J.Adj] (z : V) (h4 : J.
 
 end test1four
 
+/-! ### On decompositions with at most one end per vertex, Fan's chain is forced -/
+
+section forced
+
+variable [DecidableEq U] {K : SimpleGraph U}
+
+omit [DecidableEq U] in
+theorem two_le_sum_of_mem_ne {α : Type*} (f : α → ℕ) :
+    ∀ (l : List α) {a b : α}, a ∈ l → b ∈ l → a ≠ b → f a + f b ≤ (l.map f).sum
+  | [], _, _, ha, _, _ => absurd ha List.not_mem_nil
+  | c :: t, a, b, ha, hb, hab => by
+    simp only [List.map_cons, List.sum_cons]
+    rcases List.mem_cons.mp ha with rfl | ha'
+    · have hb' : b ∈ t := (List.mem_cons.mp hb).resolve_left (Ne.symm hab)
+      have := List.le_sum_of_mem (List.mem_map_of_mem (f := f) hb')
+      omega
+    · rcases List.mem_cons.mp hb with rfl | hb'
+      · have := List.le_sum_of_mem (List.mem_map_of_mem (f := f) ha')
+        omega
+      · have := two_le_sum_of_mem_ne f t ha' hb' hab
+        omega
+
+omit [DecidableEq U] in
+/-- In a path, the vertex before `u` is unique. -/
+theorem pred_unique_of_isPath {a b z z' u : U} (p : K.Walk a b) (hp : p.IsPath)
+    (h : [z, u] <:+: p.support) (h' : [z', u] <:+: p.support) : z = z' := by
+  obtain ⟨d, hd, hdeq⟩ : ∃ d ∈ p.darts, d.fst = z ∧ d.snd = u := by
+    have hadj : K.Adj z u := Walk.adj_of_infix_support p h
+    exact ⟨⟨(z, u), hadj⟩, Walk.mem_darts_iff_fst_snd_infix_support.mpr h, rfl, rfl⟩
+  obtain ⟨d', hd', hdeq'⟩ : ∃ d ∈ p.darts, d.fst = z' ∧ d.snd = u := by
+    have hadj : K.Adj z' u := Walk.adj_of_infix_support p h'
+    exact ⟨⟨(z', u), hadj⟩, Walk.mem_darts_iff_fst_snd_infix_support.mpr h', rfl, rfl⟩
+  have hnd : (p.darts.map (·.snd)).Nodup := by
+    rw [Walk.map_snd_darts]; exact hp.support_nodup.sublist (List.tail_sublist _)
+  have := List.inj_on_of_nodup_map hnd hd hd' (hdeq.2.trans hdeq'.2.symm)
+  rw [← hdeq.1, ← hdeq'.1, this]
+
+omit [DecidableEq U] in
+/-- In a path, the vertex after `u` is unique. -/
+theorem succ_unique_of_isPath {a b z z' u : U} (p : K.Walk a b) (hp : p.IsPath)
+    (h : [u, z] <:+: p.support) (h' : [u, z'] <:+: p.support) : z = z' := by
+  obtain ⟨d, hd, hdeq⟩ : ∃ d ∈ p.darts, d.fst = u ∧ d.snd = z := by
+    have hadj : K.Adj u z := Walk.adj_of_infix_support p h
+    exact ⟨⟨(u, z), hadj⟩, Walk.mem_darts_iff_fst_snd_infix_support.mpr h, rfl, rfl⟩
+  obtain ⟨d', hd', hdeq'⟩ : ∃ d ∈ p.darts, d.fst = u ∧ d.snd = z' := by
+    have hadj : K.Adj u z' := Walk.adj_of_infix_support p h'
+    exact ⟨⟨(u, z'), hadj⟩, Walk.mem_darts_iff_fst_snd_infix_support.mpr h', rfl, rfl⟩
+  have hnd : (p.darts.map (·.fst)).Nodup := by
+    rw [Walk.map_fst_darts]; exact hp.support_nodup.sublist (List.dropLast_sublist _)
+  have := List.inj_on_of_nodup_map hnd hd hd' (hdeq.1.trans hdeq'.1.symm)
+  rw [← hdeq.2, ← hdeq'.2, this]
+
+/-- **Fan's chain is forced.** If `x` is the end of at most one path of `D`, the predecessor of `u`
+read from `x` is unique. So on a decomposition with at most one end at every vertex (a Lovász
+decomposition) the chain `x_{i+1} = pred(x_i)` of Fan's lemma is determined by `D`, `t` and `u`:
+in the tight configuration the only freedom is the choice of `D` and of the target. -/
+theorem fanPred_unique (D : PathDecomp K) {u x z z' : U} (hx : D.ends x ≤ 1)
+    (h : FanPred D u x z) (h' : FanPred D u x z') : z = z' := by
+  obtain ⟨P, hP, hPc⟩ := h
+  obtain ⟨P', hP', hP'c⟩ := h'
+  have hst : ∀ Q : GPath K, Q.src ≠ Q.tgt := fun Q => Q.src_ne_tgt
+  have hend : ∀ Q : GPath K, (Q.src = x ∨ Q.tgt = x) → 1 ≤ Q.endsAt x := by
+    intro Q hQ
+    unfold GPath.endsAt
+    rcases hQ with h | h <;> simp [h]
+  by_cases hPP : P = P'
+  · subst hPP
+    rcases hPc with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rcases hP'c with ⟨h1', h2'⟩ | ⟨h1', h2'⟩
+    · exact pred_unique_of_isPath P.walk P.isPath h2 h2'
+    · exact absurd (h1.trans h1'.symm) (hst P)
+    · exact absurd (h1'.trans h1.symm) (hst P)
+    · exact succ_unique_of_isPath P.walk P.isPath h2 h2'
+  · exfalso
+    have h1 := hend P (hPc.imp And.left And.left)
+    have h2 := hend P' (hP'c.imp And.left And.left)
+    have := two_le_sum_of_mem_ne (fun Q : GPath K => Q.endsAt x) D.paths hP hP' hPP
+    unfold PathDecomp.ends at hx
+    omega
+
+end forced
+
 end Gallai
