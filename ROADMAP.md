@@ -411,3 +411,9 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Spine paper (2026-11-27).** `manuscripts/spine/spine.tex`, 27 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof.
   - **Audit A15:** two independent referees found no mathematical error. One expository error and one GAP (the paper claimed to be self-contained while quoting Lovász and Hall) were fixed, along with the Lean-pointer mismatches.
   - **Lean names:** all 141 Lean names cited resolve (`SpineCheck.lean`), and 14 main declarations use standard axioms (`SpineAxioms.lean`).
+- **Gallai ⇐ constrained Lovász decompositions, in Lean (2026-11-27, route-descent).** `Gallai.gallai_of_routeRR` and `gallai_of_routeRRExists` (RouteSystem.lean; standard axioms, verified). Gallai follows if every connected even-order graph has a routed pairing of Ev such that, for every transversal M, or for each even y some transversal containing y, the free graph H − routes has a decomposition satisfying all of:
+  - at most one end at every vertex;
+  - an end at every unmarked tail;
+  - RR1/RR2 compatibility.
+  - L1 (`lovasz_avoid_nonadj`) is the one-pair instance and is proved.
+  - **Open:** the L∞ residual (z at distance 3), L_N for 2 pairs, and RR in general.
