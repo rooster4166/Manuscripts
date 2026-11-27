@@ -1,0 +1,513 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad\emph{(Lean: \texttt{#1}.)}}
+\emergencystretch=3em
+
+\title[Fan's lemma at equality]{Fan's lemma at equality:\\ one residual configuration behind four
+Lov\'asz-type problems, a protected-blank form of Fan's lemma, and why flowers do not apply}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Four lines of work on Gallai's path-decomposition conjecture stop at what looks like the same
+place: the one-sided avoidance conjecture $L_1^*$ in its blocked case, the locality statement
+$L_\infty$ ($Q_c\subseteq N[c]$ in all-odd graphs), the end-edge conjecture EE when $u$ and the even
+vertex $z$ have two common neighbours, and the base step of the walk theorem for the
+terminal-matching property PTM$_2$. All four ask for a Lov\'asz decomposition with a one-sided
+property of one protected path, and all four use Lov\'asz's induction with Fan's lemma. We make the
+common obstruction precise.
+
+\begin{itemize}
+\item \emph{The configuration.} On a Lov\'asz decomposition, Fan's chain is forced
+(Proposition~\ref{prop:forced}). The obstruction is a Lov\'asz Case~I step $t\to w$ whose target $w$
+is adjacent to an end $p$ of the protected path. In the leaf graph, $p$ is then a blank of $w$, and
+Fan's inequality is the equality $b(t)=1=|Z(w)|$. The invariant survives exactly when the forced
+chain avoids $p$. Exhaustive data confirm this dichotomy without exception in the $L_\infty$
+residual and in the blocked residual of $L_1^*$, and they show it is \emph{literally} the obstruction
+in three of the four settings: $L_\infty$ (with $p$ the far end of the leaf path), the minimal
+blocked shape of $L_1^*$ (with $p=c$), and PTM instances without an admissible walk (with $p$ the
+short end). The blocked case of $L_1^*$ has in addition a hypothesis-side failure: the instance on
+$G-gu$ is good but not admissible. The $K_4$/$W_4$ base failures of PTM are of a third kind.
+\item \emph{A protected-blank form of Fan's lemma} (Theorem~\ref{thm:protected}): a blank that no
+chain vertex reaches as a predecessor does not count against the supply. As a consequence, the
+tight transfer of $L_1^*$ goes through under an explicit condition on the decomposition
+(Theorem~\ref{thm:l1tight}); at order $7$ the condition can be met in every tight instance.
+\item \emph{Unification.} $L_1^*$ on blocked instances implies both EE (known) and $L_\infty$
+(Theorem~\ref{thm:linfty}). So three of the four residuals are one statement.
+\item \emph{Flowers do not apply} (Section~\ref{sec:flower}). The flower move and receipt-or-flower
+always produce a vertex with two ends, and the equality that forces a flower cannot occur with
+$|T|\ge2$ when every vertex has at most one end. No flower move ends in a Lov\'asz decomposition,
+so none of the four residuals can be closed by it.
+\item \emph{Test~1 at degree four} (Theorem~\ref{thm:test1}): the first deletion test of the
+spine holds at every vertex $z$ of degree four with $J-z$ connected, by two-step descent, without
+PTM.
+\end{itemize}
+Everything stated as a theorem is formalised in Lean~4 with Mathlib
+(\texttt{lean/GallaiLean/TightFan.lean}, no \texttt{sorry}, standard axioms only), except
+Theorem~\ref{thm:tightwalk}, which is proved here on paper. Computations are in a separate
+section; no proof depends on them.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path decomposition} $\cD$ of $G$ partitions $E(G)$ into
+paths with at least one edge; $b_\cD(v)$ is the number of paths of $\cD$ with an end at $v$, and
+$b_\cD(v)\equiv d(v)\pmod2$. A vertex is \emph{even} if its degree is positive and even. A
+\emph{Lov\'asz decomposition} has $b(v)=d(v)\bmod2$ for every $v$; Lov\'asz~\cite{L68} proved that
+a graph with at most one even vertex has one. For an odd vertex $c$, $Q_c$ is the path ending at
+$c$. Write $Z_\cD(w)=\{v\in N(w):b_\cD(v)=0\}$ for the \emph{blanks} of $w$.
+
+Lov\'asz's induction deletes an edge $gu$ at the even vertex $g$, decomposes $G-gu$ (where $u$ is
+the even vertex), and restores $gu$ by Fan's lemma~\cite{Fan05} with source $g$ and target $u$.
+Fan's lemma keeps every vertex set except that one path gains $u$~\cite[Lemma~2.2]{RD}. So a
+property of the vertex set of one protected path survives if the induction supplies it on $G-gu$ and
+the transfer does not spoil it. Four statements of the project are proved this way except in one
+residual configuration each:
+\begin{enumerate}
+\item[(R1)] $L_\infty$ \cite[\S8]{RD}: in a graph with no even vertex, some Lov\'asz decomposition
+has $V(Q_c)\subseteq N[c]$. Through a leaf $\ell$ at $c$, Lov\'asz's induction proves it except
+when the even vertex $z$ is at distance $3$ from $c$, every neighbour of $z$ is at distance $2$,
+and $d(z)\ge4$ or $z$ lies on a triangle.
+\item[(R2)] $L_1^*$ \cite{L1S}: with at most one even vertex $g$, some Lov\'asz decomposition has
+$Q_c\cap A=\emptyset$ whenever $A\cap(N[c]\cup N(g))=\emptyset$. It is reduced to \emph{blocked}
+instances: $c\notin N(g)$ and every neighbour of $g$ is adjacent to $A\setminus\{g\}$.
+\item[(R3)] EE \cite{PE}: if $z$ is the only even vertex and $u\in N(z)$, then $uz$ is terminal
+at $u$ in some Lov\'asz decomposition. It is open when $|N(u)\cap N(z)|\ge2$, and it follows from
+the blocked case of $L_1^*$ \cite[Corollary~4.4]{L1S}.
+\item[(R4)] PTM$_2$ \cite{TM}: two prescribed terminal edges $ab$, $xy$ on different paths. The
+walk theorem reduces it to a separation problem in a base graph; that base problem fails at local
+copies of the $K_4$/$W_4$ obstruction, and in instances with no admissible walk.
+\end{enumerate}
+It had been suggested that all four are ``the same tight case of Fan's inequality'' and that the
+flower move of~\cite[\S7]{ES}, which is designed for Fan's equality case, might close them. This
+paper tests both suggestions.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Section~\ref{sec:fan}: Fan's chain is forced on Lov\'asz decompositions
+(Proposition~\ref{prop:forced}), and Fan's lemma holds with \emph{protected blanks}
+(Theorem~\ref{thm:protected}).
+\item Section~\ref{sec:four}: the precise configuration in each of (R1)--(R4), the dichotomy
+``the invariant survives iff the forced chain avoids $p$'', the tight transfer for $L_1^*$
+(Theorem~\ref{thm:l1tight}), $L_\infty$ from blocked $L_1^*$ (Theorem~\ref{thm:linfty}), and a
+tight walk theorem for PTM (Theorem~\ref{thm:tightwalk}). The answer to ``literally one
+configuration?'' is: (R1), the minimal shape of (R2), and the no-walk part of (R4) are literally one
+configuration; (R2) also has a hypothesis-side part; (R3) is (R2); the $K_4$/$W_4$ part of (R4) is
+different.
+\item Section~\ref{sec:flower}: the flower move never ends in a Lov\'asz decomposition.
+\item Section~\ref{sec:test1}: Test~1 of the spine at degree four, without PTM.
+\item Section~\ref{sec:comp}: the computations (all exhaustive unless stated).
+\item Section~\ref{sec:open}: what is left, and the precise new obstruction.
+\end{enumerate}
+
+\subsection*{Honest status}
+None of (R1)--(R4) is closed here. What is proved is the exact form of the obstruction, a
+conditional closure of the tight case, the reduction of (R1) and (R3) to one statement, and a
+complete negative answer for flower moves. The computations show that the remaining difficulty is
+in the \emph{induction hypothesis}, not in a missing move: in the $L_\infty$ residual there are
+instances in which every target admits an induction decomposition that fails
+(Section~\ref{sec:comp}, E26(B)).
+
+\section{Fan's chain, and Fan's lemma with protected blanks}\label{sec:fan}
+
+Let $\cD$ decompose $K$, let $w$ be a vertex and $t\notin N[w]$. For a path $P\in\cD$ with an end
+$x$ that contains $w$, the \emph{predecessor} of $w$ read from $x$ is the vertex of $P$ just before
+$w$ when $P$ is read from $x$. A \emph{chain} from $t$ is a sequence $t=x_0,x_1,\dots,x_k$ of
+distinct vertices in which $x_{i+1}$ is a predecessor of $w$ read from $x_i$, and some path with an
+end at $x_k$ avoids $w$. Executing a chain (re-route at $x_0,\dots,x_{k-1}$, then append $x_kw$)
+gives a decomposition of $K+tw$ of the same size with $b-\mathbf 1_t+\mathbf 1_w$, every path of
+which lies in a path of $\cD$ together with $w$ \cite[Lemma~2.2]{RD}\lean{fan\_exec\_supp}. Fan's
+lemma says a chain exists when $\sum_{t\in T}b(t)>|Z(w)|$ for a set $T$ of non-neighbours of
+$w$\lean{fan\_exists\_chain}.
+
+\begin{proposition}[the chain is forced]\label{prop:forced}
+If $b_\cD(x)\le1$, the predecessor of $w$ read from $x$ is unique when it exists. Hence, if
+$b_\cD\le1$ everywhere, Fan's chain from $t$ is determined by $\cD$, $t$ and $w$: $x_{i+1}$ is the
+predecessor of $w$ on the unique path ending at $x_i$.\lean{fanPred\_unique}
+\end{proposition}
+
+\begin{proof}
+At most one path has an end at $x$, and it has only one end there. In a path, the vertex before
+$w$ (in a fixed reading direction) is unique, because the support has no repeated vertex.
+\end{proof}
+
+So in the Case~I steps of all four problems (where $\cD$ is a Lov\'asz decomposition of $G-gu$) the
+only freedom is the choice of the target $u$ and of the decomposition supplied by the induction.
+
+\begin{theorem}[Fan's lemma with protected blanks]\label{thm:protected}
+Let $\cD$ decompose $K$, let $T$ be a set of non-neighbours of $w$ with $w\notin T$, and let $B$ be
+a set of \emph{protected} vertices with $B\cap T=\emptyset$, such that no vertex of
+$T\cup N(w)$ has a vertex of $B$ as its predecessor of $w$. If
+\[\bigl|\{v\in N(w): b_\cD(v)=0,\ v\notin B\}\bigr|<\sum_{t\in T}b_\cD(t),\]
+then some $t\in T$ starts a chain, and the chain avoids $B$. Consequently $K+tw$ has a
+decomposition of the same size, with end counts $b_\cD-\mathbf 1_t+\mathbf 1_w$ (in particular
+unchanged on $B$), every path of which lies in a path of $\cD$ together with $w$.
+\lean{fan\_exists\_chain\_protected, fan\_grouped\_protected\_supp, fan\_single\_protected\_supp}
+\end{theorem}
+
+\begin{proof}
+Suppose no $t\in T$ starts a chain, and let $R$ be the set of last vertices of the sequences
+$t=x_0,\dots,x_j$ ($t\in T$) of distinct vertices with each $x_{i+1}$ a predecessor read from $x_i$.
+Every vertex of $R\setminus T$ is a predecessor, hence adjacent to $w$. By induction along the
+sequence, every vertex of $R$ lies in $T\cup N(w)$, so its successor in the sequence is not in $B$;
+thus $R\cap B=\emptyset$. Since there is no chain, every path with an end in $R$ contains $w$, and
+the predecessor read from that end is in $R$. Map each end in $R$ to the edge between $w$ and that
+predecessor. Two ends of one path give the two different edges of the path at $w$, and different
+paths have disjoint edges. So $\sum_{x\in R}b(x)\le|N(w)\cap R|$. On the other hand $T$ and
+$N(w)\cap R$ are disjoint subsets of $R$, and every vertex of $N(w)\cap R$ with no end is a blank
+outside $B$. Hence
+\[\sum_{t\in T}b(t)+|N(w)\cap R|-\bigl|\{v\in N(w): b(v)=0,\ v\notin B\}\bigr|\le\sum_{x\in R}b(x)
+\le |N(w)\cap R|,\]
+which contradicts the hypothesis. The chain found avoids $B$ by the same induction. The rest is
+Lemma~2.2 of~\cite{RD}.
+\end{proof}
+
+With $B=\emptyset$ this is Fan's lemma. The case that matters is $B=\{p\}$ for one blank $p$ with
+$\sum_Tb=1$: Fan's inequality $1>|Z(w)|=1$ fails, but the protected form still applies.
+
+\begin{corollary}[one protected blank]\label{cor:oneblank}
+Let $b_\cD\le1$, $b_\cD(t)=1$, and $Z(w)=\{p\}$ with $p\ne t$. Let $P_p$ be the path through the
+edge $pw$ and $e$ its end on the side of $p$ (reading from $e$, the vertex before $w$ is $p$). Then:
+\begin{enumerate}
+\item the forced chain from $t$ either ends at a path avoiding $w$, or reaches $p$ and stops
+there; it reaches $p$ exactly when it reaches $e$;
+\item if $e\notin\{t\}\cup N(w)$, the conclusion of Theorem~\ref{thm:protected} holds with $B=\{p\}$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+$p$ has no end, so it is interior to $P_p$, and $pw$ is its only edge to $w$. Reading $P_p$ from
+its other end, the vertex before $w$ is $w$'s other neighbour on $P_p$, not $p$. So $e$ is the only
+vertex having $p$ as predecessor. Chain vertices after $t$ are adjacent to $w$ and have one end
+(Proposition~\ref{prop:forced}); the chain is injective (two vertices with the same predecessor
+would be the two ends of one path, and then the predecessors differ), so it terminates, and it
+cannot continue from $p$. This gives (1). For (2), the hypothesis of Theorem~\ref{thm:protected}
+on $B=\{p\}$ is exactly $e\notin T\cup N(w)$.
+\end{proof}
+
+\begin{definition}[the tight configuration]\label{def:tight}
+A \emph{tight transfer} is a Case~I step: a decomposition $\cD'$ of $K'=K-tw$ with $b\le1$,
+$b(t)=1$, $b(w)=0$, $Z(w)=\emptyset$, and a protected path $P^*\in\cD'$ with an end $p\in N(w)$,
+where the property to be kept is a property of $V(P^*)$ that the final append of $w$ to $P^*$
+(or the re-routing of $P^*$'s end away from $p$) would destroy. In the leaf graph that freezes $P^*$,
+$p$ is a blank of $w$, and Fan's inequality reads $b(t)=1=|Z(w)|$.
+\end{definition}
+
+\section{The four residuals, precisely}\label{sec:four}
+
+\subsection{\texorpdfstring{$L_\infty$}{L-infinity}}
+Let $K$ have a leaf $\ell$ with neighbour $c$, at most one even vertex $z$, and put
+$B=\{\ell\}\cup N[c]$; the statement GL is that some Lov\'asz decomposition has its $\ell$-path inside
+$B$ \cite[\S8]{RD}. In the residual configuration, delete $zu$ for some $u\in N(z)$ (so $u\notin B$),
+take a decomposition $\cD'$ of $K-zu$ whose $\ell$-path $P^*$ lies in $B$, and let $y$ be the far end
+of $P^*$.
+
+\begin{proposition}\label{prop:linfty}
+The Fan transfer $z\to u$ applied to $\cD'$ keeps $P^*$ unchanged unless the forced chain from $z$
+reaches $y$; if it reaches $y$, then $y\in N(u)$, the chain stops at $y$, and $P^*$ gains $u\notin
+B$. If $e$, the end on $y$'s side of the path through $yu$, is not in $\{z\}\cup N(u)$, the chain
+does not reach $y$.
+\end{proposition}
+
+\begin{proof}
+$P^*$ does not contain $u$, so it is never re-routed, and it changes only if the chain ends at one of
+its ends. The leaf $\ell$ is not adjacent to $u$ and is not $z$, so it is never a chain vertex. If
+the chain reaches $y$, the only path ending at $y$ is $P^*$, which avoids $u$, so $u$ is appended to
+$P^*$. The last sentence is Corollary~\ref{cor:oneblank} in the graph with a second leaf hung at $y$
+(which makes $y$ a blank of $u$).
+\end{proof}
+
+So the $L_\infty$ residual is the tight configuration with $p=y$. In the data (E26(B), all $133$
+residual instances of order $9$, all $409{,}416$ pairs $(u,\cD')$), the transfer fails exactly when
+the forced chain reaches $y$.
+
+\subsection{\texorpdfstring{$L_1^*$}{L1*}: the blocked case}
+For a blocked instance $(G,c,A)$ and $u\in N(g)$, the instance $(G-gu,c,A)$ is never admissible,
+because $u$ has a neighbour in $A\setminus\{g\}$. This is a \emph{hypothesis-side} failure. The data
+show that it is the only failure when a good target lies outside $N(c)$: at order $9$, every one of
+the $2{,}414$ irreducible blocked instances with $|A|\le2$ has a target $u$ for which $(G-gu,c,A)$
+is good although inadmissible. When such $u\notin N(c)$ exists, the protected transfer of
+\cite[Lemma~2.4]{L1S} finishes the instance. In the others, including \emph{every} instance of the
+minimal shape ($g\in A$, $d(g)=2$, $N(g)\subseteq N(c)$ independent), every good target lies in
+$N(c)$. Then, with a leaf hung at $c$, $c$ is a blank of $u$, and the transfer is tight with $p=c$:
+the plain transfer succeeds exactly when the forced chain avoids $c$ (E26(A)).
+
+\begin{theorem}[the tight transfer for $L_1^*$]\label{thm:l1tight}
+Let $g$ be the only even vertex of $G$, let $c$ be odd, and let $x\in N(g)$ with $x\ne c$ and
+$x\notin A$. Let $\cD_3$ decompose the leaf graph $G^{+c}-gx$ (a leaf $\ell$ hung at $c$,
+the edge $gx$ removed) with $b(c)=0$, $b(\ell)=1$ and the Lov\'asz end counts of $G-gx$ elsewhere,
+and suppose that the leaf path avoids $A$ and that no vertex of $\{g\}\cup N_{G-gx}(x)$ has $c$ as
+its predecessor of $x$ in $\cD_3$. Then $G$ has a Lov\'asz decomposition with
+$Q_c\cap A=\emptyset$.\lean{l1\_tight\_transfer}
+\end{theorem}
+
+\begin{proof}
+The blanks of $x$ in the leaf graph are $c$ (if $c\in N(x)$) and nothing else: every other neighbour
+of $x$ in $G-gx$ is odd and keeps its end, and $\ell$ is not adjacent to $x$. Apply
+Theorem~\ref{thm:protected} with $T=\{g\}$, $B=\{c\}$: $b(g)=1>0$. The new decomposition of $G^{+c}$
+has $b(g)=0$, $b(x)=1$, $b(c)=0$, and its leaf path lies in the old leaf path plus $x\notin A$.
+Delete the leaf \cite[Lemma~2.3(ii)]{L1S}\lean{avoid\_of\_apexSep}.
+\end{proof}
+
+The hypothesis on $\cD_3$ holds, for instance, when the path of $\cD'$ through $cx$ is $Q_c$ with
+terminal edge $xc$ (the case already used in \cite{L1S}), or when its end on $c$'s side lies outside
+$\{g\}\cup N(x)$. At order $7$ every tight blocked instance has a good decomposition of $G-gx$
+satisfying it, and the condition never fails to deliver (E26(A)).
+
+\subsection{EE, and \texorpdfstring{$L_\infty$}{L-infinity} from blocked \texorpdfstring{$L_1^*$}{L1*}}
+\begin{theorem}\label{thm:linfty}
+If every blocked instance of $L_1^*$ is good, then $L_\infty$ and EE hold.
+\lean{lInfty\_of\_l1Blocked, ee\_of\_l1Blocked}
+\end{theorem}
+
+\begin{proof}
+By \cite[Theorem~4.3]{L1S} every instance is good. In a graph with no even vertex,
+$A=V\setminus N[c]$ is admissible, and avoiding it means $V(Q_c)\subseteq N[c]$. EE is
+\cite[Corollary~4.4]{L1S}.
+\end{proof}
+
+So (R1), (R2) and (R3) are three faces of one statement. In (R3) the instances that EE needs are not
+blocked at the first level; the trouble appears deeper in the reductions. In $\mathrm{CP}(3)$ plus an
+apex (the instance where recursive certificates fail \cite{L1S}) every Case~I target of
+$(K-uz,z,\{u\})$ lies in $N(c)$, so every step is tight at $c$; of the $456$ good decompositions of
+$G-gx$, $320$ transfer successfully and $168$ satisfy the condition of Theorem~\ref{thm:l1tight}
+(E26(D)).
+
+\subsection{PTM: walks through the short end's neighbourhood}
+In the walk theorem \cite[Theorem~3.2]{TM}, the walk $P=p_0\cdots p_k$ from the long end $y$ to the
+short end $a$ is \emph{admissible} if no inner vertex lies in $N(x)$, where $x$ is the endless short
+end of the other edge. Walking back is a sequence of Fan transfers with targets $p_i$; admissibility
+keeps $x$ out of $Z(p_i)$. If $p_i\in N(x)$, then $Z(p_i)=\{x\}$ and the step is a tight transfer
+with $p=x$.
+
+\begin{theorem}[tight walk theorem]\label{thm:tightwalk}
+In the walk theorem, drop the condition $p_i\notin N(x)$ $(0<i<k)$. If at each step $i$ with
+$p_i\in N(x)$ the current decomposition has no vertex of $\{p_{i+1}\}\cup N(p_i)$ with $x$ as its
+predecessor of $p_i$ (for instance, the end on $x$'s side of the path through $xp_i$ lies outside
+$\{p_{i+1}\}\cup N(p_i)$), then the conclusion of the walk theorem holds.
+\end{theorem}
+
+\begin{proof}
+The proof of \cite[Theorem~3.2]{TM} uses admissibility only to apply Fan's lemma at the targets
+$p_i$ with $Z(p_i)=\emptyset$. At a step with $Z(p_i)=\{x\}$, use Theorem~\ref{thm:protected} with
+$B=\{x\}$ instead. It keeps $b(x)=0$ and gives the same vertex-set conclusion, so the three
+separations survive as before.
+\end{proof}
+
+This is conditional on the intermediate decompositions, and it is not formalised. In the data it
+closes every one of the $68$ instances of order $8$ that have no admissible walk (E26(C)).
+
+\subsection{Summary}
+\begin{center}\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+residual & blank $p$ & failure & literally tight?\\
+\midrule
+$L_\infty$ (R1) & far end $y$ of the leaf path & transfer & yes\\
+$L_1^*$ blocked, $u\in N(c)$ (R2) & $c$ & hypothesis and transfer & yes, given the hypothesis\\
+$L_1^*$ blocked, $u\notin N(c)$ (R2) & --- & hypothesis (admissibility) & no\\
+EE, two common neighbours (R3) & as (R2) & reduces to (R2) & ---\\
+PTM, no admissible walk (R4) & short end $x$ & transfer & yes\\
+PTM, $K_4$/$W_4$ base (R4) & --- & base separation & no\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The common form, as a lemma-shaped statement:
+\begin{conjecture}[tight transfer]\label{conj:tight}
+In a tight transfer (Definition~\ref{def:tight}) arising from Lov\'asz's induction for $L_1^*$ or for
+GL, among the decompositions that the induction hypothesis can supply, some has the end of the path
+through $pw$ on $p$'s side unreached by the forced chain.
+\end{conjecture}
+As stated this is a statement about the induction hypothesis, and E26(B) shows that some
+strengthening of the hypothesis is needed: no choice of the target alone suffices.
+
+\section{Flowers do not produce Lov\'asz decompositions}\label{sec:flower}
+
+The flower lemma \cite[\S7]{ES} takes paths $P_1,\dots,P_k$ closed into cycles $C(P_i)$ and a
+transversal $L$ with one edge $e_i$ of each cycle, and returns the $k+1$ paths $C(P_i)-e_i$ and $L$,
+with two ends at every vertex of $L$ and none elsewhere\lean{flower\_decomp}. Receipt-or-flower adds
+untouched paths\lean{flower\_decomp\_rest}. ``Equality forces a flower'': if $b(s)=|T|$, $b=1$ on
+$T$ and $0$ elsewhere, the paths join $s$ to $T$ and close into cycles\lean{hub\_cycles}.
+
+\begin{proposition}\label{prop:noflower}
+\begin{enumerate}
+\item If a decomposition satisfies the hypothesis of \texttt{hub\_cycles} and has at most one end at
+every vertex, then $|T|\le1$.\lean{hub\_cycles\_card\_le\_one}
+\item Every decomposition with the end counts produced by the flower lemma or by
+receipt-or-flower has a vertex with at least two ends (every vertex of $L$).
+\lean{flower\_decomp\_not\_le\_one, flower\_decomp\_rest\_not\_le\_one}
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) $b(s)=|T|\le1$. (2) The first vertex of $L$ has two ends from the flower, plus those of the
+untouched paths.
+\end{proof}
+
+So no flower move ends in a decomposition with $b\le1$, and in particular never in a Lov\'asz
+decomposition; and the state in which equality forces a flower never arises inside Lov\'asz's
+induction except trivially (one path from $s$ to the single vertex of $T$). Each of (R1)--(R4)
+asks for a Lov\'asz decomposition, so no flower move closes any of them, at any order. The flower
+move spends a \emph{spare path} \cite[\S7]{ES}: it is a tool for the rooted
+tests (two ends at the root, budget one more path than the parity minimum), not for Lov\'asz-type
+invariants, which have no spare path. The tight configuration of Definition~\ref{def:tight} is a
+different equality case of Fan's counting: equality at a \emph{target} with no ends, not at a
+\emph{hub} carrying $|T|$ ends.
+
+\section{Test 1 at a vertex of degree four}\label{sec:test1}
+
+The motivation for PTM$_2$ at $d(z)=4$ was the first deletion test of the spine through STL
+\cite{TM}. That test needs no PTM:
+
+\begin{theorem}\label{thm:test1}
+Let $z$ be the only even vertex of $J$, with $d(z)=4$ and $J-z$ connected. Then for every
+$r\in N(z)$, $J-z$ has a partition into $(|J|-1)/2$ paths with two ends at $r$.
+\lean{test1\_deg\_four}
+\end{theorem}
+
+\begin{proof}
+$J-z$ has even order $|J|-1$ and exactly four even vertices, the neighbours of $z$ (connectivity
+makes every degree positive). By the endpoint matroid for four even vertices \cite{ES}
+(\texttt{emc\_four}, from two-step faithful descent, which uses only Lov\'asz's theorem and Fan's
+transfers), for any two further even vertices $x,y$ one of $\{r,x\}$, $\{r,y\}$ is realisable. A
+realisation of a pair has $\#\mathrm{odd}/2+2=(|J|-1)/2$ paths and two ends at $r$.
+\end{proof}
+
+So the $K_4$/$W_4$ base failures of PTM do not obstruct Test~1 at degree four; PTM matters as a
+composition mechanism for larger degrees, not for this consequence. (The deletion tests at $d=4$ were
+already settled, by published results and by two-step descent; the point here is that the spine's
+Test~1 at degree four is now a Lean theorem that does not depend on PTM.)
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational. No proof above depends on it.} Scripts are in
+\nolinkurl{manuscripts/tight-fan/scripts/}. \texttt{tf.py} enumerates all path decompositions with
+prescribed end counts by transition systems and runs Fan's chain exactly, with every choice;
+it agrees with the oracle \texttt{l1s} of \cite{L1S} on all $1{,}772$ random avoidance queries of
+orders $5$--$7$ (\texttt{xcheck.py}). In every Case~I step tested below the Fan image was unique,
+as Proposition~\ref{prop:forced} predicts.
+
+\textbf{E26(A), $L_1^*$ blocked.} (\texttt{exp1c.py}, \texttt{exp1d.py}, \texttt{exp1e.py}.)
+\begin{itemize}
+\item Order $9$, the $2{,}414$ blocked instances with $|A|\le2$ that survive every reduction of
+\cite{L1S} one level deep: every one has a target $u$ with $(G-gu,c,A)$ good although
+inadmissible. In all $162+33$ ``separated'' instances and in $637$ of the $1{,}019$ instances with
+$g\in A$ and $d(g)=4$, such a $u$ lies outside $N(c)$. In all $1{,}200$ instances with $g\in A$ and
+$d(g)=2$, and in the other $382$ with $d(g)=4$, every good $u$ lies in $N(c)$.
+\item With $A=V\setminus(N[c]\cup N(g))$ (when this set equals its boundary $\partial C$),
+order $9$, all $12{,}622$ blocked instances: every one has a good target, and in $2{,}938$ of them
+every good target lies in $N(c)$.
+\item Order $7$, every good decomposition $\cD'$ of $G-gu$ and its forced Fan image. With
+$|A|\le2$: among the transfers with $u\in N(c)$, $896$ have a chain avoiding $c$, and all give a
+good result; $696$ have a chain through $c$, and all give a bad result; the $56$ transfers with
+$u\notin N(c)$ all succeed. With $A$ maximal: $930$ and $515$, and $618$ with $u\notin N(c)$, all
+successful.
+\item The sufficient condition of Theorem~\ref{thm:l1tight} holds for some good $\cD'$ in every
+tight instance of order $7$ ($14$ with $|A|\le2$, $49$ with $A$ maximal), and it never failed to
+deliver. ORDER9-E1E
+\end{itemize}
+
+\textbf{E26(B), $L_\infty$ residual} (\texttt{linf.py}). All connected graphs of order $7$ and $9$
+with a leaf $\ell$ at $c$, exactly one even vertex $z$, $d(c,z)=3$, $N(z)$ at distance $2$, and
+$d(z)\ge4$ or $z$ on a triangle: $3$ and $133$ instances. Every one satisfies GL. For every target
+$u\in N(z)$ and every decomposition $\cD'$ of $K-zu$ with its $\ell$-path in $B$, we ran the forced
+chain. Order $9$: $409{,}416$ transfers; the far end $y$ is a neighbour of $u$ in $206{,}780$ of
+them; the chain reaches $y$ in $53{,}964$, and exactly these fail. Every instance has a successful
+pair $(u,\cD')$. But in $59$ of the $133$ instances \emph{every} target $u$ admits a failing
+$\cD'$; in the other $74$ some $u$ succeeds for every $\cD'$.
+
+\textbf{E26(C), PTM} (\texttt{ptmwalk.py}). The $832$ NOBASE instances of order $8$ of
+\cite[E24(F)]{TM}, with walks of any length, admissible or not, base decompositions enumerated
+exactly, and the walk back run with exact Fan chains; every success is checked directly on $G$.
+\begin{itemize}
+\item The $68$ instances with no admissible walk: all $68$ are closed by a tight walk; trying walks
+in order of length, the shortest successful walk has length $2$ in $63$ of them and $3$ in $5$.
+\item The $764$ $K_4$/$W_4$-type instances: PTM-SAMPLE
+\end{itemize}
+
+\textbf{E26(D), the named instances} (\texttt{ee\_inst.py}). $\mathrm{CP}(3)$ plus an apex
+(\texttt{F]\char`~vw}) and the double $K_4$ (\texttt{FQhVw}): for each EE pair, the instances
+$(K-uz,z,\{u\})$ and the triangle instances, none blocked at the first level. In $\mathrm{CP}(3)$ plus
+apex every Case~I target of $(K-uz,z,\{u\})$ is adjacent to $c$ (tight at $c$): $456$ good
+decompositions of $G-gx$ per target, $320$ successful transfers, $168$ satisfying the condition of
+Theorem~\ref{thm:l1tight}. In the double $K_4$, every target of $(K-uz,z,\{u\})$ is tight at $c$
+and all $108$ good decompositions per target satisfy the condition; the triangle instances have their
+tight targets with no good decomposition at all (hypothesis side), and their other targets succeed.
+
+\section{What remains: the precise obstruction}\label{sec:open}
+
+\begin{enumerate}
+\item \emph{The flower move closes nothing here} (Section~\ref{sec:flower}); this is a structural
+fact, not a matter of small cases.
+\item \emph{$L_\infty$.} The obstruction $Y$ is: a residual instance together with, for each target
+$u\in N(z)$, an induction decomposition of $K-zu$ whose forced chain reaches the far end of the
+leaf path. It occurs in $59$ of $133$ residual instances of order $9$. Any proof must therefore
+strengthen the induction hypothesis to control the decomposition (for example, by prescribing that
+the far end of the leaf path, or the end on its side of the path through $yu$, avoid $N(u)$), not
+only choose the target.
+\item \emph{$L_1^*$.} Two things are needed: an inductive class that contains the inadmissible but
+good instances $(G-gu,c,A)$ (every irreducible blocked instance of order $9$ has one); and, when all
+good targets lie in $N(c)$, a decomposition meeting the condition of Theorem~\ref{thm:l1tight}.
+\item \emph{PTM.} The no-walk instances are the tight configuration and the tight walk handles
+them in the data; the $K_4$/$W_4$ base failures are a base-side obstruction not touched by Fan
+equality; Test~1 at $d(z)=4$ no longer depends on them (Theorem~\ref{thm:test1}).
+\end{enumerate}
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/TightFan.lean} (Lean~4, Mathlib; no \texttt{sorry}; \texttt{\#print
+axioms} shows only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; the full
+library builds).
+\begin{itemize}
+\item \texttt{fanPre\_protect}, \texttt{fan\_exists\_chain\_protected},
+\texttt{fan\_grouped\_protected\_supp}, \texttt{fan\_single\_protected\_supp}:
+Theorem~\ref{thm:protected}.
+\item \texttt{fanPred\_unique} (with \texttt{pred\_unique\_of\_isPath},
+\texttt{succ\_unique\_of\_isPath}): Proposition~\ref{prop:forced}.
+\item \texttt{l1\_tight\_transfer}: Theorem~\ref{thm:l1tight}.
+\item \texttt{LInfty}, \texttt{lInfty\_of\_l1StarGen}, \texttt{lInfty\_of\_l1Blocked}:
+Theorem~\ref{thm:linfty}.
+\item \texttt{hub\_cycles\_card\_le\_one}, \texttt{flower\_decomp\_not\_le\_one},
+\texttt{flower\_decomp\_rest\_not\_le\_one}: Proposition~\ref{prop:noflower}.
+\item \texttt{test1\_deg\_four}: Theorem~\ref{thm:test1}.
+\end{itemize}
+Not formalised: Corollary~\ref{cor:oneblank}(1), Proposition~\ref{prop:linfty},
+Theorem~\ref{thm:tightwalk}, and the computations.
+
+\begin{thebibliography}{9}
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
+(2005) 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
+1966), Academic Press, New York, 1968, 231--236.
+\bibitem{ES} J.~Williams, Endpoint structure of path decompositions, manuscript
+(\texttt{manuscripts/endpoint-structure}), 2026.
+\bibitem{L1S} J.~Williams, The avoidance conjecture $L_1^*$, manuscript
+(\texttt{manuscripts/l1star}), 2026.
+\bibitem{PE} J.~Williams, Prescribed end edges in Lov\'asz decompositions with one even vertex,
+manuscript (\texttt{manuscripts/prescribed-end}), 2026.
+\bibitem{RD} J.~Williams, Route descent, manuscript (\texttt{manuscripts/route-descent}), 2026.
+\bibitem{TM} J.~Williams, Two terminal edges at once: the terminal-matching property, manuscript
+(\texttt{manuscripts/terminal-matching}), 2026.
+\end{thebibliography}
+\end{document}

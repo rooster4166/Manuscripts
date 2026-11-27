@@ -1,0 +1,62 @@
+== CP(3)+apex F]~vw z = 6 {0: [2, 3, 4, 5, 6], 1: [2, 3, 4, 5, 6], 2: [0, 1, 4, 5, 6], 3: [0, 1, 4, 5, 6], 4: [0, 1, 2, 3, 6], 5: [0, 1, 2, 3, 6], 6: [0, 1, 2, 3, 4, 5]}
+ pair (z,u) = (6, 0) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 0, 'targets': [(2, 'inN(c)', 456, 320, 168), (3, 'inN(c)', 456, 320, 168), (4, 'inN(c)', 456, 320, 168), (5, 'inN(c)', 456, 320, 168)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'inN(c)', 52, 34, 28), (3, 'out', 64, 64, 0), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'inN(c)', 52, 34, 28), (2, 'out', 64, 64, 0), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'inN(c)', 52, 34, 28), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (5, 'out', 64, 64, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'inN(c)', 52, 34, 28), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (4, 'out', 64, 64, 0)]}
+ pair (z,u) = (6, 1) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 1, 'targets': [(2, 'inN(c)', 456, 320, 168), (3, 'inN(c)', 456, 320, 168), (4, 'inN(c)', 456, 320, 168), (5, 'inN(c)', 456, 320, 168)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 52, 34, 28), (3, 'out', 64, 64, 0), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 52, 34, 28), (2, 'out', 64, 64, 0), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 52, 34, 28), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (5, 'out', 64, 64, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 52, 34, 28), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (4, 'out', 64, 64, 0)]}
+ pair (z,u) = (6, 2) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 2, 'targets': [(0, 'inN(c)', 456, 320, 168), (1, 'inN(c)', 456, 320, 168), (4, 'inN(c)', 456, 320, 168), (5, 'inN(c)', 456, 320, 168)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 64, 64, 0), (3, 'inN(c)', 52, 34, 28), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 64, 64, 0), (3, 'inN(c)', 52, 34, 28), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 52, 34, 28), (5, 'out', 64, 64, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 52, 34, 28), (4, 'out', 64, 64, 0)]}
+ pair (z,u) = (6, 3) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 3, 'targets': [(0, 'inN(c)', 456, 320, 168), (1, 'inN(c)', 456, 320, 168), (4, 'inN(c)', 456, 320, 168), (5, 'inN(c)', 456, 320, 168)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 64, 64, 0), (2, 'inN(c)', 52, 34, 28), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 64, 64, 0), (2, 'inN(c)', 52, 34, 28), (4, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 76, 50, 34)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (2, 'inN(c)', 52, 34, 28), (5, 'out', 64, 64, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (2, 'inN(c)', 52, 34, 28), (4, 'out', 64, 64, 0)]}
+ pair (z,u) = (6, 4) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 4, 'targets': [(0, 'inN(c)', 456, 320, 168), (1, 'inN(c)', 456, 320, 168), (2, 'inN(c)', 456, 320, 168), (3, 'inN(c)', 456, 320, 168)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 64, 64, 0), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 52, 34, 28)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 64, 64, 0), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (5, 'inN(c)', 52, 34, 28)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (3, 'out', 64, 64, 0), (5, 'inN(c)', 52, 34, 28)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (2, 'out', 64, 64, 0), (5, 'inN(c)', 52, 34, 28)]}
+ pair (z,u) = (6, 5) |N(u)&N(z)| = 4
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 5, 'targets': [(0, 'inN(c)', 456, 320, 168), (1, 'inN(c)', 456, 320, 168), (2, 'inN(c)', 456, 320, 168), (3, 'inN(c)', 456, 320, 168)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 64, 64, 0), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (4, 'inN(c)', 52, 34, 28)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 64, 64, 0), (2, 'inN(c)', 76, 50, 34), (3, 'inN(c)', 76, 50, 34), (4, 'inN(c)', 52, 34, 28)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (3, 'out', 64, 64, 0), (4, 'inN(c)', 52, 34, 28)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 76, 50, 34), (1, 'inN(c)', 76, 50, 34), (2, 'out', 64, 64, 0), (4, 'inN(c)', 52, 34, 28)]}
+== double K4 FQhVw z = 6 {0: [2, 4, 6], 1: [3, 5, 6], 2: [0, 4, 6], 3: [1, 5, 6], 4: [0, 2, 6], 5: [1, 3, 6], 6: [0, 1, 2, 3, 4, 5]}
+ pair (z,u) = (6, 0) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 0, 'targets': [(2, 'inN(c)', 108, 108, 108), (4, 'inN(c)', 108, 108, 108)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 4, 4, 0), (3, 'out', 4, 4, 0), (4, 'inN(c)', 0, 0, 0), (5, 'out', 4, 4, 0)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 4, 4, 0), (2, 'inN(c)', 0, 0, 0), (3, 'out', 4, 4, 0), (5, 'out', 4, 4, 0)]}
+ pair (z,u) = (6, 1) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 1, 'targets': [(3, 'inN(c)', 108, 108, 108), (5, 'inN(c)', 108, 108, 108)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (2, 'out', 4, 4, 0), (4, 'out', 4, 4, 0), (5, 'inN(c)', 0, 0, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (2, 'out', 4, 4, 0), (3, 'inN(c)', 0, 0, 0), (4, 'out', 4, 4, 0)]}
+ pair (z,u) = (6, 2) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 2, 'targets': [(0, 'inN(c)', 108, 108, 108), (4, 'inN(c)', 108, 108, 108)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 4, 4, 0), (3, 'out', 4, 4, 0), (4, 'inN(c)', 0, 0, 0), (5, 'out', 4, 4, 0)]}
+   tri w=4: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 0, 0, 0), (1, 'out', 4, 4, 0), (3, 'out', 4, 4, 0), (5, 'out', 4, 4, 0)]}
+ pair (z,u) = (6, 3) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 3, 'targets': [(1, 'inN(c)', 108, 108, 108), (5, 'inN(c)', 108, 108, 108)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (2, 'out', 4, 4, 0), (4, 'out', 4, 4, 0), (5, 'inN(c)', 0, 0, 0)]}
+   tri w=5: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (1, 'inN(c)', 0, 0, 0), (2, 'out', 4, 4, 0), (4, 'out', 4, 4, 0)]}
+ pair (z,u) = (6, 4) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 4, 'targets': [(0, 'inN(c)', 108, 108, 108), (2, 'inN(c)', 108, 108, 108)]}
+   tri w=0: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(1, 'out', 4, 4, 0), (2, 'inN(c)', 0, 0, 0), (3, 'out', 4, 4, 0), (5, 'out', 4, 4, 0)]}
+   tri w=2: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'inN(c)', 0, 0, 0), (1, 'out', 4, 4, 0), (3, 'out', 4, 4, 0), (5, 'out', 4, 4, 0)]}
+ pair (z,u) = (6, 5) |N(u)&N(z)| = 2
+   (K-uz, z, {u}): {'good': True, 'admissible': True, 'blocked': False, 'g': 5, 'targets': [(1, 'inN(c)', 108, 108, 108), (3, 'inN(c)', 108, 108, 108)]}
+   tri w=1: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (2, 'out', 4, 4, 0), (3, 'inN(c)', 0, 0, 0), (4, 'out', 4, 4, 0)]}
+   tri w=3: {'good': True, 'admissible': True, 'blocked': False, 'g': 6, 'targets': [(0, 'out', 4, 4, 0), (1, 'inN(c)', 0, 0, 0), (2, 'out', 4, 4, 0), (4, 'out', 4, 4, 0)]}

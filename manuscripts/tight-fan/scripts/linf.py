@@ -29,8 +29,9 @@ for s in gs:
         ninst += 1
         B = {l, c} | set(K[c]); bK = tf.lovasz_b(K)
         assert tf.exists(K, bK, l, region=B) is not None, ("GL fails!", s, l)
-        closes = False; per = collections.Counter()
+        closes = False; per = collections.Counter(); allu = []
         for u in sorted(K[z]):
+            uall = True; ucnt = 0
             K1 = tf.rem(K, (z, u)); b1 = tf.lovasz_b(K1)
             for D1 in tf.decomps(K1, b1, l, region=B):
                 Ps = tf.Qc(D1, l); y = Ps[-1] if Ps[0] == l else Ps[0]
@@ -38,9 +39,14 @@ for s in gs:
                 ok = set(tf.Qc(D2, l)) <= B
                 hit = y in chain
                 per[(y in K[u], hit, ok)] += 1
-                closes |= ok
+                closes |= ok; uall &= ok; ucnt += 1
+            if ucnt and uall: allu.append(u)
         for k, v in per.items(): C[k] += v
         C["instance closes" if closes else "instance DOES NOT close"] += 1
+        C["some u: every D' succeeds" if allu else "ADVERSARIAL: every u has a failing D'"] += 1
+        if allu:
+            # is such a u characterised by: no neighbour of u in N(c) ... record N(u) & N(c) size
+            C[("all-ok u has |N(u)&N(c)|", min(len(K[u] & K[c]) for u in allu))] += 1
         if not closes and len(ex) < 5: ex.append((s, l, c, z))
 print("order", n, "instances", ninst)
 print("key = (far end y in N(u), chain reaches y, result in B)")

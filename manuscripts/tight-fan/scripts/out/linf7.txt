@@ -1,0 +1,7 @@
+order 7 instances 3
+key = (far end y in N(u), chain reaches y, result in B)
+some u: every D' succeeds 3
+instance closes 3
+('all-ok u has |N(u)&N(c)|', 1) 3
+(False, False, True) 54
+(True, False, True) 14

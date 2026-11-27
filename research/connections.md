@@ -1399,3 +1399,44 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ### AA.4 For ptm (§Z)
 The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w whenever w ∉ A and c ∉ N(w). Hang a leaf at c, run Fan with vertex sets, and delete the leaf (Lemma 2.4; Lean `avoid_of_apexSep` with `fan_single_supp`). If instead c ∈ N(w), it survives provided Q_c's end edge is cw (leaf graph at cw; `avoid_of_leafSep`). These are the steps a walk theorem needs to keep a prescribed end away from a set while the even vertex moves.
+
+## AB. Fan's lemma at equality: the common residual (cloud session `claude/tight-fan`, 2026-11-27)
+
+*Experiments: E26. Manuscript: `manuscripts/tight-fan/tight-fan.tex`. Lean: `lean/GallaiLean/TightFan.lean`. Audit: `research/audit/A24-tight-fan.md`.*
+
+### AB.1 Verdict on "one tight configuration"
+- **Not literally one configuration.** There are two mechanisms, and a third kind of failure.
+  - *Transfer side, literally Fan at equality with one protected blank.* A Case I step t → w on a Lovász decomposition D' of K − tw; the protected path P* has an end p ∈ N(w). In the leaf graph that freezes P*, p is a blank of w, so b(t) = 1 = |Z(w)|.
+    - On decompositions with b ≤ 1, Fan's chain is **forced** (`fanPred_unique`). The invariant survives **iff the forced chain avoids p**. E26 confirms this with no exception.
+    - It occurs in three places: the L∞ residual (§V.4c; p = far end of the leaf path); the minimal blocked shape of L1* (§AA; g ∈ A, d(g) = 2; p = c); and the PTM instances with no admissible walk (§Z; p = the short end x).
+  - *Hypothesis side.* In a blocked L1* instance, (G − gu, c, A) is inadmissible for every u ∈ N(g). That is the definition of blocked. Yet at order 9 every irreducible blocked instance has a u with (G − gu, c, A) good.
+    - When such u ∉ N(c), Lemma 2.4 of l1star finishes the instance; the only failure is admissibility.
+    - When every good u lies in N(c), we are back in the transfer-side case with p = c.
+  - *Base side.* PTM's K4/W4 failures: the three-pair base separation fails for every walk, including non-admissible ones (E26(C) sample).
+- **Residuals 1–3 are one statement.** `lInfty_of_l1Blocked` (new) and `ee_of_l1Blocked` (§AA): L1Blocked ⇒ L∞ and EE.
+- The lemma-shaped common form (manuscript Conjecture 4.6): in a tight transfer arising from Lovász's induction, some decomposition the induction can supply leaves the end of the path through pw on p's side unreached by the forced chain.
+
+### AB.2 Flowers do not apply (proved, Lean)
+- `hub_cycles_card_le_one`: with b ≤ 1 everywhere, the hypothesis of `hub_cycles` forces |T| ≤ 1.
+- `flower_decomp_not_le_one`, `flower_decomp_rest_not_le_one`: every flower or receipt-or-flower output has two ends at the first vertex of L.
+- So no flower move ends in a Lovász decomposition. All four residuals ask for one, so the flower move closes none of them, at any order.
+- The flower move spends a spare path. It is a tool for rooted tests (§Q follow-ups 5–7), not for Lovász-type invariants.
+- The tight case here is equality at a **target with no ends**, not at a **hub carrying |T| ends**.
+
+### AB.3 Proved (Lean, sorry-free, standard axioms)
+- **`fan_exists_chain_protected`**, `fan_grouped_protected_supp`, `fan_single_protected_supp`: Fan's lemma with protected blanks. A blank that no vertex of T ∪ N(w) has as its predecessor of w does not count against the supply, and the chain avoids it. Consequently, at equality with Z(w) = {p}, the transfer works when the end of the pw-path on p's side lies outside {t} ∪ N(w).
+- **`l1_tight_transfer`**: the tight case of L1* (x ∈ N(g) ∩ N(c), where Lemma 2.4 fails), conditional on the decomposition of the leaf graph.
+  - It certifies CP(3) + apex steps: 168 of 456 decompositions per target qualify.
+  - Order 7: every tight instance has a qualifying good D'.
+- **`fanPred_unique`**: Fan's chain is forced when b ≤ 1.
+- **`test1_deg_four`**: spine Test1 J z at d(z) = 4 whenever J − z is connected, via `emc_four` (two-step descent: Lovász + Fan only). **PTM₂ is not needed for Test1 at d(z) = 4.** The PTM route (`test1_of_localgirth`) is subsumed for Test1, though not for STL.
+- Paper only: the tight walk theorem for PTM (walks through N(x), using the protected-blank lemma at tight steps). In the data it closes all 68 no-walk instances at n = 8.
+
+### AB.4 The precise obstruction (what a proof must do)
+- **L∞.** In 59 of the 133 residual instances of order 9, every target u ∈ N(z) admits an induction decomposition of K − zu whose forced chain reaches the far end y.
+  - So no rule that only chooses the target closes the residual.
+  - The induction hypothesis must also control the decomposition, e.g. by keeping the y-side end of the path through yu away from N(u) ∪ {z}.
+- **L1\*.** Two ingredients are needed:
+  - an inductive class containing the good but inadmissible instances (G − gu, c, A);
+  - in the tight case, a decomposition meeting the condition of `l1_tight_transfer`.
+- **PTM.** The no-walk part is the tight configuration, and the tight walk handles it in the data. The K4/W4 part is a base-separation obstruction that Fan equality does not touch. Test1 at d(z) = 4 no longer depends on it.

@@ -1152,3 +1152,44 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   - n = 6: every instance is certified.
   - n = 7: 35 of 1,868 instances are not.
   - EE at n = 7: every pair is certified except the six pairs of CP(3) + apex (`F]~vw`, |T| = 4).
+
+## E26. Fan's lemma at equality: the common residual of L∞, L1*, EE and PTM (cloud session `claude/tight-fan`)
+
+*Manuscript: `manuscripts/tight-fan/tight-fan.tex`. Scripts and outputs: `manuscripts/tight-fan/scripts/`. Lean: `lean/GallaiLean/TightFan.lean`.*
+
+**Tooling.** `tf.py` enumerates every path decomposition with prescribed end counts (transition systems). It can prune on Q_c ∩ A, on a region, or on separated pairs, and it executes Fan's chain exactly with every choice. It matches `l1s ed` on 1,772 random avoidance queries at n = 5–7, with 0 mismatches (`out/xcheck.txt`). In every Case I step run below the Fan image was unique, as `fanPred_unique` predicts.
+
+**(A) L1* blocked residuals** (`exp1c.py`, `exp1d.py`, `exp1e.py`).
+- Order 9: all 2,414 irreducible blocked instances (|A| ≤ 2, one level of every reduction). **Every one has a target u ∈ N(g) with (G − gu, c, A) good, although inadmissible.** (`out/exp1c_9.txt`)
+  - Such a u lies outside N(c) in: all 162 + 33 separated instances; 637 of the 1,019 instances with g ∈ A, d(g) = 4.
+  - Every good u lies in N(c) (the tight case at c) in: all 1,200 instances with g ∈ A, d(g) = 2; the other 382 with d(g) = 4.
+- A = V ∖ (N[c] ∪ N(g)), order 9, the 12,622 blocked instances with A = ∂C: every one has a good target. In 2,938, every good target lies in N(c) (`out/exp1c_9max.txt`).
+- Order 7, every good D' of G − gu and its forced Fan image (`out/exp1d_7*.txt`). |A| ≤ 2:
+  - u ∈ N(c), chain avoids c: 896 transfers, all good.
+  - u ∈ N(c), chain passes c: 696 transfers, all bad.
+  - u ∉ N(c): 56 transfers, all good.
+  - With A maximal: 930 / 515 / 618, the same pattern.
+  - **The result is good iff the forced chain avoids c**, without exception.
+- The sufficient condition of `l1_tight_transfer`: the c-side end of the cx-path lies outside N(x) ∪ {g}, or cx is terminal on Q_c.
+  - Order 7: it holds for some good D' in every tight instance (14 with |A| ≤ 2; 49 with A maximal). It never failed to deliver (`out/exp1e_7*.txt`).
+  - Order 9: see `out/exp1e_9.txt`.
+
+**(B) The L∞ residual** (`linf.py`, `out/linf7.txt`, `out/linf9b.txt`). K connected, a leaf ℓ at c, exactly one even vertex z, d(c, z) = 3, N(z) at distance 2, and d(z) ≥ 4 or z on a triangle; B = {ℓ} ∪ N[c].
+- Orders 7 and 9: 3 and 133 instances. GL holds in all.
+- Order 9, all 409,416 pairs (u, D'), with D' a decomposition of K − zu whose ℓ-path lies in B:
+  - the far end y of the ℓ-path is in N(u) in 206,780 of them;
+  - the forced chain reaches y in 53,964, and **exactly these fail**.
+- Every instance closes for some (u, D').
+- **In 59 of the 133 instances every target u admits a failing D'.** In the other 74, some u succeeds for every D'. So choosing the target alone cannot prove L∞ by this induction.
+
+**(C) PTM NOBASE instances, order 8** (`ptmwalk.py`). Walks of any length are allowed, admissible or not. Base decompositions with the three separations are enumerated exactly. The walk back uses exact Fan chains, and every success is checked as a Lovász decomposition of G with ab terminal at a and xy terminal at x on different paths.
+- The 68 instances with no admissible walk: **all 68 are closed by a tight walk** (through N(x)). Trying walks in order of length, the shortest successful walk has length 2 in 63 of them and 3 in 5 (`out/ptm_nowalk68.txt`).
+- The 764 K4/W4-type instances (a systematic 1-in-10 sample of 77, walks ≤ 6): see `out/ptm764s_*.txt`.
+
+**(D) The named instances** (`ee_inst.py`, `out/ee_inst.txt`). For each EE pair (z, u): the instance (K − uz, z, {u}) and the triangle instances. None is blocked at the first level.
+- CP(3) + apex (`F]~vw`): every Case I target of (K − uz, z, {u}) is adjacent to c. Per target: 456 good D'; 320 successful transfers; 168 meet the sufficient condition.
+- Double K4 (`FQhVw`):
+  - (K − uz, z, {u}): every target is tight, and all 108 good D' per target meet the condition.
+  - Triangle instances: the tight targets have no good D' at all (hypothesis side); the other targets have 4 good D', all successful.
+
+**(E) Flowers.** No computation is needed. Every flower or receipt-or-flower output has two ends on the transversal (`flower_decomp_not_le_one`), so none is a Lovász decomposition. Lovász decompositions never meet the hypothesis of `hub_cycles` with |T| ≥ 2 (`hub_cycles_card_le_one`).

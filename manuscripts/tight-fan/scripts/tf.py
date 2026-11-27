@@ -81,7 +81,7 @@ def _perfect(xs):
         for M in _perfect(xs[1:i] + xs[i + 1:]):
             yield [(a, xs[i])] + M
 
-def decomps(G, b, c=None, avoid=frozenset(), region=None, limit=None, order=None):
+def decomps(G, b, c=None, avoid=frozenset(), region=None, limit=None, order=None, sep=()):
     """Yield every path decomposition of G with end counts b.  If c is given (b[c] == 1),
     prune so that the path ending at c avoids `avoid` and lies inside `region` (if given)."""
     E = edges(G)
@@ -125,6 +125,10 @@ def decomps(G, b, c=None, avoid=frozenset(), region=None, limit=None, order=None
                 ri, rj = find(i), find(j)
                 if ri == rj or (comp_v[ri] & comp_v[rj]) != {v}:
                     ok = False; break
+                if sep:
+                    U2 = comp_v[ri] | comp_v[rj]
+                    if any(p in U2 and q in U2 for p, q in sep):
+                        ok = False; break
                 # merge rj into ri
                 log.append((ri, rj, set(comp_v[ri])))
                 parent[rj] = ri; comp_v[ri] = comp_v[ri] | comp_v[rj]

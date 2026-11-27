@@ -57,8 +57,8 @@ def try_instance(G, a, b, x, y, maxlen, stats):
     Hb = H.copy(); Hb.remove_nodes_from([b, x])
     if y not in Hb or a not in Hb or not nx.has_path(Hb, y, a): return None, 'nopath'
     any_base = False
-    for P in nx.all_simple_paths(Hb, y, a, cutoff=maxlen):
-        P = tuple(P)
+    walks = sorted((tuple(p) for p in nx.all_simple_paths(Hb, y, a, cutoff=maxlen)), key=len)
+    for P in walks:
         tight = any(P[i] in G[x] for i in range(1, len(P) - 1))
         # base graph
         K = tf.rem(G, (a, b)); K = tf.add(K, (L1, b))          # leaf graph at ab: l1 stands for a
@@ -66,8 +66,8 @@ def try_instance(G, a, b, x, y, maxlen, stats):
         bM = tf.lovasz_b(M)
         assert tf.evens(M) in ([x], []) or tf.evens(M) == [x], tf.evens(M)
         pairs = [(x, y), (a, L1), (L1, y)]
-        for D0 in tf.decomps(M, bM):
-            if not sep_ok(D0, pairs): continue
+        for D0 in tf.decomps(M, bM, sep=pairs):
+            assert sep_ok(D0, pairs)
             any_base = True
             # step 1: extend Q_y by l2
             Qy = tf.Qc(D0, y)
@@ -90,7 +90,9 @@ def try_instance(G, a, b, x, y, maxlen, stats):
 if __name__ == '__main__':
     fn = sys.argv[1]; maxlen = int(sys.argv[2]) if len(sys.argv) > 2 else 7
     C = collections.Counter(); ex = []
-    for line in open(fn):
+    shard = int(sys.argv[3]) if len(sys.argv) > 3 else 0; nsh = int(sys.argv[4]) if len(sys.argv) > 4 else 1
+    for li, line in enumerate(open(fn)):
+        if li % nsh != shard: continue
         w = line.split()
         if not w or w[0] != 'NOBASE': continue
         g6 = w[1]; a1, b1, a2, b2 = map(int, w[2:6]); anyp = w[6]
@@ -111,5 +113,6 @@ if __name__ == '__main__':
         C[(key, found[0] if found else 'NONE')] += 1
         if not found and len(ex) < 8: ex.append((g6, a1, b1, a2, b2, dict(why)))
         if found: C[(key, found[0], 'len', found[1])] += 1
+        print("INST", g6, a1, b1, a2, b2, found if found else ("NONE", dict(why)), flush=True)
     for k, v in sorted(C.items(), key=str): print(k, v)
     for e in ex: print("UNSOLVED", e)
