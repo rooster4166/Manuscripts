@@ -303,7 +303,7 @@ Theorem 12.28 says that if (1) is absent, the minimum degree is ≥ 6. The manus
 **Corollary 22 (merged).** CS holds for every graph by Thm 21, so this is Prop 9 without the CS hypothesis. **SOUND as an implication.**
 - Its hypothesis, EMM₃ at δ ≥ 5, is open. The only refutation of EMM₃ known (§4.4) has δ = 3.
 - Synthesis §§12 and 14 expect NP-hardness of half-set realisability to carry over to higher minimum degree through gadgets. That would make the hypothesis false unless P = NP (cut-feasibility is polynomial by Lemma 1), but it is not yet proved.
-- The remark after Cor 22 now says what the corollary uses (§5, item 6).
+- In 8e7346e (as merged), the remark after Cor 22 said what the corollary uses. Both went in the rewrite.
 
 ### 4.3 Which strengthenings survive the counterexamples (`a13_realis.py`, `a13_mm12_pairings.py`, `a13_mm12_forced.py`, `a13_petersen28.py`)
 
@@ -321,7 +321,7 @@ Theorem 12.28 says that if (1) is absent, the minimum degree is ≥ 6. The manus
 | KsOeBW??G`?A | 657 | 48 |
 | KsOeBW?CG@?@ | 657 | 48 |
 
-An explicit witness is KsOeBW??G`?A with the good pairing {0 3, 1 8, 4 5, 6 9, 7 10} and its transversal {3, 4, 8, 9, 10}, which is cut-feasible and not realisable. This is quoted in the new remark after Cor 22.
+An explicit witness is KsOeBW??G`?A with the good pairing {0 3, 1 8, 4 5, 6 9, 7 10} and its transversal {3, 4, 8, 9, 10}, which is cut-feasible and not realisable. The final text quotes it in the unnumbered remark "transversals of good pairings" after Theorem 21.
 
 **(ii) "Every transversal of every Theorem-21 pairing is realisable" holds on all 12 graphs, for every spanning tree and every choice of F^v-pairings.** The proof has two cases, according to the graph.
 - **Complement not cut-feasible** (8 graphs). In these, Ev ∖ M is not cut-feasible, so M is a transversal of no good pairing: transversal sets are closed under complement.
