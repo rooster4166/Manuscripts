@@ -592,6 +592,7 @@ Scripts are in `manuscripts/endpoint-min-max/scripts/`; tools are `tools/cutfeas
   - The global cap is non-submodular in 1,063 graphs at n = 8, and the cap system is a non-matroid in 70.
   - F is not a matroid basis family in 48 graphs at n = 8 (all non-critical, e.g. GsaAD{) and in 1 at n = 6.
   - Critical graphs at n = 8: all 1,082 have matroid F. F = F_v for one v in 1,071; the cap is submodular in 1,057; 4 are explained by neither.
+
 **E18 addendum: the cut-selection construction** (`construction.py`). Each check uses a random spanning tree, takes its T-join and chooses the transitions by T-join pairings in F^v; the resulting pairing is then checked against the enumeration.
 - Coverage:
   - all 99 graphs at n = 6 and all 10,893 at n = 8, with 3 trees each (32,679 constructions at n = 8);
