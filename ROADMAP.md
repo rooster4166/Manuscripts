@@ -571,3 +571,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Conditional on chain existence, which is not proved.** In random samples, chains were found for every r in all 184 far-apart J. Far-apart neighbourhoods are common only at large order: 99/200 at n = 201, 0/200 at n = 21.
   - Data: PTM_3(r) holds for every pairing at d(z) = 6, exhaustive at orders 7 and 9 (27,390 instances) and random to 17, with 0 failures.
   - Audit A22c: the mathematics is sound (paper and Lean). Its fixes are applied on claude/ptm (0353495).
+- **L1Blocked split into two statements (l1-induction, L1Induction.lean; standard axioms, verified).** `l1Blocked_of_someTarget : TightTransfer → SomeTarget → L1Blocked`, giving `ee_of_ST_TR`, `lInfty_of_ST_TR` and `l1star_of_ST_TR`.
+  - **TR (transfer side):** a tight target x ∈ N(g) ∩ N(c) with A ∩ (N[c] ∪ {x}) = ∅. If (G − gx, c, A) is good, then so is (G, c, A). Tests: 1,735,156 exhaustive at n ≤ 9, 0 violations. The condition is sharp: there are violations if A may meet N(c).
+  - **ST (hypothesis side):** every blocked instance has x ∈ N(g) with (G − gx, c, A) good. Tests: all 135,188 blocked instances at n ≤ 9, 0 failures.
+  - The instance-level variant ST′ is FALSE (n = 7). No closed induction class has been found for ST yet.
+  - So **L1*, EE and L∞ now reduce to two concrete, heavily tested conjectures, TR and ST.**

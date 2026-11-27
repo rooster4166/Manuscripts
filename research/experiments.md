@@ -1275,3 +1275,71 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) Flowers.** No computation is needed. Every flower or receipt-or-flower output has two ends on the transversal (`flower_decomp_not_le_one`), so a flower cannot be the last move of a Lovász-type argument. Lovász decompositions never meet the hypothesis of `hub_cycles` with |T| ≥ 2 (`hub_cycles_card_le_one`).
 
 **Audit A24** (`research/audit/A24-tight-fan.md`): every committed number reproduced. Fan-image uniqueness was checked in 108,870 cases at order 7, and `exp1d.py` now asserts it. F1 (47 vs 68) and F2 (L1* converse) are corrected above.
+
+## E27. Lovász's induction for L1*: transfer calculus, TR and ST, candidate classes (cloud session `claude/l1-induction`)
+
+*Manuscript: `manuscripts/l1-induction/l1-induction.tex`. Scripts and outputs: `manuscripts/l1-induction/scripts/` (C++, `g++ -O2`; `README.md` there). Lean: `lean/GallaiLean/L1Induction.lean`.*
+
+**Tooling.**
+- `lind.h`: the exact avoidance oracle, a port of `l1s.c` (validated in E25).
+- `orc2.h`: several constrained paths, with an optional disjointness constraint.
+- `dec.h`: enumerates all good Lovász decompositions and simulates the forced Fan chain exactly. Every decomposition and Fan image is checked.
+- Cross-check `xcheck2.cpp`: `orc2` against enumeration, 31,704 random queries at n = 4–7, 0 mismatches.
+- `moves.h` / `rec2.cpp`: the certificate class Rec. Moves (a)–(i) of manuscript Thm 3.1, intermediate instances NOT required admissible; flag `T` adds TR targets.
+
+**(A) Certificates without intermediate admissibility** (`rec2.cpp`). A = Amax unless stated.
+- Moves (a)–(d) only: 26/78 not certified already at n = 6. K_{3,3} needs the d(g) = 2 split.
+- With all moves (flags `MB`):
+  - n ≤ 8: every admissible instance certified, for every admissible A. That is 9 / 23 / 405 / 2,150 / 27,837 instances at n = 4–8.
+  - n = 7, |A| ≤ 2: all 1,868 instances certified. `cert.py` (E25, admissible intermediates only) failed 35 of these.
+  - n = 9: 209 of 95,488 not certified, 163 of them blocked.
+  - n = 10: 54 of 328,510 (all-odd) not certified.
+  - Outputs: `out/rec_adm9_MB.txt`, `out/rec_adm10_MB.txt`.
+- **Stuck admissible instances** (`out/stuck0_9.txt`): good, but every instance-level move gives a bad child. There are 6 at n = 9 and none at n ≤ 8.
+  - All 6 share one mechanism: d(g) = 4, d(c) = 5, N(c) independent, N(g) ⊆ N(c), and every target u has N(u) = {g, c, a_u} with a_u ∈ A.
+  - `H?ABvrw` is the two-even example `G?Bvvo` (E25) with a leaf at its degree-2 even vertex.
+  - All 6 are closed by the D-level tight transfer (`tt.cpp`, `out/tt_stuck0_9.txt`): 76–92% of the good D' have their forced chain avoiding c, and all of these transfer.
+- With TR targets (flags `MBT`):
+  - n = 9: 56 of 95,488 not certified (35 blocked). Over every admissible A: 57 of 574,566 (36 blocked; `out/rec_sub9_MBT.txt`).
+  - n = 10: 33 of 328,510.
+  - Exploring the trees of the 56 (`out/explore9_MBT.txt`) gives 1,296 stuck states, none admissible. 1,184 of them admit no move at all.
+- **Gap** (`gap.cpp`): the longest run of consecutive inadmissible intermediates in the best certificate.
+  - n = 7: 760 / 11 / 5 / 4 instances need gap 0 / 1 / 2 / 3. With TR: 764 / 11 / 5 / 0.
+  - n = 8: 1,589 / 68 / 112 / 20 / 0 / 3 need gap 0–5, with or without TR.
+  - Gap 5: K8 minus a triangle, c in the triangle. The certificate is the leaf move, four Fan steps that revisit their first target, a route, and a split at the new terminal.
+
+**(B) The transfer side: TR.** Tight target x ∈ N(g) ∩ N(c), c ∉ N(g), A ∩ (N[c] ∪ {x}) = ∅. If (G − gx, c, A) is good, is (G, c, A) good?
+- `tr2.cpp`, every such A (g ∈ A allowed): n = 7, 3,764 tests; **n = 9, 1,735,156 tests, 0 violations** (`out/tr2_9.txt`).
+- Sharpness (`trall.cpp`, n = 7, A arbitrary):
+  - non-tight targets: 6,672 tests, 0 violations (this case is a theorem);
+  - tight targets: 8,066 tests, 14 violations, all with A ∩ N(c) ≠ ∅. Example `FCZ~o`, g = 4, c = 0, x = 6, A = {1,2,3,4}.
+- Re-choice (`rechoice.cpp`): every good tight pair has a good D' whose forced chain avoids c. That is all 8 / 457 / 82,079 pairs at n = 5 / 7 / 9 (`out/rechoice9.txt`).
+- Coverage by the proved lemmas (`exch.cpp`, n = 7): of 34,778 good D' at tight targets, 24,738 have the chain avoiding c and 375 more satisfy the exchange lemma (manuscript Lemma 4.2). The remaining 9,665 satisfy neither, and only 824 of those have a good Fan image. **So a proof of TR must re-choose D'.**
+
+**(C) The hypothesis side: ST and ST'** (`stprime.cpp`). Blocked instances, every admissible A.
+- n = 7: 406 instances. ST holds in all of them; ST' in 386.
+- **n = 9: 135,188 instances. ST holds in all of them; ST' in 133,926** (`out/stprime9.txt`).
+- **ST' is false; the smallest counterexample is `FEhv?`** (n = 7), with g = 4, c = 6, A = {3,5} or {3,4,5}. This is the d(g) = 2 minimal shape.
+- All 1,262 ST' failures at n = 9 have N(g) ⊆ N(c): 1,238 with d(g) = 2, and 24 with d(g) = 4 and d(c) = 5.
+  - In 1,208 of them, every target u has N(u) ∖ {g, c} ⊆ A.
+- L1E (`l1e.cpp`): some good D has an edge gu terminal at u, i.e. a trivial Fan chain. With A = Amax and c ∉ N(g) it holds at n = 5 / 7 / 9 in all 8 / 338 / 46,638 instances, including all 15,277 blocked at n = 9.
+- Move (s): Q_c = cu for a tight u, i.e. G − cu − gu with Q_g and Q_u disjoint (`smove.cpp`). It closes the 6 stuck instances. It applies in 32,673 of 40,476 instances at n = 9 that have a common neighbour of g and c. It is a three-even-vertex decomposability statement, so it gives no proof.
+
+**(D) Targets and the c-admissible class.** At n = 9, blocked, A = Amax (`targets.cpp`, `out/badtargets9.txt`):
+- 41,074 (instance, target) pairs; 496 have (G − gu, c, A) bad. Of these, 476 have d(c) = 1 and 20 have d(g) = 2 with d(c) = 3. None has d(g) ≥ 4 and d(c) ≥ 3.
+- No simple selection rule always works. The best, "outside N(c), then fewest A-neighbours", is right in 15,241 of 15,277.
+- The every-target form over all instances (`alltarget.cpp`): d(g) = 4, d(c) = 3 has 16 bad targets among 50,516. There are 0 for d(c) ≥ 5 or d(g) ≥ 6 (n = 9 only).
+- Dead ends of Case I within c-admissible good instances (`minobs.cpp`): the smallest is at n = 5, `DEk`, g = 0, c = 1, A = {0,2}. Its child G − 04 is good with a single target, and that target's child is bad.
+- Walks with TR to an admissible instance (`walkadm.cpp`) exist for 24 of 83 blocked instances at n = 7 and 4,283 of 15,277 at n = 9.
+
+**(E) Walk to a degree-two vertex** (manuscript Prop. 3.3, proved on paper; `walk2.cpp`). At n = 9, A = Amax, blocked:
+- the walk applies to 3,969 of 15,277 instances, the l1star Fan route (Prop. 5.3) to 0;
+- with tight targets allowed on the trail (valid under TR): 12,980 and 4,283; either applies to 13,259 (87%).
+
+**(F) Random graphs** (`randg.py` + `randtest.cpp`, budget 2·10⁶, A = Amax).
+- n = 11 and 13, 3,000 graphs, 9,071 blocked instances (`out/rand_11_13_v2.txt`):
+  - ST: 9,069 hold, 2 undecided;
+  - L1E: 9,068 hold, 3 undecided;
+  - TR: 32,267 tight tests, 0 violations, 150 undecided.
+  - The first run, `out/rand_11_13.txt`, reported 2 L1E "failures". They were tester artefacts: a target whose ST query hit the budget was skipped for L1E without being marked undecided. The tester is fixed; both were rechecked with no budget (`out/l1e_check13.txt`) and hold.
+- n = 15, 600 graphs, 2,816 blocked instances (`out/rand_15.txt`): ST 2,805 hold, 11 undecided; L1E 2,803 hold, 13 undecided; TR 10,460 tight tests, 0 violations, 146 undecided.

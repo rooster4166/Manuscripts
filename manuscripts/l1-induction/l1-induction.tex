@@ -1,0 +1,711 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad\emph{(Lean: \texttt{#1}.)}}
+\newcommand{\TR}{\mathrm{TR}}
+\newcommand{\ST}{\mathrm{ST}}
+\emergencystretch=3em
+
+\title[Lov\'asz's induction for $L_1^*$]{Lov\'asz's induction for the avoidance conjecture
+$L_1^*$:\\ unconditional transfers, a two-sided reduction of the blocked case,\\ and where the
+candidate induction hypotheses fail}
+\author{Justin Williams}
+\date{November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ have at most one vertex $g$ of positive even degree, let $c$ be odd, and let $A$ miss
+$N[c]\cup N(g)$. The general form of the avoidance conjecture $L_1^*$ asks for a Lov\'asz
+decomposition whose path $Q_c$ ending at $c$ avoids $A$. A smallest counterexample is
+\emph{blocked}~\cite{L1S}, and the blocked case implies the end-edge conjecture EE and the locality
+statement $L_\infty$~\cite{L1S,TF}. We look for an induction hypothesis that closes the blocked
+case. We do not find one. What we prove and find is this.
+
+\begin{itemize}
+\item \emph{Transfers are unconditional.} Every reduction of~\cite{L1S} transfers goodness from the
+smaller instance to the larger one without any admissibility (Theorem~\ref{thm:calculus}).
+Admissibility is used only to call the induction hypothesis. The Case~I transfers are formalised.
+\item \emph{A two-sided reduction} (formal, Theorem~\ref{thm:two}). The blocked case follows from two
+statements. The first is a transfer statement $\TR$: for a target $x\in N(g)\cap N(c)$ and any $A$
+missing $N[c]\cup\{x\}$, goodness of $(G-gx,c,A)$ implies goodness of $(G,c,A)$. The second is a
+hypothesis statement $\ST$: every blocked instance has a target $x$ with $(G-gx,c,A)$ good.
+\begin{itemize}
+\item $\TR$ held in all $1{,}735{,}156$ exhaustive tests to order $9$, and it fails if $A$ may meet
+$N(c)$.
+\item $\ST$ held in all $135{,}188$ blocked instances to order $9$, for every admissible $A$.
+\item Both held on random graphs of orders $11$, $13$ and $15$.
+\end{itemize}
+\item \emph{The transfer conjecture cannot be dropped.} The instance-level version $\ST'$, which would
+need no transfer statement, is false. The smallest counterexample has order~$7$
+(Proposition~\ref{prop:stprime}).
+\item \emph{The candidate classes do not close} (Section~\ref{sec:candidates}). The certificate class
+built from all known reductions, with inadmissible intermediate instances allowed, certifies every
+admissible instance of order at most~$8$. At order~$9$ six admissible instances are stuck for every
+instance-level move. Certificates must leave admissibility for five consecutive steps already at
+order~$8$. The class $A\cap N[c]=\emptyset$ is preserved by Case~I steps, and $\TR$ makes goodness
+propagate up it, but it has dead ends from order $5$ on. Controlling the decomposition (the trivial
+chain) holds in the data, but it does not touch the hypothesis side.
+\item \emph{A new reduction.} A Fan trail from $g$ that ends at a vertex of remaining degree two with
+non-adjacent neighbours reduces a blocked instance to an admissible all-odd one
+(Proposition~\ref{prop:walk2}). At order~$9$ it applies to $26\%$ of the blocked instances with
+$A=V\setminus(N[c]\cup N(g))$, where the Fan route of~\cite{L1S} applies to none.
+\end{itemize}
+The formal results are in \texttt{lean/GallaiLean/L1Induction.lean} (no \texttt{sorry}, standard
+axioms). The computations are in a separate section; no proof depends on them.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path decomposition} partitions $E(G)$ into paths with at
+least one edge; $b_\cD(v)$ is the number of paths of $\cD$ with an end at $v$. A vertex is
+\emph{even} if its degree is positive and even, \emph{odd} if its degree is odd. A \emph{Lov\'asz
+decomposition} has $b(v)=d(v)\bmod 2$ for every $v$; Lov\'asz~\cite{L68} proved that a graph with at
+most one even vertex has one. For an odd vertex $c$, $Q_c$ is the path ending at $c$. Throughout,
+$g$ is the even vertex, when there is one.
+
+\begin{definition}[\cite{L1S}]
+An \emph{instance} $(G,c,A)$ has $G$ with at most one even vertex, $c$ odd, and $A\subseteq V(G)$.
+It is \emph{admissible} if $A\cap(N[c]\cup N(g))=\emptyset$, and \emph{good} if some Lov\'asz
+decomposition has $V(Q_c)\cap A=\emptyset$. It is \emph{blocked} if $c\notin N(g)$ and every
+neighbour of $g$ has a neighbour in $A\setminus\{g\}$. A \emph{target} is a vertex $x\in N(g)$; it
+is \emph{tight} if $x\in N(c)$.
+\end{definition}
+
+The general form of $L_1^*$ says that every admissible instance is good. In Lean, \texttt{L1Blocked}
+says that every blocked admissible instance is good. It implies the general form
+(\texttt{l1starGen\_of\_blocked}~\cite{L1S}), EE (\texttt{ee\_of\_l1Blocked}) and $L_\infty$
+(\texttt{lInfty\_of\_l1Blocked}~\cite{TF}).
+
+\emph{Lov\'asz's Case I step} deletes an edge $gx$ at the even vertex, so that $x$ becomes the even
+vertex. It solves $(G-gx,c,A)$, then restores $gx$ by Fan's lemma with source $g$ and target $x$.
+The step has two sides.
+\begin{itemize}
+\item \emph{Hypothesis side.} In a blocked instance, $(G-gx,c,A)$ is never admissible, because $x$
+has a neighbour in $A\setminus\{g\}$. The induction hypothesis says nothing about it.
+\item \emph{Transfer side.} If $x\notin N(c)$, the end at $c$ is protected and the transfer works
+(\cite[Lemma~2.4]{L1S}). If $x\in N(c)$, Fan's inequality is tight at $c$. The forced chain may pass
+through $c$ and hand $c$'s end to another path~\cite{TF}.
+\end{itemize}
+The task, posed in~\cite[\S7]{TF} and connections~\S AB, is to find an inductive class that contains
+the good but inadmissible instances $(G-gx,c,A)$ and is preserved by the Case~I step.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Section~\ref{sec:calculus}: the transfer calculus (Theorem~\ref{thm:calculus}). The
+certificate class $\mathrm{Rec}$ of instances certified by the moves, with no intermediate
+admissibility. A new reduction, the walk to a degree-two vertex (Proposition~\ref{prop:walk2}).
+\item Section~\ref{sec:two}: the conjectures $\TR$ and $\ST$, the formal reduction
+$\TR\wedge\ST\Rightarrow\texttt{L1Blocked}$ (Theorem~\ref{thm:two}), and its consequences.
+\begin{itemize}
+\item Proved partial cases of $\TR$, including an exchange lemma (Lemma~\ref{lem:exchange}).
+\item $\TR$ is sharp: it fails when $A$ meets $N(c)$ (Example~\ref{ex:trsharp}).
+\item The transfer-free form $\ST'$ is false (Proposition~\ref{prop:stprime}).
+\end{itemize}
+\item Section~\ref{sec:candidates}: the three candidate classes of the task, (i) joint
+``$L_1^*$ and some target'', (ii) a non-local admissibility, (iii) control of the decomposition. The
+precise point at which each fails to close (Table~\ref{tab:obs}).
+\item Section~\ref{sec:comp}: computations, all exhaustive to order $9$ or $10$ unless stated, with
+random tests at orders $11$, $13$ and $15$.
+\item Section~\ref{sec:lean}: formalisation.
+\end{enumerate}
+
+\subsection*{Honest status}
+\texttt{L1Blocked} is \emph{not} proved here. It is reduced, formally, to the conjunction of two
+statements, each with exhaustive support to order $9$. One of the two cannot be removed without a
+statement about decompositions. We found no inductive class that closes. The obstruction is on the
+hypothesis side: none of our classes supplies the good but inadmissible instance.
+
+\section{Preliminaries}\label{sec:prelim}
+
+For a decomposition $\cD$ and a vertex $w$, $Z_\cD(w)$ is the set of neighbours of $w$ with no end
+(the \emph{blanks}).
+
+\begin{lemma}[Fan's lemma with vertex sets~{\cite{Fan05},\cite[Lemma~2.2]{RD}}]\label{lem:fan}
+Let $\cD$ decompose $K$, let $t\ne w$ be non-adjacent, and suppose $b_\cD(t)>|Z_\cD(w)|$. Then
+$K+tw$ has a decomposition $\cD^+$ with $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_w$ in which every
+path lies inside $V(P)\cup\{w\}$ for some path $P$ of $\cD$.
+\end{lemma}
+
+On a decomposition with $b\le1$ the chain of Fan's lemma is \emph{forced}~\cite[Prop.~2.1]{TF}.
+Put $x_0=t$. Then $x_{i+1}$ is the vertex before $w$ on the path ending at $x_i$, read from $x_i$.
+The chain stops at the first $x_k$ whose path avoids $w$. Executing it re-routes the paths of
+$x_0,\dots,x_{k-1}$ and appends $x_kw$.
+
+\begin{lemma}[{\cite[Lemma~3.2]{TF}}]\label{lem:avoidc}
+Let $x\in N(g)\setminus A$, and let $\cD'$ be a Lov\'asz decomposition of $G-gx$ with $Q_c\cap
+A=\emptyset$. If the forced chain $g\to x$ does not pass through $c$, the resulting Lov\'asz
+decomposition of $G$ has $Q_c\cap A=\emptyset$.
+\end{lemma}
+
+Leaf graphs are as in~\cite{L1S}. $H(K;x,y)$ is $K-xy$ with a new leaf $\ell$ at $y$, standing for
+$x$. $K^{+x}$ is $K$ with a new leaf at $x$.
+
+\section{The transfer calculus}\label{sec:calculus}
+
+\begin{theorem}[unconditional transfers]\label{thm:calculus}
+In each of the following, if the instance on the right is good, so is $(G,c,A)$. No admissibility is
+assumed of either instance.
+\begin{enumerate}
+\item[(a)] $g$ even, $c\in N(g)$, $c\notin A$: $\ (G-gc,\ g,\ A\cup\{c\})$.
+\item[(b)] $g$ even, $c\notin N(g)$, $x\in N(g)\setminus(A\cup N(c))$: $\ (G-gx,\ c,\ A)$.
+\lean{avoid\_of\_target\_child}
+\item[(c)] $g$ even, $c\notin N(g)$, $x\in N(g)\cap N(c)$, $c,x\notin A$:
+$\ (G-xc-gx,\ x,\ A\cup\{c\})$.\lean{avoid\_of\_target\_adj\_child}
+\item[(d)] no even vertex, $d(c)\ge3$, $y\in N(c)\setminus A$: $\ (H(G;c,y),\ \ell,\ A\cup\{c\})$.
+\item[(e)] $d(g)=2$, $N(g)=\{u,v\}$, $uv\notin E$, $G'=G-gu-gv+uv$: $\ (G',c,A)$ if $g\notin A$;
+$\ (G',c,(A\setminus\{g\})\cup\{w\})$ for $w\in\{u,v\}\setminus\{c\}$ if $g\in A$.
+\item[(f)] $d(g)=2$, $N(g)=\{u,v\}$, $uv\in E$, $g\in A$, $c\notin N(g)$: $\ (G,c,A\setminus\{g\})$.
+\item[(g)] $d(c)=3$, $y_1,y_2\in N(c)$ non-adjacent: $\ (G-cy_1-cy_2+y_1y_2,\ c,\ A\cup\{y_1\})$.
+\item[(h)] $g\notin A$, $R=g\,r_1\cdots r_{k-1}\,c$ ($k\ge2$) a path with interior outside $A$:
+$\ (G-E(R),\ g,\ A\cup(V(R)\setminus\{g\}))$.
+\item[(i)] $C$ the component of $c$ in $G-A$: $\ (G,c,\partial C)$.
+\end{enumerate}
+Each move strictly decreases $(\nu(G),|A|)$ lexicographically, where
+$\nu(G)=\sum_vd(v)+[G\text{ has no even vertex}]$, except (i), which leaves $(\nu,|A|)$ unchanged
+when $\partial C=A$. We apply (i) only when it shrinks $A$.
+\end{theorem}
+
+\begin{proof}
+These are the reductions of~\cite[Theorem~4.2, Lemma~5.1, Propositions~5.2,~5.4,~5.5]{L1S}. In every
+one of those proofs admissibility is used for exactly two things:
+\begin{itemize}
+\item to show that the smaller instance is an instance to which the induction hypothesis applies;
+\item through its consequences that some vertex lies outside $A$.
+\end{itemize}
+The second use is replaced here by explicit hypotheses: $c\notin A$ in (a) and (c), and $x\notin A$
+in (b) and (c). Two cases need comment.
+\begin{itemize}
+\item (h): a path $R$ that is not chordless is allowed. The route $Q'_g\cup R$ is still a path, because
+$Q'_g$ avoids $V(R)\setminus\{g\}$. Chordlessness was used only for admissibility.
+\item (g): the condition $c\notin N(g)$ of~\cite[Prop.~5.5]{L1S} is not needed. $c$ is a leaf of the
+new graph, so the path through $y_1y_2$ avoids $c$.
+\end{itemize}
+In (e) and (g) the subdivided path gains only $g$, respectively $c$. When it is $Q_c$, the vertex
+added to $A$ (or $g\notin A$) excludes this.
+\end{proof}
+
+The Lean proofs of (b) and (c) are the proofs of \texttt{l1\_case\_target} and
+\texttt{l1\_case\_target\_adj}~\cite{L1S} with the induction hypothesis replaced by the goodness
+hypothesis on the child. They need $x\notin A$ instead of $A\cap N(g)=\emptyset$, and $c\notin A$.
+
+\begin{definition}\label{def:rec}
+$\mathrm{Rec}$ is the least class of instances that contains the base cases and contains $(G,c,A)$
+whenever one of its moves (a)--(i) leads into $\mathrm{Rec}$. The base cases are:
+\begin{itemize}
+\item no even vertex, $d(c)=1$, and the neighbour of $c$ is not in $A$;
+\item $A$ misses the component of $c$.
+\end{itemize}
+$\mathrm{Rec}_T$ adds the move $(\mathrm t)$: a tight target $x\in N(g)\cap N(c)$ with $A\cap
+N[c]=\emptyset$, $x\notin A$ and child $(G-gx,c,A)$. This move is valid if $\TR$
+(Conjecture~\ref{conj:tr}) holds.
+\end{definition}
+
+By Theorem~\ref{thm:calculus} and induction on $(\nu,|A|)$, every instance in $\mathrm{Rec}$ is
+good. The certificate search of~\cite[\S6]{L1S} (\texttt{cert.py}) required every intermediate
+instance to be admissible. That is why it failed on $35$ of the $1{,}868$ instances of order $7$ with
+$|A|\le2$; $\mathrm{Rec}$ certifies all of them (Section~\ref{sec:comp}).
+
+\begin{proposition}[walk to a degree-two vertex]\label{prop:walk2}
+Let $(G,c,A)$ be admissible, with even vertex $g$ and $c\notin N(g)$. Let $W=g\,w_1\cdots w_k$
+($k\ge1$) be a trail, that is, a walk with distinct edges, with $w_i\notin A\cup N[c]$ for $i\ge1$.
+Suppose that in $G_W=G-E(W)$ the vertex $w_k$ has degree two and its two neighbours $x,y$ are
+non-adjacent in $G_W$. Let $G^*=G_W-w_kx-w_ky+xy$. Then:
+\begin{itemize}
+\item $(G^*,c,A)$ is an admissible instance with no even vertex, and $\nu(G^*)<\nu(G)$;
+\item if $(G^*,c,A)$ is good, so is $(G,c,A)$.
+\end{itemize}
+The vertex $w_k$ may have neighbours in $A$. No condition on $A\cap N(w_i)$ is needed.
+\end{proposition}
+
+\begin{proof}
+Let $K_i$ be $G$ minus the first $i$ edges of $W$.
+\begin{itemize}
+\item \emph{Parities.} A vertex changes parity in $K_i$ exactly when it is met an odd number of times
+by the first $i$ edges. That happens only at $g$ and at $w_i$. So $w_i$ is the only even vertex of
+$K_i$; when $w_i=g$, $K_i$ has none. In $G^*$, every vertex has the parity it has in $G_W$, except
+that $w_k$ is now isolated. So $G^*$ has no even vertex.
+\item \emph{$G^*$ is admissible.} Since $w_k\notin N(c)$, also $c\notin\{x,y\}$. No edge at $c$ is
+removed, because $c\ne g$ and $c\ne w_i$. So $N_{G^*}[c]=N[c]$ misses $A$.
+\item \emph{Measure.} $|E(G^*)|=|E(G)|-k-1$, so $\nu(G^*)=2|E(G)|-2k-1<\nu(G)$.
+\end{itemize}
+Now let $\cD^*$ be good for $(G^*,c,A)$.
+\begin{itemize}
+\item \emph{Subdivide $xy$.} Replace $xy$ by $x\,w_k\,y$ on the path $P$ containing it; $w_k$ lies
+on no path of $\cD^*$. This gives a Lov\'asz decomposition of $K_k=G_W$ (note $xy\notin E(G_W)$). If
+$P=Q_c$, then $Q_c$ gains only $w_k\notin A$.
+\item \emph{Restore the trail.} For $i=k,\dots,1$ restore $w_{i-1}w_i$ by Lemma~\ref{lem:fan} with
+$t=w_{i-1}$ and target $w_i$. In $K_i$, the vertex $w_{i-1}$ is odd, so $b(w_{i-1})=1$, and every
+neighbour of $w_i$ is odd, so $Z(w_i)=\emptyset$. Since $w_i\notin N(c)\cup A$, the protected
+transfer~\cite[Lemma~2.4]{L1S} keeps $Q_c$ off $A$.
+\end{itemize}
+\end{proof}
+
+With $k=1$, the proposition is the composite of moves (b) and (e) at a target of degree three. It
+extends two results of~\cite{L1S}: the Fan route (Proposition~5.3 there), whose end must have no
+neighbour in $A$, and the degree-two split (Proposition~5.4(i)), which needs $d(g)=2$ at the start.
+
+\begin{corollary}\label{cor:mincex}
+In a smallest counterexample to the general form of $L_1^*$, no trail from $g$ through
+$V\setminus(A\cup N[c])$ ends at a vertex of remaining degree two whose two remaining neighbours are
+non-adjacent. This is in addition to the items of~\cite[Corollary~5.6]{L1S}.
+\end{corollary}
+
+At order $9$, with $A=V\setminus(N[c]\cup N(g))$, Proposition~\ref{prop:walk2} applies to $3{,}969$
+of the $15{,}277$ blocked instances. The Fan route of~\cite[Prop.~5.3]{L1S} applies to none of them.
+If tight targets are allowed on the trail (valid under $\TR$), the walk applies to $12{,}980$ and
+the Fan route to $4{,}283$; together they cover $13{,}259$ ($87\%$).
+
+\section{The two sides of Case I}\label{sec:two}
+
+\subsection{The transfer side}
+
+\begin{conjecture}[$\TR$, tight transfer]\label{conj:tr}
+Let $g$ be the only even vertex of $G$, let $c\notin N(g)$ be odd, let $x\in N(g)\cap N(c)$, and
+let $A$ be disjoint from $N[c]\cup\{x\}$. If $(G-gx,c,A)$ is good, then $(G,c,A)$ is good.
+\end{conjecture}
+
+$A$ may meet $N(g)$ and may contain $g$. For a non-tight target $x\notin N(c)$ the same statement is
+Theorem~\ref{thm:calculus}(b), and it needs only $x\notin A$. Known sufficient conditions on the
+decomposition $\cD'$ of $G-gx$ supplied by the hypothesis:
+\begin{enumerate}
+\item the forced chain $g\to x$ avoids $c$ (Lemma~\ref{lem:avoidc});
+\item $Q'_c$ begins with the edge $cx$. Then $c$ is never the predecessor of $x$ read from another
+vertex, so (1) holds. Deleting $cx$ shows that such a $\cD'$ is the same thing as a good
+decomposition of the child of Theorem~\ref{thm:calculus}(c);
+\item the static condition of~\cite[Theorem~3.3]{TF}: no vertex of $\{g\}\cup N(x)$ has $c$ as its
+predecessor of $x$ in the leaf graph at $c$;
+\item the exchange condition of Lemma~\ref{lem:exchange}.
+\end{enumerate}
+
+\begin{lemma}[exchange at $c$]\label{lem:exchange}
+In the setting of Conjecture~\ref{conj:tr}, let $\cD'$ be good for $(G-gx,c,A)$. Suppose the forced
+chain $g=x_0,x_1,\dots$ first meets $c$ at step $i\ge1$, and $Q'_c$ does not contain $x$. Let $P$ be
+the path of $\cD'$ ending at $x_{i-1}$. If $V(P)\cap V(Q'_c)=\{c\}$, then $G$ has a Lov\'asz
+decomposition with $Q_c=cx$. In particular $(G,c,A)$ is good, for every $A\not\ni x$.
+\end{lemma}
+
+\begin{proof}
+\emph{The chain stops at $c$.} Since $Q'_c$ avoids $x$, the chain stops at step $i$ and appends $cx$
+to $Q'_c$. Before step $i$, no step touches $Q'_c$. Its other end $q$ is not an earlier chain vertex:
+if it were, the chain would already have stopped there, because $Q'_c$ avoids $x$.
+
+\emph{The path $P$.} Read from $x_{i-1}$, the vertex before $x$ on $P$ is $c$. So $c$ is interior to
+$P$, and $P\ne Q'_c$. Re-routing keeps vertex sets, so after the chain $P$ has become a path $P'$
+with $V(P')=V(P)$, ending at $c$ and at some vertex $f$. If $P$ was already re-routed at its other
+end at an earlier step, that step does not change the segment from $x_{i-1}$ to $x$.
+
+\emph{The result $\cD$.} It contains $P'$, with ends $c$ and $f$, and $R=Q'_c+cx$, with ends $q$ and
+$x$.
+
+\emph{The exchange.} Replace $P'$ and $R$ by $Q=cx$ and $S=P'\cup Q'_c$, joined at $c$. $S$ is a path
+because $V(P')\cap V(Q'_c)=\{c\}$, and it is not a cycle, since $f\in V(P')$, $q\in V(Q'_c)$ and
+$q\ne c$. The two new paths use the same edges and have the same ends, $\{c,x\}$ and $\{f,q\}$. So
+the result is a Lov\'asz decomposition of $G$ with $Q_c=cx$.
+\end{proof}
+
+Conditions (1)--(4) do not cover all good decompositions. At order $7$, of the $34{,}778$ good
+decompositions $\cD'$ at tight targets, $24{,}738$ satisfy (1), $375$ more satisfy (4), and $9{,}665$
+satisfy neither. Only $824$ of those $9{,}665$ give a good Fan image. So a proof of $\TR$ must in
+general re-choose $\cD'$; a local repair of a given $\cD'$ is not enough. The data support
+re-choice: at order $9$, every one of the $82{,}079$ pairs (instance with
+$A=V\setminus(N[c]\cup N(g))$, tight target $x$) with $(G-gx,c,A)$ good has a good $\cD'$ whose chain
+avoids $c$ (Section~\ref{sec:comp}).
+
+\begin{example}[$\TR$ is sharp]\label{ex:trsharp}
+The hypothesis $A\cap N(c)=\emptyset$ cannot be dropped. Take vertices $0,\dots,6$ and edges $03$,
+$05$, $06$, $15$, $16$, $14$, $24$, $25$, $26$, $35$, $36$, $45$, $46$ (graph6 \texttt{FCZ\char`~o}).
+\begin{itemize}
+\item $g=4$, $c=0$, $x=6\in N(g)\cap N(c)$, and $A=\{1,2,3,4\}$, which meets $N(c)$ in $3$.
+\item $(G-46,0,A)$ is good: one good decomposition is $\{05,\ 1453062,\ 361524\}$.
+Its forced chain is $4\to1\to0=c$. Every good decomposition of $G-46$ must have its chain through
+$c$, since otherwise Lemma~\ref{lem:avoidc} would make $(G,0,A)$ good.
+\item $(G,0,A)$ is not good.
+\end{itemize}
+At order $7$ there are $14$ such violations among $8{,}066$ tests with $A$ arbitrary, and all of them
+have $A\cap N(c)\neq\emptyset$.
+\end{example}
+
+\subsection{The hypothesis side}
+
+\begin{conjecture}[$\ST$, some target]\label{conj:st}
+Every blocked admissible instance $(G,c,A)$ has a target $x\in N(g)$ such that $(G-gx,c,A)$ is good.
+\end{conjecture}
+
+\begin{definition}
+$\ST'$ is the instance-level form. Every blocked admissible instance has a target $x$ such that:
+\begin{itemize}
+\item $x\notin N(c)$ and $(G-gx,c,A)$ is good; or
+\item $x\in N(c)$ and $(G-xc-gx,x,A\cup\{c\})$ is good.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[two-sided reduction]\label{thm:two}
+$\TR\wedge\ST$ implies \texttt{L1Blocked}. Hence it implies the general form of $L_1^*$, $L_1^*$, EE
+and $L_\infty$. Also, $\ST'$ alone implies \texttt{L1Blocked}.
+\lean{l1Blocked\_of\_someTarget, l1starGen\_of\_ST\_TR, l1star\_of\_ST\_TR, ee\_of\_ST\_TR,
+lInfty\_of\_ST\_TR, l1Blocked\_of\_someTargetLocal}
+\end{theorem}
+
+\begin{proof}
+Let $(G,c,A)$ be blocked and admissible, and let $x$ be the target given by $\ST$. Then $x\notin A$,
+since $A\cap N(g)=\emptyset$.
+\begin{itemize}
+\item If $x\notin N(c)$, apply Theorem~\ref{thm:calculus}(b).
+\item If $x\in N(c)$, apply $\TR$. Its hypotheses hold: $c\notin A$ and $A\cap N(c)=\emptyset$ by
+admissibility, and $x\notin A$.
+\end{itemize}
+For $\ST'$, use (b) and (c) of Theorem~\ref{thm:calculus}. The consequences follow from
+\texttt{l1starGen\_of\_blocked}, \texttt{ee\_of\_l1Blocked} and
+\texttt{lInfty\_of\_l1Blocked}~\cite{L1S,TF}.
+\end{proof}
+
+\begin{proposition}[$\ST'$ is false]\label{prop:stprime}
+Take vertices $0,\dots,6$ and edges $03$, $04$, $06$, $13$, $15$, $16$, $24$, $25$, $26$, $35$ (graph6
+\texttt{FEhv?}). Let $g=4$, $c=6$ and $A=\{3,5\}$; the same holds for $A=\{3,4,5\}$. Then the
+instance is admissible and blocked, $\ST$ holds for it, and $\ST'$ fails.
+\end{proposition}
+
+\begin{proof}
+\emph{The instance.} $N(g)=\{0,2\}$ and $N[c]=\{0,1,2,6\}$, so $A$ is admissible and $c\notin N(g)$.
+Both targets are tight and have a neighbour in $A$: $03$ and $25$. So the instance is blocked.
+
+\emph{$\ST'$ fails.} For $x=0$, the child of (c) is $G-06-04$, with terminal $0$ and avoidance set
+$A\cup\{6\}$. There the only neighbour of $0$ is $3\in A$, so $Q_0$ cannot start. The target $x=2$
+is symmetric, with $5\in A$. There are no non-tight targets.
+
+\emph{$\ST$ holds.} $G-40$ has the good decomposition $\cD'=\{61,\ 260315,\ 3524\}$. The path ending
+at $g=4$ is $3524$; it avoids $x=0$, so the forced chain is trivial. Fan's step appends $40$ and
+gives the good decomposition $\{61,\ 260315,\ 04253\}$ of $G$, with $Q_c=61$.
+\end{proof}
+
+So the transfer side cannot be removed by passing to the instance-level child (c): the good
+$\cD'$ above uses the tight target $0$ with $c$ as the terminal. Not every good $\cD'$ works. For
+$\{61,\ 2513,\ 426035\}$ the forced chain is $4\to6=c$, and the image has $Q_c=624035$, which meets
+$A$.
+
+At order $9$, $1{,}262$ of the $135{,}188$ blocked instances, over all admissible $A$, violate
+$\ST'$. All of them have $N(g)\subseteq N(c)$, so every target is tight. Of these, $1{,}238$ have
+$d(g)=2$, which is the minimal shape of~\cite[Corollary~5.6(5)]{L1S}. The other $24$ have $d(g)=4$
+and $d(c)=5$, as in Example~\ref{ex:stuck}. The mechanism is the one seen here. In $1{,}208$ of the
+$1{,}262$, every target $u$ has $N(u)\setminus\{g,c\}\subseteq A$, so every (c)-child has no first
+step for $Q_u$. ($760$ of these $1{,}208$ have every target of degree three.) In the other $54$ the
+(c)-children fail further on.
+
+\begin{remark}[a stronger conclusion]\label{rem:l1e}
+Call an instance \emph{L1E-good} if some good Lov\'asz decomposition has an edge $gx$ as the terminal
+edge of $Q_x$. Equivalently, $(G-gx,c,A)$ is good through a $\cD'$ whose path ending at $g$ avoids
+$x$, so that the forced chain is trivial and the transfer side disappears. At order $9$ every
+instance with $A=V\setminus(N[c]\cup N(g))$ and $c\notin N(g)$ is L1E-good ($46{,}638$, including
+all $15{,}277$ blocked). It also holds in the random tests (Section~\ref{sec:comp}). L1E-goodness is
+candidate (iii) in its strongest form. It strengthens the conclusion, but it does not supply the
+hypothesis $\ST$.
+\end{remark}
+
+\section{The candidate classes, and where each fails to close}\label{sec:candidates}
+
+An induction proof of \texttt{L1Blocked} by these moves needs a class $\mathcal C$ of instances with
+three properties:
+\begin{enumerate}
+\item $\mathcal C$ contains every admissible instance;
+\item $\mathcal C$ consists of good instances;
+\item every instance of $\mathcal C$ that is not a base case has a move into $\mathcal C$, of
+smaller measure.
+\end{enumerate}
+The largest class with (2) and (3) is $\mathrm{Rec}$ (or $\mathrm{Rec}_T$ under $\TR$). The task is
+to describe one that also has (1) and whose closure (3) can be \emph{proved}.
+
+\subsection{(i) Joint statements and certificate classes}
+
+\emph{Instance-level moves are not enough.} $\mathrm{Rec}$ contains every admissible instance of order
+at most $8$, for every admissible $A$. Order $8$ has no blocked instance, since a connected graph of
+even order with at most one even vertex has no even vertex at all. At order $9$, $209$ of the $95{,}488$ admissible instances with
+$A=V\setminus(N[c]\cup N(g))$ are not in $\mathrm{Rec}$. Six of them are stuck: every move leads to a
+bad instance.
+
+\begin{example}[the stuck family]\label{ex:stuck}
+$H$ (\texttt{H?ABvrw}) has vertices $0,\dots,8$.
+\begin{itemize}
+\item $\{6,7,8\}$ and $\{1,2,3,4\}$ span a complete bipartite graph $K_{3,4}$.
+\item $0$ is adjacent to $7$ and $8$, and $5$ is a leaf at $0$.
+\end{itemize}
+Take $g=6$, $c=7$ and $A=\{5,6,8\}$. Then $N(g)=\{1,2,3,4\}\subseteq N(c)=\{0,1,2,3,4\}$, and $N(c)$ is
+independent, so $Q_c$ is a single edge. The only moves are (c) at the four targets, and each child
+needs a path from $u$ whose only available neighbour is $8\in A$.
+
+All five edges $cx$, $x\in N(c)$, can be $Q_c$ in a good decomposition. At each target, $84\%$ of the
+good decompositions of $G-gu$ have their forced chain avoiding $c$, and all of these transfer.
+
+$H$ is the two-even example \texttt{G?Bvvo} of~\cite[\S7]{L1S} with a leaf at its even vertex of
+degree two. The six stuck instances at order $9$ come from five graphs, not all isomorphic. They
+share one mechanism: $d(g)=4$, $d(c)=5$, $N(c)$ is independent, $N(g)\subseteq N(c)$, and every
+target $u$ has $N(u)=\{g,c,a_u\}$ with $a_u\in A$.
+\end{example}
+
+With $\TR$ added, $\mathrm{Rec}_T$ still misses $56$ of the $95{,}488$ admissible instances of order $9$
+($35$ of them blocked), and $33$ of the $328{,}510$ of order $10$. In the trees of the missed
+instances there are $1{,}296$ stuck states, none of them admissible. $1{,}184$ of them admit no move at
+all (in particular every neighbour of the even vertex is in $A$), yet the state is good.
+
+\emph{No bounded excursion.} Measure a certificate by its \emph{gap}: the longest run of consecutive
+inadmissible intermediate instances. A class of the form ``admissible, or at most $k$ moves from an
+admissible instance'' is closed only if gap $\le k$ always suffices.
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+least gap & 0 & 1 & 2 & 3 & 4 & 5\\
+\midrule
+order 7, $\mathrm{Rec}$ & 760 & 11 & 5 & 4 & 0 & 0\\
+order 7, $\mathrm{Rec}_T$ & 764 & 11 & 5 & 0 & 0 & 0\\
+order 8, $\mathrm{Rec}_T$ & 1{,}589 & 68 & 112 & 20 & 0 & 3\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The three instances of gap $5$ at order $8$ are $K_8$ minus a triangle $\{0,1,2\}$, with $c\in\{0,1,2\}$
+and $A$ the other two. The certificate goes as follows:
+\begin{itemize}
+\item the leaf move (d);
+\item a Fan trail of four (b)-steps that returns to its first target;
+\item a route (h);
+\item a split at the new terminal (g).
+\end{itemize}
+No class ``within $k$ steps of admissibility'' with $k\le4$ is closed, with or without $\TR$. So a
+joint statement ``$L_1^*$ and some target'' does not close at the second level: the some-target
+instance $(G-gx,c,A)$ itself needs a long excursion.
+
+\subsection{(ii) A non-local admissibility}
+
+\begin{proposition}\label{prop:cadm}
+Call $(G,c,A)$ \emph{$c$-admissible} if $A\cap N[c]=\emptyset$. Every admissible instance is
+$c$-admissible, and every $(G-gx,c,A)$ coming from a $c$-admissible $(G,c,A)$ with $c\notin N(g)$ is
+$c$-admissible. Under $\TR$, goodness propagates upward along every Case~I step between
+$c$-admissible instances with target outside $A$.
+\end{proposition}
+
+\begin{proof}
+Deleting $gx$ does not change $N[c]$, because $c\notin\{g,x\}$ and $g\notin N(c)$. The last statement
+is Theorem~\ref{thm:calculus}(b) together with $\TR$.
+\end{proof}
+
+So $c$-admissibility is a non-local weakening that \emph{is} preserved by the Case~I step, for every
+target. It is exactly the condition under which $\TR$ holds. But the class is not contained in the
+good instances, and its good part is not closed downward.
+\begin{itemize}
+\item \emph{Bad children.} A $c$-admissible child of an admissible instance can be bad. At order $9$,
+$496$ of the $41{,}074$ pairs (blocked instance with $A=V\setminus(N[c]\cup N(g))$, target $x$) have
+$(G-gx,c,A)$ bad. All $496$ have $d(c)=1$ or $d(g)=2$: $476$ have $d(c)=1$, and the other $20$ have
+$d(g)=2$ and $d(c)=3$. No simple local rule (fewest neighbours in $A$, non-tight first, and others)
+always picks a good target.
+\item \emph{An ``every target'' form fails too.} Among all instances (not only blocked) at order $9$
+with $d(g)=4$ and $d(c)=3$, $16$ of the $50{,}516$ targets are bad.
+\item \emph{Dead ends.} A good $c$-admissible instance can have no good Case~I child. The smallest is
+at order $5$. Take \texttt{DEk}, with edges $03,04,13,24,34$, $g=0$, $c=1$ and $A=\{0,2\}$. The child
+$G-04$ is good: $\{13,\ 0342\}$. Its even vertex $4$ has the single target $3$, and $(G-04-43,1,A)$ is
+bad, since $Q_1$ would be $1\,3\,0$. The split (e) at $4$ rescues this instance. With all moves
+and $\TR$, stuck states still occur at order $9$, in the trees of the $56$ uncertified instances.
+\end{itemize}
+
+\emph{The two-even core.} If $d(c)=1$ with neighbour $y$, and $y$ has no neighbour in $N(g)$, then
+$Q_c=cy$ is forced, and goodness of $(G,c,A)$ says exactly that $G-c$, which has two even vertices
+$y$ and $g$, has a decomposition with no ends at either. This is the two-even
+conjecture~\cite[Conj.~3.2]{L1S}. Its own Case~I walk stalls at order~$8$ (\texttt{G?Bvvo}).
+$96\%$ of the bad targets above have $d(c)=1$. So the hypothesis side of $L_1^*$ contains the
+two-even problem, and a closed class would have to solve it as well.
+
+\subsection{(iii) Controlling the decomposition}
+
+Strengthening the conclusion to control $\cD'$ (the forced chain avoids $c$, or even the trivial chain
+of Remark~\ref{rem:l1e}) removes the transfer side completely. The data support this:
+\begin{itemize}
+\item re-choice holds in all $82{,}079$ tight pairs of order $9$;
+\item L1E-goodness holds at order $9$ and in all decided random instances.
+\end{itemize}
+But such a strengthened statement for $(G-gx,c,A)$ is again a statement about an inadmissible
+instance. Its proof needs exactly the hypothesis that (i) and (ii) fail to supply. At the level of
+instances, (iii) \emph{is} $\TR$: Theorem~\ref{thm:two} isolates it, and what remains is $\ST$.
+
+\subsection{The minimal obstructions}
+
+\begin{table}[ht]
+\caption{The smallest instances at which each candidate fails.}\label{tab:obs}
+\footnotesize
+\begin{tabular}{@{}llll@{}}
+\toprule
+candidate & fails because & smallest & instance\\
+\midrule
+$\ST'$ (no transfer statement) & false & $7$ & \texttt{FEhv?}, $g=4$, $c=6$, $A=\{3,5\}$\\
+instance-level $\mathrm{Rec}$ & admissible instance stuck & $9$ & \texttt{H?ABvrw}, $g=6$, $c=7$, $A=\{5,6,8\}$\\
+bounded gap $k\le4$ & gap $5$ needed & $8$ & $K_8-K_3$, $c\in K_3$\\
+$c$-admissible, Case~I & dead end & $5$ & \texttt{DEk}, $g=0$, $c=1$, $A=\{0,2\}$\\
+$c$-admissible, $\subseteq$ good & bad child & $5$ & (in \texttt{DEk}: $(G-04-43,1,A)$)\\
+$\TR$ with $A\cap N(c)\ne\emptyset$ & false & $7$ & \texttt{FCZ\char`~o}, $g=4$, $c=0$, $A=\{1,2,3,4\}$\\
+$\mathrm{Rec}_T$ (all moves $+\TR$) & good state, no good child & $9$ & see \texttt{out/explore9\_MBT.txt}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+What survives every test is the pair $\TR$ and $\ST$. The \emph{precise} remaining obstruction is
+$\ST$: for a blocked instance, produce a target $x$ and a good decomposition of the inadmissible
+instance $(G-gx,c,A)$. Its hardest part is $N(g)\subseteq N(c)$ (all targets tight; every $\ST'$
+failure is of this shape), together with $d(c)=1$, where it contains the two-even conjecture.
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational. No proof above depends on it.} The scripts are in
+\nolinkurl{manuscripts/l1-induction/scripts/}, and their outputs are in \texttt{out/}. Graphs are all
+connected graphs from \texttt{nauty-geng -c}; odd order gives exactly one even vertex when there is at
+most one.
+
+\subsection*{Tools and validation}
+\begin{itemize}
+\item \texttt{lind.h}: the exact avoidance oracle, a port of \texttt{l1s.c}~\cite{L1S}, which was
+validated there against brute force.
+\item \texttt{orc2.h}: several constrained paths, with an optional disjointness constraint.
+\item \texttt{dec.h}: enumeration of all good Lov\'asz decompositions, and exact simulation of the
+forced chain. Every decomposition and every Fan image is checked by \texttt{check\_decomp}.
+\item \texttt{xcheck2.cpp}: \texttt{orc2} against enumeration, $31{,}704$ random queries at orders
+$4$--$7$, $0$ mismatches.
+\item The Fan simulation reproduces the order-$9$ instance \texttt{H??FFf\char`\}} of~\cite{TF}.
+\end{itemize}
+
+\subsection*{Certificates (\texttt{rec2.cpp}, \texttt{moves.h})}
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+order & instances & blocked & not in $\mathrm{Rec}$ & not in $\mathrm{Rec}_T$\\
+\midrule
+$6$ & $78$ & $0$ & $0$ & $0$\\
+$7$ & $780$ & $83$ & $0$ & $0$\\
+$8$ & $1{,}792$ & $0$ & $0$ & $0$\\
+$9$ & $95{,}488$ & $15{,}277$ & $209$ ($163$ blocked) & $56$ ($35$ blocked)\\
+$10$ & $328{,}510$ & $0$ & $54$ & $33$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Instances are $(G,c,A)$ with $A=V\setminus(N[c]\cup N(g))$. With every admissible $A$ (mode
+\texttt{subsets}): orders $4$--$6$, $9$, $23$ and $405$ instances; order $7$, $2{,}150$ instances ($406$
+blocked); order $8$, $27{,}837$. All of these are in $\mathrm{Rec}$. At order $9$, $57$ of the
+$574{,}566$ instances ($135{,}188$ blocked) are not in $\mathrm{Rec}_T$, $36$ of them blocked
+(\texttt{out/rec\_sub9\_MBT.txt}). With $|A|\le2$ at order $7$, all $1{,}868$ instances of the census of~\cite{L1S} are
+in $\mathrm{Rec}$. Without the \S5 moves ((a)--(d) only), Rec
+fails already on $26$ of the $78$ all-odd instances of order $6$; $K_{3,3}$ needs the split (e).
+
+The stuck admissible instances are listed in \texttt{out/stuck0\_9.txt}; there are $6$, none at order
+$\le8$. Tight-transfer test (\texttt{tt.cpp}, \texttt{out/tt\_stuck0\_9.txt}): each target admits
+$284$--$1{,}284$ good $\cD'$, of which $76$--$92\%$ have the chain avoiding $c$, and all of these
+transfer.
+
+\subsection*{The two sides}
+\begin{itemize}
+\item $\TR$ (\texttt{tr2.cpp}): tight targets, and \emph{every} $A\subseteq V\setminus(N[c]\cup\{x\})$
+with $(G-gx,c,A)$ good.
+  \begin{itemize}
+  \item Order $7$: $3{,}764$ tests; order $9$: $1{,}735{,}156$ tests; $0$ violations.
+  \item With $A$ arbitrary (\texttt{trall.cpp}, order $7$): $6{,}672$ non-tight tests with $0$
+  violations, and $8{,}066$ tight tests with $14$ violations, all with $A\cap N(c)\ne\emptyset$.
+  \end{itemize}
+\item Re-choice (\texttt{rechoice.cpp}): at orders $5$, $7$, $9$, all $8$, $457$ and $82{,}079$ good
+tight pairs have a good $\cD'$ with chain avoiding $c$.
+\item Coverage of $\TR$ by the proved lemmas (\texttt{exch.cpp}, order $7$): see
+Section~\ref{sec:two}.
+\item $\ST$ and $\ST'$ (\texttt{stprime.cpp}), all admissible $A$:
+  \begin{itemize}
+  \item order $7$: $406$ blocked instances; $\ST$ holds in all, $\ST'$ in $386$;
+  \item order $9$: $135{,}188$ blocked instances; $\ST$ holds in all, $\ST'$ in $133{,}926$.
+  \end{itemize}
+\item L1E (\texttt{l1e.cpp}, $A=V\setminus(N[c]\cup N(g))$, $c\notin N(g)$): orders $5$, $7$, $9$:
+$8$, $338$, $46{,}638$ instances, all L1E-good.
+\item Targets (\texttt{targets.cpp}, \texttt{alltarget.cpp}): Section~\ref{sec:candidates}. Output
+\texttt{out/badtargets9.txt}.
+\item Gaps (\texttt{gap.cpp}), dead ends (\texttt{minobs.cpp}), the walk census (\texttt{walk2.cpp}),
+and walks to admissibility (\texttt{walkadm.cpp}, assuming $\TR$: $24$ of $83$ blocked at order $7$,
+$4{,}283$ of $15{,}277$ at order $9$).
+\end{itemize}
+
+\subsection*{Random graphs}
+\texttt{randg.py} generates $G(n,p)$ with $p\in[0.2,0.6]$, parities repaired as in~\cite{L1S},
+connected, with exactly one even vertex. \texttt{randtest.cpp} uses a node budget of $2\cdot10^6$ and
+$A=V\setminus(N[c]\cup N(g))$. With $3{,}000$ graphs of orders $11$ and $13$
+(\texttt{out/rand\_11\_13\_v2.txt}):
+\begin{itemize}
+\item $9{,}071$ blocked instances: $\ST$ holds in $9{,}069$, with $2$ undecided;
+\item L1E: no failure among the decided instances;
+\item $\TR$: $32{,}267$ tight tests, $0$ violations, $150$ undecided.
+\end{itemize}
+(An earlier run, \texttt{out/rand\_11\_13.txt}, reported two L1E failures. They were artefacts: the
+tester skipped a target whose $\ST$ query had hit the budget without marking it undecided. Both were
+rechecked with no budget, \texttt{out/l1e\_check13.txt}, and are L1E-good.) With $600$ graphs
+of order $15$ (\texttt{out/rand\_15.txt}): $2{,}816$ blocked instances; $\ST$ holds in $2{,}805$, with
+$11$ undecided; $\TR$: $10{,}460$ tight tests, $0$ violations, $146$ undecided; no L1E failure.
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/L1Induction.lean} (Lean~4, Mathlib; no \texttt{sorry}; \texttt{\#print axioms}
+shows only \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}; the full library
+builds).
+\begin{itemize}
+\item \texttt{avoid\_of\_target\_child}, \texttt{avoid\_of\_target\_adj\_child}:
+Theorem~\ref{thm:calculus}(b),(c).
+\item \texttt{TightTransfer}, \texttt{SomeTarget}, \texttt{SomeTargetLocal}:
+Conjectures~\ref{conj:tr}, \ref{conj:st} and $\ST'$.
+\item \texttt{l1Blocked\_of\_someTarget}, \texttt{l1Blocked\_of\_someTargetLocal}: Theorem~\ref{thm:two}.
+\item \texttt{l1starGen\_of\_ST\_TR}, \texttt{l1star\_of\_ST\_TR}, \texttt{ee\_of\_ST\_TR},
+\texttt{lInfty\_of\_ST\_TR}: its consequences.
+\end{itemize}
+Not formalised:
+\begin{itemize}
+\item Theorem~\ref{thm:calculus}(a),(d)--(i). The subdivision steps (e), (g) need path surgery that
+the library does not yet have.
+\item Proposition~\ref{prop:walk2}, Lemma~\ref{lem:exchange}, Propositions~\ref{prop:stprime}
+and~\ref{prop:cadm}.
+\item The computations.
+\end{itemize}
+
+\section{What remains}\label{sec:open}
+\begin{enumerate}
+\item \emph{$\ST$.} This is the obstruction. A proof needs a way to certify a good but inadmissible
+instance $(G-gx,c,A)$. Promising sub-cases:
+  \begin{itemize}
+  \item $d(g)=2$ with $N(g)\subseteq N(c)$: the minimal shape, which contains every order-$7$
+  failure of $\ST'$. After the split (e) it reads: $L_\infty$ with one forbidden edge inside $N(c)$.
+  \item $d(c)=1$: the two-even problem.
+  \end{itemize}
+\item \emph{$\TR$.} By Lemma~\ref{lem:exchange} and the coverage data, a proof must re-choose the
+decomposition. A natural route is an exchange argument at $c$ combined with Fan's protected-blank
+lemma~\cite[Theorem~2.2]{TF}.
+\item \emph{A different invariant.} Every class tested here is defined by instances. The data
+(Section~\ref{sec:candidates}) suggest that a closing hypothesis must carry information about the
+decomposition near $c$, for instance which neighbour of $c$ ends $Q_c$. It must also cover the
+two-even problem.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.~Combin.\ Theory Ser.~B 93
+(2005) 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
+1966), Academic Press, New York, 1968, 231--236.
+\bibitem{L1S} J.~Williams, The avoidance conjecture $L_1^*$: a local form, a reduction to blocked
+instances, and two even vertices, manuscript (\texttt{manuscripts/l1star}), 2026.
+\bibitem{RD} J.~Williams, Route descent, manuscript (\texttt{manuscripts/route-descent}), 2026.
+\bibitem{TF} J.~Williams, Fan's lemma at equality, manuscript (\texttt{manuscripts/tight-fan}), 2026.
+\end{thebibliography}
+\end{document}
