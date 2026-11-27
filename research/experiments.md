@@ -1531,7 +1531,22 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - Two pairs, exhaustive:
   - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
   - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
-- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds. See the table below.
+- Two pairs, order 9 sample (every 20th graph of `one_even_9.g6`): 597 graphs, 31,701 instances, **0 compatibility failures**. The 45 failures each contain a failing single pair.
+- Random (`dl_rand.py`): pairs inside N(g) (the regime where L1* is inadmissible), universal twins skipped, budget 2·10⁶, three seeds.
+
+  | n | p | k | instances | decided OK | budget-undecided | failures | one orientation fails (k = 1) |
+  |---|---|---|---|---|---|---|---|
+  | 11 | 0.4 | 1 / 2 / 3 | 268 / 148 / 46 | 266 / 148 / 46 | 2 / 0 / 0 | 0 | 17 |
+  | 11 | 0.6 | 1 / 2 / 3 | 296 / 243 / 111 | 286 / 230 / 98 | 10 / 13 / 13 | 0 | 99 |
+  | 11 | 0.8 | 1 / 2 / 3 | 292 / 231 / 137 | 292 / 229 / 134 | 0 / 2 / 3 | 0 | 168 |
+  | 13 | 0.4 | 1 / 2 / 3 | 283 / 196 / 76 | 283 / 190 / 75 | 0 / 6 / 1 | 0 | 58 |
+  | 13 | 0.6 | 1 / 2 / 3 | 296 / 269 / 169 | 288 / 259 / 152 | 8 / 10 / 17 | 0 | 99 |
+  | 13 | 0.8 | 1 / 2 / 3 | 299 / 282 / 240 | 296 / 276 / 229 | 3 / 6 / 11 | 0 | 156 |
+  | 15 | 0.5 | 1 / 2 / 3 | 99 / 94 / 57 | 99 / 87 / 55 | 0 / 7 / 2 | 0 | 23 |
+  | 15 | 0.7 | 1 / 2 | 100 / 99 | 97 / 94 | 3 / 5 | 0 | 35 |
+
+  - Totals: 4,331 instances, **0 failures**, 122 budget-undecided.
+  - Exact rechecks (`dl_recheck.py`, no budget, 300 s per query) of the undecided instances at n = 11: 14 have a base, 1 timed out, none is absent (still running when recorded).
 - **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
 - **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
 
