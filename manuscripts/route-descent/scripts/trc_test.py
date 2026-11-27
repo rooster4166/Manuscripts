@@ -101,7 +101,10 @@ def run(name, graphs, ncons, maxT, seed):
             for M in Ts:
                 stats["transversals"] += 1
                 b = L.simple_profile(G, M)
-                rb = L.realisable(G, b)
+                rr_w = None
+                if os.environ.get("RR"):
+                    rr_w = L.route_respecting(G, routes, M, want=True)
+                rb = True if rr_w is not None else L.realisable(G, b)
                 if rb is None:
                     stats["unknown_real"] = stats.get("unknown_real", 0) + 1
                     continue
@@ -113,7 +116,7 @@ def run(name, graphs, ncons, maxT, seed):
                     continue
                 Mset = set(M)
                 if os.environ.get("RR"):
-                    rr = L.route_respecting(G, routes, M)
+                    rr = True if rr_w is not None else L.route_respecting(G, routes, M)
                     if rr is None:
                         stats["rr_unknown"] = stats.get("rr_unknown", 0) + 1
                     stats["rr_true"] = stats.get("rr_true", 0) + bool(rr)
@@ -149,6 +152,8 @@ def run(name, graphs, ncons, maxT, seed):
                     stuck_log.append(dict(g=gname, edges=sorted(G.edges()), routes=routes, M=list(M)))
                 if k == len(routes):
                     stats["all_p"] += 1
+            if os.environ.get("PROGRESS"):
+                print("  construction", stats["constructions"], json.dumps(stats), flush=True)
         if stats["graphs"] % 10 == 0:
             print(f"  ... {stats['graphs']} graphs, {time.time() - t0:.0f}s", flush=True)
     stats["hist_num_good_p"] = dict(sorted(hist.items()))

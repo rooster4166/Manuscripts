@@ -20,7 +20,10 @@
      A n m u1 v1 ... um vm b0 .. b_{n-1} x0 .. x_{n-1}
           avoidance query: print 1 if b is realisable by paths each of which avoids x_s and x_w,
           where s, w are its ends (x_v is a vertex bit mask; v itself is removed from x_v).
-     W... (WP / WX / WC / WA): as P / X / C / A, but on success also print the paths of one realisation on the
+     S n m u1 v1 ... um vm b0 .. b_{n-1} k s1 t1 ... sk tk
+          separation query: print 1 if b is realisable by paths none of which contains both s_i
+          and t_i, for any i.
+     W... (WP / WX / WC / WA / WS): as P / X / C / A / S, but on success also print the paths of one realisation on the
           same line after the 1, as  "| v0 v1 ... | w0 w1 ... |".
      Flag B (e.g. PB, XB, CB, WPB): two more numbers follow the query, a seed and a node budget;
           the neighbour order is shuffled by the seed and the search stops after `budget` calls
@@ -109,6 +112,7 @@ static int solve(void);
 static int use_c, use_a;
 static uint32_t crv[MAXN];      /* query C: route vertex sets */
 static uint32_t avd[MAXN];      /* query A: a path ending at v avoids avd[v] */
+static int use_s, nsep; static uint32_t sepm[MAXN];  /* query S: no path contains both vertices of any sepm[i] */
 
 static int extend(int a, int c, uint32_t vis, uint32_t pm) {
   if (aborted) return 0;
@@ -121,6 +125,11 @@ static int extend(int a, int c, uint32_t vis, uint32_t pm) {
     rem &= ~((u128)1 << e);
     pathbuf[plen++] = w;
     uint32_t pm2 = pm | (1u << w);
+    if (use_s) {
+      int badp = 0;
+      for (int i = 0; i < nsep; i++) if ((pm2 & sepm[i]) == sepm[i]) { badp = 1; break; }
+      if (badp) { plen--; rem |= (u128)1 << e; continue; }
+    }
     if (b[w] > 0 && (!use_c || ((pm2 & crv[w]) == (1u << w) && (crv[a] & crv[w]) == 0))
         && (!use_a || (pm2 & avd[w]) == 0)) {
       b[a]--; b[w]--;
@@ -223,6 +232,11 @@ int main(void) {
     if (isX && scanf("%d %llu", &c, &f) != 2) return 1;
     use_c = (strchr(tag, 'C') != NULL);
     use_a = (strchr(tag, 'A') != NULL);
+    use_s = (strchr(tag, 'S') != NULL);
+    if (use_s) {
+      if (scanf("%d", &nsep) != 1 || nsep > MAXN) return 1;
+      for (int i = 0; i < nsep; i++) { int s1, s2; if (scanf("%d %d", &s1, &s2) != 2) return 1; sepm[i] = (1u << s1) | (1u << s2); }
+    }
     if (use_a) for (int v = 0; v < n; v++) { unsigned long long x; if (scanf("%llu", &x) != 1) return 1; avd[v] = (uint32_t)x & ~(1u << v); }
     int useB = (strchr(tag, 'B') != NULL);
     if (use_c) for (int v = 0; v < n; v++) { unsigned long long x; if (scanf("%llu", &x) != 1) return 1; crv[v] = (uint32_t)x | (1u << v); }

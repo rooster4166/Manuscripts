@@ -938,3 +938,44 @@ Details: E19; endpoint-min-max §6 (`sec:gadgets`, Lemmas 29–40, Thms 41, 42, 
 - Formalisation (`sec:lean`) records `cs_all`.
 - TRC is open problem 1, the main one.
 - One correction to the gadgets text: open problem 2, bullet 2 now says "constructible pairing" instead of "good pairing". A13's n = 12 witness is a failing transversal of a *good* pairing that needs no gadget.
+
+## V. Route descent (cloud session `claude/route-descent`, 2026-11-27)
+
+*Experiments: E20. Manuscript: `manuscripts/route-descent/route-descent.tex`. Oracle: `tools/route_ext.c`.*
+
+### V.1 Verdicts on the brief's observations
+- **Upward closure, heredity, base, extension** (synthesis §17): all correct as stated; heredity is also machine-checked on every route of every construction in E20. Two small additions: deleting a route never isolates a vertex (an interior vertex of degree 2 would be even and also a route end, forcing J-degree ≥ 3), and linking paths of a component never leave it.
+- **Extension ⟺ terminal route.** "Some realisation of G − E(R_p) has V(Q_c) ∩ V(R_p) = {c}" is equivalent to "G has a realisation of M in which R_p is a terminal segment ending at a". This is what the oracle tests.
+
+### V.2 The finding: minimality of J removes the extension problem (in the data)
+- With spanning-tree T-joins the extension fails (4–5% of queries). Almost all failures are *trivial*: the unmarked end c has degree 2 and the route runs through c's other neighbour, so Q_c cannot leave the route. Stuck transversals (no route works) occur only in this way, and re-routing fixes every one.
+- **With a minimum T-join, every route admits the extension for every transversal** (E20: about 210,000 queries, no failure). Moreover a **route-respecting realisation** exists: all routes are terminal segments at once.
+- Why minimality is natural. (i) A min T-join is a forest, so Thm 21 applies. (ii) Every subpath of a route is a geodesic of G; in particular routes are induced, so the trivial obstruction is impossible. (iii) **Minimality is inherited by route deletion**: a smaller T′-join K′ of G − E(R_p) would give the smaller T-join K′ ∪ E(R_p) of G. (iv) A matching that is a T-join is minimum. So the class "Thm-21 system on a minimum T-join" is closed under the descent.
+- Hence the **strengthened invariant**: prescribe that J is minimum. The induction hypothesis then needs nothing about end-paths at all, if conjecture RR holds.
+
+### V.3 RR is a constrained Lovász theorem
+A route-respecting realisation of M is the same thing as a Lovász decomposition D of F = G − J (all degrees odd, one end per vertex) such that (RR1) the path of D at each unmarked end c_p meets R_p only in c_p, and (RR2) a path whose ends are two unmarked ends c_p, c_q has R_p, R_q vertex-disjoint. So:
+
+> **Conjecture RR.** For a Thm-21 system on a minimum T-join and every transversal M, F has a Lovász decomposition satisfying (RR1), (RR2).
+
+RR ⇒ TRC for min-T-join systems ⇒ Gallai. RR\* (one D for all M) is false (E20).
+
+The single-edge case is the cleanest: J = N a perfect matching of G[Ev] (always minimum).
+> **Conjecture L_N.** If F has all degrees odd and N = {c_i a_i} is a matching of non-edges of F, oriented c_i → a_i, then F has a Lovász decomposition in which the path at each c_i avoids a_i (then (RR2) is automatic).
+
+L_N would give **Gallai for every graph whose even vertices induce a subgraph with a perfect matching**, which includes every Eulerian graph with a perfect matching. Gallai is open there; Pyber, Fan and Botler–Sambinelli need the even subgraph to be a forest, or blocks of maximum degree ≤ 3. Its one-pair case is **L1** (avoid one non-neighbour), and E20 finds no failure of L1, L1e, L∞ or L_N.
+
+### V.4 Proved: separation at distance three (the base of the programme)
+**Theorem (separation).** If G has at most one vertex of positive even degree and dist(c, a) ≥ 3, then G has a decomposition with ends ≡ degrees mod 2 in which **no path contains both c and a**.
+
+Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant through, because of one observation about **Fan's lemma**. Its proof (a chain of re-routings and one append) keeps the vertex set of every path, except that one path gains the target vertex g. So any Fan transfer with g ∉ {c, a} preserves separation. At distance ≥ 3, every case of Lovász's induction can choose its target outside {c, a}. Corollary: **L1 holds when c and a have no common neighbour.** At distance 2, separation can fail (7-vertex example with an even vertex), while L1 survives. So the right inductive invariant there is still to be found.
+
+### V.5 Existential version and BranchBase
+- A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used.
+- Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.
+
+### V.6 Classes (honest comparison)
+- *G[Ev] has a unique perfect matching ⇒ every orientation is realisable.* This is Fan descent along an acyclic order. It is a direct corollary of endpoint-structure Cor 25 / `realisable_of_fanSchedule`; uniqueness is exactly what makes every orientation acyclic. Not new as Gallai: Gallai for these graphs follows from Cor 25.
+- *Fan-isolated routes* (every vertex of a route has no even neighbours except its route-neighbours): TRC by Fan transfers along each route. Inside Pyber's class (G[Ev] is then a matching), so new only as a TRC (all-transversals) statement.
+- *Separation theorem*: new as far as we know; a strengthening of Lovász's theorem.
+- *Conjectures RR / L_N / L1*: new; L_N would be a genuinely new Gallai class.

@@ -377,3 +377,31 @@ def avoid(G, b, X):
     xs = [sum(1 << x for x in X.get(v, ())) & ~(1 << v) for v in range(n)]
     return _decide("A", _graph_str(G) + " " + " ".join(str(b[v]) for v in range(n)) + " "
                    + " ".join(map(str, xs)))
+
+
+def sep(G, b, s1, s2=None):
+    """Is b realisable by paths none of which contains both s1 and s2?  With s2 None, s1 is a
+    list of pairs, none of which may lie on a common path."""
+    n = G.number_of_nodes()
+    prs = [(s1, s2)] if s2 is not None else list(s1)
+    return _decide("S", _graph_str(G) + " " + " ".join(str(b[v]) for v in range(n)) + f" {len(prs)} "
+                   + " ".join(f"{x} {y}" for x, y in prs))
+
+
+def route_respecting_all(G, routes):
+    """RR*: one partition of F = G - J into paths with one end at every vertex such that every
+    route can be appended at EITHER end: a path with an end at a route end e meets that route only
+    in e, and a path with ends e, e' at route ends has the two routes vertex-disjoint (so it is not
+    a path joining the two ends of one route).  Then every transversal is realised at once."""
+    n = G.number_of_nodes()
+    J = {frozenset(e) for r in routes for e in zip(r, r[1:])}
+    F = nx.Graph()
+    F.add_nodes_from(range(n))
+    F.add_edges_from(e for e in G.edges() if frozenset(e) not in J)
+    b = [F.degree(v) % 2 for v in range(n)]
+    crv = [1 << v for v in range(n)]
+    for R in routes:
+        m = sum(1 << x for x in R)
+        crv[R[0]] = m
+        crv[R[-1]] = m
+    return _decide("C", _graph_str(F) + " " + " ".join(map(str, b)) + " " + " ".join(map(str, crv)))
