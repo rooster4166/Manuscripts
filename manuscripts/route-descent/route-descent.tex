@@ -64,8 +64,8 @@ Gallai's conjecture for every graph whose even vertices induce a subgraph with a
 proofs use no computation. Computations (an exact oracle, about $1.5\times10^5$ transversals and
 $6\times10^5$ extension queries) are reported separately and only guided the statements. The
 separation theorem and its one-pair corollary, the vertex-set form of Fan's lemma, the extension step
-of route descent and the reduction of Gallai's conjecture to an existential TRC are formalised in
-Lean.
+of route descent, the reduction of TRC to constrained Lov\'asz decompositions, and the resulting
+reduction of Gallai's conjecture are formalised in Lean.
 \end{abstract}
 \maketitle
 
@@ -112,7 +112,8 @@ at once (Proposition~\ref{prop:spine}).
 (Section~\ref{sec:min}).
 \item Realisations in which every route is terminal are exactly the \emph{constrained Lov\'asz
 decompositions} of the free graph $G-J$ (Proposition~\ref{prop:rr}). This turns TRC into a problem about
-graphs with all degrees odd.
+graphs with all degrees odd. The resulting implication, from compatible Lov\'asz decompositions to
+Gallai's conjecture, is formalised in Lean.
 \item \emph{Separation theorem} (Theorem~\ref{thm:sep}): for every set $X$ of vertices at pairwise
 distance at least three, some Lov\'asz decomposition has every path meeting $X$ at most once; in
 particular, it can separate any two vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
@@ -734,9 +735,11 @@ marks automatically fall inside the forcing gadgets, as they must for transversa
 \item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
 $4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
 \emph{minimum} $T$-joins it never failed, in about $220{,}000$ pairs $(M,p)$, including $8{,}896$ on
-$80$ random graphs of order $14$.
+$80$ random graphs of order $14$ and $21{,}896$ on $120$ random block trees of order at most $20$ ($16$
+undecided). On the block trees, spanning-tree $T$-joins failed $115$ times, $70$ of them nontrivially.
 \item \emph{RR.} An $M$-compatible decomposition was found for every transversal tested with minimum
-$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph). A
+$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph,
+$4{,}512$ on block trees). A
 single decomposition compatible with every transversal at once fails to exist in two of the twelve
 order-$12$ graphs, even with minimum $T$-joins.
 \item \emph{Linking is needed.} For minimum $T$-joins decomposed into routes by random
@@ -829,6 +832,16 @@ files are sorry-free, and each theorem listed depends only on the standard axiom
 \item \texttt{OnePair.lean}: Corollary~\ref{cor:onepair} (\texttt{realisable\_two\_even\_adj}), one
 step of route descent end to end: Theorem~\ref{thm:L1} on $G-ca$ is the base, and
 \texttt{route\_append} is the step.
+\item \texttt{RouteSystem.lean}: Proposition~\ref{prop:rr}, in the direction used for TRC
+(\texttt{append\_routes}, \texttt{realisable\_of\_compatible}). A route system is a family of paths, one
+from each even vertex $v$ to its partner $\sigma(v)$, with routes of different pairs edge-disjoint;
+for a transversal $M$ the routes of the tails are removed. If the remaining graph has a decomposition
+with at most one end at every vertex and an end at every tail, satisfying (RR1) and (RR2), then $M$ is
+realisable. The routes are appended one at a time, and compatibility is shown to pass to each
+intermediate decomposition. As a consequence, \texttt{gallai\_of\_routeRR} derives Gallai's conjecture
+from Conjecture~\ref{conj:rr} in the following form: every connected graph of even order has a routed
+pairing all of whose transversals admit compatible Lov\'asz decompositions. The existential form
+(\texttt{gallai\_of\_routeRRExists}) asks this only for one transversal through each even vertex.
 \item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
 \texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
 \item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation\_set}, and
@@ -840,7 +853,7 @@ strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets and th
 kept part of an old one.
 \end{itemize}
 Not formalised: Lemma~\ref{lem:hered}, Lemma~\ref{lem:ext} (ii)$\Rightarrow$(i), Lemma~\ref{lem:min}(1)--(3),
-Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
+the converse half of Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
 Corollary~\ref{cor:upm}, which is close to the existing \texttt{realisable\_of\_fanSchedule}.
 
 \section{Open problems}\label{sec:open}

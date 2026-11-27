@@ -1065,6 +1065,12 @@ What L1 does and does not give:
   - **S1**: both a ∉ Q_c and c ∉ Q_a at distance 2, in one decomposition. 998 decided instances, 0 failures.
   - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 1,984 instances, 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
 
+### V.4b Lean: Gallai ⟸ RR (formal)
+`RouteSystem.lean`: **`gallai_of_routeRR`** and **`gallai_of_routeRRExists`**. If every connected graph of even order has a pairing of its even vertices, routed by edge-disjoint paths, such that for every transversal (resp. one through each even vertex) the free graph has an M-compatible Lovász decomposition (RR1 + RR2), then Gallai holds.
+- The core is **`append_routes`** (Prop. rr, ⇐): routes are appended one at a time, and compatibility passes to each intermediate decomposition (the new path ends at a head, which is no tail).
+- The final profile comes from the parity lemma alone; no degree bookkeeping is needed.
+- So the programme's reduction "Gallai ⟸ constrained Lovász decompositions of all-odd graphs" is now formal end to end. L1 (`lovasz_avoid_nonadj`) is the m = 1 instance of the hypothesis.
+
 ### V.5 Existential version and BranchBase
 - A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).
 - Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.

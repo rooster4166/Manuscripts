@@ -15,6 +15,7 @@ All files are in `lean/GallaiLean/`. They are sorry-free, use only the standard 
   - `realisable_of_even_matching` (Theorem "Fan-isolated routes", one-edge routes);
   - `PathDecomp.route_append` (Lemma "extension", (i) ⇒ (ii): the inductive step of route descent).
 - `OnePair.lean`: `realisable_two_even_adj` (Corollary "onepair": one step of route descent end to end, with L₁ as the base).
+- `RouteSystem.lean`: `append_routes`, `realisable_of_compatible` (Proposition "rr": compatible decompositions of the free graph give realisations), `gallai_of_routeRR`, `gallai_of_routeRRExists` (RR, or its existential form, implies Gallai).
 - `FanSupport.lean`: `fan_single_supp`, `fan_grouped_supp`, `fan_exec_supp` (Lemma "Fan's lemma with vertex sets").
 - `Separation.lean`: `separation_set` (Theorem "separation", packed sets), `separation` (two vertices), `lovasz_avoid` (Corollary "symmetric L₁ at distance three"), `lovasz_avoid_set` and `lovasz_avoid_nonadj` (Theorem "L₁": the path ending at c avoids any non-neighbour, via a leaf at c).
 
