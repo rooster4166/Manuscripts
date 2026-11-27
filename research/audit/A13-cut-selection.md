@@ -3,13 +3,31 @@
 Auditor: independent adversarial referee pass, 2026-11-27.
 
 Sources audited:
-- **[EMM]** `manuscripts/endpoint-min-max/endpoint-min-max.tex`, 14 pp. Numbers such as "Lemma 20" refer to the compiled PDF; they are unchanged by my edits. The focus is §4.4, "Cut selection holds for every graph": identity (3) = (eq:split), Lemma 19 (free degrees), Lemma 20 (linked transitions), Theorem 21 (cut selection, `thm:ps`) and Corollary 22 (EMM implies Gallai). I also checked what they use: Lemma 1 (four forms), Lemma 6 (signed form, G^v), Lemma 7 (parity), Proposition 9, Remark 10, Lemma 13 (good pairings), Lemma 14 (T-join pairing), Theorem 17 (guarded route lemma) and Corollary 18. I checked Theorem 11 (per-vertex matroids) and Theorem 15 (cones) more briefly.
+- **[EMM]** `manuscripts/endpoint-min-max/endpoint-min-max.tex`, as merged on this branch: the A13 fixes plus the author's revision 8e7346e (EMM₃, the new Prop 9 / Cor 22 via SP Theorem 10.16, wording fixes), 15 pp. Numbers such as "Lemma 20" refer to the compiled PDF. They are the same in the version I started from (a1522ab) and in the merged one.
+  - The focus is §4.4, "Cut selection holds for every graph": identity (3) = (eq:split), Lemma 19 (free degrees), Lemma 20 (linked transitions) and Theorem 21 (cut selection, `thm:ps`).
+  - Then the Gallai consequence: Corollary 22 and Proposition 9, both in the original form (EMM ⇒ Gallai) and in the merged form (EMM₃ at δ ≥ 5 ⇒ every Gallai failure is an SP 10.16(1) witness).
+  - I also checked what they use: Lemma 1 (four forms), Lemma 6 (signed form, G^v), Lemma 7 (parity), Remark 10, Lemma 13 (good pairings), Lemma 14 (T-join pairing), Theorem 17 (guarded route lemma) and Corollary 18. I checked Theorem 11 (per-vertex matroids) and Theorem 15 (cones) more briefly.
 - The inequality itself: ED = `gallai/01-original-manuscripts/even-degrees.pdf` §12.4, inequality (1), b(W) ≤ |δ_G(W)| + 2k − d(v) − b(v) for W ⊆ V(G) − v. [EMM] (1) is verbatim.
-- Background: `research/synthesis.md` §§5–13, `research/connections.md` §§T–U; missing-move Theorem 7.5 and its outputs (`manuscripts/missing-move/scripts/outputs/emm_counterexamples12*.{g6,log}`); synthesis §12 and `scripts/petersen_counterexample.py` (the n = 28 example); ES §1 and Lean `Doubling.lean` for (R).
+- SP = `gallai/02-november-25/separating-pairs.pdf`, Theorems 10.16 and 12.28 (as cited by the new Prop 9).
+- Background:
+  - `research/synthesis.md` §§5–14 and `research/connections.md` §§T–U;
+  - missing-move Theorem 7.5 and its outputs (`manuscripts/missing-move/scripts/outputs/emm_counterexamples12*.{g6,log}`);
+  - synthesis §12 and `scripts/petersen_counterexample.py` (the n = 28 example);
+  - synthesis §14 and `scripts/emm3_counterexample.py` (the n = 18 EMM₃ example);
+  - ES §1 and Lean `Doubling.lean` for (R).
 
-**Version.** I started at 5e0c7f1, where the .tex was last changed in a1522ab. While I worked, upstream commits added synthesis §§11–13 (0a686f3, ea53f46), the n = 28 script and ROADMAP changes. The parent session also checkpointed my scripts (5c68000). None of these touched the .tex.
+**Version.**
+- I started at 5e0c7f1, where the .tex was last changed in a1522ab.
+- The parent session checkpointed my work (5c68000, f910027) and pushed a recompiled PDF (b9dd270).
+- At the coordinator's request I merged the author's revision `origin/claude/emc-four-even` (8e7346e). The merge commit 328eb52 was committed by the main session while the merge was still in progress, and it contained unresolved conflict markers in the .tex. I resolved all six hunks as an ordinary edit (fdfaddd), keeping both sides (§5), and recompiled. The emm3-gadgets result (EMM₃ false, synthesis §14) arrived in 18d429f and eba61f6, and I recorded it in the text (4765feb).
+- The conflict in `research/experiments.md` (not my file) was resolved by keeping both sides: the author's blank line, and this branch's E17 addendum 2.
 
-**Independence.** I wrote `research/audit/A13-scripts/a13_check.py` (the construction and a brute-force check of (1)) from the text alone, before opening the authors' `scripts/construction.py`. It shares no code with `manuscripts/endpoint-min-max/scripts/`, `tools/cutfeas.c` or `tools/realis.c`. The same holds for `a13_forms.py` (Lemmas 1, 6, 7 with max-flow) and `a13_realis.py` (a new exact realisability oracle). Re-runs of the authors' script are labelled **non-independent**.
+**Independence.** I wrote `research/audit/A13-scripts/a13_check.py` (the construction and a brute-force check of (1)) from the text alone, before opening the authors' `scripts/construction.py`. It shares no code with `manuscripts/endpoint-min-max/scripts/`, `tools/cutfeas.c` or `tools/realis.c`. The same holds for:
+- `a13_forms.py` (Lemmas 1, 6, 7 with max-flow);
+- `a13_realis.py` (a new exact realisability oracle);
+- `a13_emm3_18.py` and `a13_emm3_gadget.py` (the n = 18 example, rebuilt from its description).
+
+Re-runs of the authors' script are labelled **non-independent**.
 
 Verdicts: **SOUND**; **GAP** (fixable; the fix is stated); **ERROR** (false; a counterexample is given); **UNCLEAR** (cannot be settled from the available material).
 
@@ -21,31 +39,35 @@ Verdicts: **SOUND**; **GAP** (fixable; the fix is stated); **ERROR** (false; a c
 |---|---|---|---|
 | C1 | **Lemma 1 (four forms)**: (a) ⇔ (b) ⇔ (c) ⇔ (d) | **SOUND** | (a)⇔(b) uses b(V) = 2k; (b)⇔(c): \|δ(Y+v)\| = \|δ_{G−v}(Y)\| + d(v) − e(v,Y); (c)⇔(d): the cut {σ} ∪ X has capacity \|N(v)∖X\| + \|δ_{G−v}(X)\| + b(X). Checked on every (M, v) at n = 6 and on 78,928 (M, v) at n = 8, including the max-flow (d) (§3.3). |
 | C2 | Proposition 2 (necessity by arms) | SOUND | Each end occurrence terminates ≤ 1 arm; both arms of a path through v end at its two distinct ends. |
-| C3 | **Lemma 6 (signed form) and the G^v single-commodity form** | **SOUND** | b_M = 1 − x_M pointwise, \|δ_{G^v}(Y)\| = \|δ_{G−v}(Y)\| + \|Y∖N(v)\|. Gale: the cuts with finite capacity are exactly the Y ⊆ V − v. The flow version (unmarked even ≠ v → distinct marked vertices or v) matches (c) on every instance tested. Cosmetic: "because there are no isolated vertices" is not needed for b_M = 1 − x_M. |
+| C3 | **Lemma 6 (signed form) and the G^v single-commodity form** | **SOUND** | b_M = 1 − x_M pointwise, \|δ_{G^v}(Y)\| = \|δ_{G−v}(Y)\| + \|Y∖N(v)\|. Gale: the cuts with finite capacity are exactly the Y ⊆ V − v. The flow version (unmarked even ≠ v → distinct marked vertices or v) matches (c) on every instance tested. The superfluous "because there are no isolated vertices" was replaced by the author in 8e7346e. |
 | C4 | **Lemma 7 (parity)** | **SOUND** | \|δ_{G^v}(Y)\| = \|δ(Y)\| + \|Y\| − 2e(v,Y) ≡ \|Y ∩ Ev\|, and x_M(Y) ≡ σ_P(Y) ≡ \|Y ∩ Ev\|. Checked on every (v, Y) at n ≤ 8. |
 | C5 | **Lemma 13 (good pairings ⇔ σ_P(Y) ≤ \|δ_{G^v}(Y)\| ∀ v, Y)** | **SOUND** | x_M(Y) ≤ σ_P(Y) with equality for the transversal marking outside Y. Brute force agrees on all 299 pairings at n = 6, and on every constructed pairing at n ≤ 8. |
 | C6 | Lemma 14 (T-join pairing) | SOUND | Works in any graph, connected or not (handshake per component). |
-| C7 | Theorem 17 (guarded route lemma) | SOUND | Token injectivity rechecked: equal edge tokens force z_p = h_{p′}, z_{p′} = h_p ∈ N(v), so h_p is a bypass that is an end of another passage, which is forbidden. |
+| C7 | Theorem 17 (guarded route lemma) | SOUND | Token injectivity rechecked: equal edge tokens force z_p = h_{p′}, z_{p′} = h_p ∈ N(v), so h_p is a bypass that is an end of another passage, which is forbidden. Merged wording: passages are unordered pairs, and the parity of σ_P comes from \|Y∩Ev\| = σ_P(Y) + 2·#{p ⊆ Y}. Both are correct. |
 | C8 | Corollary 18 | SOUND | K_{2,m}: q bypasses each passage ℓ_{2i−1} p ℓ_{2i}. |
 | C9 | **Identity (3) (eq:split)** | **SOUND** | E(G^v) = E(F^v) ⊔ E(J − v), so δ_{G^v}(Y) = δ_{F^v}(Y) ⊔ δ_{J−v}(Y). Checked numerically on every (v, Y) of 23,354 constructions (n ≤ 8). |
-| C10 | **Lemma 19 (free degrees)** | **SOUND** | d_F ≡ [w∈Ev] + [w∉Ev] = 1. For w ≠ v, deg_{F^v}(w) = d_F(w) − [vw∈F] + [w∉N(v)] is odd iff vw ∈ J. deg_{F^v}(v) = n − 1 − d(v). Asserted at every v of all 90,000+ constructions. |
-| C11 | **Lemma 20 (linked transitions)** | **SOUND** | The charging is injective (§2.3). It covers every Y ⊆ V − v, hence every W, for v ∈ Ev (end edge vz, path z → v crosses δ_{F^v}(Y)) and for v odd (no bad end). Good pairs are charged to J-edges, bad pairs to F^v-edges, and these sets are disjoint. The bound has no +1. |
+| C10 | **Lemma 19 (free degrees)** | **SOUND** | d_F ≡ [w∈Ev] + [w∉Ev] = 1. For w ≠ v, deg_{F^v}(w) = d_F(w) − [vw∈F] + [w∉N(v)] is odd iff vw ∈ J. deg_{F^v}(v) = n − 1 − d(v). Asserted at every v of all 113,000+ constructions. |
+| C11 | **Lemma 20 (linked transitions)**, original and merged wording ("one path for each passage {x, y}") | **SOUND** | The charging is injective (§2.3). It covers every Y ⊆ V − v, hence every W, for v ∈ Ev (end edge vz, path z → v crosses δ_{F^v}(Y)) and for v odd (no bad end). Good pairs are charged to J-edges, bad pairs to F^v-edges, and these sets are disjoint. The bound has no +1. |
 | C12 | Paragraph after Lemma 20 (guards are linking paths) | SOUND; GAP (incomplete), **fixed** | It said only that the guards give some of the linking paths. The guard paths are edge-disjoint. Deleting them leaves z and v as the only odd vertices of F^v, and a vertex on one route has exactly two odd vertices. So the remaining linking paths exist, and Theorem 17 is a special case of Lemma 20. One sentence added. |
-| C13 | **Theorem 21 (cut selection)** | **SOUND**; GAP (one line), **fixed** | Transitions are a perfect matching of the J-edges at v, except for one end edge when v ∈ Ev. v is odd in F^v and can only be paired with a J-neighbour z. Closed trails and repeated vertices would contain a cycle of J; the justification was missing and is added. Lemma 14 needs no connectivity of F^v. Polynomial. |
+| C13 | **Theorem 21 (cut selection)**, original and merged | **SOUND**; GAP (one line), **fixed** | Transitions are a perfect matching of the J-edges at v, except for one end edge when v ∈ Ev. v is odd in F^v and can only be paired with a J-neighbour z. Closed trails and repeated vertices would contain a cycle of J; the justification was missing and is added. Lemma 14 needs no connectivity of F^v. Polynomial. The merged proof keeps my sentence and the author's new one (d_J(v) = 0 ⇒ v odd, nothing to link), which is correct. |
 | C14 | Thm 21(1): "or any other T-join that is a forest (e.g. a minimum one)" | SOUND (remark) | This is no wider: a forest T-join is the T-join of every spanning tree containing it (T-joins in a tree are unique). A minimum T-join is a forest. |
-| C15 | **Computation: `scripts/construction.py` (non-independent)** | **Reproduced**; GAP (counts), **fixed** | 0 failures in every family, with exactly the printed counts. The text's "all trees of orders 8–12" means orders 8, 10, 12 with e ≥ 2 (20, 99, 538 trees, one construction each). Order 12 uses two trees per graph. Now said. |
+| C15 | **Computation: `scripts/construction.py` (non-independent)** | **Reproduced**; GAP (counts), **fixed** | 0 failures in every family, with exactly the printed counts. The text's "all trees of orders 8–12" means orders 8, 10, 12 with e ≥ 2 (20, 99, 538 trees, one construction each). Order 12 uses two trees per graph. Now said, merged with the author's "e > 0 (of 112 / 11,117)". |
 | C16 | **Independent check of Thm 21** | **No failure** | All connected graphs of order ≤ 8 (11,229; 10,992 with e ≥ 2): 67,822 constructions. 1,133 further graphs (cycles, K_{a,b}, trees of orders 8, 10, 12, random graphs of orders 10 and 12, …): 22,660 constructions. Two F^v-pairing procedures, one of them an arbitrary random edge-disjoint pairing. Brute force on (1) for every transversal, v and W. Random pairings fail (400 of 10,893 at n = 8), so the test has teeth. §3. |
-| C17 | Proposition 9 (EMM + CS₀ ⇒ Gallai) | SOUND | The pendant vertex handles odd order. |
-| C18 | **Corollary 22 (EMM ⇒ Gallai)** | **SOUND as an implication; vacuous, since EMM is false**; GAP (status), **fixed** | [EMM] nowhere recorded the refutation. The abstract, §4.4 and open problem 1 said that Gallai "reduces to" the sufficiency of (1). Fixed: a status sentence after Conjecture 4, a remark after Cor 22, and wording in the abstract and open problem 1. What the proof uses: every connected even-order graph has a realisable half-set (§4). |
-| C19 | **Remark 10: "CS + sufficiency ⇒ (R_s) ⇒ (R) ⇒ Gallai"** | **Correct as an implication** | CS + EMM puts every even r in a realisable half-set. Its k paths have b(r) = 2, so p(H) ≤ k for every H (not only critical H), and attaching a leaf at r gives the Lean `RootedTest` directly. Then `gallai_iff_rootedTest`. Vacuous for the same reason as C18. |
-| C20 | **Strengthenings tested on the known EMM counterexamples** | **New facts** (§4.2) | (i) *Every transversal of every good pairing is realisable*: **false**. In KsOeBW??G`?A the pairing {03, 18, 45, 69, 7 10} is good, and its transversal {3, 4, 8, 9, 10} is the Thm 7.5 half-set. 4 of the 12 order-12 graphs behave like this. (ii) *Every transversal of every Thm 21 pairing is realisable*: **holds on all 12**, for every tree and every F^v-pairing (proved, §4.2). The n = 28 half-set L is never a transversal of any route-system pairing. |
+| C17 | Proposition 9, **original** (EMM + CS₀ ⇒ Gallai) | SOUND | The pendant vertex handles odd order. Superseded in the merge. |
+| C18 | Corollary 22, **original** (EMM ⇒ Gallai) | **SOUND as an implication; vacuous, since EMM is false**; GAP (status), **fixed**, then superseded by the author's revision | [a1522ab] nowhere recorded the refutation. The abstract, §4.4 and open problem 1 said that Gallai "reduces to" the sufficiency of (1). What the proof uses is that every connected even-order graph has a realisable half-set (§4.1). |
+| C19 | Remark 10: "CS + sufficiency ⇒ (R_s) ⇒ (R) ⇒ Gallai", original | **Correct as an implication** | CS + EMM puts every even r in a realisable half-set, so p(H) ≤ k for every H (not only critical H), and attaching a leaf at r gives the Lean `RootedTest` directly. Then `gallai_iff_rootedTest`. Vacuous for the same reason as C18. The merged remark restricts to δ ≥ 3 and no longer claims Gallai, which is correct. |
+| C26 | **Proposition 9, merged** (EMM₃ + CS at δ ≥ 5 ⇒ if Gallai fails, SP 10.16(1) occurs) | **SOUND** (given SP 10.16 as cited) | The rooted-test equivalence matches Lean `RootedTest`. The least failing even order 2h + 2 is exactly SP 10.16's hypothesis, and SP 10.16(2) puts every failing host at δ ≥ 5. At an even root, CS + EMM₃ give h + 1 paths with two ends at t, and the leaf extends one of them. At an odd root, any realised half-set has an end at t. The statement of 10.16(1) and the Thm 12.28 remark match SP verbatim. §4.2. |
+| C27 | **Corollary 22, merged** (EMM₃ at δ ≥ 5 ⇒ every Gallai failure yields an SP 10.16(1) witness) | **SOUND as an implication; hypothesis open** | CS comes from Thm 21. EMM₃ at δ = 3 is false (C28), but no counterexample with δ ≥ 5 is known. The hypothesis is used for one half-set per failing host, so (R_s) on SP-10.16(2) hosts suffices. The remark after Cor 22 is rewritten to say so (§5). |
+| C28 | **Conjecture 4 (EMM₃), merged** | **ERROR (refuted)**; status **recorded in the text** | The order-18 example of synthesis §14 is confirmed independently. (1) holds at every v and every W (brute force, 2^18 subsets). The gadget's forcing property holds (my oracle: D⁺ realisable, D + w with b(w) ∈ {0, 2} not realisable). The gluing argument rechecked (§4.4). One sentence added after the EMM₃ paragraph; open problem 1 now asks about δ ≥ 5. |
+| C29 | Merged evidence: "at order ≤ 8 every half-set of a δ ≥ 3 graph is realisable" (Table 1, δ ≥ 3 rows) | **Reproduced (independent)** | 13 graphs / 60 half-sets at n = 6, 2,475 / 19,422 at n = 8, all cut-feasible (`out/delta3.txt`). |
+| C20 | **Strengthenings tested on the known counterexamples** | **New facts** (§4.3) | (i) *Every transversal of every good pairing is realisable*: **false**. In KsOeBW??G`?A the pairing {03, 18, 45, 69, 7 10} is good, and its transversal {3, 4, 8, 9, 10} is the Thm 7.5 half-set. 4 of the 12 order-12 graphs behave like this. (ii) *Every transversal of every Thm 21 pairing is realisable*: **holds on all 12**, for every tree and every F^v-pairing (proved, §4.3). The n = 28 half-set L is never a transversal of any route-system pairing. |
 | C21 | Remark "certificates and guards" | Logic SOUND; count not re-run | "31 graphs at order 8 with no guarded decomposition of a minimum T-join" was not re-run. It no longer matters (C12). |
 | C22 | Remarks (1)–(2) of §4.5 | SOUND; one sentence UNCLEAR | n − 1 − d(v) = s(v) + b(v) − 1 ✓. "An apex joined to the vertices of positive slack is realised exactly, but separately for each v" has no checkable content. Left as is. |
 | C23 | Theorem 11 (per-vertex matroids); matroid-intersection remark | SOUND (brief check) | λ_v is supermodular and even. ℓ_v is a supermodular projection, and g_v ≥ ⌈\|X\|/2⌉ is submodular. Edmonds; rank ≥ e/2. Intersection: ⌈a/2⌉ + ⌈(e−1−a)/2⌉ ≥ e/2. |
 | C24 | Theorem 15 (cones) | SOUND (brief check) | s(u) = 0. The case u ∈ W uses \|δ(U)\| = \|δ_H(U)\| + \|U\| and d_H(v) ≤ \|δ_H(U)\| + \|U\| − 1. |
 | C25 | §8 Formalisation | GAP (wording), **fixed** | `CutFeasible` and `gallai_of_emm_cs` exist on no branch (`git grep` on this branch, lean-d6-frontier and missing-move). The text read as if they did. Now "planned"; `EmmTemplate.lean` has `CutOK`. |
 
-**Overall.** **Theorem 21 is correct.** Every step I was asked to check is SOUND:
+**Overall.** **Theorem 21 is correct**, in the original and the merged wording. Every step I was asked to check is SOUND:
 - the forms of (1) and the G^v reduction, including parity;
 - identity (3) and Lemma 19;
 - the injective charging of Lemma 20;
@@ -55,7 +77,12 @@ Verdicts: **SOUND**; **GAP** (fixable; the fix is stated); **ERROR** (false; a c
 
 Two independent implementations find no failure: the authors', and mine with arbitrary F^v-pairings and a brute-force check of (1) itself.
 
-The substantive problem is one of status. EMM is false (missing-move Thm 7.5; synthesis §12), but [EMM] still presented "Gallai reduces to the sufficiency of the cut inequality" as the payoff. Corollary 22 and the chain in Remark 10 are correct implications with a false hypothesis. I recorded this in the text without changing any mathematics.
+**The Gallai consequence.**
+- The original Corollary 22 ("EMM ⇒ Gallai") is a correct but vacuous implication.
+- The merged Proposition 9 / Corollary 22 are correct implications from EMM₃ at minimum degree ≥ 5, granting SP Theorem 10.16. Their hypothesis is open.
+- The conjecture as stated in the merged text, EMM₃ at minimum degree 3, is false. I confirmed the order-18 counterexample independently and recorded it in the text. I changed no mathematics.
+
+---
 
 ---
 
@@ -220,9 +247,9 @@ The families are:
 
 See §1.4: all five forms agree on all 3,186 pairs (M, v) at n = 6 and on 78,928 at n = 8 (a one-in-ten sample of the graphs).
 
-## 4. Corollary 22, Proposition 9 and Remark 10 after the refutation of EMM
+## 4. The Gallai consequence: Proposition 9 and Corollary 22, before and after the merge
 
-### 4.1 What the implications use
+### 4.1 The original form (a1522ab): EMM + CS₀ ⇒ Gallai
 
 - **Proposition 9.** Its proof uses EMM only to make one cut-feasible half-set realisable in each connected even-order graph. A realisation of b_M has exactly n/2 paths, and the pendant vertex handles odd order. **SOUND.**
 - **Corollary 22.** CS₀ is now a theorem (Thm 21; M = ∅ when e = 0), so Corollary 22 is a correct implication.
@@ -235,7 +262,29 @@ See §1.4: all five forms agree on all 3,186 pairs (M, v) at n = 6 and on 78,928
   - Attaching a leaf at any r and extending a path ending at r gives p(H^r) ≤ n/2, which is the Lean `RootedTest`. `gallai_iff_rootedTest` then gives Gallai.
   - The step "(R_s) ⇒ (R)" is immediate. Like Cor 22, the chain is vacuous because EMM is false.
 
-### 4.2 Which strengthenings survive the counterexamples (`a13_realis.py`, `a13_mm12_pairings.py`, `a13_mm12_forced.py`, `a13_petersen28.py`)
+### 4.2 The merged form (8e7346e): EMM₃ at δ ≥ 5, via SP Theorem 10.16
+
+**SP Theorem 10.16**, read from the PDF. Let 2h + 2 be the least even order with a connected (F, t) such that p(F^t) > h + 1. Then either:
+1. there is a two-connected simple W of order 2h + 1 with no matching cut, at least h + 1 missing edges and p(W) > h; or
+2. every failing host of order 2h + 2 is two-connected and four-edge-connected, has no matching cut, and has minimum degree ≥ 5.
+
+Theorem 12.28 says that if (1) is absent, the minimum degree is ≥ 6. The manuscript cites both exactly.
+
+**Proposition 9 (merged).** The hypothesis is that every connected even-order graph with δ ≥ 5 satisfies EMM₃ and CS. The conclusion is that a failure of Gallai forces SP 10.16(1). **SOUND.**
+- *Equivalence.* Gallai ⇔ p(F^t) ≤ n/2 for all connected even-order F and all t. This is exactly Lean `RootedTest`, and `gallai_iff_rootedTest` is proved in `Doubling.lean`.
+- *Least failure.* If Gallai fails, some (F, t) fails. The least even order 2h + 2 of a failure is SP's hypothesis verbatim.
+- *Case (2).* Take a failing (F, t). F is connected of even order with δ ≥ 5, so the hypothesis applies.
+  - **t even.** CS gives a cut-feasible M ∋ t. EMM₃ gives h + 1 paths with b(t) = 2, and extending one of them by the leaf gives p(F^t) ≤ h + 1.
+  - **t odd.** Any realised half-set has b(t) = 1; when e = 0, Lovász's theorem gives this with M = ∅. Extend in the same way. This is a contradiction.
+- *What it uses.* EMM₃ is applied to one half-set per failing host. So the hypothesis can be weakened to (R_s) on SP-10.16(2) hosts: every even vertex lies in a realisable half-set. With Thm 21, EMM₃ at δ ≥ 5 implies this.
+- The paragraph after the proof is commentary, and it is correct: (1) is an odd-floor failure, one path below Gallai's budget, and below budget cuts alone do not suffice.
+
+**Corollary 22 (merged).** CS holds for every graph by Thm 21, so this is Prop 9 without the CS hypothesis. **SOUND as an implication.**
+- Its hypothesis, EMM₃ at δ ≥ 5, is open. The only refutation of EMM₃ known (§4.4) has δ = 3.
+- Synthesis §§12 and 14 expect NP-hardness of half-set realisability to carry over to higher minimum degree through gadgets. That would make the hypothesis false unless P = NP (cut-feasibility is polynomial by Lemma 1), but it is not yet proved.
+- The remark after Cor 22 now says what the corollary uses (§5, item 6).
+
+### 4.3 Which strengthenings survive the counterexamples (`a13_realis.py`, `a13_mm12_pairings.py`, `a13_mm12_forced.py`, `a13_petersen28.py`)
 
 **The oracle.** `a13_realis.py` is a new exact realisability oracle: a DFS that grows each path from the least vertex with an end left, memoised, with parity and component pruning.
 - At n = 6 it agrees with the cut checker on all 531 half-sets, as EMM predicts there.
@@ -269,29 +318,64 @@ An explicit witness is KsOeBW??G`?A with the good pairing {0 3, 1 8, 4 5, 6 9, 7
 
 **Consequence for the programme.** The weakest corrected target suggested by Cor 22 is "some transversal of the Thm-21 pairing is realisable". A stronger one is "all transversals of Thm-21 pairings are realisable". Neither is refuted by any known counterexample, whereas the intermediate "all transversals of all good pairings" is false.
 
-The construction never marks both ends of a J-edge joining two J-degree-1 vertices. In both counterexample families, the bad half-set marks such a pair (or a pair whose complement starves a region). This fits the "never starve a region" heuristic of synthesis §13.
+The construction never marks both ends of a J-edge joining two J-degree-1 vertices. In the n = 28 example and in 4 of the 12 order-12 graphs, the bad half-set marks such a pair. In the other 8, its complement is not even cut-feasible. This fits the "never starve a region" heuristic of synthesis §13.
+
+### 4.4 EMM₃ (merged Conjecture 4) is false: the order-18 example, checked independently
+
+`a13_emm3_18.py` and `a13_emm3_gadget.py` rebuild the graph from the description in synthesis §14. G = D + K_{4,4} + {sp, sb₀}, where:
+- D is two K₄ blocks {a₀..a₃} and {b₀..b₃}, with p ~ a₁, a₂, b₁ and q ~ a₃, b₂, b₃;
+- s is a vertex of the K_{4,4}.
+
+So n = 18, m = 36, δ = 3, e = 16, and the half-set is M = V(K_{4,4}).
+- **Cut-feasible.** Brute force over every v and all 2^18 sets W ⊆ V − v: (1) holds everywhere.
+- **Forcing property of D (my oracle).** D⁺ = D + leaves at p and b₀, with b = 1 at both leaves, a₀ and q, is realisable. D + w, with w ~ p, b₀ and b = 1 at a₀, q, is **not** realisable for b(w) = 2, nor for b(w) = 0.
+- **Gluing argument, rechecked.** {sp, sb₀} is a 2-edge cut. The D-side has b = 0 except at a₀ and q, so its segments have at most four ends: a₀, q and the two edge-ends at s.
+  - If sp and sb₀ lie on one path through s, the D-side is D + w with b(w) = 0, which is impossible.
+  - Otherwise it is D⁺ with four unit ends. Every 2-path realisation of D⁺ joins the two leaves, since D + w with b(w) = 2 is not realisable. In G this would be a path through s twice, which is impossible.
+  - So M is not realisable.
+- A direct run of my DFS oracle on the n = 18 graph had not finished when this report was written. It is not needed, given the gluing argument.
+
+The merged text stated EMM₃ as a conjecture without this. One sentence now records it after the EMM₃ paragraph, and open problem 1 now asks about δ ≥ 5.
 
 **Caution for the EMM_ns route of synthesis §11.** A selection that never marks a degree-2 vertex cannot exist in general. In C_n every even vertex has degree 2. In KsOeBW??G`?A, 7 of the 10 even vertices have degree 2, and a half-set needs 5 marks.
 
-## 5. Changes made to the .tex (recompiled twice with pdflatex; 14 pp.; numbering unchanged)
+## 5. Changes made to the .tex (recompiled twice with pdflatex each time; numbering unchanged)
 
-Note on the build environment: `lmodern.sty` was missing on this machine. I installed the Debian package `lmodern`. With it, the unmodified source rebuilds to a PDF of exactly the committed size, and the two overfull boxes in the log already existed.
+Note on the build environment: `lmodern.sty` was missing on this machine. I installed the Debian package `lmodern`. With it, the unmodified source rebuilds to a PDF of exactly the committed size. The remaining overfull boxes (18.9pt, 35.6pt, 66.8pt) were already in the author's version.
 
-1. **Abstract.** It now says that EMM was refuted later (n = 12, missing-move Thm 7.5; n = 28). The sentence "Gallai's conjecture reduces … to the sufficiency of the cut inequality" is replaced by: the implication is vacuous as stated, and what it uses is that every connected graph of even order has a realisable half-set.
-2. **After Conjecture 4.** Added: sufficiency is false in general (KsOeBW??G`?A of order 12; synthesis §12, order 28). EMM is used below only as a hypothesis.
-3. **After Lemma 20.** Added: the guard paths are edge-disjoint, and the remaining linking paths exist by Lemma 19. So Theorem 17 is a special case of Lemma 20 (C12).
-4. **Proof of Theorem 21.** Added the one-line reason why trails in a forest are paths and none is closed (C13).
-5. **After Corollary 22.** "Gallai's conjecture reduces entirely to the sufficiency direction of EMM" is replaced by a correct statement. The construction-script counts are made precise (C15).
-6. **New unnumbered remark after Corollary 22**, "what Corollary 22 uses":
-   - the corollary and the Remark 10 chain are vacuous;
-   - what is needed is one realisable half-set per graph;
-   - "every transversal of every good pairing is realisable" is false, with the KsOeBW??G`?A witness.
-7. **Open problem 1.** It no longer says that the sufficiency of EMM is "the whole of Gallai's conjecture".
-8. **§8 Formalisation.** The Lean names are said to be planned, not existing; `EmmTemplate.lean` has `CutOK` (C25).
+**Before the merge** (committed by the parent session in f910027):
+1. Abstract and §2: EMM refuted (n = 12, missing-move Thm 7.5; n = 28, synthesis §12).
+2. After Lemma 20: the guard paths are edge-disjoint, and the remaining linking paths exist by Lemma 19. So Theorem 17 is a special case of Lemma 20 (C12).
+3. Proof of Theorem 21: the one-line reason why trails in a forest are paths and none is closed (C13).
+4. After Corollary 22: the construction-script counts are made precise (C15), and a remark says what Corollary 22 uses.
+5. Open problem 1, and §8 Formalisation (the Lean names are planned, not existing; C25).
+
+**Merge with the author's revision 8e7346e** (fdfaddd). All six conflict hunks were resolved by keeping both sides:
+1. *Abstract, first paragraph.* The author's EMM₃ wording is kept, with "and by the same mechanism at order 28" added.
+2. *Abstract, Gallai sentence.* The author's (via SP 10.16).
+3. *§2 after the conjecture.* The author's example of Theorem 7.5 is kept, with one sentence added on the order-28 counterexample, which also rests on saturated degree-2 vertices. The edge list of the example now has `\allowbreak` (it was 115pt overfull).
+4. *Proof of Theorem 21.* My cycle sentence plus the author's d_J(v) = 0 sentence.
+5. *After Corollary 22.* The author's paragraph, with my precise script counts merged into the author's "e > 0 (of 112 / 11,117)". The remark "what Corollary 22 uses" is **rewritten for the merged corollary**:
+   - the first version, EMM ⇒ Gallai, is vacuous;
+   - the proof of Prop 9 needs EMM₃ only for one half-set per failing host, that is (R_s) on SP-10.16(2) hosts;
+   - Thm 21 says where to look;
+   - "every transversal of every good pairing is realisable" fails without a degree condition, with the KsOeBW??G`?A witness.
+6. *Open problems.* The author's list.
+
+**After the merge** (4765feb):
+1. After the EMM₃ paragraph of §2: "EMM₃ is false as well" (synthesis §14, order 18, δ = 3). Corollary 22 assumes δ ≥ 5, which that example does not reach, so EMM₃ is used only as a hypothesis.
+2. Open problem 1: EMM₃ is false at δ = 3; does sufficiency hold at δ ≥ 5?
 
 ## 6. Recommendations (not done; for the authors)
 
-1. The paper's title and framing ("An endpoint min-max conjecture") should follow the pivot of synthesis §13: the cut inequalities are necessary, always simultaneously satisfiable (Thm 21), sufficient at n ≤ 8, false at n = 12 and 28, and NP-hard to characterise. Restructuring is the authors' call; I only made the status explicit.
+1. The paper's title and framing ("An endpoint min-max conjecture") should follow the pivot of synthesis §§13–14. The cut inequalities are:
+   - necessary;
+   - always simultaneously satisfiable (Thm 21);
+   - sufficient at n ≤ 8;
+   - not sufficient at n = 12 and n = 28, nor at minimum degree 3 (n = 18);
+   - NP-hard to characterise.
+
+   The merged Conjecture 4 (EMM₃) should be restated as refuted, and only the δ ≥ 5 case that Cor 22 uses kept open. Restructuring is the authors' call; I only made the status explicit.
 2. Theorem 17 can now be stated as a corollary of Lemma 20 (§2.4). Corollary 18 and the certificate tables then become illustrations.
 3. State the "forced pair" observation of §4.2 as a lemma, since it explains why the Thm-21 pairings avoid both known counterexample families. A J-edge between two vertices of J-degree 1 is a route in every decomposition. In particular, two adjacent even vertices of degree 2 whose shared edge lies in J are paired.
 4. For the "pairing-guided descent" test of synthesis §13, use the observation of §4.2 that on all 12 order-12 counterexamples every transversal of every Thm-21 pairing is realisable. That makes them natural first test cases.
