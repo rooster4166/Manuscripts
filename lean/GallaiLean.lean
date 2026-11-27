@@ -78,3 +78,5 @@ import GallaiLean.ConstrainedLovasz
 import GallaiLean.EulerianCone
 import GallaiLean.CycleInsert
 import GallaiLean.DLOne
+import GallaiLean.ConjN
+import GallaiLean.ConjNFar

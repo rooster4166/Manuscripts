@@ -1,5 +1,14 @@
 # GallaiLean
 
+## Conjecture N: reduction to the tight transfer and neighbour avoidance (cloud session, branch `claude/conj-n`)
+
+Manuscript `manuscripts/conj-n`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.
+
+| File | Content |
+|---|---|
+| `ConjN.lean` | `ConjNOn V` (Conjecture N of dl-one: `x, y` odd, non-adjacent, `y` has a neighbour that is not even and not adjacent to `x`; then `AvoidDecomp G y {x}`), `TightTransferNOn` (TR of l1-induction for `A = {x}`, tail allowed adjacent to `g`), `ConjNDegTwoOn` (N with `N(g) = {x, y}`), `NeighbourAvoidOn` (NA: no even vertex, `x ~ y`, `y` has a neighbour `w ≠ x` not adjacent to `x`), `TightTransferAdj` (`TightTransfer` with `G.Adj g c`). **`conjN_of_tight_degTwo`** (manuscript Thm 4.3): TRN and the degree-two case imply N, by induction on the degree sum (`conjN_strong`): no even vertex → L₁ (`lovasz_avoid_nonadj`); a non-tight target → the child is an N-instance (the witness survives) and `avoid_free_target`; a tight target whose child keeps a witness → TRN; otherwise parity of `d(g)` leaves `N(g) = {x, w₀}` (split off, L₁) or `N(g) = {x, y}`. **`conjNDegTwo_of_neighbourAvoid`** (the degree-two case is NA), **`conjN_of_tight_neighbourAvoid`**, **`tightTransferNOn_of`**, **`conjN_of_TR_neighbourAvoid`** (TR ∧ TR-adjacent ∧ NA ⇒ N). **`avoid_of_splitOff`** (move (e): `N(g) = {a, b}`, `ab ∉ E`, subdivide `ab` by `g`). Helpers `evenSet_delEdge_sub`, `evenSet_delEdge_card`, `avoidDecomp_singleton_iff`, `delEdge_adj_of_ne`. |
+| `ConjNFar.lean` | **`fan_single_protected_path`** (manuscript Lemma 3.2: Fan's lemma keeping a path `P` of the old decomposition, when no end of `P` lies in `{t, u} ∪ N_{G'}(u)`), via **`PathDecomp.erase_path`** (remove a path: a decomposition of `delEdgeList K P.edges`) and **`PathDecomp.add_path`** (add it back); `exists_decomp_of_edgesM_both`. `AvoidFarDecomp G c A B` (the path ending at `c` avoids `A`, its far end is outside `B`) and **`avoidFar_target`** (Theorem 3.3, move (x): Case I across a target `u ∈ N(g) ∖ N[c]` that may lie in `A`, with child far-end set `B ∪ N_G(u)`). |
+
 ## Cones: Test1 at the apex is rooted Gallai for Eulerian graphs (cloud session, branch `claude/eulerian-cone`)
 
 Manuscript `manuscripts/eulerian-cone`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,406 jobs).
