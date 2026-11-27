@@ -600,3 +600,8 @@ Candidate uniform mechanisms (`research/connections.md`):
   - Hand-checked proof. Computation: 180/180 roots at n = 11, d = 6; d = 8 partial, 24/24 so far; all lifts verified.
   - Manuscript `manuscripts/direct-test1/` (synthesis §24). This is sharper than t6-dense Conj 5.1, which needs no fewer than STL-P plus two terminal edges.
   - Lean and audit pending.
+- **Direct lift to Test1 in Lean (triangle-base bd616c7, DirectTest1.lean; standard axioms, verified; definitions checked).**
+  - `test1At_of_triangleBase`: if z is the only even vertex, d(r) ≥ 3, and TriangleBase holds (triangle data w, L with L a J-edge matching partitioning N(z) − {r, w}, plus a Lovász decomposition of triM with every disjunction), then Test1 holds at r.
+  - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
+  - **So Test1, and with it the two-end half of Gallai via the spine, now reduces in Lean to the triangle base conjecture wherever N(z) − r has a near-perfect matching.**
+  - Audit A28 is next.
