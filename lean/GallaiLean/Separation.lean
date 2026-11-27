@@ -29,6 +29,13 @@ Proof: Lovász's induction (`Lovasz.lean`, cases I–IV), carrying the separatio
   positive degree, hence a leaf `v`): delete the leaf edge `vw`, restore it as the path `vw`.
 * Case IV: no vertex outside `{c, a}` has positive degree; then there are no edges.
 
+Corollary (`lovasz_avoid_set`, `lovasz_avoid_nonadj`: conjecture `L₁` of the manuscript, now a
+theorem): in a graph
+with no vertex of positive even degree, for every odd `c` and every `a` not adjacent to `c`, some
+Lovász decomposition has the path ending at `c` avoiding `a`. Proof: attach a leaf `ℓ` at `c`; then
+`c` is the only vertex of positive even degree and `ℓ`, `a` are at distance at least three, so
+`separation` applies; deleting `ℓ` turns the path through `ℓ` into the path ending at `c`.
+
 Support bookkeeping: `PathDecomp.eq_of_mem_edges` (each edge lies on one path),
 `Retract.delete_supp`, `PathDecomp.add_edge_supp` (copies of `Retract.delete` and
 `PathDecomp.add_edge` with a vertex-set conclusion).
@@ -77,7 +84,8 @@ theorem delete_supp [DecidableEq U] [DecidableEq V] (D : PathDecomp K)
       ((∀ e₁ ∈ K.edgeSet, ∀ e₂ ∈ K.edgeSet, bothKept R.kept e₁ = false →
           bothKept R.kept e₂ = false → R.ι v ∈ e₁ → R.ι v ∈ e₂ → e₁ = e₂) →
         D'.ends v ≤ D.ends (R.ι v) + 1)) ∧
-      ∀ Q' ∈ D'.paths, ∃ P ∈ D.paths, ∀ x ∈ Q'.walk.support, R.ι x ∈ P.walk.support := by
+      ∀ Q' ∈ D'.paths, ∃ P ∈ D.paths, (∀ x ∈ Q'.walk.support, R.ι x ∈ P.walk.support) ∧
+        Q'.edges.Perm ((P.edges.filter (bothKept R.kept)).map (Sym2.map R.f)) := by
   obtain ⟨D', -, hpieces, hends⟩ := D.project_full R.f (bothKept R.kept) _ R.injOn R.hT R.hcov
     (fun P hP => R.hasPiece P (hD P hP))
   refine ⟨D', fun v => ?_, ?_⟩
@@ -145,7 +153,7 @@ theorem delete_supp [DecidableEq U] [DecidableEq V] (D : PathDecomp K)
       hperm.mem_iff.mpr (List.mem_map_of_mem (List.mem_filter.mpr ⟨he₀P, hS₀⟩))
     have hQQ' : Q = Q' := D'.eq_of_mem_edges hQ hQ' he₀Q he'₀
     subst hQQ'
-    refine ⟨P, hP, fun x hx => ?_⟩
+    refine ⟨P, hP, fun x hx => ?_, hperm⟩
     have hnil : ¬ Q.walk.Nil := fun h => by
       have := Q.pos; rw [← SimpleGraph.Walk.length_eq_zero_iff] at h; omega
     obtain ⟨e', he', hxe'⟩ := (Walk.mem_support_iff_exists_mem_edges_of_not_nil hnil).mp hx
@@ -443,7 +451,7 @@ theorem sep_case_big {n : ℕ} (ih : ∀ m < n, SepStrong.{u} m)
     | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
   have hsep' : MeetsOnce D' X := by
     intro Q hQ p hp q hq hpQ hqQ
-    obtain ⟨P, hP, hPs⟩ := hcovD' Q hQ
+    obtain ⟨P, hP, hPs, -⟩ := hcovD' Q hQ
     exact Option.some.inj (hsepH P hP (some p) (Finset.mem_image_of_mem _ hp) (some q)
       (Finset.mem_image_of_mem _ hq) (hPs p hpQ) (hPs q hqQ))
   have hD'w : ∀ w, w ≠ u → D'.ends w = (delEdge G u x).degree w % 2 := by
@@ -671,5 +679,163 @@ theorem lovasz_avoid {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGraph W
   rcases hend with h | h
   · rw [← h]; exact P.walk.start_mem_support
   · rw [← h]; exact P.walk.end_mem_support
+
+/-- **`L₁`, set form** (route-descent manuscript, Theorem "L₁"). In a graph with no vertex of
+positive even degree, let `c` have odd degree and let `Y` be a packed set containing neither `c` nor a
+neighbour of `c`. Then some Lovász decomposition has every path meeting `Y` at most once and every
+path ending at `c` disjoint from `Y`.
+
+Proof: attach a leaf `ℓ = none` at `c` (the apex graph on `{c}`). There `c` is the only vertex of
+positive even degree, and `{ℓ} ∪ Y` is packed, so `separation_set` applies. Delete `ℓ`. A path ending
+at `c` is the kept part of a path `P` of the leaf graph; if it met `Y`, then `P` would avoid `ℓ`, so
+all of `P` is kept and `P` itself would end at `c`, which has no end in the leaf graph. -/
+theorem lovasz_avoid_set {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGraph W)
+    [DecidableRel G.Adj] (hev : (evenSet G).card = 0) {c : W} (hc : G.degree c % 2 = 1)
+    {Y : Finset W} (hY : Packed G Y) (hYc : ∀ y ∈ Y, y ≠ c ∧ ¬ G.Adj c y) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧ MeetsOnce D Y ∧
+      ∀ P ∈ D.paths, (P.src = c ∨ P.tgt = c) → ∀ y ∈ Y, y ∉ P.walk.support := by
+  classical
+  have hHsome : ∀ w, (apex G {c}).degree (some w) = G.degree w + (if w = c then 1 else 0) := by
+    intro w; rw [apex_degree_some]; simp [Finset.mem_singleton]
+  have hHnone : (apex G {c}).degree none = 1 := by rw [apex_degree_none]; simp
+  have hnoev : ∀ w, w ∉ evenSet G := fun w hw => by
+    rw [Finset.card_eq_zero] at hev; rw [hev] at hw; simp at hw
+  have hpar : ∀ w, 0 < G.degree w → G.degree w % 2 = 1 := fun w hw => by
+    have := hnoev w; rw [mem_evenSet_iff] at this; omega
+  have hevH : evenSet (apex G {c}) ⊆ {some c} := by
+    intro w hw
+    rw [mem_evenSet_iff] at hw
+    rw [Finset.mem_singleton]
+    cases w with
+    | none => rw [hHnone] at hw; omega
+    | some y =>
+      rw [hHsome] at hw
+      by_cases hyc : y = c
+      · rw [hyc]
+      · simp only [hyc, ite_false, add_zero] at hw
+        have := hpar y hw.1
+        omega
+  have hcardH : (evenSet (apex G {c})).card ≤ 1 := (Finset.card_le_card hevH).trans (by simp)
+  -- the leaf together with `Y` is packed
+  have hnone_far : ∀ q ∈ Y, ¬ (apex G {c}).Adj none (some q) ∧
+      ∀ w, ¬ ((apex G {c}).Adj none w ∧ (apex G {c}).Adj w (some q)) := by
+    intro q hq
+    refine ⟨fun h => (hYc q hq).1 ?_, fun w hw => ?_⟩
+    · rw [apex_adj_none_some, Finset.mem_singleton] at h; exact h
+    · cases w with
+      | none => exact apex_not_adj_none_none hw.1
+      | some w' =>
+        obtain ⟨h1, h2⟩ := hw
+        rw [apex_adj_none_some, Finset.mem_singleton] at h1
+        subst h1
+        exact (hYc q hq).2 h2
+  have hfar : Packed (apex G {c}) (insert none (Y.image some)) := by
+    intro x hx y hy hxy
+    rw [Finset.mem_insert] at hx hy
+    rcases hx with rfl | hx <;> rcases hy with rfl | hy
+    · exact absurd rfl hxy
+    · obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hy
+      exact hnone_far q hq
+    · obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hx
+      obtain ⟨h1, h2⟩ := hnone_far p hp
+      exact ⟨fun h => h1 h.symm, fun w hw => h2 w ⟨hw.2.symm, hw.1.symm⟩⟩
+    · obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hx
+      obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hy
+      have hpq : p ≠ q := fun h => hxy (h ▸ rfl)
+      refine ⟨fun h => (hY p hp q hq hpq).1 h, fun w hw => ?_⟩
+      cases w with
+      | none =>
+        obtain ⟨h1, -⟩ := hw
+        rw [apex_adj_some_none, Finset.mem_singleton] at h1
+        exact (hYc p hp).1 h1
+      | some w' => exact (hY p hp q hq hpq).2 w' ⟨hw.1, hw.2⟩
+  obtain ⟨DH, hDH, hsep⟩ := separation_set (apex G {c}) hcardH hfar
+  obtain ⟨D, hD, hcov⟩ := (apexRetract G {c} c).delete_supp DH (by
+    intro P _ y hy hky
+    cases y with
+    | some _ => simp [apexRetract] at hky
+    | none => exact (P.end_of_pendant apex_none_pendant hy).imp Eq.symm Eq.symm)
+  have hDc0 : DH.ends (some c) = 0 := by
+    rw [hDH, hHsome]; simp only [ite_true]; omega
+  have hmemX : ∀ q ∈ Y, some q ∈ insert none (Y.image some) := fun q hq =>
+    Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ hq)
+  refine ⟨D, fun w => ?_, ?_, ?_⟩
+  · by_cases hwc : w = c
+    · subst hwc
+      have hle := (hD w).2 (fun e₁ he₁ e₂ he₂ hk₁ hk₂ hv₁ hv₂ => by
+        rw [(apex_nonkept he₁ hk₁ hv₁).1, (apex_nonkept he₂ hk₂ hv₂).1])
+      change D.ends w ≤ DH.ends (some w) + 1 at hle
+      have hp := D.ends_mod_two w
+      rw [hc] at hp ⊢
+      omega
+    · rw [(hD w).1 (fun e he hk hwe => hwc (Finset.mem_singleton.mp (apex_nonkept he hk hwe).2))]
+      change DH.ends (some w) = _
+      rw [hDH, hHsome]
+      simp [hwc]
+  · intro Q hQ p hp q hq hpQ hqQ
+    obtain ⟨P, hP, hPs, -⟩ := hcov Q hQ
+    exact Option.some.inj (hsep P hP (some p) (hmemX p hp) (some q) (hmemX q hq)
+      (hPs p hpQ) (hPs q hqQ))
+  · intro Q hQ hend y hy hyQ
+    obtain ⟨P, hP, hPs, hperm⟩ := hcov Q hQ
+    have hyP : some y ∈ P.walk.support := hPs y hyQ
+    have hnoneP : none ∉ P.walk.support := fun h =>
+      absurd (hsep P hP none (Finset.mem_insert_self _ _) (some y) (hmemX y hy) h hyP)
+        (by simp)
+    have hsome : ∀ e ∈ P.edges, ∃ x y : W, e = s(some x, some y) := by
+      intro e he
+      induction e using Sym2.inductionOn with
+      | hf x y =>
+        have hx : x ∈ P.walk.support := Walk.fst_mem_support_of_mem_edges _ he
+        have hy : y ∈ P.walk.support := Walk.snd_mem_support_of_mem_edges _ he
+        cases x with
+        | none => exact absurd hx hnoneP
+        | some x' =>
+          cases y with
+          | none => exact absurd hy hnoneP
+          | some y' => exact ⟨x', y', rfl⟩
+    have hfilt : P.edges.filter (bothKept (apexRetract G {c} c).kept) = P.edges := by
+      rw [List.filter_eq_self]
+      intro e he
+      obtain ⟨x, y, rfl⟩ := hsome e he
+      simp [apexRetract, bothKept_mk]
+    rw [hfilt] at hperm
+    have hQc : Q.incid c = 1 := by
+      have h := Q.endsAt_eq_ite c
+      have h1 : 1 ≤ Q.endsAt c := by
+        unfold GPath.endsAt
+        rcases hend with h' | h' <;> simp [h']
+      split_ifs at h with hh
+      · exact hh
+      · omega
+    have hPc : P.incid (some c) = 1 := by
+      rw [← hQc]
+      unfold GPath.incid
+      rw [hperm.countP_eq, List.countP_map]
+      apply List.countP_congr
+      intro e he
+      obtain ⟨x, y, rfl⟩ := hsome e he
+      simp [apexRetract]
+    have hPend : P.endsAt (some c) = 1 := by rw [P.endsAt_eq_ite, hPc]; rfl
+    have hle : P.endsAt (some c) ≤ DH.ends (some c) := by
+      unfold PathDecomp.ends
+      exact List.le_sum_of_mem (List.mem_map_of_mem hP)
+    omega
+
+/-- **`L₁`** (route-descent manuscript, Theorem "L₁", the case `Y = {a}`). In a graph with no vertex
+of positive even degree, let `c` have odd degree and let `a ≠ c` be non-adjacent to `c`. Then some
+Lovász decomposition has every path ending at `c` avoiding `a`. -/
+theorem lovasz_avoid_nonadj {W : Type u} [Fintype W] [DecidableEq W] (G : SimpleGraph W)
+    [DecidableRel G.Adj] (hev : (evenSet G).card = 0) {c a : W} (hc : G.degree c % 2 = 1)
+    (hca : c ≠ a) (hadj : ¬ G.Adj c a) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+      ∀ P ∈ D.paths, (P.src = c ∨ P.tgt = c) → a ∉ P.walk.support := by
+  have hY : Packed G {a} := by
+    intro x hx y hy hxy
+    rw [Finset.mem_singleton] at hx hy
+    exact absurd (hx.trans hy.symm) hxy
+  obtain ⟨D, hD, -, hav⟩ := lovasz_avoid_set G hev hc hY (fun y hy => by
+    rw [Finset.mem_singleton] at hy; subst hy; exact ⟨Ne.symm hca, hadj⟩)
+  exact ⟨D, hD, fun P hP hend => hav P hP hend a (Finset.mem_singleton_self a)⟩
 
 end Gallai

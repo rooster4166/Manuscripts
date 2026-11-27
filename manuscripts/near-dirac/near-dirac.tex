@@ -37,7 +37,9 @@ Under the balance condition we realise every bounded endpoint profile of the rig
 \item an exact Gallai theorem, with the floor at both parities and the rooted private-leaf bound at even order, for near-regular graphs near $K_{n/2,n/2}$ whose degree excess is balanced across a bisection (Corollary~\ref{cor:class});
 \item a structural restriction on any counterexample sequence to the full ``Target~D'' (Corollary~\ref{cor:failures}).
 \end{itemize}
-An exact counting identity (Lemma~\ref{lem:identity}), whose bipartite case is SP's counting obstruction at unequal shores (SP \S14.18), explains why some balance condition of this kind is needed by the Hamilton-decomposition finish of SP~14.27. It also isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$. Two finite lemmas used in the proof are formalised in Lean.
+An exact counting identity (Lemma~\ref{lem:identity}), whose bipartite case is SP's counting obstruction at unequal shores (SP \S14.18), explains why some balance condition of this kind is needed by the Hamilton-decomposition finish of SP~14.27. It also isolates what remains for Target~D: unbalanced configurations, which need the one-apex removal scheme of SP~14.31/14.33 extended to two-sided exceptional vertices, and exceptional vertices of degree well above $n/2$.
+
+For the one-apex route we prove the counting half: a balancing lemma, based on a mirror symmetry between the two choices of bin shore (Lemmas~\ref{lem:bal-exact} and~\ref{lem:bal-robust}, Proposition~\ref{prop:bal-app}). The two-sided form of this lemma is due to audit A19. We then reduce the near-regular case of Target~D, conditionally on one explicitly stated scheduling hypothesis, to a single named open configuration, intermediate vertices (Theorem~\ref{thm:conditional}). Two finite lemmas used in the proof are formalised in Lean.
 \end{abstract}
 
 \tableofcontents
@@ -124,8 +126,16 @@ Theorem~\ref{thm:main} leaves two kinds of configuration that a failure sequence
 
 Section~\ref{sec:sp} states precisely how the present results relate to SP \S14.
 
+\subsection{The one-apex route: what \S\S\ref{sec:balance}--\ref{sec:conditional} add}
+These sections work on (R1) with every exceptional vertex kept in the Hamilton graph and a single apex.
+\begin{itemize}[nosep]
+\item \textbf{Counting (proved).} Lemma~\ref{lem:bal-exact} is an exact balancing lemma; its proof rests on a mirror symmetry $(S,\Gamma)\mapsto(-S,-\Gamma)$ between the two choices of bin shore. Lemma~\ref{lem:bal-robust} is its robust form. Proposition~\ref{prop:bal-app} meets the one-apex counting window \emph{exactly}, for every size of $X$, under the degree window $D+|\Delta|+2|X|+2\le d_x\le5D/4$. Its proof is the two-sided sweep with nested removed sets found in audit A19.
+\item \textbf{Scheduling (not proved).} The scheduling half is isolated as the Scheduling Hypothesis~SH (Definition~\ref{def:SH}). With $X=\emptyset$ it lies in the regime of the last sentence of SP's proof of 14.37.
+\item \textbf{Conditional reduction (proved).} Theorem~\ref{thm:conditional}: assuming SH, a failure sequence with $\Delta\le(1/2+o(1))n$ must, at all large orders, and for every maximum cut, contain an intermediate vertex (Problem~\ref{prob:intermediate}). Failures with larger maximum degree fall under Problem~\ref{prob:high}.
+\end{itemize}
+
 \subsection{Organisation}
-\S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:lean} describes the Lean formalisation.
+\S\ref{sec:cited} quotes the external results and the SP statements used, with their hypotheses. \S\ref{sec:tools} proves the membership-matrix lemma and the weaving lemma. \S\ref{sec:identity} proves the counting identity and the apex finish. \S\ref{sec:proof} proves Theorem~\ref{thm:main}, and \S\ref{sec:cor} proves the corollaries. \S\ref{sec:sp} discusses the relation to SP~\S14 and the remaining problems. \S\ref{sec:balance} proves the balancing step of the one-apex route, and \S\ref{sec:conditional} states the scheduling hypothesis and the conditional reduction. \S\ref{sec:lean} describes the Lean formalisation.
 
 \section{Cited results and the hypotheses used}\label{sec:cited}
 
@@ -507,7 +517,7 @@ SP's one-apex scheme places the sites of one shore $A$ in cyclic intervals of co
 \item the slot sizes must already account for the pairs.
 \end{itemize}
 
-Two observations. Section~\ref{sec:balance} turns the second into a proved statement in two regimes.
+Two observations. Section~\ref{sec:balance} turns the second into a proved statement (Proposition~\ref{prop:bal-app}).
 \begin{itemize}[nosep]
 \item In a one-apex scheme, Lemma~\ref{lem:identity} with $b'(V)=D$ and $0\le b'\le1$ gives the window
 \[
@@ -563,7 +573,7 @@ List $X=\{x_1,\dots,x_s\}$ and let $M_r=\{x_1,\dots,x_r\}$ for $0\le r\le s$. Le
 \item $S_0=-\sum_x\beta_x\le0\le\sum_x\alpha_x=S_s$;
 \item $\Gamma_r=\Delta+s-2r$.
 \end{itemize}
-Let $r$ be least with $S_r\ge-D$. Either $r=0$ and $S_0\in[-D,0]$, or $S_r<S_{r-1}+2D<D$. So $S_r\in[-D,D)$.
+Let $r$ be least with $S_r\ge-D$. Either $r=0$ and $S_0\in[-D,0]$, or $S_r\le S_{r-1}+2D<D$. So $S_r\in[-D,D)$.
 
 The \emph{mirror} configuration uses naming $A$ and the set $X\setminus M_r$. Its imbalance is $\sum_{x\notin M_r}\beta_x-\sum_{x\in M_r}\alpha_x=-S_r$, and its slack is $-\Delta+r-(s-r)=-\Gamma_r$.
 \begin{itemize}[nosep]
@@ -589,45 +599,188 @@ With the notation of the previous proof, let $r$ be least with $S_r\ge-3D/4$. Si
 \end{itemize}
 \end{proof}
 
-\begin{proposition}[The counting window in the one-apex route]\label{prop:bal-app}
-Consider the route described at the start of this section. Every exceptional vertex is kept in $J$; those on the interval shore keep all their internal edges; those on the bin shore keep all their bin-internal edges. Let $s=|X|$ and let $\Delta$ be the difference of the healthy shore sizes, with $|\Delta|+5s+1<D$. Take the degrees $\alpha_x,\beta_x$ into the healthy vertices, and suppose every $x\in X$ satisfies \eqref{eq:B1} and $D+|\Delta|+2s+2\le d_x\le5D/4$. Suppose further that either
-\begin{enumerate}[label=\textup{(\roman*)},nosep]
-\item $|\Delta|\ge s+1$; or
-\item $s\le\sqrt D/6$.
-\end{enumerate}
-Then there are a naming, a placement of $X$, an integer $t\in\{-1,0,1\}$ and a set $W$ of healthy bin-shore vertices with $|W|=\Gamma+t$, such that \eqref{eq:window} holds for the internal edges kept at $X$. Moreover every vertex of $X$ on the interval shore still has enough cross edges, $d_x-|N(x)\cap W|\ge D$, to reach $R$-degree $D-b'(x)$ with $b'(x)=0$.
+\begin{proposition}[The counting window in the one-apex route; audit A19, Proposition~P]\label{prop:bal-app}
+Consider the route described at the start of this section:
+\begin{itemize}[nosep]
+\item every exceptional vertex is kept in $J$;
+\item those on the interval shore keep all their internal edges;
+\item those on the bin shore keep all their internal edges except those to $W$.
+\end{itemize}
+Let $s=|X|$ and let $\Delta=|B_H|-|A_H|$ be the difference of the healthy shore sizes. Write $\alpha_x,\beta_x$ for the numbers of \emph{healthy} neighbours of $x$ in $A$ and $B$, and $d_x=\alpha_x+\beta_x$. Assume:
+\begin{itemize}[nosep]
+\item $|\Delta|+5s+1<D$ and $|A_H|,|B_H|\ge|\Delta|+s+1$;
+\item every $x\in X$ satisfies \eqref{eq:B1} and $D+|\Delta|+2s+2\le d_x\le5D/4$.
+\end{itemize}
+Then there are a naming, a placement of $X$, an integer $t\in\{-1,0,1\}$ and a set $W$ of healthy bin-shore vertices with $|W|=\Gamma+t\le|\Delta|+s+1$, such that the \emph{exact} value $e_X(I)-e_X(K\setminus W)$ lies in $[D(t-1)/2,D(t+1)/2]$. Here $e_X(S)$ is the number of edges inside $S$ with an end in $X$. Moreover every $x\in X$ satisfies $d(x)-|N(x)\cap W|\ge D$.
 \end{proposition}
 
 \begin{proof}
-The cross-edge condition holds because $|W|\le|\Gamma|+1\le|\Delta|+s+1$.
+The proof is that of audit A19 (\texttt{research/audit/A19-near-dirac-8-9.md}, \S4.2). It replaces an earlier, one-sided argument that worked only in two sub-regimes.
 
-(i) Name the shores so that the healthy bin shore is the larger, $\Delta_\nu=|\Delta|\ge s+1$. Then $\Gamma_r=|\Delta|+s-2r\ge1$ for every $r$, so the mirror is never needed. Let $F(r)$ be the \emph{exact} value of $e_R(I)-e_R(K)$ coming from $X$ in the configuration $(\nu,M_r)$, with $W=W_r$ a set of $\Gamma_r-1\ge0$ healthy bin-shore vertices, the size for $t=-1$. Take the sets $W_r$ nested, $W_r\subseteq W_{r-1}$. The value $F(r)$ accounts for both the edges between exceptional vertices and the edges from $X_K$ to $W_r$.
-\begin{itemize}[nosep]
-\item $F(0)\le0$, because every kept edge is then on the bin shore.
-\item $F(s)\ge0$, because then $X_K=\emptyset$.
-\item Moving $x_r$ to the interval shore, and returning two vertices of $W$ to the bin shore, changes $F$ by $d_{x_r}$ minus at most $|W|+4s$. Here $|N(x_r)\cap W|\le|W|$; the edges from $x_r$ to other exceptional vertices account for at most $2s$; and the two returned vertices have at most $2s$ edges to $X_K$. The change is also at most $d_{x_r}$. Since $|W|\le|\Delta|+s+1$ and $|\Delta|+5s+1<D\le d_{x_r}$, we get $0<F(r)-F(r-1)\le5D/4$.
-\end{itemize}
-So the least $r$ with $F(r)\ge-D$ has $F(r)\in[-D,D/4)$.
-\begin{itemize}[nosep]
-\item If $F(r)\le0$, use $t=-1$, so $|W|=\Gamma_r-1$ and \eqref{eq:window} holds.
-\item If $F(r)>0$, use $t=1$ and remove two further healthy bin-shore vertices. This raises $F$ by at most $2s$, so $F\in(0,D/4+2s]\subseteq[0,D]$.
-\end{itemize}
-In both cases $\Gamma_r+t\ge0$ holds and \eqref{eq:window} holds.
+\emph{The exact value.} Write $X_I,X_K$ for the exceptional vertices placed on the two shores. Healthy internal edges are cleared. So every internal edge of the residual at $X$ either joins $x$ to a healthy vertex, and is counted once in $\iota_x$ or $\kappa_x$, or joins two exceptional vertices on the same shore. Hence
+\begin{equation}\label{eq:exactvalue}
+e_X(I)-e_X(K\setminus W)=S+e(G[X_I])-e(G[X_K])+e(X_K,W),
+\end{equation}
+with $S$ the imbalance of the configuration, computed from healthy degrees.
 
-(ii) Apply Lemma~\ref{lem:bal-robust} with $\mu=D/8$. The true imbalance of a configuration differs from $S$ by at most $e(G[X])+e(X_K,W)\le s^2/2+s(|\Gamma|+1)$. The first term comes from edges between exceptional vertices on one side, which are counted once in $e_R$ but twice or not at all in $S$. The second comes from the edges from $X_K$ to the removed set. When $|\Delta|\le s$ we have $|\Gamma|\le2s$, so the error is at most $s^2/2+s(2s+1)\le3s^2+3\le D/8$. When $|\Delta|\ge s+1$, part~(i) applies instead.
+\emph{Stages.} List $X=\{x_1,\dots,x_s\}$. At stage $r\in\{0,\dots,s\}$ put $x_1,\dots,x_r$ on $A$ and the rest on $B$; healthy vertices stay where they are. Write $\Gamma_r=\Delta+s-2r$, and let $C_r=e_X(A)-e_X(B)$ at stage $r$ with nothing removed. Then:
+\begin{itemize}[nosep]
+\item $C_0=-e_X(B)\le0\le e_X(A)=C_s$.
+\item Moving $x_r$ from $B$ to $A$ makes all its healthy edges change status and raises the count of each edge to another exceptional vertex by one. So $C_r-C_{r-1}=d_{x_r}+d_X(x_r)$, where $d_X$ is the degree into $X$. Hence $D\le C_r-C_{r-1}\le5D/4+s-1<2D$, using $s<D/5$.
+\end{itemize}
+At a given stage $r$ both namings are available:
+\begin{itemize}[nosep]
+\item \emph{Bin shore $B$} (interval $A$, $M=\{x_1,\dots,x_r\}$, slack $\Gamma_r$). Here $W\subseteq B_H$ with $|W|=\Gamma_r+t$, and by \eqref{eq:exactvalue} the exact value is $C_r+e(X_B,W)\ge C_r$.
+\item \emph{Bin shore $A$} (interval $B$, $M=\{x_{r+1},\dots,x_s\}$, slack $-\Gamma_r$). Here $W'\subseteq A_H$ with $|W'|=-\Gamma_r+t$, and the exact value is $-C_r+e(X_A,W')\ge-C_r$.
+\end{itemize}
+
+\emph{Sweep with bin shore $B$.} Let $R_B=\{r:\Gamma_r\ge1\}$; it is an initial segment of $\{0,\dots,s\}$. Fix a list $w_1,w_2,\dots$ of $B_H$ and put $W_r=\{w_1,\dots,w_{\Gamma_r-1}\}$, so the sets $W_r$ are nested and decrease with $r$. Let $F_r=C_r+e(X_B^{(r)},W_r)$, the exact value of $(B,M_r,t=-1,W_r)$. Then $F_0=-e_X(B\setminus W_0)\le0$. Since both $X_B$ and $W$ shrink, $F_r-F_{r-1}\le C_r-C_{r-1}\le5D/4+s-1$.
+
+Suppose some $r\in R_B$ has $F_r\ge-D$, and take the least one. Either $r=0$ and $F_0\in[-D,0]$, or $F_r<-D+5D/4+s-1=D/4+s-1$.
+\begin{itemize}[nosep]
+\item If $F_r\le0$, take $t=-1$ and $W=W_r$.
+\item If $F_r>0$, take $t=1$ and add $w_{\Gamma_r},w_{\Gamma_r+1}$ to $W$. This raises the value by at most $2s$, to at most $D/4+3s<D$.
+\end{itemize}
+In both cases the configuration is valid with the exact value.
+
+\emph{Sweep with bin shore $A$.} Symmetrically, let $R_A=\{r:\Gamma_r\le-1\}$, a final segment, and run downwards from $r=s$. Use nested sets $W'_r\subseteq A_H$ with $|W'_r|=-\Gamma_r-1$, and $F'_r=-C_r+e(X_A^{(r)},W'_r)$. Then $F'_s=-e_X(A\setminus W'_s)\le0$, and $F'_{r-1}-F'_r\le C_r-C_{r-1}$. If some $r\in R_A$ has $F'_r\ge-D$, we conclude as before.
+
+\emph{Both sweeps fail.} Then $C_r\le F_r<-D$ on $R_B$ and $C_r\ge-F'_r>D$ on $R_A$.
+\begin{itemize}[nosep]
+\item If $\Gamma_r\ne0$ for all $r$ and $R_B=\emptyset$, then $R_A=\{0,\dots,s\}$. But $F'_0=-C_0\ge0$, so the sweep with bin shore $A$ succeeds, a contradiction. The case $R_A=\emptyset$ is symmetric, using $F_s=C_s\ge0$.
+\item If $\Gamma_r\ne0$ for all $r$ and both sets are non-empty, then $\Gamma$ passes from $1$ to $-1$ between $r_0=\max R_B$ and $r_0+1=\min R_A$. So $C_{r_0+1}-C_{r_0}>2D$, contradicting the step bound.
+\item Otherwise $\Gamma_{r_0}=0$ for some $r_0$. If $r_0\ge1$, then $r_0-1\in R_B$, so $C_{r_0}<-D+5D/4+s=D/4+s$; if $r_0=0$, then $C_{r_0}\le0$. Symmetrically, $C_{r_0}>-D/4-s$. Since $s<D/5$, we get $|C_{r_0}|<D/2$. So $(B,M_{r_0},t=0,W=\emptyset)$ is valid: $\Gamma+t=0$, and the exact value $C_{r_0}$ lies in $[-D/2,D/2]$.
+\end{itemize}
+
+In every case $|W|\le\max_r|\Gamma_r|+1\le|\Delta|+s+1\le\min(|A_H|,|B_H|)$. Hence $d(x)-|N(x)\cap W|\ge d_x-|W|\ge D$ for every $x\in X$.
 \end{proof}
 
 \begin{remark}[What this does and does not settle]\label{rem:bal-scope}
-Proposition~\ref{prop:bal-app} shows that the counting obstruction of Remark~\ref{rem:forces} does not block the one-apex route. It does so whenever:
+Proposition~\ref{prop:bal-app} settles the counting half of the one-apex route completely, under its standing hypotheses. These hypotheses are:
 \begin{itemize}[nosep]
-\item every exceptional vertex has at most $D$ neighbours in each shore, which holds once vertices with $\min(d_A,d_B)\le d-D$ have had their few internal edges cleared in a preliminary phase, as in SP Theorem~14.37;
-\item exceptional degrees lie in $[D+\Omega(|\Delta|+|X|),5D/4]$, which in a failure sequence is arranged by choosing $q$ sufficiently large compared with $|\Delta|+|X|$;
-\item either the healthy shores differ by more than $|X|$, or $|X|\le\sqrt D/6$.
+\item every exceptional vertex has at most $D$ healthy neighbours in each shore;
+\item exceptional degrees lie in $[D+|\Delta|+2|X|+2,\ 5D/4]$;
+\item $|\Delta|+5|X|+1<D$.
 \end{itemize}
-The remaining counting case has nearly equal healthy shores and $|X|\ge c\sqrt n$. There the errors from edges to $W$ can reach order $|X|^2$, which may exceed $D$, and neither Lemma~\ref{lem:bal-robust} nor the monotone argument of part~(i) applies.
+The first excludes intermediate vertices (Problem~\ref{prob:intermediate}), whose internal edges are not few. Lemmas~\ref{lem:bal-exact} and~\ref{lem:bal-robust} are first-order and robust forms. In the regime of nearly equal healthy shores with $|X|\gtrsim\sqrt n$, their mirror step meets an error of order $|X|^2$ from the edges to $W$. Audit A19 observed it missing the window for adversarial $W$. The two-sided exact sweep with nested $W$ avoids this.
 
-The scheduling half of Problem~\ref{prob:twosided} is untouched. In the version used in Proposition~\ref{prop:bal-app}, every exceptional vertex keeps all its internal edges in its own shore and consumes only cross edges: $d_x-D$ of them, about $q$. So it enters SP's interval and bin construction as a \emph{weak site}, with $p_x\approx q/2$ visits, whose neighbours on the other shore may be a small linear fraction of that shore. What is missing is SP's construction (Theorems~14.31 and 14.33) re-derived with $o(q)$ weak sites per slot placed before the gap matching, together with the corresponding lost-neighbour bounds, and with the one-apex end pattern adjusted to the value of $b'(K)-b'(I)$ fixed by \eqref{eq:window}.
+The scheduling half of Problem~\ref{prob:twosided} is untouched. In the version used here, every exceptional vertex keeps all its internal edges in its own shore and consumes only cross edges: $d_x-D$ of them, about $q$. So it enters SP's interval and bin construction as a \emph{weak site}, with $p_x\approx q/2$ visits. Note that the sweep may place a vertex on its cross side. Such a vertex may then have as few as about $\own(x)\approx q$ neighbours on the other shore, almost all of which it must use. What is missing is SP's construction (Theorems~14.31 and 14.33) re-derived with three ingredients:
+\begin{itemize}[nosep]
+\item $o(q)$ weak sites per slot, placed before the gap matching;
+\item the corresponding lost-neighbour bounds;
+\item the one-apex end pattern adjusted to the value of $b'(K)-b'(I)$ fixed by \eqref{eq:window}.
+\end{itemize}
 \end{remark}
+
+\section{A conditional reduction of the near-regular case}\label{sec:conditional}
+
+This section states precisely what the results so far give for Target~D in the near-regular regime $\Delta\le(1/2+o(1))n$, assuming a single open scheduling statement.
+
+\begin{definition}[Scheduling Hypothesis SH]\label{def:SH}
+Consider a sequence of graphs $G$ with $n=|V(G)|\to\infty$. Each comes with:
+\begin{itemize}[nosep]
+\item a partition $V(G)=I\cup K$ and sets $X\subseteq V(G)$ and $W\subseteq K\setminus X$;
+\item an integer $t\in\{-1,0,1\}$ and an even integer $D$;
+\item a profile $b:V(G)\to\{0,1,2\}$ of the degree parity with $b(V)=2\lfloor n/2\rfloor$.
+\end{itemize}
+Put $q=\lfloor n/2\rfloor-D$. Let $h$ be the maximum of $\own(v)+\mis(v)$ over $v\notin X$, taken with respect to $(I,K)$, and let $e=|\{v:b(v)\ne1\}|$. Assume:
+\begin{enumerate}[label=(H\arabic*),nosep]
+\item\label{H1} $q=o(n)$, $h+e+|X|+|W|=o(q)$ and $n\,(h+|W|)=o(q^2)$. SP's tolerances carry an extra ``$+1$''. Its absence here is harmless: $h=0$ forces $X=\emptyset$ by~\ref{H2}, and $D$ then plays no role;
+\item\label{H2} every $x\in X$ has $|N(x)\cap I|\le D$, $|N(x)\cap K|\le D$, $d(x)\le5D/4$ and $d(x)-|N(x)\cap W|\ge D$;
+\item\label{H3} $|I|-|K\setminus W|=t$;
+\item\label{H4} $e_X(I)-e_X(K\setminus W)\in[D(t-1)/2,D(t+1)/2]$, where $e_X(S)$ is the number of edges inside $S$ with at least one end in $X$.
+\end{enumerate}
+\emph{SH asserts} that for all sufficiently large members, $G$ has a decomposition into exactly $b(V)/2$ paths realising~$b$.
+\end{definition}
+
+\begin{remark}[Status and meaning of SH]\label{rem:SH}
+SH is \emph{not proved} here.
+
+With $X=\emptyset$, hypotheses \ref{H2} and \ref{H4} are vacuous, and SH asks for the realisation of a bounded profile with $o(q)$ entries different from~$1$ on a bipartite-like graph with $o(q)$ size and degree errors. This is the regime of SP Theorems~14.33 and 14.37. The penultimate sentence of SP's proof of 14.37 says that ``the same construction realizes any cap-two profile of the degree parity on unequal shores when the number of even-degree sites and the three size and degree errors are $o(m)$''. At equal shores ($|K\setminus W|=|I|$), SH with $X=\emptyset$ allows $|b(I)-b(K)|\le e=o(q)$. That case is covered instead by Theorem~\ref{thm:main} with $X=\emptyset$ and $\rho=0$. For $X=\emptyset$ the conclusion of SH does not involve $W$.
+
+The intended proof of SH runs SP's one-apex construction (Theorems~14.31 and 14.33) on $I\cup(K\setminus W)$, with the healthy internal edges first cleared as in SP~14.37. In that construction:
+\begin{itemize}[nosep]
+\item the exceptional vertices keep all their internal edges, which \ref{H4} makes compatible with the one-apex identity~\eqref{eq:window};
+\item they enter the preliminary slots only through prebuilt partner blocks, as in Step~4 of \S\ref{sec:proof}, consuming $d(x)-D$ cross edges;
+\item the edges from $X_K$ to $W$ are routed through blocks of the form $u'\,x\,w\,u$.
+\end{itemize}
+What such a proof must supply is SP's interval, bin and queue scheduling with $o(q)$ such blocks per slot, the corresponding lost-neighbour bounds, and the end pattern for the value of $b'(K)-b'(I)$ fixed by \ref{H4}.
+\end{remark}
+
+\begin{theorem}[Conditional reduction]\label{thm:conditional}
+Assume SH. Let $(G_n)$ be a failure sequence as in SP Corollary~14.24 with $\Delta(G_n)\le(1/2+o(1))n$. Then there are integers $q_n=o(n)$, $\sigma_n=o(q_n)$ and reals $\lambda_n$ with the following property. For all sufficiently large $n$, put $D_n=\lfloor n/2\rfloor-q_n$, which is even. Then for every maximum cut $(A,B)$ of $G_n$ some vertex $v$ satisfies
+\[
+\lambda_n\le\own(v)<d(v)-D_n+\sigma_n ,
+\]
+where $\lambda_n=q_n^2/(n\,\omega_n)$ for a sequence $\omega_n\to\infty$ fixed in the proof. Such a $v$ is an \emph{intermediate vertex}.
+\end{theorem}
+
+\begin{proof}
+\emph{Parameters.} By SP Corollary~14.26 and the hypothesis on $\Delta$, there is $\xi_n\to0$ such that every maximum cut $(A,B)$ of $G_n$ satisfies:
+\begin{itemize}[nosep]
+\item $\bigl||A|-|B|\bigr|\le\xi_nn$ and $e(A)+e(B)\le\xi_nn^2$, by the proof of SP Corollary~14.39;
+\item every degree lies in $[n/2-\xi_nn,\,n/2+\xi_nn]$;
+\item at most $\xi_nn$ vertices have even degree, because $\Delta\le n/2+o(n)$ forces $\odd(G_n)=n-o(n)$.
+\end{itemize}
+Replacing $\xi_n$ by $\max(\xi_n,1/\log n)$, we may assume $\xi_n\ge1/\log n$.
+
+Put $\omega_n=\xi_n^{-1/100}$. Let $q_n$ be an integer with $|q_n-\xi_n^{1/5}n|\le1$ and the parity making $D_n$ even, and put
+\[
+\sigma_n=\lceil4\xi_nn^2/q_n\rceil+1 .
+\]
+Then $q_n=o(n)$, $q_n\ge n/(\log n)^{1/5}-1$, and $q_n\ge\omega_n(\xi_n^{1/3}+\xi_n^{1/4})n$ for large $n$. Also $\sigma_n=O(\xi_n^{4/5}n)=o(q_n)$, and $\lambda_n=q_n^2/(n\omega_n)\ge\omega_n\xi_n^{1/2}n/2$, so $\lambda_n$ dominates $\xi_nn$.
+
+\emph{The contradiction runs along a subsequence.} Suppose the conclusion fails for infinitely many $n$. Along that subsequence, pick a maximum cut $(A,B)$ of $G_n$ with no intermediate vertex, and put
+\[
+X=\{v:\own(v)\ge d(v)-D_n+\sigma_n\},\qquad\Delta_H=|B\setminus X|-|A\setminus X| .
+\]
+We build data satisfying \ref{H1}--\ref{H4} along the subsequence. Every bound below is an explicit function of $\xi_n$, $q_n$ and $\omega_n$ that tends to~$0$ in the required ratio.
+
+\emph{Sizes.} Every $v\in X$ has $\own(v)\ge q_n-2\xi_nn\ge q_n/2$. So $|X|\le4(e(A)+e(B))/q_n\le4\xi_nn^2/q_n<\sigma_n$, and $|X|=o(q_n)$. Also $|\Delta_H|\le\xi_nn+|X|=o(q_n)$.
+
+\emph{Healthy vertices.} A vertex $v\notin X$ has $\own(v)<d(v)-D_n+\sigma_n$. Since $v$ is not intermediate, $\own(v)<\lambda_n$. Then $\mis(v)\le\max(|A|,|B|)-d(v)+\own(v)\le2\xi_nn+\lambda_n$.
+
+\emph{Exceptional vertices.} Every $x\in X$ has $\cro(x)=\max(d_A(x),d_B(x))=d(x)-\own(x)\le D_n-\sigma_n$, because in a maximum cut $\own$ is the smaller side. So the healthy degrees satisfy \eqref{eq:B1}. Moreover, in every placement, the full neighbourhood of $x$ in either shore has size at most
+\[
+\max(\cro(x),\own(x))+|X|-1<D_n-\sigma_n+\sigma_n=D_n .
+\]
+This is the first part of~\ref{H2}. Also $d_x\ge d(x)-|X|\ge n/2-\xi_nn-|X|\ge D_n+q_n-2\xi_nn-|X|-1$, which is at least $D_n+|\Delta_H|+2|X|+2$ because $q_n$ dominates. Finally $d(x)\le n/2+\xi_nn\le5D_n/4$, $|\Delta_H|+5|X|+1<D_n$, and $|A_H|,|B_H|\ge n/3\ge|\Delta_H|+|X|+1$.
+
+\emph{Placement.} Proposition~\ref{prop:bal-app} applies. It gives a naming $(I,K)$, a placement of $X$, an integer $t$ and a set $W$ of healthy bin-shore vertices with $|W|=\Gamma+t\le|\Delta_H|+|X|+1$. With these data:
+\begin{itemize}[nosep]
+\item \ref{H3} holds;
+\item \ref{H4} holds, because the proposition controls the exact value;
+\item \ref{H2} holds, by the last paragraph and the proposition's cross-edge bound.
+\end{itemize}
+Healthy vertices stay on their maximum-cut sides.
+
+\emph{Hypothesis \ref{H1}.} With respect to $(I,K)$, every healthy $v$ has $\own(v)+\mis(v)\le2\lambda_n+2\xi_nn+|X|=:h$, since moving $X$ changes these counts by at most $|X|$. Then:
+\begin{itemize}[nosep]
+\item $h=o(q_n)$;
+\item $n\,h\le2q_n^2/\omega_n+2\xi_nn^2+4\xi_nn^3/q_n=o(q_n^2)$, by the choice of $q_n$;
+\item $n|W|\le n(\xi_nn+2|X|+1)=o(q_n^2)$, since $q_n\ge n/(\log n)^{1/5}-1$ gives $n=o(q_n^2)$;
+\item $e\le\xi_nn=o(q_n)$.
+\end{itemize}
+
+\emph{Profile.} Put $b=1$ on odd-degree vertices; their number is even.
+\begin{itemize}[nosep]
+\item If $n$ is even, the number of even-degree vertices is even. Let $t_0$ be a failing root, and give two ends to half of the even-degree vertices, including $t_0$ if its degree is even. Then $b(V)=n=2\lfloor n/2\rfloor$ and $b(t_0)\ge1$.
+\item If $n$ is odd, the number $e_0$ of even-degree vertices is odd; give two ends to $(e_0-1)/2$ of them. Then $b(V)=n-1=2\lfloor n/2\rfloor$.
+\end{itemize}
+In both cases $e\le\xi_nn$.
+
+\emph{Conclusion.} By SH, for all large members of the subsequence, $G_n$ has $\lfloor n/2\rfloor$ paths realising $b$. At even order, append the private leaf at $t_0$. This contradicts the failure of $G_n$.
+\end{proof}
+
+\begin{problem}[Intermediate vertices]\label{prob:intermediate}
+In the setting of Theorem~\ref{thm:conditional}, handle vertices with $\lambda_n\le\own(v)<d(v)-D_n+\sigma_n$.
+
+\emph{Why SP's scheduling does not apply.} For the fixed $\omega_n$, such a vertex may miss more than the $h=o(q^2/n)$ opposite neighbours that SP's one-apex scheduling tolerates.
+
+\emph{Why the balancing does not apply.} On its larger (cross) side its own-side neighbours exceed $D$, so it cannot keep all its internal edges there. On its own side it has fewer than about $q$ internal edges and could keep them. The natural extension of Proposition~\ref{prop:bal-app} fixes such vertices on their own side. They then add an offset of up to their total own-degree to $C_r$, and this breaks $C_0\le0\le C_s$ once that total exceeds $D$. That is where the counting difficulty lies.
+\end{problem}
+
+\noindent\emph{Summary of the near-regular case.} Assume SH. A failure sequence with $\Delta\le(1/2+o(1))n$ must, at all large orders and for every maximum cut, contain an intermediate vertex (Problem~\ref{prob:intermediate}). Failures with $\Delta\ge(1/2+\beta)n$ fall under Problem~\ref{prob:high}.
 
 \section{Lean formalisation}\label{sec:lean}
 

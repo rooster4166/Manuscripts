@@ -38,7 +38,8 @@ theorem PathDecomp.replace_supp (D : PathDecomp K) {P : GPath K} (hP : P ∈ D.p
       (∀ w, D'.ends w + P.endsAt w = D.ends w + P'.endsAt w) ∧
       (∀ Q ∈ D.paths, Q ≠ P → ∃ Q' ∈ D'.paths, Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
         Q'.walk.support = Q.walk.support) ∧
-      ∀ Q' ∈ D'.paths, Q' = P' ∨ ∃ Q ∈ D.paths, Q'.walk.support = Q.walk.support := by
+      ∀ Q' ∈ D'.paths, Q' = P' ∨ ∃ Q ∈ D.paths, Q'.src = Q.src ∧ Q'.tgt = Q.tgt ∧
+        Q'.walk.support = Q.walk.support := by
   obtain ⟨l₁, l₂, hl⟩ := List.append_of_mem hP
   have hnd := D.nodup_edges
   rw [hl, List.flatMap_append, List.flatMap_cons] at hnd
@@ -117,10 +118,11 @@ theorem PathDecomp.replace_supp (D : PathDecomp K) {P : GPath K} (hP : P ∈ D.p
     change Q' ∈ L at hQ'
     simp only [L, List.mem_append, List.mem_cons, List.mem_pmap] at hQ'
     rcases hQ' with ⟨Q, hQ, rfl⟩ | rfl | ⟨Q, hQ, rfl⟩
-    · exact Or.inr ⟨Q, by rw [hl]; exact List.mem_append_left _ hQ, GPath.transfer_support _ _⟩
+    · exact Or.inr ⟨Q, by rw [hl]; exact List.mem_append_left _ hQ, rfl, rfl,
+        GPath.transfer_support _ _⟩
     · exact Or.inl rfl
     · exact Or.inr ⟨Q, by rw [hl]; exact List.mem_append_right _ (List.mem_cons_of_mem _ hQ),
-        GPath.transfer_support _ _⟩
+        rfl, rfl, GPath.transfer_support _ _⟩
 
 end replace
 
@@ -180,7 +182,7 @@ theorem PathDecomp.append_move_supp (D : PathDecomp K) {t u : U} (hadj : ¬ K.Ad
   have h3 : P.endsAt w = (if t = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := by
     rw [← hQends]; simp only [GPath.endsAt, hQs]
   omega
-  rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, hs₀⟩
+  rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, -, -, hs₀⟩
   · refine ⟨P, hP, fun x hx => ?_⟩
     have : x ∈ (Walk.cons hut (Q.walk.transfer K' hQK)).support := hx
     rw [Walk.support_cons, Walk.support_transfer, List.mem_cons] at this
@@ -288,7 +290,7 @@ theorem PathDecomp.reroute_core_supp (D : PathDecomp K) {t u y : U} (hadj : ¬ K
     have h3 : P.endsAt w = (if t = w then 1 else 0) + (if Q.tgt = w then 1 else 0) := by
       rw [← hQends]; simp only [GPath.endsAt, hQs]
     omega
-  · rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, hs₀⟩
+  · rcases hcovr Q' hQ' with rfl | ⟨Q₀, hQ₀, -, -, hs₀⟩
     · refine ⟨P, hP, fun x hx => ?_⟩
       have hx' : x ∈ W.support := hx
       rw [hWsupp, List.mem_append, List.mem_reverse] at hx'

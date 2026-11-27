@@ -53,14 +53,19 @@ path decomposition with the parity-forced ends in which every path meets $X$ at 
 particular any two vertices at distance at least three can be separated. The proof runs
 Lov\'asz's induction and uses that Fan's addible-edge lemma changes the vertex set of only one path, by
 one vertex. We show by example that distance three cannot be replaced by two.
+\item \emph{One constrained pair.} As a corollary, if all degrees are odd and $c,a$ are non-adjacent,
+some Lov\'asz decomposition has the path ending at $c$ avoiding $a$. This is the one-pair case of the
+constrained conjectures. The proof attaches a leaf at $c$, which makes $c$ the only even vertex and puts
+the leaf at distance three from $a$.
 \end{itemize}
 We also prove TRC for two classes reachable by Fan's lemma, state the constrained Lov\'asz conjectures that
 would give TRC for minimum $T$-joins, and record what we know of their status. One of them would imply
 Gallai's conjecture for every graph whose even vertices induce a subgraph with a perfect matching. The
 proofs use no computation. Computations (an exact oracle, about $1.5\times10^5$ transversals and
 $6\times10^5$ extension queries) are reported separately and only guided the statements. The
-separation theorem, the vertex-set form of Fan's lemma and the reduction of Gallai's conjecture to an
-existential TRC are formalised in Lean.
+separation theorem and its one-pair corollary, the vertex-set form of Fan's lemma, the extension step
+of route descent, the reduction of TRC to constrained Lov\'asz decompositions, and the resulting
+reduction of Gallai's conjecture are formalised in Lean.
 \end{abstract}
 \maketitle
 
@@ -107,11 +112,14 @@ at once (Proposition~\ref{prop:spine}).
 (Section~\ref{sec:min}).
 \item Realisations in which every route is terminal are exactly the \emph{constrained Lov\'asz
 decompositions} of the free graph $G-J$ (Proposition~\ref{prop:rr}). This turns TRC into a problem about
-graphs with all degrees odd.
+graphs with all degrees odd. The resulting implication, from compatible Lov\'asz decompositions to
+Gallai's conjecture, is formalised in Lean.
 \item \emph{Separation theorem} (Theorem~\ref{thm:sep}): for every set $X$ of vertices at pairwise
 distance at least three, some Lov\'asz decomposition has every path meeting $X$ at most once; in
 particular, it can separate any two vertices at distance at least three. The proof rests on a vertex-set form of Fan's lemma
-(Lemma~\ref{lem:fan}), proved in full. Both are formalised in Lean (Section~\ref{sec:lean}).
+(Lemma~\ref{lem:fan}), proved in full. Attaching a leaf turns it into a one-sided statement at
+distance two (Theorem~\ref{thm:L1}): in a graph with all degrees odd, the path ending at $c$ can avoid
+any prescribed non-neighbour of $c$. All three are formalised in Lean (Section~\ref{sec:lean}).
 \item TRC holds for \emph{Fan-isolated} route systems, and every orientation of a unique perfect matching
 of $G[\Ev]$ is realisable (Section~\ref{sec:classes}). Both are proved with Fan's lemma alone.
 \end{enumerate}
@@ -138,7 +146,7 @@ Theorem~\ref{thm:sep} below reproves it.
 For vertices $t\neq u$ with $tu\notin E(K)$ we write $K+tu$ for the graph with the edge $tu$ added. For a
 path partition $\cD$ of $K$ let $Z_\cD(u)=\{w\in N_K(u): b_\cD(w)=0\}$.
 
-\begin{lemma}[Fan's lemma with vertex sets; cf.~\cite[Lemma~3.4]{Fan05}]\label{lem:fan}
+\begin{lemma}[Fan's lemma with vertex sets; cf.~{\cite[Lemma~3.4]{Fan05}}]\label{lem:fan}
 Let $\cD$ be a path partition of $K$, and let $t\neq u$ be vertices with $tu\notin E(K)$ and
 $b_\cD(t)>|Z_\cD(u)|$. Then $K+tu$ has a path partition $\cD^+$ with $|\cD^+|=|\cD|$,
 $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$, and a bijection $\varphi:\cD\to\cD^+$ with $V(\varphi(Q))=V(Q)$
@@ -438,14 +446,8 @@ $|\Od|/2+|\Ev|/2=n/2$ paths.
 \end{proof}
 
 This class contains every Eulerian graph with a perfect matching. For such graphs Gallai's conjecture is
-open. The case $m=1$ of Conjecture~\ref{conj:LN} is:
-
-\begin{conjecture}[$L_1$]\label{conj:L1}
-If $F$ has all degrees odd and $c,a$ are non-adjacent, then some Lov\'asz decomposition of $F$ has
-$a\notin V(Q_c)$.
-\end{conjecture}
-
-The next section proves $L_1$ when $c$ and $a$ have no common neighbour.
+open. The case $m=1$ of Conjecture~\ref{conj:LN} is true. It is Theorem~\ref{thm:L1} in the next
+section, which derives it from the separation theorem by attaching a leaf at $c$.
 
 \section{Lov\'asz decompositions that separate vertices}\label{sec:sep}
 
@@ -511,21 +513,57 @@ Case~IV applies. This completes the induction. For the last statement, take $X=\
 Theorem~\ref{thm:sep} is formalised in Lean as \texttt{separation\_set}, with the case
 $X=\{c,a\}$ as \texttt{separation} (Section~\ref{sec:lean}).
 
-\begin{corollary}[$L_1$ at distance three]\label{cor:L1}
+\begin{corollary}[symmetric $L_1$ at distance three]\label{cor:L1}
 If all degrees of $F$ are odd and $c,a$ are non-adjacent with no common neighbour, then $F$ has a
 Lov\'asz decomposition in which $Q_c$ avoids $a$ and $Q_a$ avoids $c$.
 \end{corollary}
 
+At distance two only one side can be guaranteed by this method, but that side always can.
+
+\begin{theorem}[$L_1$]\label{thm:L1}
+Let $F$ have no vertex of positive even degree, let $c$ have odd degree, and let $Y$ be a packed set of
+vertices containing neither $c$ nor a neighbour of $c$. Then $F$ has a Lov\'asz decomposition in which
+every path meets $Y$ at most once and $Q_c$ is disjoint from $Y$. In particular, if $c$ and $a$ are
+distinct and non-adjacent, some Lov\'asz decomposition of $F$ has $a\notin V(Q_c)$.
+\end{theorem}
+
+\begin{proof}
+Let $K=F+c\ell$, where $\ell$ is a new vertex. In $K$ the vertex $c$ has positive even degree
+$d_F(c)+1$, the vertex $\ell$ has degree one, and all other degrees are as in $F$. So $c$ is the only
+vertex of $K$ of positive even degree. The set $X=Y\cup\{\ell\}$ is packed in $K$. Indeed, $\ell$ is
+adjacent only to $c$, so it is not a common neighbour of two vertices of $F$, and two vertices of $Y$
+are at the same distance in $K$ as in $F$. And $\ell$ is at distance at least three from every
+$y\in Y$, since its only neighbour $c$ is neither $y$ nor adjacent to $y$.
+
+By Theorem~\ref{thm:sep}, $K$ has a Lov\'asz decomposition $\cD_K$ in which every path meets $X$ at
+most once. Let $Q$ be the path containing the edge $\ell c$. Since $\ell$ has degree one, it is an end
+of $Q$. Since $c$ has no end in $\cD_K$, the path $Q$ continues beyond $c$. So $Q-\ell$ is a path with an
+end at $c$. Replace $Q$ by $Q-\ell$. The result $\cD$ is a path partition of $F$. In it $c$ has gained
+one end, so $b_\cD(c)=1=d_F(c)\bmod2$, and the ends at all other vertices of $F$ are unchanged. So $\cD$
+is a Lov\'asz decomposition of $F$ with $Q_c=Q-\ell$. As $Q$ contains $\ell\in X$, it has no vertex of $Y$.
+Every other path of $\cD$ is a path of $\cD_K$, so it meets $Y$ at most once. For the last statement
+take $Y=\{a\}$.
+\end{proof}
+
+Theorem~\ref{thm:L1} is formalised as \texttt{lovasz\_avoid\_set}, with the case $Y=\{a\}$ as
+\texttt{lovasz\_avoid\_nonadj}.
+
 \begin{corollary}\label{cor:onepair}
-Let $G$ have exactly two even vertices $a$ and $c$, and suppose $ac\in E(G)$ lies in no triangle. Then
-$\{a\}$ has a realisation in which $ca$ is a terminal edge at $a$, and $\{c\}$ has one in which $ac$ is a
-terminal edge at $c$.
+Let $G$ have exactly two even vertices $a$ and $c$, and suppose they are adjacent. Then $\{a\}$ has a
+realisation in which $ca$ is a terminal edge at $a$, and $\{c\}$ has one in which $ac$ is a terminal
+edge at $c$.
 \end{corollary}
 
 \begin{proof}
-In $F=G-ac$ all degrees are odd, and $c,a$ are non-adjacent with no common neighbour. Apply
-Corollary~\ref{cor:L1} and Proposition~\ref{prop:rr} with the single route $ca$.
+In $F=G-ac$ all degrees are odd, and $c,a$ are non-adjacent. Apply Theorem~\ref{thm:L1} and
+Proposition~\ref{prop:rr} with the single route $ca$, and then the same with the roles of $a$ and $c$
+exchanged.
 \end{proof}
+
+Realisability of $\{a\}$ alone already follows from Fan's lemma (Theorem~\ref{thm:schedule} below). What
+Corollary~\ref{cor:onepair} adds is the terminal edge. This is the property that route descent needs
+at every step, and the one that Conjectures~\ref{conj:rr} and~\ref{conj:LN} ask for at all pairs at
+once.
 
 \begin{corollary}\label{cor:packedroutes}
 Let $(P,\cR)$ be a route system for $G$ with union $J$, and suppose $V(J)$ is packed in the free graph
@@ -559,21 +597,28 @@ leaf at $z$ makes all degrees odd, and then a separating decomposition exists ag
 not used).
 \end{example}
 
-\begin{remark}[how far Lov\'asz's induction proves $L_1$]\label{rem:L1res}
-For $L_1$ itself the invariant is weaker: only the path \emph{ending} at $c$ must avoid $a$. In
-Lemma~\ref{lem:fan} with target $g\neq a$ the chain vertices other than $t$ are neighbours of $g$. If
-$c\notin N(g)\cup\{t\}$, the path ending at $c$ keeps its vertex set, or gains $g$. If $c$ is a chain
-vertex, the end at $c$ moves onto the path containing the edge $cg$. So the invariant survives whenever
-$g\ne a$ and either $c\notin N(g)\cup\{t\}$ or the path through $cg$ avoids $a$. Running the induction of
-Theorem~\ref{thm:sep} with this rule leaves two residual configurations:
+\begin{remark}[what the leaf does, and its limits]\label{rem:L1res}
+The leaf trades a one-sided condition at distance two for a symmetric one at distance three, at the
+price of making $c$ even. The trade is possible only because Theorem~\ref{thm:sep} allows one even
+vertex. Three limits are worth recording.
 \begin{itemize}
-\item the even vertex $z$ has $N(z)\subseteq N[c]\cup\{a\}$;
-\item all degrees are odd, the non-isolated vertices are $c$, $N(c)$ and $a$, $N(a)\subseteq N(c)$, and
-every vertex of $N(c)$ has degree at least three.
+\item Symmetric separation fails at distance two (Example~\ref{ex:dist2}).
+\item $L_1$ fails if the graph already has an even vertex. On the path $c\,z\,a$ the only Lov\'asz
+decomposition is the path itself. In random graphs with one even vertex $z$ (orders $5$--$11$) it
+failed in $648$ of $5{,}399$ decided pairs. Every failure had $\mathrm{dist}(c,a)=2$, $z$ adjacent to
+$a$, and every neighbour of $z$ in $N[c]\cup N[a]$.
+\item For $m\ge2$ pairs the leaf trick produces $m$ even vertices, one at each tail. So
+Conjecture~\ref{conj:LN} is equivalent to separating each leaf from its head in a graph whose even
+vertices all carry pendant leaves. Neither Theorem~\ref{thm:sep} nor the multi-pair Conjecture~\ref{conj:msep}
+(which assumes all degrees odd) covers this. Nor does the packed-set form of the trick extend to
+several leaves. Asking that every path meet a packed set containing all the leaves at most once fails
+already when the leaves hang at the three leaves of a star $K_{1,3}$, since some path joins two of them.
+With leaves at two non-adjacent vertices and one further packed vertex, it failed in $2$ of $221$
+random instances.
 \end{itemize}
-Leaves adjacent to $c$ finish at once, with the one-edge path $Q_c$. Leaves outside $N[c]$ are deleted and
-restored. Example~\ref{ex:dist2} shows that the residual cases need an invariant strictly between $L_1$ and
-separation.
+Whether both sides can be had at distance two, that is, $a\notin V(Q_c)$ and $c\notin V(Q_a)$ in the
+same Lov\'asz decomposition, is open. It held in all $998$ decided random instances at distance two
+(orders $6$--$12$).
 \end{remark}
 
 \section{Classes reachable by Fan's lemma}\label{sec:classes}
@@ -694,20 +739,24 @@ marks automatically fall inside the forcing gadgets, as they must for transversa
 \item \emph{The extension step.} With spanning-tree $T$-joins, (i) of Lemma~\ref{lem:ext} fails for
 $4$--$5\%$ of the pairs $(M,p)$ in sparse random graphs; $95\%$ of the failures are trivial. With
 \emph{minimum} $T$-joins it never failed, in about $220{,}000$ pairs $(M,p)$, including $8{,}896$ on
-$80$ random graphs of order $14$.
+$80$ random graphs of order $14$ and $21{,}896$ on $120$ random block trees of order at most $20$ ($16$
+undecided). On the block trees, spanning-tree $T$-joins failed $115$ times, $70$ of them nontrivially.
 \item \emph{RR.} An $M$-compatible decomposition was found for every transversal tested with minimum
-$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph). A
+$T$-joins ($1{,}276$ of order $10$, $1{,}280$ on the order-$18$ graph, $128$ on the order-$28$ graph,
+$4{,}512$ on block trees). A
 single decomposition compatible with every transversal at once fails to exist in two of the twelve
 order-$12$ graphs, even with minimum $T$-joins.
 \item \emph{Linking is needed.} For minimum $T$-joins decomposed into routes by random
 transitions, without the linking condition, $4$ of $1{,}834$ transversals in random graphs of order $10$
 were not realisable.
-\item \emph{$L_1$, $L_N$.} No failure of $L_1$ in $70{,}978$ non-adjacent pairs (orders $\le10$), nor of
-the stronger statement that $Q_c\subseteq N[c]$ can be achieved ($19{,}040$ vertices). No failure of
+\item \emph{$L_1$, $L_N$.} Before Theorem~\ref{thm:L1} was proved, $L_1$ had no failure in $70{,}978$
+non-adjacent pairs (orders $\le10$). The stronger statement that $Q_c\subseteq N[c]$ can be achieved
+had no failure at $19{,}040$ vertices (orders $\le10$), nor at $5{,}026$ further vertices of orders
+$6$--$12$ ($41$ more were undecided). No failure of
 $L_N$ in $3{,}732$ instances of orders up to $14$ with up to seven pairs. When the pairs form a perfect matching $N$ of $V(F)$ (the Eulerian case: $F+N$ has all
 degrees even), no failure in $2{,}332$ decided
 instances of orders $8$--$20$ ($157$ more were undecided within the search budget). In $2{,}421$ of the
-$2{,}489$ instances some pair is at distance two, where the symmetric version below fails.
+$2{,}489$ instances some pair is at distance two, where the symmetric version below fails. On random $4$-regular graphs of orders $14$--$20$ and $6$-regular graphs of orders $14$--$18$, each with a random perfect matching and orientation, there was no failure in $600$ instances, all decided.
 \item \emph{Separation.} The symmetric version of $L_N$ (no path contains both vertices of any pair) is
 false when some pair is at distance two, failing in about a fifth of random instances. It held in all
 $2{,}892$ tested instances of orders $8$--$16$ in which all pairs are at distance at least three,
@@ -719,6 +768,31 @@ search budget).
 If $K$ has all degrees odd and $\{s_1,t_1\},\dots,\{s_m,t_m\}$ are pairwise disjoint pairs at distance at
 least three, then some Lov\'asz decomposition of $K$ separates every pair.
 \end{conjecture}
+
+\begin{conjecture}[one-sided separation]\label{conj:ball}
+If $K$ has at most one vertex of positive even degree and $s$ has odd degree, then some Lov\'asz
+decomposition of $K$ has every vertex of $Q_s$ at distance at most two from $s$.
+\end{conjecture}
+
+Theorem~\ref{thm:sep} gives the weaker conclusion that $Q_s$ avoids any one vertex, indeed any packed
+set, at distance at least three from $s$. By the argument of Theorem~\ref{thm:L1} (attach a leaf
+$\ell$ at $c$ and take $s=\ell$), Conjecture~\ref{conj:ball} implies that in a graph with all degrees
+odd some Lov\'asz decomposition has $V(Q_c)\subseteq N[c]$. For a minimum Thm-21 system the tail $c$ of
+a route has no neighbour in $F$ on its route, because routes have no chords
+(Lemma~\ref{lem:min}(3)). So this would give (RR1) for any single route. Conjecture~\ref{conj:ball}
+held in all $3{,}195$ random instances with one even vertex (orders $7$--$15$).
+
+For the leaf case ($s=\ell$ a leaf at $c$) the induction of Theorem~\ref{thm:sep} nearly goes through.
+A leaf is never a chain vertex in Lemma~\ref{lem:fan}, because the chain vertices after the first are
+interior to paths. So a Fan transfer towards $u$ changes the path through $\ell$ only by adding $u$, and
+only when the chain ends at the far end of that path. Choosing every target in $N[c]$ where possible, or
+at distance at least three from $c$ when the even vertex is far, every case of the induction is safe
+except one: the even vertex $z$ is at distance three from $c$ and all its neighbours are at distance
+two. If moreover $z$ has degree two with non-adjacent neighbours $u,u'$, replacing $u\,z\,u'$ by the edge
+$uu'$ removes the even vertex. The path through $uu'$ cannot be the path through $\ell$, since $u\notin
+N[c]$, and re-inserting $z$ is safe because it is isolated. The remaining cases, $z$ of degree at least
+four or on a triangle, are a tight case of Fan's inequality, and we do not know how to handle them.
+In $1{,}531$ random instances of exactly this configuration the conclusion held.
 
 Theorem~\ref{thm:sep} is the case of Conjecture~\ref{conj:msep} in which the union of the pairs is
 packed. Conjecture~\ref{conj:msep} implies Conjecture~\ref{conj:LN} for pairs at distance at least three. So it
@@ -733,7 +807,8 @@ paired, and the path that gains the target may contain its partner.
 \begin{itemize}
 \item Lov\'asz's theorem~\cite{L68} is the base of route descent. Theorem~\ref{thm:sep} strengthens its
 strong form: the decomposition can be chosen so that every path meets a prescribed packed set at most
-once. We have not found this in the literature.
+once. Theorem~\ref{thm:L1} is its one-sided consequence at distance two. We have not found either in
+the literature.
 \item Pyber~\cite{Pyb96} (even subgraph a forest), Fan~\cite{Fan05} (blocks triangle-free of maximum
 degree at most three) and Botler and Sambinelli~\cite{BS21} prove Gallai's conjecture under structural
 conditions on $G[\Ev]$. Theorem~\ref{thm:isolated} lies inside Pyber's class. Corollary~\ref{cor:upm}
@@ -767,25 +842,45 @@ files are sorry-free, and each theorem listed depends only on the standard axiom
   \item \texttt{PathDecomp.route\_append} is Lemma~\ref{lem:ext}, (i)$\Rightarrow$(ii), the inductive
   step of route descent: for a path $R$ of $G$ from $c$ to $a$ and a decomposition of $G-E(R)$ whose path
   at $c$ meets $R$ only in $c$, it gives a decomposition of $G$ of the same size whose end counts are
-  those of the old one with one end moved from $c$ to $a$.
+  those of the old one with one end moved from $c$ to $a$, and in which $R$ is a terminal segment of
+  a path.
   \end{itemize}
+\item \texttt{OnePair.lean}: Corollary~\ref{cor:onepair} (\texttt{realisable\_two\_even\_adj}), one
+step of route descent end to end: Theorem~\ref{thm:L1} on $G-ca$ is the base, and
+\texttt{route\_append} is the step.
+\item \texttt{RouteSystem.lean}: Proposition~\ref{prop:rr}, in the direction used for TRC
+(\texttt{append\_routes}, \texttt{realisable\_of\_compatible}). A route system is a family of paths, one
+from each even vertex $v$ to its partner $\sigma(v)$, with routes of different pairs edge-disjoint;
+for a transversal $M$ the routes of the tails are removed. If the remaining graph has a decomposition
+with at most one end at every vertex and an end at every tail, satisfying (RR1) and (RR2), then $M$ is
+realisable. The routes are appended one at a time, and compatibility is shown to pass to each
+intermediate decomposition. As a consequence, \texttt{gallai\_of\_routeRR} derives Gallai's conjecture
+from Conjecture~\ref{conj:rr} in the following form: every connected graph of even order has a routed
+pairing all of whose transversals admit compatible Lov\'asz decompositions. The existential form
+(\texttt{gallai\_of\_routeRRExists}) asks this only for one transversal through each even vertex.
 \item \texttt{FanSupport.lean}: Lemma~\ref{lem:fan} (\texttt{fan\_single\_supp},
 \texttt{fan\_grouped\_supp}, \texttt{fan\_exec\_supp}).
 \item \texttt{Separation.lean}: Theorem~\ref{thm:sep} (\texttt{separation\_set}, and
-\texttt{separation} for $X=\{c,a\}$) and Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}). The formal
-proof follows Cases I--IV above. The leaf of Case~II lives on the type \texttt{Option W} and is removed
-by a projection lemma; a strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets.
+\texttt{separation} for $X=\{c,a\}$), Corollary~\ref{cor:L1} (\texttt{lovasz\_avoid}) and
+Theorem~\ref{thm:L1} (\texttt{lovasz\_avoid\_set}, and \texttt{lovasz\_avoid\_nonadj} for $Y=\{a\}$). The
+formal proof of Theorem~\ref{thm:sep} follows Cases I--IV above. The leaf of Case~II, and the leaf
+of Theorem~\ref{thm:L1}, live on the type \texttt{Option W} and are removed by a projection lemma. A
+strengthened copy, \texttt{Retract.delete\_supp}, records the vertex sets and that each new path is the
+kept part of an old one.
 \end{itemize}
 Not formalised: Lemma~\ref{lem:hered}, Lemma~\ref{lem:ext} (ii)$\Rightarrow$(i), Lemma~\ref{lem:min}(1)--(3),
-Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
+the converse half of Proposition~\ref{prop:rr}, Theorem~\ref{thm:isolated} for routes of length at least two, and
 Corollary~\ref{cor:upm}, which is close to the existing \texttt{realisable\_of\_fanSchedule}.
 
 \section{Open problems}\label{sec:open}
 \begin{enumerate}
-\item Prove $L_1$ (Conjecture~\ref{conj:L1}) at distance two. The separation invariant of
-Theorem~\ref{thm:sep} is too strong there (Example~\ref{ex:dist2}), so a weaker invariant is needed. It
-must still survive Fan transfers whose chains pass through $c$.
-\item Prove Conjecture~\ref{conj:msep}, or Conjecture~\ref{conj:LN}, for two pairs.
+\item Prove Conjecture~\ref{conj:LN} for two pairs. By the leaf trick of Theorem~\ref{thm:L1} this is
+a separation problem in a graph with two even vertices, each carrying a pendant leaf
+(Remark~\ref{rem:L1res}). Conjecture~\ref{conj:msep} for two pairs is the all-odd analogue.
+\item At distance two, can a single Lov\'asz decomposition have both $a\notin V(Q_c)$ and
+$c\notin V(Q_a)$?
+\item Prove Conjecture~\ref{conj:ball}, or at least $V(Q_c)\subseteq N[c]$ for graphs with all
+degrees odd.
 \item Is Conjecture~\ref{conj:rr} true for routes of length two, that is, for star-forest $T$-joins?
 \item Does every \emph{minimum} Thm-21 system admit route descent in every order of deletion, as the
 computations suggest?

@@ -137,10 +137,11 @@ Manuscript: `manuscripts/near-dirac`.
 
 Open:
 
-- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is now **proved in §8** for the "keep X in J" route.
-  - Mirror-symmetry balancing lemma (Lemma 8.1), with a robust form (Lemma 8.2).
-  - Prop 8.3: the window can be met if the healthy shores differ by more than |X|, or if |X| ≤ √D/6.
-  - Open: nearly equal shores with |X| ≳ √n, and the whole scheduling half (SP 14.31/14.33 with weak sites).
+- (P7.1) Two-sided removal: SP 14.33 with labelled pairs on both shores. Its counting half is **proved in full** (§8), for the "keep X in J" route.
+  - Lemmas 8.1 and 8.2: mirror-symmetry balancing.
+  - Prop 8.3: an exact two-sided sweep, due to audit A19. It meets the window for every |X|, under the degree window.
+  - Open: the scheduling half, stated as the Scheduling Hypothesis SH (§9).
+  - Thm 9.3 (proved, conditional on SH): near-regular failures must contain an intermediate vertex (Problem 9.4).
 - (P7.2) High-degree exceptional vertices, of degree at least (1/2 + β)n.
 
 Two observations from this session (heuristic, not proved in the manuscript):
@@ -1042,6 +1043,61 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 - In addition, leaves adjacent to c finish at once (Q_c = cv), and leaves outside N[c] are deleted.
 - Separation itself fails at distance 2 in about 15% of all-odd instances (E20), so the residual cases need an invariant strictly between L1 and separation.
 
+### V.4a Proved: L1 in full (the leaf trick)
+**Theorem (L1).** If all degrees of F are odd and c, a are distinct and non-adjacent, some Lovász decomposition of F has a ∉ V(Q_c). More generally, Q_c can avoid any packed set Y ⊆ V ∖ N[c], while every path meets Y at most once.
+
+Proof, in one step from the separation theorem. Attach a new leaf ℓ at c: K = F + cℓ.
+- In K the vertex c is the **only** vertex of positive even degree, and dist_K(ℓ, a) = 1 + dist_F(c, a) ≥ 3.
+- Separation therefore gives a Lovász decomposition of K in which no path contains both ℓ and a.
+- The path through ℓ is ℓ c w ⋯. It does not stop at c, because c has no end.
+- Delete ℓ. The result is a Lovász decomposition of F whose path ending at c avoids a.
+
+**Lean (done).** `Separation.lean`: **`lovasz_avoid_set`** and **`lovasz_avoid_nonadj`**, sorry-free, standard axioms. `OnePair.lean`: **`realisable_two_even_adj`**, one step of route descent end to end (L1 on G − ca as the base, `route_append` as the step, which now also records that R is terminal). `Retract.delete_supp` now also returns that each new path is the kept part of an old path.
+
+So the residual configurations (R-I), (R-II) of V.4 are moot: the right invariant was not to be found inside Lovász's induction on F, but on F + leaf.
+
+What L1 does and does not give:
+- It is the m = 1 case of L_N / RR, and it makes the edge ca terminal at a (Cor "onepair", now without the triangle condition).
+- It gives **no new realisability class by itself**. The first pair of any Fan schedule is always free, and one-edge "mixed schedules" (one pair appended last via L1, the rest by Fan) need the special pair to be a sink of the schedule digraph, so they are already acyclic.
+- **Limits** (E20):
+  - L1 is false in graphs that already have an even vertex z (e.g. the path c z a). In 5,399 random pairs it failed 648 times, always with dist(c, a) = 2, z ~ a, and N(z) ⊆ N[c] ∪ N[a].
+  - Multi-leaf *packed* separation is false: with leaves at three pairwise non-adjacent vertices, the star K_{1,3} already fails. With two leaves plus one packed extra vertex, it fails in about 1% of instances. So any extension must be pair-by-pair.
+  - For m ≥ 2 pairs, the leaf trick creates m even vertices, one per tail. So L_N ⇔ separating each leaf from its head in a graph whose even vertices all carry pendant leaves. MSEP (all-odd) is the analogue without even vertices. A proof of MSEP that tolerates even vertices with pendant leaves would give L_N at distance ≥ 2, hence Gallai for every graph whose even subgraph has a perfect matching.
+- **Open, with evidence.**
+  - **S1**: both a ∉ Q_c and c ∉ Q_a at distance 2, in one decomposition. 998 decided instances, 0 failures.
+  - **One-sided separation (BALL)**: with ≤ 1 even vertex, Q_s ⊆ B_2(s); 3,195 instances (n ≤ 15), 0 failures. Via the leaf, BALL ⇒ Q_c ⊆ N[c] in all-odd graphs (itself 5,026 vertices, 0 failures), which gives (RR1) for any single route of a minimum T-join.
+
+### V.4c L∞ via the leaf: Lovász's induction leaves one residual configuration
+**Target.** L∞ (synthesis §18 priority 1): in an all-odd F, some Lovász decomposition has V(Q_c) ⊆ N[c]. Attaching a leaf, this is GL: if K has ≤ 1 positive even vertex and ℓ is a leaf with neighbour c, some Lovász decomposition has the path through ℓ inside B = {ℓ} ∪ N[c]. That is one-sided separation (BALL) at a leaf.
+
+**Key observation.** A leaf is never a chain vertex of Fan's lemma. Chain vertices after x₀ are of the form π(x, Q), which lies strictly inside Q. Fan's lemma keeps every vertex set except that of Q*, the path ending at the last chain vertex. So a Fan move with t ≠ ℓ and target u changes the ℓ-path only if Q* is the ℓ-path: then the last chain vertex is the other end y of the ℓ-path, and the ℓ-path gains u. That is harmless when u ∈ B.
+
+**Case analysis** (Lovász's induction, in its current graph; d = distance from c):
+- **I, even vertex z.**
+  - z = c: delete cu for some u ∈ N(c) ∖ ℓ. The target u ∈ B. Safe.
+  - z ∈ N(c): delete zc. Then c becomes the even vertex, and the target c is already on the ℓ-path, so Q* is not the ℓ-path. Safe.
+  - d(z) = 2: delete zw for w ∈ N(z) ∩ N(c). Target w ∈ B. Safe.
+  - d(z) ≥ 4, or d(z) = 3 with a neighbour u at d ≥ 3: every vertex of N(u) has d ≥ 2, so none is in B. So y ∉ N(u), and z ∉ B. Safe.
+- **II, all odd.** Take x = c if deg c ≥ 3, with u ∈ N(c) ∖ ℓ. The Fan target is x = c ∈ B, or the new path ux is added. Safe. If deg c = 1, the component of c is the edge ℓc, which is trivial.
+- **III, a leaf v ≠ ℓ.** Delete vw and add the path vw back. Safe.
+
+**Residual (the only gap).** z is the even vertex with d(z) = 3, and **every neighbour of z is at distance exactly 2 from c**. Deleting uz (u ∈ N(z)) fails if the ℓ-path ends at y ∈ N(u) ∩ N(c) and Fan's chain from z ends at y. Counting shows this is a tight case of Fan's inequality: every vertex reachable from z is a neighbour of u, and the only u-avoiding path with an end there is the ℓ-path.
+- **Partial fix.** If deg z = 2 and its two neighbours u, u′ are non-adjacent, lift: K° = K − z + uu′.
+  - K° has no even vertex and fewer edges. The ℓ-path avoids uu′, since u ∉ B. Replacing uu′ by u z u′ is safe, because z is isolated in K°.
+  - So the residual needs deg z ≥ 4, or deg z = 2 with z in a triangle.
+  - For deg z ≥ 4, lifting one pair fails when the lifted path already passes through z.
+- Lifting z–u–w to zw does not close it: the lifted path may already pass through u.
+- The leaf-at-u variant gives b(z) = 2.
+- The even vertex cannot be kept near c either: after deleting cu at z = c, the new even vertex u may lie far from c in the smaller graph.
+
+So **L∞ ⇐ handling this one configuration**. BALL data (8,000+ instances, n ≤ 15) shows no failure. A targeted test of the residual configuration itself (E20, `residual_test.py`) also shows no failure, in 1,531 instances. The obstruction is in the method, not in the statement.
+
+### V.4b Lean: Gallai ⟸ RR (formal)
+`RouteSystem.lean`: **`gallai_of_routeRR`** and **`gallai_of_routeRRExists`**. If every connected graph of even order has a pairing of its even vertices, routed by edge-disjoint paths, such that for every transversal (resp. one through each even vertex) the free graph has an M-compatible Lovász decomposition (RR1 + RR2), then Gallai holds.
+- The core is **`append_routes`** (Prop. rr, ⇐): routes are appended one at a time, and compatibility passes to each intermediate decomposition (the new path ends at a head, which is no tail).
+- The final profile comes from the parity lemma alone; no degree bookkeeping is needed.
+- So the programme's reduction "Gallai ⟸ constrained Lovász decompositions of all-odd graphs" is now formal end to end. L1 (`lovasz_avoid_nonadj`) is the m = 1 instance of the hypothesis.
+
 ### V.5 Existential version and BranchBase
 - A realisable transversal M ∋ y gives Desc H k y ∅ for **every** k ≤ e/2, by upward closure on R ⊆ Ev ∖ M. So TRC_∃ ⇒ BranchBase_k for all k ⇒ Gallai (`gallai_of_branchBase`), with none of BranchBase's side hypotheses used. **Lean:** `RouteDescent.lean`, `gallai_of_pairingTRC`, `gallai_of_pairingTRCExists` and `branchBase_of_rootedHalfSets`. Also `isMinTJoin_sdiff` (heredity of minimality) and `IsEvenPairing.of_isPairing` (the `cs_all` pairings qualify).
 - Measured (E20): with fixed tree routes the existential step fails about as often as the universal one (45 / 8,562 roots). The cure is minimality, not the choice of end.
@@ -1050,4 +1106,4 @@ Proof: Lovász's own induction (Lovasz.lean cases I–III) carries the invariant
 - *G[Ev] has a unique perfect matching ⇒ every orientation is realisable.* This is Fan descent along an acyclic order. It is a direct corollary of endpoint-structure Cor 25 / `realisable_of_fanSchedule`; uniqueness is exactly what makes every orientation acyclic. Not new as Gallai: Gallai for these graphs follows from Cor 25.
 - *Fan-isolated routes* (every vertex of a route has no even neighbours except its route-neighbours): TRC by Fan transfers along each route. Inside Pyber's class (G[Ev] is then a matching), so new only as a TRC (all-transversals) statement.
 - *Separation theorem*: new as far as we know; a strengthening of Lovász's theorem.
-- *Conjectures RR / L_N / L1*: new; L_N would be a genuinely new Gallai class.
+- *L1*: now a theorem (V.4a), new as far as we know. *Conjectures RR / L_N*: new; L_N would be a genuinely new Gallai class.

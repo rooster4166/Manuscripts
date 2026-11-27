@@ -30,12 +30,30 @@ EMM sufficiency work is **stopped**.
 
 **Sessions, re-assigned 2026-11-27 02:25.** Sessions that finished their task do not take large follow-ups from a peer session, so new tasks go to fresh sessions.
 - **lean-thm59** (session_01FxXpVfLDxpMYxUsRi7svQy): **DONE** at 81dbc63. `thm59 : Thm59Statement` and `gallai_iff_spineTests'` are proved, with standard axioms (audit A14: no gap in MR).
-- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9, branch `claude/route-descent`, new): the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
+- **route-descent** (session_01FxXpViNYwgYUE2BTWtj3X9): **finished** at 60adf00.
+  - Proved (paper and Lean): separation (pair and set forms), Fan's lemma with vertex sets, L1 (leaf trick), route_append, Gallai ⇐ RR (`gallai_of_routeRR`), min-T-join heredity.
+  - Open items it leaves:
+    - the L∞ residual (z at distance 3; 1,531 tests, 0 failures). L∞ would give RR1 for any single route of a min T-join, since routes are geodesics and the first edge lies in J.
+    - L_N for 2+ pairs (owned by multi-sep);
+    - S1 at distance 2;
+    - RR for star forests.
+  - Its paper proofs are under audit A16.
+  - Original brief: the main line, synthesis §17. It reduces TRC to an extension lemma by route deletion, with Lovász's odd theorem as the base case. Plan: falsification tests first, then the extension invariant, then the existential version, then banked special classes in a manuscript plus Lean. It replaces two-even's pairing-guided descent follow-up, which was never started.
 - **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
   - **Delivered:** the *balanced return theorem* (`manuscripts/near-dirac/`, 15 pp.). It returns a linear-size exceptional set X under a balance condition; it contains SP Thm 14.27, and its Corollary 1.2 is an exact class.
   - **Lean:** `NearDirac.lean` (two finite lemmas).
   - **Remaining for full Target D:** Problem 7.1 (two-sided removal) and Problem 7.2 (exceptional vertices of high degree). **AUDITED (A17): Theorem 1.1 correct.** All CKLOT hypotheses are verified and the constants are consistent; there are wording gaps (N10, N29, N30, N26, N36, N24, N32, N33) and one statement gap (N25, already fixed). The author is fixing the wording.
 - **audit-a17**: DONE (7593f1a). Theorem 1.1 is sound; wording fixes were sent to near-dirac.
+- **near-dirac §§8–9** (Problem 7.1 attempt):
+  - Proved: the balancing lemma (Lemmas 8.1–8.2, Prop 8.3, in regimes (i) and (ii)).
+  - Open regime: Problem 8.5, with |X| ≳ √D and an explicit |X|² error.
+  - Theorem 9.3, assuming the explicit Scheduling Hypothesis SH: a failure sequence must contain intermediate vertices (new obstruction, Problem 9.4) or lie in the 8.5 regime.
+  - What remains for Target D on this route: SH, 7.2, 8.5 and 9.4.
+- **audit-a19**: DONE (dc79e9f).
+  - Sound: Lemmas 8.1–8.2 and SH as stated.
+  - Fixes: a GAP in Prop 8.3(i)'s proof (the conclusion survives) and a sign ERROR in Problem 8.5's identity.
+  - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
+  - The fixes were sent to near-dirac.
 - **multi-sep** (session_01FxXpVgYWAz7871pVVEKwNF, branch `claude/multi-sep`, new): conjecture MSEP. Lovász decompositions of an all-odd F can separate any disjoint pairs at distance ≥ 3. MSEP would give Gallai whenever G[Ev] has a perfect matching with no edge in a triangle, which includes triangle-free Eulerian graphs with a perfect matching. Evidence: 2,892 instances, 0 failures. route-descent keeps L1 at distance 2 and RR.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
@@ -405,3 +423,9 @@ Candidate uniform mechanisms (`research/connections.md`):
 - **Spine paper (2026-11-27).** `manuscripts/spine/spine.tex`, 27 pp., builds clean. It is a standalone proof that Gallai is equivalent to the two deletion tests, following the Lean proof.
   - **Audit A15:** two independent referees found no mathematical error. One expository error and one GAP (the paper claimed to be self-contained while quoting Lovász and Hall) were fixed, along with the Lean-pointer mismatches.
   - **Lean names:** all 141 Lean names cited resolve (`SpineCheck.lean`), and 14 main declarations use standard axioms (`SpineAxioms.lean`).
+- **Gallai ⇐ constrained Lovász decompositions, in Lean (2026-11-27, route-descent).** `Gallai.gallai_of_routeRR` and `gallai_of_routeRRExists` (RouteSystem.lean; standard axioms, verified). Gallai follows if every connected even-order graph has a routed pairing of Ev such that, for every transversal M, or for each even y some transversal containing y, the free graph H − routes has a decomposition satisfying all of:
+  - at most one end at every vertex;
+  - an end at every unmarked tail;
+  - RR1/RR2 compatibility.
+  - L1 (`lovasz_avoid_nonadj`) is the one-pair instance and is proved.
+  - **Open:** the L∞ residual (z at distance 3), L_N for 2 pairs, and RR in general.

@@ -338,3 +338,11 @@ The single-vertex statements L1 and L∞ come first. They are Lovász's theorem 
 - Gallai's conjecture is open for Eulerian graphs in general. It is known for Δ ≤ 4 (Favaron–Kouider) and Δ ≤ 5 (Bonamy–Perrett, arXiv 1609.06257). The best general-type Eulerian bound found is p(G) ≤ 3n/5, for Eulerian graphs whose triangles are pairwise at distance ≥ 3 (Chu–Wang, arXiv 2510.12806, Oct 2025).
 - No source was found on Lovász decompositions with avoidance constraints (L1, L∞, L_N, RR), nor on Gallai for "G[Ev] has a perfect matching".
 - So L_N, which would give Gallai for every Eulerian graph with a perfect matching, would be a significant new result. This was a web search, not a full survey.
+
+**Update (route-descent, 01e9f89; verified).**
+- **L1 is proved in full** by the leaf trick: attach a leaf ℓ at c, so that c is the only even vertex and dist(ℓ, a) ≥ 3, then apply separation. In Lean this is `lovasz_avoid_nonadj` / `lovasz_avoid_set` (standard axioms).
+- `realisable_two_even_adj` does one route-descent step end to end, and `PathDecomp.route_append` is the extension step.
+- By the same trick, L_N with m pairs is equivalent to separating pendant leaves ℓ_i from the a_i in a graph whose m even vertices carry pendant leaves.
+- So a leaf-tolerant MSEP would give **Gallai whenever G[Ev] has a perfect matching**, with no triangle condition; this includes every Eulerian graph with a perfect matching.
+- L1 alone gives no new realisability class, since the first pair of any Fan schedule is already free.
+- Evidence: MSEP held on all cubic graphs of order 16 (36M pairings) and on 41k random cubic graphs of order 18, with 0 failures (multi-sep). L_N for perfect matchings held in 2,332 decided cases, with 0 failures.
