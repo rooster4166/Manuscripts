@@ -85,8 +85,8 @@ Necessity is ED §12.4: each path through v gives each of its ends in W a privat
    - RE Thm 13.1 and MR Cor 39 are Hall, that is cut, conditions at one vertex;
    - JM-repair's extension lemma is exactly a Hoffman cut theorem;
    - our hub, flower and barrier results are supply-versus-cut computations at a vertex.
-3. **It explains EMC.** The cut inequalities are upper bounds |M ∩ X| ≤ f(X) on how many marks a set may contain. If the cap function is submodular, the realisable half-sets are the bases of the induced matroid. Uniformity fails exactly when some cut caps a shore, which is what ED Thm 46 shows.
-4. **It splits Gallai into a hard analytic half and a combinatorial half.** Gallai ⇐ EMM + **(CS) cut selection**: every connected even-order G and every even r have a half-set M ∋ r meeting all inequalities (1). Conversely Gallai + EMM ⇒ CS. CS is a pure cut/flow statement. **For cones (a universal vertex) CS follows from the classical T-join pairing lemma**: x = ±1 on marked/unmarked even vertices is unit-flow routable in G − apex.
+3. **It explains EMC.** The cut inequalities are upper bounds |M ∩ X| ≤ f(X) on how many marks a set may contain. If the cap function is submodular, the realisable half-sets are the bases of the induced matroid. (Checked by the emc-four session: **the global cap is not submodular** in 1,063 of 10,893 graphs at n = 8. Each per-vertex family F_v is a matroid basis family, but F = ∩ F_v need not be a matroid: it fails in 48 non-critical graphs. All 1,082 critical graphs at n = 8 do have a matroid F. So EMM ⇒ EMC is not formal; see endpoint-min-max Question 12.) Uniformity fails exactly when some cut caps a shore, which is what ED Thm 46 shows.
+4. **It splits Gallai into a hard analytic half and a combinatorial half.** Gallai ⇐ EMM + **(CS) cut selection**: every connected even-order G and every even r have a half-set M ∋ r meeting all inequalities (1). (Correction, from the emc-four session: the converse "Gallai + EMM ⇒ CS" is *not* formal. (R) may produce a non-simple profile at r, so what holds is CS ⇐ (R_s) + necessity, where R_s is the simple-profile rooted test.) CS is a pure cut/flow statement. **For cones (a universal vertex) CS follows from the classical T-join pairing lemma**: x = ±1 on marked/unmarked even vertices is unit-flow routable in G − apex.
 
 **What it does not do.** EMM's sufficiency is a min-max theorem for path decompositions, and it is at least as hard as Gallai. The gain is that the difficulty is now a single structural statement with a natural inductive proof template:
 - induction on |E|;
@@ -139,3 +139,11 @@ The refined conjecture is **EMM⁺**: for connected G and p ≥ ⌈n/2⌉, a pro
 **Reductions proved** (missing-move Lemma 7.4; Lean `leaf_step`). Leaves at unsaturated neighbours and some degree-2 configurations can be removed from a minimal counterexample to EMM⁺.
 
 **The inductive template.** It closes most small instances. The stuck instances at n = 6 all have a cut-feasible move that lacks only its guarantee: a transfer at Fan's equality, or a two-end concatenation. **The missing ingredient is an equality lemma: at Fan's equality, either the move succeeds or a tight cut appears.** This is the same equality phenomenon as the flower move (§3), now located inside the min-max framework.
+
+## 9. Tracks C1/C2, first results (emc-four session, `manuscripts/endpoint-min-max`, 11 pp.)
+
+- **Equivalent forms of (1)** (Lemma 1): the demand form, the arm form, and arm systems by max-flow. For half-sets, (1) at v is a single-commodity cut condition in G^v, which is G with v's star complemented.
+- **Dense case** (Prop 21): if δ ≥ (n + r − 1)/2, the local conditions imply (1) for every profile b ≤ r. This is the cut-theoretic content of SP 14.1.
+- **CS for cones** (Thm 15, proved): M is cut-feasible iff its marked and unmarked even vertices pair up by edge-disjoint paths of G − apex. CS then follows from the T-join lemma.
+- **PS (pairing selection)**, stronger than CS: some pairing of Ev has *all* of its transversals cut-feasible. **The guarded route lemma (Thm 17, proved)** gives PS from edge-disjoint routes pairing Ev with "guards" at busy vertices. **Certificates exist for every connected graph of order ≤ 8** (9,848 via Hamiltonian paths, 996 via other linkages, 49 via guarded routes). So **CS holds at n ≤ 8 by a proof that never uses realisability.**
+- **Open: Conjecture GR.** Every connected graph has a guarded route system. GR ⇒ PS ⇒ CS.
