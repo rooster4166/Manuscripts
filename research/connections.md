@@ -1295,7 +1295,7 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
 
 ### Z.1 Verdict on the statement
 - **PTM₂ as stated is false**: K₄ with a perfect matching. This is W₄ with its diagonal pairing. The pairs are *not* adjacent in J, so this is a simple-graph failure, not a parallel-edge one.
-- **Simple G.** Exhaustive to n = 8; n = 10 up to isomorphism, see E24(B):
+- **Simple G.** Exhaustive to n = 8. For n = 10 up to isomorphism (E24(B)), 18 of 24 chunks are done: 2.61M of 3.47M classes, 0 failures.
   - PTM₂ fails only at K₄;
   - PTM₃ fails twice (the prism with its rungs, one graph of order 8), both with G − F disconnected;
   - other than K₄, PTM(e@x) never fails when G − F is connected. (e@x is only tested where PTM holds, so K₄ is not counted there.)
