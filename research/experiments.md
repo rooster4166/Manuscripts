@@ -757,6 +757,12 @@ Marks inside the gadgets are automatic: all transversals of Thm-21 pairings were
   - k = 2, |Y| = 0: 0 / 249 failures, as L1 predicts.
   - k = 2, |Y| = 1: 2 / 221 fail. k = 2, |Y| = 2: 3 / 76 fail.
   - k = 3, |Y| = 0: fails on the star K_{1,3} with C its three leaves.
+  - With C pairwise at distance ≥ 3 (`mls_test.py 300 100000 k ny 3`):
+    - (k, |Y|) = (2, 1): 0 / 157 failures; at distance ≥ 4: 0 / 68.
+    - (2, 2): 7 / 78 fail, e.g. a triangle with three pendant edges.
+    - (3, 0): 0 / 63. (3, 1): 2 / 47 fail.
+  - L_N itself survives these instances; only the packed-set strengthening fails.
+  - L_N for the ≤ 1-even-vertex inductive form, Q_s ⊆ N[s] with one even vertex z (`lloc_z_test.py 700 100000 5 11`): fails 240 / 846 decided when z ~ s and 90 / 1,036 when z ≁ s (smallest: n = 5, path-plus-triangle). So the strong local invariant cannot be carried through Lovász's induction; one-sided separation (radius 2) stays open.
   - So the leaf trick generalises only pair by pair (L_N), not to packed sets with several leaves.
 - **Multi-pair separation** (`msep3.py`, query S; `outputs/msep3.log`). F all-odd, a random maximal matching of pairs at F-distance ≥ 3. **2,892 instances, n = 8–16, 0 failures**, of which 925 are perfect matchings; 102 undecided within budget. With some pair at distance 2: 500 / 2,191 fail. So symmetric separation needs distance 3.
 - **n = 14, minimum T-joins** (80 graphs, 160 constructions): 2,232 transversals, 0 not realisable, 8,896 / 8,896 extension queries succeed, RR true for 2,020, undecided for 212, never false.

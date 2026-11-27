@@ -2,7 +2,7 @@
 F all odd; C a set of pairwise non-adjacent vertices; K = F + a leaf l_c at each c in C (so the
 vertices of C are the even vertices of K); X = leaves + Y, packed in K (Y packed in F, Y outside
 N[C]).  Is there a Lovasz decomposition of K in which every path meets X at most once?
-Usage: python3 mls_test.py trials budget k ny   (k = |C|, ny = |Y|)"""
+Usage: python3 mls_test.py trials budget k ny [dmin]   (k = |C|, ny = |Y|, C pairwise at distance >= dmin)"""
 import random
 import sys
 from itertools import combinations
@@ -16,6 +16,7 @@ from lovasz_matching import make_all_odd
 def main():
     trials, L.BUDGET, L.FINAL = int(sys.argv[1]), int(sys.argv[2]), False
     k, ny = int(sys.argv[3]), int(sys.argv[4])
+    dmin = int(sys.argv[5]) if len(sys.argv) > 5 else 2
     rng = random.Random(555 + 10 * k + ny)
     tot = bad = und = 0
     for it in range(trials):
@@ -25,16 +26,16 @@ def main():
             continue
         V = list(F)
         rng.shuffle(V)
+        dist = dict(nx.all_pairs_shortest_path_length(F))
         C = []
         for v in V:
-            if all(not F.has_edge(v, c) for c in C):
+            if all(dist[v].get(c, 99) >= dmin for c in C):
                 C.append(v)
             if len(C) == k:
                 break
         if len(C) < k:
             continue
         NC = set(C) | {w for c in C for w in F[c]}
-        dist = dict(nx.all_pairs_shortest_path_length(F))
         Y = []
         for v in V:
             if len(Y) == ny:
@@ -61,7 +62,7 @@ def main():
             bad += 1
             if bad <= 5:
                 print("FAIL", n, sorted(F.edges()), "C", C, "Y", Y, flush=True)
-    print(f"k={k} ny={ny}: total {tot} failures {bad} undecided {und}")
+    print(f"k={k} ny={ny} dmin={dmin}: total {tot} failures {bad} undecided {und}")
 
 
 if __name__ == "__main__":
