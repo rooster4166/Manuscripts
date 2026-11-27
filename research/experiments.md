@@ -1648,7 +1648,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 |---|---|---|---|---|
 | bip1 (500 with ≥ 2 nonempty avoid sets, 487 empty) | 11–16 | 1,800 | 0 | 4 |
 | bip1 + tails' end paths distinct (same systems) | 11–16 | 1,800 | 0 | 5 |
-| bip1m (bip1 redrawn until ≥ 2 avoid sets are nonempty) | 11–14 | 1,200 | 0 | 0 (3 by local search); orders 15–16 still running at the time of writing |
+| bip1m (bip1 redrawn until ≥ 2 avoid sets are nonempty) | 11–14 | 1,200 | 0 | 0 (3 by local search); orders 15–16 stopped for time |
 | bipx (CLT-B, d(g) ≠ 2; 1,203 with ≥ 2 nonempty, 30 empty) | 11–16 | 1,800 | 0 | 0 (55 by local search) |
 | lnmatch (L_N with g, local) | 11–16 | 1,800 | 0 | 72 |
 | n = 10 controls (star, bip1, bip1ne, lnmatch) | 10 | 800 | 0 | 5 |
