@@ -622,5 +622,6 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **Lean: DONE.** `ForestLift.lean` provides `test1At_of_forestBase` and `test1_of_forestBases` (triangle-base 6da125b), with standard axioms only, checked by the coordinator.
     - The data use (child, parent) pairs in parent-first order with distinct children. That ordering forces Φ to be a rooted forest, and w is never a child.
     - Conditions (i) and (ii) are stated exactly as in Thm 4.2.
-    - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, with no data-existence hypothesis needed when J − {z, r} is connected.
+    - The converse is Prop 4.3, paper only. So **Test1 ⇐ the forest base conjecture is in Lean at every root of every J** with d(r) ≥ 3, that has a forest base.
+    - Forest data always exist when J − {z, r} is connected, since T-joins exist. That fact is paper-only; it is not in Lean.
 - **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 4.7).
