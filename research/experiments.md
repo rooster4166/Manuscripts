@@ -1217,7 +1217,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
     - in A24's sample of 101 order-9 instances, 34,577 of 487,872 through-c transfers are good, and all 1,243,484 avoiding transfers are good.
 - The sufficient condition of `l1_tight_transfer`: the c-side end of the cx-path lies outside N(x) ∪ {g}, or cx is terminal on Q_c.
   - Order 7: it holds for some good D' in every tight instance (14 with |A| ≤ 2; 49 with A maximal). It never failed to deliver (`out/exp1e_7*.txt`).
-  - Order 9: met in all 83 tight instances of A24's sample. The full existence run is `exp1f.py` (`out/exp1f_9.txt`).
+  - Order 9: met in all 83 tight instances of A24's sample. A full existence run (`exp1f.py 9 2`) was started and stopped unfinished after more than an hour of CPU time.
 
 **(B) The L∞ residual** (`linf.py`, `out/linf7.txt`, `out/linf9b.txt`). K connected, a leaf ℓ at c, exactly one even vertex z, d(c, z) = 3, N(z) at distance 2, and d(z) ≥ 4 or z on a triangle; B = {ℓ} ∪ N[c].
 - Orders 7 and 9: 3 and 133 instances. GL holds in all.
@@ -1229,7 +1229,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - For every instance and every target u, some D' has its far end outside N(u), which makes the step safe (`linf_far.py`, `out/linf_far9.txt`: 106 instances with 2 of 2 targets, 27 with 4 of 4).
 - The strengthening GL⁺ (some GL decomposition has its far end not adjacent to the even vertex) is false in general (`glplus.py`):
   - it fails at d(c, g) = 1, 2 already at order 5; the smallest distance-2 failure is `DTw`;
-  - it holds at order 7 when d(c, g) ≥ 3 (`out/glplus5.txt`, `out/glplus7.txt`; order 9: `out/glplus9.txt`).
+  - it holds at order 7 when d(c, g) ≥ 3 (`out/glplus5.txt`, `out/glplus7.txt`). An order-9 run was stopped unfinished.
 
 **(C) PTM NOBASE instances, order 8** (`ptmwalk.py`). Walks of any length are allowed, admissible or not. Base decompositions with the three separations are enumerated exactly. The walk back uses exact Fan chains, and every success is checked as a Lovász decomposition of G with ab terminal at a and xy terminal at x on different paths.
 - The 68 instances with no admissible walk: **all 68 are closed by a tight walk** (through N(x)), under the forced-chain hypothesis ("the forced chain does not reach x"). The shortest successful walk, minimised over orientations, has length 2 in 63 of them and 3 in 5 (`out/ptm_nowalk68.txt`; minimum over orientations confirmed by A24).
