@@ -34,6 +34,7 @@ EMM sufficiency work is **stopped**.
 - **dense-near-dirac** (session_01FxXpVhsyyw9pbAoqda1H6h): Target D, the exact Gallai bound below Dirac.
 - **emc-four**: the endpoint-prescription paper. It still has to make the B-proof the main proof of Thm 21 (citing `cs_all`) and make TRC the main open problem.
 - **emm3-gadgets**: done. §6 (forcing gadgets, Thm 45: hardness at even degrees ≥ 4) is merged at 5771c65. TRC survives every gadget construction (connections §T.result-3).
+- **spine-paper** (session_01FxXpVgukMvgum4ucV8zWfX, branch `claude/spine-paper`, new): a standalone, audited paper `manuscripts/spine/` presenting the machine-checked reduction (MR Thms 1, 7, 59, 113, 114) along the Lean proof, with audit A15.
 - **Queued, not assigned:** Lean for MR Thms 38/175 and Cor 39 (flowers). This is a banking task, not on the critical path.
 - **Finished:** two-even, spine (113/114), missing-move, bs-prescribed, jm-repair, six-clique, lean-d6-frontier.
 
