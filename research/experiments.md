@@ -1525,9 +1525,9 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 - One pair, exhaustive (`disj_general.py … 1`):
   - n = 5: 21 pairs, 3 failures.
   - n = 7: 947 pairs, 14 failures.
-  - n = 9: every connected graph with exactly one even vertex. All 151+ failures are universal twins of degree 7 (final count below).
+  - n = 9: 166,217 pairs in 11,936 graphs, 170 failures.
   - **Every failure is a pair of universal twins** (a, b adjacent to every other vertex, hence to g).
-  - At n = 7 every universal-twin pair (14) fails. At n = 9, 151 or more of the 170 universal-twin pairs fail (final count below).
+  - **The failures are exactly the universal-twin pairs**: 3, 14 and 170 of them at n = 5, 7, 9. Every universal-twin pair fails, and nothing else does.
 - Two pairs, exhaustive:
   - n = 7 with one even vertex: 1,404 instances, 0 compatibility failures. The 34 failures each contain a failing single pair.
   - All-odd graphs of order 8 (`--allodd`): 10,850 instances, all satisfiable. There a single pair always succeeds by L1.
@@ -1543,10 +1543,10 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
   | 13 | 0.6 | 1 / 2 / 3 | 296 / 269 / 169 | 288 / 259 / 152 | 8 / 10 / 17 | 0 | 99 |
   | 13 | 0.8 | 1 / 2 / 3 | 299 / 282 / 240 | 296 / 276 / 229 | 3 / 6 / 11 | 0 | 156 |
   | 15 | 0.5 | 1 / 2 / 3 | 99 / 94 / 57 | 99 / 87 / 55 | 0 / 7 / 2 | 0 | 23 |
-  | 15 | 0.7 | 1 / 2 | 100 / 99 | 97 / 94 | 3 / 5 | 0 | 35 |
+  | 15 | 0.7 | 1 / 2 / 3 | 100 / 99 / 89 | 97 / 94 / 82 | 3 / 5 / 7 | 0 | 35 |
 
-  - Totals: 4,331 instances, **0 failures**, 122 budget-undecided.
-  - Exact rechecks (`dl_recheck.py`, no budget, 300 s per query) of the undecided instances at n = 11: 14 have a base, 1 timed out, none is absent (still running when recorded).
+  - Totals: 4,420 instances, **0 failures**, 129 budget-undecided.
+  - Exact rechecks (`dl_recheck.py`, no budget, 300 s per query) of the first 24 undecided instances: 23 have a base, 1 timed out, none is absent.
 - **The free orientation is used.** At n = 11, one orientation alone fails in 17 of 266 instances at p = 0.4 and in 99 of 286 at p = 0.6.
 - **Proposition 7.5** (the exception is needed): in K_{2k+1} minus a perfect matching of K_{2k}, every Lovász decomposition consists of k Hamiltonian paths.
 
@@ -1565,6 +1565,13 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | \|O\| = 8, 6 per shape (∅, K2, P3, K3, C4 TW=2) | 30 | 180 | 178 | 2 (one ∅ graph) | 0 |
 | \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
 
+- The 2 undecided roots, `M~~zRz{~m~~lX|j~_` at r = 1 and 4 (J-numbering), remain undecided at budget 2·10⁷ with seeds 7, 11, 13, 17, 19 across all 15 data choices. They are not refuted.
+
+**(D′) Random 3-connected J** (`tb.py rand`, the dtl.py generator, budget 2·10⁶, three seeds).
+- n = 11, d(z) = 4: 25 graphs, 100 roots, 100 bases.
+- n = 11, d(z) = 6: 25 graphs, 150 roots, 150 bases.
+- Every lift was verified. The runs at d(z) = 8 and at n = 13 had not finished when this was recorded.
+
 **(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
 - **The triangle base certifies all 48 of their roots.**
   - 42 roots are certified at budget 2·10⁶ with seed 7. This covers every root of the P3 |O|=8, P3 |O|=10 and K3 |O|=10 graphs.
@@ -1576,7 +1583,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
 - n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
 - n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
-- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28) and at 2·10⁸. An exact run with no budget is pending; see the final status below.
+- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28), at 2·10⁸ (coordinator) and at 2·10⁷ with seeds 7–29. An exact run with no budget did not finish in 2 hours. It is not refuted.
 
 **(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
 - **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.

@@ -20,9 +20,9 @@
 \newcommand{\RESIDA}{$178$}
 \newcommand{\RESIDK}{$35$}
 \newcommand{\HEADTOHEAD}{all}
-\newcommand{\DLNINE}{$151$}
+\newcommand{\DLNINE}{$170$}
 \newcommand{\DLTWONINE}{A $1$-in-$20$ sample of order $9$ with one even vertex ($597$ graphs, $31{,}701$ instances) also has no compatibility failure. Each of its $45$ failures contains a failing single pair.}
-\newcommand{\DLRANDOM}{There were $4{,}331$ instances at orders $11$, $13$, $15$, edge densities $0.4$ to $0.8$, and $k=1,2,3$ pairs, and none failed. $122$ were budget-undecided; of the $15$ rechecked exactly so far, $14$ have a base and $1$ timed out. One orientation alone fails in $6\%$ (order $11$, density $0.4$) to $58\%$ (order $11$, density $0.8$) of the single-pair instances, so the free choice of end is used.}
+\newcommand{\DLRANDOM}{There were $4{,}420$ instances at orders $11$, $13$, $15$, edge densities $0.4$ to $0.8$, and $k=1,2,3$ pairs, and none failed. $129$ were budget-undecided; of the $24$ rechecked exactly, $23$ have a base and $1$ timed out. One orientation alone fails in $6\%$ (order $11$, density $0.4$) to $58\%$ (order $11$, density $0.8$) of the single-pair instances, so the free choice of end is used.}
 \newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. The runs at $d(z)=8$ and at order $13$ had not finished when this was written.}
 
 \title{A direct lift to the two-end test through triangles at the even vertex}
@@ -676,9 +676,11 @@ between the pairs is needed beyond the single-pair conditions. In the data, none
 \item \emph{Single pair, all graphs} (\texttt{disj\_general.py}, exact). We tested every connected graph
 of order $5$, $7$, $9$ with exactly one even vertex, and every pair of non-adjacent odd vertices.
 \begin{itemize}
-\item The disjunction fails at $3$, $14$ and \DLNINE{} pairs respectively.
-\item Every failure is a pair of universal twins. At order $7$ every universal-twin pair fails; at
-order $9$, \DLNINE{} of the $170$ do.
+\item The disjunction fails at $3$, $14$ and \DLNINE{} of the $21$, $947$ and $166{,}217$ pairs.
+\item These are \emph{exactly} the pairs of universal twins: every failure is a universal-twin pair,
+and every universal-twin pair fails. So for one pair, up to order $9$, the exception in
+Conjecture~\ref{conj:dl} is not only necessary (Proposition~\ref{prop:twins}) but the only
+obstruction.
 \end{itemize}
 \item \emph{Two pairs, all graphs} (exact). There are $0$ compatibility failures, that is, instances in
 which each pair is satisfiable alone but the two are not jointly satisfiable.
