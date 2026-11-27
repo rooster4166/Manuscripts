@@ -17,13 +17,13 @@
 \newtheorem{example}[theorem]{Example}
 
 % data cells (E29)
-\newcommand{\RESIDA}{$178$}
-\newcommand{\RESIDK}{$35$}
+\newcommand{\RESIDA}{$180$}
+\newcommand{\RESIDK}{$36$}
 \newcommand{\HEADTOHEAD}{all}
 \newcommand{\DLNINE}{$170$}
 \newcommand{\DLTWONINE}{A $1$-in-$20$ sample of order $9$ with one even vertex ($597$ graphs, $31{,}701$ instances) also has no compatibility failure. Each of its $45$ failures contains a failing single pair.}
 \newcommand{\DLRANDOM}{There were $4{,}420$ instances at orders $11$, $13$, $15$, edge densities $0.4$ to $0.8$, and $k=1,2,3$ pairs, and none failed. $129$ were budget-undecided; of the $24$ rechecked exactly, $23$ have a base and $1$ timed out. One orientation alone fails in $6\%$ (order $11$, density $0.4$) to $58\%$ (order $11$, density $0.8$) of the single-pair instances, so the free choice of end is used.}
-\newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. The runs at $d(z)=8$ and at order $13$ had not finished when this was written.}
+\newcommand{\RANDOMTB}{Random $3$-connected $J$ as in \texttt{dtl.py} were run with \texttt{tb.py rand}. At order $11$, all $100$ roots with $d(z)=4$ and all $150$ roots with $d(z)=6$ ($25$ graphs each) have a base, and every lift verified. The run at $d(z)=8$ was stopped after a few graphs and the order-$13$ runs did not start. The only roots the budgeted search left undecided, $7$ roots of one graph with $d(z)=8$, all have a base by exact search at the first data choice.}
 
 \title{A direct lift to the two-end test through triangles at the even vertex}
 \author{Gallai project}
@@ -542,9 +542,13 @@ the K2-residual run of \texttt{dtl\_resid.py}, $|B|=14$ & $6$ & $36$ & \RESIDK &
 \bottomrule
 \end{tabular}
 \end{center}
-The undecided roots are two roots of one $\emptyset$-shape graph with $|O|=8$, and the root $r=1$ of
-the K2-residual run. All three are undecided at budget $2\cdot10^7$ with five seeds, and the last one
-also at $2\cdot10^8$. None was refuted.
+Three roots were left undecided by the oracle: two roots of one $\emptyset$-shape graph with $|O|=8$,
+and the root $r=1$ of the K2-residual run. Each was undecided at budget $2\cdot10^7$ with five to
+seven seeds, and the last one also at $2\cdot10^8$. The clt session's local search
+(\texttt{manuscripts/clt}, \texttt{data/triangle\_base\_witnesses.txt}) found a base at all three.
+We verified each witness independently with \texttt{tb.py}'s checks: the base is a Lov\'asz
+decomposition of $M$ satisfying~\eqref{eq:disj}, and the lift is a (T1) decomposition. So no root
+of these families is undecided.
 
 \subsection{Head-to-head with the dense-residual base}
 Experiment E28 lists $8$ residual graphs in which every search for a t6-dense base hit the budget, at

@@ -1565,12 +1565,14 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 | \|O\| = 8, 6 per shape (∅, K2, P3, K3, C4 TW=2) | 30 | 180 | 178 | 2 (one ∅ graph) | 0 |
 | \|O\| = 10, 4 per shape; C4 TW=1, \|O\| = 8, 4 graphs | 24 | 144 | 144 | 0 | 0 |
 
-- The 2 undecided roots, `M~~zRz{~m~~lX|j~_` at r = 1 and 4 (J-numbering), remain undecided at budget 2·10⁷ with seeds 7, 11, 13, 17, 19 across all 15 data choices. They are not refuted.
+- The 2 undecided roots, `M~~zRz{~m~~lX|j~_` at r = 1 and 4 (J-numbering), stayed undecided at budget 2·10⁷ with five seeds. clt's local search then found witnesses (`manuscripts/clt/data/triangle_base_witnesses.txt`), which `tb.py`'s `check_base` + `lift` + `verify_test1` confirm. So the family is **180/180**.
 
 **(D′) Random 3-connected J** (`tb.py rand`, the dtl.py generator, budget 2·10⁶, three seeds).
 - n = 11, d(z) = 4: 25 graphs, 100 roots, 100 bases.
 - n = 11, d(z) = 6: 25 graphs, 150 roots, 150 bases.
-- Every lift was verified. The runs at d(z) = 8 and at n = 13 had not finished when this was recorded.
+- Every lift was verified.
+- n = 11, d(z) = 8: stopped after a few graphs. The only roots it left undecided, 7 roots of `Jev}~nZ\u~_` (κ = 3), all have a base by exact search with no budget, at the first data choice, with the lift verified. The budgeted search's random vertex order was unlucky there.
+- n = 13: not run (stopped at the end of the session).
 
 **(E) Head-to-head against Conj 5.1 / STL-P on the E28 hard graphs.** These are the 8 graphs in which every Conj 5.1 search for 46 roots hit the budget.
 - **The triangle base certifies all 48 of their roots.**
@@ -1583,7 +1585,7 @@ Manuscript: `manuscripts/l1star/l1star.tex`. Scripts and outputs: `manuscripts/l
 **(F) The coordinator's budget-undecided roots** (`scripts/out/nobase_budget.txt`):
 - n = 13, d(z) = 8, r = 1: base found by exact search with no budget (184 s; also by the auditor at 3·10⁷).
 - n = 15 (K2 residual), r = 2: base found at 2·10⁸ (coordinator, `out/recheck_200M.log`).
-- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28), at 2·10⁸ (coordinator) and at 2·10⁷ with seeds 7–29. An exact run with no budget did not finish in 2 hours. It is not refuted.
+- n = 15 (K2 residual), r = 1: undecided at 3·10⁷ (A28), at 2·10⁸ (coordinator) and at 2·10⁷ with seeds 7–29, and the exact run did not finish in 2 hours. clt's local-search witness (w = 2, pairs (3,4), (5,6)) is confirmed here by `tb.py`'s checks: the base is verified and the lift is a valid Test1 decomposition. So the K2-residual run is **36/36**.
 
 **(G) The forest base at roots without triangle data** (coordinator's request; `fb_nodata.py`, `fb_exhaustive.py`, `fb_bruteforce.py`).
 - **Setting.** Every 3-connected J of order 9 with d(z) ≥ 4 and every root without triangle data: 2,438 roots.

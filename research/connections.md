@@ -1703,7 +1703,7 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - First data choice: 36,779 of the 36,781 roots with a base at n = 9 have one at the first data choice tried.
 - **Every failure, single-pair or not, is a pair of universal twins** (N(a) = N(b) = C − {a, b}) in a component C of M missing z. This holds for all 243 failing data choices at n = 9, and for the 4 failing data choices among the 88,526 of the 3-connected order-9 graphs.
 - **Multi-pair compatibility: none needed in the data.** There are 0 instances where each pair is satisfiable alone but not jointly. This covers 3-connected TB at n = 9, arbitrary one-even graphs at n = 7, all-odd graphs at n = 8, and random graphs at n = 11–15 with k ≤ 3 pairs (4,420 instances, 0 failures).
-- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. 322 of 324 roots are certified; 2 are still running, and none is proved absent.
+- **Residual families of T(6)-i** (`gen_resid.py`, all five shapes): |O| = 8 and 10, plus C4 with TW = 1. **All 324 roots are certified**, and so are the coordinator's K2-residual run (36/36) and its d(z) = 8 budget root. The last three hard roots were found by clt's local search and independently verified here.
 - **Head-to-head with t6-dense.** On the 8 E28 graphs where Conj 5.1 / STL-P was undecided at 46 roots, the triangle base certifies **all 48 roots**. 42 are certified at budget 2·10⁶, the last 6 at 2·10⁷ with five seeds. Every lift was verified. So the triangle base is weaker in form and much easier for the search.
 
 ### AF.4 Conjecture DL, and where it sits
