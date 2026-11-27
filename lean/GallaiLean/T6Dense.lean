@@ -573,7 +573,7 @@ theorem split_abc (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y�
     simp [Sym2.eq_iff, hy₂y₃.symm, hx₃y₃.symm]
   have hK₁ := delList_cons (splitG J z x₂ y₂ x₃ y₃) eA nA
   obtain ⟨PA, hPA, hPAe⟩ := D₀.exists_end_of_pos (show 0 < D₀.ends (Sum.inl y₃) by
-    rw [hD₀, if_neg (Ne.symm hx₃y₃)]; omega)
+    rw [hD₀, ite_eq_right (Ne.symm hx₃y₃)]; omega)
   obtain ⟨D₁, hD₁e, P₁, hP₁, hP₁s, hP₁x, hrest₁, -⟩ := append_full D₀ (delList_not_adj _ _) hK₁ hPA
     hPAe (PA.not_mem_of_isolated (iso0 1))
   have ext₁ : ExtP P₁ PA (Sum.inl y₃) (Sum.inr 1) := ⟨hP₁s, hP₁x⟩
@@ -589,7 +589,7 @@ theorem split_abc (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y�
     have h1 := hD₁e (Sum.inl x₂)
     have h2 := hD₀ x₂
     simp only [Sum.inl.injEq, reduceCtorEq, ite_false, add_zero] at h1
-    split_ifs at h1 h2 with c1 c2 <;> first | omega | exact absurd c1.symm hx₂y₃ | exact absurd c2 hx₂x₃
+    split_ifs at h1 h2 with c1 <;> first | omega | exact absurd c1.symm hx₂y₃
   obtain ⟨RB, hRB, hRBe⟩ := D₁.exists_end_of_pos hD₁x₂
   obtain ⟨QB, hQB, sB⟩ : ∃ Q ∈ D₀.paths, SameP RB Q := by
     rcases hrest₁ RB hRB with h | h
@@ -662,13 +662,13 @@ theorem split_abc (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y�
           simp only [hx₂y₂, hy₂y₃.symm, a, b, ite_true, ite_false, or_true, add_zero] at h1 h2 h3 h4 ⊢
           omega
         · have c' : ¬ (v = x₃ ∨ v = x₂ ∨ v = y₂) := fun h => h.elim a (fun h => h.elim b c)
-          rw [if_neg (Ne.symm c)] at h1
-          rw [if_neg (Ne.symm b)] at h2
-          rw [if_neg a] at h4
-          rw [if_neg c']
+          rw [ite_eq_right (Ne.symm c)] at h1
+          rw [ite_eq_right (Ne.symm b)] at h2
+          rw [ite_eq_right a] at h4
+          rw [ite_eq_right c']
           by_cases d : y₃ = v
-          · rw [if_pos d] at h2 h3; omega
-          · rw [if_neg d] at h2 h3; omega
+          · rw [ite_eq_left d] at h2 h3; omega
+          · rw [ite_eq_right d] at h2 h3; omega
   · have h1 := hD₃e (Sum.inr 0)
     have h2 := hD₂e (Sum.inr 0)
     have h3 := hD₁e (Sum.inr 0)
@@ -815,7 +815,8 @@ theorem walk_leaf_edges {W : Type*} {K : SimpleGraph W} {a b : W} (hab : a ≠ b
   | nil => exact absurd rfl hab
   | cons h q =>
     obtain rfl := hnb _ h
-    have hq : q = Walk.nil := Walk.isPath_iff_eq_nil.mp ((Walk.cons_isPath_iff h q).mp hp).1
+    have hq : q = Walk.nil :=
+      Walk.eq_nil_iff_nil.mpr (Walk.isPath_iff_nil.mp ((Walk.cons_isPath_iff h q).mp hp).1)
     subst hq
     intro e he
     simp only [Walk.edges_cons, Walk.edges_nil, List.mem_singleton] at he
@@ -1043,6 +1044,673 @@ theorem collapse_hcov (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
       · refine ⟨s(Sum.inl a, Sum.inl b), (splitG_ll J z x₂ y₂ x₃ y₃).2 ⟨he', ?_⟩, rfl⟩
         simp [Sym2.eq_iff, ha, hb, Ne.symm ha, Ne.symm hb]
 
+omit [Fintype V] in
+/-- In the graph before the last three appends, the split vertex `z` has the single neighbour
+`y₁`. -/
+theorem spl_nbr_z (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃) :
+    ∀ w, (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj (Sum.inl z) w → w = Sum.inl y₁ := by
+  intro w hw
+  rcases splitG_edge_z J hne hN (e := s(Sum.inl z, w)) hw.1 (Sym2.mem_mk_left _ _) with h | h
+  · exact absurd (by rw [h]; simp) hw.2
+  · exact (Sym2.congr_right.mp h)
+
+omit [Fintype V] in
+theorem spl_nbr_r0 : ∀ w, (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj (Sum.inr 0) w → w = Sum.inl y₂ := by
+  intro w hw
+  rcases splitG_edge_r J (e := s(Sum.inr 0, w)) hw.1 (Sym2.mem_mk_left _ _) with
+    ⟨-, h | h⟩ | ⟨h, -⟩
+  · exact absurd (by rw [h]; simp) hw.2
+  · exact Sym2.congr_right.mp h
+  · exact absurd h (by decide)
+
+omit [Fintype V] in
+theorem spl_nbr_r1 : ∀ w, (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj (Sum.inr 1) w → w = Sum.inl y₃ := by
+  intro w hw
+  rcases splitG_edge_r J (e := s(Sum.inr 1, w)) hw.1 (Sym2.mem_mk_left _ _) with
+    ⟨h, -⟩ | ⟨-, h | h⟩
+  · exact absurd h (by decide)
+  · exact absurd (by rw [h]; simp) hw.2
+  · exact Sym2.congr_right.mp h
+
+omit [Fintype V] in
+/-- A path ending at a leaf of `spl … []` contains the leaf's edge. -/
+theorem spl_leaf_edge {ℓ m : V ⊕ Fin 2} (hnb : ∀ w, (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj ℓ w → w = m)
+    {P : GPath (spl J z x₁ x₂ y₂ x₃ y₃ [])} (hP : P.src = ℓ ∨ P.tgt = ℓ) : s(ℓ, m) ∈ P.edges := by
+  obtain ⟨e, he, hℓe⟩ : ∃ e ∈ P.edges, ℓ ∈ e := by
+    rcases hP with h | h
+    · obtain ⟨e, he, hx⟩ := P.exists_edge_at_src; exact ⟨e, he, h ▸ hx⟩
+    · obtain ⟨e, he, hx⟩ := P.exists_edge_at_tgt; exact ⟨e, he, h ▸ hx⟩
+  have heG := P.walk.edges_subset_edgeSet he
+  induction e using Sym2.inductionOn with
+  | hf a b =>
+    rcases Sym2.mem_iff.mp hℓe with rfl | rfl
+    · rw [hnb b heG] at he; exact he
+    · rw [hnb a ((SimpleGraph.mem_edgeSet _).mp heG).symm, Sym2.eq_swap] at he; exact he
+
+/-- **Steps 5–8.** Append `z → x₁`, `ℓ₂ → x₂`, `ℓ₃ → x₃` in the split graph, then identify the
+split vertices with `z`. The result is a star-terminal decomposition of `J` with the end counts of
+a Lovász decomposition, and every `yᵢ` is on a long side or some path is `xᵢ z yᵢ`. -/
+theorem split_finish (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃)
+    (D₄ : PathDecomp (spl J z x₁ x₂ y₂ x₃ y₃ []))
+    (hD₄ : ∀ v, D₄.ends (Sum.inl v) = if v = x₁ ∨ v = x₂ ∨ v = x₃ then 0 else 1)
+    (hD₄0 : D₄.ends (Sum.inr 0) = 1) (hD₄1 : D₄.ends (Sum.inr 1) = 1)
+    (hL : LeafOK D₄ z x₁ x₂ x₃) :
+    ∃ D : PathDecomp J, (∀ v, D.ends v = if v = z then 0 else 1) ∧ StarAt D z ∧
+      ∀ r, (r = y₁ ∨ r = y₂ ∨ r = y₃) → (LongAt D z r ∨ HasShortShort D z) := by
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  obtain ⟨L1, L2, L3⟩ := hL
+  -- Step 5: `z → x₁`
+  have e1 : s(Sum.inl z, Sum.inl x₁) ∈ (splitG J z x₂ y₂ x₃ y₃).edgeSet :=
+    (splitG_ll J z x₂ y₂ x₃ y₃).2 ⟨(hN x₁).2 (Or.inl rfl), by
+      simp [Sym2.eq_iff, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hzx₂, hzy₂, hzx₃, hzy₃]⟩
+  have hK₅ := delList_cons (splitG J z x₂ y₂ x₃ y₃) e1
+    (show s(Sum.inl z, Sum.inl x₁) ∉ [s(Sum.inr (0 : Fin 2), Sum.inl x₂),
+      s(Sum.inr (1 : Fin 2), Sum.inl x₃)] by simp)
+  obtain ⟨P, hP, hPe⟩ := D₄.exists_end_of_pos (show 0 < D₄.ends (Sum.inl z) by
+    rw [hD₄, ite_eq_right (by simp [hzx₁, hzx₂, hzx₃])]; omega)
+  have hPz : Sum.inl z ∈ P.walk.support := mem_support_of_end hPe
+  obtain ⟨D₅, hD₅e, P₅, hP₅, hP₅s, hP₅x, hrest₅, hkeep₅⟩ :=
+    append_full D₄ (delList_not_adj _ _) hK₅ hP hPe (L1 P hP hPz).1
+  have ext₅ : ExtP P₅ P (Sum.inl z) (Sum.inl x₁) := ⟨hP₅s, hP₅x⟩
+  -- Step 6: `ℓ₂ → x₂`
+  have e2 : s(Sum.inr 0, Sum.inl x₂) ∈ (splitG J z x₂ y₂ x₃ y₃).edgeSet :=
+    ((splitG_l0 J z x₂ y₂ x₃ y₃).2 (Or.inl rfl)).symm
+  have hK₆ := delList_cons (splitG J z x₂ y₂ x₃ y₃) e2
+    (show s(Sum.inr 0, Sum.inl x₂) ∉ [s(Sum.inr (1 : Fin 2), Sum.inl x₃)] by simp)
+  have hD₅0 : 0 < D₅.ends (Sum.inr 0) := by
+    have := hD₅e (Sum.inr 0); simp only [reduceCtorEq, ite_false, add_zero] at this; omega
+  obtain ⟨R, hR, hRe⟩ := D₅.exists_end_of_pos hD₅0
+  have hRP₅ : R ≠ P₅ := by
+    rintro rfl
+    obtain ⟨h, -⟩ := ext₅.ends hRe (by simp)
+    exact (L1 P hP hPz).2.1 (mem_support_of_end h)
+  obtain ⟨Q₂, hQ₂, sR⟩ : ∃ Q ∈ D₄.paths, SameP R Q := by
+    rcases hrest₅ R hR with h | h
+    · exact absurd h hRP₅
+    · exact h
+  have hQ₂e : Q₂.src = Sum.inr 0 ∨ Q₂.tgt = Sum.inr 0 := sR.ends.mp hRe
+  have hQ₂0 : Sum.inr 0 ∈ Q₂.walk.support := mem_support_of_end hQ₂e
+  obtain ⟨D₆, hD₆e, P₆, hP₆, hP₆s, hP₆x, hrest₆, hkeep₆⟩ :=
+    append_full D₅ (delList_not_adj _ _) hK₆ hR hRe (by rw [sR.mem]; exact (L2 Q₂ hQ₂ hQ₂0).1)
+  have ext₆ : ExtP P₆ Q₂ (Sum.inr 0) (Sum.inl x₂) := ExtP.of_same ⟨hP₆s, hP₆x⟩ sR
+  -- Step 7: `ℓ₃ → x₃`
+  have e3 : s(Sum.inr 1, Sum.inl x₃) ∈ (splitG J z x₂ y₂ x₃ y₃).edgeSet :=
+    ((splitG_l1 J z x₂ y₂ x₃ y₃).2 (Or.inl rfl)).symm
+  have hK₇ := delList_single (splitG J z x₂ y₂ x₃ y₃) e3
+  have hD₆1 : 0 < D₆.ends (Sum.inr 1) := by
+    have h1 := hD₆e (Sum.inr 1); have h2 := hD₅e (Sum.inr 1)
+    simp only [reduceCtorEq, ite_false, add_zero, Sum.inr.injEq,
+      show ((0 : Fin 2) = 1) = False by decide] at h1 h2
+    omega
+  obtain ⟨R', hR', hR'e⟩ := D₆.exists_end_of_pos hD₆1
+  have hR'P₆ : R' ≠ P₆ := by
+    rintro rfl
+    obtain ⟨h, -⟩ := ext₆.ends hR'e (by simp)
+    exact (L2 Q₂ hQ₂ hQ₂0).2 (mem_support_of_end h)
+  obtain ⟨Q₃, hQ₃, sR'⟩ : ∃ Q ∈ D₄.paths, SameP R' Q := by
+    rcases hrest₆ R' hR' with h | ⟨R₅, hR₅, s₅⟩
+    · exact absurd h hR'P₆
+    · have s₅ : SameP R' R₅ := s₅
+      rcases hrest₅ R₅ hR₅ with h | ⟨Q, hQ, s⟩
+      · exfalso
+        subst h
+        obtain ⟨h, -⟩ := ext₅.ends (s₅.ends.mp hR'e) (by simp)
+        exact (L1 P hP hPz).2.2 (mem_support_of_end h)
+      · exact ⟨Q, hQ, s₅.trans s⟩
+  have hQ₃e : Q₃.src = Sum.inr 1 ∨ Q₃.tgt = Sum.inr 1 := sR'.ends.mp hR'e
+  have hQ₃1 : Sum.inr 1 ∈ Q₃.walk.support := mem_support_of_end hQ₃e
+  obtain ⟨D₇, hD₇e, P₇, hP₇, hP₇s, hP₇x, hrest₇, hkeep₇⟩ :=
+    append_full D₆ (delList_not_adj _ _) hK₇ hR' hR'e (by rw [sR'.mem]; exact L3 Q₃ hQ₃ hQ₃1)
+  have ext₇ : ExtP P₇ Q₃ (Sum.inr 1) (Sum.inl x₃) := ExtP.of_same ⟨hP₇s, hP₇x⟩ sR'
+  -- the three star paths of `D₇`
+  obtain ⟨S₁', hS₁', s1'⟩ := hkeep₆ P₅ hP₅ (Ne.symm hRP₅)
+  have s1' : SameP S₁' P₅ := s1'
+  have hS₁'R' : S₁' ≠ R' := by
+    rintro rfl
+    obtain ⟨h, -⟩ := ext₅.ends (s1'.ends.mp hR'e) (by simp)
+    exact (L1 P hP hPz).2.2 (mem_support_of_end h)
+  obtain ⟨S₁, hS₁, s1⟩ := hkeep₇ S₁' hS₁' hS₁'R'
+  have x1S : ExtP S₁ P (Sum.inl z) (Sum.inl x₁) := (show SameP S₁ S₁' from s1).ext (s1'.ext ext₅)
+  obtain ⟨S₂, hS₂, s2⟩ := hkeep₇ P₆ hP₆ (Ne.symm hR'P₆)
+  have x2S : ExtP S₂ Q₂ (Sum.inr 0) (Sum.inl x₂) := (show SameP S₂ P₆ from s2).ext ext₆
+  -- leaf edges
+  have nbz := spl_nbr_z J hne hN
+  have nb0 := spl_nbr_r0 (J := J) (z := z) (x₁ := x₁) (x₂ := x₂) (y₂ := y₂) (x₃ := x₃) (y₃ := y₃)
+  have nb1 := spl_nbr_r1 (J := J) (z := z) (x₁ := x₁) (x₂ := x₂) (y₂ := y₂) (x₃ := x₃) (y₃ := y₃)
+  have fPz : s(Sum.inl z, Sum.inl y₁) ∈ P.edges := spl_leaf_edge J nbz hPe
+  have fQ₂ : s(Sum.inr 0, Sum.inl y₂) ∈ Q₂.edges := spl_leaf_edge J nb0 hQ₂e
+  have fQ₃ : s(Sum.inr 1, Sum.inl y₃) ∈ Q₃.edges := spl_leaf_edge J nb1 hQ₃e
+  -- each path through a leaf is the corresponding star path
+  have edge_at : ∀ R ∈ D₇.paths, ∀ ℓ ∈ R.walk.support, ∃ e ∈ R.edges, ℓ ∈ e := fun R _ ℓ hℓ =>
+    (Walk.mem_support_iff_exists_mem_edges_of_not_nil (Walk.not_nil_of_ne R.src_ne_tgt)).mp hℓ
+  have idz : ∀ R ∈ D₇.paths, Sum.inl z ∈ R.walk.support → R = S₁ := by
+    intro R hR hz
+    obtain ⟨e, he, hze⟩ := edge_at R hR _ hz
+    refine D₇.eq_of_mem_edges hR hS₁ he ?_
+    rw [x1S.edges_mem]
+    rcases splitG_edge_z J hne hN (R.walk.edges_subset_edgeSet he) hze with rfl | rfl
+    · exact Or.inl Sym2.eq_swap
+    · exact Or.inr fPz
+  have id0 : ∀ R ∈ D₇.paths, Sum.inr 0 ∈ R.walk.support → R = S₂ := by
+    intro R hR h0
+    obtain ⟨e, he, h0e⟩ := edge_at R hR _ h0
+    refine D₇.eq_of_mem_edges hR hS₂ he ?_
+    rw [x2S.edges_mem]
+    rcases splitG_edge_r J (R.walk.edges_subset_edgeSet he) h0e with ⟨-, rfl | rfl⟩ | ⟨h, -⟩
+    · exact Or.inl Sym2.eq_swap
+    · exact Or.inr fQ₂
+    · exact absurd h (by decide)
+  have id1 : ∀ R ∈ D₇.paths, Sum.inr 1 ∈ R.walk.support → R = P₇ := by
+    intro R hR h1
+    obtain ⟨e, he, h1e⟩ := edge_at R hR _ h1
+    refine D₇.eq_of_mem_edges hR hP₇ he ?_
+    rw [ext₇.edges_mem]
+    rcases splitG_edge_r J (R.walk.edges_subset_edgeSet he) h1e with ⟨h, -⟩ | ⟨-, rfl | rfl⟩
+    · exact absurd h (by decide)
+    · exact Or.inl Sym2.eq_swap
+    · exact Or.inr fQ₃
+  -- each star path carries one leaf
+  have S₁r : ∀ i : Fin 2, Sum.inr i ∉ S₁.walk.support := by
+    intro i h
+    rcases x1S.mem.mp h with h | h
+    · exact absurd h (by simp)
+    · fin_cases i
+      · exact (L1 P hP hPz).2.1 h
+      · exact (L1 P hP hPz).2.2 h
+  have S₂z : Sum.inl z ∉ S₂.walk.support := by
+    intro h
+    rcases x2S.mem.mp h with h | h
+    · exact hzx₂ (Sum.inl_injective h)
+    · exact (L1 Q₂ hQ₂ h).2.1 hQ₂0
+  have S₂1 : Sum.inr 1 ∉ S₂.walk.support := by
+    intro h
+    rcases x2S.mem.mp h with h | h
+    · exact absurd h (by simp)
+    · exact (L2 Q₂ hQ₂ hQ₂0).2 h
+  have S₃z : Sum.inl z ∉ P₇.walk.support := by
+    intro h
+    rcases ext₇.mem.mp h with h | h
+    · exact hzx₃ (Sum.inl_injective h)
+    · exact (L1 Q₃ hQ₃ h).2.2 hQ₃1
+  have S₃0 : Sum.inr 0 ∉ P₇.walk.support := by
+    intro h
+    rcases ext₇.mem.mp h with h | h
+    · exact absurd h (by simp)
+    · exact (L2 Q₃ hQ₃ h).2 hQ₃1
+  -- ends of `D₇`
+  have hD₇l : ∀ v, D₇.ends (Sum.inl v) = if v = z then 0 else 1 := by
+    intro v
+    have h1 := hD₇e (Sum.inl v)
+    have h2 := hD₆e (Sum.inl v)
+    have h3 := hD₅e (Sum.inl v)
+    have h4 := hD₄ v
+    simp only [reduceCtorEq, Sum.inl.injEq, ite_false, add_zero, zero_add] at h1 h2 h3
+    by_cases a : v = z
+    · subst a
+      simp only [hzx₁, hzx₂, hzx₃, Ne.symm hzx₁, Ne.symm hzx₂, Ne.symm hzx₃, or_self, ite_false,
+        ite_true, add_zero] at h1 h2 h3 h4 ⊢
+      omega
+    · rw [ite_eq_right a]
+      rw [ite_eq_right (Ne.symm a)] at h3
+      by_cases b : v = x₁
+      · subst b
+        simp only [hx₁x₂.symm, hx₁x₃.symm, true_or, ite_true, ite_false, add_zero] at h1 h2 h3 h4
+        omega
+      · by_cases c : v = x₂
+        · subst c
+          simp only [hx₁x₂, hx₂x₃.symm, true_or, or_true, ite_true, ite_false, add_zero] at h1 h2 h3 h4
+          omega
+        · by_cases d : v = x₃
+          · subst d
+            simp only [hx₁x₃, hx₂x₃, or_true, ite_true, ite_false, add_zero] at h1 h2 h3 h4
+            omega
+          · rw [ite_eq_right (Ne.symm d)] at h1; rw [ite_eq_right (Ne.symm c)] at h2
+            rw [ite_eq_right (Ne.symm b)] at h3
+            rw [ite_eq_right (fun h => h.elim b (fun h => h.elim c d))] at h4
+            omega
+  have hD₇0 : D₇.ends (Sum.inr 0) = 0 := by
+    have h1 := hD₇e (Sum.inr 0); have h2 := hD₆e (Sum.inr 0); have h3 := hD₅e (Sum.inr 0)
+    simp only [reduceCtorEq, ite_false, ite_true, add_zero, Sum.inr.injEq,
+      show ((1 : Fin 2) = 0) = False by decide] at h1 h2 h3
+    omega
+  have hD₇1 : D₇.ends (Sum.inr 1) = 0 := by
+    have h1 := hD₇e (Sum.inr 1); have h2 := hD₆e (Sum.inr 1); have h3 := hD₅e (Sum.inr 1)
+    simp only [reduceCtorEq, ite_false, ite_true, add_zero, Sum.inr.injEq,
+      show ((0 : Fin 2) = 1) = False by decide] at h1 h2 h3
+    omega
+  -- identify the split vertices
+  have hinj : ∀ R ∈ D₇.paths, ∀ x ∈ R.walk.support, ∀ y ∈ R.walk.support,
+      collapse z x = collapse z y → x = y := by
+    intro R hR x hx y hy hxy
+    cases x with
+    | inl a =>
+      cases y with
+      | inl b => simp only [collapse_inl] at hxy; rw [hxy]
+      | inr j =>
+        simp only [collapse_inl, collapse_inr] at hxy; subst hxy
+        obtain rfl := idz R hR hx
+        exact absurd hy (S₁r j)
+    | inr i =>
+      cases y with
+      | inl b =>
+        simp only [collapse_inl, collapse_inr] at hxy; subst hxy
+        obtain rfl := idz R hR hy
+        exact absurd hx (S₁r i)
+      | inr j =>
+        fin_cases i <;> fin_cases j
+        · rfl
+        · obtain rfl := id0 R hR hx; exact absurd hy S₂1
+        · obtain rfl := id0 R hR hy; exact absurd hx S₂1
+        · rfl
+  let D := D₇.pushOn (collapse z) (collapse_hE J hne hN) (collapse_hEinj J hne hN)
+    (collapse_hcov J hne hN) hinj
+  have mem_D : ∀ (R : GPath (splitG J z x₂ y₂ x₃ y₃)) (hR : R ∈ D₇.paths),
+      R.pushOn (collapse z) (collapse_hE J hne hN) (hinj R hR) ∈ D.paths :=
+    fun R hR => PathDecomp.pushOn_mem.mpr ⟨R, hR, rfl⟩
+  -- the pushed star paths
+  have star : ∀ (R : GPath (splitG J z x₂ y₂ x₃ y₃)) (hR : R ∈ D₇.paths) (ℓ : V ⊕ Fin 2) (x y : V),
+      collapse z ℓ = z → R.src = Sum.inl x → s(Sum.inl x, ℓ) ∈ R.edges →
+      s(ℓ, Sum.inl y) ∈ R.edges → x ≠ y → y ≠ z →
+      (R.tgt = Sum.inl y → ∀ e ∈ R.edges, ℓ ∈ e) →
+      (s((R.pushOn (collapse z) (collapse_hE J hne hN) (hinj R hR)).src, z) ∈
+          (R.pushOn (collapse z) (collapse_hE J hne hN) (hinj R hR)).edges) ∧
+        (LongAt D z y ∨ HasShortShort D z) := by
+    intro R hR ℓ x y hℓ hsrc hx hy hxy hyz hshort
+    have hmapx : s(x, z) ∈ (R.pushOn (collapse z) (collapse_hE J hne hN) (hinj R hR)).edges := by
+      rw [GPath.pushOn_edges, List.mem_map]
+      exact ⟨_, hx, by rw [Sym2.map_mk, collapse_inl, hℓ]⟩
+    refine ⟨by rw [GPath.pushOn_src, hsrc, collapse_inl]; exact hmapx, ?_⟩
+    have hmapy : s(z, y) ∈ (R.pushOn (collapse z) (collapse_hE J hne hN) (hinj R hR)).edges := by
+      rw [GPath.pushOn_edges, List.mem_map]
+      exact ⟨_, hy, by rw [Sym2.map_mk, collapse_inl, hℓ]⟩
+    by_cases ht : R.tgt = Sum.inl y
+    · right
+      refine ⟨_, mem_D R hR, fun e he => ?_⟩
+      rw [GPath.pushOn_edges, List.mem_map] at he
+      obtain ⟨e', he', rfl⟩ := he
+      exact Sym2.mem_map.mpr ⟨ℓ, hshort ht e' he', hℓ⟩
+    · left
+      refine ⟨_, mem_D R hR, hmapy, ?_, ?_⟩
+      · rw [GPath.pushOn_src, hsrc, collapse_inl]; exact hxy
+      · rw [GPath.pushOn_tgt]
+        intro h
+        exact ht ((collapse_eq_iff hyz).mp h)
+  have short_of : ∀ {Q : GPath (spl J z x₁ x₂ y₂ x₃ y₃ [])} {S : GPath (splitG J z x₂ y₂ x₃ y₃)}
+      {ℓ m u : V ⊕ Fin 2}, ExtP S Q ℓ u → (Q.src = ℓ ∨ Q.tgt = ℓ) → ℓ ≠ m → m ≠ u →
+      (∀ w, (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj ℓ w → w = m) →
+      S.tgt = m → ∀ e ∈ S.edges, ℓ ∈ e := by
+    intro Q S ℓ m u hS hQℓ hℓm hmu hnb ht e he
+    obtain ⟨hQm, -⟩ := hS.ends (Or.inr ht) hmu
+    have hall := gpath_leaf_edges Q hℓm hnb (ends_pair Q hℓm hQℓ hQm)
+    rcases (hS.edges_mem e).mp he with rfl | he
+    · exact Sym2.mem_mk_right _ _
+    · exact hall e he
+  refine ⟨D, fun v => ?_, ?_, ?_⟩
+  · by_cases hv : v = z
+    · subst hv
+      rw [ite_eq_left rfl, PathDecomp.pushOn_ends D₇ (collapse v) _ _ _ _ v
+        (fun P => P.endsAt (Sum.inl v) + P.endsAt (Sum.inr 0) + P.endsAt (Sum.inr 1))]
+      · rw [List.sum_map_add, List.sum_map_add]
+        have a := hD₇l v; have b := hD₇0; have c := hD₇1
+        unfold PathDecomp.ends at a b c
+        rw [ite_eq_left rfl] at a
+        omega
+      · intro P _
+        unfold GPath.endsAt
+        have key : ∀ x : V ⊕ Fin 2, (if collapse v x = v then 1 else 0) =
+            (if x = Sum.inl v then 1 else 0) + (if x = Sum.inr 0 then 1 else 0) +
+              (if x = Sum.inr 1 then 1 else 0) := by
+          intro x
+          cases x with
+          | inl a => by_cases h : a = v <;> simp [h]
+          | inr i => fin_cases i <;> simp
+        rw [key P.src, key P.tgt]
+        omega
+    · rw [ite_eq_right hv, PathDecomp.pushOn_ends D₇ (collapse z) _ _ _ _ v
+        (fun P => P.endsAt (Sum.inl v))]
+      · have a := hD₇l v
+        rw [ite_eq_right hv] at a
+        exact a
+      · intro P _
+        unfold GPath.endsAt
+        simp only [collapse_eq_iff hv]
+  · intro Q hQ hzQ
+    obtain ⟨R, hR, rfl⟩ := PathDecomp.pushOn_mem.mp hQ
+    rw [GPath.pushOn_support, List.mem_map] at hzQ
+    obtain ⟨w, hw, hwz⟩ := hzQ
+    cases w with
+    | inl a =>
+      simp only [collapse_inl] at hwz; subst hwz
+      obtain rfl := idz R hR hw
+      exact Or.inl (star R hR (Sum.inl a) x₁ y₁ rfl x1S.1 ((x1S.edges_mem _).mpr (Or.inl rfl))
+        ((x1S.edges_mem _).mpr (Or.inr fPz)) hx₁y₁ (Ne.symm hzy₁)
+        (short_of x1S hPe (by simpa using hzy₁) (by simpa using hx₁y₁.symm) nbz)).1
+    | inr i =>
+      fin_cases i
+      · obtain rfl := id0 R hR hw
+        exact Or.inl (star R hR (Sum.inr 0) x₂ y₂ rfl x2S.1 ((x2S.edges_mem _).mpr (Or.inl rfl))
+          ((x2S.edges_mem _).mpr (Or.inr fQ₂)) hx₂y₂ (Ne.symm hzy₂)
+          (short_of x2S hQ₂e (by simp) (by simpa using hx₂y₂.symm) nb0)).1
+      · obtain rfl := id1 R hR hw
+        exact Or.inl (star R hR (Sum.inr 1) x₃ y₃ rfl ext₇.1 ((ext₇.edges_mem _).mpr (Or.inl rfl))
+          ((ext₇.edges_mem _).mpr (Or.inr fQ₃)) hx₃y₃ (Ne.symm hzy₃)
+          (short_of ext₇ hQ₃e (by simp) (by simpa using hx₃y₃.symm) nb1)).1
+  · rintro r (rfl | rfl | rfl)
+    · exact (star S₁ hS₁ (Sum.inl z) x₁ r rfl x1S.1 ((x1S.edges_mem _).mpr (Or.inl rfl))
+        ((x1S.edges_mem _).mpr (Or.inr fPz)) hx₁y₁ (Ne.symm hzy₁)
+        (short_of x1S hPe (by simpa using hzy₁) (by simpa using hx₁y₁.symm) nbz)).2
+    · exact (star S₂ hS₂ (Sum.inr 0) x₂ r rfl x2S.1 ((x2S.edges_mem _).mpr (Or.inl rfl))
+        ((x2S.edges_mem _).mpr (Or.inr fQ₂)) hx₂y₂ (Ne.symm hzy₂)
+        (short_of x2S hQ₂e (by simp) (by simpa using hx₂y₂.symm) nb0)).2
+    · exact (star P₇ hP₇ (Sum.inr 1) x₃ r rfl ext₇.1 ((ext₇.edges_mem _).mpr (Or.inl rfl))
+        ((ext₇.edges_mem _).mpr (Or.inr fQ₃)) hx₃y₃ (Ne.symm hzy₃)
+        (short_of ext₇ hQ₃e (by simp) (by simpa using hx₃y₃.symm) nb1)).2
+
+omit [Fintype V] in
+/-- The leaves are isolated in the base graph. -/
+theorem splBase_iso (i : Fin 2) (w : V ⊕ Fin 2) :
+    ¬ (splBase J z x₁ x₂ y₂ x₃ y₃).Adj (Sum.inr i) w := by
+  intro h
+  obtain ⟨h1, h2⟩ := h
+  cases w with
+  | inr j => exact h1
+  | inl b =>
+    fin_cases i
+    · rcases (show b = x₂ ∨ b = y₂ from h1) with rfl | rfl
+      · exact h2 (by simp)
+      · exact h2 (by simp [Sym2.eq_swap])
+    · rcases (show b = x₃ ∨ b = y₃ from h1) with rfl | rfl
+      · exact h2 (by simp)
+      · exact h2 (by simp [Sym2.eq_swap])
+
+/-- Steps 5–8 from the decomposition after the second walk (`x₁ → y₂`). -/
+theorem split_stage4 (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃)
+    {D₃ : PathDecomp (spl J z x₁ x₂ y₂ x₃ y₃ [s(Sum.inl x₁, Sum.inl y₂)])}
+    (hD₃l : ∀ v, D₃.ends (Sum.inl v) = if v = x₃ ∨ v = x₂ ∨ v = y₂ then 0 else 1)
+    (hD₃0 : D₃.ends (Sum.inr 0) = 1) (hD₃1 : D₃.ends (Sum.inr 1) = 1)
+    (hL₃ : LeafOK D₃ z x₁ x₂ x₃)
+    (D₄ : PathDecomp (spl J z x₁ x₂ y₂ x₃ y₃ []))
+    (hD₄e : ∀ v, D₄.ends v + (if v = Sum.inl x₁ then 1 else 0) =
+      D₃.ends v + (if v = Sum.inl y₂ then 1 else 0))
+    (hcov : ∀ Q ∈ D₄.paths, ∃ Q' ∈ D₃.paths, ∀ v ∈ Q.walk.support,
+      v ∈ Q'.walk.support ∨ v = Sum.inl y₂) :
+    ∃ D : PathDecomp J, (∀ v, D.ends v = if v = z then 0 else 1) ∧ StarAt D z ∧
+      ∀ r, (r = y₁ ∨ r = y₂ ∨ r = y₃) → (LongAt D z r ∨ HasShortShort D z) := by
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  refine split_finish J hne hN D₄ (fun v => ?_) ?_ ?_
+    (hL₃.of_cover hcov (Ne.symm hzy₂) (Ne.symm hx₁y₂) hx₂y₂.symm hy₂x₃)
+  · have h1 := hD₄e (Sum.inl v)
+    have h2 := hD₃l v
+    simp only [Sum.inl.injEq] at h1
+    by_cases a : v = x₁
+    · subst a
+      simp only [hx₁y₂, hx₁x₂, hx₁x₃, ite_true, ite_false, true_or, or_false, add_zero] at h1 h2 ⊢
+      omega
+    · by_cases b : v = y₂
+      · subst b
+        simp only [hx₂y₂.symm, hy₂x₃, a, ite_true, ite_false, or_true, add_zero, false_or]
+          at h1 h2 ⊢
+        omega
+      · rw [ite_eq_right a, ite_eq_right b, h2, add_zero, add_zero] at h1
+        rw [h1]
+        by_cases c : v = x₂
+        · simp [c]
+        · by_cases d : v = x₃
+          · simp [d]
+          · simp [a, b, c, d]
+  · have := hD₄e (Sum.inr 0); simp only [reduceCtorEq, ite_false, add_zero] at this; omega
+  · have := hD₄e (Sum.inr 1); simp only [reduceCtorEq, ite_false, add_zero] at this; omega
+
+/-- **The append chain** (manuscript Theorem 2.1, all seven steps appends). Let `x₁y₂, x₂y₃` be
+edges of `J`, `N(z) = {x₁, y₁, x₂, y₂, x₃, y₃}`, and `D₀` a decomposition of the base graph (split
+form) with one end everywhere except `x₃` (and the isolated leaves) such that
+* (E1) the path through `z` avoids `x₁` and does not end at `y₂` or `y₃`;
+* (E2) the path ending at `y₂` avoids `x₂`; (E3) the path ending at `y₃` avoids `x₃`;
+* (E4) no path has ends `y₂` and `y₃`;
+* (E5) the path ending at `x₂` avoids `y₃`; (E7) the path ending at `x₁` avoids `y₂`.
+Then `J` has a star-terminal decomposition with one end at every vertex but `z`, none at `z`, in
+which every `yᵢ` is on a long side unless some path is `xⱼ z yⱼ`. -/
+theorem star_of_appendBase (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃)
+    (h₁₂ : J.Adj x₁ y₂) (h₂₃ : J.Adj x₂ y₃)
+    (D₀ : PathDecomp (splBase J z x₁ x₂ y₂ x₃ y₃))
+    (hD₀ : ∀ v, D₀.ends (Sum.inl v) = if v = x₃ then 0 else 1)
+    (E1 : ∀ P ∈ D₀.paths, Sum.inl z ∈ P.walk.support → Sum.inl x₁ ∉ P.walk.support ∧
+      P.src ≠ Sum.inl y₂ ∧ P.tgt ≠ Sum.inl y₂ ∧ P.src ≠ Sum.inl y₃ ∧ P.tgt ≠ Sum.inl y₃)
+    (E2 : ∀ P ∈ D₀.paths, (P.src = Sum.inl y₂ ∨ P.tgt = Sum.inl y₂) →
+      Sum.inl x₂ ∉ P.walk.support)
+    (E3 : ∀ P ∈ D₀.paths, (P.src = Sum.inl y₃ ∨ P.tgt = Sum.inl y₃) →
+      Sum.inl x₃ ∉ P.walk.support)
+    (E4 : ∀ P ∈ D₀.paths, ¬ ((P.src = Sum.inl y₂ ∧ P.tgt = Sum.inl y₃) ∨
+      (P.src = Sum.inl y₃ ∧ P.tgt = Sum.inl y₂)))
+    (E5 : ∀ P ∈ D₀.paths, (P.src = Sum.inl x₂ ∨ P.tgt = Sum.inl x₂) →
+      Sum.inl y₃ ∉ P.walk.support)
+    (E7 : ∀ P ∈ D₀.paths, (P.src = Sum.inl x₁ ∨ P.tgt = Sum.inl x₁) →
+      Sum.inl y₂ ∉ P.walk.support) :
+    ∃ D : PathDecomp J, (∀ v, D.ends v = if v = z then 0 else 1) ∧ StarAt D z ∧
+      ∀ r, (r = y₁ ∨ r = y₂ ∨ r = y₃) → (LongAt D z r ∨ HasShortShort D z) := by
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  obtain ⟨D₃, hD₃l, hD₃0, hD₃1, hcl, -⟩ := split_abc J hne h₂₃ D₀ hD₀
+    (fun P hP hz => (E1 P hP hz).2) E2 E4 E5
+  have hiso : ∀ P ∈ D₀.paths, ∀ i : Fin 2, Sum.inr i ∉ P.walk.support :=
+    fun P _ i => P.not_mem_of_isolated (splBase_iso J i)
+  have hL₃ := leafOK_three hzy₃ hx₁y₃ hiso hcl E1 E2 E3
+  -- the second walk is an append `x₁ → y₂`
+  have eD : s(Sum.inl x₁, Sum.inl y₂) ∈ (splitG J z x₂ y₂ x₃ y₃).edgeSet :=
+    (splitG_ll J z x₂ y₂ x₃ y₃).2 ⟨h₁₂, by
+      simp [Sym2.eq_iff, hzx₁.symm, hzx₁, hzy₂, hzy₂.symm, hx₁x₂, hx₁x₃, hx₁y₃, hy₂x₃, hy₂y₃,
+        hx₂y₂.symm]⟩
+  have hK₄ := delList_cons (splitG J z x₂ y₂ x₃ y₃) eD
+    (show s(Sum.inl x₁, Sum.inl y₂) ∉ [s(Sum.inl z, Sum.inl x₁), s(Sum.inr (0 : Fin 2), Sum.inl x₂),
+      s(Sum.inr (1 : Fin 2), Sum.inl x₃)] by simp [Sym2.eq_iff, hzx₁.symm, hzy₂, hzy₂.symm])
+  obtain ⟨R, hR, hRe⟩ := D₃.exists_end_of_pos (show 0 < D₃.ends (Sum.inl x₁) by
+    rw [hD₃l, ite_eq_right (by simp [hx₁x₃, hx₁x₂, hx₁y₂])]; omega)
+  have hRy₂ : Sum.inl y₂ ∉ R.walk.support := by
+    obtain ⟨Q, hQ, hs | he | he | he⟩ := hcl R hR
+    · rw [hs.mem]; exact E7 Q hQ (hs.ends.mp hRe)
+    · rw [he.mem]
+      rintro (h | h)
+      · exact absurd h (by simp)
+      · exact E7 Q hQ (he.ends hRe (by simp)).1 h
+    · rw [he.mem]
+      rintro (h | h)
+      · exact hy₂y₃ (Sum.inl_injective h)
+      · exact E7 Q hQ (he.ends hRe (by simpa using hx₁y₃)).1 h
+    · exact absurd (mem_support_of_end he.end_t) (E7 Q hQ (he.ends hRe (by simp)).1)
+  obtain ⟨D₄, hD₄e, P₄, hP₄, hP₄s, hP₄x, hrest₄, -⟩ :=
+    append_full D₃ (delList_not_adj _ _) hK₄ hR hRe hRy₂
+  have ext₄ : ExtP P₄ R (Sum.inl x₁) (Sum.inl y₂) := ⟨hP₄s, hP₄x⟩
+  refine split_stage4 J hne hN hD₃l hD₃0 hD₃1 hL₃ D₄ (fun v => ?_) (fun Q hQ => ?_)
+  · have := hD₄e v
+    simp only [eq_comm (a := Sum.inl x₁), eq_comm (a := Sum.inl y₂)] at this
+    exact this
+  · rcases hrest₄ Q hQ with rfl | ⟨Q', hQ', hs⟩
+    · exact ⟨R, hR, fun v hv => (ext₄.mem.mp hv).elim Or.inr Or.inl⟩
+    · exact ⟨Q', hQ', fun v hv => Or.inl ((show SameP Q Q' from hs).mem.mp hv)⟩
+
+/-- **The append chain with one protected step** (manuscript Theorem 2.2). As
+`star_of_appendBase`, with (E7) replaced by the static predecessor condition (E6) at the protected
+step `x₁ → y₂`, read on `D₀`: for `p ∈ {x₂, x₃}`, no neighbour `w ≠ z, x₂` of `y₂` has `p` as its
+predecessor of `y₂`, and if `y₂y₃ ∈ E(J)`, neither has `x₂`. The step is `walk_step_protected`
+with protected set `{x₂, x₃}`. -/
+theorem star_of_protectedBase (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
+    (hN : ∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃)
+    (h₁₂ : J.Adj x₁ y₂) (h₂₃ : J.Adj x₂ y₃)
+    (D₀ : PathDecomp (splBase J z x₁ x₂ y₂ x₃ y₃))
+    (hD₀ : ∀ v, D₀.ends (Sum.inl v) = if v = x₃ then 0 else 1)
+    (E1 : ∀ P ∈ D₀.paths, Sum.inl z ∈ P.walk.support → Sum.inl x₁ ∉ P.walk.support ∧
+      P.src ≠ Sum.inl y₂ ∧ P.tgt ≠ Sum.inl y₂ ∧ P.src ≠ Sum.inl y₃ ∧ P.tgt ≠ Sum.inl y₃)
+    (E2 : ∀ P ∈ D₀.paths, (P.src = Sum.inl y₂ ∨ P.tgt = Sum.inl y₂) →
+      Sum.inl x₂ ∉ P.walk.support)
+    (E3 : ∀ P ∈ D₀.paths, (P.src = Sum.inl y₃ ∨ P.tgt = Sum.inl y₃) →
+      Sum.inl x₃ ∉ P.walk.support)
+    (E4 : ∀ P ∈ D₀.paths, ¬ ((P.src = Sum.inl y₂ ∧ P.tgt = Sum.inl y₃) ∨
+      (P.src = Sum.inl y₃ ∧ P.tgt = Sum.inl y₂)))
+    (E5 : ∀ P ∈ D₀.paths, (P.src = Sum.inl x₂ ∨ P.tgt = Sum.inl x₂) →
+      Sum.inl y₃ ∉ P.walk.support)
+    (E6 : ∀ p, (p = x₂ ∨ p = x₃) →
+      (∀ w, J.Adj y₂ w → w ≠ z → w ≠ x₂ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl w) (Sum.inl p)) ∧
+      (J.Adj y₂ y₃ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl x₂) (Sum.inl p))) :
+    ∃ D : PathDecomp J, (∀ v, D.ends v = if v = z then 0 else 1) ∧ StarAt D z ∧
+      ∀ r, (r = y₁ ∨ r = y₂ ∨ r = y₃) → (LongAt D z r ∨ HasShortShort D z) := by
+  classical
+  obtain ⟨hzx₁, hzy₁, hzx₂, hzy₂, hzx₃, hzy₃, hx₁y₁, hx₁x₂, hx₁y₂, hx₁x₃, hx₁y₃, hy₁x₂, hy₁y₂,
+    hy₁x₃, hy₁y₃, hx₂y₂, hx₂x₃, hx₂y₃, hy₂x₃, hy₂y₃, hx₃y₃⟩ := nodup7 hne
+  obtain ⟨D₃, hD₃l, hD₃0, hD₃1, hcl, htr⟩ := split_abc J hne h₂₃ D₀ hD₀
+    (fun P hP hz => (E1 P hP hz).2) E2 E4 E5
+  have hiso : ∀ P ∈ D₀.paths, ∀ i : Fin 2, Sum.inr i ∉ P.walk.support :=
+    fun P _ i => P.not_mem_of_isolated (splBase_iso J i)
+  have hD₀r : ∀ i : Fin 2, D₀.ends (Sum.inr i) = 0 :=
+    fun i => ends_eq_zero_of_isolated D₀ (splBase_iso J i)
+  have hL₃ := leafOK_three hzy₃ hx₁y₃ hiso hcl E1 E2 E3
+  -- the protected step `x₁ → y₂`
+  have hzL : s(Sum.inl x₁, Sum.inl y₂) ∉ [s(Sum.inl z, Sum.inl x₁),
+      s(Sum.inr (0 : Fin 2), Sum.inl x₂), s(Sum.inr (1 : Fin 2), Sum.inl x₃)] := by
+    simp [Sym2.eq_iff, hzx₁.symm, hzy₂, hzy₂.symm]
+  have hwb : (spl J z x₁ x₂ y₂ x₃ y₃ []).Adj (Sum.inl y₂) (Sum.inl x₁) := by
+    refine ⟨(splitG_ll J z x₂ y₂ x₃ y₃).2 ⟨h₁₂.symm, ?_⟩, ?_⟩
+    · simp [Sym2.eq_iff, hzx₁.symm, hzx₁, hzy₂, hzy₂.symm, hx₁x₂, hx₁x₃, hx₁y₃, hy₂x₃, hy₂y₃,
+        hx₂y₂.symm]
+    · rw [show s(Sum.inl y₂, Sum.inl x₁) = (s(Sum.inl x₁, Sum.inl y₂) : Sym2 (V ⊕ Fin 2)) from
+        Sym2.eq_swap]
+      exact hzL
+  have hK₀ : ∀ e, e ∈ (spl J z x₁ x₂ y₂ x₃ y₃ [s(Sum.inl x₁, Sum.inl y₂)]).edgeSet ↔
+      e ∈ (spl J z x₁ x₂ y₂ x₃ y₃ []).edgeSet ∧ e ≠ s(Sum.inl y₂, Sum.inl x₁) := by
+    intro e
+    rw [delList_edgeSet, delList_edgeSet]
+    rw [show s(Sum.inl y₂, Sum.inl x₁) = (s(Sum.inl x₁, Sum.inl y₂) : Sym2 (V ⊕ Fin 2)) from
+      Sym2.eq_swap]
+    simp only [List.cons_append, List.nil_append, List.mem_cons]
+    tauto
+  obtain ⟨D₄, hD₄e, hcov⟩ := walk_step_protected (spl J z x₁ x₂ y₂ x₃ y₃ []) hwb
+    (spl J z x₁ x₂ y₂ x₃ y₃ [s(Sum.inl x₁, Sum.inl y₂)]) hK₀ D₃ {Sum.inl x₂, Sum.inl x₃}
+    (by simp [hx₁x₂, hx₁x₃])
+    (by
+      intro x z' hx hF hz'B
+      have hz' : z' = Sum.inl x₂ ∨ z' = Sum.inl x₃ := by simpa using hz'B
+      obtain ⟨p, rfl, hp⟩ : ∃ p, z' = Sum.inl p ∧ (p = x₂ ∨ p = x₃) := by
+        rcases hz' with rfl | rfl
+        · exact ⟨x₂, rfl, Or.inl rfl⟩
+        · exact ⟨x₃, rfl, Or.inr rfl⟩
+      have hpy₃ : p ≠ y₃ := by rcases hp with rfl | rfl; exact hx₂y₃; exact hx₃y₃
+      have hxx₂ : x ≠ Sum.inl x₂ := by
+        rintro rfl
+        have := ends_pos_of_fanPred D₃ hF
+        rw [hD₃l] at this; simp at this
+      rcases htr x (Sum.inl p) (by simp) (by simpa using hpy₃) (by simp) hF with
+        h | ⟨rfl, -⟩ | ⟨rfl, h⟩
+      · rcases hx with rfl | hx
+        · exact (E6 p hp).1 x₁ h₁₂.symm hzx₁.symm hx₁x₂ h
+        · cases x with
+          | inl w =>
+            have hw := (splitG_ll J z x₂ y₂ x₃ y₃).mp hx.1
+            have hwz : w ≠ z := by
+              rintro rfl; exact hw.2 (by simp)
+            exact (E6 p hp).1 w hw.1.symm hwz (fun h' => hxx₂ (by rw [h'])) h
+          | inr i =>
+            have := ends_pos_of_fanPred D₀ h
+            rw [hD₀r] at this; omega
+      · rcases hx with h | hx
+        · exact absurd h (by simp)
+        · have : (if (1 : Fin 2) = 0 then y₂ = x₂ ∨ y₂ = y₂ else y₂ = x₃ ∨ y₂ = y₃) := hx.1
+          simp only [show ((1 : Fin 2) = 0) = False by decide, ite_false] at this
+          rcases this with h | h; exact hy₂x₃ h; exact hy₂y₃ h
+      · rcases hx with h | hx
+        · exact hx₁y₃ (Sum.inl_injective h).symm
+        · exact (E6 p hp).2 ((splitG_ll J z x₂ y₂ x₃ y₃).mp hx.1).1.symm h)
+    (by
+      intro v hv hvb hvB
+      cases v with
+      | inl w =>
+        have hw := (splitG_ll J z x₂ y₂ x₃ y₃).mp hv.1
+        have hwy₂ : w ≠ y₂ := fun h => J.loopless.irrefl y₂ (h ▸ hw.1)
+        have hwx₁ : w ≠ x₁ := fun h => hvb (by rw [h])
+        have hwB : w ≠ x₂ ∧ w ≠ x₃ := by
+          refine ⟨fun h => hvB (by simp [h]), fun h => hvB (by simp [h])⟩
+        rw [hD₃l, ite_eq_right (fun h => h.elim hwB.2 (fun h => h.elim hwB.1 hwy₂))]
+      | inr i =>
+        fin_cases i
+        · rw [show (Sum.inr ((fun i => i) (⟨0, by decide⟩ : Fin 2)) : V ⊕ Fin 2) = Sum.inr 0 from rfl,
+            hD₃0]
+        · rw [show (Sum.inr ((fun i => i) (⟨1, by decide⟩ : Fin 2)) : V ⊕ Fin 2) = Sum.inr 1 from rfl,
+            hD₃1])
+    (by rw [hD₃l, ite_eq_right (by simp [hx₁x₃, hx₁x₂, hx₁y₂])])
+  exact split_stage4 J hne hN hD₃l hD₃0 hD₃1 hL₃ D₄ hD₄e hcov
+
 end main
+
+/-! ### STL and the first deletion test -/
+
+section stl
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **The base hypothesis of the append chain** for the labelled neighbourhood
+`(x₁, y₁, x₂, y₂, x₃, y₃)` of `z` (manuscript Definition 2.1): the chain edges `x₁y₂, x₂y₃` are in
+`J`, and the base graph has a decomposition with one end at every vertex but `x₃` satisfying
+(E1)–(E5), and (E7) or (E6). -/
+def AppendBase (J : SimpleGraph V) [DecidableRel J.Adj] (z x₁ y₁ x₂ y₂ x₃ y₃ : V) : Prop :=
+  [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup ∧
+  (∀ v, J.Adj z v ↔ v = x₁ ∨ v = y₁ ∨ v = x₂ ∨ v = y₂ ∨ v = x₃ ∨ v = y₃) ∧
+  J.Adj x₁ y₂ ∧ J.Adj x₂ y₃ ∧
+  ∃ D₀ : PathDecomp (splBase J z x₁ x₂ y₂ x₃ y₃),
+    (∀ v, D₀.ends (Sum.inl v) = if v = x₃ then 0 else 1) ∧
+    (∀ P ∈ D₀.paths, Sum.inl z ∈ P.walk.support → Sum.inl x₁ ∉ P.walk.support ∧
+      P.src ≠ Sum.inl y₂ ∧ P.tgt ≠ Sum.inl y₂ ∧ P.src ≠ Sum.inl y₃ ∧ P.tgt ≠ Sum.inl y₃) ∧
+    (∀ P ∈ D₀.paths, (P.src = Sum.inl y₂ ∨ P.tgt = Sum.inl y₂) → Sum.inl x₂ ∉ P.walk.support) ∧
+    (∀ P ∈ D₀.paths, (P.src = Sum.inl y₃ ∨ P.tgt = Sum.inl y₃) → Sum.inl x₃ ∉ P.walk.support) ∧
+    (∀ P ∈ D₀.paths, ¬ ((P.src = Sum.inl y₂ ∧ P.tgt = Sum.inl y₃) ∨
+      (P.src = Sum.inl y₃ ∧ P.tgt = Sum.inl y₂))) ∧
+    (∀ P ∈ D₀.paths, (P.src = Sum.inl x₂ ∨ P.tgt = Sum.inl x₂) → Sum.inl y₃ ∉ P.walk.support) ∧
+    ((∀ P ∈ D₀.paths, (P.src = Sum.inl x₁ ∨ P.tgt = Sum.inl x₁) →
+        Sum.inl y₂ ∉ P.walk.support) ∨
+      (∀ p, (p = x₂ ∨ p = x₃) →
+        (∀ w, J.Adj y₂ w → w ≠ z → w ≠ x₂ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl w) (Sum.inl p)) ∧
+        (J.Adj y₂ y₃ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl x₂) (Sum.inl p))))
+
+/-- **STL from an append base** (manuscript Corollary 2.3): if `z` is the only even vertex of `J`
+and the labelled neighbourhood has an append base, then `STL J z yᵢ` for `i = 1, 2, 3`. -/
+theorem stl_of_appendBase (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y₂ x₃ y₃ : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (h : AppendBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
+    STL J z y₁ ∧ STL J z y₂ ∧ STL J z y₃ := by
+  obtain ⟨hne, hN, h₁₂, h₂₃, D₀, hD₀, E1, E2, E3, E4, E5, E67⟩ := h
+  obtain ⟨D, hD, hstar, hlong⟩ : ∃ D : PathDecomp J, (∀ v, D.ends v = if v = z then 0 else 1) ∧
+      StarAt D z ∧ ∀ r, (r = y₁ ∨ r = y₂ ∨ r = y₃) → (LongAt D z r ∨ HasShortShort D z) := by
+    rcases E67 with E7 | E6
+    · exact star_of_appendBase J hne hN h₁₂ h₂₃ D₀ hD₀ E1 E2 E3 E4 E5 E7
+    · exact star_of_protectedBase J hne hN h₁₂ h₂₃ D₀ hD₀ E1 E2 E3 E4 E5 E6
+  have hpar : ∀ v, D.ends v = J.degree v % 2 := by
+    intro v
+    rw [hD v]
+    split_ifs with hv
+    · exact (Nat.even_iff.mp ((hz v).2 hv)).symm
+    · have : ¬ Even (J.degree v) := fun he => hv ((hz v).1 he)
+      rw [Nat.not_even_iff] at this; exact this.symm
+  exact ⟨⟨D, hpar, hstar, hlong y₁ (Or.inl rfl)⟩, ⟨D, hpar, hstar, hlong y₂ (Or.inr (Or.inl rfl))⟩,
+    ⟨D, hpar, hstar, hlong y₃ (Or.inr (Or.inr rfl))⟩⟩
+
+/-- **The first deletion test from append bases** (manuscript Corollary 2.4): if every neighbour
+of `z` has degree at least three and, for every `r ∈ N(z)`, some labelling of `N(z)` with `r` among
+`y₁, y₂, y₃` has an append base, then `Test1 J z`. -/
+theorem test1_of_appendBases (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
+    (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
+    (h : (∀ v, Even (J.degree v) ↔ v = z) → ∀ r, J.Adj z r → ∃ x₁ y₁ x₂ y₂ x₃ y₃ : V,
+      (r = y₁ ∨ r = y₂ ∨ r = y₃) ∧ AppendBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
+    Test1 J z := by
+  refine test1_of_stl z hdeg fun hz r hr => ?_
+  obtain ⟨x₁, y₁, x₂, y₂, x₃, y₃, hr', hB⟩ := h hz r hr
+  obtain ⟨s₁, s₂, s₃⟩ := stl_of_appendBase J hz hB
+  rcases hr' with rfl | rfl | rfl
+  · exact s₁
+  · exact s₂
+  · exact s₃
+
+end stl
 
 end Gallai

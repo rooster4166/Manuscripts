@@ -1,4 +1,5 @@
-lsearch
-out/*.log
-out/*.g6
 __pycache__/
+lsearch
+out/
+out/*.g6
+out/*.log
