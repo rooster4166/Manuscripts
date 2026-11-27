@@ -14,6 +14,7 @@
      Lok  = some orientation (any of the 2^(k-1)) whose general compatibility graph on the 2k-2
             members (paths and trivial ends; compatible = vertex-disjoint) has a matching of size
             k - 2.
+   (stderr: number of decompositions containing a Hamiltonian path of G.)
    Input lines: g6 [root].  Output: g6 r ndec minmuT minmuA Lyes(0/1) status(DONE/CAP) need=k-3
    Options: -r R (one root), -c CAP (stop after CAP decompositions, status CAP), -l (stop at the
    first Lok success; then ndec/minmu are partial and status is LSTOP), -noL (skip Lok; Lyes = 0).
@@ -31,7 +32,7 @@ static int isend[MAXN];
 static int npaths;
 static int pv[MAXN][MAXN + 1], plen[MAXN]; /* vertex sequences */
 static unsigned pmask[MAXN];
-static long long ndec, cap;
+static long long ndec, cap, nham;
 static int minT, minA, Lyes, stopL, capped, nrem, noL;
 
 static int bip_match(int m, unsigned *pm, int *triv) {
@@ -78,6 +79,7 @@ static int gen_match(int m, unsigned *vm) {
 static void evaluate(void) {
     int m = npaths;
     ndec++;
+    for (int i = 0; i < m; i++) if (plen[i] == n - 2) { nham++; break; }
     /* ret.c -T orientation */
     int triv[MAXN];
     for (int i = 0; i < m; i++) {
@@ -218,10 +220,11 @@ int main(int argc, char **argv) {
             nrem = 0;
             for (int v = 0; v < n; v++) { rdeg[v] = 0; for (int w = 0; w < n; w++) { rem[v][w] = adj[v][w] && v != r && w != r; rdeg[v] += rem[v][w]; } nrem += rdeg[v]; }
             nrem /= 2;
-            npaths = 0; ndec = 0; minT = minA = 1000; Lyes = 0; capped = 0;
+            npaths = 0; ndec = 0; nham = 0; minT = minA = 1000; Lyes = 0; capped = 0;
             if (feasible()) search();
             printf("%s %d %lld %d %d %d %s need=%d\n", line, r, ndec, minT, minA, Lyes,
                    capped ? "CAP" : (stopL && Lyes) ? "LSTOP" : "DONE", k - 3);
+            fprintf(stderr, "%s %d decompositions with a Hamiltonian path: %lld of %lld\n", line, r, nham, ndec);
             fflush(stdout);
         }
     }

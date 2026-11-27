@@ -1814,7 +1814,7 @@ Manuscript `manuscripts/re-tight`, Lean `lean/GallaiLean/RETight.lean`, scripts 
   - YES at 14,054 of 14,131 roots, all witnesses verified;
   - the other 77 lie in 10 graphs with ≥ 8 vertices of degree 8 (inside MR Cor 168);
   - 19 of the 77 are provable failures by the Hamiltonian obstruction (m ≥ 39);
-  - 58 are undecided at 2·10⁷ to 2·10⁸ nodes.
+  - of the other 58 (m = 36–38), audit A31 decided `ITm~vvz}w` r = 0 exhaustively: all 22,764,672 Lovász decompositions × 16 orientations fail, and 15% of them have no Hamiltonian path; 57 are undecided at 2·10⁷ to 2·10⁸ nodes.
 - The L-mode component prune, "o_C/2 paths per component", cut one root from 3·10⁷ nodes to 9. It leaves the `-T` enumeration counts at order 8 unchanged.
 
 **(C) Theorem 3.1 against every Lovász decomposition** (`ret -T`, lower-degree end trivial, `check_star.py`).
