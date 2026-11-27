@@ -1,24 +1,35 @@
 import GallaiLean.MultiSepEE
 
 /-!
-# Prescribed end edges at the even vertex
+# Prescribed end edges in Lovász decompositions with one even vertex
 
 Manuscript `manuscripts/prescribed-end/prescribed-end.tex`.
 
-Let `z` be the only vertex of positive even degree of `G` and `u ∈ N(z)`. Conjecture EE asks for
-a Lovász decomposition (`ends v = deg v mod 2`) in which `uz` is the terminal edge at `u`, that is,
-the path ending at `u` contains `uz`.
+Let `z` be the only vertex of positive even degree of `G`. A Lovász decomposition has
+`ends v = deg v mod 2`. For an edge `xy` with `deg x` odd, `xy` is *terminal at `x`* if the path
+ending at `x` contains `xy` (it is then the last edge of that path). Conjecture EE: every edge `uz`
+is terminal at `u`. Edges `xy` away from `z` need not be terminal at `x` (the manuscript has a
+counterexample on five vertices).
 
-* **`ee_atMostOneCommon`**: EE holds whenever `u` and `z` have at most one common neighbour.
-  If there is none, this is `ee_noTriangle`. If `w` is the only one, `u` and `z` are at distance
-  at least three in `G − uz − uw`, where `w` is the only vertex of positive even degree; separate
-  them there (`separation`), restore `uw` by Fan's lemma with target `w` (`fan_single_supp`: the
-  only vertex set that changes gains `w`, so the separation survives), and append `zu`
-  (`ee_of_avoid`).
-* **`ee_deg_two`**: in particular EE holds whenever `d(z) = 2`, in every configuration.
+* **`sep_atMostOneCommon`**, **`ee_atMostOneCommon`**: if `u` and `z` have at most one common
+  neighbour, `G − uz` has a Lovász decomposition separating `u` from `z`, and EE holds at `u`.
+  With a common neighbour `w`, separate `u` and `z` in `G − uz − uw` (one even vertex `w`), restore
+  `uw` by Fan's lemma with target `w` (`fan_single_supp`: only one vertex set changes, by gaining
+  `w`), and append `zu` (`ee_of_avoid`).
+* **`ee_deg_two`**: EE holds whenever `d(z) = 2`, in every configuration.
+* The leaf graph `apex (G − xy) {y}`: **`PathDecomp.append_move_exact`**, **`PathDecomp.liftLeaf`**
+  (lift a decomposition, extending one path by the leaf edge) and **`endEdge_of_leafSep`** (a
+  decomposition of the leaf graph separating `x` from the leaf merges into one of `G` with `xy`
+  terminal at `x`). In the leaf graph a terminal edge is a vertex-set property, which Fan's lemma
+  with vertex sets preserves.
+* **`pee_adjEven`**: if `y ∈ N(z)`, `x ≠ z`, and `x`, `y` have at most one common neighbour other
+  than `z`, then `xy` is terminal at `x` in some Lovász decomposition. (EE in `G − zy`, where `y`
+  is the even vertex, then Fan's lemma with target `y` in the leaf graph.)
+* **`ee_of_triangle`**: for a common neighbour `w` of `u` and `z`, EE at `u` follows from a Lovász
+  decomposition of `G − {uz, uw, wz}` whose path ending at `w` avoids `u` and `z`.
 
 This contains `ee_noTriangle`, `ee_split` and `ee_triangle` (multi-sep Proposition "EE3") and the
-degree-two cases of the star-terminal session.
+degree-two cases of the star-terminal session (`stl_of_deg_two`, `stl_of_deg_two_tri`).
 -/
 
 open SimpleGraph
@@ -687,5 +698,243 @@ theorem pee_adjEven (G : SimpleGraph W) [DecidableRel G.Adj] (hev : (evenSet G).
   exact endEdge_of_leafSep G hxy hxodd DH hDH hsepH
 
 end adjEven
+
+/-! ### The triangle reduction -/
+
+section triangle
+
+/-- **Triangle reduction for EE.** Let `z` be the only vertex of positive even degree, `u ∈ N(z)`
+and `w` a common neighbour of `u` and `z`. If `G − {uz, uw, wz}` has a Lovász decomposition whose
+path ending at `w` avoids `u` and `z`, then some Lovász decomposition of `G` has its path ending at
+`u` through `uz`.
+
+Proof: lift to the leaf graph of `G − uz` at the edge `zw` (append the leaf edge to the path
+ending at `w`; the leaf stands for `z`), so that no path contains the leaf together with `u` or
+`z`. Restore `uw` by Fan's lemma with target `w`; merge the leaf into `z`. The path ending at `z`
+is the image of the leaf path, so it avoids `u`; append `zu` (`ee_of_avoid`). -/
+theorem ee_of_triangle (G : SimpleGraph W) [DecidableRel G.Adj] (hev : (evenSet G).card ≤ 1)
+    {z u w : W} (hz : z ∈ evenSet G) (hzu : G.Adj z u) (huw : G.Adj u w) (hwz : G.Adj w z)
+    (D₁ : PathDecomp (delEdge (delEdge (delEdge G u z) u w) w z))
+    (hD₁ : ∀ v, D₁.ends v = (delEdge (delEdge (delEdge G u z) u w) w z).degree v % 2)
+    (hav : ∀ P ∈ D₁.paths, (P.src = w ∨ P.tgt = w) → u ∉ P.walk.support ∧ z ∉ P.walk.support) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+      ∃ P ∈ D.paths, (P.src = u ∨ P.tgt = u) ∧ s(u, z) ∈ P.edges := by
+  classical
+  have hzu' : z ≠ u := hzu.ne
+  have hwu : w ≠ u := huw.ne.symm
+  have hwz' : w ≠ z := hwz.ne
+  have huniq : ∀ v ∈ evenSet G, v = z := fun v hv => Finset.card_le_one.mp hev v hv z hz
+  have hodd : ∀ v, v ≠ z → 0 < G.degree v → G.degree v % 2 = 1 := by
+    intro v hvz hpos
+    have : v ∉ evenSet G := fun h => hvz (huniq v h)
+    rw [mem_evenSet_iff] at this
+    omega
+  have hzd := mem_evenSet_iff.mp hz
+  -- the graphs `F = G − uz`, `K₀ = F − uw`, `K₁ = K₀ − wz`
+  have hFuw : (delEdge G u z).Adj u w := ⟨huw, fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨-, h⟩ | ⟨h, -⟩
+    · exact hwz' h
+    · exact hzu' h.symm⟩
+  have hK₀wz : (delEdge (delEdge G u z) u w).Adj w z := ⟨⟨hwz, fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨h, -⟩ | ⟨h, -⟩
+    · exact hwu h
+    · exact hwz' h⟩, fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨h, -⟩ | ⟨-, h⟩
+    · exact hwu h
+    · exact hzu' h⟩
+  have hFzw : (delEdge G u z).Adj z w := ⟨hwz.symm, fun h => by
+    rcases Sym2.eq_iff.mp h with ⟨-, h⟩ | ⟨-, h⟩
+    · exact hwz' h
+    · exact hwu h⟩
+  have hd₁ := delEdge_degree G hzu.symm
+  have hd₂ := delEdge_degree (delEdge G u z) hFuw
+  have hd₃ := delEdge_degree (delEdge (delEdge G u z) u w) hK₀wz
+  have hdeg : ∀ v, (delEdge (delEdge (delEdge G u z) u w) w z).degree v +
+      2 * ((if v = u then 1 else 0) + (if v = w then 1 else 0) + (if v = z then 1 else 0)) =
+      G.degree v := by
+    intro v; have := hd₁ v; have := hd₂ v; have := hd₃ v; omega
+  have hdF : ∀ v, (delEdge G u z).degree v + (if v = u then 1 else 0) +
+      (if v = z then 1 else 0) = G.degree v := hd₁
+  -- the path ending at `w`
+  have hwpos : 0 < G.degree w := (G.degree_pos_iff_exists_adj w).mpr ⟨u, huw.symm⟩
+  have hD₁w : D₁.ends w = 1 := by
+    rw [hD₁]
+    have := hdeg w
+    have := hodd w hwz' hwpos
+    simp only [hwu, hwz', ite_true, ite_false] at *
+    omega
+  obtain ⟨P, hP, hPend⟩ := D₁.exists_end_of_pos (by rw [hD₁w]; omega)
+  obtain ⟨huP, hzP⟩ := hav P hP hPend
+  obtain ⟨D₃, hD₃some, hD₃none, hD₃cov⟩ := D₁.liftLeaf hP hPend
+  have hsep₃ : ∀ a, a = u ∨ a = z → Separates D₃ (some a) none := by
+    intro a ha Q' hQ' ⟨hx, hn⟩
+    rcases hD₃cov Q' hQ' with h | ⟨Q, hQ, hs⟩
+    · rcases h (some a) hx with h | ⟨y', hy', h⟩
+      · exact Option.some_ne_none _ h
+      · rw [Option.some.injEq] at h
+        subst h
+        rcases ha with rfl | rfl
+        · exact huP hy'
+        · exact hzP hy'
+    · rw [hs, List.mem_map] at hn
+      obtain ⟨_, _, h⟩ := hn
+      exact Option.some_ne_none _ h
+  -- Fan's lemma in the leaf graph of `F` at `zw`: restore `uw`, moving the end at `u` to `w`
+  have hHwu : (apex (delEdge (delEdge G u z) w z) {w}).Adj (some w) (some u) := by
+    rw [apex_adj_some_some]
+    refine ⟨hFuw.symm, fun h => ?_⟩
+    rcases Sym2.eq_iff.mp h with ⟨-, h⟩ | ⟨h, -⟩
+    · exact hzu' h.symm
+    · exact hwz' h
+  have hedges : ∀ e, e ∈ (apex (delEdge (delEdge (delEdge G u z) u w) w z) {w}).edgeSet ↔
+      e ∈ (apex (delEdge (delEdge G u z) w z) {w}).edgeSet ∧ e ≠ s(some w, some u) := by
+    intro e
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+      rw [mem_edgeSet, mem_edgeSet]
+      cases a with
+      | none =>
+        cases b with
+        | none => simp
+        | some b => simp
+      | some a =>
+        cases b with
+        | none => simp
+        | some b =>
+          simp only [apex_adj_some_some, delEdge, ne_eq, Sym2.eq_iff, Option.some.injEq]
+          constructor
+          · rintro ⟨⟨hab, h1⟩, h2⟩
+            refine ⟨⟨hab, h2⟩, fun h => h1 ?_⟩
+            rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+            · right; exact ⟨rfl, rfl⟩
+            · left; exact ⟨rfl, rfl⟩
+          · rintro ⟨⟨hab, h1⟩, h2⟩
+            refine ⟨⟨hab, fun h => h2 ?_⟩, h1⟩
+            rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+            · right; exact ⟨rfl, rfl⟩
+            · left; exact ⟨rfl, rfl⟩
+  have hD₃u : D₃.ends (some u) = 1 := by
+    have := hD₃some u
+    simp only [hwu.symm, ite_false, add_zero] at this
+    rw [this, hD₁]
+    have := hdeg u
+    have := hodd u hzu'.symm ((G.degree_pos_iff_exists_adj u).mpr ⟨z, hzu.symm⟩)
+    simp only [hwu.symm, hzu'.symm, ite_true, ite_false] at *
+    omega
+  have hcount : (Finset.univ.filter (fun v => (apex (delEdge (delEdge (delEdge G u z) u w) w z)
+      {w}).Adj (some w) v ∧ D₃.ends v = 0)).card < D₃.ends (some u) := by
+    have hempty : Finset.univ.filter (fun v => (apex (delEdge (delEdge (delEdge G u z) u w) w z)
+        {w}).Adj (some w) v ∧ D₃.ends v = 0) = ∅ := by
+      refine Finset.eq_empty_of_forall_notMem fun v hv => ?_
+      rw [Finset.mem_filter] at hv
+      obtain ⟨-, hadj, h0⟩ := hv
+      cases v with
+      | none => rw [hD₃none] at h0; exact one_ne_zero h0
+      | some v =>
+        rw [apex_adj_some_some] at hadj
+        have hvw : v ≠ w := hadj.ne.symm
+        have hvu : v ≠ u := fun h => hadj.1.2 (by rw [h, Sym2.eq_swap])
+        have hvz : v ≠ z := fun h => hadj.2 (by rw [h])
+        have := hD₃some v
+        simp only [hvw, ite_false, add_zero] at this
+        rw [this, hD₁] at h0
+        have hdv := hdeg v
+        simp only [hvu, hvw, hvz, ite_false, add_zero, mul_zero] at hdv
+        have hpos : 0 < G.degree v :=
+          (G.degree_pos_iff_exists_adj v).mpr ⟨w, hadj.1.1.1.symm⟩
+        have := hodd v hvz hpos
+        omega
+    rw [hempty, Finset.card_empty, hD₃u]
+    omega
+  obtain ⟨DH, -, hDHw, hDHu, hDHrest, hcovH⟩ :=
+    fan_single_supp (G := apex (delEdge (delEdge G u z) w z) {w}) hHwu hedges D₃ hcount
+  have hsepH : ∀ a, a = u ∨ a = z → Separates DH (some a) none := by
+    intro a ha
+    have hwa : some w ≠ some a := by
+      rcases ha with rfl | rfl
+      · simp [hwu]
+      · simp [hwz']
+    exact separates_of_cover hwa (by simp) (hsep₃ a ha) hcovH
+  obtain ⟨D, hDz, hDw, -, hfwd⟩ := leaf_merge (delEdge G u z) hFzw DH (hsepH z (Or.inr rfl))
+  have hDHnone : DH.ends none = 1 := by
+    rw [hDHrest none (by simp) (by simp), hD₃none]
+  have hD : ∀ v, D.ends v = (delEdge G u z).degree v % 2 := by
+    intro v
+    by_cases hvz : v = z
+    · rw [hvz]
+      have e2 := hDHrest (some z) (by simp [hwz'.symm]) (by simp [hzu'])
+      have e3 := hD₃some z
+      have e4 := hD₁ z
+      have e5 := hdeg z
+      have e6 := hdF z
+      simp only [hwz'.symm, hzu', ite_true, ite_false, add_zero] at e3 e5 e6
+      rw [hDz, hDHnone, e2]
+      omega
+    · rw [hDw v hvz]
+      by_cases hvu : v = u
+      · rw [hvu]
+        have e6 := hdF u
+        have e7 := hodd u hzu'.symm ((G.degree_pos_iff_exists_adj u).mpr ⟨z, hzu.symm⟩)
+        simp only [hzu'.symm, ite_true, ite_false, add_zero] at e6
+        have := hDHu
+        rw [hD₃u] at this
+        omega
+      · by_cases hvw : v = w
+        · rw [hvw]
+          have e3 := hD₃some w
+          have e6 := hdF w
+          simp only [hwu, hwz', ite_true, ite_false, add_zero] at e3 e6
+          have e7 := hodd w hwz' hwpos
+          rw [hDHw]
+          omega
+        · rw [hDHrest (some v) (by simp [hvw]) (by simp [hvu])]
+          have e3 := hD₃some v
+          have e4 := hD₁ v
+          have e5 := hdeg v
+          have e6 := hdF v
+          simp only [hvu, hvw, hvz, ite_false, add_zero, mul_zero] at e3 e5 e6
+          omega
+  -- the path ending at `z` is the image of the leaf path
+  obtain ⟨Pℓ, hPℓ, hPℓend⟩ := DH.exists_end_of_pos (by rw [hDHnone]; omega)
+  obtain ⟨Qℓ, hQℓ, hQs, hQt, hQe⟩ := hfwd Pℓ hPℓ
+  have hQℓz : Qℓ.src = z ∨ Qℓ.tgt = z := by
+    rcases hPℓend with h | h
+    · left; rw [hQs, h, mergeMap_none]
+    · right; rw [hQt, h, mergeMap_none]
+  have hnoneP : (none : Option W) ∈ Pℓ.walk.support := by
+    have hmem : ∀ o, (Pℓ.src = o ∨ Pℓ.tgt = o) → o ∈ Pℓ.walk.support := by
+      rintro o (h | h)
+      · rw [← h]; exact Pℓ.walk.start_mem_support
+      · rw [← h]; exact Pℓ.walk.end_mem_support
+    exact hmem none hPℓend
+  have huQℓ : u ∉ Qℓ.walk.support := by
+    intro hu
+    have hnil : ¬ Qℓ.walk.Nil := by
+      rw [← Walk.length_eq_zero_iff]; have := Qℓ.pos; omega
+    obtain ⟨e, he, hue⟩ := (Walk.mem_support_iff_exists_mem_edges_of_not_nil hnil).mp hu
+    have he' : e ∈ Qℓ.edges := he
+    rw [hQe, List.mem_map] at he'
+    obtain ⟨e', he'P, rfl⟩ := he'
+    rw [Sym2.mem_map] at hue
+    obtain ⟨o, ho, hou⟩ := hue
+    have ho' : o = some u := by
+      cases o with
+      | none => exact absurd hou (by simpa using hzu')
+      | some a => rw [mergeMap_some] at hou; rw [hou]
+    subst ho'
+    have hsP : some u ∈ Pℓ.walk.support :=
+      (Walk.mem_support_iff_exists_mem_edges_of_not_nil (by
+        rw [← Walk.length_eq_zero_iff]; have := Pℓ.pos; omega)).mpr ⟨e', he'P, ho⟩
+    exact hsepH u (Or.inl rfl) Pℓ hPℓ ⟨hsP, hnoneP⟩
+  have hav' : ∀ Q ∈ D.paths, (Q.src = z ∨ Q.tgt = z) → u ∉ Q.walk.support := by
+    intro Q hQ hQz
+    by_cases hQQ : Q = Qℓ
+    · rw [hQQ]; exact huQℓ
+    · have h2 := D.two_le_ends hQ hQℓ hQQ hQz hQℓz
+      rw [hD z] at h2
+      omega
+  exact ee_of_avoid G hev hz hzu D hD hav'
+
+end triangle
 
 end Gallai
