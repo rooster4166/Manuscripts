@@ -10,7 +10,7 @@ set -e
 D=${1:?scratch dir}; mkdir -p "$D"
 SC=/home/user/Manuscripts/manuscripts/conj-n/scripts
 L=/home/user/Manuscripts/manuscripts/l1-induction/scripts
-A=/home/user/Manuscripts/research/audit/conj-n-scripts
+A=/home/user/Manuscripts/research/audit/A31-scripts
 for v in var1 var2 var3 full; do mkdir -p "$D/$v"; cp "$SC/ext.h" "$SC/orcb.h" "$SC/xcert.cpp" "$SC/closure2.cpp" "$D/$v/"; done
 sed -i 's/if (!(A >> u \& 1) \&\& !(B >> u \& 1) \&\& !(G.adj\[u\] \& B)) out.push_back({H, c, A, B, .b.});/if (!(A >> u \& 1)) out.push_back({H, c, A, B, '"'"'b'"'"'});/' "$D/var1/ext.h"
 sed -i 's/if (!(G.adj\[u\] \& B)) out.push_back({H, u, A | (1u << c), B, .c.});/out.push_back({H, u, A | (1u << c), B, '"'"'c'"'"'});/' "$D/var2/ext.h"

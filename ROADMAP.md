@@ -133,6 +133,13 @@ EMM sufficiency work is **stopped**.
   - Also in Lean: the protected Fan move and the target-in-A move.
   - **Data:** NA has 0 failures at order ≤ 10 (1.3M instances), and TR\* has 0 violations at order 9.
   - **Status:** the open core for DL(1) is now TR plus NA.
+  - **Finished** (256651b; audit A31 applied: mathematics and Lean sound).
+    - Conjecture N is not proved, and no closed class was found.
+    - The obstruction is three persistent shapes:
+      1. all-tight configurations;
+      2. NA itself (stuck from order 6; smallest example the 5-spoke wheel EUZw);
+      3. an even vertex of degree 2 on a triangle.
+  - **Next targets:** TightTransferAdj with A = {x}, and NA when d(y) ≥ 5 and x, y share a neighbour.
 - **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **eulerian-cone** (session_01FxXpVgoFCkhm91f7QXrs2p, branch `claude/eulerian-cone`): Test1 on cones is rooted Gallai RE for Eulerian graphs (synthesis §§26–27, E30, `manuscripts/eulerian-cone`, Lean `EulerianCone.lean`).
   - **Lean** (standard axioms; full build): `test1_fullCone_iff`, `kConnected_three_fullCone_iff`, `hasMatchingCut_delVert_fullCone_iff`, the vacuous tests, and **`rootedDecomp_of_spineTestsNMC`**. The spine needs RE exactly for 2-connected Eulerian B of even order **without a matching cut**. Also `rootedDecomp_of_gallai` (Gallai ⇒ RE), `rootedDecomp_iff_addLeaf` and `rootedDecomp_of_dbl`.
