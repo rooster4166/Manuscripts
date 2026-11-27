@@ -1059,6 +1059,17 @@ The base hypothesis is decided exactly (the stl.c engine with a separation const
   - admissible walk but base fails: 764 instances, 761 at distance 1 (the shortest walk is a single edge, k = 1) and 3 at distance 2.
   - So with the edges at distance ≥ 2 and an admissible walk, the base hypothesis fails in 3 of 616 instances. At distance 1 it fails in 761 of 12,341.
   - NOBASE graphs are dense: 21.7 edges in G − F on average, against 13.8 for the others.
+- **The number of edges of G − F joining the two F-edges decides** (`connector_profile.py`, `out/connector_profile.txt`):
+
+  | joining edges | 0 | 1 | 2 | 3 | 4 |
+  |---|---|---|---|---|---|
+  | instances, n = 8 | 684 | 2,434 | 4,556 | 3,608 | 1,743 |
+  | NOBASE with a walk | 3 | 0 | 0 | 182 | 579 |
+  | no admissible walk | 68 | 0 | 0 | 0 | 0 |
+
+  At n = 6, NOBASE occurs only with 4 joining edges (45 of 63) plus one instance without a walk.
+  - In J, 4 joining edges mean that z and N(z) span W₄ with F as its diagonal pairing (the K₄ obstruction); 3 mean W₄ minus a rim edge.
+  - So the base problem fails exactly at local copies of the K₄ obstruction, apart from walk-less instances and 3 exceptions.
 - **The packed case has none.** With the three pairs packed in M, every base graph is separable: n = 6: 200 of 1,298 base graphs packed; n = 8: 11,810 of 85,608 (audit A22, `packedbase.py`).
 
 **(G) Random multigraph case, G − F 2-connected** (`run_multi.sh`, `gen_multi.py n M 120 seed 2conn` → `ptm p M`, budget 2·10⁵; `out/multi.log`). For each n = 10, 12, 14 and M = 2, 3: 120 random 2-connected G' with exactly 2M even vertices, and every pairing F of them.

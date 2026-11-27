@@ -586,9 +586,24 @@ orientation and every shortest admissible walk ($764$ of them have such a walk, 
 although $\PTM_2$ holds in all of them; allowing admissible walks of every length covers none of
 them. The failures are of two kinds. In the $68$ instances without an admissible walk
 the edges are at distance two or three, and every path between them enters the neighbourhood of
-the short end. Of the $764$ with an admissible walk, $761$ have the two edges joined by an edge,
-so that $P$ is that single edge ($k=1$). Among the $616$ instances whose edges are at distance at
-least two and which have an admissible walk, the base hypothesis fails only $3$ times. So the base separation problem (three pairs forming a path $x-y-\ell_1-a$ of
+the short end. Of the $764$ with an admissible walk, $761$ have the two edges joined by at least
+three edges of $G$, and the other $3$ are at distance two. The count of joining edges decides
+(\texttt{connector\_profile.py}):
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+edges of $G-F$ between $ab$ and $xy$ & $0$ & $1$ & $2$ & $3$ & $4$\\
+\midrule
+instances ($n=8$) & $684$ & $2{,}434$ & $4{,}556$ & $3{,}608$ & $1{,}743$\\
+base hypothesis fails & $71$ & $0$ & $0$ & $182$ & $579$\\
+\bottomrule
+\end{tabular}
+\end{center}
+(At $n=6$: failures only with $4$ joining edges, $45$ of $63$, and one instance without an
+admissible walk.) In terms of $J=(G-F)+z(V(F))$, four joining edges mean that $z$ and its four
+neighbours span the wheel $W_4$ with $F$ as its diagonal pairing, the obstruction of
+Example~\ref{ex:K4}; three mean $W_4$ minus a rim edge. So the base problem fails exactly at local
+copies of the $K_4$ obstruction, and in the few instances with no admissible walk. So the base separation problem (three pairs forming a path $x-y-\ell_1-a$ of
 constraints, one even vertex) is not always solvable. When the three pairs are packed in $M$, it
 is a case of the class-separation questions of~\cite{MS} for the union of two matchings, where no
 counterexample is known; all $11{,}810$ base graphs of order eight with packed pairs are
@@ -599,9 +614,11 @@ separable (audit~A22).
 \begin{enumerate}
 \item \emph{$\PTM_2$ beyond girth five.} The walk theorem reduces it to the base separation
 problem; Theorem~\ref{thm:sparse} solves that problem only under sparseness. The base problem
-alone does not suffice (Section~\ref{sec:comp}): its failures are concentrated where the two edges
-are joined by an edge, and where no admissible walk exists. These two configurations need a
-second mechanism. The obstructions to
+alone does not suffice (Section~\ref{sec:comp}). At order eight its failures are local copies of
+the $K_4$ obstruction (at least three edges between $ab$ and $xy$) and instances without an
+admissible walk, with $3$ exceptions; with one or two edges between $ab$ and $xy$ it never fails.
+A second mechanism is needed where the obstruction appears locally, presumably one that uses the
+rest of the graph to break the wheel. The obstructions to
 sparseness are short cycles through the special vertices. $K_4$ shows that some such
 configurations are genuinely bad.
 \item \emph{More than two edges.} The walk theorem chains: leaf the first edge, and for each

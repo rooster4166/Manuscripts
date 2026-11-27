@@ -1,0 +1,12 @@
+n=6
+connectors=0 instances=3 NOBASE_with_walk=0 no_admissible_walk=1
+connectors=1 instances=26 NOBASE_with_walk=0 no_admissible_walk=0
+connectors=2 instances=66 NOBASE_with_walk=0 no_admissible_walk=0
+connectors=3 instances=48 NOBASE_with_walk=0 no_admissible_walk=0
+connectors=4 instances=63 NOBASE_with_walk=45 no_admissible_walk=0
+n=8
+connectors=0 instances=684 NOBASE_with_walk=3 no_admissible_walk=68
+connectors=1 instances=2434 NOBASE_with_walk=0 no_admissible_walk=0
+connectors=2 instances=4556 NOBASE_with_walk=0 no_admissible_walk=0
+connectors=3 instances=3608 NOBASE_with_walk=182 no_admissible_walk=0
+connectors=4 instances=1743 NOBASE_with_walk=579 no_admissible_walk=0

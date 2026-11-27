@@ -1334,10 +1334,12 @@ Short answer: **not as black boxes with prescribed ends; possibly with free ends
    - K₄ shows some short-cycle configurations are genuinely bad.
    - With shortest walks the base hypothesis holds for some orientation in 93.6% of the instances at n = 8, but not in all of them (832 NOBASE).
    - The failures are structured (E24(F)):
-     - two edges joined by an edge (k = 1): 761 of the 764 NOBASE instances that have a walk;
+     - **local K₄ obstruction**: 761 of the 764 NOBASE instances with a walk have ≥ 3 edges between the two F-edges. In J, z ∪ N(z) spans W₄ (or W₄ minus a rim edge) with F as its diagonal pairing.
+     - With 1 or 2 joining edges the base never fails (6,990 instances at n = 8).
      - no admissible walk at all: 68, every path between the edges enters N(short end).
-     - At distance ≥ 2 with a walk, the base fails in 3 of 616.
-   - So a complete proof of PTM₂ needs a second mechanism for these two configurations, not a different walk.
+     - 3 other exceptions, at distance 2.
+   - So a complete proof of PTM₂ needs a second mechanism exactly where the K₄/W₄ obstruction appears locally, presumably one that uses the rest of the graph to break the wheel. A different walk does not help.
+   - A provable target suggested by the data: **the base hypothesis holds whenever exactly one or two edges join ab and xy.**
    - Within packed configurations, a proof would be a "separation for a path of three pairs with one even vertex" theorem, close to CSEP for the union of two matchings (§W.2).
 2. **PTM_m by chaining walks** (manuscript §8). It is routine under large girth and mutual distance, but not yet written or formalised.
 3. **The multigraph case**, needed when every pairing of N(z) contains adjacent pairs.
