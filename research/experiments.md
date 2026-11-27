@@ -1138,6 +1138,13 @@ Instances: J 3-connected, z the only even vertex, d(z) = 6, G' = J − z. Every 
 
 "Covered" means r is a long end (y_i) of some configuration with a base. The theorem then reduces STL(J,z,r), hence Test1 at z, to the base hypothesis.
 
+**Far-apart form (manuscript Prop 8.3, Cor 8.4).** If the six neighbours of z are pairwise at distance ≥ 3 in J − z, the base hypothesis holds for every admissible chain (sparse separation, no exceptional vertex). So only chain existence is needed. `d6_reach.py 200 61 21 31 51 101 201` (`out/d6_reach.log`) uses random 3-connected J with degrees (6, 3/5, …). Chains are searched greedily: a shortest constrained P2, then a shortest P1 edge-disjoint from it.
+
+| order | 21 | 31 | 51 | 101 | 201 |
+|---|---|---|---|---|---|
+| N(z) pairwise at distance ≥ 3 in J − z | 0 | 1 | 15 | 69 | 99 |
+| of which every r has a chain | 0 | 1 | 15 | 69 | 99 |
+
 **Cross-check of the theorem against the oracle.** At order 9 (all configurations, `walk3 0 1`) there are 9,457 base configurations. For each of them, PEE with the three short ends x1, x2, x3 is realisable. Checked with a scratch copy of `ptm.c` that prints each PEE failure. The 207 PEE failures on the simple instances (54 distinct (graph, short set) keys) never coincide with a base configuration; about 80 would be expected by chance.
 
 ## E25. The avoidance conjecture L1*: the local form, two even vertices, blocked instances (cloud session `claude/l1star`)
