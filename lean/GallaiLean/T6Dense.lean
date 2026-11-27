@@ -21,11 +21,13 @@ are the split graph minus a list of edges (`delList`):
 1. append `y₃ → ℓ₃` (leaf at `y₃`);
 2. append `x₂ → y₃` (the first walk);
 3. append `y₂ → ℓ₂` (leaf at `y₂`);
-4. the second walk `x₁ → y₂`: an append (`stl_of_appendBase`), or a protected Fan step with
-   protected set `{x₂, x₃}` (`stl_of_protectedBase`, from `walk_step_protected`);
-5. push the leaves onto `z` (`PathDecomp.pushOn`) and append `z → x₁, x₂, x₃`.
-The result is a star-terminal Lovász decomposition of `J` with transitions `xᵢ z ·`, hence
-`STL J z yᵢ` for `i = 1, 2, 3`.
+4. the second walk `x₁ → y₂`: an append (`star_of_appendBase`, under (E7)), or a protected Fan
+   step with protected set `{x₂, x₃}` (`star_of_protectedBase`, under (E6), from
+   `walk_step_protected`);
+5. append `x₁` at the leaf `z`, `x₂` at `ℓ₂` and `x₃` at `ℓ₃`, then push `ℓ₂, ℓ₃` onto `z`
+   (`PathDecomp.pushOn`).
+The result is a star-terminal Lovász decomposition of `J` with transitions `xᵢ z yᵢ` (built in
+`split_finish`; the statements record only the STL data), hence `STL J z yᵢ` for `i = 1, 2, 3`.
 
 ## Main results
 
@@ -33,8 +35,12 @@ The result is a star-terminal Lovász decomposition of `J` with transitions `x�
 * `append_full`: the append move with the new path's support made explicit.
 * `fanPred_append`, `fanPred_self`: predecessors through an append.
 * `splitG`: the split graph.
-* **`stl_of_appendBase`**: the base conditions (E1)–(E5), (E7) give STL at `y₁, y₂, y₃`.
-* **`stl_of_protectedBase`**: the base conditions (E1)–(E6) give STL at `y₁, y₂, y₃`.
+* **`star_of_appendBase`** (manuscript Thm 2.2): (E1)–(E5), (E7) give a star-terminal Lovász
+  decomposition of `J` with a long side or a path of length two at each `yᵢ`.
+* **`star_of_protectedBase`** (manuscript Thm 2.3): the same from (E1)–(E6).
+* `AppendBase`, **`stl_of_appendBase`**, **`test1_of_appendBases`** (manuscript Cor 2.4(b)).
+* `baseM`, `baseM_parity`, `LovaszBase`, `appendBase_of_lovaszBase`, **`stl_of_lovaszBase`**,
+  **`test1_of_lovaszBases`**: the same with the hypothesis on `M` itself (manuscript Def 2.1).
 -/
 
 open SimpleGraph
@@ -1466,7 +1472,7 @@ theorem split_stage4 (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
   · have := hD₄e (Sum.inr 0); simp only [reduceCtorEq, ite_false, add_zero] at this; omega
   · have := hD₄e (Sum.inr 1); simp only [reduceCtorEq, ite_false, add_zero] at this; omega
 
-/-- **The append chain** (manuscript Theorem 2.1, all seven steps appends). Let `x₁y₂, x₂y₃` be
+/-- **The append chain** (manuscript Theorem 2.2, all seven steps appends). Let `x₁y₂, x₂y₃` be
 edges of `J`, `N(z) = {x₁, y₁, x₂, y₂, x₃, y₃}`, and `D₀` a decomposition of the base graph (split
 form) with one end everywhere except `x₃` (and the isolated leaves) such that
 * (E1) the path through `z` avoids `x₁` and does not end at `y₂` or `y₃`;
@@ -1534,7 +1540,7 @@ theorem star_of_appendBase (hne : [z, x₁, y₁, x₂, y₂, x₃, y₃].Nodup)
     · exact ⟨R, hR, fun v hv => (ext₄.mem.mp hv).elim Or.inr Or.inl⟩
     · exact ⟨Q', hQ', fun v hv => Or.inl ((show SameP Q Q' from hs).mem.mp hv)⟩
 
-/-- **The append chain with one protected step** (manuscript Theorem 2.2). As
+/-- **The append chain with one protected step** (manuscript Theorem 2.3). As
 `star_of_appendBase`, with (E7) replaced by the static predecessor condition (E6) at the protected
 step `x₁ → y₂`, read on `D₀`: for `p ∈ {x₂, x₃}`, no neighbour `w ≠ z, x₂` of `y₂` has `p` as its
 predecessor of `y₂`, and if `y₂y₃ ∈ E(J)`, neither has `x₂`. The step is `walk_step_protected`
@@ -1674,7 +1680,7 @@ def AppendBase (J : SimpleGraph V) [DecidableRel J.Adj] (z x₁ y₁ x₂ y₂ x
         (∀ w, J.Adj y₂ w → w ≠ z → w ≠ x₂ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl w) (Sum.inl p)) ∧
         (J.Adj y₂ y₃ → ¬ FanPred D₀ (Sum.inl y₂) (Sum.inl x₂) (Sum.inl p))))
 
-/-- **STL from an append base** (manuscript Corollary 2.3): if `z` is the only even vertex of `J`
+/-- **STL from an append base** (manuscript Theorems 2.2 and 2.3): if `z` is the only even vertex of `J`
 and the labelled neighbourhood has an append base, then `STL J z yᵢ` for `i = 1, 2, 3`. -/
 theorem stl_of_appendBase (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y₂ x₃ y₃ : V}
     (hz : ∀ v, Even (J.degree v) ↔ v = z) (h : AppendBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
@@ -1695,7 +1701,7 @@ theorem stl_of_appendBase (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ 
   exact ⟨⟨D, hpar, hstar, hlong y₁ (Or.inl rfl)⟩, ⟨D, hpar, hstar, hlong y₂ (Or.inr (Or.inl rfl))⟩,
     ⟨D, hpar, hstar, hlong y₃ (Or.inr (Or.inr rfl))⟩⟩
 
-/-- **The first deletion test from append bases** (manuscript Corollary 2.4): if every neighbour
+/-- **The first deletion test from append bases** (manuscript Corollary 2.4(b)): if every neighbour
 of `z` has degree at least three and, for every `r ∈ N(z)`, some labelling of `N(z)` with `r` among
 `y₁, y₂, y₃` has an append base, then `Test1 J z`. -/
 theorem test1_of_appendBases (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
@@ -1959,14 +1965,14 @@ theorem appendBase_of_lovaszBase (J : SimpleGraph V) [DecidableRel J.Adj]
       exact ⟨fun w hw hwz hwx h' => k1 w hw hwz hwx (back _ _ _ h'),
         fun hy h' => k2 hy (back _ _ _ h')⟩
 
-/-- **STL from a Lovász decomposition of the base graph** (manuscript Theorems 2.2, 2.3 and
-Corollary 2.4 in the form stated there). -/
+/-- **STL from a Lovász decomposition of the base graph** (manuscript Theorems 2.2 and 2.3, with
+the hypothesis of Definition 2.1 on `M` itself). -/
 theorem stl_of_lovaszBase (J : SimpleGraph V) [DecidableRel J.Adj] {z x₁ y₁ x₂ y₂ x₃ y₃ : V}
     (hz : ∀ v, Even (J.degree v) ↔ v = z) (h : LovaszBase J z x₁ y₁ x₂ y₂ x₃ y₃) :
     STL J z y₁ ∧ STL J z y₂ ∧ STL J z y₃ :=
   stl_of_appendBase J hz (appendBase_of_lovaszBase J hz h)
 
-/-- **The first deletion test from Lovász bases.** -/
+/-- **The first deletion test from Lovász bases** (manuscript Corollary 2.4(b)). -/
 theorem test1_of_lovaszBases (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
     (hdeg : ∀ r, J.Adj z r → 3 ≤ J.degree r)
     (h : (∀ v, Even (J.degree v) ↔ v = z) → ∀ r, J.Adj z r → ∃ x₁ y₁ x₂ y₂ x₃ y₃ : V,

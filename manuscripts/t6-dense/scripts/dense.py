@@ -9,22 +9,28 @@ Input: g6 lines of B = J - z with U = N(z) = {0..5}.  For every root r in U and 
           (E2) the path ending at y2 avoids x2;   (E3) the path ending at y3 avoids x3;
           (E4) y2, y3 are not the two ends of one path;
           (E5) the path ending at x2 avoids y3;
-          (E6) for p in {x2, x3} cap N_B(y2): the path through p y2 has its end e on p's side
-               with phi(e) not in N_B(y2), where phi(x2) = y3, phi(y3) = l3, phi(v) = v else;
-  walk    leaf l3 at y3; append x2 -> y3; leaf l2 at y2; protected Fan y2 <- x1 (blanks
-          {x2, x3} cap N(y2));
+          and (E6) or (E7) as in Definition 2.1 of manuscripts/t6-dense:
+          (E6) for p in {x2, x3} cap N_B(y2): the path through p y2 has its end on p's side
+               outside MASK = N_B(y2) - x2, plus x2 if y2y3 is an edge (the static predecessor
+               condition, Lean `AppendBase`);
+          (E7) the path ending at x1 avoids y2;
+  walk    leaf l3 at y3; x2 -> y3; leaf l2 at y2; x1 -> y2 (an append under (E7), a protected
+          Fan step with blanks {x2, x3} cap N(y2) under (E6)); forced Fan chains throughout;
   un-lift l_i -> z, append x_i, and verify the star-terminal Lovasz decomposition of J.
 
-This is Theorem 3.1 of manuscripts/t6-dense (Lean `stl_of_appendBase`).  Mode `end` drops (E5)
-and (E6) and runs the first walk as a Fan transfer (forced chain) and the protected step with
-the forced chain (Theorem 3.3 / Remark).  Mode `endZ` is the form proved in Lean, with every
-leaf identified with z: in (E6) the end e must moreover not be l1 (= z) or y3.  Mode `endT`
-replaces (E6) by (E7) the path ending at x1 avoids y2, so that the protected step is an append
-as well (Theorem 2.1, Lean `star_of_appendBase`).  Mode `lean` is exactly the Lean hypothesis
-`AppendBase`: per labelling it tries (E1)-(E5)+(E7), and otherwise (E1)-(E5)+(E6) in the Lean form
-(mask N(y2) - x2, plus x2 if y2y3 is an edge; distinct leaves), and checks that the static
-predecessor condition then holds at the protected step.  Roots are tried in all labellings in a fixed random
-order; per root the search stops at the first labelling whose base executes.
+Modes (manuscript Section 6):
+  lean    exactly the Lean hypothesis `AppendBase`: per labelling, endT first, otherwise leanE6,
+          and with (E6) it checks that the static predecessor condition holds at the step.
+  endT    (E1)-(E5) + (E7): all seven steps are appends (Theorem 2.2, `star_of_appendBase`).
+  leanE6  (E1)-(E5) + (E6) (Theorem 2.3, `star_of_protectedBase`).
+  endA    (E1)-(E5) + (E6) without its clause w = y3 (MASK - y3); the clause is redundant (audit
+          A26 Section 1.2), but Theorem 2.3 is proved with it, so endA is checked by execution.
+  endZ    endA with l1 (= z) and y3 added to MASK (every leaf identified with z): stronger than
+          (E6), so endZ bases satisfy the hypothesis of Theorem 2.3.
+  end     (E1)-(E4); the first walk and the step x1 -> y2 run as Fan transfers with the forced
+          chain.  The hypothesis of no theorem; its executions can fail at a blank.
+Roots are tried in all labellings in a fixed random order; per root the search stops at the
+first labelling whose base executes.
 
 usage: dense.py MODE SEEDS BUDGET [MAXLAB] < graphs.g6
 """
@@ -228,6 +234,8 @@ def main():
                 for (status, D0), kind in zip(res, kinds):
                     if status == 'UND':
                         st['und'] += 1
+                    if status == 'NONE':        # a proved absence of a base for this (labelling, kind)
+                        st['none'] = st.get('none', 0) + 1
                     if status != 'OK':
                         continue
                     st['bases'] += 1

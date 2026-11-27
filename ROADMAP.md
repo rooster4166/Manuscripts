@@ -94,8 +94,14 @@ EMM sufficiency work is **stopped**.
   - **Paper (`manuscripts/l1star`):** five more reductions narrow down a smallest counterexample.
   - **Audit A23:** applied.
   - **Open:** the blocked case. It is the same tight Fan configuration as route-descent's L∞ residual (§V.4c). In the original statement L1* (|A| ≤ 2) is still open, so EE is still open.
+- **triangle-base** (session_01FxXpVhyEkCtnbHHCjYEHdD, branch `claude/triangle-base`, new): direct lift to Test1 (direct-test1 note). Tasks: Lean, audit A28, and the triangle base conjecture. Started once A25, A26 and the t6-dense K2/empty runs had landed, as the project lead asked.
 - **clt** (session_01FxXpVf6ee2SZyWpw8dhoVr, branch `claude/clt`, new): the constrained Lovász theorem, a master statement covering the t6 base conjecture, ST, MSEP and the L1* local form (synthesis §23).
-- **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`, new): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
+- **t6-dense**: **finished** (ec9fcc4).
+  - **Lean:** `test1_of_lovaszBases`, uniform over the five dense shapes, with no chain hypothesis.
+  - **Audit A26:** sound; fixes F1–F10 applied. Conj 5.1's (E7) branch is equivalent to STL-P plus two terminal edges, a strengthening of STL.
+  - **Data:** 536 roots certified, 46 budget-undecided (the K2 |O| = 8 cell is hardest).
+  - **Superseded as a target** by the triangle base conjecture (§24).
+- (original entry) **t6-dense** (session_01FxXpVfyngHtzWia7Etrjsg, branch `claude/t6-dense`): the dense T(6)-i residual. C4 first (chained walk + one protected step), then end-path tracking for K2/P3/K3.
 - **ptm**: **finished**.
   - **Lean:** the walk theorems (PTM₂: sparse and local girth 5), the STL lift, the chained walk (PTM₃: far-apart), and `test1_of_chains3`. These re-derive the known d = 4 and far-apart d = 6 cases; the new content is STL-P with prescribed transitions.
   - **Audits:** A22, A22b and A22c are all sound.
@@ -589,3 +595,29 @@ Candidate uniform mechanisms (`research/connections.md`):
   - **This is a reduction, not a closure. The remaining statement is the base conjecture (t6-dense manuscript, Conj 5.1).**
   - Data in the exact Lean form: C4, K3 and P3 48/48 roots certified; K2 and ∅ are running.
   - Audit A26 is in progress.
+- **Direct lift to Test1 (external proposal via the project lead; verified 2026-11-27).**
+  - Statement: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − ⋃ triangles z a_i b_i (for a matching of N(z) − {r, w}) with one disjunctive end-path condition per triangle.
+  - Hand-checked proof. Computation: 180/180 roots at n = 11, d = 6; d = 8 partial, 24/24 so far; all lifts verified.
+  - Manuscript `manuscripts/direct-test1/` (synthesis §24). Comparison with t6-dense Conj 5.1, made precise by audit A28: at m = 3, r = y1 the base graphs coincide, and (E5), (E7) are disjuncts of the triangle condition. So every (E7)-branch base is a triangle base (Lean `triangleBase_of_E5_E7`); nothing is known for the (E6) branch or for r ∈ {y2, y3}. For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w} (A28, direct-test1 Prop 2.2), a PTM-type strengthening of Test1.
+  - Lean and audit pending.
+- **Direct lift to Test1 in Lean (triangle-base bd616c7, DirectTest1.lean; standard axioms, verified; definitions checked).**
+  - `test1At_of_triangleBase`: if z is the only even vertex, d(r) ≥ 3, and TriangleBase holds (triangle data w, L with L a J-edge matching partitioning N(z) − {r, w}, plus a Lovász decomposition of triM with every disjunction), then Test1 holds at r.
+  - `test1_of_triangleBaseConj`: the conjecture form, restricted to roots that have data. The note's Conj 3.1 over-asserted that data exist for every r, and is being fixed.
+  - **So Test1 J z reduces in Lean to the triangle base conjecture for every 3-connected J in which every root has data** (about 80% of the 3-connected d(z) = 6 instances at order 9, A28). This is not "the two-end half of Gallai": the spine needs Test1 and Test2 for all 3-connected J (audit A28, F4).
+  - Audit A28 is next.
+- **Triangle base, first data and Lean (triangle-base 159820d, TriangleBase.lean; standard axioms, verified).**
+  - **Exhaustive, order ≤ 9, 3-connected J:** every root with data (22,772) has a base. The only failures (52 roots) are in κ = 1 graphs, where Test1 itself fails at 28 of them.
+  - **E28 hard graphs, head to head:** the triangle base certifies 42/48 roots where Conj 5.1 / STL-P left 46 undecided. **Better target confirmed.**
+  - **Clean conjecture DL:** in a graph with ≤ 1 even vertex, any disjoint non-adjacent odd pairs, none of which are universal twins of their component, admit one Lovász decomposition satisfying all the disjunctions. Every failure to order 9 is a universal-twin pair.
+  - **Lean:**
+    - `triangleBase_of_packed` (any m);
+    - `triangleBase_of_farApart` (m = 2);
+    - `triangleBase_of_L1Star` / `_of_L1Blocked` (m = 2, needing a ≁ w or b ≁ w);
+    - **`test1At_of_disjL1`: DL ⇒ Test1 at every root with data whenever M is connected.**
+- **Forest lift (forwarded claims 1–2, verified 2026-11-27 18:20; direct-test1 §3, synthesis §25).**
+  - Lemma 3.1 (forest stepping, an iff) and Thm 3.2: Test1(J, z, r) ⇐ a Lovász decomposition of M = J − zw − zT − Φ, where Φ is any forest T-join of J − {z, r} and T = N(z) − {r, w}, satisfying (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+  - It generalises the direct lift (Φ = M0). **It applies at every root of every 3-connected J**, with no matching hypothesis.
+  - Checked by hand and by computation: 101,282 iff agreements; 253,834 lifts with 0 failures.
+  - Conj 3.4 (forest base) is weaker than the triangle base.
+  - **Lean: pending (only the matching case exists).**
+- **Forwarded claim 3 refuted as argued.** L1* `Admissible` fails whenever b1 ~ w, so A25 does not give the single-pair OR. The OR still held in 246/246 sampled instances, and the tail case has a direct proof (Remark 3.5).

@@ -489,7 +489,7 @@ This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruc
 - d(z) = 4: Test1 is known (`emc_four` / two-step descent). There is also a new composition proof (`test1_of_localgirth`) and the d = 4 packaging `test1_deg_four`.
 - d(z) = 6 (T(6)-i):
   - the sparse / far-apart case is known (six-even-incidence Thm 1(2)), with a new composition proof (`test1_of_chains3`, conditional on chains);
-  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. It holds on every root tested.
+  - **the dense residual (∅/K2/P3/K3/C4) reduces, in Lean, to ONE base conjecture** (`test1_of_appendBases`, t6-dense Conj 5.1). That conjecture is a Lovász decomposition of a graph M with one even vertex, satisfying five or six end-path conditions. *Correction (A26):* by Prop 2.6 its main branch is EQUIVALENT to STL-P plus two prescribed terminal edges, so it is a strengthening of STL, not a weaker target. In lean mode 536 residual roots are certified and 46 are budget-undecided; none was shown to lack a base.
 
 **Proved strengthenings of Lovász (single-vertex constraints).**
 - separation (pair and set forms);
@@ -502,7 +502,7 @@ This replaces vertex-set tracking, so the "separated pairs non-adjacent" obstruc
 
 **Open core conjectures.** No counterexample to any of these.
 - **ST** (some target): implies L1Blocked, hence L1*, EE and L∞ (with TR, needed only when N(g) ⊆ N(c)).
-- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual, hence all of T(6)-i.
+- **t6 base conjecture** (Conj 5.1): implies the dense T(6)-i residual. Together with MR Thm 144, which excludes roots isolated in the core (there D ⊇ K_{1,5}, outside the five shapes; audit A26 F1), it implies all of T(6)-i. **Superseded as a target by the triangle base conjecture of §24**, which is a weaker sufficient condition.
 - **MSEP / L_N:** implies Gallai for graphs whose even subgraph has a perfect matching.
 - **PTM_m** and the **chain conjecture:** composition at higher d(z).
 
@@ -514,3 +514,80 @@ All four are statements about Lovász decompositions with at most one even verte
 - Realisability of a prescribed half-set is NP-hard.
 
 **Next.** Look for the master statement behind the open core: a **constrained Lovász theorem** with several end-path constraints under a locality and compatibility condition. It should be true on the data, contain ST, the t6 base conjecture and MSEP, and be provable by Lovász's induction carrying every constraint. In parallel, t6-dense attacks its base conjecture directly.
+
+## 24. Direct lift to Test1 through triangles at z (external proposal, verified; 2026-11-27 17:30)
+
+**Proposal.** The project lead forwarded it from another agent "with a grain of salt". Its data:
+- J with one even vertex z, d(z) = 2m, and δ(J) ≥ 3;
+- r ∈ N(z), w ∈ N(z) − r, and a perfect matching M0 = {a_i b_i} of J[N(z) − {r, w}] (edges of J);
+- M = J − zw − {z a_i, z b_i, a_i b_i}, with 3m − 2 edges deleted.
+
+In M, z is a leaf at r and w is the only even vertex.
+
+**Theorem (direct lift).** If some Lovász decomposition D0 of M satisfies, for every i, (a_i ∉ V(Q0(b_i))) ∨ (b_i ∉ V(Q0(a_i))), then Test1 holds at (J, z, r).
+- **Proof.** Delete z: drop or trim the zr-path, splitting at r if needed; vertex sets only shrink. Then append each a_i b_i at an end chosen by the disjunction. The appends are legal because M0 is a matching and each path has two ends.
+- **Comparison.** No STL, no star-terminal condition, and m − 1 disjunctive conditions in place of the 5–6 conditions of t6-dense Conj 5.1. Audit A26 showed Conj 5.1's main branch is STL-P plus two prescribed terminal edges, which is *stronger* than STL.
+
+**My checks.**
+1. **Hand proof.** I checked the two steps above by hand, including Q0(z) = zr and the shared-path case. The guard example (C4 + two pendants: every 2-path decomposition violates the disjunction) is also correct.
+2. **Computation** (`manuscripts/direct-test1/scripts`). Random dense 3-connected J. The base is found with route_ext.c (per-end avoidance queries), and the lift is executed and verified independently.
+
+   | order | d(z) | roots | base found | lift verified |
+   |---|---|---|---|---|
+   | 11 | 6 | 180 | 180 | 180 |
+   | 13 | 8 | (partial) 24 | 24 | 24 |
+
+**Manuscript:** `manuscripts/direct-test1/direct-test1.tex` (3 pp.), with Conjecture "triangle base".
+
+**Next.**
+- Lean formalisation of the lift.
+- An independent audit (A28).
+- Attack the triangle base conjecture, which is now the cleanest target for T(6)-i and for Test1 at every even d(z) with a near-perfect matching in N(z) − r.
+
+**Audit A28 and the triangle-base session (2026-11-27, 18:30; connections §AF, E29).**
+- **Lean.** Banked, sorry-free with standard axioms:
+  - the lift for every m (`DirectTest1.lean`);
+  - the packed, far-apart and L1\* cases of the base (`TriangleBase.lean`);
+  - the (E7)-branch comparison `triangleBase_of_E5_E7`.
+- **Precise comparison** (replacing "weaker / sharper" above). At m = 3 and r = y1, M is t6-dense's base graph, and (E5), (E7) are disjuncts of the triangle condition. So the triangle base is implied by the (E7) branch of Conj 5.1 at that root. No other implication is known.
+- **Framing** (A28 F3). For fixed data, the triangle base is equivalent to Test1 with a terminal matching of N(z) − {r, w}. It is a PTM-type strengthening of Test1, not a weaker kind of statement.
+- **Data** (exhaustive to order 9). The triangle base holds at every root with data of every 2-connected J. All failures are universal-twin pairs in components of M. There are no multi-pair compatibility failures.
+- **New single-vertex target: Conjecture DL** (disjunctive avoidance, `DisjL1`). DL ⇒ triangle base whenever M is connected.
+- **Isolated roots** (refining the next paragraph). Data at r depend only on J[N(z) − r]: they exist iff ν(J[N(z) − r]) ≥ 2 (d(z) = 6). So they exist at every root of the five dense shapes, and at an isolated root whenever the other five core vertices carry two disjoint edges (e.g. D = K_{1,5}). For "triangle base ⇒ T(6)-i", isolated roots therefore need MR Thm 144 only when ν(J[N(z) − r]) ≤ 1.
+
+**Correction to §§22–23 (audit A26, F1).**
+- Not every T(6)-i failure has a dense shape. A root isolated in the core has D ⊇ K_{1,5}, outside {∅, K2, P3, K3, C4}. Such roots are excluded by MR Thm 144 (failing roots may be taken with ≥ 3 neighbours in T; Shaik-free per ROADMAP). So "Conj 5.1 ⇒ T(6)-i" and "triangle base ⇒ T(6)-i" both use MR Thm 144 as well.
+- t6-dense FINAL agrees that the direct lift (§24) is a weaker sufficient condition than Conj 5.1, and so is the better target.
+
+## 25. Verification of three forwarded claims; the forest lift (2026-11-27 18:20)
+
+The project lead forwarded three claims from another agent and asked that each be verified, by hand and computationally or against the Lean definitions, before anything is built on them. Script: `manuscripts/direct-test1/scripts/verify/verify3.py`. Its enumerator is exhaustive up to a cap; `bf_check.py` checks it against brute force on 60 graphs with 0 mismatches. Logs are in the same directory.
+
+1. **Forest edge-stepping: TRUE.**
+   - Setting: append each parent edge p(v)v of a rooted forest Φ at the v-end of the unique path ending at v.
+   - Statement: the result is a decomposition into the same number of paths iff (i) p(v) ∉ V(Q0(v)) and (ii) siblings lie on different paths.
+   - Hand proof: each path receives at most one edge per end, and the appends commute.
+   - Computation: 101,282/101,282 iff agreements on 40 graphs of order 6 and 8.
+   - Manuscript: direct-test1, Lemma 3.1.
+2. **Forest lift to Test1: TRUE, as a sufficient condition.**
+   - Setting: T = N(z) − {r, w}, Φ a forest T-join of H = J − {z, r}, M = J − zw − zT − Φ, with w's component rooted at w.
+   - The parities are as claimed: z is a leaf at r, r is unchanged (r ∉ H), w is even (possibly 0), and every other vertex is odd.
+   - Step 1 is unchanged. Step 2 is Lemma 3.1 on D1. Conditions (i) and (ii) transfer from Q0 to D1 because every D1 path is a subpath of a unique Q0 path.
+   - Computation: 192/192 parity checks hold, 253,834 lifts all valid (T1), and 84 instances have a tree component with ≥ 3 vertices.
+   - Manuscript: direct-test1, Thm 3.2.
+   - It **generalises** the direct lift (Φ = M0) and needs no hypothesis on J[N(z)]. For 3-connected J it applies at every r and every w. The forest base conjecture (Conj 3.4) is formally weaker than the triangle base.
+   - Lean has only the matching case (`test1At_of_triangleBase`).
+3. **"A25 (L1*) gives the single-pair OR unconditionally": FALSE as argued.**
+   - Component sub-claim TRUE (2-connected J, |J| ≥ 5): a component with odd set {a1, b1} would be the path a1 w b1, attached only through z. Computation: 0/246.
+   - Admissibility sub-claim FALSE. Lean `Admissible G c A` requires A to be non-adjacent to every even vertex. In the claimed configuration b1 ~ w (= the even vertex), so the reverse direction is never admissible, whatever |C ∩ Odd| is. Computation: 57/246 instances have both directions inadmissible, all with |C ∩ Odd| ≥ 4.
+   - Also, L1Star has no unconditional proof in Lean; it is only `l1star_of_ST_TR` / `l1star_of_gen`.
+   - The OR itself held in all 246 instances. In the tail configuration (N_M(w) = {a1, b1}, N_M(b1) = {w}) it has a direct proof: delete w and b1, split at a1, prepend b1 w. See Remark 3.5.
+
+**Consequence.** The cleanest Test1 target is now the forest base conjecture: for 3-connected J, some w, Φ, rooting and Lovász decomposition of M satisfy (i) and (ii). By Lemma 3.1 these are single-vertex avoidances plus a sibling condition.
+
+**Addendum (18:45).**
+- **The forest lift is reversible.** For fixed (r, w, Φ, rooting), the forest base holds iff J − z has a (T1) decomposition at r in which every Φ-edge p(v)v is the end edge of its path at p(v). The proof is end counting; the lower bounds sum to exactly 2k (sent to triangle-base for the tex).
+  - So Conj 3.4 is "(T1) with a terminal forest T-join". This is PTM-type, the analogue of A28 F3.
+  - It is still weaker than the terminal-matching form.
+- **A28's no-data example has forest bases.** J = K_{3,4} + x1x2 has N(z) independent, so no triangle data. It has a forest base at all four roots (`scripts/verify/fb_k34.py`).
+  - Root y1: w = y2, Φ = {x1y3, x1y4} rooted at y3. Lifted by hand: the result is a valid (T1) decomposition [y3 x1 y2 x2], [y1 x1 x2 y3], [x1 y4 x2 y1].

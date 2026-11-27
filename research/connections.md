@@ -1558,12 +1558,17 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
 
 *Experiments: E28. Manuscript: `manuscripts/t6-dense/t6-dense.tex`. Lean: `lean/GallaiLean/T6Dense.lean`. Audit: `research/audit/A26-t6-dense.md`. Origin: synthesis §22, §Z.4, §AB.5.*
 
-### AD.1 Verdict
-- **The dense residual of T(6)-i is reduced, not closed.** All five shapes D ∈ {∅, K2, P3, K3, C4}, C4 included, reduce uniformly to one statement in Lovász's setting, the base conjecture (manuscript Conj. 5.1). It has no counterexample in the data.
+### AD.1 Verdict (after audit A26)
+- **The dense residual of T(6)-i is re-encoded, not closed.** All five shapes D ∈ {∅, K2, P3, K3, C4}, C4 included, are equivalent, uniformly, to one statement on a graph with one even vertex: the base conjecture (manuscript Conj 5.1). It has no counterexample in the data.
+- **What kind of statement Conj 5.1 is (A26 main finding; manuscript Prop 2.6).** The (E7) form is reversible. An (E7)-base exists iff J has a star-terminal Lovász decomposition with transitions x_i z y_i (x_i an end) in which, in addition, **x1y2 is terminal at y2 and x2y3 is terminal at y3**.
+  - In terminal-matching form: in G = (J − z) + F, every edge of the alternating path y1 x1 y2 x2 y3 x3 is terminal at its forward end, and the F-edges are on different paths.
+  - So Conj 5.1 ⇒ STL-P (labelled pairings) ⇒ STL ⇒ Test1. It is a *strengthening* of STL-P, relaxed at y2 by (E6).
+  - It is strictly stronger on single labellings: at order 9, 8 labellings satisfy STL-P but have no base (E28 B′). It still costs no root there.
+  - Nothing shows it is easier than STL-P. What it gains is a base statement on a fixed graph M that names, at every step, the path that must avoid a vertex, with no chain hypothesis.
 - **Chains are free.** If x1y2 and x2y3 are edges of B = J − z, take P2 = y3x2 and P1 = y2x1, both single edges. Such a labelling exists for every root whenever D has maximum degree ≤ 2 (Lemma 2.5), so in every residual shape.
-  - So the chain conjecture (TM Conj 8.6) and `AdmChain` play no role in the dense regime.
+  - So `AdmChain` and TM Conj 8.6 are not used in the dense regime. (The length-one chain violates TM Def 8.1(ii) whenever y2x3 ∈ B.)
   - For C4 the canonical labelling is x2 y2 y3 x3 along the cycle, with x1, y1 universal.
-- **End-path tracking is exact for single-edge walks.** Every step is an explicit append, except possibly one protected Fan step. So the six separations of TM Thm 8.2 can be replaced by **end-path conditions** on one Lovász decomposition of
+- **End-path tracking**, proposed in TM §9(1), is exact for single-edge walks. Every step is an explicit append, except possibly one protected Fan step. So the six separations of TM Thm 8.2 become **end-path conditions** on one Lovász decomposition of
   M = J − {zx1, zx2, zx3, zy2, zy3, x1y2, x2y3},
   in which z is a leaf at y1 and x3 is the only even vertex:
   - (E1) the path through z avoids x1 and does not end at y2, y3;
@@ -1572,36 +1577,46 @@ The one-sided invariant "Q_c ∩ A = ∅" survives a Fan transfer with target w 
   - (E4) P_{y2} ≠ P_{y3};
   - (E5) P_{x2} ∌ y3;
   - and either (E7) P_{x1} ∌ y2 (all seven steps are appends), or (E6) the static predecessor condition of `walk_step_protected` at y2, read on the base.
-- **The obstruction of §Z.4 is an artefact of vertex-set tracking.** Separated pairs had to be non-adjacent because the walk only told us that a new path lies in some old path through y_i. With appends, the path ending at y_i is known, so adjacency is irrelevant.
+  - (E6)'s clause w = y3 is redundant (A26 §1.2), which would weaken Conj 5.1 slightly. Not yet done in Lean.
+- **Conj 5.1 ⇒ T(6)-i** needs MR Thm 144 as well as the root-shape theorem. A root isolated in the core has D ⊇ K_{1,5}, outside the five shapes. (A26 F1; this corrects the earlier "every failure has a dense shape".)
 
 ### AD.2 Proved (Lean, sorry-free, standard axioms; full build green)
-- **`star_of_appendBase`** (Thm 2.2) and **`star_of_protectedBase`** (Thm 2.3). An append base gives a star-terminal Lovász decomposition of J with transitions x_i z y_i, hence **`stl_of_appendBase`**: STL(J, z, y_i) for i = 1, 2, 3 (STL-P with three transitions).
-- **`test1_of_appendBases`** (Cor 2.4): Test1 J z if every r ∈ N(z) has a labelling with r ∈ {y_i} and an append base.
+- **`star_of_appendBase`** (Thm 2.2) and **`star_of_protectedBase`** (Thm 2.3). An append base gives a Lovász decomposition of J that is star-terminal at z, with a long side or a path of length two at each y_i. Hence **`stl_of_appendBase`**: STL(J, z, y_i) for i = 1, 2, 3.
+  - The transitions x_i z y_i are built in `split_finish` but are not in the Lean conclusion.
+- **`test1_of_appendBases`**, **`test1_of_lovaszBases`** (Cor 2.4(b)): Test1 J z if every r ∈ N(z) has a labelling with r ∈ {y_i} and an append base. `LovaszBase` is Def 2.1 verbatim, on M itself.
 - Mechanism: the **split graph** (`splitG`, on V ⊕ Fin 2), where z is split into three degree-2 vertices z ~ x1, y1; ℓ2 ~ x2, y2; ℓ3 ~ x3, y3.
   - Seven appends, or six appends and `walk_step_protected`, along the list L = (ℓ3y3, x2y3, ℓ2y2, x1y2, zx1, ℓ2x2, ℓ3x3).
   - Then `PathDecomp.pushOn` collapses the split vertices onto z.
-  - x1y1 ∈ B (the C4 parallel pair) is no problem: no edge of F is ever needed in a simple graph.
 - Reusable pieces:
   - `append_full`: the append with an explicit vertex sequence;
   - `SameP` / `ExtP` bookkeeping;
   - **`fanPred_append`**: predecessors through an append; this is how the static condition is read back on D₀;
   - `fanPred_self`, `delList`, `collapse_*`.
-- Paper only:
-  - Lemma 4.1, Fan with end paths: an end at v ∉ N(u) ∪ {u} stays on a path with the same vertex set plus u;
-  - Prop 4.2, Thm 8.2 with end-path conditions, at the cost of y2 ∉ N(targets of P2). It removes the {x2,y2} obstruction but not y2 ∉ V(P2). A walk ending y2x2 cannot be repaired by tracking alone: an appended last step puts x2 on P_{y2}.
+- **Paper only.**
+  - Prop 2.6, the converse: undo the appends, so the end conditions hold automatically.
+  - Lemma 4.1, Fan with end paths: an end at v ∉ N(u) ∪ {u} stays on a path with the same vertex set plus u.
+  - Prop 4.2, TM Thm 8.2 with end-path conditions, at the cost of y2 ∉ N(targets of P2). Its proof replaces each of the six separation uses (A26 §1.3 table). It reaches only shapes where D contains a path x3 y2 y3.
 
 ### AD.3 Data (E28)
-- In every computed instance, every root of every shape has an append base, and every executed construction verifies edge by edge in J.
-  - Sparse `gen_core` graphs.
-  - Residual-style 3-connected graphs (`gen_resid.py`): δ(B) ≥ 6, δ(B[O]) ≥ 4, odd-neighbour counts, contact sizes in {0,3,4,5,6}, C4 closed twins, full exterior vertex for ∅.
-- Mostly (E7) suffices; (E6) is needed for a few roots.
-- The six-separation base of TM Thm 8.2 was never found in residual C4 graphs (all 320 searches hit the budget), but exists for 95% of configurations on sparse ones.
+- **Exhaustive at order 9** (28 dense J, exact search): all 168 roots certified. STL-P holds for all 14,144 labellings; 14,128 have an (E7)-base, 8 an (E6)-base only, and 8 (C4) none.
+- **Random** (sparse `gen_core`; residual-style `gen_resid.py`, which imposes a subset of the residual conditions): every root certified except 46 roots in 8 graphs where every search hit the budget.
+  - In each of those graphs all or most roots are uncertified, which points at the search.
+  - Every executed construction from a base satisfying the theorem hypotheses verifies edge by edge in J.
+- (E7) almost always suffices; (E6) was needed for 12 of 536 certified residual roots.
+- The six-separation base of TM Thm 8.2 was never found in residual C4 graphs within the budget (all 320 searches undecided). It exists for 95% of configurations on sparse ones.
 
 ### AD.4 What remains, and for whom
-- **The base conjecture** (Conj 5.1): six end-path conditions at six vertices of a nearly complete K6, in a graph with one even vertex.
-  - It is the dense-regime analogue of L1* (§AA) and of class separation (§W), now with several end-path constraints at once.
+- **The base conjecture** (Conj 5.1): six end-path conditions at six vertices of a nearly complete K6, in a graph with one even vertex. Equivalently (E7 form), STL-P plus two prescribed terminal edges.
   - The single-vertex tools (`lovasz_avoid_set`, `separation_sparse`) need packed or sparse special vertices, the opposite of the dense regime.
+- **Not a conjunction of L1\* instances** (coordinator's question; E28(B″)).
+  - The even vertex of M is x3 ∈ U, adjacent to ≥ 3 other vertices of U. In every labelling of every shape some base condition avoids a neighbour of x3. That is the regime where L1\* is false in general (`DTw`).
+  - Fewest such conditions: C4 {E1, E7}; K3 {E1, E2}; P3 {E2, E4′, E7}; K2 {E1, E2, E4′, E7}; ∅ all of them.
+  - These conditions are binding. Of 1,920 C4 bases satisfying only the admissible conditions, E1 holds in 186 and E7 in 1,042.
+  - They are exactly the reversibility conditions of Prop 2.6, which is why dropping any one of them changes the statement.
+  - So no constraint-by-constraint reduction to L1\* / TR + ST exists. The base conjecture is a joint statement in the tight-Fan regime.
 - **For l1-induction (§AC).** (E7) is the T(6)-i face of L1E (a good D whose relevant chain is trivial): the protected step becomes an append exactly when the path ending at x1 avoids y2. An induction for L1-type end-path constraints with several constrained vertices would attack Conj 5.1 directly.
-- **For the coordinator.**
-  - T(6)-i now follows from Conj 5.1, because every failure has a dense shape by the root-shape theorem.
+- **For the coordinator (corrections to synthesis §22/§23).**
+  - "Reduces to ONE base conjecture" stands, but that conjecture is STL-P with two extra terminal edges (Prop 2.6). It is a strengthening of the known sufficient condition, not a weaker target.
+  - "It holds on every root tested" is not quite right: 46 residual roots in 8 graphs are budget-undecided (every search hit the budget; none proved a base absent).
+  - Conj 5.1 ⇒ T(6)-i uses MR Thm 144 (isolated roots) together with RS.
   - The C4 shape is **not** closed; neither are K2, P3, K3, ∅.
