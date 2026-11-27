@@ -394,6 +394,31 @@ theorem sep_sparse_fix (K : SimpleGraph U) [DecidableRel K.Adj] {g v : U}
 
 end sparseFix
 
+/-! ### Walks as chains, and adjacency in the base graph -/
+
+section walks
+
+variable {W : Type u} {G : SimpleGraph W}
+
+theorem walk_support_eq_cons {u v : W} (p : G.Walk u v) : p.support = u :: p.support.tail := by
+  cases p <;> rfl
+
+theorem chainLast_walk : ∀ {u v : W} (p : G.Walk u v), chainLast u p.support.tail = v
+  | _, _, .nil => rfl
+  | _, _, .cons _ p => by
+      simp only [Walk.support_cons, List.tail_cons]
+      rw [walk_support_eq_cons p]
+      exact chainLast_walk p
+
+theorem chainAdj_walk : ∀ {u v : W} (p : G.Walk u v), ChainAdj G p.support
+  | _, _, .nil => trivial
+  | _, _, .cons h p => by
+      rw [Walk.support_cons, walk_support_eq_cons p]
+      exact ⟨h, by rw [← walk_support_eq_cons p]; exact chainAdj_walk p⟩
+
+end walks
+
+
 /-! ### The walk theorem -/
 
 section main
@@ -535,6 +560,50 @@ theorem baseG_adj_some (G : SimpleGraph W) {a b x y : W} (q : List W) {u : W} {z
   cases z with
   | none => exact Or.inl ⟨rfl, by simpa using h1⟩
   | some w => exact Or.inr ⟨w, rfl, (apex_adj_some_some.mp h1).1⟩
+
+
+omit [Fintype W] in
+theorem mem_chainEdges_map_some {L : List W} {c d : W} :
+    s(some c, some d) ∈ chainEdges (L.map some) ↔ s(c, d) ∈ chainEdges L := by
+  rw [chainEdges_map, List.mem_map]
+  constructor
+  · rintro ⟨e, he, h⟩
+    rw [show s(some c, some d) = s(c, d).map some from rfl] at h
+    rwa [Sym2.map.injective (Option.some_injective _) h] at he
+  · intro h; exact ⟨_, h, rfl⟩
+
+omit [Fintype W] in
+theorem baseG_adj_none (G : SimpleGraph W) {a b x y : W} (q : List W) (z : Option W) :
+    (baseG G a b x y q).Adj none z ↔ z = some b := by
+  rw [baseG, delChain_adj]
+  constructor
+  · rintro ⟨⟨h, -⟩, -⟩
+    cases z with
+    | none => exact absurd h apex_not_adj_none_none
+    | some r => rw [apex_adj_none_some, Finset.mem_singleton] at h; rw [h]
+  · rintro rfl
+    refine ⟨⟨by simp, by simp⟩, fun h => ?_⟩
+    have := mem_of_mem_chainEdges _ h none (Sym2.mem_mk_left _ _)
+    rw [List.mem_map] at this
+    obtain ⟨_, _, h⟩ := this
+    exact Option.some_ne_none _ h
+
+omit [Fintype W] in
+theorem baseG_adj_some_some (G : SimpleGraph W) {a b x y : W} (q : List W) (u w : W) :
+    (baseG G a b x y q).Adj (some u) (some w) ↔
+      G.Adj u w ∧ s(u, w) ≠ s(b, a) ∧ s(u, w) ≠ s(y, x) ∧ s(u, w) ∉ chainEdges (y :: q) := by
+  rw [baseG, delChain_adj, mem_chainEdges_map_some]
+  show ((apex (delEdge G b a) {b}).Adj (some u) (some w) ∧ ¬ s(some u, some w) = s(some y, some x))
+    ∧ _ ↔ _
+  rw [apex_adj_some_some]
+  have : s(some u, some w) = s(some y, some x) ↔ s(u, w) = s(y, x) := by
+    rw [show s(some u, some w) = s(u, w).map some from rfl,
+      show s(some y, some x) = s(y, x).map some from rfl]
+    exact (Sym2.map.injective (Option.some_injective _)).eq_iff
+  rw [this]
+  show ((G.Adj u w ∧ ¬ s(u, w) = s(b, a)) ∧ ¬ s(u, w) = s(y, x)) ∧ _ ↔ _
+  tauto
+
 
 /-- **The walk theorem.** Let `ab`, `xy` be disjoint edges of `G` (no vertex of positive even
 degree), and `y :: q` a duplicate-free chain from `y` to `a` avoiding `b` and `x`, whose
@@ -1024,5 +1093,304 @@ theorem ptm2_of_sparse (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v
   exact ptm2_of_base G hodd hab hxy hax hay hbx hby q hlast hch hnd hbq hxq hZ D₀ hD₀ hs1 hs2 hs3
 
 end main
+
+/-! ### Girth at least five -/
+
+section girth
+
+variable {W : Type u} [Fintype W] [DecidableEq W]
+
+/-- No triangles. -/
+def NoTriangle (G : SimpleGraph W) : Prop := ∀ u v w, G.Adj u v → G.Adj v w → G.Adj w u → False
+
+/-- No four-cycles. -/
+def NoSquare (G : SimpleGraph W) : Prop :=
+  ∀ u v w t, G.Adj u v → G.Adj v w → G.Adj w t → G.Adj t u → u ≠ w → v ≠ t → False
+
+omit [Fintype W] in
+/-- A path of length one or two, read off. -/
+theorem walk_len_one {G : SimpleGraph W} {u v : W} (p : G.Walk u v) (h : p.length = 1) :
+    p.support.tail = [v] := by
+  cases p with
+  | nil => simp at h
+  | cons _ p' =>
+    cases p' with
+    | nil => rfl
+    | cons _ p'' => simp at h
+
+omit [Fintype W] in
+theorem walk_len_two {G : SimpleGraph W} {u v : W} (p : G.Walk u v) (h : p.length = 2) :
+    ∃ m, G.Adj u m ∧ G.Adj m v ∧ p.support.tail = [m, v] := by
+  cases p with
+  | nil => simp at h
+  | cons h₁ p' =>
+    cases p' with
+    | nil => simp at h
+    | cons h₂ p'' =>
+      cases p'' with
+      | nil => exact ⟨_, h₁, h₂, rfl⟩
+      | cons _ _ => simp at h
+
+/-- **Core of the girth theorem.** Let `p` be a shortest walk between the edges `ab` and `xy`,
+running from `y` to `a`. In a graph without triangles and four-cycles the walk theorem applies
+with short ends `a` and `x`. -/
+theorem ptm2_girth_core (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    (h3 : NoTriangle G) (h4 : NoSquare G) {a b x y : W} (hab : G.Adj a b) (hxy : G.Adj x y)
+    (hax : a ≠ x) (hay : a ≠ y) (hbx : b ≠ x) (hby : b ≠ y)
+    (p : G.Walk y a) (hp : p.IsPath)
+    (hmin : ∀ u w, (u = a ∨ u = b) → (w = x ∨ w = y) → ∀ r : G.Walk w u, p.length ≤ r.length) :
+    PTM2At G a b x y := by
+  classical
+  have hab' : a ≠ b := hab.ne
+  have hxy' : x ≠ y := hxy.ne
+  set q := p.support.tail with hq
+  have hsupp : p.support = y :: q := walk_support_eq_cons p
+  have hlast : chainLast y q = a := chainLast_walk p
+  have hch : ChainAdj G (y :: q) := hsupp ▸ chainAdj_walk p
+  have hnd : (y :: q).Nodup := hsupp ▸ hp.support_nodup
+  have hlen : 1 ≤ p.length := by
+    by_contra h
+    exact hay (Walk.eq_of_length_eq_zero (by omega : p.length = 0)).symm
+  -- lengths of the two pieces at a vertex of the walk
+  have hsplit : ∀ t (ht : t ∈ p.support),
+      (p.takeUntil t ht).length + (p.dropUntil t ht).length = p.length := by
+    intro t ht
+    rw [← Walk.length_append, Walk.take_spec]
+  have hpos : ∀ {c d : W} (r : G.Walk c d), c ≠ d → 1 ≤ r.length := by
+    intro c d r hcd
+    by_contra h
+    exact hcd (Walk.eq_of_length_eq_zero (by omega : r.length = 0))
+  have hbq : b ∉ y :: q := by
+    rw [← hsupp]; intro hb
+    have h1 := hmin b y (Or.inr rfl) (Or.inr rfl) (p.takeUntil b hb)
+    have h2 := hpos (p.dropUntil b hb) (Ne.symm hab')
+    have := hsplit b hb
+    omega
+  have hxq : x ∉ y :: q := by
+    rw [← hsupp]; intro hx
+    have h1 := hmin a x (Or.inl rfl) (Or.inl rfl) (p.dropUntil x hx)
+    have h2 := hpos (p.takeUntil x hx) (Ne.symm hxy')
+    have := hsplit x hx
+    omega
+  have hZ : ∀ t ∈ initOf y q, t ≠ y → ¬ G.Adj t x := by
+    intro t ht hty htx
+    have ht' : t ∈ p.support := by rw [hsupp]; exact mem_initOf_mem y q ht
+    have h1 := hmin a x (Or.inl rfl) (Or.inl rfl) (Walk.cons htx.symm (p.dropUntil t ht'))
+    rw [Walk.length_cons] at h1
+    have h2 := hpos (p.takeUntil t ht') (Ne.symm hty)
+    have := hsplit t ht'
+    have h1' : (p.takeUntil t ht').length = 1 := by omega
+    exact h3 t x y htx hxy (Walk.adj_of_length_eq_one h1')
+  -- short distances
+  have hlen1 : ∀ {c d : W}, G.Adj c d → (d = a ∨ d = b) → (c = x ∨ c = y) → p.length = 1 := by
+    intro c d hcd hd hc
+    have := hmin d c hd hc (Walk.cons hcd Walk.nil)
+    simp only [Walk.length_cons, Walk.length_nil] at this
+    omega
+  have hya1 : p.length = 1 → G.Adj y a := fun h => Walk.adj_of_length_eq_one h
+  have hbx' : ¬ G.Adj b x := by
+    intro h
+    exact h4 a y x b (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inl rfl))).symm hxy.symm h.symm hab.symm
+      hax (Ne.symm hby)
+  have hby' : ¬ G.Adj b y := by
+    intro h
+    exact h3 a b y hab h (hya1 (hlen1 h.symm (Or.inr rfl) (Or.inr rfl)))
+  have hya_chain : G.Adj y a → s(y, a) ∈ chainEdges (y :: q) := by
+    intro h
+    have h1 := hlen1 h (Or.inl rfl) (Or.inr rfl)
+    have : q = [a] := walk_len_one p h1
+    rw [this]; simp [chainEdges]
+  have hxy_common : ∀ u, G.Adj u x → G.Adj u y → False := fun u h1 h2 => h3 u x y h1 hxy h2.symm
+  have hxa_common : ∀ u u', G.Adj u x → G.Adj u a → G.Adj u' x → G.Adj u' a → u = u' := by
+    intro u u' h1 h2 h1' h2'
+    by_contra hne
+    exact h4 x u a u' h1.symm h2 h2'.symm h1' hax.symm hne
+  have hya_common : ∀ u, G.Adj u y → G.Adj u a → s(u, a) ∉ chainEdges (y :: q) → False := by
+    intro u h1 h2 hch2
+    have hle := hmin a y (Or.inl rfl) (Or.inr rfl) (Walk.cons h1.symm (Walk.cons h2 Walk.nil))
+    simp only [Walk.length_cons, Walk.length_nil] at hle
+    by_cases h1' : p.length = 1
+    · exact h3 u y a h1 (hya1 h1') h2.symm
+    · obtain ⟨m, hym, hma, hq2⟩ := walk_len_two p (by omega)
+      by_cases hum : u = m
+      · subst hum
+        apply hch2
+        have : q = [u, a] := hq2
+        rw [this]; simp [chainEdges]
+      · exact h4 y u a m h1.symm h2 hma.symm hym.symm hay.symm hum
+  -- adjacency facts in the base graph `M`
+  have hNs : ∀ u, (baseG G a b x y q).Adj (some u) none → u = b := by
+    intro u h
+    have := (baseG_adj_none G (a := a) (b := b) (x := x) (y := y) q (some u)).mp h.symm
+    exact Option.some_injective _ this
+  have hSS := baseG_adj_some_some G (a := a) (b := b) (x := x) (y := y) q
+  have F_xy : ∀ u, (baseG G a b x y q).Adj (some u) (some x) →
+      (baseG G a b x y q).Adj (some u) (some y) → False := fun u h1 h2 =>
+    hxy_common u ((hSS u x).mp h1).1 ((hSS u y).mp h2).1
+  have F_ya : ∀ u, (baseG G a b x y q).Adj (some u) (some y) →
+      (baseG G a b x y q).Adj (some u) (some a) → False := fun u h1 h2 =>
+    hya_common u ((hSS u y).mp h1).1 ((hSS u a).mp h2).1 ((hSS u a).mp h2).2.2.2
+  have F_bx : ¬ (baseG G a b x y q).Adj (some b) (some x) := fun h => hbx' ((hSS b x).mp h).1
+  have F_by : ¬ (baseG G a b x y q).Adj (some b) (some y) := fun h => hby' ((hSS b y).mp h).1
+  have F_ba : ¬ (baseG G a b x y q).Adj (some b) (some a) := fun h => ((hSS b a).mp h).2.1 rfl
+  have F_xy' : ¬ (baseG G a b x y q).Adj (some x) (some y) := fun h =>
+    ((hSS x y).mp h).2.2.1 (Sym2.eq_swap)
+  have F_nn : ¬ (baseG G a b x y q).Adj none none := fun h => by
+    have := (baseG_adj_none G (a := a) (b := b) (x := x) (y := y) q none).mp h
+    exact absurd this (by simp)
+  -- sparseness for every subgraph of `M` without a common neighbour of `x` and `a`
+  have hsparse : ∀ M' : SimpleGraph (Option W), (∀ c d, M'.Adj c d → (baseG G a b x y q).Adj c d) →
+      (∀ u, M'.Adj (some u) (some x) → M'.Adj (some u) (some a) → False) →
+      SparseFam M' (baseX a x y) (baseFam a x y) := by
+    intro M' hle hxa
+    refine ⟨?_, ?_, ?_⟩
+    · intro A hA
+      simp only [baseFam, Finset.mem_insert, Finset.mem_singleton] at hA
+      rcases hA with rfl | rfl | rfl
+      · intro c hc d hd hcd
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hc hd
+        rcases hc with rfl | rfl <;> rcases hd with rfl | rfl
+        · exact absurd rfl hcd
+        · refine ⟨fun h => F_xy' (hle _ _ h), fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact hbx (hNs x (hle _ _ h1)).symm
+          | some u => exact F_xy u (hle _ _ h1).symm (hle _ _ h2)
+        · refine ⟨fun h => F_xy' (hle _ _ h).symm, fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact hbx (hNs x (hle _ _ h2).symm).symm
+          | some u => exact F_xy u (hle _ _ h2) (hle _ _ h1).symm
+        · exact absurd rfl hcd
+      · intro c hc d hd hcd
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hc hd
+        rcases hc with rfl | rfl <;> rcases hd with rfl | rfl
+        · exact absurd rfl hcd
+        · refine ⟨fun h => hab' (hNs a (hle _ _ h)), fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact F_nn (hle _ _ h2)
+          | some u => obtain rfl := hNs u (hle _ _ h2); exact F_ba (hle _ _ h1).symm
+        · refine ⟨fun h => hab' (hNs a (hle _ _ h).symm), fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact F_nn (hle _ _ h1)
+          | some u => obtain rfl := hNs u (hle _ _ h1).symm; exact F_ba (hle _ _ h2)
+        · exact absurd rfl hcd
+      · intro c hc d hd hcd
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hc hd
+        rcases hc with rfl | rfl <;> rcases hd with rfl | rfl
+        · exact absurd rfl hcd
+        · refine ⟨fun h => hby (hNs y (hle _ _ h).symm).symm, fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact F_nn (hle _ _ h1)
+          | some u => obtain rfl := hNs u (hle _ _ h1).symm; exact F_by (hle _ _ h2)
+        · refine ⟨fun h => hby (hNs y (hle _ _ h)).symm, fun w ⟨h1, h2⟩ => ?_⟩
+          cases w with
+          | none => exact F_nn (hle _ _ h2)
+          | some u => obtain rfl := hNs u (hle _ _ h2); exact F_by (hle _ _ h1).symm
+        · exact absurd rfl hcd
+    · intro A hA z hz
+      simp only [baseFam, Finset.mem_insert, Finset.mem_singleton] at hA
+      rcases hA with rfl | rfl | rfl <;>
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hz <;>
+        rcases hz with rfl | rfl <;> simp [baseX]
+    · intro v c d hvc hvd hc hd
+      simp only [baseX, Finset.mem_insert, Finset.mem_singleton] at hc hd
+      cases v with
+      | none =>
+        have h1 := (baseG_adj_none G (a := a) (b := b) (x := x) (y := y) q c).mp (hle _ _ hvc)
+        have h2 := (baseG_adj_none G (a := a) (b := b) (x := x) (y := y) q d).mp (hle _ _ hvd)
+        rw [h1, h2]
+      | some u =>
+        rcases hc with rfl | rfl | rfl | rfl <;> rcases hd with rfl | rfl | rfl | rfl
+        · rfl
+        · exact (F_xy u (hle _ _ hvc) (hle _ _ hvd)).elim
+        · exact (hxa u hvc hvd).elim
+        · obtain rfl := hNs u (hle _ _ hvd); exact (F_bx (hle _ _ hvc)).elim
+        · exact (F_xy u (hle _ _ hvd) (hle _ _ hvc)).elim
+        · rfl
+        · exact (F_ya u (hle _ _ hvc) (hle _ _ hvd)).elim
+        · obtain rfl := hNs u (hle _ _ hvd); exact (F_by (hle _ _ hvc)).elim
+        · exact (hxa u hvd hvc).elim
+        · exact (F_ya u (hle _ _ hvd) (hle _ _ hvc)).elim
+        · rfl
+        · obtain rfl := hNs u (hle _ _ hvd); exact (F_ba (hle _ _ hvc)).elim
+        · obtain rfl := hNs u (hle _ _ hvc); exact (F_bx (hle _ _ hvd)).elim
+        · obtain rfl := hNs u (hle _ _ hvc); exact (F_by (hle _ _ hvd)).elim
+        · obtain rfl := hNs u (hle _ _ hvc); exact (F_ba (hle _ _ hvd)).elim
+        · rfl
+  have hsp : SparseFam (baseG G a b x y q) (baseX a x y) (baseFam a x y) ∨
+      ∃ v, (baseG G a b x y q).Adj (some x) v ∧ v ∉ baseX a x y ∧
+        SparseFam (delEdge (baseG G a b x y q) (some x) v) (baseX a x y) (baseFam a x y) := by
+    by_cases hbad : ∃ u, (baseG G a b x y q).Adj (some u) (some x) ∧
+        (baseG G a b x y q).Adj (some u) (some a)
+    · obtain ⟨u₀, hu₀x, hu₀a⟩ := hbad
+      right
+      refine ⟨some u₀, hu₀x.symm, ?_, hsparse _ (fun c d h => h.1) ?_⟩
+      · have hx' := ((hSS u₀ x).mp hu₀x).1
+        have ha' := (hSS u₀ a).mp hu₀a
+        simp only [baseX, Finset.mem_insert, Finset.mem_singleton, Option.some.injEq,
+          reduceCtorEq, or_false, not_or]
+        refine ⟨hx'.ne, fun h => ?_, ha'.1.ne⟩
+        subst h
+        exact ha'.2.2.2 (hya_chain ha'.1)
+      · intro u h1 h2
+        have hu : u ≠ u₀ := by
+          rintro rfl
+          exact h1.2 (Sym2.eq_swap)
+        exact hu (hxa_common u u₀ ((hSS u x).mp h1.1).1 ((hSS u a).mp h2.1).1
+          ((hSS u₀ x).mp hu₀x).1 ((hSS u₀ a).mp hu₀a).1)
+    · left
+      exact hsparse _ (fun _ _ h => h) (fun u h1 h2 => hbad ⟨u, h1, h2⟩)
+  exact ptm2_of_sparse G hodd hab hxy hax hay hbx hby q hlast hch hnd hbq hxq hZ hsp
+
+omit [Fintype W] in
+theorem PTM2At.symm {G : SimpleGraph W} [DecidableRel G.Adj] {a b x y : W} [Fintype W]
+    (h : PTM2At G a b x y) : PTM2At G x y a b := by
+  obtain ⟨D, hD, P₁, hP₁, P₂, hP₂, hne, h1, h2, h3, h4⟩ := h
+  exact ⟨D, hD, P₂, hP₂, P₁, hP₁, Ne.symm hne, h3, h4, h1, h2⟩
+
+/-- **PTM₂ at girth five.** Let `G` be connected, without vertices of positive even degree, and
+without triangles and four-cycles. For disjoint edges `ab` and `cd` there is a Lovász
+decomposition in which `ab` is terminal at the prescribed end `a`, `cd` is terminal at one of
+its ends, and the two edges lie on different paths. -/
+theorem ptm2_girth5 (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    (hconn : G.Connected) (h3 : NoTriangle G) (h4 : NoSquare G) {a b c d : W}
+    (hab : G.Adj a b) (hcd : G.Adj c d) (hac : a ≠ c) (had : a ≠ d) (hbc : b ≠ c)
+    (hbd : b ≠ d) :
+    PTM2At G a b c d ∨ PTM2At G a b d c := by
+  classical
+  have hex : ∃ n, ∃ u w, (u = a ∨ u = b) ∧ (w = c ∨ w = d) ∧ ∃ r : G.Walk w u, r.length = n := by
+    obtain ⟨r⟩ := hconn.preconnected c a
+    exact ⟨r.length, a, c, Or.inl rfl, Or.inl rfl, r, rfl⟩
+  obtain ⟨u₀, w₀, hu₀, hw₀, r₀, hr₀⟩ := Nat.find_spec hex
+  have hmin : ∀ u w, (u = a ∨ u = b) → (w = c ∨ w = d) → ∀ r : G.Walk w u,
+      Nat.find hex ≤ r.length := fun u w hu hw r =>
+    Nat.find_min' hex ⟨u, w, hu, hw, r, rfl⟩
+  obtain ⟨p, hp, hplen⟩ : ∃ p : G.Walk w₀ u₀, p.IsPath ∧ p.length = Nat.find hex := by
+    refine ⟨r₀.bypass, r₀.bypass_isPath, ?_⟩
+    have h1 := r₀.length_bypass_le
+    have h2 := hmin u₀ w₀ hu₀ hw₀ r₀.bypass
+    omega
+  rcases hu₀ with h | h <;> rcases hw₀ with h' | h' <;> subst u₀ <;> subst w₀
+  · right
+    exact ptm2_girth_core G hodd h3 h4 hab hcd.symm had hac hbd hbc p hp
+      (fun u w hu hw r => hplen ▸ hmin u w hu hw.symm r)
+  · left
+    exact ptm2_girth_core G hodd h3 h4 hab hcd hac had hbc hbd p hp
+      (fun u w hu hw r => hplen ▸ hmin u w hu hw r)
+  · left
+    refine PTM2At.symm (ptm2_girth_core G hodd h3 h4 hcd hab (Ne.symm hac) (Ne.symm hbc)
+      (Ne.symm had) (Ne.symm hbd) p.reverse hp.reverse ?_)
+    intro u w hu hw r
+    rw [Walk.length_reverse, hplen]
+    have := hmin w u hw hu r.reverse
+    rwa [Walk.length_reverse] at this
+  · right
+    refine PTM2At.symm (ptm2_girth_core G hodd h3 h4 hcd.symm hab (Ne.symm had) (Ne.symm hbd)
+      (Ne.symm hac) (Ne.symm hbc) p.reverse hp.reverse ?_)
+    intro u w hu hw r
+    rw [Walk.length_reverse, hplen]
+    have := hmin w u hw hu.symm r.reverse
+    rwa [Walk.length_reverse] at this
+
+end girth
 
 end Gallai
