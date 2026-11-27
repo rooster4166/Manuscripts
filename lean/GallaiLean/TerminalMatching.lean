@@ -322,6 +322,78 @@ theorem delChain_degree_of_not_mem (K : SimpleGraph U) [DecidableRel K.Adj] :
 
 end chainDegree
 
+/-! ### The base case from sparse separation -/
+
+section sparseFix
+
+variable {U : Type u} [Fintype U] [DecidableEq U]
+
+/-- **Sparse separation with one exceptional vertex.** Let `g` be the only vertex of `K` that can
+have positive even degree, with `deg g` even, and let `v` be a neighbour of `g`. If the family is
+sparse in `K − gv` and `v ∉ X`, then `K` has a Lovász decomposition meeting every set of the
+family at most once per path. (Separate in `K − gv`, where `v` is the even vertex, and restore `gv`
+by Fan's lemma with target `v`.) -/
+theorem sep_sparse_fix (K : SimpleGraph U) [DecidableRel K.Adj] {g v : U}
+    (hev : ∀ w ∈ evenSet K, w = g) (hg : K.degree g % 2 = 0) (hgv : K.Adj g v)
+    {X : Finset U} {𝒜 : Finset (Finset U)} (hX : SparseFam (delEdge K g v) X 𝒜) (hvX : v ∉ X) :
+    ∃ D : PathDecomp K, (∀ w, D.ends w = K.degree w % 2) ∧ ∀ A ∈ 𝒜, MeetsOnce D A := by
+  have hgv' : g ≠ v := hgv.ne
+  have hd := delEdge_degree K hgv
+  have hvodd : K.degree v % 2 = 1 := by
+    have hpos : 0 < K.degree v := (K.degree_pos_iff_exists_adj v).mpr ⟨g, hgv.symm⟩
+    by_contra h
+    have : v ∈ evenSet K := by rw [mem_evenSet_iff]; omega
+    exact hgv' (hev v this).symm
+  have hev' : (evenSet (delEdge K g v)).card ≤ 1 := by
+    refine Finset.card_le_one.mpr fun w₁ h₁ w₂ h₂ => ?_
+    have key : ∀ w ∈ evenSet (delEdge K g v), w = v := by
+      intro w hw
+      rw [mem_evenSet_iff] at hw
+      have := hd w
+      by_cases hwg : w = g
+      · subst hwg; simp only [ite_true, hgv', ite_false, add_zero] at this; omega
+      · by_cases hwv : w = v
+        · exact hwv
+        · simp only [hwg, hwv, ite_false, add_zero] at this
+          exact absurd (hev w (by rw [mem_evenSet_iff]; omega)) hwg
+    rw [key w₁ h₁, key w₂ h₂]
+  obtain ⟨D', hD', hmeet⟩ := separation_sparse (delEdge K g v) hev' hX
+  have hG' : ∀ e, e ∈ (delEdge K g v).edgeSet ↔ e ∈ K.edgeSet ∧ e ≠ s(v, g) := by
+    intro e; rw [delEdge_edgeSet, Sym2.eq_swap]
+  have hD'g : D'.ends g = 1 := by
+    rw [hD']; have := hd g; simp only [ite_true, hgv', ite_false, add_zero] at this; omega
+  have hD'v : D'.ends v = 0 := by
+    rw [hD']; have := hd v; simp only [Ne.symm hgv', ite_true, ite_false, zero_add] at this; omega
+  have hcount : (Finset.univ.filter (fun w => (delEdge K g v).Adj v w ∧ D'.ends w = 0)).card <
+      D'.ends g := by
+    have hempty : Finset.univ.filter (fun w => (delEdge K g v).Adj v w ∧ D'.ends w = 0) = ∅ := by
+      refine Finset.eq_empty_of_forall_notMem fun w hw => ?_
+      rw [Finset.mem_filter] at hw
+      obtain ⟨-, hadj, h0⟩ := hw
+      have hwv : w ≠ v := hadj.ne.symm
+      have hpos : 0 < (delEdge K g v).degree w :=
+        ((delEdge K g v).degree_pos_iff_exists_adj w).mpr ⟨v, hadj.symm⟩
+      rw [hD'] at h0
+      have hmem : w ∈ evenSet (delEdge K g v) := by rw [mem_evenSet_iff]; omega
+      have := hd w
+      by_cases hwg : w = g
+      · subst hwg; simp only [ite_true, hgv', ite_false, add_zero] at this; omega
+      · simp only [hwg, hwv, ite_false, add_zero] at this
+        exact hwg (hev w (by rw [mem_evenSet_iff]; omega))
+    rw [hempty, Finset.card_empty, hD'g]; omega
+  obtain ⟨D, -, hDv, hDg, hDrest, hcov⟩ := fan_single_supp (G := K) hgv.symm hG' D' hcount
+  refine ⟨D, fun w => ?_, fun A hA => meetsAll_of_cover hX.sub hvX hmeet hcov A hA⟩
+  by_cases hwv : w = v
+  · subst hwv; rw [hDv, hD'v, hvodd]
+  · by_cases hwg : w = g
+    · subst hwg; rw [hg]; omega
+    · rw [hDrest w hwv hwg, hD']
+      have := hd w
+      simp only [hwg, hwv, ite_false, add_zero] at this
+      rw [this]
+
+end sparseFix
+
 /-! ### The walk theorem -/
 
 section main
@@ -350,6 +422,119 @@ theorem separates_of_cover_list {U : Type*} [DecidableEq U] {K K' : SimpleGraph 
   intro Q hQ ⟨hcQ, hdQ⟩
   obtain ⟨Q', hQ', h⟩ := hcov Q hQ
   exact hD' Q' hQ' ⟨(h c hcQ).resolve_right hc, (h d hdQ).resolve_right hd⟩
+
+/-- Degree parities in the base graph: only `x` changes parity, and the leaf `ℓ₁` is odd. -/
+theorem baseG_parity (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    {a b x y : W} (hab : G.Adj a b) (hxy : G.Adj x y)
+    (hax : a ≠ x) (hay : a ≠ y) (hbx : b ≠ x) (hby : b ≠ y)
+    (q : List W) (hlast : chainLast y q = a)
+    (hch : ChainAdj G (y :: q)) (hnd : (y :: q).Nodup) (hbq : b ∉ y :: q) (hxq : x ∉ y :: q) :
+    (∀ v, (baseG G a b x y q).degree (some v) % 2 = (G.degree v + if v = x then 1 else 0) % 2) ∧
+      (baseG G a b x y q).degree none % 2 = 1 := by
+  classical
+  have hab' : a ≠ b := hab.ne
+  have hxy' : x ≠ y := hxy.ne
+  have hoddv : ∀ v, 0 < G.degree v → G.degree v % 2 = 1 := by
+    intro v hv
+    have := hodd v
+    rw [mem_evenSet_iff] at this
+    omega
+  have hq : q ≠ [] := by
+    rintro rfl
+    exact hay (hlast.symm.trans rfl)
+  have hK₁yx : (leafG G a b).Adj (some y) (some x) := by
+    rw [apex_adj_some_some]
+    refine ⟨hxy.symm, fun h => ?_⟩
+    rcases Sym2.eq_iff.mp h with ⟨h1, -⟩ | ⟨h1, -⟩
+    · exact hby h1.symm
+    · exact hay h1.symm
+  have hK₂adj : ∀ u w, (midG G a b x y).Adj (some u) (some w) ↔
+      G.Adj u w ∧ s(u, w) ≠ s(b, a) ∧ s(u, w) ≠ s(y, x) := by
+    intro u w
+    show ((leafG G a b).Adj (some u) (some w) ∧ ¬ s(some u, some w) = s(some y, some x)) ↔ _
+    rw [apex_adj_some_some]
+    show ((G.Adj u w ∧ ¬ s(u, w) = s(b, a)) ∧ _) ↔ _
+    have : s(some u, some w) = s(some y, some x) ↔ s(u, w) = s(y, x) := by
+      constructor
+      · intro h
+        have := congrArg (Sym2.map (Option.getD · y)) h
+        simpa using this
+      · intro h; rw [show s(some u, some w) = s(u, w).map some from rfl, h]; rfl
+    rw [this]
+    tauto
+  have hlist : ∀ u ∈ y :: q, ∀ w ∈ y :: q, G.Adj u w → (midG G a b x y).Adj (some u) (some w) := by
+    intro u hu w hw huw
+    rw [hK₂adj]
+    refine ⟨huw, fun h => ?_, fun h => ?_⟩
+    · rcases Sym2.eq_iff.mp h with ⟨rfl, -⟩ | ⟨-, rfl⟩
+      · exact hbq hu
+      · exact hbq hw
+    · rcases Sym2.eq_iff.mp h with ⟨-, rfl⟩ | ⟨rfl, -⟩
+      · exact hxq hw
+      · exact hxq hu
+  have hchK₂ : ChainAdj (midG G a b x y) ((y :: q).map some) := chainAdj_map_mem some (y :: q) hch hlist
+  have hndK₂ : ((y :: q).map some).Nodup := hnd.map (Option.some_injective W)
+  have hlastK₂ : chainLast (some y) (q.map some) = some a := by
+    rw [chainLast_map, hlast]
+  -- degrees in the base graph
+  have hdG := fun v => delEdge_degree G hab.symm v
+  have hdK₁ : ∀ v, (leafG G a b).degree (some v) = (delEdge G b a).degree v + if v = b then 1 else 0 := by
+    intro v
+    show (apex (delEdge G b a) {b}).degree (some v) = _
+    rw [apex_degree_some]; simp only [Finset.mem_singleton]
+  have hdK₁none : (leafG G a b).degree none = 1 := by
+    show (apex (delEdge G b a) {b}).degree none = _
+    rw [apex_degree_none]; simp
+  have hdK₂ := fun w => delEdge_degree (leafG G a b) hK₁yx w
+  have hdM := delChain_degree_mod (midG G a b x y) (some y) (q.map some) (by simpa using hq) hchK₂ hndK₂
+  rw [hlastK₂] at hdM
+  have hMsome : ∀ v, (baseG G a b x y q).degree (some v) % 2 = (G.degree v + if v = x then 1 else 0) % 2 := by
+    intro v
+    have h1 : ((baseG G a b x y q).degree (some v) + (if some v = some y then 1 else 0) +
+        (if some v = some a then 1 else 0)) % 2 = (midG G a b x y).degree (some v) % 2 :=
+      hdM (some v)
+    have h2 : (midG G a b x y).degree (some v) + (if some v = some y then 1 else 0) +
+        (if some v = some x then 1 else 0) = (leafG G a b).degree (some v) := hdK₂ (some v)
+    have h3 := hdK₁ v
+    have h4 := hdG v
+    simp only [Option.some.injEq] at h1 h2
+    by_cases hva : v = a
+    · subst hva
+      simp only [hay, hax, hab', ite_true, ite_false, add_zero] at h1 h2 h3 h4 ⊢
+      omega
+    · by_cases hvb : v = b
+      · subst hvb
+        simp only [hby, hbx, hva, ite_true, ite_false, add_zero] at h1 h2 h3 h4 ⊢
+        omega
+      · by_cases hvx : v = x
+        · subst hvx
+          simp only [hxy', hva, hvb, ite_true, ite_false, add_zero] at h1 h2 h3 h4 ⊢
+          omega
+        · by_cases hvy : v = y
+          · subst hvy
+            simp only [hvx, hva, hvb, ite_true, ite_false, add_zero] at h1 h2 h3 h4 ⊢
+            omega
+          · simp only [hvx, hva, hvb, hvy, ite_false, add_zero] at h1 h2 h3 h4 ⊢
+            omega
+  have hMnone : (baseG G a b x y q).degree none % 2 = 1 := by
+    have h1 : ((baseG G a b x y q).degree none + (if (none : Option W) = some y then 1 else 0) +
+        (if (none : Option W) = some a then 1 else 0)) % 2 = (midG G a b x y).degree none % 2 :=
+      hdM none
+    have h2 : (midG G a b x y).degree none + (if (none : Option W) = some y then 1 else 0) +
+        (if (none : Option W) = some x then 1 else 0) = (leafG G a b).degree none := hdK₂ none
+    simp only [reduceCtorEq, ite_false, add_zero] at h1 h2
+    rw [hdK₁none] at h2
+    omega
+  exact ⟨hMsome, hMnone⟩
+
+/-- Adjacency in the base graph comes from `G` or from the leaf edge `bℓ₁`. -/
+theorem baseG_adj_some (G : SimpleGraph W) {a b x y : W} (q : List W) {u : W} {z : Option W}
+    (h : (baseG G a b x y q).Adj (some u) z) : (z = none ∧ u = b) ∨ ∃ w, z = some w ∧ G.Adj u w := by
+  rw [baseG, delChain_adj] at h
+  have h1 := h.1.1
+  cases z with
+  | none => exact Or.inl ⟨rfl, by simpa using h1⟩
+  | some w => exact Or.inr ⟨w, rfl, (apex_adj_some_some.mp h1).1⟩
 
 /-- **The walk theorem.** Let `ab`, `xy` be disjoint edges of `G` (no vertex of positive even
 degree), and `y :: q` a duplicate-free chain from `y` to `a` avoiding `b` and `x`, whose
@@ -760,6 +945,83 @@ theorem ptm2_of_base (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v �
     · exact Option.some_ne_none _ h.symm
   exact ⟨D₆, hD₆, Q₁, hQ₁, Q₂, hQ₂, hne, hQ₁end, by rw [Sym2.eq_swap]; exact hQ₁ab, hQ₂end,
     by rw [Sym2.eq_swap]; exact hQ₂xy⟩
+
+/-- `ab` is terminal at `a`, `xy` is terminal at `x`, on two different paths of a Lovász
+decomposition of `G`. -/
+def PTM2At (G : SimpleGraph W) [DecidableRel G.Adj] (a b x y : W) : Prop :=
+  ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+    ∃ P₁ ∈ D.paths, ∃ P₂ ∈ D.paths, P₁ ≠ P₂ ∧ (P₁.src = a ∨ P₁.tgt = a) ∧
+      s(a, b) ∈ P₁.edges ∧ (P₂.src = x ∨ P₂.tgt = x) ∧ s(x, y) ∈ P₂.edges
+
+omit [Fintype W] in
+theorem separates_of_meetsOnce {K : SimpleGraph W} {D : PathDecomp K} {c d : W} (hcd : c ≠ d)
+    (h : MeetsOnce D {c, d}) : Separates D c d := fun P hP ⟨hc, hd⟩ =>
+  hcd (h P hP c (Finset.mem_insert_self _ _) d (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))
+    hc hd)
+
+/-- The four special vertices of the base graph. -/
+abbrev baseX (a x y : W) : Finset (Option W) := {some x, some y, some a, none}
+
+/-- The three pairs to be separated in the base graph. -/
+abbrev baseFam (a x y : W) : Finset (Finset (Option W)) :=
+  {{some x, some y}, {some a, none}, {none, some y}}
+
+/-- **The walk theorem, sparse form.** The base hypothesis of `ptm2_of_base` holds when the four
+special vertices `x, y, a, ℓ₁` are sparse in the base graph, possibly after deleting one edge
+`x v` with `v` not special. -/
+theorem ptm2_of_sparse (G : SimpleGraph W) [DecidableRel G.Adj] (hodd : ∀ v, v ∉ evenSet G)
+    {a b x y : W} (hab : G.Adj a b) (hxy : G.Adj x y)
+    (hax : a ≠ x) (hay : a ≠ y) (hbx : b ≠ x) (hby : b ≠ y)
+    (q : List W) (hlast : chainLast y q = a)
+    (hch : ChainAdj G (y :: q)) (hnd : (y :: q).Nodup) (hbq : b ∉ y :: q) (hxq : x ∉ y :: q)
+    (hZ : ∀ t ∈ initOf y q, t ≠ y → ¬ G.Adj t x)
+    (hsp : SparseFam (baseG G a b x y q) (baseX a x y) (baseFam a x y) ∨
+      ∃ v, (baseG G a b x y q).Adj (some x) v ∧ v ∉ baseX a x y ∧
+        SparseFam (delEdge (baseG G a b x y q) (some x) v) (baseX a x y) (baseFam a x y)) :
+    PTM2At G a b x y := by
+  classical
+  have hxy' : x ≠ y := hxy.ne
+  obtain ⟨hMsome, hMnone⟩ := baseG_parity G hodd hab hxy hax hay hbx hby q hlast hch hnd hbq hxq
+  have hoddv : ∀ v w, G.Adj v w → G.degree v % 2 = 1 := by
+    intro v w h
+    have := hodd v
+    rw [mem_evenSet_iff] at this
+    have : 0 < G.degree v := (G.degree_pos_iff_exists_adj v).mpr ⟨w, h⟩
+    omega
+  have hev : ∀ w ∈ evenSet (baseG G a b x y q), w = some x := by
+    intro w hw
+    rw [mem_evenSet_iff] at hw
+    cases w with
+    | none => rw [hMnone] at hw; omega
+    | some v =>
+      by_cases hvx : v = x
+      · rw [hvx]
+      · exfalso
+        obtain ⟨z, hz⟩ := ((baseG G a b x y q).degree_pos_iff_exists_adj (some v)).mp hw.1
+        have hGv : G.degree v % 2 = 1 := by
+          rcases baseG_adj_some G q hz with ⟨-, rfl⟩ | ⟨w, -, h⟩
+          · exact hoddv v a hab.symm
+          · exact hoddv v w h
+        have := hMsome v
+        rw [if_neg hvx, add_zero, hGv] at this
+        omega
+  have hcard : (evenSet (baseG G a b x y q)).card ≤ 1 :=
+    Finset.card_le_one.mpr fun w₁ h₁ w₂ h₂ => (hev w₁ h₁).trans (hev w₂ h₂).symm
+  have hgx : (baseG G a b x y q).degree (some x) % 2 = 0 := by
+    rw [hMsome, if_pos rfl]; have := hoddv x y hxy; omega
+  obtain ⟨D₀, hD₀, hmeet⟩ : ∃ D₀ : PathDecomp (baseG G a b x y q),
+      (∀ v, D₀.ends v = (baseG G a b x y q).degree v % 2) ∧
+        ∀ A ∈ baseFam a x y, MeetsOnce D₀ A := by
+    rcases hsp with h | ⟨v, hxv, hvX, h⟩
+    · exact separation_sparse _ hcard h
+    · exact sep_sparse_fix _ hev hgx hxv h hvX
+  have hs1 : Separates D₀ (some x) (some y) :=
+    separates_of_meetsOnce (by simpa using hxy') (hmeet _ (by simp))
+  have hs2 : Separates D₀ (some a) none :=
+    separates_of_meetsOnce (by simp) (hmeet _ (by simp))
+  have hs3 : Separates D₀ none (some y) :=
+    separates_of_meetsOnce (by simp) (hmeet _ (by simp))
+  exact ptm2_of_base G hodd hab hxy hax hay hbx hby q hlast hch hnd hbq hxq hZ D₀ hD₀ hs1 hs2 hs3
 
 end main
 
