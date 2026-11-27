@@ -361,7 +361,8 @@ rooting as in Theorem~\ref{thm:forest}, and a Lov\'asz decomposition of $M$ sati
 At a root that admits triangle data, Conjecture~\ref{conj:base} is the special case of
 Conjecture~\ref{conj:forest} in which $\Phi$ is required to be a matching inside $N(z)$, so
 Conjecture~\ref{conj:forest} is formally weaker there. Conjecture~\ref{conj:forest} would give (T1) for
-every $3$-connected $J$, which is one of the two tests of the spine reduction.
+every $3$-connected $J$, which is one of the two tests of the spine reduction; but see
+Example~\ref{ex:forestfail}.
 
 \begin{example}[a root without triangle data; coordinator, checked by hand]\label{ex:k34}
 Let $J=K_{3,4}+x_1x_2$, with parts $\{z,x_1,x_2\}$ and $\{y_1,\dots,y_4\}$. Then $z$ is the only even
@@ -375,6 +376,42 @@ since $Q_0(x_1)\not\ni y_3$ and $Q_0(y_4)\not\ni x_1$, and (ii) is vacuous.
 $9$ edges of $J-z$, with two ends at $y_1$.
 \end{itemize}
 The same holds at every root (\texttt{scripts/verify/fb\_k34.py}).
+\end{example}
+
+\begin{example}[the forest base can fail]\label{ex:forestfail}
+Conjecture~\ref{conj:forest} is false as stated. Let $J$ be the cone over $K_{2,6}$: the vertices
+$r,r'$ are joined to $y_1,\dots,y_6$, and $z$ is joined to all eight. Then $z$ (of degree $8$) is the
+only even vertex, $J$ is $3$-connected, $k=4$, and no root admits triangle data at $r$ or $r'$.
+
+Here $H=J-\{z,r\}$ is the star with centre $r'$ and leaves $y_1,\dots,y_6$. A tree has a unique
+$T$-join, so for each $w$ there is one $\Phi$. In $M$ the vertex $r$ has odd degree $7$. The edges at $r$
+lie in the \emph{branches} at $r$: three paths through $r$ use two branches each, and one path ends at
+$r$.
+\begin{itemize}[leftmargin=*]
+\item $w=r'$. Then $\Phi$ is the whole star, rooted at $r'$, and the six leaves are siblings. The
+branches at $r$ are the six leaves and $z$. So two of the three paths through $r$ pair two siblings,
+against (ii).
+\item $w=y_i$ and the root is $r'$. Then $\Phi$ is the star on $r'$ and the five other leaves, and
+those leaves are siblings. The branches are these five leaves, $z$, and $r\,y_i\,r'$. By (i) no leaf
+lies on a path with $r'$, so a leaf can pair only with $z$ or end at $r$. At most two of the five
+leaves are placed this way, so two siblings share a path, against (ii).
+\item $w=y_i$ and the root is a leaf $y_{j_0}$. Then $p(r')=y_{j_0}$, and the other four leaves are
+siblings with parent $r'$.
+\begin{itemize}
+\item By (i) at the leaves, no leaf pairs with the branch $r\,y_i\,r'$.
+\item By (i) at $r'$, that branch does not pair with $y_{j_0}$.
+\item So the four siblings can only pair with $z$ or with $y_{j_0}$, or end at $r$, and the branch
+$r\,y_i\,r'$ takes $z$ or the end at $r$.
+\end{itemize}
+At most two siblings are separated, so two siblings share a path, against (ii).
+\end{itemize}
+By exact search (\texttt{fb\_exhaustive.py}) and an independent brute force over all Lov\'asz
+decompositions (\texttt{fb\_bruteforce.py}), no $w$, forest $T$-join and rooting work at $r$ or $r'$.
+The same holds at one root of a second $3$-connected graph of order $9$ (graph6 \texttt{HsaAD\textasciitilde\}}),
+where $d(z)=6$ and $N(z)$ is independent. Yet (T1) holds at all three roots.
+
+Over all $2{,}438$ roots without triangle data of $3$-connected graphs of order $9$
+(\texttt{fb\_nodata.py}), the forest base exists, and its lift verifies, at the other $2{,}435$.
 \end{example}
 
 \begin{remark}[a single pair is not settled by one-sided avoidance]\label{rem:onepair}
