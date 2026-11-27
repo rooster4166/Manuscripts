@@ -1,0 +1,1 @@
+SUMMARY max K=3 dropNg=0 graphs=3963178 pairs(G,c)=39631780 Amax_ok=39631780 trivial(Amax empty)=1682162 minfail_size>K=0
