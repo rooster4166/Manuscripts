@@ -333,3 +333,8 @@ RR ⇒ TRC on minimum T-joins ⇒ Gallai. **Gallai is thereby reduced to a state
 3. Prove RR, which gives full Gallai.
 
 The single-vertex statements L1 and L∞ come first. They are Lovász's theorem with one protected vertex, so Lovász's induction (Lovasz.lean, cases I–III) and Fan's vertex-set-preserving lemma are the tools.
+
+**Literature check (2026-11-27).**
+- Gallai's conjecture is open for Eulerian graphs in general. It is known for Δ ≤ 4 (Favaron–Kouider) and Δ ≤ 5 (Bonamy–Perrett, arXiv 1609.06257). The best general-type Eulerian bound found is p(G) ≤ 3n/5, for Eulerian graphs whose triangles are pairwise at distance ≥ 3 (Chu–Wang, arXiv 2510.12806, Oct 2025).
+- No source was found on Lovász decompositions with avoidance constraints (L1, L∞, L_N, RR), nor on Gallai for "G[Ev] has a perfect matching".
+- So L_N, which would give Gallai for every Eulerian graph with a perfect matching, would be a significant new result. This was a web search, not a full survey.
