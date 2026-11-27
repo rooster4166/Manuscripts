@@ -60,6 +60,7 @@ EMM sufficiency work is **stopped**.
   - **The auditor solved Problem 8.5** with Proposition P (a two-sided exact sweep). So, under SH, a near-regular failure sequence must contain intermediate vertices (Problem 9.4); alternative (b) of Thm 9.3 goes.
   - The fixes were sent to near-dirac and applied in 8535af5.
   - **Re-audit §R: Prop 8.3 (= Prop P) and Thm 9.3 are SOUND as stated**; only wording nits remain.
+- **tight-fan** (session_01FxXpVgSY1WViJquJVXFmqx, branch `claude/tight-fan`, new): applies the flower / receipt-or-flower moves (Flower.lean) to the common tight-Fan residual of L∞, L1* (blocked case), EE and the PTM base (synthesis §21).
 - **l1star** (session_01FxXpVhazXKyYfL1CL5Nk7k, branch `claude/l1star`): **finished**.
   - **Lean:** `l1starGen_of_blocked`, `ee_of_l1Blocked`. So EE ⇐ L1* on *blocked* instances: g even, c ∉ N(g), every neighbour of g adjacent to A ∖ {g}.
   - **Data:** the local form V(Q_c) ⊆ N[c] ∪ N(g) (L1* for every A at once) holds exhaustively to n = 11, with 0 failures.
