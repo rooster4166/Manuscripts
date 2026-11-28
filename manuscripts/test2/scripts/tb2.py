@@ -1,7 +1,8 @@
 """tb2.py: the (T2) forest base and its lift (test2 session).
 
 Setting: J with exactly two even vertices z, r, adjacent; B = J - z; T = N_J(z) (r included).
-Data: a forest T-join Phi of B, rooted, with r a root of its component.
+Data: a forest T-join Phi of B, rooted, with r a root of its component or a non-root with at
+least two children.
 Base graph: M = J - {zv : v in N(z) - r} - E(Phi).  M has no even vertex and z is a leaf at r.
 Base: a Lovasz decomposition D0 of M (one end at every vertex) with
    (i)  p(v) not in V(Q0(v)) for every non-root vertex v of Phi,
@@ -19,7 +20,10 @@ Tiers, in order (the first that succeeds is reported):
   S  : Phi the T-join of a spanning tree of B (BFS trees from every vertex, plus random trees),
        every rooting with r a root (other components: every root);
   X  : every forest T-join of B (spanning-tree T-join + cycle space, when its dimension is at
-       most XDIM), every rooting.
+       most XDIM), every rooting with r a root;
+  N  : the same forests, every rooting with r a non-root having at least two children; (i) and
+       (ii) then also apply to r (in M, r has odd degree and one end), and the lift is unchanged:
+       r ends c(r) paths after the appends and one more when z is trimmed.
 Output per instance:  g6 z r dz dr tier dPhi(r) nbase_queries  [witness]
   tier is M, S, X, ABSENT (exhaustive over all forest T-joins and rootings) or UNDEC.
 usage: python3 tb2.py ORACLE [budget] [xdim] < instances   (lines 'g6 z r ...' as printed by t2.c)
@@ -43,6 +47,21 @@ def run_oracle(oracle, lines):
     return out
 
 
+class Oracle:
+    """A persistent route_ext process, line-buffered, queried one line at a time."""
+
+    def __init__(self, path):
+        self.p = subprocess.Popen(["stdbuf", "-oL", path], stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE, text=True, bufsize=1)
+
+    def query(self, line):
+        self.p.stdin.write(line + "\n")
+        self.p.stdin.flush()
+        out = self.p.stdout.readline().strip()
+        assert out, "oracle died"
+        return out
+
+
 def perfect_matchings(vs, J):
     if not vs:
         yield []
@@ -61,11 +80,17 @@ def base_graph(J, z, r, phi):
     return M
 
 
-def rootings(phi, r, cap):
-    """Parent maps of the forest phi with r a root; every choice of root in the other components."""
+def rootings(phi, r, cap, nonroot=False):
+    """Parent maps of the forest phi with r a root (nonroot=False), or with r a non-root having at
+    least two children (nonroot=True); every choice of root in the other components."""
     F = nx.Graph(list(phi))
     comps = [sorted(c) for c in nx.connected_components(F)]
-    choices = [[r] if r in c else c for c in comps]
+    if nonroot:
+        if r not in F or F.degree(r) < 3:
+            return []
+        choices = [[u for u in c if u != r] if r in c else c for c in comps]
+    else:
+        choices = [[r] if r in c else c for c in comps]
     out = []
     for roots in itertools.product(*choices):
         par, order = {}, []
@@ -102,7 +127,7 @@ def parse_paths(line):
     return [list(map(int, p.split())) for p in parts if p.strip()]
 
 
-def check_base(M, n, par, D0):
+def check_base(M, n, par, D0, skip=None):
     used = set()
     ends = [0] * n
     for P in D0:
@@ -121,10 +146,11 @@ def check_base(M, n, par, D0):
         Q[P[0]] = P
         Q[P[-1]] = P
     for v, p in par.items():
-        assert p not in Q[v], ("(i)", v, p)
+        if v != skip:
+            assert p not in Q[v], ("(i)", v, p)
     for x in par:
         for y in par:
-            if x < y and par[x] == par[y]:
+            if x < y and par[x] == par[y] and skip not in (x, y):
                 assert Q[x] is not Q[y], ("(ii)", x, y)
 
 
@@ -182,16 +208,14 @@ def verify_test2(J, z, r, paths):
 
 
 def try_data(oracle, J, z, r, n, datas, budget, seed=7):
-    """datas: list of (phi, par, order). Returns (found, witness, undecided)."""
-    lines, meta = [], []
+    """datas: list of (phi, par, order); oracle: an Oracle.  Stops at the first base.
+    Returns (found, witness, undecided)."""
+    und = 0
     for phi, par, order in datas:
         M = base_graph(J, z, r, phi)
         assert all(M.degree(v) % 2 == 1 for v in range(n)), "M not all-odd"
-        lines.append(query_line(M, n, par, budget, seed))
-        meta.append((phi, par, order, M))
-    out = run_oracle(oracle, lines)
-    und = 0
-    for o, (phi, par, order, M) in zip(out, meta):
+        o = oracle.query(query_line(M, n, par, budget, seed))
+        assert o[0] in "012", o
         if o.startswith("1"):
             D0 = parse_paths(o)
             check_base(M, n, par, D0)
@@ -326,11 +350,21 @@ def process(oracle, J, z, r, budget, xdim, rng):
     und += u
     if ok:
         return "X", wit, nq, und
+    # tier N: r a non-root with at least two children, over every forest T-join seen
+    datas = []
+    for key in seen:
+        phi = [tuple(e) for e in key]
+        datas.extend((phi, par, order) for par, order in rootings(phi, r, 10 ** 6, nonroot=True))
+    nq += len(datas)
+    ok, wit, u = try_data(oracle, J, z, r, n, datas, budget)
+    und += u
+    if ok:
+        return "N", wit, nq, und
     return ("ABSENT" if und == 0 else "UNDEC"), None, nq, und
 
 
 def main():
-    oracle = sys.argv[1]
+    oracle = Oracle(sys.argv[1])
     budget = int(sys.argv[2]) if len(sys.argv) > 2 else 0
     xdim = int(sys.argv[3]) if len(sys.argv) > 3 else XDIM
     rng = random.Random(1)

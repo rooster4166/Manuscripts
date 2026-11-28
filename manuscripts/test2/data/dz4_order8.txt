@@ -1,0 +1,6 @@
+FAR 88
+STEER 390
+d(z)=4 instances 637
+no data 83
+not covered 76
+with data 554

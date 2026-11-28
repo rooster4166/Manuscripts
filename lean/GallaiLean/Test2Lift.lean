@@ -1,4 +1,6 @@
 import GallaiLean.ForestLift
+import GallaiLean.TriangleBase
+import GallaiLean.TRNSteer
 
 /-!
 # The forest lift to Test2 (session `claude/test2`)
@@ -8,7 +10,7 @@ Manuscript: `manuscripts/test2/test2.tex`, §3 (the forest lift for the three-en
 Let `z, r` be the only even vertices of `J`, adjacent, with `d(r) ≥ 3`. Put `T = N(z) − r` (a list)
 and let `Φ` be a set of edges of `J − z` whose odd-degree vertices are exactly `N(z) = T ∪ {r}`,
 given as a list `L` of (child, parent) pairs `(v, p(v))` in parent-first order, with distinct
-children and edges and **`r` never a child** (so `r` is a root of its component of `Φ`).
+children and edges, and **if `r` is a child then `r` has at least two children**.
 Put `M = J − zT − Φ` (`forM2`): `z` is a leaf at `r`, and every vertex of `M` has odd degree.
 If `M` has a Lovász decomposition with
 * (i) the path ending at each child `v` avoids `p(v)`, and
@@ -16,8 +18,9 @@ If `M` has a Lovász decomposition with
 then Test2 holds at `(z, r)` (**`test2At_of_forestBase2`**).
 
 Compared with the Test1 lift (`test1At_of_forestBase`) there is no vertex `w`: the odd set of `Φ`
-is all of `N(z)`, and `r` itself is in it. The leaf `z` gives `r` one extra end when it is trimmed,
-the own Lovász end of `r` gives one, and the children of `r` give `d_Φ(r) ≥ 1` more.
+is all of `N(z)`, and `r` itself is in it. In `M` the vertex `r` has odd degree, so it ends one
+path; after the appends it ends `1 − [r is a child] + c(r) ≥ 2` paths, and trimming the leaf `z`
+gives one more.
 
 ## Main results
 
@@ -239,14 +242,14 @@ abbrev forM2 (J : SimpleGraph V) (z : V) (T : List V) (L : List (V × V)) : Simp
 abbrev leafT2 (J : SimpleGraph V) (z : V) (T : List V) : SimpleGraph V := delList J (zDel2 z T)
 
 /-- **Test2 forest data** at `(J, z, r)`: the list `T = N(z) − r`, and a forest `Φ` of `J − z` whose
-odd-degree vertices are exactly `N(z)`, given by (child, parent) pairs in parent-first order,
-with `r` never a child. -/
+odd-degree vertices are exactly `N(z)`, given by (child, parent) pairs in parent-first order;
+if `r` is a child, it has at least two children. -/
 structure ForestData2 (J : SimpleGraph V) (z r : V) (T : List V) (L : List (V × V)) : Prop where
   nodup : (r :: T).Nodup
   nbr : ∀ v, J.Adj z v ↔ v = r ∨ v ∈ T
   edge : ∀ p ∈ L, J.Adj p.1 p.2
   avoid_z : ∀ p ∈ L, p.1 ≠ z ∧ p.2 ≠ z
-  child_ne_r : ∀ p ∈ L, p.1 ≠ r
+  r_child : (∃ p ∈ L, p.1 = r) → 2 ≤ L.countP (fun p => decide (p.2 = r))
   children : (L.map Prod.fst).Nodup
   edges : (L.map pairEdge).Nodup
   parent_first : L.Pairwise (fun p q => p.2 ≠ q.1)
@@ -397,11 +400,22 @@ theorem ForestData2.forM2_degree (v : V) :
   rw [← hF.count_del v]
   exact delList_degree_count J _ hF.del_facts.1 hF.del_facts.2 v
 
+/-- In `M`, the vertex `r` has odd degree. -/
+theorem ForestData2.forM2_odd_r (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) :
+    (forM2 J z T L).degree r % 2 = 1 := by
+  obtain ⟨hzr', -, hrT, -⟩ := hF.facts
+  have h := hF.forM2_degree r
+  have ht := hF.tjoin r
+  simp only [Ne.symm hzr', hrT, ite_false, ite_true, zero_add, true_or] at h ht
+  have hev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
+  omega
+
 /-- In `M`, every child has odd degree. -/
 theorem ForestData2.forM2_odd_child (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r)
     {p : V × V} (hp : p ∈ L) : (forM2 J z T L).degree p.1 % 2 = 1 := by
   obtain ⟨h1, -⟩ := hF.avoid_z p hp
-  have hr := hF.child_ne_r p hp
+  by_cases hr : p.1 = r
+  · rw [hr]; exact hF.forM2_odd_r hzr
   have h := hF.forM2_degree p.1
   have ht := hF.tjoin p.1
   simp only [h1, hr, ite_false, zero_add, false_or] at h ht
@@ -412,19 +426,10 @@ theorem ForestData2.forM2_odd_child (hzr : ∀ v, Even (J.degree v) ↔ v = z �
       · exact hr h'))
   split_ifs at h ht <;> omega
 
-/-- In `M`, the root `r` has odd degree. -/
-theorem ForestData2.forM2_odd_r (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) :
-    (forM2 J z T L).degree r % 2 = 1 := by
-  obtain ⟨hzr', -, hrT, -⟩ := hF.facts
-  have h := hF.forM2_degree r
-  have ht := hF.tjoin r
-  simp only [Ne.symm hzr', hrT, ite_false, ite_true, zero_add, true_or] at h ht
-  have hev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
-  omega
-
 omit [Fintype V] [DecidableRel J.Adj] in
-/-- `r` is the parent of at least one pair (it has odd degree in `Φ` and is never a child). -/
-theorem ForestData2.one_le_children_r : 1 ≤ L.countP (fun p => decide (p.2 = r)) := by
+/-- If `r` is not a child, it is the parent of at least one pair (it has odd degree in `Φ`). -/
+theorem ForestData2.one_le_children_r (hnc : ∀ p ∈ L, p.1 ≠ r) :
+    1 ≤ L.countP (fun p => decide (p.2 = r)) := by
   have ht := hF.tjoin r
   simp only [true_or, ite_true] at ht
   have hpos : 0 < (L.map pairEdge).countP (fun e => decide (r ∈ e)) := by omega
@@ -432,12 +437,33 @@ theorem ForestData2.one_le_children_r : 1 ≤ L.countP (fun p => decide (p.2 = r
   obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
   have hr : r ∈ s(p.1, p.2) := by simpa [pairEdge] using hre
   rcases Sym2.mem_iff.mp hr with h | h
-  · exact absurd h.symm (hF.child_ne_r p hp)
+  · exact absurd h.symm (hnc p hp)
   · exact List.countP_pos_iff.mpr ⟨p, hp, by simp [h]⟩
 
 omit [Fintype V] [DecidableRel J.Adj] in
-theorem ForestData2.no_child_r : L.countP (fun p => decide (p.1 = r)) = 0 :=
-  List.countP_eq_zero.mpr (fun p hp => by simpa using hF.child_ne_r p hp)
+/-- `r` is a child at most once (children are distinct). -/
+theorem ForestData2.child_r_le_one : L.countP (fun p => decide (p.1 = r)) ≤ 1 := by
+  have h := List.nodup_iff_count_le_one.mp hF.children r
+  rw [List.count, List.countP_map] at h
+  refine le_trans (le_of_eq ?_) h
+  apply List.countP_congr
+  intro p _
+  simp [Function.comp_def]
+
+omit [Fintype V] [DecidableRel J.Adj] in
+/-- `r` ends at least two paths after the appends: its own end, minus one if it is a child, plus
+one per child. -/
+theorem ForestData2.two_le_r_count :
+    2 ≤ 1 + L.countP (fun p => decide (p.2 = r)) - L.countP (fun p => decide (p.1 = r)) := by
+  by_cases hc : ∃ p ∈ L, p.1 = r
+  · have h2 := hF.r_child hc
+    have h1 := hF.child_r_le_one
+    omega
+  · have hnc : ∀ p ∈ L, p.1 ≠ r := fun p hp h => hc ⟨p, hp, h⟩
+    have h1 := hF.one_le_children_r hnc
+    have h0 : L.countP (fun p => decide (p.1 = r)) = 0 :=
+      List.countP_eq_zero.mpr (fun p hp => by simpa using hnc p hp)
+    omega
 
 /-- Every decomposition of a graph on `V` with at most one end per vertex has at most `|V|/2` paths;
 in particular every Lovász decomposition of `M` does. -/
@@ -470,8 +496,8 @@ theorem test2At_of_forestBase2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V
   have hr1 : D₀.ends r = 1 := by rw [hD₀, hF.forM2_odd_r hzr]
   have hends : 2 ≤ D₁.ends r := by
     have := hD₁e r
-    rw [hF.no_child_r, hr1] at this
-    have := hF.one_le_children_r
+    rw [hr1] at this
+    have := hF.two_le_r_count
     omega
   have hrev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
   exact test2At_of_leafDecomp J hrev hr3 (fun _ => hF.leafT2_adj_z)
@@ -486,5 +512,516 @@ theorem test2_of_forestBases2 (J : SimpleGraph V) [DecidableRel J.Adj] (z : V)
   test2_of_test2At J z fun r hr hzr => test2At_of_forestBase2 J hzr (hdeg r hr) (h r hr hzr)
 
 end forest2
+
+/-! ### The floor lift -/
+
+section floor
+
+variable {W : Type*} [Fintype W] [DecidableEq W]
+
+/-- **Floor forest data** on a graph `B` whose even vertices are `w` and the list `T`: a forest `Φ` of
+`B` whose odd-degree vertices are exactly `T`, given by (child, parent) pairs in parent-first order,
+with `w` never a child. -/
+structure FloorData (B : SimpleGraph W) (w : W) (T : List W) (L : List (W × W)) : Prop where
+  edge : ∀ p ∈ L, B.Adj p.1 p.2
+  w_not_mem : w ∉ T
+  child_ne_w : ∀ p ∈ L, p.1 ≠ w
+  children : (L.map Prod.fst).Nodup
+  edges : (L.map pairEdge).Nodup
+  parent_first : L.Pairwise (fun p q => p.2 ≠ q.1)
+  tjoin : ∀ v, (L.map pairEdge).countP (fun e => decide (v ∈ e)) % 2 = if v ∈ T then 1 else 0
+
+/-- **A floor base**: floor data and a Lovász decomposition of `B − Φ` with (i) and (ii). -/
+def FloorBase (B : SimpleGraph W) [DecidableRel B.Adj] (w : W) (T : List W) : Prop :=
+  ∃ L, FloorData B w T L ∧ ∃ D₀ : PathDecomp (delList B (L.map pairEdge)),
+    (∀ v, D₀.ends v = (delList B (L.map pairEdge)).degree v % 2) ∧
+    (∀ p ∈ L, ∀ P ∈ D₀.paths, (P.src = p.1 ∨ P.tgt = p.1) → p.2 ∉ P.walk.support) ∧
+    (∀ p ∈ L, ∀ q ∈ L, p.1 ≠ q.1 → p.2 = q.2 → ∀ P ∈ D₀.paths,
+      ¬ ((P.src = p.1 ∨ P.tgt = p.1) ∧ (P.src = q.1 ∨ P.tgt = q.1)))
+
+/-- **The floor lift** (manuscript Theorem 4.1). If the even vertices of `B` are exactly `w` and the
+vertices of `T`, a floor base gives a decomposition of `B` into at most `(|B| − 1)/2` paths. -/
+theorem floor_of_floorBase (B : SimpleGraph W) [DecidableRel B.Adj] {w : W} {T : List W}
+    (hev : ∀ v, Even (B.degree v) ↔ v = w ∨ v ∈ T) (h : FloorBase B w T) :
+    ∃ D : PathDecomp B, D.size ≤ (Fintype.card W - 1) / 2 := by
+  obtain ⟨L, hF, D₀, hD₀, hi, hii⟩ := h
+  have hnd : (L.map pairEdge).Nodup := hF.edges
+  have hin : ∀ e ∈ L.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hF.edge p hp
+  have hdeg := delList_degree_count B (L.map pairEdge) hnd hin
+  -- children are odd in `B − Φ`
+  have hend : ∀ p ∈ L, 1 ≤ D₀.ends p.1 := by
+    intro p hp
+    rw [hD₀]
+    have h1 := hdeg p.1
+    have ht := hF.tjoin p.1
+    have hw := hF.child_ne_w p hp
+    have hpar := hev p.1
+    by_cases hT : p.1 ∈ T
+    · have he : Even (B.degree p.1) := hpar.2 (Or.inr hT)
+      rw [Nat.even_iff] at he
+      simp only [hT, ite_true] at ht
+      omega
+    · have ho : ¬ Even (B.degree p.1) := fun he => by
+        rcases hpar.1 he with h' | h'
+        · exact hw h'
+        · exact hT h'
+      rw [Nat.not_even_iff] at ho
+      simp only [hT, ite_false] at ht
+      omega
+  have hnotK : ∀ p ∈ L, ¬ (delList B (L.map pairEdge)).Adj p.1 p.2 := fun p hp h =>
+    h.2 (List.mem_map_of_mem hp)
+  have hG : ∀ e, e ∈ B.edgeSet ↔ e ∈ (delList B (L.map pairEdge)).edgeSet ∨ e ∈ L.map pairEdge := by
+    intro e
+    rw [delList_edgeSet]
+    constructor
+    · intro he
+      by_cases hm : e ∈ L.map pairEdge
+      · exact Or.inr hm
+      · exact Or.inl ⟨he, hm⟩
+    · rintro (⟨he, -⟩ | hm)
+      · exact he
+      · exact hin e hm
+  obtain ⟨D, hD⟩ := append_forest (G := B) L (delList B (L.map pairEdge)) hG hnotK hF.children
+    hF.edges hF.parent_first D₀ hend hi hii
+  refine ⟨D, ?_⟩
+  -- `w` is even in `B − Φ`, every vertex has at most one end
+  have hw0 : D₀.ends w = 0 := by
+    rw [hD₀]
+    have h1 := hdeg w
+    have ht := hF.tjoin w
+    have he : Even (B.degree w) := (hev w).2 (Or.inl rfl)
+    rw [Nat.even_iff] at he
+    simp only [hF.w_not_mem, ite_false] at ht
+    omega
+  have h2 : 2 * D₀.size ≤ Fintype.card W - 1 := by
+    rw [← D₀.sum_ends]
+    have h1 : ∑ v, D₀.ends v ≤ ∑ v, (if v ≠ w then 1 else 0) :=
+      Finset.sum_le_sum fun v _ => by
+        by_cases hv : v = w
+        · subst hv; simp [hw0]
+        · simp only [hv, ne_eq, not_false_eq_true, ite_true]
+          rw [hD₀ v]
+          exact Nat.le_of_lt_succ (Nat.mod_lt _ (by norm_num))
+    refine h1.trans (le_of_eq ?_)
+    rw [← Finset.card_filter, Finset.filter_ne', Finset.card_erase_of_mem (Finset.mem_univ _),
+      Finset.card_univ]
+  omega
+
+end floor
+
+section floorT2
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **The floor gives Test2.** If `r` has even degree `≥ 3` in `J` and `J − z` has a decomposition
+into at most `(|J| − 2)/2` paths, then Test2 holds at `(z, r)` (split once at `r`). -/
+theorem test2At_of_floor (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hrev : J.degree r % 2 = 0) (hr3 : 3 ≤ J.degree r)
+    (h : ∃ D : PathDecomp (delVert J z), D.size ≤ (Fintype.card V - 2) / 2) : Test2At J z r := by
+  intro hr
+  obtain ⟨D, hD⟩ := h
+  let r' : {v | v ≠ z} := ⟨r, hr.ne'⟩
+  have hdr : (delVert J z).degree r' + 1 = J.degree r := by
+    have := delVert_degree (J := J) z r'
+    simp only [show J.Adj (r' : V) z from hr.symm, ite_true] at this
+    exact this
+  have hodd : Odd ((delVert J z).degree r') := by rw [Nat.odd_iff]; omega
+  have h3 : 3 ≤ (delVert J z).degree r' := by omega
+  have hcard : 2 ≤ Fintype.card V := by
+    have := Finset.card_le_univ ({z, r} : Finset V)
+    rw [Finset.card_pair hr.ne] at this; exact this
+  obtain ⟨D', h1, h2⟩ := exists_three_ends (x := r') D (k := (Fintype.card V - 2) / 2) hD hodd h3
+  exact ⟨D', by omega, h2⟩
+
+/-- In a Test2 instance, the even vertices of `J − z` are exactly the neighbours of `z` other
+than `r`. -/
+theorem even_delVert_iff (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr : J.Adj z r) (v : {v | v ≠ z}) :
+    Even ((delVert J z).degree v) ↔ J.Adj z v ∧ (v : V) ≠ r := by
+  have hd := delVert_degree (J := J) z v
+  have hvz : (v : V) ≠ z := v.2
+  have hpar := hzr v
+  rw [Nat.even_iff, ← J.adj_comm]
+  by_cases ha : J.Adj (v : V) z
+  · simp only [ha, ite_true] at hd
+    by_cases hvr : (v : V) = r
+    · have : J.degree v % 2 = 0 := Nat.even_iff.mp (hpar.2 (Or.inr hvr))
+      simp only [hvr, ne_eq, not_true_eq_false, and_false, iff_false]
+      omega
+    · have : J.degree v % 2 = 1 :=
+        Nat.odd_iff.mp (Nat.not_even_iff_odd.mp (fun he => by
+          rcases hpar.1 he with h | h
+          · exact hvz h
+          · exact hvr h))
+      simp only [ha, ne_eq, hvr, not_false_eq_true, and_self, iff_true]
+      omega
+  · simp only [ha, ite_false, add_zero] at hd
+    simp only [ha, false_and, iff_false]
+    by_cases hvr : (v : V) = r
+    · exact absurd (hvr ▸ hr.symm) ha
+    · have : J.degree v % 2 = 1 :=
+        Nat.odd_iff.mp (Nat.not_even_iff_odd.mp (fun he => by
+          rcases hpar.1 he with h | h
+          · exact hvz h
+          · exact hvr h))
+      omega
+
+/-- **The floor lift for Test2** (manuscript Corollary 4.2). Let `z, r` be the only even vertices
+of `J`, adjacent, `d(r) ≥ 3`, and let `w`, `T` list the even vertices of `J − z` (that is,
+`N(z) − r`). A floor base of `J − z` gives Test2 at `(z, r)`. -/
+theorem test2At_of_floorBase (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
+    {w : {v | v ≠ z}} {T : List {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ T)
+    (h : FloorBase (delVert J z) w T) : Test2At J z r := by
+  intro hr
+  have hev : ∀ v, Even ((delVert J z).degree v) ↔ v = w ∨ v ∈ T := fun v =>
+    (even_delVert_iff J hzr hr v).trans (hT v)
+  obtain ⟨D, hD⟩ := floor_of_floorBase (delVert J z) hev h
+  have hcard := card_delVert (W := V) z
+  have hrev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
+  exact test2At_of_floor J hrev hr3 ⟨D, by rw [hcard] at hD; omega⟩ hr
+
+end floorT2
+
+/-! ### The matching case of the floor lift, and DL -/
+
+section floorMatching
+
+variable {W : Type*} [Fintype W] [DecidableEq W]
+
+omit [Fintype W] in
+/-- The edges of a list of disjoint pairs are distinct. -/
+theorem nodup_map_pairEdge :
+    ∀ (L : List (W × W)), (pairVerts L).Nodup → (L.map pairEdge).Nodup
+  | [], _ => List.nodup_nil
+  | p :: L', hnd => by
+    rw [pairVerts_cons, List.nodup_cons, List.nodup_cons] at hnd
+    obtain ⟨hp1, hp2, hnd'⟩ := hnd
+    rw [List.mem_cons, not_or] at hp1
+    rw [List.map_cons, List.nodup_cons]
+    refine ⟨?_, nodup_map_pairEdge L' hnd'⟩
+    intro hm
+    obtain ⟨q, hq, hqe⟩ := List.mem_map.mp hm
+    have h1 : p.1 ∈ pairEdge q := by rw [hqe]; simp [pairEdge]
+    simp only [pairEdge, Sym2.mem_iff] at h1
+    rcases h1 with h | h
+    · exact hp1.2 (h ▸ fst_mem_pairVerts hq)
+    · exact hp1.2 (h ▸ snd_mem_pairVerts hq)
+
+omit [Fintype W] in
+/-- A list of disjoint pairs meets each vertex of its support in exactly one edge. -/
+theorem countP_pairEdge_of_nodup :
+    ∀ (L : List (W × W)), (pairVerts L).Nodup → ∀ v,
+      (L.map pairEdge).countP (fun e => decide (v ∈ e)) = if v ∈ pairVerts L then 1 else 0
+  | [], _, v => by simp [pairVerts]
+  | p :: L', hnd, v => by
+    rw [pairVerts_cons, List.nodup_cons, List.nodup_cons] at hnd
+    obtain ⟨hp1, hp2, hnd'⟩ := hnd
+    rw [List.mem_cons, not_or] at hp1
+    have ih := countP_pairEdge_of_nodup L' hnd' v
+    rw [List.map_cons, List.countP_cons, ih]
+    simp only [pairVerts_cons, List.mem_cons, pairEdge, Sym2.mem_iff]
+    by_cases h1 : v = p.1
+    · subst h1
+      simp [hp1.2]
+    · by_cases h2 : v = p.2
+      · subst h2
+        simp [hp2, h1]
+      · simp [h1, h2]
+
+/-- **The floor lift, matching case** (manuscript Theorem 4.1 with `Φ` a matching). If the even
+vertices of `B` are `w` and the vertices of the disjoint pairs `L` (edges of `B`), a Lovász
+decomposition of `B − L` satisfying the disjunction of every pair gives a decomposition of `B` into
+at most `(|B| − 1)/2` paths. -/
+theorem floor_of_matchingBase (B : SimpleGraph W) [DecidableRel B.Adj] {w : W} {L : List (W × W)}
+    (hev : ∀ v, Even (B.degree v) ↔ v = w ∨ v ∈ pairVerts L) (hnd : (pairVerts L).Nodup)
+    (hw : w ∉ pairVerts L) (hedge : ∀ p ∈ L, B.Adj p.1 p.2)
+    (D₀ : PathDecomp (delList B (L.map pairEdge)))
+    (hD₀ : ∀ v, D₀.ends v = (delList B (L.map pairEdge)).degree v % 2)
+    (hdisj : TriangleDisj D₀ L) :
+    ∃ D : PathDecomp B, D.size ≤ (Fintype.card W - 1) / 2 := by
+  have hin : ∀ e ∈ L.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hedge p hp
+  have hnde : (L.map pairEdge).Nodup := nodup_map_pairEdge L hnd
+  have hdeg := delList_degree_count B (L.map pairEdge) hnde hin
+  have hcnt := countP_pairEdge_of_nodup L hnd
+  have hodd : ∀ v ∈ pairVerts L, (delList B (L.map pairEdge)).degree v % 2 = 1 := by
+    intro v hv
+    have h1 := hdeg v
+    rw [hcnt v, if_pos hv] at h1
+    have he := (hev v).2 (Or.inr hv)
+    rw [Nat.even_iff] at he
+    omega
+  have hnotK : ∀ p ∈ L, ¬ (delList B (L.map pairEdge)).Adj p.1 p.2 := fun p hp h =>
+    h.2 (List.mem_map_of_mem hp)
+  have hG : ∀ e, e ∈ B.edgeSet ↔ e ∈ (delList B (L.map pairEdge)).edgeSet ∨ e ∈ L.map pairEdge := by
+    intro e
+    rw [delList_edgeSet]
+    constructor
+    · intro he
+      by_cases hm : e ∈ L.map pairEdge
+      · exact Or.inr hm
+      · exact Or.inl ⟨he, hm⟩
+    · rintro (⟨he, -⟩ | hm)
+      · exact he
+      · exact hin e hm
+  obtain ⟨D, hD⟩ := append_pairs (G := B) L (delList B (L.map pairEdge)) hG hnotK hnd D₀
+    (fun p hp => ⟨by rw [hD₀, hodd p.1 (fst_mem_pairVerts hp)],
+      by rw [hD₀, hodd p.2 (snd_mem_pairVerts hp)]⟩) hdisj
+  refine ⟨D, ?_⟩
+  have hw0 : D₀.ends w = 0 := by
+    rw [hD₀]
+    have h1 := hdeg w
+    rw [hcnt w, if_neg hw] at h1
+    have he := (hev w).2 (Or.inl rfl)
+    rw [Nat.even_iff] at he
+    omega
+  have h2 : 2 * D₀.size ≤ Fintype.card W - 1 := by
+    rw [← D₀.sum_ends]
+    have h1 : ∑ v, D₀.ends v ≤ ∑ v, (if v ≠ w then 1 else 0) :=
+      Finset.sum_le_sum fun v _ => by
+        by_cases hv : v = w
+        · subst hv; simp [hw0]
+        · simp only [hv, ne_eq, not_false_eq_true, ite_true]
+          rw [hD₀ v]
+          exact Nat.le_of_lt_succ (Nat.mod_lt _ (by norm_num))
+    refine h1.trans (le_of_eq ?_)
+    rw [← Finset.card_filter, Finset.filter_ne', Finset.card_erase_of_mem (Finset.mem_univ _),
+      Finset.card_univ]
+  omega
+
+end floorMatching
+
+section floorDL
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **DL gives Test2** (manuscript Corollary 4.4). Let `z, r` be the only even vertices of `J`,
+adjacent, `d(r) ≥ 3`; let `w ∈ N(z) − r` and let `L` be disjoint pairs, edges of `J − z`, covering
+exactly `N(z) − {r, w}`. If no pair is a pair of universal twins of its component of
+`(J − z) − L`, then Conjecture DL gives Test2 at `(z, r)` (through the floor of `J − z`). -/
+theorem test2At_of_disjL1 (hDL : DisjL1.{u}) (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
+    {w : {v | v ≠ z}} {L : List ({v | v ≠ z} × {v | v ≠ z})}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ pairVerts L)
+    (hnd : (pairVerts L).Nodup) (hw : w ∉ pairVerts L)
+    (hedge : ∀ p ∈ L, (delVert J z).Adj p.1 p.2)
+    (htw : ∀ p ∈ L, ¬ UnivTwins (delList (delVert J z) (L.map pairEdge)) p.1 p.2) :
+    Test2At J z r := by
+  intro hr
+  set B := delVert J z with hB
+  have hev : ∀ v, Even (B.degree v) ↔ v = w ∨ v ∈ pairVerts L := fun v =>
+    (even_delVert_iff J hzr hr v).trans (hT v)
+  -- parities in `G = B − L`
+  have hin : ∀ e ∈ L.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hedge p hp
+  have hnde : (L.map pairEdge).Nodup := nodup_map_pairEdge L hnd
+  have hdeg := delList_degree_count B (L.map pairEdge) hnde hin
+  have hcnt := countP_pairEdge_of_nodup L hnd
+  have hpar : ∀ v, (delList B (L.map pairEdge)).degree v % 2 = if v = w then 0 else 1 := by
+    intro v
+    have h1 := hdeg v
+    rw [hcnt v] at h1
+    by_cases hvw : v = w
+    · subst hvw
+      rw [if_neg hw] at h1
+      have he := (hev v).2 (Or.inl rfl)
+      rw [Nat.even_iff] at he
+      simp only [ite_true]
+      omega
+    · rw [if_neg hvw]
+      by_cases hv : v ∈ pairVerts L
+      · rw [if_pos hv] at h1
+        have he := (hev v).2 (Or.inr hv)
+        rw [Nat.even_iff] at he
+        omega
+      · rw [if_neg hv] at h1
+        have ho : ¬ Even (B.degree v) := fun he => by
+          rcases (hev v).1 he with h | h
+          · exact hvw h
+          · exact hv h
+        rw [Nat.not_even_iff] at ho
+        omega
+  have hevG : (evenSet (delList B (L.map pairEdge))).card ≤ 1 := by
+    have hsub : evenSet (delList B (L.map pairEdge)) ⊆ {w} := by
+      intro v hv
+      simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and] at hv
+      rw [Finset.mem_singleton]
+      by_contra hvw
+      have := hpar v
+      rw [if_neg hvw] at this
+      exact (Nat.not_even_iff.mpr this) hv.2
+    exact (Finset.card_le_card hsub).trans (by simp)
+  obtain ⟨D₀, hD₀, hdisj⟩ := hDL _ (delList B (L.map pairEdge)) hevG L hnd (by
+    intro p hp
+    have hw1 : p.1 ≠ w := fun h => hw (h ▸ fst_mem_pairVerts hp)
+    have hw2 : p.2 ≠ w := fun h => hw (h ▸ snd_mem_pairVerts hp)
+    have h1 := hpar p.1
+    have h2 := hpar p.2
+    rw [if_neg hw1] at h1
+    rw [if_neg hw2] at h2
+    exact ⟨h1, h2, fun h => h.2 (List.mem_map_of_mem hp), htw p hp⟩)
+  obtain ⟨D, hD⟩ := floor_of_matchingBase B hev hnd hw hedge D₀ hD₀ hdisj
+  have hcard := card_delVert (W := V) z
+  have hrev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
+  exact test2At_of_floor J hrev hr3 ⟨D, by rw [hcard] at hD; omega⟩ hr
+
+end floorDL
+
+/-! ### One pair: deletion degree four, from separation and two-token steering -/
+
+section onePair
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- Parities after deleting a matching: if the even vertices of `B` are `w` and the vertices of the
+disjoint pairs `L`, then in `B − L` only `w` is even. -/
+theorem delPairs_degree_mod {W : Type*} [Fintype W] [DecidableEq W] (B : SimpleGraph W)
+    [DecidableRel B.Adj] {w : W} {L : List (W × W)}
+    (hev : ∀ v, Even (B.degree v) ↔ v = w ∨ v ∈ pairVerts L) (hnd : (pairVerts L).Nodup)
+    (hw : w ∉ pairVerts L) (hedge : ∀ p ∈ L, B.Adj p.1 p.2) (v : W) :
+    (delList B (L.map pairEdge)).degree v % 2 = if v = w then 0 else 1 := by
+  have hin : ∀ e ∈ L.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hedge p hp
+  have h1 := delList_degree_count B (L.map pairEdge) (nodup_map_pairEdge L hnd) hin v
+  rw [countP_pairEdge_of_nodup L hnd v] at h1
+  by_cases hvw : v = w
+  · subst hvw
+    rw [if_neg hw] at h1
+    have he := (hev v).2 (Or.inl rfl)
+    rw [Nat.even_iff] at he
+    simp only [ite_true]
+    omega
+  · rw [if_neg hvw]
+    by_cases hv : v ∈ pairVerts L
+    · rw [if_pos hv] at h1
+      have he := (hev v).2 (Or.inr hv)
+      rw [Nat.even_iff] at he
+      omega
+    · rw [if_neg hv] at h1
+      have ho : ¬ Even (B.degree v) := fun he => by
+        rcases (hev v).1 he with h | h
+        · exact hvw h
+        · exact hv h
+      rw [Nat.not_even_iff] at ho
+      omega
+
+/-- **One pair suffices at deletion degree four** (manuscript Proposition 5.3). Let `z, r` be the
+only even vertices of `J`, adjacent, `d(r) ≥ 3`, and let the even vertices of `J − z` be `w, a, b`
+with `ab` an edge. If some Lovász decomposition of `(J − z) − ab` has its path ending at `b` avoiding
+`a`, then Test2 holds at `(z, r)`. -/
+theorem test2At_of_pairAvoid (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
+    {w a b : {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ pairVerts [(a, b)])
+    (hnd : (pairVerts [(a, b)]).Nodup) (hw : w ∉ pairVerts [(a, b)])
+    (hab : (delVert J z).Adj a b)
+    (h : AvoidDecomp (delList (delVert J z) ([(a, b)].map pairEdge)) b {a}) : Test2At J z r := by
+  intro hr
+  have hev : ∀ v, Even ((delVert J z).degree v) ↔ v = w ∨ v ∈ pairVerts [(a, b)] := fun v =>
+    (even_delVert_iff J hzr hr v).trans (hT v)
+  obtain ⟨D₀, hD₀, hav⟩ := h
+  have hdisj : TriangleDisj D₀ [(a, b)] := by
+    intro p hp
+    rw [List.mem_singleton] at hp
+    subst hp
+    exact Or.inl fun P hP hend => hav P hP hend a (Finset.mem_singleton_self a)
+  obtain ⟨D, hD⟩ := floor_of_matchingBase (delVert J z) hev hnd hw
+    (fun p hp => by rw [List.mem_singleton] at hp; subst hp; exact hab) D₀ hD₀ hdisj
+  have hcard := card_delVert (W := V) z
+  have hrev : J.degree r % 2 = 0 := Nat.even_iff.mp ((hzr r).2 (Or.inr rfl))
+  exact test2At_of_floor J hrev hr3 ⟨D, by rw [hcard] at hD; omega⟩ hr
+
+/-- The graph `(J − z) − ab` has at most one even vertex, namely `w`, which has positive degree when
+`d_J(w) ≥ 3`. -/
+theorem onePair_evenSet (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr : J.Adj z r)
+    {w a b : {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ pairVerts [(a, b)])
+    (hnd : (pairVerts [(a, b)]).Nodup) (hw : w ∉ pairVerts [(a, b)])
+    (hab : (delVert J z).Adj a b) (hw3 : 3 ≤ J.degree w) :
+    (evenSet (delList (delVert J z) ([(a, b)].map pairEdge))).card ≤ 1 ∧
+      w ∈ evenSet (delList (delVert J z) ([(a, b)].map pairEdge)) ∧
+      (∀ v, v ≠ w → (delList (delVert J z) ([(a, b)].map pairEdge)).degree v % 2 = 1) := by
+  have hev : ∀ v, Even ((delVert J z).degree v) ↔ v = w ∨ v ∈ pairVerts [(a, b)] := fun v =>
+    (even_delVert_iff J hzr hr v).trans (hT v)
+  have hpar := delPairs_degree_mod (delVert J z) hev hnd hw
+    (fun p hp => by rw [List.mem_singleton] at hp; subst hp; exact hab)
+  refine ⟨?_, ?_, fun v hv => by rw [hpar v, if_neg hv]⟩
+  · have hsub : evenSet (delList (delVert J z) ([(a, b)].map pairEdge)) ⊆ {w} := by
+      intro v hv
+      simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and] at hv
+      rw [Finset.mem_singleton]
+      by_contra hvw
+      have := hpar v
+      rw [if_neg hvw] at this
+      exact (Nat.not_even_iff.mpr this) hv.2
+    exact (Finset.card_le_card hsub).trans (by simp)
+  · -- `w` is not in the pair, so it keeps its degree `d_J(w) − 1 ≥ 2`
+    have hwa : w ≠ a := fun h => hw (by rw [h]; simp [pairVerts])
+    have hwb : w ≠ b := fun h => hw (by rw [h]; simp [pairVerts])
+    have hdeg := delList_degree_count (delVert J z) ([(a, b)].map pairEdge)
+      (nodup_map_pairEdge _ hnd) (fun e he => by
+        rw [List.map_singleton, List.mem_singleton] at he; subst he; exact hab) w
+    rw [countP_pairEdge_of_nodup _ hnd w, if_neg hw] at hdeg
+    have hzw : J.Adj z w := ((hT w).2 (Or.inl rfl)).1
+    have hdz := delVert_degree (J := J) z w
+    simp only [show J.Adj (w : V) z from hzw.symm, ite_true] at hdz
+    have hev2 := hpar w
+    simp only [ite_true] at hev2
+    simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and]
+    exact ⟨by omega, Nat.even_iff.mpr hev2⟩
+
+/-- **Deletion degree four by separation**: if moreover `a, b` have no common neighbour in
+`(J − z) − ab`, Test2 holds at `(z, r)` (manuscript Corollary 5.4(a)). -/
+theorem test2At_of_pair_farApart (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
+    {w a b : {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ pairVerts [(a, b)])
+    (hnd : (pairVerts [(a, b)]).Nodup) (hw : w ∉ pairVerts [(a, b)])
+    (hab : (delVert J z).Adj a b) (hw3 : 3 ≤ J.degree w)
+    (hfar : ∀ x, ¬ ((delVert J z).Adj a x ∧ (delVert J z).Adj x b)) : Test2At J z r := by
+  intro hr
+  obtain ⟨hev1, -, -⟩ := onePair_evenSet J hzr hr hT hnd hw hab hw3
+  have hab' : a ≠ b := by
+    intro h; rw [pairVerts, List.flatMap_cons, List.flatMap_nil, List.append_nil, h] at hnd; simp at hnd
+  have hFar : FarApart (delList (delVert J z) ([(a, b)].map pairEdge)) b a := by
+    refine ⟨Ne.symm hab', fun h => h.2 ?_, fun x hx => hfar x ⟨hx.2.1.symm, hx.1.1.symm⟩⟩
+    simp [pairEdge, Sym2.eq_swap]
+  obtain ⟨D, hD, hav⟩ := lovasz_avoid _ hev1 hFar
+  exact test2At_of_pairAvoid J hzr hr3 hT hnd hw hab
+    ⟨D, hD, fun P hP hend x hx => by rw [Finset.mem_singleton] at hx; subst hx; exact hav P hP hend⟩ hr
+
+/-- **Deletion degree four by two-token steering**: a two-token schedule for `((J − z) − ab, b, {a})`
+gives Test2 at `(z, r)` (manuscript Corollary 5.4(b); `avoid_of_steer2`). -/
+theorem test2At_of_pair_steer2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
+    {w a b : {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, (J.Adj z v ∧ (v : V) ≠ r) ↔ v = w ∨ v ∈ pairVerts [(a, b)])
+    (hnd : (pairVerts [(a, b)]).Nodup) (hw : w ∉ pairVerts [(a, b)])
+    (hab : (delVert J z).Adj a b) (hw3 : 3 ≤ J.degree w)
+    (hS : Steer2 (leafX a) (apex (delList (delVert J z) ([(a, b)].map pairEdge)) {b})
+      (some w) (some b)) : Test2At J z r := by
+  intro hr
+  obtain ⟨hev1, hwev, hodd⟩ := onePair_evenSet J hzr hr hT hnd hw hab hw3
+  have hwa : a ≠ w := fun h => hw (by rw [← h]; simp [pairVerts])
+  have hwb : b ≠ w := fun h => hw (by rw [← h]; simp [pairVerts])
+  have hab' : a ≠ b := by
+    intro h; rw [pairVerts, List.flatMap_cons, List.flatMap_nil, List.append_nil, h] at hnd; simp at hnd
+  have hna : ¬ (delList (delVert J z) ([(a, b)].map pairEdge)).Adj a b := fun h => h.2 (by simp [pairEdge])
+  exact test2At_of_pairAvoid J hzr hr3 hT hnd hw hab
+    (avoid_of_steer2 _ hev1 hwev (hodd a hwa) (hodd b hwb) hab' hna hS) hr
+
+end onePair
 
 end Gallai
