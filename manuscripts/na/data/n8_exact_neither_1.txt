@@ -68,3 +68,4 @@ graph 67 GEj\v{ graphs=4042 allodd=67 pairs=1838 na=1433 weak=1680 weak_not_na=2
 graph 68 GEh}p{ graphs=4088 allodd=68 pairs=1872 na=1462 weak=1714 weak_not_na=252 neither=158 construct_ok=1714 exact_good=0 exact_bad=158 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 69 GEhzs{ graphs=4099 allodd=69 pairs=1906 na=1493 weak=1748 weak_not_na=255 neither=158 construct_ok=1748 exact_good=0 exact_bad=158 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 70 GEnvS{ graphs=4176 allodd=70 pairs=1942 na=1527 weak=1784 weak_not_na=257 neither=158 construct_ok=1784 exact_good=0 exact_bad=158 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+exit=124
