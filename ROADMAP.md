@@ -145,7 +145,7 @@ EMM sufficiency work is **stopped**.
   - **Milestone 1 (bbede7f, merged; build green; axioms checked):**
     - Lean `MultiToken.lean`: `SteerK` (moves, drops, suppression, finish), the transfer theorem `steerK_good`, `triangleBase_of_steerK`, and **`test1At_of_steerK`**. A k-token schedule is therefore a certificate of Test1 at that root.
     - Data at order 9, d(z) = 6, all 3-connected J: schedules exist at 7,529 of 10,118 roots with data (74%).
-    - Residual families: 71/180 roots at |O| = 8 and 107/144 at |O| = 10, with many undecided at the budget. E28 hard graphs: 10/48.
+    - Residual families: 72/180 roots at |O| = 8 and 109/144 at |O| = 10, at budget 2·10⁶ (committed `data/runs/resid_O8_s1_b2e6.txt` and `resid_O10_s1_b2e6.txt`). An earlier, smaller-budget run gave 71/107. E28 hard graphs: 10/48.
 - **na** (session_01FxXpVhLSRHGoH9FHpDU66p, branch `claude/na`): **NA PROVED** (ba80a1c, merged; build green; axioms checked by the coordinator).
   - **Lean** `neighbourAvoidOn` (NeighbourAvoid.lean). Corollaries:
     - `conjNDegTwoOn`: the degree-two case of N, unconditional;
