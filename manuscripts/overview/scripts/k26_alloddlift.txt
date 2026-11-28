@@ -1,0 +1,6 @@
+forest V(B)-joins of K_{2,6}: 32
+decompositions of K_{2,6} into <= 4 paths: 6360
+root 0 (hub) rooted forests tried 128 all-odd base exists: False
+root 2 (leaf) rooted forests tried 112 all-odd base exists: True
+(T1) at hub 0: True
+variant, root 0 as a child with >= 2 children: rooted forests tried 300 base exists: True
