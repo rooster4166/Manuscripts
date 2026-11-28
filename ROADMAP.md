@@ -134,7 +134,25 @@ EMM sufficiency work is **stopped**.
   - **Separated case at order 10** (417,988 instances): classified. Proved categories cover most of it; the other 31,897 instances are all certified by Criterion R and executed.
   - **Conjecture AE** (Q(c) avoids the even vertex g, c ≁ g): exhaustive to n ≤ 9.
   - m = 3: Criterion R3 certified every instance tested at order 8.
-- **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`, new): roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
+- **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`): **finished** (a95f308). Manuscript `manuscripts/nodata`; audit A41 (minor revision; mathematics sound; F1–F18 fixed).
+  - Lean `NoData.lean`:
+    - twin insertion and the twin reductions for (T1) and (T2);
+    - the fat theta for all t;
+    - root moves M1/M2;
+    - CherryLN ⇒ (T1) at cherry-data roots;
+    - CherryLN ⇒ L_N;
+    - L_N ⇒ (T1) at matching-data roots;
+    - the far-apart 2-chain.
+  - Data:
+    - order 11, exhaustive: root moves reach matching data at 78.1% of the 12.8M no-data roots;
+    - CL families hold at order 10 with 0 failures (two 2-chains: 157M sets);
+    - sibling (star/claw) families fail exactly where the Hall condition (H1) fails, with a few further failures.
+  - Open:
+    - CL;
+    - the rooted floor needed by the twin reduction;
+    - root moves for (T2);
+    - a sibling CL (906 twin-free order-11 roots).
+  - Original brief: roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
   - **Milestone 1 (ff51181, merged; build green; axioms checked):**
     - Lean `NoData.lean`:
       - **`test1_fatTheta`: (T1) on K_{3,t} + h2h3 for every even t, which closes the six all-odd exceptions and the whole family**;
