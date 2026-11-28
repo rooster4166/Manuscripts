@@ -13,7 +13,7 @@ tails we look for a *parity decomposition* (`ends v = deg v mod 2` for every `v`
 live tail, no path contains both `c` and `x` (`TailGood`). This is a property of vertex sets, and it
 is kept by every Fan step whose target is none of the vertices `c, x` of a live tail.
 
-*Tokens* are the even vertices of the current graph (`evenSet`). `SteerK` (manuscript Definition 3.1)
+*Tokens* are the even vertices of the current graph (`evenSet`). `SteerK` (manuscript Definition 2.2)
 is a schedule of four kinds of moves:
 * `move`: a token `p` moves along an edge `pu` to an odd vertex `u` that is not `c` or `x` of a live
   tail and, once `pu` is deleted, is adjacent to no other token (`fan_step_multi`: Fan's step has no
@@ -26,10 +26,10 @@ is a schedule of four kinds of moves:
   *multi-tail leaf lemma* (`tailGood_fin`, from the leaf-tail lemma `avoid_leafTail` and Lovász's
   theorem) gives a good decomposition.
 
-* **`steerK_good`** (manuscript Theorem 3.4, the transfer theorem): a schedule from the even set of
+* **`steerK_good`** (manuscript Theorem 2.7, the transfer theorem): a schedule from the even set of
   `K` gives `TailGood T K`, whatever `K` is, provided the static conditions `TailSys T` and the
   dynamic invariant `TailInv T K` hold at the start.
-* **`triangleBase_of_steerK`** (Theorem 4.2): for triangle data `(J, z, r, w, L)` with the pairs of
+* **`triangleBase_of_steerK`** (Theorem 3.1): for triangle data `(J, z, r, w, L)` with the pairs of
   `L` oriented as `(xᵢ, yᵢ)`, a schedule in `M⁺ = leaves M {yᵢ}` with the tails `(ℓᵢ, yᵢ, xᵢ)` gives
   a triangle base; **`test1At_of_steerK`**: hence Test1 at `(J, z, r)`.
 -/
@@ -58,7 +58,7 @@ def SuppOK (T : Finset (U × U × U)) (K : SimpleGraph U) (a b : U) : Prop :=
   ∀ t ∈ T, a ≠ t.1 ∧ b ≠ t.1 ∧
     (K.Adj t.1 t.2.1 → ¬ (a = t.2.2 ∧ b = t.2.1) ∧ ¬ (a = t.2.1 ∧ b = t.2.2))
 
-/-- **Static conditions on a set of tails** (manuscript Definition 3.2). In each tail `x ∉ {c, w}`,
+/-- **Static conditions on a set of tails** (manuscript Definition 2.1). In each tail `x ∉ {c, w}`,
 and the vertices of two different tails do not interfere: the leaf of one is neither the leaf nor
 the stem of the other, and the avoided vertex of one is neither the leaf nor the stem of the
 other. -/
@@ -80,7 +80,7 @@ def TailGood (T : Finset (U × U × U)) (K : SimpleGraph U) [DecidableRel K.Adj]
   ∃ D : PathDecomp K, (∀ v, D.ends v = K.degree v % 2) ∧
     ∀ t ∈ T, K.Adj t.1 t.2.1 → MeetsOnce D {t.1, t.2.2}
 
-/-- **A `k`-token schedule** (manuscript Definition 3.1). `SteerK T K τ`: the tokens are the vertices
+/-- **A `k`-token schedule** (manuscript Definition 2.2). `SteerK T K τ`: the tokens are the vertices
 of `τ` (in use, `τ` is the even set of `K`), and the live tails are those of `T` whose leaf edge is
 in `K`.
 * `fin`: at most one token and at most one live tail are left.
@@ -107,7 +107,7 @@ inductive SteerK (T : Finset (U × U × U)) : SimpleGraph U → Finset U → Pro
 
 /-! ### One Fan step with many even vertices -/
 
-/-- **Fan's step with many tokens** (manuscript Lemma 3.3). Let `p` be even, `u` an odd neighbour
+/-- **Fan's step with many tokens** (manuscript Lemma 2.3). Let `p` be even, `u` an odd neighbour
 of `p`, and suppose that in `K − up` the vertex `u` is adjacent to no even vertex of `K` other than
 `p`. A parity decomposition of `K − up` gives one of `K`, every path of which lies in a path of the
 old one plus `u`. -/
@@ -415,7 +415,7 @@ theorem tailGood_move (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U ×
   simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
   exact ⟨huc, hux⟩
 
-/-- **The drop step** (manuscript Lemma 3.3(b)): if the stem `w` of a live tail `(c, w, x)` is odd,
+/-- **The drop step** (manuscript Lemma 2.5(b)): if the stem `w` of a live tail `(c, w, x)` is odd,
 a good decomposition of `K − cw` plus the one-edge path `cw` is good for `K`. -/
 theorem tailGood_drop (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U × U × U)}
     (hT : TailSys T) (hinv : TailInv T K) {t₀ : U × U × U} (ht₀ : t₀ ∈ T)
@@ -588,7 +588,7 @@ theorem tailGood_supp (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U ×
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
     exact ⟨fun h => leaf_not_mem_evenSet K hc (h ▸ hp), fun h => odd_not_mem_evenSet K hx (h ▸ hp)⟩
 
-/-- **The multi-tail leaf lemma** (manuscript Lemma 3.5). Let `K` have at most one even vertex,
+/-- **The multi-tail leaf lemma** (manuscript Lemma 2.6). Let `K` have at most one even vertex,
 and let at most one tail be live. Then `K` has a parity decomposition in which no path contains
 both the leaf and the avoided vertex of a live tail. (With no live tail this is Lovász's theorem;
 with one, it is the leaf-tail lemma `avoid_leafTail`; the even vertex may be the stem.) -/
@@ -625,7 +625,7 @@ theorem tailGood_fin (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U × 
 
 /-! ### The transfer theorem -/
 
-/-- **The transfer theorem** (manuscript Theorem 3.6). If `T` satisfies the static conditions, the
+/-- **The transfer theorem** (manuscript Theorem 2.7). If `T` satisfies the static conditions, the
 live tails of `K` satisfy the invariant, and `K` has a `k`-token schedule from its even set, then `K`
 has a parity decomposition in which no path contains both the leaf and the avoided vertex of a
 live tail. -/
@@ -671,7 +671,7 @@ with `ℓᵢ = inr yᵢ`. -/
 def triTails (L : List (V × V)) : Finset ((V ⊕ V) × (V ⊕ V) × (V ⊕ V)) :=
   (L.map (fun p => ((Sum.inr p.2 : V ⊕ V), (Sum.inl p.2 : V ⊕ V), (Sum.inl p.1 : V ⊕ V)))).toFinset
 
-/-- **The leaf graph** `M⁺ = M + {yᵢℓᵢ}` (manuscript §4). -/
+/-- **The leaf graph** `M⁺ = M + {yᵢℓᵢ}` (manuscript §3). -/
 abbrev triLeaf (J : SimpleGraph V) (z w : V) (L : List (V × V)) : SimpleGraph (V ⊕ V) :=
   leaves (triM J z w L) (leafSet L)
 
@@ -747,7 +747,7 @@ theorem triTails_inv (hz : ∀ v, Even (J.degree v) ↔ v = z) (hD : TriangleDat
   · simp only [leaves_adj_inl_inl]
     exact hD.triM_not_adj hp
 
-/-- **A schedule gives a triangle base** (manuscript Theorem 4.2). Let `(J, z, r, w, L)` be triangle
+/-- **A schedule gives a triangle base** (manuscript Theorem 3.1). Let `(J, z, r, w, L)` be triangle
 data, `z` the only even vertex of `J`, and orient each pair of `L` as `(xᵢ, yᵢ)`. If the leaf graph
 `M⁺` has a `k`-token schedule from its even set, with the tails `(ℓᵢ, yᵢ, xᵢ)`, then some Lovász
 decomposition of `M` has, for every `i`, the path ending at `yᵢ` avoiding `xᵢ`; so `J` has a
@@ -839,7 +839,7 @@ theorem triangleBase_of_steerK (hz : ∀ v, Even (J.degree v) ↔ v = z)
     rw [hDHy p.2 hp2Y] at hle
     omega
 
-/-- **Test1 from a schedule** (manuscript Corollary 4.3). -/
+/-- **Test1 from a schedule** (manuscript Corollary 3.2). -/
 theorem test1At_of_steerK (hz : ∀ v, Even (J.degree v) ↔ v = z) (hr3 : 3 ≤ J.degree r)
     (hD : TriangleData J z r w L)
     (hS : SteerK (triTails L) (triLeaf J z w L) (evenSet (triLeaf J z w L))) :

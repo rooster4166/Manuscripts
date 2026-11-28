@@ -1,0 +1,621 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\MT}{\mathrm{MT}}
+\emergencystretch=3em
+
+\title[Multi-token steering]{Multi-token steering:\\ the triangle base from $k$-token schedules}
+\author{Gallai project (cloud session \texttt{claude/multi-token})}
+\date{28 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+The triangle base~\cite{DT} asks for a Lov\'asz decomposition of an auxiliary graph $M$ with one
+disjunctive end-path condition per pair of a matching; it implies Test1, one of the two tests to
+which Gallai's conjecture is reduced in Lean. The frontier is $d(z)=6$: two pairs, and in the
+dense T(6)-i residual no proof is known. Two-token steering~\cite{TRN} settles one pair by hanging a
+leaf and moving two tokens. We extend it to $k$ pairs at once. \emph{Status labels: everything in
+Sections~\ref{sec:sched}--\ref{sec:tb} is proved and formalised in Lean; Theorem~\ref{thm:cover} and Propositions~\ref{prop:potential}
+and~\ref{prop:nminus2} are proved on paper; Sections~\ref{sec:comp}--\ref{sec:resid} are computations with stated scope.}
+\begin{itemize}
+\item \emph{$k$-token schedules and the transfer theorem} (Lean). Hang a leaf $\ell_i$ at one vertex
+$y_i$ of every pair; the tokens are the even vertices of the current graph. A schedule uses three
+moves: a Fan step of a token onto an odd vertex outside $\{\ell_i,x_i\}$ that is adjacent to no other
+token; a \emph{drop} of a leaf whose stem has become odd; and the \emph{suppression} of a token of
+degree two. It ends with at most one token and one live tail, where the \emph{multi-tail leaf lemma}
+applies. A schedule gives a Lov\'asz decomposition of $M$ with $x_i\notin Q(y_i)$ for every $i$
+(Theorems~\ref{thm:transfer} and~\ref{thm:tb}), hence a triangle base and Test1
+(Corollary~\ref{cor:test1}).
+\item \emph{Coverage} (paper). An explicit certificate family (Theorem~\ref{thm:cover}) covers
+$882$ of the $10{,}118$ roots with data at order~$9$. No structural condition covering a whole
+dense residual shape exists for this move set: in our $|O|=8$ residual family every shape has roots
+at which the exhaustive search proves that no schedule exists.
+\item \emph{Computation.} At order~$9$ ($d(z)=6$, all $1{,}819$ $3$-connected $J$) some data choice
+and orientation has a schedule at $7{,}529$ of the $10{,}118$ roots ($74\%$); all $76{,}474$
+schedules found were executed and checked by an independent program. On the residual families of~\cite{T6} the
+proportion is $72$ of $180$ roots ($|O|=8$) and $109$ of $144$ ($|O|=10$, with a $C_4$ subfamily at $|O|=8$); on the eight E28 hard graphs it is $10$ of $48$ roots.
+\item \emph{The residual} (paper and computation). A schedule needs $2k-1$ token removals, each at a
+vertex of degree at most two (Proposition~\ref{prop:potential}). If $r$ has fewer than $k$
+non-neighbours, at most $k-1$ removals are possible, so there is no schedule
+(Proposition~\ref{prop:nminus2}): at $d(z)=6$ this excludes every root of degree $n-2$, which is
+$1{,}597$ of the $2{,}589$ unscheduled roots at order~$9$. In the dense residual almost every other
+unscheduled root is \emph{frozen}: no reachable state allows a single removal.
+\end{itemize}
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+\subsection*{The triangle base} Let $J$ have exactly one even vertex $z$, with $d(z)=2m$. Triangle
+data at a root $r\in N(z)$ are a vertex $w\in N(z)-r$ and a perfect matching
+$\{a_1b_1,\dots,a_kb_k\}$, $k=m-1$, of $J[N(z)-\{r,w\}]$ by edges of $J$. Put
+\[M=J-zw-\{za_i,zb_i,a_ib_i:i\le k\}.\]
+In $M$ the vertex $z$ is a leaf at $r$, $w$ is the only even vertex, and $a_i\not\sim b_i$. A
+\emph{triangle base} is a Lov\'asz decomposition $\cD$ of $M$ with, for every $i$,
+\begin{equation}\label{eq:disj}
+a_i\notin V(Q(b_i))\quad\text{or}\quad b_i\notin V(Q(a_i)),
+\end{equation}
+where $Q(v)$ is the path ending at $v$. A triangle base gives Test1 at $(J,z,r)$~\cite[Thm.~2.1]{DT}
+(Lean \texttt{test1At\_of\_triangleBase}). For $d(z)=4$ there is one pair and Test1 at $d(z)=4$ was
+already known; the frontier is $d(z)=6$, two pairs, in particular the dense T(6)-i residual, where
+$J[N(z)]=K_6-D$ with $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$~\cite{T6}. There the triangle base holds
+in all data~\cite[\S5]{DT}, without proof.
+
+\subsection*{Steering} Neighbour avoidance~\cite{NA} turned ``$Q(y)$ avoids $x$'' into a property
+of vertex sets: hang a leaf $\ell$ at $y$; then the property is ``no path contains both $\ell$ and
+$x$'', and Fan's lemma with vertex sets keeps it through every step whose target is not $\ell$ or
+$x$. Two-token steering~\cite[\S6]{TRN} runs Lov\'asz's induction with two even vertices, $g$ and
+$y$, choosing the targets in advance so that Fan's inequality never becomes tight.
+
+\subsection*{This paper} For $k$ pairs we orient each pair, $y_i\in\{a_i,b_i\}$ and $x_i$ the
+other vertex, hang a leaf $\ell_i$ at every $y_i$, and play with $k+1$ tokens. Three points are new.
+\begin{enumerate}
+\item The tokens are the even vertices of the current graph. A Fan step needs its target to be
+non-adjacent to \emph{every} other token (Lemma~\ref{lem:fan}).
+\item Two further moves are sound: a live tail whose stem has become odd can be \emph{dropped}, by
+deleting its leaf edge, which comes back as a one-edge path (Lemma~\ref{lem:steps}(b)); and a token
+of degree two with non-adjacent neighbours can be suppressed (Lemma~\ref{lem:steps}(c)). Drops are
+what lets us end with the proved multi-tail leaf lemma: at order~$9$, schedules with drops ending
+at one live tail reach $7{,}529$ roots, schedules without drops ending at any number of live tails
+(which would need Conjecture~\ref{conj:mt}) reach $7{,}558$.
+\item The end is the \emph{multi-tail leaf lemma} (Lemma~\ref{lem:mtl}): with at most one token and
+at most one live tail, Lov\'asz's theorem or the leaf-tail lemma of~\cite{TRN} applies. The
+general multi-tail statement, with any number of live tails, is Conjecture~\ref{conj:mt}; it holds
+in all our tests but adds little coverage ($91$ roots at order~$9$).
+\end{enumerate}
+
+\section{Tails and the moves}\label{sec:sched}
+
+All graphs are finite and simple. For a path decomposition $\cD$ let $b_\cD(v)$ be the number of
+path ends at $v$. A \emph{parity decomposition} of $H$ has $b(v)=d_H(v)\bmod2$ for every $v$; when
+$H$ has at most one vertex of positive even degree it is a Lov\'asz decomposition, and one exists
+(Lov\'asz~\cite{L68}; Lean \texttt{lovasz\_ends}). A vertex is \emph{even} if its degree is even and
+positive, \emph{odd} if its degree is odd.
+
+\begin{definition}[tails]\label{def:tails}
+A \emph{tail} is a triple $t=(c,s,x)$ of vertices: a \emph{leaf} $c$, its \emph{stem} $s$, and the
+vertex $x$ to be avoided. It is \emph{live} in $K$ if $cs\in E(K)$. Let $T$ be a finite set of
+tails.
+\begin{itemize}
+\item[(TS)] \emph{Static conditions}: $x\notin\{c,s\}$ for every tail, and for distinct tails
+$t,t'$ the leaf $c'$ and the avoided vertex $x'$ of $t'$ lie outside $\{c,s\}$.\lean{TailSys}
+\item[(TI)] \emph{Invariant} in $K$: for every live tail, $N_K(c)=\{s\}$, $x$ is odd and
+$x\not\sim s$.\lean{TailInv}
+\item[(TG)] $K$ is \emph{good} if it has a parity decomposition in which, for every live tail, no
+path contains both $c$ and $x$.\lean{TailGood}
+\end{itemize}
+Let $X(K)=\bigcup\{\{c,x\}:(c,s,x)\in T\text{ live in }K\}$.
+\end{definition}
+
+Since $c$ is a leaf, the path through $c$ ends at $c$, so (TG) says that for every live tail the
+path ending at $c$ avoids $x$. It is a property of vertex sets.
+
+\begin{definition}[$k$-token schedule]\label{def:sched}
+The \emph{tokens} of $K$ are its even vertices, $\tau(K)$. A \emph{move} replaces $K$ by $K'$:
+\begin{enumerate}[label=(\Alph*)]
+\item[(M)] \emph{token move}: a token $p$ and an edge $pu$ with $u$ odd, $u\notin X(K)$, and no
+neighbour of $u$ in $K-pu$ a token other than $p$; then $K'=K-pu$. The token goes to $u$; it
+\emph{retires} if $u$ is isolated in $K'$.
+\item[(D)] \emph{drop}: a live tail $(c,s,x)$ whose stem $s$ is odd; then $K'=K-cs$. The stem becomes
+a token unless it is isolated in $K'$.
+\item[(S)] \emph{suppression}: a token $p$ with $N_K(p)=\{a,b\}$, $a\not\sim b$, neither $a$ nor
+$b$ the leaf of a tail, and $\{a,b\}\neq\{x,s\}$ for every live tail; then $K'=K-pa-pb+ab$.
+\end{enumerate}
+A \emph{schedule} for $(K,T)$ is a sequence of moves after which at most one token and at most one
+live tail are left.\lean{SteerK}
+\end{definition}
+
+In Lean the schedule is the inductive predicate \texttt{SteerK T K $\tau$}, with the token set
+$\tau$ carried explicitly; the transfer theorem assumes $\tau=\tau(K)$ at the start, and each
+constructor states the new token set: $\tau-p$, plus $u$ unless $u$ is isolated, after (M); $\tau$,
+plus $s$ unless $s$ is isolated, after (D); $\tau-p$ after (S) (Lemma~\ref{lem:inv}).
+
+\begin{lemma}[Fan's step with many even vertices]\label{lem:fan}
+Let $p$ be even in $K$, $u$ an odd neighbour of $p$, and suppose that in $K-up$ the vertex $u$ has
+no even neighbour of $K$ other than $p$. Every parity decomposition $\cD'$ of $K-up$ gives a parity
+decomposition $\cD$ of $K$, every path of which lies in $V(P)\cup\{u\}$ for some $P\in\cD'$.
+\lean{fan\_step\_multi}
+\end{lemma}
+
+\begin{proof}
+In $K'=K-up$ the vertex $p$ is odd, so $b_{\cD'}(p)=1$, and $u$ is even or isolated, so
+$b_{\cD'}(u)=0$. A neighbour $v$ of $u$ in $K'$ with $b_{\cD'}(v)=0$ would be even in $K'$, hence
+$v\neq p$ and $v$ even in $K$ (its degree is unchanged), which is excluded. So $Z_{\cD'}(u)=\emptyset$
+and $b_{\cD'}(p)=1>|Z_{\cD'}(u)|$. Fan's lemma with vertex sets~\cite{Fan05},~\cite[Lemma~2.2]{RD}
+(Lean \texttt{fan\_single\_supp}) gives $\cD$ with $b_\cD=b_{\cD'}-\mathbf 1_p+\mathbf 1_u$ and the
+covering property. This is $0$ at $p$, $1$ at $u$, and $d\bmod2$ elsewhere.
+\end{proof}
+
+\begin{lemma}[bookkeeping]\label{lem:inv}
+Let $T$ satisfy (TS) and $K$ satisfy (TI).
+\begin{enumerate}[label=(\alph*)]
+\item After (M), (D) or (S) the token set is as stated above, and (TI) holds in
+$K'$.\lean{evenSet\_move, evenSet\_drop, evenSet\_supp, tailInv\_move, tailInv\_drop, tailInv\_supp}
+\item Every live tail of $K$ stays live in $K'$, except the dropped one after (D).\lean{live\_move,
+live\_drop, live\_supp}
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Tokens. In (M), $p$ loses one edge and becomes odd; $u$ is odd and loses one edge, so it is even
+unless isolated; other degrees are unchanged. In (D), $c$ becomes isolated and the odd stem $s$
+becomes even unless isolated. In (S), $p$ becomes isolated and the degrees of $a,b$ are unchanged.
+(TI): edges are only deleted, except $ab$ in (S). The leaf $c$ of a live tail is neither $p$ (a
+token; $d(c)=1$) nor $u$ ($u\notin X$), nor $a,b$ (excluded in (S)), nor the leaf or stem of the
+dropped tail (by (TS)); so $N(c)$ is unchanged. The vertex $x$ is odd, hence not a token, and $x\ne
+u$; in (D) $x$ lies outside $\{c_0,s_0\}$ by (TS); in (S) the degrees of $a,b$ are unchanged. So $x$
+stays odd. Finally $x\not\sim s$ survives deletions, and the new edge $ab$ of (S) is not $xs$.
+(b) The edge $cs$ of a live tail is not $pu$, $pa$ or $pb$ (as $c\notin\{p,u,a,b\}$), and in (D) it
+is not the dropped edge $c_0s_0$ unless the tail is the dropped one.
+\end{proof}
+
+\begin{lemma}[the three steps]\label{lem:steps}
+Let $T$ satisfy (TS), $K$ satisfy (TI), and $K'$ arise from $K$ by one move. If $K'$ is good, so
+is $K$.
+\begin{enumerate}[label=(\alph*)]
+\item (M): by Lemma~\ref{lem:fan}; the new paths lie in old paths plus $u\notin X(K)$.
+\lean{tailGood\_move}
+\item (D): add the one-edge path $cs$ to a good decomposition of $K-cs$. The stem $s$ was even or
+isolated in $K-cs$ and is odd in $K$; the path $cs$ misses $x$ and the vertices of every other tail
+(by (TS)); no other path contains the isolated vertex $c$.\lean{tailGood\_drop}
+\item (S): subdivide the edge $ab$, on its path of a good decomposition of $K-pa-pb+ab$, by $p$.
+The ends do not change, $p$ gets none, and the new path lies in the old one plus $p\notin X$.
+\lean{tailGood\_supp, splitOff\_supp}
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[the multi-tail leaf lemma]\label{lem:mtl}
+Let $T$ satisfy (TS), $K$ satisfy (TI), and suppose $K$ has at most one even vertex and at most one
+live tail. Then $K$ is good.\lean{tailGood\_fin}
+\end{lemma}
+
+\begin{proof}
+With no live tail this is Lov\'asz's theorem. With one live tail $(c,s,x)$, $c$ is a leaf at $s$,
+$x\notin\{c,s\}$ is odd and $x\not\sim s$, so the leaf-tail lemma~\cite[Lemma~6.1]{TRN} (Lean
+\texttt{avoid\_leafTail}; the stem may be the even vertex) gives a Lov\'asz decomposition whose
+path ending at $c$ avoids $x$. Since $c$ is a leaf, every path through $c$ ends at $c$, so no path
+contains both $c$ and $x$.
+\end{proof}
+
+\begin{theorem}[the transfer theorem]\label{thm:transfer}
+Let $T$ satisfy (TS) and $K$ satisfy (TI). If $(K,T)$ has a $k$-token schedule, then $K$ has a
+parity decomposition in which, for every tail live in $K$, no path contains both its leaf and its
+avoided vertex.\lean{steerK\_good}
+\end{theorem}
+
+\begin{proof}
+Induction on the schedule. At the end Lemma~\ref{lem:mtl} applies. Each move keeps (TI) and gives
+the right token set (Lemma~\ref{lem:inv}), so the induction hypothesis applies to $K'$, and
+Lemma~\ref{lem:steps} carries goodness back to $K$.
+\end{proof}
+
+\begin{remark}\label{rem:general}
+Nothing in Theorem~\ref{thm:transfer} refers to the triangle base: $K$ is arbitrary, and the number
+of tokens and of tails is arbitrary. With one tail and the two tokens $g,y$ of~\cite[\S6]{TRN},
+schedules without (D) and (S) are the two-token schedules of~\cite[Def.~6.3]{TRN}: with two even
+vertices a target other than the second token is odd, and the end there, a retirement, leaves one
+token and the one tail.
+\end{remark}
+
+\section{The triangle base}\label{sec:tb}
+
+Fix triangle data $(J,z,r,w,\{a_ib_i\})$ with $z$ the only even vertex of $J$, and an orientation:
+for each $i$ a vertex $y_i\in\{a_i,b_i\}$, and $x_i$ the other. Let $M^+$ be $M$ with a new leaf
+$\ell_i$ at each $y_i$, and $T=\{(\ell_i,y_i,x_i):i\le k\}$. The tokens of $M^+$ are $w$ and the
+$y_i$ (when $d_J(w)\ge3$). In Lean $M^+$ is \texttt{leaves M Y} on $V\oplus V$, with $\ell_i$ the
+copy \texttt{inr}~$y_i$, and the orientation is the order of the coordinates of each pair.
+\lean{triLeaf, triTails}
+
+\begin{theorem}[schedules give triangle bases]\label{thm:tb}
+If $(M^+,T)$ has a $k$-token schedule, then $M$ has a Lov\'asz decomposition with $x_i\notin
+V(Q(y_i))$ for every $i$; in particular $J$ has a triangle base at $r$.
+\lean{triangleBase\_of\_steerK}
+\end{theorem}
+
+\begin{proof}
+(TS) holds because the $2k$ pair vertices are distinct. (TI) holds in $M^+$: $\ell_i$ is a leaf
+at $y_i$; $d_{M^+}(x_i)=d_M(x_i)$ is odd, since $x_i\ne w$ is not a leaf-bearer; and $x_iy_i\notin
+E(M)$.\lean{triTails\_sys, triTails\_inv} By Theorem~\ref{thm:transfer}, $M^+$ has a parity
+decomposition $\cD^+$ in which no path contains both $\ell_i$ and $x_i$. Delete the leaves (Lean
+\texttt{Retract.delete\_supp} for \texttt{leavesRetract}). A vertex $v\notin\{y_i\}$ keeps its ends.
+At $y_i$, which is even in $M^+$ and odd in $M$, $b_{\cD^+}(y_i)=0$ and the new count is at most
+$1$ and odd, hence $1$. So the result $\cD$ is a Lov\'asz decomposition of $M$. Suppose the path $Q$
+of $\cD$ ending at $y_i$ contains $x_i$. It is the trace of a path $P\in\cD^+$, which contains
+$x_i$, hence not $\ell_i$. Then every edge of $P$ at $y_i$ is an edge of $M$, so $P$ has exactly one
+edge at $y_i$ and ends there, against $b_{\cD^+}(y_i)=0$. So $x_i\notin V(Q(y_i))$, which is the
+disjunct of~\eqref{eq:disj} with $y_i$ in the role of $b_i$ or $a_i$.
+\end{proof}
+
+\begin{corollary}[Test1]\label{cor:test1}
+If $d_J(r)\ge3$ and some data choice at $r$ and some orientation have a schedule, Test1 holds at
+$(J,z,r)$.\lean{test1At\_of\_steerK}
+\end{corollary}
+
+\begin{example}\label{ex:short}
+$J=$ \texttt{HsaBEy\textasciitilde} (order $9$, $d(z)=6$), $z=7$, $r=3$, $w=1$, pairs oriented as
+$(y,x)=(4,0),(8,5)$. Here $N_J(w)=\{z,0,6\}$ with $0\not\sim6$, and $d_J(4)=3$. The schedule found
+by the search, with four moves after the suppression, is
+\[
+\mathrm S\,1{:}\,0\text{-}6,\quad 8\to3,\quad 3\to z,\quad 4\to8,\quad \mathrm D\,(\ell_1,4,0).
+\]
+The token $w$ is suppressed; the token at $y_2=8$ moves to $r$ ($r\not\sim4$) and retires at the leaf
+$z$; the token at $y_1=4$ moves onto $8$, which is odd again and has no token neighbour; then $4$ is
+odd with only its leaf left, and the drop isolates it. One token ($8$) and one live tail
+$(\ell_2,8,5)$ remain.
+\end{example}
+
+\section{Coverage}\label{sec:cover}
+
+\begin{proposition}[the potential]\label{prop:potential}
+Let $\Phi(K)=|\tau(K)|+\#\{\text{live tails}\}$. A token move that does not retire and a drop whose
+stem is not isolated leave $\Phi$ unchanged; a retirement, a suppression and a drop that isolates
+the stem lower it by one. In $M^+$, $\Phi=2k+1$, so a schedule contains at least $2k-1$ moves of the
+second kind, each at a vertex of degree at most $2$ (a vertex of degree $1$ entered by a token, a
+token of degree $2$, or a stem with only its leaf). If $\delta(J)\ge3$, the only vertex of degree $1$
+in $M$ outside the pairs is $z$, and a token can retire there only from $r$.
+\end{proposition}
+
+\begin{proof}
+Immediate from Lemma~\ref{lem:inv}(a).
+\end{proof}
+
+So at $d(z)=6$ three removals are needed, and in a dense $M$ low degrees arise only after tokens
+have passed through a vertex (each pass deletes two of its edges). This is why schedules in the
+dense residual are long, and why they fail when the root is hard to enter.
+
+\begin{theorem}[a certificate family]\label{thm:cover}
+Let $d(z)=6$, let $(r,w,\{x_1y_1,x_2y_2\})$ be oriented triangle data, and suppose:
+\begin{enumerate}[label=(\Alph*)]
+\item \emph{$w$ can be removed}: either (A1) $d_J(w)=3$, $N_J(w)=\{z,p,q\}$, $p\not\sim q$ and
+$\{p,q\}$ is not a pair; or (A2) $wr\in E(J)$ and $r\not\sim y_1,y_2$.
+\item \emph{$y_1$ has degree three and its token can be removed}: $N_J(y_1)=\{z,x_1,v\}$ with
+$v\notin\{w,x_2,y_2\}$, $v\not\sim y_2$, and $\{p,q\}\ne\{v,y_2\}$ under (A1); and either (B1)
+$v=r$ and (A1) holds, or (B2) $v\notin N[z]$, $d_J(v)=3$, and the two neighbours $s,t$ of $v$
+other than $y_1$ in the graph obtained after step~1 of the proof below (that is, after the
+suppression of (A1) if it is used) are non-adjacent there, with $\{s,t\}\ne\{x_2,y_2\}$.
+\end{enumerate}
+Then $(M^+,T)$ has a schedule; so $J$ has a triangle base at $r$, and Test1 holds at $(J,z,r)$.
+\end{theorem}
+
+\begin{proof}
+The tokens of $M^+$ are $w,y_1,y_2$; $X=\{\ell_1,\ell_2,x_1,x_2\}$. Write $K$ for the current graph.
+\begin{enumerate}
+\item Remove $w$. Under (A1), $d_M(w)=2$ with $N_M(w)=\{p,q\}$; neither is a leaf, $p\not\sim q$,
+and $\{p,q\}$ is no pair $\{x_i,y_i\}$: suppress $w$. Under (A2), $r$ is odd, $r\notin X$, and after
+deleting $wr$ no neighbour of $r$ is a token (the other tokens are $y_1,y_2$, and $r\not\sim
+y_1,y_2$): move $w\to r$. Now $r$ is a token, $z$ is a leaf at $r$ and $z\notin X$: $r\to z$
+retires.
+\item Move $y_1\to v$. In $M$, $N_M(y_1)=\{v\}$. The vertex $v$ is odd in $K$ (it is not $w$, and
+its degree is unchanged by step 1, also when $v\in\{p,q\}$), $v\notin X$, and after deleting $y_1v$
+its only possible token neighbour is $y_2$, excluded by $v\not\sim y_2$ and, under (A1), by
+$\{p,q\}\ne\{v,y_2\}$.
+\item Remove the token at $v$. Under (B1), $v=r$ and $z$ is still a leaf at $r$: $r\to z$ retires.
+Under (B2), $v$ has degree $2$ in $K$ with non-adjacent neighbours $s,t$, neither a leaf (since $v\ne
+y_1,y_2$) and $\{s,t\}$ not $\{x_2,y_2\}$, nor $\{x_1,y_1\}$ (as $y_1\not\sim v$ now): suppress
+$v$.
+\item Drop $(\ell_1,y_1,x_1)$: $y_1$ has only its leaf, so it is odd, and the drop isolates it.
+\end{enumerate}
+One token, $y_2$, and one live tail, $(\ell_2,y_2,x_2)$, remain. Apply Theorem~\ref{thm:tb} and
+Corollary~\ref{cor:test1} ($d_J(r)\ge3$ since $J$ is $3$-connected in our setting; in general
+Corollary~\ref{cor:test1} needs it).
+\end{proof}
+
+At order~$9$ the hypotheses hold, for some data choice, labelling and orientation, at $882$ of the
+$10{,}118$ roots with data ($6$ of $40$ at order~$7$); \texttt{pattern.py} checks them from $J$ and
+writes the certificate, and the independent executor of Section~\ref{sec:comp} verified all $882$.
+The theorem is a sparse-graph statement: it needs vertices of degree three. In the dense residual
+$\delta(J-z)\ge6$ and no such certificate exists.
+
+\begin{remark}[no theorem for a whole residual shape]\label{rem:noshape}
+For this move set no condition can cover a whole residual shape: in the residual family
+\texttt{resid\_O8} below, every shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$ has roots at which the
+exhaustive search (no budget hit for any data choice or orientation) finds no schedule
+(Table~\ref{tab:resid}). These are computed facts, valid up to the correctness of the search
+(which uses a $128$-bit hash of the current graph to memoise failed states).
+\end{remark}
+
+\section{Computation}\label{sec:comp}
+
+\subsection*{Tools} All scripts are in \texttt{manuscripts/multi-token/scripts}.
+\begin{itemize}
+\item \texttt{mtok.cpp}: depth-first search with memoised failures over the moves of
+Definition~\ref{def:sched} (suppression with \texttt{SUPP=1}), for every root $r$ with $d(r)\ge3$,
+every data choice $(w,M_0)$ and every orientation; per root the verdict is ``schedule'',
+``none'' (every search finished without a schedule) or ``undecided'' (some search hit the node
+budget). \texttt{MAXLEN} gives shortest schedules by iterative deepening.
+\item \texttt{mt\_verify.py}, the independent executor. It shares no code with \texttt{mtok.cpp}.
+For each schedule it rebuilds $J$, checks the data, rebuilds $M^+$, replays the moves re-deriving
+their legality from Definition~\ref{def:sched}, checks the end condition, solves the bottom graph
+with the oracle \texttt{route\_ext} (query \texttt{WS}) and re-checks that decomposition, undoes
+the moves (a drop by the path $\ell_iy_i$, a suppression by subdividing $ab$, a token move by its
+own implementation of Fan's forced chain, checking $b(p)=1$ and $Z(u)=\emptyset$), checks after every
+step that it has a parity decomposition meeting every live $\{\ell_i,x_i\}$ at most once, deletes the
+leaves, checks the Lov\'asz decomposition of $M$ and $x_i\notin Q(y_i)$, and finally lifts it to a
+Test1 decomposition of $J-z$ with \texttt{tb.py}'s \texttt{lift} and \texttt{verify\_test1}
+(direct-test1, Steps 1--2).
+\item A tamper test: $130$ order-$7$ schedules, each corrupted once at random (last or first move
+removed, a target changed, two adjacent moves swapped). The executor rejected every corruption
+except $14$ swaps of two commuting moves, which are valid schedules.
+\item \texttt{pattern.py} (Theorem~\ref{thm:cover}), \texttt{firstmove.py} (legal first moves),
+\texttt{filt.py} (the order-$7$ and order-$9$ inputs from \texttt{stl/scripts/one\_even\_*.g6}).
+\end{itemize}
+
+\begin{table}[ht]
+\caption{Orders $7$ and $9$, $d(z)=6$, every $3$-connected $J$ with $z$ the only even vertex (no
+node budget; all searches finished). ``Data'' counts data choices $(r,w,M_0)$; a data choice is
+scheduled if some orientation is.}\label{tab:small}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order & graphs & roots & roots scheduled & data scheduled & schedules executed\\
+\midrule
+$7$ & $7$ & $40$ & $17$ & $71$ / $242$ & $130$ (all orientations)\\
+$9$ & $1{,}819$ & $10{,}118$ & $7{,}529$ & $30{,}769$ / $45{,}644$ & $76{,}474$ (all orientations)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\caption{Ablation at order~$9$ (roots with a schedule, of $10{,}118$).}\label{tab:ablate}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+moves (M), (D); end at $\le1$ token and $\le1$ live tail & $7{,}045$\\
+$+$ suppression (S) (the setting of this paper; (S) is on in all rows below) & $7{,}529$\\
+$+$ end as soon as $\le1$ token is left (needs Conjecture~\ref{conj:mt}) & $7{,}620$\\
+$+$ end also at a sparse family of live tails (\texttt{separation\_sparse}) & $7{,}529$\\
+without drops (D), end at $\le1$ token (needs Conjecture~\ref{conj:mt}) & $7{,}558$\\
+without drops (D), end at $\le1$ token and $\le1$ live tail & $0$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\caption{Residual families of T(6)-i (\texttt{t6-dense/scripts/gen\_resid.py}: \texttt{resid\_O8}
+$=$ \texttt{gen\_resid.py 6 8 2 7 SHAPE}; \texttt{resid\_O10} $=$ \texttt{gen\_resid.py 4 10 2 11
+SHAPE} and \texttt{gen\_resid.py 4 8 1 77 C4}; our seeds, since those of the families
+of~\cite[\S5]{DT} are not recorded), node budget $2\cdot10^6$ per search, suppression on. ``None'':
+every search finished without a schedule.}\label{tab:resid}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+family & $D$ & roots & scheduled & none & undecided\\
+\midrule
+\texttt{resid\_O8}, $|O|=8$, $|J|=15$ & $\emptyset$ & $36$ & $6$ & $25$ & $5$\\
+ & $K_2$ & $36$ & $15$ & $15$ & $6$\\
+ & $P_3$ & $36$ & $19$ & $9$ & $8$\\
+ & $K_3$ & $36$ & $14$ & $10$ & $12$\\
+ & $C_4$ ($\mathrm{TW}=2$) & $36$ & $18$ & $10$ & $8$\\
+\midrule
+\texttt{resid\_O10}, $|O|=10$, $|J|=17$ & $\emptyset$ & $24$ & $23$ & $0$ & $1$\\
+ & $K_2$ & $24$ & $19$ & $0$ & $5$\\
+ & $P_3$ & $24$ & $18$ & $1$ & $5$\\
+ & $K_3$ & $24$ & $21$ & $0$ & $3$\\
+ & $C_4$ ($\mathrm{TW}=2$) & $24$ & $15$ & $7$ & $2$\\
+\phantom{x}\quad and $|O|=8$, $|J|=15$ & $C_4$ ($\mathrm{TW}=1$) & $24$ & $13$ & $6$ & $5$\\
+\midrule
+E28 hard graphs~\cite[E28]{T6} & all & $48$ & $10$ & $18$ & $20$\\
+clt graph \texttt{M\textasciitilde\textasciitilde zRz\{\textasciitilde m\textasciitilde\textasciitilde lX|j\textasciitilde\_} & $\emptyset$ & $6$ & $0$ & $6$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{The residual}\label{sec:resid}
+
+\subsection*{What is left} The unscheduled roots, with the exact verdicts of Tables~\ref{tab:small}
+and~\ref{tab:resid}, are listed in \texttt{data/runs/*\_none.txt} (proved: every search finished
+without a schedule) and \texttt{data/runs/*\_undec.txt} (some search hit the budget).
+\begin{itemize}
+\item Order~$7$: $23$ of the $40$ roots. All of them lie in cones $J=K_1+B$ over Eulerian graphs $B$
+of order~$6$: all six roots of \texttt{Fr\textasciitilde vw} ($B=K_{2,2,2}$), of
+\texttt{Fqz\textasciicircum w} and of \texttt{Fut\textasciitilde w}, and the roots of degree
+$5=n-2$ of \texttt{FsQ\textasciitilde w} and \texttt{Fsz\textbackslash w}. These are the smallest
+unscheduled instances.
+\item Order~$9$: $2{,}589$ of the $10{,}118$ roots, all proved. Every one of the $1{,}597$ roots of
+degree $7=n-2$ is among them (Proposition~\ref{prop:nminus2}); the other $992$ have degree $5$ ($783$)
+or $3$ ($209$). Only $260$ unscheduled roots have no legal first move in any data choice and
+orientation (\texttt{firstmove.py}).
+\item Residual families: $69$ ($|O|=8$) and $14$ ($|O|=10$) roots proved unscheduled, $39$ and $21$
+undecided; E28: $18$ proved, $20$ undecided; the clt $\emptyset$ graph: all $6$ roots proved. In the
+residual families a legal first move exists at $178$ of $180$, $144$ of $144$ and $48$ of $48$
+roots: the obstruction is not local.
+\end{itemize}
+
+\subsection*{Roots of degree $n-2$} The degree of the root explains most of the residual.
+
+\begin{proposition}\label{prop:nminus2}
+Let $\delta(J)\ge3$, $k\ge1$ pairs, and suppose $r$ has fewer than $k$ non-neighbours in $J-r$. Then
+no data choice and orientation at $r$ has a schedule. In particular, for $d(z)=6$ ($k=2$) there is
+no schedule at a root of degree $|J|-2$.
+\end{proposition}
+
+\begin{proof}
+Let $A$ be the set of non-neighbours of $r$ in $J-r$, $|A|=t<k$. In $M^+$ the vertex $r$ keeps all
+its edges of $J$, is odd, and is not a token. Its degree can change only by a token move into $r$
+(an \emph{entry}): a move out of $r$ needs a token at $r$, a drop is at a stem $y_i\ne r$, and a
+suppression keeps the degrees of $a,b$. So until the first entry every edge of $J$ at $r$ is present,
+and the vertices of $J$ other than $r$ that are not adjacent to $r$ lie in $A$ (a suppression may
+add edges at $r$, never delete them).
+
+\emph{Before the first entry every removal uses up a vertex of $A$.} A retirement enters a vertex
+$u$ whose only edge goes to the moving token $p\ne r$; $u$ is not a leaf (leaves of live tails are
+in $X$, dead leaves are isolated) and not $z$ (whose only neighbour is $r$), so $u\not\sim r$, i.e.
+$u\in A$, and $u$ is isolated afterwards. A suppression of a token $p$ with $N(p)=\{a,b\}$: if $p\in
+A$, then $p$ is isolated afterwards; otherwise $p\sim r$, so $r\in\{a,b\}$, say $a=r$, and $b\not\sim
+r$, $b$ not a leaf, $b\ne z$, so $b\in A$, and afterwards $b\sim r$. A drop that isolates its stem
+$y_i$ needs $N(y_i)=\{\ell_i\}$, so $y_i\not\sim r$, $y_i\in A$, and $y_i$ is isolated afterwards. A
+used-up vertex is isolated or adjacent to $r$ from then on, so it is never used again. Hence if $R$
+removals happen before the first entry, $R\le t$ and at most $t-R$ vertices of $A$ are neither
+isolated nor adjacent to $r$.
+
+\emph{There is no entry.} At an entry, the other tokens are not adjacent to $r$ after the move, have
+positive degree and are not leaves, so they lie among those $t-R$ vertices. The number of tokens is
+at least $k+1-R$: it starts at $k+1$ ($w$ and the $y_i$; $d_M(w)=d_J(w)-1\ge2$), a non-retiring move
+keeps it, a drop does not lower it, and only retirements and suppressions lower it, by one each. So
+an entry needs $k+1-R\le1+(t-R)$, i.e.\ $k\le t$, which is false.
+
+So the first-entry analysis applies to the whole schedule: there are at most $t<k\le 2k-1$ removals,
+while Proposition~\ref{prop:potential} requires $2k-1$. No schedule exists.
+\end{proof}
+
+The data agree: at every proved-unscheduled root of degree $n-2$ the least potential reached is $5$
+or $4$, never less (\texttt{explore.py}, exhaustive over all reachable states of every data choice
+and orientation). For $d(z)\ge6$ such roots therefore need a different method; for $d(z)=8$ the
+proposition excludes roots with at most two non-neighbours.
+
+\subsection*{The rest: frozen and partial roots} At every proved-unscheduled root, \texttt{explore.py}
+explores all reachable states of every data choice and orientation and records the least potential
+$\Phi$ reached (Proposition~\ref{prop:potential}; $\Phi=5$ at the start, a schedule ends at
+$\Phi\le2$ with at most one token and one live tail). Call a root \emph{frozen} if $\Phi$ never drops,
+so that no token can ever be removed.
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & unscheduled & degree $n-2$ & other frozen & other, least $\Phi=4$ & $=3$ & $=2$\\
+\midrule
+order $7$ & $23$ & $20$ & $0$ & $1$ & $0$ & $2$\\
+order $9$ & $2{,}589$ & $1{,}597$ & $113$ & $597$ & $121$ & $161$\\
+\texttt{resid\_O8} & $69$ & $36$ & $27$ & $4$ & $2$ & $0$\\
+\texttt{resid\_O10} & $14$ & $2$ & $7$ & $3$ & $2$ & $0$\\
+E28 hard & $18$ & $12$ & $6$ & $0$ & $0$ & $0$\\
+clt graph & $6$ & $4$ & $2$ & $0$ & $0$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+(At order~$7$, $15$ of the $20$ roots of degree $n-2$ are frozen; at order~$9$, $376$ of $1{,}597$.)
+A least potential of $2$ without a schedule means two tokens and no live tail, or no token and two
+live tails; the second kind is what Conjecture~\ref{conj:mt} would settle. In the dense graphs almost
+every unscheduled root is frozen: of the $53$ proved-unscheduled roots of degree less than $n-2$ in
+the residual families, the E28 graphs and the clt graph, $42$ are frozen. Of these $42$, $38$ have
+exactly three non-neighbours of $r$ and four have five, so Proposition~\ref{prop:nminus2} does not
+reach them. Like Proposition~6.10 of~\cite{TRN} for one pair, they show that a
+dense $N(r)$ blocks steering: the root is the only way to the leaf $z$, and it cannot be entered while
+other tokens are near it.
+
+
+\begin{conjecture}[multi-tail, $\MT$]\label{conj:mt}
+If $K$ has at most one even vertex and $T$ satisfies (TS) and (TI), then $K$ is good, whatever the
+number of live tails.
+\end{conjecture}
+
+$\MT$ holds in all our tests (\texttt{scripts/mt\_conj.py}; the oracle \texttt{route\_ext}, query
+\texttt{S}). An instance is a connected graph $G$ with leaves attached at distinct stems, and avoided
+vertices that are distinct, odd, outside the stems and non-adjacent to their own stem, such that the
+result has at most one even vertex. With two tails, every connected $G$ of order $n\le9$ ($1$, $29$,
+$113$, $6{,}502$, $18{,}858$ and $2{,}860{,}182$ instances for $n=4,\dots,9$); with three tails, every
+connected $G$ of order $n\le7$ ($552$ instances at $n=6$, $6{,}156$ at $n=7$). If $\MT$ is true, the
+end of a schedule can be taken at $\le1$ token; at order~$9$ this adds $91$ roots
+(Table~\ref{tab:ablate}).
+
+\begin{remark}[where an induction for $\MT$ stops]\label{rem:mtind}
+The leaf-tail lemma is $\MT$ for one tail. Run its induction with two live tails. With no even
+vertex, drop a tail and apply the leaf-tail lemma. If the even vertex $g$ has a neighbour outside
+$X$, take Lov\'asz's Case~I step there (Lemma~\ref{lem:fan} with one token). Otherwise every
+neighbour of $g$ lies in $X$; a stem is adjacent to its own leaf only, and $x_i\not\sim s_i$, so
+$N(g)=\{x_1,x_2\}$ or $N(g)=\{c_j,x_i\}$ with $g=s_j$, $i\ne j$. If $N(g)=\{x_1,x_2\}$ with $x_1\not\sim x_2$,
+suppress $g$ and drop. The two configurations left, $g$ on a triangle $gx_1x_2$ and a stem
+$s_j$ of degree two with neighbours $c_j,x_i$, are where we do not know how to proceed.
+\end{remark}
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/MultiToken.lean}, no \texttt{sorry}; \texttt{lake build} is green
+($18{,}426$ jobs), and \texttt{\#print axioms} gives only \texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound} for every theorem listed
+(\texttt{data/axioms.txt}).
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+manuscript & Lean\\
+\midrule
+Definition~\ref{def:tails} & \texttt{TailSys}, \texttt{TailInv}, \texttt{TailGood},
+\texttt{OffTails}, \texttt{OneLive}, \texttt{SuppOK}\\
+Definition~\ref{def:sched} & \texttt{SteerK} (constructors \texttt{fin}, \texttt{move},
+\texttt{drop}, \texttt{supp})\\
+Lemma~\ref{lem:fan} & \texttt{fan\_step\_multi}\\
+Lemma~\ref{lem:inv} & \texttt{evenSet\_move/drop/supp}, \texttt{tailInv\_move/drop/supp},
+\texttt{live\_move/drop/supp}\\
+Lemma~\ref{lem:steps} & \texttt{tailGood\_move}, \texttt{tailGood\_drop}, \texttt{tailGood\_supp},
+\texttt{splitOff\_supp}\\
+Lemma~\ref{lem:mtl} & \texttt{tailGood\_fin}\\
+Theorem~\ref{thm:transfer} & \texttt{steerK\_good}\\
+Theorem~\ref{thm:tb} & \texttt{triangleBase\_of\_steerK} (with \texttt{triTails\_sys},
+\texttt{triTails\_inv})\\
+Corollary~\ref{cor:test1} & \texttt{test1At\_of\_steerK}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Faithfulness. \texttt{SteerK} quantifies over an arbitrary token set $\tau$; the theorems use it
+with $\tau$ the even set of the graph, which is what \texttt{mtok.cpp} and
+\texttt{mt\_verify.py} compute. The C++ move conditions are exactly the constructor hypotheses:
+(M) $u$ odd ($\Leftrightarrow u\notin\tau$, as $u\sim p$), $u\notin X$, no token neighbour of $u$
+other than $p$ after the deletion; (D) a live tail with odd stem; (S) degree two, non-adjacent
+neighbours, not the leaf of any tail (a dead leaf is isolated, so this is the C++ test on live
+leaves), and not the pair $x_is_i$ of a live tail; the end: $\le1$ even vertex and $\le1$ live
+tail. Theorem~\ref{thm:cover} is not formalised.
+
+\section{What remains}\label{sec:open}
+
+\begin{enumerate}
+\item The dense residual. With this move set, schedules exist at $181$ of the $324$ residual-family
+roots; at $|O|=8$ every shape has roots without any schedule (Remark~\ref{rem:noshape}), and no root
+of degree $n-2$ has one (Proposition~\ref{prop:nminus2}). A proof of the triangle base there needs a
+new token-removing move, or an end lemma with two even vertices. At $|O|=10$ the shapes $\emptyset$,
+$K_2$, $K_3$ have no root proved unscheduled; whether every such root has a schedule is open.
+\item Conjecture~$\MT$; it is the multi-tail generalisation of the leaf-tail lemma.
+\item The frozen roots of degree less than $n-2$ (Section~\ref{sec:resid}) are computed; a proof of the
+obstruction there, extending Proposition~\ref{prop:nminus2}, is open.
+\end{enumerate}
+
+\begin{thebibliography}{99}
+\bibitem{DT} The direct lift to Test1 through triangles at $z$, \texttt{manuscripts/direct-test1}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
+B} \textbf{93} (2005), 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc. Colloq.,
+Tihany, 1966), Academic Press, 1968, 231--236.
+\bibitem{NA} Neighbour avoidance, \texttt{manuscripts/na}.
+\bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
+\bibitem{T6} The dense T(6)-i residual, \texttt{manuscripts/t6-dense}.
+\bibitem{TRN} The tight transfer TRN, two-token steering, \texttt{manuscripts/trn}.
+\end{thebibliography}
+\end{document}

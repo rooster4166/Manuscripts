@@ -1,0 +1,2 @@
+progress 500
+verified 882 schedules, 3857 moves in all
