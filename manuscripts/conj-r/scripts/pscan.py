@@ -57,7 +57,7 @@ def work(lines):
     k = 0
     for line, rec in recs:
         for r in rec:
-            s = res[k].split()[0] if res[k] else '?'; k += 1
+            s = {'SAT': 'S', 'UNSAT': 'U', 'UNDEC': 'D'}.get(res[k].split()[0], '?') if res[k] else '?'; k += 1
             r[4] = s
         out.append(line + ' | ' + ' '.join('%d:%d:%s:%s:%s' % (r[0], r[1], r[2],
                    '-' if r[3] is None else ('Y' if r[3] else 'N'), r[4][0]) for r in rec))

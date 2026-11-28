@@ -2,7 +2,8 @@
 v = a_j cut vertex, B = component of c_j in F - v (contains a_i), A = rest (contains c_i), c_i ~ v,
 d_B(v) even.  (G3'): the component of c_i in F_A - v contains a vertex not adjacent to v."""
 import sys, collections
-sys.path.insert(0, '/home/user/Manuscripts/manuscripts/ln/scripts')
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'ln', 'scripts'))
 from lnlib import g6_decode
 def comp(adj, s, banned):
     seen = {s}; st = [s]

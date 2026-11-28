@@ -1,0 +1,11 @@
+# A42: Conjecture J spot checks at order 10 (graphs: gen 10 oddc, checked complete by burnside_allodd.py + isocheck.py)
+# (1) uniform sample: ./sampleJ 0.001 42 < odd10c.g6  (each joined instance kept with prob 1e-3)
+#     lnsolve3 -b 2000000, witnesses checked by checkqa.py (a42lib.check):
+J10s.lnsolve3.a {'OK': 20271}
+# (2) every joined instance of the 191 graphs with |E| >= 33: ./sampleJ 1.0 1 < dense10.g6
+J10d.lnsolve3.a {'OK': 25476}
+witnesses checked 25476, unsat 0, undecided 0, failures 0
+# (3) two random joined instances of every order-10 graph (seed 9):
+J10g.lnsolve3.a {'OK': 65698}
+# (4) own solver a42solve -b 2000000 on 1,500 of sample (1):
+J10sub.a42.a {'OK': 1470, 'UNDEC': 30}

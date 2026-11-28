@@ -1,0 +1,20 @@
+('Jpair', 'wcheck rejects', 'a42 rejects') 258
+('avoid', 'wcheck rejects', 'a42 rejects') 252
+('drop', 'wcheck rejects', 'a42 rejects') 261
+('dup', 'wcheck rejects', 'a42 rejects') 240
+('graph', 'wcheck rejects', 'a42 rejects') 257
+('nonsimple', 'wcheck rejects', 'a42 rejects') 268
+('range', 'wcheck rejects', 'a42 rejects') 243
+('reverse(valid)', 'wcheck accepts', 'a42 accepts') 240
+('rotate', 'wcheck rejects', 'a42 rejects') 199
+('single', 'wcheck rejects', 'a42 rejects') 256
+('split', 'wcheck rejects', 'a42 rejects') 232
+('trap: R makes 2 ends', 'wcheck rejects', 'a42 rejects') 1
+('trap: avoid on interior path', 'wcheck rejects', 'a42 rejects') 1
+('trap: empty witness', 'wcheck rejects', 'a42 rejects') 1
+('trap: extra blank paths', 'wcheck accepts', 'a42 accepts') 1
+('trap: missing ::', 'wcheck rejects', 'a42 parse error') 1
+('trap: unknown query token', 'wcheck accepts', 'a42 parse error') 1
+('trap: valid', 'wcheck accepts', 'a42 accepts') 1
+('trap: x-suffix garbage', 'wcheck accepts', 'a42 parse error') 1
+cases 2714 wcheck accepts but own checker rejects: 2

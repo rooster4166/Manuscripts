@@ -3,7 +3,7 @@ import GallaiLean.LemmaR
 /-!
 # Joint pre-committed paths: proved cases of Conjecture J (session `claude/conj-r`)
 
-Manuscript `manuscripts/conj-r`, Section 5.
+Manuscript `manuscripts/conj-r`, Section 6 (and Proposition 7.3 at the end).
 
 Case (a) of Lemma R: `P` is a path from `c₁` to `c₂` avoiding `a₁, a₂`, and `K₀ = G − E(P)`
 needs a parity decomposition. Its even vertices lie in `{c₁, c₂}` (`evenSet_delEdgeList_sub`).

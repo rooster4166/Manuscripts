@@ -17,7 +17,7 @@ inst 43400
 orient_allexact 36944
 orient_allsched 28888
 
-# instances with no single-edge P that works exactly, by edge count (an2.py)
+# instances with no single-edge P that works exactly, by edge count (an2.py, shipped in scripts/)
 no single-edge exact, by edge count: [(11, 4), (12, 2), (13, 6), (14, 12), (15, 11), (16, 165), (17, 173), (18, 221), (19, 204), (20, 176), (21, 176), (22, 92), (23, 20), (24, 8)]
 all instances by edge count: [(7, 1340), (8, 1256), (9, 1888), (10, 4016), (11, 4500), (12, 6160), (13, 5784), (14, 5812), (15, 4112), (16, 3424), (17, 2096), (18, 1552), (19, 700), (20, 464), (21, 176), (22, 92), (23, 20), (24, 8)]
 graphs 60 of 222

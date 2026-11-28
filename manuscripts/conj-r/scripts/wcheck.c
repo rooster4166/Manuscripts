@@ -34,14 +34,16 @@ int main(void) {
         if (!tok || !g6(tok)) { printf("BADQUERY\n"); bad++; continue; }
         char gq[256]; strncpy(gq, tok, 255); gq[255] = 0;
         for (int v = 0; v < n; v++) req[v] = deg[v] % 2;
-        nA = nS = nJ = 0;
+        nA = nS = nJ = 0; int badtok = 0;
         while ((tok = strtok(NULL, " \t\n"))) {
             int x = atoi(strtok(NULL, " \t\n")), y = atoi(strtok(NULL, " \t\n"));
             if (!strcmp(tok, "A")) { At[nA] = x; Aa[nA++] = y; }
             else if (!strcmp(tok, "S")) { Sp[nS] = x; Sq[nS++] = y; }
             else if (!strcmp(tok, "J")) { Jp[nJ] = x; Jq[nJ++] = y; }
             else if (!strcmp(tok, "R")) req[x] = y;
+            else { badtok = 1; }
         }
+        if (badtok) { printf("BADQUERYTOKEN %s\n", gq); bad++; continue; }
         if (!strncmp(a, "UNSAT", 5)) { unsat++; continue; }
         if (!strncmp(a, "UNDEC", 5)) { und++; continue; }
         if (strncmp(a, "SAT ", 4)) { printf("BADANSWER %s", a); bad++; continue; }

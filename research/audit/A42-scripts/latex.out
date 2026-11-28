@@ -1,0 +1,7 @@
+latex: 479:Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+latex: 483:Underfull \hbox (badness 10000) in paragraph at lines 116--116
+latex: 488:Underfull \hbox (badness 10000) in paragraph at lines 121--122
+latex: 493:Underfull \hbox (badness 1127) in paragraph at lines 163--171
+latex: 502:Underfull \hbox (badness 1484) in paragraph at lines 673--677
+latex: 508:Underfull \hbox (badness 3557) in paragraph at lines 677--680
+Build completed successfully (18446 jobs).

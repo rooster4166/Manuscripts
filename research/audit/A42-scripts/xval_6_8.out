@@ -1,0 +1,6 @@
+queries 4000 disagreements 0 with some UNDEC 0 witnesses checked 11298
+by (kind, a42solve answer): {(0, 'SAT'): 1009, (1, 'SAT'): 915, (1, 'UNSAT'): 74, (2, 'SAT'): 254, (2, 'UNSAT'): 159, (3, 'SAT'): 1065, (4, 'SAT'): 261, (5, 'SAT'): 262, (5, 'UNSAT'): 1}
+
+real	0m4.798s
+user	0m4.589s
+sys	0m0.298s

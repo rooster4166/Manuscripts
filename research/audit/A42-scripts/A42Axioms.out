@@ -1,0 +1,130 @@
+'Gallai.PathDecomp.add_path_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.delEdgeList_degree_mod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.lemmaR' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.lemmaR_leaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.ln2_of_critRPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.ln2_of_criterionR' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.ln2_of_conjR' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.steerK_of_steer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.evenSet_delEdgeList_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_D₀' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_leaf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_supp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_steer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.joint_of_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.ln2_of_leaf_at_head' depends on axioms: [propext, Classical.choice, Quot.sound]
+@SteerK : {U : Type u_1} → [DecidableEq U] → Finset (U × U × U) → SimpleGraph U → Finset U → Prop
+inductive Gallai.SteerK.{u} : {U : Type u} → [DecidableEq U] → Finset (U × U × U) → SimpleGraph U → Finset U → Prop
+number of parameters: 3
+constructors:
+Gallai.SteerK.fin : ∀ {U : Type u} [inst : DecidableEq U] {T : Finset (U × U × U)} {K : SimpleGraph U} {τ : Finset U},
+  τ.card ≤ 1 → OneLive T K → SteerK T K τ
+Gallai.SteerK.move : ∀ {U : Type u} [inst : DecidableEq U] {T : Finset (U × U × U)} {K : SimpleGraph U}
+  {τ τ' : Finset U} {p u : U},
+  p ∈ τ →
+    K.Adj p u →
+      u ∉ τ →
+        OffTails T K u →
+          (∀ v ∈ τ, v ≠ p → ¬(delEdge K u p).Adj u v) →
+            (∀ (v : U), v ∈ τ' ↔ v ∈ τ ∧ v ≠ p ∨ v = u ∧ ∃ q, (delEdge K u p).Adj u q) →
+              SteerK T (delEdge K u p) τ' → SteerK T K τ
+Gallai.SteerK.drop : ∀ {U : Type u} [inst : DecidableEq U] {T : Finset (U × U × U)} {K : SimpleGraph U}
+  {τ τ' : Finset U} {t : U × U × U},
+  t ∈ T →
+    K.Adj t.1 t.2.1 →
+      t.2.1 ∉ τ →
+        (∀ (v : U), v ∈ τ' ↔ v ∈ τ ∨ v = t.2.1 ∧ ∃ q, (delEdge K t.1 t.2.1).Adj t.2.1 q) →
+          SteerK T (delEdge K t.1 t.2.1) τ' → SteerK T K τ
+Gallai.SteerK.supp : ∀ {U : Type u} [inst : DecidableEq U] {T : Finset (U × U × U)} {K : SimpleGraph U} {τ : Finset U}
+  {p a b : U},
+  p ∈ τ →
+    (∀ (v : U), K.Adj p v ↔ v = a ∨ v = b) →
+      a ≠ b →
+        ¬K.Adj a b → SuppOK T K a b → SteerK T (plusEdge (delEdge (delEdge K p a) p b) a b) (τ.erase p) → SteerK T K τ
+inductive Gallai.Steer.{u} : {W : Type u} → Finset W → SimpleGraph W → W → Prop
+number of parameters: 2
+constructors:
+Gallai.Steer.last : ∀ {W : Type u} {X : Finset W} {K : SimpleGraph W} {g u : W},
+  K.Adj g u → u ∉ X → (∀ (v : W), K.Adj u v → v = g) → Steer X K g
+Gallai.Steer.step : ∀ {W : Type u} {X : Finset W} {K : SimpleGraph W} {g u : W},
+  K.Adj g u → u ∉ X → Steer X (delEdge K u g) u → Steer X K g
+def Gallai.AvoidDecomp.{u} : {V : Type u} →
+  [Fintype V] → [DecidableEq V] → (G : SimpleGraph V) → [DecidableRel G.Adj] → V → Finset V → Prop :=
+fun {V} [Fintype V] [DecidableEq V] G [DecidableRel G.Adj] c A =>
+  ∃ D, (∀ (v : V), D.ends v = G.degree v % 2) ∧ ∀ P ∈ D.paths, P.src = c ∨ P.tgt = c → ∀ a ∈ A, a ∉ P.walk.support
+def Gallai.TailInv.{u} : {U : Type u} →
+  [Fintype U] → Finset (U × U × U) → (K : SimpleGraph U) → [DecidableRel K.Adj] → Prop :=
+fun {U} [Fintype U] T K [DecidableRel K.Adj] =>
+  ∀ t ∈ T, K.Adj t.1 t.2.1 → (∀ (v : U), K.Adj t.1 v ↔ v = t.2.1) ∧ K.degree t.2.2 % 2 = 1 ∧ ¬K.Adj t.2.2 t.2.1
+structure Gallai.TailSys.{u} {U : Type u} (T : Finset (U × U × U)) : Prop
+number of parameters: 2
+fields:
+  Gallai.TailSys.xc : ∀ t ∈ T, t.2.2 ≠ t.1
+  Gallai.TailSys.xw : ∀ t ∈ T, t.2.2 ≠ t.2.1
+  Gallai.TailSys.cross : ∀ t ∈ T, ∀ t' ∈ T, t ≠ t' → t'.1 ≠ t.1 ∧ t'.1 ≠ t.2.1 ∧ t'.2.2 ≠ t.1 ∧ t'.2.2 ≠ t.2.1
+constructor:
+  Gallai.TailSys.mk.{u} {U : Type u} {T : Finset (U × U × U)} (xc : ∀ t ∈ T, t.2.2 ≠ t.1) (xw : ∀ t ∈ T, t.2.2 ≠ t.2.1)
+    (cross : ∀ t ∈ T, ∀ t' ∈ T, t ≠ t' → t'.1 ≠ t.1 ∧ t'.1 ≠ t.2.1 ∧ t'.2.2 ≠ t.1 ∧ t'.2.2 ≠ t.2.1) : TailSys T
+def Gallai.TailGood.{u} : {U : Type u} →
+  [Fintype U] → [DecidableEq U] → Finset (U × U × U) → (K : SimpleGraph U) → [DecidableRel K.Adj] → Prop :=
+fun {U} [Fintype U] [DecidableEq U] T K [DecidableRel K.Adj] =>
+  ∃ D, (∀ (v : U), D.ends v = K.degree v % 2) ∧ ∀ t ∈ T, K.Adj t.1 t.2.1 → MeetsOnce D {t.1, t.2.2}
+@steerK_good : ∀ {U : Type u_1} [inst : Fintype U] [inst_1 : DecidableEq U] {T : Finset (U × U × U)},
+  TailSys T →
+    ∀ {K : SimpleGraph U} {τ : Finset U},
+      SteerK T K τ → ∀ [inst_2 : DecidableRel K.Adj], evenSet K = τ → TailInv T K → TailGood T K
+@steer_of_inv : ∀ {W : Type u_1} [inst : Fintype W] [DecidableEq W] {X : Finset W} (A : W → Prop) (n : ℕ)
+  (K S : SimpleGraph W) [inst_2 : DecidableRel S.Adj] (c : W),
+  ∑ w, S.degree w = n →
+    S ≤ K →
+      (∀ (a b : W), S.Adj a b → b ∉ X) →
+        (∀ (v : W), A v → ∀ (w : W), K.Adj v w → S.Adj v w) →
+          (∀ (v : W), v ≠ c → S.degree v % 2 = 1 → A v) → A c ∨ S.degree c % 2 = 1 → 0 < S.degree c → Steer X K c
+@avoid_of_apexSep : ∀ {W : Type u_1} [inst : Fintype W] [inst_1 : DecidableEq W] (G : SimpleGraph W)
+  [inst_2 : DecidableRel G.Adj] {c : W},
+  G.degree c % 2 = 1 →
+    ∀ (DH : PathDecomp (apex G {c})),
+      (∀ (w : W), w ≠ c → DH.ends (some w) = G.degree w % 2) →
+        DH.ends (some c) = 0 →
+          ∀ {A : Finset W},
+            (∀ P ∈ DH.paths, none ∈ P.walk.support → ∀ a ∈ A, some a ∉ P.walk.support) → AvoidDecomp G c A
+def Gallai.evenSet.{u} : {V : Type u} → [Fintype V] → (G : SimpleGraph V) → [DecidableRel G.Adj] → Finset V :=
+fun {V} [Fintype V] G [DecidableRel G.Adj] => {v | 0 < G.degree v ∧ Even (G.degree v)}
+def Gallai.apex.{u} : {V : Type u} → SimpleGraph V → Finset V → SimpleGraph (Option V) :=
+fun {V} G T =>
+  {
+    Adj := fun x y =>
+      match x, y with
+      | some a, some b => G.Adj a b
+      | none, some b => b ∈ T
+      | some a, none => a ∈ T
+      | none, none => False,
+    symm := ⋯, loopless := ⋯ }
+def Gallai.delEdgeList.{u} : {V : Type u} → SimpleGraph V → List (Sym2 V) → SimpleGraph V :=
+fun {V} K S => { Adj := fun x y => K.Adj x y ∧ s(x, y) ∉ S, symm := ⋯, loopless := ⋯ }
+structure Gallai.PathDecomp.{u} {V : Type u} (G : SimpleGraph V) : Type u
+number of parameters: 2
+fields:
+  Gallai.PathDecomp.paths : List (GPath G)
+  Gallai.PathDecomp.nodup_edges : (List.flatMap GPath.edges self.paths).Nodup
+  Gallai.PathDecomp.covers : ∀ (e : Sym2 V), e ∈ G.edgeSet ↔ e ∈ List.flatMap GPath.edges self.paths
+constructor:
+  Gallai.PathDecomp.mk.{u} {V : Type u} {G : SimpleGraph V} (paths : List (GPath G))
+    (nodup_edges : (List.flatMap GPath.edges paths).Nodup)
+    (covers : ∀ (e : Sym2 V), e ∈ G.edgeSet ↔ e ∈ List.flatMap GPath.edges paths) : PathDecomp G
+structure Gallai.GPath.{u} {V : Type u} (G : SimpleGraph V) : Type u
+number of parameters: 2
+fields:
+  Gallai.GPath.src : V
+  Gallai.GPath.tgt : V
+  Gallai.GPath.walk : G.Walk self.src self.tgt
+  Gallai.GPath.isPath : self.walk.IsPath
+  Gallai.GPath.pos : 0 < self.walk.length
+constructor:
+  Gallai.GPath.mk.{u} {V : Type u} {G : SimpleGraph V} (src tgt : V) (walk : G.Walk src tgt) (isPath : walk.IsPath)
+    (pos : 0 < walk.length) : GPath G
+def Gallai.PathDecomp.ends.{u} : {V : Type u} → {G : SimpleGraph V} → [DecidableEq V] → PathDecomp G → V → ℕ :=
+fun {V} {G} [DecidableEq V] D v => (List.map (fun P => P.endsAt v) D.paths).sum
+def Gallai.GPath.endsAt.{u} : {V : Type u} → {G : SimpleGraph V} → [DecidableEq V] → GPath G → V → ℕ :=
+fun {V} {G} [DecidableEq V] P v => (if P.src = v then 1 else 0) + if P.tgt = v then 1 else 0
