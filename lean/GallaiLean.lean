@@ -96,3 +96,4 @@ import GallaiLean.NoData
 import GallaiLean.LemmaR
 import GallaiLean.JointR
 import GallaiLean.Conj31
+import GallaiLean.Conj31Up

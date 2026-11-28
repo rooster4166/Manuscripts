@@ -106,8 +106,8 @@ statement & status & where\\
 Conjecture~31 & open; exhaustive $n\le10$ & Sec.~\ref{sec:data}\\
 (DB) necessary & proved, Lean & Lemma~\ref{lem:DB}\\
 (DB) fails only at a universal vertex & proved; Lean (this direction) & Lemma~\ref{lem:DBfail}\\
-upward closure (split a path) & proved (paper) & Lemma~\ref{lem:up}\\
-PC with $\le1$ zero, every graph & proved (paper; Lov\'asz in Lean) & Thm.~\ref{thm:PC1}\\
+upward closure (split a path) & proved, Lean & Lemma~\ref{lem:up}\\
+PC with $\le1$ zero, every graph & proved; Lean (one zero: even order) & Thm.~\ref{thm:PC1}\\
 PC $\Leftrightarrow$ minimal profiles and the (O1) boundary & proved (paper) & Prop.~\ref{prop:min}\\
 Conjecture PC & open; exhaustive $n\le 8$ & Conj.~\ref{conj:PC}\\
 PC $\Rightarrow$ Conjecture~31 & proved, Lean & Prop.~\ref{prop:PC31}\\
@@ -173,7 +173,7 @@ Lean proves the forward direction, which is all that Proposition~\ref{prop:PC31}
 
 \begin{lemma}[upward closure]\label{lem:up}
 If $b$ is realisable and $b(x)\le d(x)-2$, then $b+2\cdot 1_x$ is realisable. Moreover (DB) is preserved by
-$b\mapsto b+2\cdot1_x$.
+$b\mapsto b+2\cdot1_x$.\lean{realisesProfile\_up}
 \end{lemma}
 \begin{proof}
 Since $b(x)<d(x)$, some path $AxB$ of the decomposition has $x$ as an interior vertex. Replace it by the
@@ -188,7 +188,7 @@ of~\cite{EP}.
 
 \begin{theorem}[PC with at most one zero]\label{thm:PC1}
 Let $G$ be any graph and $b\equiv d\pmod 2$ with $b\le d$, $b\ge1$ at every vertex of positive degree
-except at most one. Then $b$ is realisable.
+except at most one. Then $b$ is realisable.\lean{realisesProfile\_of\_no\_zero, realisesProfile\_of\_one\_zero}
 \end{theorem}
 \begin{proof}
 Let $Z$ be the set of zeros, $|Z|\le1$. The graph $G$ with a pendant vertex attached at every vertex of
@@ -199,7 +199,9 @@ realisable. Now raise $m_Z$ to $b$ two ends at a time with Lemma~\ref{lem:up}; e
 the current value at $x$ is below $b(x)\le d(x)$.
 \end{proof}
 
-Lemma~\ref{lem:DBfail} agrees: with $\le1$ zero, (DB) always holds. With two zeros the same argument gives
+The Lean versions assume no isolated vertex, and for one zero even order (they use
+\texttt{realisable\_evenSet'} and \texttt{realisable\_evenSet\_erase'}); \texttt{realisesProfile\_of\_le} is the
+raising step. Lemma~\ref{lem:DBfail} agrees: with $\le1$ zero, (DB) always holds. With two zeros the same argument gives
 the reduction to minimal profiles.
 
 \begin{proposition}[reduction to minimal profiles]\label{prop:min}

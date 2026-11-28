@@ -1,1 +1,1 @@
-Build completed successfully (18448 jobs).
+lake build (lean/, with Conj31.lean and Conj31Up.lean): Build completed successfully (18450 jobs).

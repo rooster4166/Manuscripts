@@ -1,6 +1,6 @@
 # Conjecture 31: profile form, block criterion, joint paths (session `claude/conj31`)
 
-Manuscript `conj31.tex` / `conj31.pdf` (working draft). Lean: `lean/GallaiLean/Conj31.lean`.
+Manuscript `conj31.tex` / `conj31.pdf` (working draft). Lean: `lean/GallaiLean/Conj31.lean`, `lean/GallaiLean/Conj31Up.lean`.
 Builds on `manuscripts/endpoint-structure` §5 (the two-even problem, Conjecture 31) and `manuscripts/conj-r`
 (Conjecture J).
 
@@ -8,17 +8,18 @@ Builds on `manuscripts/endpoint-structure` §5 (the two-even problem, Conjecture
 
 ## Proved
 
-**In Lean** (no `sorry`; full library build green, 18,448 jobs; axioms `propext`, `Classical.choice`,
+**In Lean** (no `sorry`; full library build green, 18,450 jobs; axioms `propext`, `Classical.choice`,
 `Quot.sound` only, see `data/axioms.txt`):
 - `tight_iff_realisesProfile`.
 - (DB) is necessary: `degree_add_le_sum_of_realises`.
 - (DB) fails only at a vertex adjacent to everything: `universal_of_not_degreeBound`.
 - The moves TR (Fan transfer), NEW, SUP and TRI, realisation step: `realisesProfile_transfer`, `_newPath`, `_suppress`, `_tri`.
 - **PC ⇒ Conjecture 31**: `conj31_of_profileConj`.
+- Upward closure, by splitting a path at an interior vertex: `realisesProfile_up`, `realisesProfile_of_le`.
+- **PC with ≤ 1 zero**: `realisesProfile_of_no_zero` and `realisesProfile_of_one_zero`. Any graph without isolated vertices; the one-zero version needs even order.
 
 **On paper:**
-- Upward closure (split a path at an interior vertex).
-- **PC with ≤ 1 zero holds for every graph** (Lovász + leaf dictionary + upward closure).
+- PC with ≤ 1 zero at every order.
 - PC reduces to minimal profiles, i.e. to "Ev∖{u,v} realisable for every pair" plus the (O1) boundary.
 - The moves CYC, EAR, SPL, TW2, DOWN, and the output conditions of all moves.
 - A minimal counterexample to PC is irreducible.
