@@ -139,7 +139,10 @@ EMM sufficiency work is **stopped**.
     4. Use L1 for the back-steps.
   - **Strengthening:** the proof needs only that y's component in G − x contains a non-neighbour of x. This weak condition is exactly the boundary at orders 4 and 6.
   - **Data:** all 1.3M order-10 instances constructed and verified.
-  - Manuscript and audit pending.
+  - **Finished** (cc4e063).
+    - Manuscript `manuscripts/na`; audit A33: all proofs SOUND.
+    - Lean also proves the exact boundary, `avoid_iff_reach`, and the set form with its boundary, `avoid_packed_of_reach` / `avoid_packed_iff_reach`.
+    - Open: the R2 strengthening, and the even-vertex version (two even vertices after the leaf), which is where N differs from NA.
 - **trn** (session_01FxXpVf3UQSh4TMBMYT3AEH, branch `claude/trn`, new): prove TRN, tight transfer for A = {x}, in both cases y ≁ g and y ~ g. **TRN is now the only missing piece: TRN ⇒ Conjecture N (Lean) ⇒ DL(1)** (Prop 9.2, paper). I sent the NA technique to the session.
   - **Milestone 2 (e3d9aef, merged; build green; axioms checked):**
     - `TightTransferNCore`, the core restriction, and `conjN_of_core` (TRN.lean).

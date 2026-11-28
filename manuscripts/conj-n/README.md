@@ -1,3 +1,5 @@
+> **Update (2026-11-28):** NA is now PROVED in `manuscripts/na` (Lean `neighbourAvoidOn`, audit A33). So Conjecture N ⇐ TRN alone (`conjN_of_tightTransferN`).
+
 # Conjecture N — cloud session `claude/conj-n`
 
 Manuscript: `conj-n.tex` (compile with `pdflatex` twice). Lean: `lean/GallaiLean/ConjN.lean`, `lean/GallaiLean/ConjNFar.lean`.
