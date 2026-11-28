@@ -1,0 +1,11 @@
+graphs 82905 instances 165810 slack 165809 tight 1 fail 0 unk 0
+emax distribution (all / tight): undecided 1
+graphs 84858 instances 169716 slack 169713 tight 3 fail 0 unk 0
+emax distribution (all / tight): undecided 3
+graphs 96447 instances 192894 slack 192887 tight 7 fail 0 unk 0
+emax distribution (all / tight): 5:2/2 undecided 5
+graphs 94282 instances 188564 slack 188562 tight 2 fail 0 unk 0
+emax distribution (all / tight): undecided 2
+graphs 474 instances 948 slack 943 tight 5 fail 0 unk 0
+emax distribution (all / tight): 3:948/5 undecided 0
+verified witnesses: 717942  other: {}
