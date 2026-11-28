@@ -1,0 +1,11 @@
+residual: mine 32 data file 32 identical sets: True same J/S labels: True
+{'leaf at head': 30, '2cut': 2}
+residual: mine 2353 data file 2353 identical sets: False same J/S labels: False
+{'leaf at head': 1579, '2cut': 214, 'joined': 515, 'cut': 45}
+joined residual |E|: min 13 max 24 #|E|>=16 508 by |E| [(13, 2), (14, 4), (15, 1), (16, 8), (17, 14), (18, 68), (19, 79), (20, 156), (21, 91), (22, 74), (23, 10), (24, 8)]
+residual: mine 2353 data file 2353 identical sets: True same J/S labels: True
+{'leaf at head': 1579, '2cut': 214, 'joined': 515, 'cut': 45}
+joined residual |E|: min 13 max 24 #|E|>=16 508 by |E| [(13, 2), (14, 4), (15, 1), (16, 8), (17, 14), (18, 68), (19, 79), (20, 156), (21, 91), (22, 74), (23, 10), (24, 8)]
+residual: mine 74 data file 74 identical sets: True same J/S labels: True
+{'leaf at head': 45, 'joined': 21, '2cut': 7, 'cut': 1}
+joined residual |E|: min 24 max 36 #|E|>=16 21 by |E| [(24, 1), (27, 3), (28, 3), (29, 2), (30, 3), (31, 2), (33, 3), (34, 3), (36, 1)]

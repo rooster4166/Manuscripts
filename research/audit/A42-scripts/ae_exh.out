@@ -1,0 +1,5 @@
+n = 5 queries 8 {'OK': 8}
+n = 6 queries 8 {'OK': 8}
+n = 7 queries 354 {'OK': 354}
+n = 8 queries 354 {'OK': 354}
+n = 9 (a42solve -b 2000000, 4 x 1200 s; 431 queries not reached before the timeout): AE9pre.a {'OK': 46921, 'UNDEC': 2}

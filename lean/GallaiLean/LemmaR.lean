@@ -4,7 +4,7 @@ import GallaiLean.ConjNFar
 /-!
 # Pre-committed end paths: Lemma R and Criterion R (session `claude/conj-r`)
 
-Manuscript `manuscripts/conj-r` (Lemma R and Proposition 6.3 of `manuscripts/ln`).
+Manuscript `manuscripts/conj-r`, Section 3 (Lemma R, Definition 3.3, Proposition 3.4; in `manuscripts/ln` these are Lemma 6.1, Definition 6.2 and Proposition 6.3).
 
 Let `G` have no vertex of positive even degree, and let `(cᵢ, aᵢ)`, `(cⱼ, aⱼ)` be two pairs.
 Fix a path `P` from `cᵢ` avoiding `aᵢ`, and let `K₀ = G − E(P)` (`delEdgeList G P.edges`).
@@ -19,7 +19,7 @@ Fix a path `P` from `cᵢ` avoiding `aᵢ`, and let `K₀ = G − E(P)` (`delEdg
   `cⱼ` has no end in `D₀`); case (b) is `P.tgt ≠ cⱼ`.
 * **`lemmaR_leaf`** (Lemma R(b) with a new leaf): a parity decomposition of `K₀ + cⱼℓ` in which no
   path contains both `ℓ` and `aⱼ` gives the decomposition.
-* **`CriterionR`** (manuscript Definition 6.2) and **`ln2_of_criterionR`** (Proposition 6.3): a
+* **`CriterionR`** (conj-r Definition 3.3 = ln Definition 6.2) and **`ln2_of_criterionR`** (conj-r Proposition 3.4 = ln Proposition 6.3): a
   multi-token schedule for `K₀` (case (a)), for `K₀ + cⱼℓ` with the tail `(ℓ, cⱼ, aⱼ)`, or for `K₀`
   with the tail `(cⱼ, w, aⱼ)` when `cⱼ` is a leaf of `K₀` at `w`, gives `L_N(2)` for the instance.
 * **`LN2`**, **`ConjR`**, **`ln2_of_conjR`**: Conjecture R implies `L_N(2)`.
@@ -206,7 +206,7 @@ section criterion
 
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/-- **Criterion R for an ordered choice and a path** (manuscript Definition 6.2). `P` starts at `cᵢ`
+/-- **Criterion R for an ordered choice and a path** (conj-r Definition 3.3 = ln Definition 6.2). `P` starts at `cᵢ`
 and avoids `aᵢ`; with `K₀ = G − E(P)`, one of:
 * (a) `P` ends at `cⱼ`, avoids `aⱼ`, and `(K₀, ∅)` has a multi-token schedule;
 * (b) `P` ends outside `{cⱼ, aⱼ}`, and `(K₀ + cⱼℓ, {(ℓ, cⱼ, aⱼ)})` has a schedule (`ℓ = none`);

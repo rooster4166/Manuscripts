@@ -21,6 +21,23 @@ Manuscript `conj-r.tex` / `conj-r.pdf` (working draft). Lean: `lean/GallaiLean/L
   - m = 3 at order 8.
 - **Conjectured:** J, AE.
 
+**Audit A42** (`research/audit/A42-conj-r.md`, scripts in `research/audit/A42-scripts/`): every proof
+correct (Lemma S and Theorem G checked case by case), Lean pass, every re-derived number reproduced with
+independent code. It found one ERROR and two OVERCLAIMs, all in wording, and all now fixed:
+- the abstract's description of the non-tight remainders;
+- §10's description of (R3) and of what would prove L_N(2);
+- "reduces exactly / equivalent to AE".
+
+Its MINOR items are applied, in particular:
+- connectivity of the data;
+- NA citations;
+- the (G3) wording;
+- Example 8.3;
+- Lean-scope notes;
+- m = 3 at all 84,064 instances;
+- joint ends over all 224 order-8 graphs;
+- script and data fixes.
+
 ## Contents
 
 | Path | What |
@@ -57,3 +74,11 @@ Manuscript `conj-r.tex` / `conj-r.pdf` (working draft). Lean: `lean/GallaiLean/L
     python3 scripts/m3.py odd8c.g6 m3_J3fail8.txt                        # m = 3 (expects ./lnsolve3, ./wcheck)
 
 Raw intermediate outputs (`pall8.out` is 91 MB) are regenerable and are not committed.
+
+Graph labels: the order-8 and order-10-sample files (`residual_order8.txt`, `residual_order10_sample.txt`,
+`single_edge_order8.txt` and the order-8 path data) use the graph6 strings of `manuscripts/ln` (nauty's
+labelling), because they were computed on ln's instance lists. Graphs produced by `gen.c` (orders 6, 10 exhaustive,
+`conjJ_exhaustive.txt`, `separated*.txt`, `m3_*`) use `gen.c`'s canonical labelling. Recomputing the residual from
+`gen 8 oddc` gives the same 2,353 instances under different labels (audit A42 compared the sets up to isomorphism).
+`pall.py` and `pscan.py` now record a budget-limited answer as `D`; in the shipped runs no answer was budget-limited.
+`wcheck.c` now rejects unknown query tokens (audit A42, M12).

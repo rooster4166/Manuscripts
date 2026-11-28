@@ -1,0 +1,15 @@
+('NOT', 'act', '2c', 'O1') 10595
+('NOT', 'act', 'n2c', '-') 4556
+('NOT', 'act', 'n2c', 'O1') 5233
+('tight', 'act', '2c', '-') 72975
+('tight', 'act', 'n2c', '-') 128205
+('tight', 'iso', '2c', '-') 4934
+('tight', 'iso', '2c', 'O1') 266
+('tight', 'iso', 'n2c', '-') 24570
+('tight', 'iso', 'n2c', 'O1') 932
+joint paths 252266 tight 231882 UNDEC 0
+{'joined': 40538, 'some joint exact': 40538, 'some longest exact': 39966, 'every longest exact': 39452, 'some shortest exact': 37544, 'every shortest exact': 36460}
+
+real	1m57.260s
+user	4m3.287s
+sys	0m4.141s

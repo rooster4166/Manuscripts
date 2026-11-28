@@ -1,0 +1,9 @@
+order 6:
+instances 428 joined 374 separated 54 | B 2 G 20 leaf 30 cut 0 2cut 2 | notB&Gn 20 AEqueries 30 CriterionR-run 2
+real	0m0.001s
+order 8:
+instances 43400 joined 40538 separated 2862 | B 342 G 682 leaf 1579 cut 45 2cut 214 | notB&Gn 664 AEqueries 1582 CriterionR-run 274
+real	0m0.003s
+order 10:
+instances 20569948 joined 20151960 separated 417988 | B 37170 G 58283 leaf 292643 cut 4323 2cut 25569 | notB&Gn 56083 AEqueries 292838 CriterionR-run 31897
+real	0m0.508s

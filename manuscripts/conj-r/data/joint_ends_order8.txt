@@ -1,2 +1,3 @@
-# Joint ends without avoidance (J0): for every connected all-odd graph of order 8 with an instance of L_N(2) (the 222 graphs of ln; the other two are K_8 and K_8 - K_3) and every pair u != v, query 'J u v' (some Lovasz decomposition has a path with ends u and v).
-6216 queries: witnesses checked 6216, unsat 0, undecided 0, failures 0
+# Joint ends without avoidance (J0): every connected all-odd graph of order 8 (gen.c, 224 graphs) and every pair u != v: query 'J u v'
+# (some Lovasz decomposition has a path with ends u and v); lnsolve3, witnesses re-checked by wcheck.c.
+6272 queries: witnesses checked 6272, unsat 0, undecided 0, failures 0

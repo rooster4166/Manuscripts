@@ -1,0 +1,9 @@
+{'answer_OK': 314461, 'answer_UNSAT': 2937, 'inst': 84064, 'LN3_OK': 84064, 'joint_choice': 83956, 'J3': 83872}
+J3 failures 84 their J3 queries 148 all UNSAT: True
+failure list equals data/m3_J3_failures_order8.txt: True
+edge counts of failures: [(9, 8), (10, 8), (11, 20), (12, 11), (13, 5), (14, 2), (15, 2), (16, 4), (17, 24)]
+instances without a joint choice: 108
+
+real	2m35.914s
+user	2m33.660s
+sys	0m5.326s

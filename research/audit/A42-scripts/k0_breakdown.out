@@ -1,0 +1,7 @@
+('2-connected', 'O1', 'NOT tight') 10595
+('2-connected', 'no O1', 'tight') 72975
+('cut vertex', 'O1', 'NOT tight') 5233
+('cut vertex', 'no O1', 'NOT tight') 3697
+('cut vertex', 'no O1', 'tight') 123830
+('disconnected', 'no O1', 'NOT tight') 859
+('disconnected', 'no O1', 'tight') 4375

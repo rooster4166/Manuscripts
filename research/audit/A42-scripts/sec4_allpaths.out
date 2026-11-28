@@ -1,0 +1,31 @@
+records 5732328
+by (length, kind): [((1, 'a'), 41964), ((1, 'b'), 173656), ((1, 'z'), 41964), ((2, 'a'), 90300), ((2, 'b'), 447592), ((2, 'z'), 90300), ((3, 'a'), 141052), ((3, 'b'), 833680), ((3, 'z'), 185928), ((4, 'a'), 149804), ((4, 'b'), 1160356), ((4, 'z'), 288396), ((5, 'a'), 81412), ((5, 'b'), 1064052), ((5, 'z'), 305696), ((6, 'b'), 472444), ((6, 'z'), 163732)]
+length 1 queries 215620 instances first working here 40964 UNDEC 0
+length 2 queries 43006 instances first working here 2132 UNDEC 0
+length 3 queries 24948 instances first working here 258 UNDEC 0
+length 4 queries 12336 instances first working here 38 UNDEC 0
+length 5 queries 4608 instances first working here 8 UNDEC 0
+least working length (non-z): [(1, 40964), (2, 2132), (3, 258), (4, 38), (5, 8)] none: 0
+sample of 800 instances, 107840 records; fraction working by (length, kind):
+   (1, 'a') [814, 694] 0.853
+   (1, 'b') [3162, 2307] 0.730
+   (1, 'z') [780, 680] 0.872
+   (2, 'a') [1612, 1392] 0.864
+   (2, 'b') [8450, 6306] 0.746
+   (2, 'z') [1645, 1393] 0.847
+   (3, 'a') [2622, 2388] 0.911
+   (3, 'b') [15712, 12519] 0.797
+   (3, 'z') [3489, 3197] 0.916
+   (4, 'a') [2892, 2690] 0.930
+   (4, 'b') [22065, 18460] 0.837
+   (4, 'z') [5342, 4921] 0.921
+   (5, 'a') [1622, 1592] 0.982
+   (5, 'b') [20033, 17989] 0.898
+   (5, 'z') [5791, 5481] 0.946
+   (6, 'b') [8646, 8443] 0.977
+   (6, 'z') [3163, 3088] 0.976
+sample mean fraction working (non-z) 0.8884, min 0.5025
+
+real	19m48.240s
+user	43m24.593s
+sys	0m10.047s

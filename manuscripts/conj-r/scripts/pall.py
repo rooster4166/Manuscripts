@@ -55,7 +55,7 @@ def work(lines):
     out = []; k = 0
     for line, rec in recs:
         for r in rec:
-            r[3] = res[k][0] if res[k] else '?'; k += 1
+            r[3] = {'SAT': 'S', 'UNSAT': 'U', 'UNDEC': 'D'}.get(res[k].split()[0], '?') if res[k] else '?'; k += 1
         out.append(line + ' | ' + ' '.join('%d:%s:%s:%s' % (r[0], '-'.join(map(str, r[1])), r[2], r[3]) for r in rec))
     return out
 

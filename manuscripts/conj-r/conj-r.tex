@@ -41,25 +41,30 @@ and the conditional reduction of the ``leaf at the other head'' case to Conjectu
 \item \emph{The joint form} (computed). When $c_1,c_2$ lie in one component of $F-\{a_1,a_2\}$ (we
 call the instance \emph{joined}), some Lov\'asz decomposition has $Q(c_1)=Q(c_2)$, a path avoiding
 $a_1$ and $a_2$. This holds at every joined instance of orders $6$, $8$ and $10$, which is $374$,
-$40{,}538$ and $20{,}151{,}960$ instances. Every witness was checked by an independent program. We state it as Conjecture~J; it is the exact form of
-case (a) of Lemma R. At order $8$ the non-tight remainders $F-E(P)$ are exactly those with a
-universal odd vertex or a cut vertex. This is consistent with Conjecture~31 of the two-even problem.
+$40{,}538$ and $20{,}151{,}960$ instances ($F$ connected; disconnected $F$ reduce to these and to two
+related tests, checked by audit A42). Every witness was checked by an independent program. We state it
+as Conjecture~J; it is the exact form of case (a) of Lemma R. At order $8$, a $2$-connected remainder
+$F-E(P)$ is tight exactly when it has no universal odd vertex (with one it is never tight, by a degree
+count), and every non-tight remainder has such a vertex or is not $2$-connected. This is consistent
+with Conjecture~31 of the two-even problem.
 \item \emph{Proved joint cases} (Lean). A joint path $P$ finishes the instance when an end of $P$
 has degree $1$, or degree $3$ with non-adjacent remaining neighbours, or when one token can be
-steered to retirement while the other stays put. We prove that the last condition (Lemma~S) is
-equivalent to a parity condition on components (a $T$-join).
+steered to retirement while the other stays put. We prove on paper that the last condition
+(Lemma~S) is equivalent to a parity condition on components (a $T$-join).
 \item \emph{The separated case} (paper). If a cut vertex $a_j$ separates $c_j$ from $c_i$,
-gluing two applications of $L_1$ settles the instance, except when $a_i$ lies on $c_j$'s side,
-$d_B(a_j)$ is even, and $c_i\sim a_j$ fails NA's boundary condition. The typical exception, $c_i$ a
-leaf at $a_j$, reduces exactly to Conjecture~AE: avoiding the even vertex, the case $A=\{g\}$ of
-$L_1^*$. AE holds exhaustively for $n\le9$ and on $292{,}838$ derived instances of order $10$.
+gluing two decompositions obtained from $L_1$ and NA settles the instance, except when $a_i$ lies on
+$c_j$'s side, $d_B(a_j)$ is even, and $c_i\sim a_j$ with every vertex of $c_i$'s component in
+$F-a_j$ adjacent to $a_j$. The typical exception, $c_i$ a leaf at $a_j$, reduces to Conjecture~AE
+(Proposition~\ref{prop:leafhead}): avoiding the even vertex, the case $A=\{g\}$ of $L_1^*$. AE holds exhaustively for $n\le9$ and on $292{,}838$ derived instances of order $10$.
 \item \emph{The residual.} The proved conditions cover $396$ of $428$ instances at order $6$, $41{,}047$
 of $43{,}400$ at order $8$, and $2{,}926$ of the $3{,}000$ sampled at order $10$. We list the residual by
-type and give the smallest examples (order $6$). Every residual instance has an executed Criterion R certificate (orders
-$6$, $8$; order-$10$ sample) or an exact certificate (order $10$, exhaustive).
-\item \emph{$m=3$} (computed). $L_N(3)$ holds at all $84{,}064$ instances of order $8$. The
-natural joint extension fails at $84$ of them. Pre-committing two end paths certifies every hard
-instance and a sample of $1{,}500$; every certificate was executed.
+type and give the smallest examples (orders $6$ and $8$). At orders $6$ and $8$ and on the order-$10$
+sample, every residual instance has an executed Criterion R certificate. At order $10$ every instance
+has an exact or executed certificate: Conjecture~J at the joined instances; Corollary~B,
+Theorem~\ref{thm:G}, AE or Criterion R at the separated ones.
+\item \emph{$m=3$} (computed). $L_N(3)$ holds at all $84{,}064$ instances of order $8$ ($F$
+connected). The natural joint extension fails at $84$ of them. Criterion R3, which pre-commits one
+joint path or two end paths, certifies all $84{,}064$ instances; every certificate was executed.
 \end{itemize}
 \end{abstract}
 \maketitle
@@ -101,7 +106,7 @@ The real difficulty is exactness, which is a two-even-vertex tightness problem.
 and a gluing theorem for the separated case (Section~\ref{sec:sep}). The rest is the residual
 (Section~\ref{sec:resid}): dense joined instances, separated instances with a leaf at the other
 head (reduced to Conjecture~AE), and separated instances whose separation needs both $a_1$ and
-$a_2$ or a cut vertex outside the gluing theorem.
+$a_2$ or uses a cut vertex outside the gluing theorem.
 \end{enumerate}
 
 \subsection*{Status of the results}
@@ -134,8 +139,8 @@ We use the multi-token calculus of~\cite{MT} as it stands. A \emph{tail} is a tr
 a leaf $c$, its stem $s$, an avoided vertex $x$. The \emph{tokens} of a graph are its even vertices.
 A \emph{schedule} for $(K,T)$ is a sequence of moves M (a token $p$ moves along an edge $pu$ to an odd
 $u$ outside $X(K)$ that, once $pu$ is deleted, is adjacent to no other token), D (a live tail
-with odd stem is dropped) and S (a token of degree two with non-adjacent neighbours is suppressed),
-after which at most one token and at most one live tail are left~\cite[Def.~2.2]{MT}. The transfer
+with odd stem is dropped) and S (a token of degree two with non-adjacent neighbours is suppressed,
+with the side conditions of~\cite[Def.~2.2]{MT}), after which at most one token and at most one live tail are left~\cite[Def.~2.2]{MT}. The transfer
 theorem~\cite[Thm.~2.7]{MT} (Lean \texttt{steerK\_good}) says that if $T$ satisfies the static
 conditions (TS) and $K$ the invariant (TI), a schedule gives a parity decomposition of $K$ in which no
 path contains both the leaf and the avoided vertex of a live tail.
@@ -239,7 +244,7 @@ $L_1$ with one even vertex, the subject of Conjecture~N of~\cite{TRN}.
 
 \subsection*{All paths}
 We enumerated every path $P$ from $c_i$ avoiding $a_i$, of every length, both orientations and with
-$c_j$ allowed as an interior vertex: $5{,}732{,}328$ records. The mean fraction of paths that work exactly is
+$c_j$ allowed as an interior vertex: $5{,}732{,}328$ records. The mean fraction of paths (not ending at $a_j$) that work exactly is
 $88.5\%$; the minimum over instances is $1/3$. The least length of a working $P$ (not ending at $a_j$) is
 $1$ at $40{,}964$ instances, $2$ at $2{,}132$, $3$ at $258$, $4$ at $38$ and $5$ at $8$. The fraction
 of working paths grows with the length: $72\%$ of single edges in case (b), $97.5\%$ of paths of
@@ -286,8 +291,11 @@ not $2$-connected & $128{,}205$ & $9{,}789$\\
 \end{center}
 Here $|V(K_0)|$ counts non-isolated vertices. When an end of $P$ is isolated in $K_0$ (a leaf $c_i$),
 $K_0$ has at most one even vertex and is always tight ($30{,}702$ paths). So at order~$8$, a 2-connected $K_0$ is tight exactly
-when it has no universal odd vertex (Conjecture~31 of the two-even problem). Since $P$ is ours to
-choose, a universal vertex of $F$ must lie on $P$.
+when it has no universal odd vertex (Conjecture~31 of the two-even problem). One direction is a degree
+count: when $c_1,c_2$ are the only even vertices and $K_0$ has $n_0$ non-isolated vertices, a parity
+decomposition has $(n_0-2)/2$ paths, so an odd vertex has degree at most $1+2((n_0-2)/2-1)=n_0-3$.
+Hence every vertex of $F$ of degree $n-1$ lies on every joint path $P$ that works with both ends of
+positive degree in $K_0$.
 
 \section{The joint form: Conjecture J}\label{sec:J}
 
@@ -298,12 +306,12 @@ one path, and this path avoids $a_1$ and $a_2$.
 \end{conjecture}
 
 Equivalently: for some joint path $P$, $F-E(P)$ has a parity decomposition (then
-Lemma~\ref{lem:R}(a) applies). Conjecture J implies that joined instances are good, and it is strictly
+Lemma~\ref{lem:R} applies with $P$ ending at $c_j$). Conjecture J implies that joined instances are good, and it is strictly
 stronger: a good decomposition need not have $Q(c_1)=Q(c_2)$.
 
 \emph{Evidence} (\texttt{data/conjJ\_exhaustive.txt}). We generated the connected graphs with all
 degrees odd with our own program (\texttt{gen.c}, $13$, $224$ and $32{,}851$ graphs at orders $6$,
-$8$, $10$). Over all instances, Conjecture J holds at every joined one:
+$8$, $10$). Over all instances with $F$ connected, Conjecture J holds at every joined one:
 \begin{center}\footnotesize
 \begin{tabular}{@{}lrrr@{}}
 \toprule
@@ -318,19 +326,25 @@ $10$ & $20{,}569{,}948$ & $\mathbf{20{,}151{,}960}$ & $417{,}988$\\
 The order-$10$ total equals the count X2 of test2 (E34). Each joined instance was solved by
 \texttt{lnsolve3} (\texttt{lnsolve} with the joined pair branched first and a degree bound, both
 sound; validated in Section~\ref{sec:comp}). Every witness was re-checked by \texttt{wcheck.c}, which
-shares no code with the solvers.
+shares no code with the solvers. For disconnected $F$ of order $\le10$, Conjecture J reduces, through
+the component containing $c_1$ and $c_2$, to Conjecture J itself, to the joint-ends test below, or to
+its form with one avoidance, at orders $\le8$. Audit A42 checked all three exhaustively.
 
-\emph{Without avoidance.} At order $8$, every pair $u\ne v$ of every graph is the pair of ends of
-a path of some Lov\'asz decomposition ($6{,}216$ of $6{,}216$; \texttt{data/joint\_ends\_order8.txt}).
+\emph{Without avoidance.} At order $8$, every pair $u\ne v$ of every connected all-odd graph is the
+pair of ends of a path of some Lov\'asz decomposition ($6{,}272$ of $6{,}272$ pairs;
+\texttt{data/joint\_ends\_order8.txt}).
 
 \section{Proved joint cases}\label{sec:Jproof}
 
 Throughout this section $P$ is a joint path of an instance and $K_0=F-E(P)$. The even vertices of
-$K_0$ lie in $\{c_1,c_2\}$ (\texttt{evenSet\_delEdgeList\_sub}).
+$K_0$ lie in $\{c_1,c_2\}$ (\texttt{evenSet\_delEdgeList\_sub}). The Lean theorems below conclude
+that the instance is good (\texttt{LN2Good}); the equality $Q(c_1)=Q(c_2)=P$ holds in their
+construction (Lemma~\ref{lem:R}) but is not part of the stated conclusion.
 
 \begin{proposition}\label{prop:card}
 If $K_0$ has at most one even vertex, the instance is good with $Q(c_1)=Q(c_2)=P$. In particular this
 holds when $d_F(c_1)=1$ or $d_F(c_2)=1$.\lean{joint\_of\_card, joint\_of\_leaf}
+(\texttt{joint\_of\_leaf} states the case $d_F(c_1)=1$; the other is symmetric.)
 \end{proposition}
 
 \begin{proof}
@@ -355,7 +369,8 @@ $g$ avoiding $X$, the instance is good with $Q(c_1)=Q(c_2)=P$.\lean{steerK\_of\_
 
 \begin{proof}
 A steering sequence is a schedule (\texttt{steerK\_of\_steer}). Each step moves the token from $g_t$
-to $g_{t+1}\notin X$. The target is odd: it is not $h$ (which is in $X$) and not $g_t$. Once $g_tg_{t+1}$ is
+to $g_{t+1}\notin X$. The target is odd: every vertex other than $g_t$ and $h$ is odd or isolated, and
+the target is neither ($h\in X$, and the target differs from $g_t$) and has an edge. Once $g_tg_{t+1}$ is
 deleted, the target is not adjacent to the other token $h$, since $N(h)\subseteq X$. No edge at $h$
 is ever deleted, so the tokens are $\{g_t,h\}$ (or $\{h\}$) throughout. At the last step the target
 is left isolated and the token retires. Apply the transfer theorem with $T=\emptyset$ and
@@ -365,14 +380,17 @@ Lemma~\ref{lem:R}.
 Theorem~\ref{thm:steer} only asks for a trail. The next lemma decides when one exists.
 
 \begin{lemma}[Lemma S]\label{lem:S}
-Let $K$ be a graph whose even vertices are $g$ and $h$ ($g\ne h$, $g$ even), let $X=N_K[h]$, and
-suppose $g\notin X$. Let $H$ be the subgraph of $K$ induced by $(V(K)\setminus X)\cup\{g\}$. The
+Let $K$ be a graph whose even vertices are exactly $g$ and $h$ ($g\ne h$, both even), and let
+$X=N_K[h]$.
+\begin{enumerate}[label=(\roman*)]
+\item Suppose $g\notin X$, and let $H$ be the subgraph of $K$ induced by $(V(K)\setminus X)\cup\{g\}$. The
 $g$-token can be moved to retirement by M-moves of that token alone if and only if
 there is a vertex $t$ of $H$ with $0<d_K(t)$ and $N_K(t)\subseteq V(H)$ such that every component of $H-t$
 contains an even number of vertices of
 \[T_t=\begin{cases}N_K(t)\,\triangle\,\{g\}&\text{if }t\ne g,\\ N_K(g)&\text{if }t=g.\end{cases}\]
-If $g\in X$ (that is, $g\sim h$), the token can be moved to retirement if and only if some $u\in N_K(g)\setminus X$ is a leaf,
-or satisfies the criterion in $K-gu$ with $u$ in the role of $g$ (and the same $X$).
+\item If $g\in X$ (that is, $g\sim h$), the token can be moved to retirement if and only if some $u\in N_K(g)\setminus X$ is a leaf,
+or satisfies the criterion of (i) in $K-gu$ with $u$ in the role of $g$ (and the same $X$).
+\end{enumerate}
 \end{lemma}
 
 \begin{proof}
@@ -380,7 +398,8 @@ or satisfies the criterion in $K-gu$ with $u$ in the role of $g$ (and the same $
 each pair by a path in that component. The symmetric difference $J$ of these paths is a $T_t$-join of $H-t$.
 Let $S=\mathrm{star}_K(t)\cup J$. Every edge at $t$ joins $t$ to $V(H)$, so $S\subseteq E(H)$. The odd
 vertices of $S$ are exactly $g$ and $t$: $t$ has odd degree $d_K(t)$, a neighbour $w\ne g$ of $t$ has
-degree $1+d_J(w)$, even, and $g$ has degree $[g\in N(t)]+d_J(g)$, odd. The component of $S$ containing $g$
+degree $1+d_J(w)$, even, $g$ has degree $[g\in N(t)]+d_J(g)$, odd, and every other vertex has the even
+degree $d_J$. The component of $S$ containing $g$
 contains another odd vertex, which can only be $t$, and hence it contains $\mathrm{star}(t)$. An Euler trail of that
 component from $g$ to $t$ is a steering sequence from $g$ avoiding $X$: its vertices after the start lie in $V(H)$, and
 $g\notin X$. A return to $g$ is a legal move, because $g$ is then odd and not adjacent to $h$. At the end every edge at $t$ has been used, so the token retires
@@ -389,7 +408,9 @@ at $t$.
 \emph{Sufficiency, $t=g$.} The same argument with $S=\mathrm{star}(g)\cup J$, $J$ an $N(g)$-join of
 $H-g$, gives an Euler circuit from $g$ that leaves $g$ isolated.
 
-\emph{Necessity.} Let $W$ be a successful trail ending at $t$, and $S=E(W)$. Its vertices after $g$ are outside $X$, so
+\emph{Necessity.} A legal M-move of the $g$-token goes to an odd vertex outside $N[h]$, since $h$
+keeps all its edges; so the moves form a trail whose targets avoid $X$. Let $W$ be a successful trail
+ending at $t$, and $S=E(W)$. Its vertices after $g$ are outside $X$, so
 $S\subseteq E(H)$. Every edge at $t$ is in $S$, so $N_K(t)\subseteq V(H)$. The odd vertices of $S$ are $g,t$ (or none, if
 $t=g$). Then $S\setminus\mathrm{star}(t)$ is a $T_t$-join of $H-t$, which forces the parity
 condition.
@@ -400,20 +421,24 @@ Apply the first part to $K-gu$, where $u\notin X$ is the moving token, or it ret
 
 Lemma~\ref{lem:S} is paper-only. Lean has Theorem~\ref{thm:steer} for any steering sequence, and
 the subgraph form \texttt{joint\_of\_inv}, which is the sufficiency direction via NA's walking lemma
-\texttt{steer\_of\_inv}. The $T$-join step is standard and is not formalised. We checked the
-equivalence by computer: on every joint path of $6{,}000$ random order-$8$ instances, for both choices of $g$, the criterion
-agrees with an exhaustive search for the trail ($62{,}530$ cases;
-\texttt{data/tjoin\_vs\_trail.txt}).
+\texttt{steer\_of\_inv} (for $g\notin X$). The $T$-join step is standard and is not formalised. We checked the
+equivalence by computer: on every joint path with both ends of positive degree in $K_0$ of $6{,}000$
+random order-$8$ instances, for both choices of $g$, the criterion agrees with an exhaustive search for
+the trail ($62{,}530$ cases; \texttt{data/tjoin\_vs\_trail.txt}). Audit A42 repeated the comparison
+with its own code on every such joint path at orders $6$ and $8$ and on the order-$10$ sample
+($694{,}256$ cases, no disagreement).
 
 \begin{corollary}[Lemma S, joint form]\label{cor:S}
-If for some joint path $P$ and some $\{g,h\}=\{c_1,c_2\}$ the criterion of Lemma~\ref{lem:S} holds in
-$K_0$, the instance is good, with $Q(c_1)=Q(c_2)=P$.
+If for some joint path $P$ with both ends of positive degree in $K_0$ (otherwise
+Proposition~\ref{prop:card} applies) and some $\{g,h\}=\{c_1,c_2\}$ the criterion of
+Lemma~\ref{lem:S} holds in $K_0$, the instance is good, with $Q(c_1)=Q(c_2)=P$.
 \end{corollary}
 
 \emph{Coverage.} Among the $40{,}538$ joined instances of order $8$ (\texttt{cov.py}), each condition on its own
 covers: Proposition~\ref{prop:card} (a leaf) $12{,}176$; Proposition~\ref{prop:supp} $30{,}607$;
-Corollary~\ref{cor:S} $37{,}371$. Their union covers $40{,}023$. The other $515$ need two-token schedules
-($509$) or non-schedule certificates ($6$, above). All $515$ have $|E(F)|\ge13$
+Corollary~\ref{cor:S} $37{,}371$ (computed with an actual trail, so this count rests on
+Theorem~\ref{thm:steer} alone). Their union covers $40{,}023$. Of the other $515$, $509$ have a case-(a)
+schedule that moves both tokens or combines moves with suppressions, and $6$ have none (above). All $515$ have $|E(F)|\ge13$
 (Section~\ref{sec:resid}).
 
 \section{The separated case}\label{sec:sep}
@@ -428,7 +453,8 @@ of
 \begin{enumerate}[label=(G\arabic*)]
 \item $a_i\in A$;
 \item $d_B(v)$ is odd;
-\item $c_i\not\sim v$, or the component of $c_i$ in $F-v$ contains a vertex not adjacent to $v$,
+\item the component of $c_i$ in $F-v$ contains a vertex not adjacent to $v$ (in particular, if
+$c_i\not\sim v$),
 \end{enumerate}
 holds, the instance is good.
 \end{theorem}
@@ -457,13 +483,13 @@ take $\cD_A\cup\cD_B$. If $b_A(v)=2$, the two $A$-paths ending at $v$ are distin
 them ends at $c_i$. Merge the other one with $Y$. In both cases $v$ has one end, the merged path
 ends neither at $c_i$ nor at $c_j$, and $Q(c_i)=Q_A(c_i)$, $Q(c_j)=Q_B(c_j)$.
 
-\emph{Case $d_B(v)$ even} ((G1) or (G3)). Then $F_A$ has all degrees odd and $F_B+v\ell$ has all
+\emph{Case $d_B(v)$ even} ((G1) or (G3); we use (G3) only when (G1) fails, so then $a_i\in B$). Then $F_A$ has all degrees odd and $F_B+v\ell$ has all
 degrees odd. Take $L_1$ on $F_B+v\ell$ for $(c_j,v)$; then $Q(c_j)$ avoids $v$, hence $\ell$. Delete $\ell$;
 this gives $\cD_B$ with $b_B(v)\in\{0,2\}$, and no path ending at $v$ is $Q_B(c_j)$. On the $A$ side:
 \begin{itemize}
 \item under (G1), $L_1$ on $F_A$ for $(c_i,a_i)$;
 \item under (G3) with $c_i\not\sim v$, $L_1$ on $F_A$ for $(c_i,v)$;
-\item under (G3) with $c_i\sim v$, NA's boundary theorem~\cite[Cor.~1.3]{NA} on $F_A$ for $(c_i,v)$. The component of $c_i$
+\item under (G3) with $c_i\sim v$, NA's corollary~\cite[Cor.~1.3]{NA} (\texttt{avoid\_of\_reach}) on $F_A$ for $(c_i,v)$. The component of $c_i$
 in $F_A-v$ is its component in $F-v$, and it contains a vertex not adjacent to $v$.
 \end{itemize}
 Let $X=Q_A(v)$. Under (G3), $Q_A(c_i)$ avoids $v$, so $X\ne Q_A(c_i)$, and $Q_A(c_i)\subseteq A$
@@ -478,9 +504,10 @@ Theorem~\ref{thm:G} is paper-only; it uses $L_1$ (\texttt{lovasz\_avoid\_nonadj}
 decompositions along a cut vertex is not formalised.
 
 \emph{What Theorem~\ref{thm:G} leaves.} A cut vertex $v=a_j$ separates, $a_i\in B$, $d_B(v)$ is even,
-$c_i\sim v$, and every vertex of the component of $c_i$ in $F-v$ is adjacent to $v$. By NA's boundary
-theorem, $Q_A(c_i)$ then contains $v$ in every Lov\'asz decomposition of $F_A$. Almost always $c_i$ is a leaf whose
-only neighbour is $v=a_j$ (at order $8$, $1{,}579$ of the $1{,}624$ such instances).
+$c_i\sim v$, and every vertex of the component of $c_i$ in $F-v$ is adjacent to $v$. By NA's boundary theorem~\cite[Thm.~1.4]{NA}
+($F_A$ has all degrees odd, as $d_B(v)$ is even), $Q_A(c_i)$ then contains $v$ in every Lov\'asz decomposition of $F_A$. Almost always $c_i$ is a leaf whose
+only neighbour is $v=a_j$ (at order $8$, $1{,}579$ of the $1{,}624$ such instances not covered by
+Corollary~B).
 
 \begin{conjecture}[AE: avoiding the even vertex]\label{conj:AE}
 Let $K$ have exactly one vertex $g$ of positive even degree, and let $c$ be odd with $c\not\sim g$. Then
@@ -497,6 +524,7 @@ Let $c_i$ be a leaf whose only neighbour is $a_j$. If $K=F-c_ia_j$ satisfies AE 
 instance is good, with $Q(c_i)=c_ia_j$. Hence AE implies that every such instance is good.
 \lean{ln2\_of\_leaf\_at\_head}
 \end{proposition}
+(The Lean form assumes the full \texttt{ConjAE}, not AE for the one graph $K$.)
 
 \begin{proof}
 In $K$ the vertex $c_i$ is isolated, so $a_j$ is its only possible even vertex. If $a_j$ is
@@ -514,7 +542,7 @@ $292{,}838$ instances at orders $6$, $8$, $10$. All witnesses were checked.
 instances:
 \begin{itemize}
 \item Corollary~B of~\cite{LN} covers $37{,}170$;
-\item Theorem~\ref{thm:G} covers $58{,}283$;
+\item Theorem~\ref{thm:G} covers $58{,}283$ of the rest;
 \item $292{,}643$ have a leaf at the other head (AE, verified);
 \item $4{,}323$ have a cut vertex outside Theorem~\ref{thm:G};
 \item $25{,}569$ need both $a_1$ and $a_2$ to separate (a $2$-cut).
@@ -549,7 +577,8 @@ therefore has three parts:
 \begin{enumerate}[label=(R\arabic*)]
 \item \emph{dense joined instances}, where no joint path admits a leaf end, a suppression or a static
 steering. At order $8$ all have $13\le|E|\le24$, and $508$ of the $515$ have $|E|\ge16$;
-\item \emph{a leaf at the other head} (Proposition~\ref{prop:leafhead}), equivalent to AE for $F-c_ia_j$;
+\item \emph{a leaf at the other head} (Proposition~\ref{prop:leafhead}). AE for $F-c_ia_j$ implies that the
+instance is good, and it is equivalent to the existence of a good decomposition with $Q(c_i)=c_ia_j$;
 \item \emph{other separations}: a cut vertex $a_j$ with all of the component of $c_i$ in $F-a_j$ adjacent to $a_j$, but $c_i$ not a leaf; or a
 $2$-cut $\{a_1,a_2\}$.
 \end{enumerate}
@@ -575,7 +604,8 @@ Criterion R holds with $P=0\,5\,3\,4$ and no moves. The instance $(0,3;1,2)$ is 
 The smallest joined residual instances have $13$ edges: \texttt{G?`vfc} with $(6,4;7,5)$ and
 $(6,5;7,4)$. The edges are $04,06,07,15,16,17,25,26,27,35,36,37,67$; vertices $6$ and $7$ have degree $5$. No joint
 path admits a schedule of case (a). The joint decomposition $\{6\,0\,7,\ 0\,4,\ 1\,5\,2\,6\,7\,3,\
-2\,7\,1\,6\,3\,5\}$ exists. Criterion R holds in case (b) with $P=6\,0$ and two moves.
+2\,7\,1\,6\,3\,5\}$ exists. Criterion R holds in case (b): with $P=6\,0$ and two moves for $(6,4;7,5)$,
+and for $(6,5;7,4)$ with $P=7\,0$, by the automorphism $6\leftrightarrow7$.
 \end{example}
 
 \section{Three pairs}\label{sec:m3}
@@ -616,14 +646,12 @@ pre-committed paths gives a Lov\'asz decomposition with $Q(c_i)=P$ or $P_1$, $Q(
 $\cD_0$.
 \end{proof}
 
-\emph{Coverage} (\texttt{r3.py}, every certificate executed and checked as in~\cite{LN}).
-\begin{itemize}
-\item Criterion R3 holds at all $84$ instances where the joint extension fails ($37$ with paths of length $\le2$, the rest with length
-$\le7$).
-\item It holds at all $108$ instances without a joined pair.
-\item It holds at all $1{,}500$ instances of a random sample. Form (A) is enough at $1{,}491$; (B) is
-needed at $9$.
-\end{itemize}
+\emph{Coverage} (\texttt{r3.py}, every certificate executed and checked as in~\cite{LN};
+\texttt{data/m3\_order8.txt}, \texttt{m3\_R3\_all\_order8.txt.gz}). Criterion R3 holds at all
+$84{,}064$ instances of order $8$. Form (A) suffices at $83{,}765$; form (B) is needed at $299$, of
+which $51$ need paths of length $4$ to $7$. In particular it holds at the $84$ instances where the
+joint extension fails, and at the $108$ instances without a joined pair. Audit A42 re-checked every
+certificate.
 So at $m=3$, pre-committing two end paths does what pre-committing one did at $m=2$. The joint form
 alone no longer suffices.
 
@@ -636,11 +664,13 @@ instances in which neither token can be steered with the other fixed. Case-(a) s
 both tokens, or combine moves with suppressions, cover all but $6$ of them at order $8$; the $6$ are
 the adjacent-twin instances of Section~\ref{sec:data}.
 \item \emph{Conjecture AE} (Conjecture~\ref{conj:AE}), which settles (R2).
-\item \emph{The $2$-cut separations} (R3). Gluing along two vertices needs control of paths through both cut
-vertices. Criterion R handles all of them up to order $10$.
+\item \emph{The other separations} (R3): a cut vertex outside Theorem~\ref{thm:G} with $c_i$ not a leaf
+($45$ instances at order $8$, $4{,}323$ at order $10$), or a $2$-cut. Gluing along two vertices needs
+control of paths through both cut vertices. Criterion R handles all of them up to order $10$.
 \item Formalising the gluing theorem and Lemma S's $T$-join step.
 \end{enumerate}
-A proof of J and AE together with a $2$-cut gluing lemma would prove $L_N(2)$.
+A proof of J and AE, together with gluing lemmas for the remaining separations (a cut vertex outside
+Theorem~\ref{thm:G}, and a $2$-cut), would prove $L_N(2)$.
 
 \section{Formalisation}\label{sec:lean}
 Files \texttt{lean/GallaiLean/LemmaR.lean} and \texttt{lean/GallaiLean/JointR.lean}. There is no
@@ -652,7 +682,7 @@ Files \texttt{lean/GallaiLean/LemmaR.lean} and \texttt{lean/GallaiLean/JointR.le
 \toprule
 manuscript & Lean\\
 \midrule
-adding a path, both directions of the correspondence & \texttt{PathDecomp.add\_path\_full}\\
+adding a path (every path of the result is $P$ or an old path) & \texttt{PathDecomp.add\_path\_full}\\
 $d_{G-E(P)}(v)\equiv d_G(v)+[v\text{ an end of }P]$ & \texttt{delEdgeList\_degree\_mod}\\
 Lemma~\ref{lem:R}, Lemma~\ref{lem:Rb} & \texttt{lemmaR}, \texttt{lemmaR\_leaf}\\
 Definition~\ref{def:R}, Proposition~\ref{prop:R} & \texttt{CritRPath}, \texttt{CriterionR}, \texttt{ln2\_of\_criterionR}\\

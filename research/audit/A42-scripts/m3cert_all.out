@@ -1,0 +1,2 @@
+{'static OK A': 83765, 'static OK B': 299, 'final OK': 84064}
+instance set of m3_R3_all_order8.txt.gz equals own enumeration of the 84,064 order-8 L_N(3) instances: True
