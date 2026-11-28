@@ -40,7 +40,11 @@ other $8{,}112$, a spanning-tree join with $r$ a root works at $8{,}103$, and $r
 (the cone over $K_{2,6}$ at both hubs, and one relative). The remaining six are the instances of
 Example~\ref{ex:t1theta}, where no all-odd base exists. Every lift is verified; $r$ gets two ends
 in $24{,}782$ cases and four in $552$ (\texttt{data/tb1\_odd\_le9.txt})}
-\newcommand{\ALLODDTEN}{PENDING}
+\newcommand{\ALLODDTEN}{$239{,}003{,}418$ constraint sets in all: $20{,}569{,}948$ fixed pairs of
+pairs, $102{,}784{,}552$ fixed triples, $5{,}142{,}487$ and $12{,}848{,}069$ free ones,
+$20{,}569{,}948$ of the form of Conjecture~\ref{conj:two} and $77{,}088{,}414$ with one fixed and two
+free pairs. Every one holds, and no search hit its budget. The same is true at orders $6$ and $8$
+(\texttt{data/allodd\_dl\_order10.txt})}
 
 \title[The three-end test]{The three-end test of the spine:\\ exact data, two direct lifts, and the floor}
 \author{Gallai project}
@@ -660,7 +664,8 @@ $b\notin V(Q(a))$.
 
 Each constraint alone is $L_1$. \texttt{scripts/allodd\_pairs.py} checks Conjecture~\ref{conj:two}
 exactly on every connected all-odd graph of order $6$ ($13$ graphs, $428$ choices) and $8$ ($224$
-graphs, $43{,}400$ choices): there are no failures.
+graphs, $43{,}400$ choices): there are no failures. The faster \texttt{scripts/allodd\_dl.c} below
+reproduces these counts and extends the check to order $10$ ($20{,}569{,}948$ choices, no failure).
 
 Both matching bases, for (T1) (Corollary~\ref{cor:oddmatch}) and for (T2) \eqref{eq:match}, are
 instances of one statement.
@@ -774,7 +779,7 @@ which removes a terminal edge and keeps every other path.
 unrefereed); the literature ranges (from restated floor theorems); the cone characterisation.
 \item \emph{Computed.} (T2) exhaustively to order $10$, with (T2) and slack witnesses; the general
 forest base at every instance there;
-the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $8$;
+the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $10$;
 the (T1) all-odd base to order $9$; Conjecture~\ref{conj:common} with $j\le3$ at order $10$.
 \item \emph{Open.}
 \begin{itemize}

@@ -1879,3 +1879,32 @@ Lean `Test2Lift.lean`, `Test2Converse.lean`. (If E33 is already taken, renumber.
 **All-odd, two constraints** (`allodd_pairs.py`): Q(c) ∌ x plus one disjunctive pair, in connected all-odd graphs. 0 failures at order 6 (13 graphs, 428 choices) and order 8 (224 graphs, 43,400 choices).
 
 **Cones** (`cones.py`): 6 / 204 / 35,952 cone instances at n = 6 / 8 / 10, all hold; all 20 tight instances are cones.
+
+## E34. (T2) slack witnesses; the all-odd (T1) base; the common all-odd base to order 10 (cloud session `claude/test2`)
+
+Manuscript `manuscripts/test2/test2.tex` (§§`sec:data`, `sec:allodd`, `sec:conj`); audit A37 fixes applied. Lean
+`Test1AllOdd.lean`. (If E34 is already taken, renumber.)
+
+**Slack witnesses** (`t2.c -s`, `verify_t2.py --require-slack`): every slack answer (p(J − z) ≤ n/2 − 1) at n ≤ 10
+now carries a witness decomposition. All 8 + 943 + 716,971 = 717,922 are verified (`data/t2_slack_witnesses.txt`).
+This closes the validation GAP of A37.
+
+**All-odd base for (T1)** (`tb1_odd.py`; route_ext query C; every lift verified as a (T1) decomposition).
+- Population: every 3-connected J with one even vertex, n = 5, 7, 9 (1 + 28 + 5,231 graphs; 25,340 instances).
+- Matching base at all 17,228 instances with matching data.
+- Spanning-tree join: r a root at 8,103; r a child (c(r) ≥ 2) at 3 (the cone over K_{2,6} at both hubs, and one relative).
+- No all-odd base at 6: J = K_{3,6} + h2h3, z = h1, r a leaf. A hand proof is in Example `ex:t1theta`.
+- Lean: `test1At_of_oddBase` (both rootings) and `test1At_of_matchingOdd`; standard axioms.
+
+**Common all-odd base, Conjecture `conj:common`** (`allodd_dl.c`; exact DFS with parity, degree and component
+pruning and memoised failures; free sets are searched through their fixed orientations).
+- Order 10, all 32,851 connected all-odd graphs, two or three disjoint non-adjacent pairs: 239,003,418 constraint sets,
+  0 failures, 0 undecided. By family:
+  - X2 20,569,948; X3 102,784,552;
+  - F2 5,142,487; F3 12,848,069;
+  - XF (Conjecture 7.2) 20,569,948; XF2 77,088,414.
+- Orders 6 and 8: 0 failures; the XF counts 428 and 43,400 reproduce `allodd_pairs.py`.
+- Validation with adjacent pairs admitted (`-A`, so that failures exist), against route_ext query A:
+  - order 6: 784 + 675 failures, no mismatch;
+  - order 8, X2: 188,160 sets, 21,425 failures, no mismatch;
+  - the final version reproduces the previous search exactly (orders 6 and 8).
