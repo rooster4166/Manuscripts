@@ -1,0 +1,1 @@
+XCHECK {'tier 1 negative confirmed': 2642, 'tier 2 negative confirmed': 618}
