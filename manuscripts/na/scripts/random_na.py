@@ -3,8 +3,8 @@
 usage: python3 random_na.py N TRIALS SEED
 
 Random graph G(N, p) with p uniform in [0.15, 0.7]; the even-degree vertices are paired at random and
-the edge of each pair toggled, so that every degree becomes odd or zero; then the component of a
-random vertex is kept. For every ordered pair (y, x) with x ~ y satisfying the weak hypothesis, and
+the edge of each pair toggled, so that every degree becomes odd or zero. The graph may be
+disconnected (the construction and the verifier handle that). For every ordered pair (y, x) with x ~ y satisfying the weak hypothesis, and
 for one random packed set Y containing x when possible, the construction is run and its output
 checked by the independent verifier."""
 import random

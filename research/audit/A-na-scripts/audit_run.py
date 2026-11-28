@@ -1,6 +1,6 @@
 """Audit driver for manuscripts/na.
 
-usage: nauty-geng -cq N | python3 -B audit_run.py [--sets] [--lds] [--limit K] [--every M]
+usage: nauty-geng -cq N | python3 -B audit_run.py [--sets] [--lds] [--noexact] [--limit K] [--every M]
 
 For every connected graph with all degrees odd and every ordered pair (y, x), x ~ y:
   * my own exact solver (indep.good) decides whether Q(y) can avoid x; compare with the weak
@@ -125,14 +125,15 @@ for line in sys.stdin:
             wk = indep.weak(G, y, {x})
             S["na"] += na
             S["weak"] += wk
-            gd = indep.good(G, y, {x})
-            S["good"] += gd
-            if gd != wk:
-                S["iff_fail"] += 1
-                print("IFF FAIL", line.strip(), y, x, gd, wk, flush=True)
-            if (exact.avoid_exact(G, y, {x}) is not None) != gd:
-                S["exact_disagree"] += 1
-                print("EXACT DISAGREES", line.strip(), y, x, flush=True)
+            if "--noexact" not in args:
+                gd = indep.good(G, y, {x})
+                S["good"] += gd
+                if gd != wk:
+                    S["iff_fail"] += 1
+                    print("IFF FAIL", line.strip(), y, x, gd, wk, flush=True)
+                if (exact.avoid_exact(G, y, {x}) is not None) != gd:
+                    S["exact_disagree"] += 1
+                    print("EXACT DISAGREES", line.strip(), y, x, flush=True)
             if lds is not None and not wk:
                 for D in lds:
                     S["lds_checked"] += 1

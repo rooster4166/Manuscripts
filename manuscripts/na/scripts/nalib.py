@@ -4,8 +4,12 @@ Everything here follows the written proofs step by step:
   * fan(...)          Fan's lemma with vertex sets (route-descent Lemma 2.2), general chain search;
   * separation(...)   the separation theorem for packed sets (route-descent Thm 6.1), Cases I-IV;
   * l1(...)           L1 in set form (route-descent Thm 6.3), via the pendant-leaf trick;
-  * exhausting_trail  the trail lemma of the manuscript (good vertex, T-join, Euler trail);
-  * na_construct      the main theorem: pendant leaf at y, steered Case-I chain, L1, Fan back-steps.
+  * invariant_subgraph, walk_along, steering_sequence
+                      Lemmas 4.3 and 4.1 of the manuscript as written (farthest odd vertex, toggled
+                      shortest paths, the walk along S): the steering sequence used by default;
+  * exhausting_trail  a second, independent steering routine: the reverse of an Euler trail
+                      (good vertex by descent, T-join from paths, Hierholzer);
+  * na_construct      Theorem A: pendant leaf at y, steered Case-I chain, L1, Fan back-steps.
 The verifier `check_lovasz` is independent of the construction.
 
 Graphs are dicts {vertex: set(neighbours)}; paths are lists of vertices.
@@ -190,6 +194,7 @@ def separation(K, X):
     decomposition of K in which every path meets X at most once (route-descent Thm 6.1)."""
     K = copy_graph(K)
     X = set(X)
+    assert packed(K, X), "separation: X is not packed"
     ev = even_vertices(K)
     assert len(ev) <= 1
     if ev:  # Case I
