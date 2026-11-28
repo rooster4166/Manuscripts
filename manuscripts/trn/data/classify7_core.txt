@@ -1,0 +1,85 @@
+ALLFAIL FsObO g=4 y=6 x=0 u=1 wit=1 D'=62 03 461025  chain=46
+ALLFAIL FsObO g=4 y=6 x=0 u=1 wit=1 D'=625 03 20164  chain=46
+ALLFAIL FsObO g=4 y=1 x=2 u=6 wit=1 D'=10 25 302614  chain=41
+ALLFAIL FsObO g=4 y=1 x=2 u=6 wit=1 D'=103 02614 25  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=10 2065 3052614  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=10 25603 416205  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=10 2605 3025614  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=103 025614 2605  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=103 052614 2065  chain=41
+ALLFAIL FsQfW g=4 y=1 x=2 u=6 wit=1 D'=103 0652 416205  chain=41
+  adj=0 i=1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=0                    6
+  adj=0 i=1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    122
+  adj=0 i=1 side=E qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                    5
+  adj=0 i=1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=0                    8
+  adj=0 i=1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                    22
+  adj=0 i=1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                    6
+  adj=0 i=1 side=E qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                    5
+  adj=0 i=1 side=E qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    16
+  adj=0 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=0                    12
+  adj=0 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    121
+  adj=0 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                    54
+  adj=0 i=1 side=P qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                    33
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=0                    4
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                    52
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=1 loc=1                    9
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                    50
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=1 loc=1                    14
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                    8
+  adj=0 i=1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=1 loc=1                    4
+  adj=0 i=1 side=P qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    106
+  adj=0 i=1 side=P qu=1 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                    108
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   127
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                   10
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                   3
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                   50
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                   8
+  adj=0 i=>1 side=E qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                   5
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   136
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                   80
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                   5
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                   72
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=1 loc=1                   9
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                   48
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=1 loc=1                   8
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                   38
+  adj=0 i=>1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=1 loc=1                   4
+  adj=0 i=>1 side=P qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   86
+  adj=0 i=>1 side=P qu=1 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                   44
+  adj=1 i=1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=0                    16
+  adj=1 i=1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    807
+  adj=1 i=1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                    28
+  adj=1 i=1 side=E qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                    14
+  adj=1 i=1 side=E qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    328
+  adj=1 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=0                    180
+  adj=1 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    2507
+  adj=1 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                    420
+  adj=1 i=1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=1 loc=1                    10
+  adj=1 i=1 side=P qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                    172
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=0                    158
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                    426
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=1 loc=0                    2
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=1 loc=1                    3
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                    170
+  adj=1 i=1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=1 loc=1                    17
+  adj=1 i=1 side=P qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                    2211
+  adj=1 i=1 side=P qu=1 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                    288
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   1202
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                   129
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                   31
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                   40
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                   8
+  adj=1 i=>1 side=E qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                   6
+  adj=1 i=>1 side=E qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   174
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   2049
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=0 loc=1                   456
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=0 | exch=0 rot=1 rep=1 loc=1                   10
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=0 loc=1                   55
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=0 | exch=1 rot=1 rep=1 loc=1                   2
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=0 rep=0 loc=1                   30
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=0 loc=1                   24
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=1 | exch=0 rot=1 rep=1 loc=1                   2
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=0 loc=1                   16
+  adj=1 i=>1 side=P qu=0 wit=1 tri2=1 | exch=1 rot=1 rep=1 loc=1                   2
+  adj=1 i=>1 side=P qu=1 wit=1 tri2=0 | exch=0 rot=0 rep=0 loc=1                   1262
+SUMMARY tests=494 (skipped 0 with > maxD good D') instances-with-bad-D'=428 bad D'=14753 all-repairs-fail=384
