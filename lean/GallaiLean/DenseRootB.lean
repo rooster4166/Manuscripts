@@ -143,19 +143,20 @@ theorem connector_core (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ} (hk : 
       (att j = (D.paths.get j).tgt ∧ lo j = (D.paths.get j).src))
     (qQ : W) (hqQ : qQ = Q.src ∨ qQ = Q.tgt) (iQ : Fin D.paths.length) (hiQ : lo iQ = qQ)
     (hQdes : ∀ v ∈ Q.walk.support, B.Adj r v → v ≠ qQ → ∃ j, att j = v)
+    (jU : Option (Fin D.paths.length)) (hjU : ∀ j, jU = some j → j ≠ iQ)
     (π : Fin D.paths.length → W)
-    (hπdes : ∀ j, j ≠ iQ → ∃ j', att j' = π j)
-    (hπinj : ∀ j j', j ≠ iQ → j' ≠ iQ → π j = π j' → j = j')
-    (hπdeg : ∀ j, j ≠ iQ → B.degree (lo j) ≤ B.degree (π j))
-    (hπQ : ∀ j, j ≠ iQ → π j ∉ Q.walk.support)
+    (hπdes : ∀ j, j ≠ iQ → jU ≠ some j → ∃ j', att j' = π j)
+    (hπinj : ∀ j j', j ≠ iQ → j' ≠ iQ → jU ≠ some j → jU ≠ some j' → π j = π j' → j = j')
+    (hπdeg : ∀ j, j ≠ iQ → jU ≠ some j → B.degree (lo j) ≤ B.degree (π j))
+    (hπQ : ∀ j, j ≠ iQ → jU ≠ some j → π j ∉ Q.walk.support)
     (lam : ℕ)
     (hlam : ∑ v ∈ Q.walk.support.toFinset,
       ((delList (starDel B r) Q.edges).degree v + 1) / 2 ≤ lam)
     (hstar : ∀ t, 3 ≤ t → t ≤ k - 1 →
-      #((heavyNbrs B r t).filter (fun x => x ∉ Q.walk.support)) / 2 +
-          (if t ≤ lam then 1 else 0) + t ≤ k + 1 ∨
-      #((heavyNbrs B r (t + 1)).filter (fun x => x ∉ Q.walk.support)) / 2 +
-          (if t ≤ lam then 1 else 0) + 2 * t ≤ k + 1) :
+      (#((heavyNbrs B r t).filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0)) / 2 + (if t ≤ lam then 1 else 0) + t ≤ k + 1 ∨
+      (#((heavyNbrs B r (t + 1)).filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0)) / 2 + (if t ≤ lam then 1 else 0) + 2 * t ≤ k + 1) :
     ∃ D' : PathDecomp B, D'.size = k ∧ D'.ends r = 2 := by
   classical
   set P := D.paths.get with hP
@@ -295,33 +296,52 @@ theorem connector_core (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ} (hk : 
     have : #S' ≤ #(univ.filter (fun i => x ∈ (D.paths.get i).walk.support)) :=
       card_le_card (fun i hi => mem_filter.mpr ⟨mem_univ _, hS' i hi⟩)
     omega
-  -- heavy pairs off `Q`
+  -- heavy pairs off `Q`, with at most one unpaired far end
   have hpairs : ∀ u, 2 * #(univ.filter (fun j => j ≠ iQ ∧ 2 * u ≤ B.degree (lo j))) ≤
-      #((heavyNbrs B r u).filter (fun x => x ∉ Q.walk.support)) := by
+      #((heavyNbrs B r u).filter (fun x => x ∉ Q.walk.support)) + (if jU.isSome then 1 else 0) := by
     intro u
     set X := univ.filter (fun j => j ≠ iQ ∧ 2 * u ≤ B.degree (lo j)) with hX
-    have hsub : X.image lo ∪ X.image π ⊆ (heavyNbrs B r u).filter (fun x => x ∉ Q.walk.support) := by
+    set X' := X.filter (fun j => jU ≠ some j) with hX'
+    have hsub : X.image lo ∪ X'.image π ⊆
+        (heavyNbrs B r u).filter (fun x => x ∉ Q.walk.support) := by
       intro x hx
       rw [mem_union, mem_image, mem_image] at hx
       rw [mem_filter, heavyNbrs, mem_filter, mem_neighborFinset]
-      rcases hx with ⟨j, hj, rfl⟩ | ⟨j, hj, rfl⟩ <;> rw [hX, mem_filter] at hj
-      · exact ⟨⟨hlor j, hj.2.2⟩, hloQ j hj.2.1⟩
-      · obtain ⟨j', hj'⟩ := hπdes j hj.2.1
-        exact ⟨⟨hj' ▸ hattr j', hj.2.2.trans (hπdeg j hj.2.1)⟩, hπQ j hj.2.1⟩
-    have hd : Disjoint (X.image lo) (X.image π) := by
+      rcases hx with ⟨j, hj, rfl⟩ | ⟨j, hj, rfl⟩
+      · rw [hX, mem_filter] at hj
+        exact ⟨⟨hlor j, hj.2.2⟩, hloQ j hj.2.1⟩
+      · rw [hX', mem_filter, hX, mem_filter] at hj
+        obtain ⟨j', hj'⟩ := hπdes j hj.1.2.1 hj.2
+        exact ⟨⟨hj' ▸ hattr j', hj.1.2.2.trans (hπdeg j hj.1.2.1 hj.2)⟩, hπQ j hj.1.2.1 hj.2⟩
+    have hd : Disjoint (X.image lo) (X'.image π) := by
       rw [Finset.disjoint_left]
       intro x hx hx'
       rw [mem_image] at hx hx'
       obtain ⟨j, -, rfl⟩ := hx
       obtain ⟨j', hj', h⟩ := hx'
-      rw [hX, mem_filter] at hj'
-      obtain ⟨j'', hj''⟩ := hπdes j' hj'.2.1
+      rw [hX', mem_filter, hX, mem_filter] at hj'
+      obtain ⟨j'', hj''⟩ := hπdes j' hj'.1.2.1 hj'.2
       exact hlo_att j j'' (hj''.trans h).symm
     have h1 := card_le_card hsub
     rw [card_union_of_disjoint hd, card_image_of_injective _ hlo_inj,
-      card_image_of_injOn (fun a ha b hb h => hπinj a b (by
-        have := mem_filter.mp ha; exact this.2.1) (by have := mem_filter.mp hb; exact this.2.1) h)]
+      card_image_of_injOn (fun a ha b hb h => by
+        have ha' := mem_filter.mp ha; have hb' := mem_filter.mp hb
+        exact hπinj a b (mem_filter.mp ha'.1).2.1 (mem_filter.mp hb'.1).2.1 ha'.2 hb'.2 h)]
       at h1
+    have h2 : #X ≤ #X' + (if jU.isSome then 1 else 0) := by
+      rcases hjU' : jU with _ | j0
+      · have : X' = X := by
+          rw [hX']; apply filter_true_of_mem; intro j _; simp [hjU']
+        rw [this]; simp
+      · have : X ⊆ insert j0 X' := by
+          intro j hj
+          rw [mem_insert]
+          by_cases h : j = j0
+          · exact Or.inl h
+          · exact Or.inr (mem_filter.mpr ⟨hj, by rw [hjU']; simpa using fun h' => h h'.symm⟩)
+        have := (card_le_card this).trans (card_insert_le _ _)
+        simp only [Option.isSome_some, if_true]
+        omega
     omega
   refine hallReassemble D2 attP hattP_end hattPr hattP_inj hk hr Aset hAcard ?_ ?_
   · intro c hc c' hc' hcc' v h1 h2
@@ -412,8 +432,10 @@ theorem connector_core (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ} (hk : 
         exact mem_image_of_mem _ (mem_filter.mpr ⟨mem_univ _, hj,
           hTdeg _ hc.1 hc.2 S' (hTon _ hc.1 hc.2)⟩)
       have h1 := (card_le_card hT).trans card_image_le
-      have h2 : 2 * #X ≤ #((heavyNbrs B r #S').filter (fun x => x ∉ Q.walk.support)) := hpairs #S'
-      have h3 : #X ≤ #((heavyNbrs B r #S').filter (fun x => x ∉ Q.walk.support)) / 2 := by
+      have h2 : 2 * #X ≤ #((heavyNbrs B r #S').filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0) := hpairs #S'
+      have h3 : #X ≤ (#((heavyNbrs B r #S').filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0)) / 2 := by
         rw [Nat.le_div_iff_mul_le two_pos]; omega
       omega
     · set X := univ.filter (fun j => j ≠ iQ ∧ 2 * (#S' + 1) ≤ B.degree (lo j)) with hX
@@ -438,9 +460,10 @@ theorem connector_core (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ} (hk : 
           exact this
       have h1 := (card_le_card hT).trans ((card_union_le _ _).trans
         (add_le_add card_image_le card_image_le))
-      have h2 : 2 * #X ≤ #((heavyNbrs B r (#S' + 1)).filter (fun x => x ∉ Q.walk.support)) :=
-        hpairs (#S' + 1)
-      have h3 : #X ≤ #((heavyNbrs B r (#S' + 1)).filter (fun x => x ∉ Q.walk.support)) / 2 := by
+      have h2 : 2 * #X ≤ #((heavyNbrs B r (#S' + 1)).filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0) := hpairs (#S' + 1)
+      have h3 : #X ≤ (#((heavyNbrs B r (#S' + 1)).filter (fun x => x ∉ Q.walk.support)) +
+          (if jU.isSome then 1 else 0)) / 2 := by
         rw [Nat.le_div_iff_mul_le two_pos]; omega
       omega
 
@@ -451,6 +474,83 @@ end core
 section thmB
 
 variable {W : Type u} [Fintype W] [DecidableEq W]
+
+/-- The Lovász decomposition of `G − E(Q)`: its ends are exactly the neighbours of `r`, and it has
+`k − 1` paths. -/
+theorem exists_lovasz_connector (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ}
+    (hW : Fintype.card W = 2 * k) (r : W) (hr : B.degree r + 2 = 2 * k)
+    (Q : GPath (starDel B r))
+    (hodd : ∀ x, B.Adj r x → (delList (starDel B r) Q.edges).degree x % 2 = 1) :
+    ∃ D : PathDecomp (delList (starDel B r) Q.edges),
+      (∀ v, D.ends v = if B.Adj r v then 1 else 0) ∧ D.paths.length + 1 = k := by
+  classical
+  -- `r` and `s`
+  have hcS : #(univ \ insert r (B.neighborFinset r)) = 1 := by
+    rw [card_sdiff_of_subset (subset_univ _), card_univ, hW, card_insert_of_notMem
+      (by rw [mem_neighborFinset]; exact B.loopless.irrefl r), card_neighborFinset_eq_degree]
+    omega
+  obtain ⟨s, hs⟩ := card_eq_one.mp hcS
+  have hsmem : s ∈ univ \ insert r (B.neighborFinset r) := by rw [hs]; exact mem_singleton_self _
+  have hsr : s ≠ r ∧ ¬ B.Adj r s := by
+    rw [mem_sdiff, mem_insert, mem_neighborFinset] at hsmem; push Not at hsmem; exact hsmem.2
+  have hsuniq : ∀ v, v ≠ r → ¬ B.Adj r v → v = s := by
+    intro v hvr hv
+    have : v ∈ univ \ insert r (B.neighborFinset r) := by
+      rw [mem_sdiff, mem_insert, mem_neighborFinset]; push Not; exact ⟨mem_univ _, hvr, hv⟩
+    rw [hs, mem_singleton] at this; exact this
+  have hdr : (delList (starDel B r) Q.edges).degree r = 0 := by
+    have := (delList_le' (starDel B r) Q.edges)
+    have h := (delList (starDel B r) Q.edges).degree_le_of_le (v := r) this
+    rw [starDel_degree_self] at h; omega
+  -- at most one even vertex in `G'`
+  have hev : (evenSet (delList (starDel B r) Q.edges)).card ≤ 1 := by
+    have hsub : evenSet (delList (starDel B r) Q.edges) ⊆ {s} := by
+      intro v hv
+      rw [mem_evenSet_iff] at hv
+      rw [mem_singleton]
+      have hvr : v ≠ r := fun h => by rw [h, hdr] at hv; exact lt_irrefl _ hv.1
+      by_contra hvs
+      have hadj : B.Adj r v := by
+        by_contra hn; exact hvs (hsuniq v hvr hn)
+      have := hodd v hadj; omega
+    exact (card_le_card hsub).trans (card_singleton s).le
+  obtain ⟨D, hD⟩ := lovasz_ends (delList (starDel B r) Q.edges) hev
+  set P := D.paths.get with hP
+  have hsize : D.paths.length + 1 = k ∧ D.ends s = 0 := by
+    have h1 := D.sum_ends
+    set N := B.neighborFinset r with hNdef
+    have hsplit : ∑ v, D.ends v = ∑ v ∈ N, D.ends v + ∑ v ∈ univ \ N, D.ends v := by
+      rw [← sum_sdiff (subset_univ N), add_comm]
+    have hrest : univ \ N = {r, s} := by
+      ext v
+      rw [mem_sdiff, hNdef, mem_neighborFinset, mem_insert, mem_singleton]
+      constructor
+      · rintro ⟨-, hv⟩
+        by_cases hvr : v = r
+        · exact Or.inl hvr
+        · exact Or.inr (hsuniq v hvr hv)
+      · rintro (h | h)
+        · rw [h]; exact ⟨mem_univ _, B.loopless.irrefl _⟩
+        · rw [h]; exact ⟨mem_univ _, hsr.2⟩
+    have hrest_sum : ∑ v ∈ univ \ N, D.ends v = D.ends s := by
+      rw [hrest, sum_pair hsr.1.symm, hD r, hdr, Nat.zero_mod, zero_add]
+    have hNsum : ∑ v ∈ N, D.ends v = #N := by
+      rw [card_eq_sum_ones]
+      refine sum_congr rfl (fun x hx => ?_)
+      rw [hD x, hodd x ((B.mem_neighborFinset r x).mp hx)]
+    have hNc : #N = 2 * k - 2 := by rw [hNdef, card_neighborFinset_eq_degree]; omega
+    have hs1 : D.ends s ≤ 1 := by rw [hD s]; omega
+    rw [hsplit, hrest_sum, hNsum, hNc] at h1
+    unfold PathDecomp.size at h1
+    omega
+  have hDends : ∀ v, D.ends v = if B.Adj r v then 1 else 0 := by
+    intro v
+    split_ifs with h
+    · rw [hD v, hodd v h]
+    · by_cases hvr : v = r
+      · rw [hvr, hD r, hdr]
+      · rw [hsuniq v hvr h]; exact hsize.2
+  exact ⟨D, hDends, hsize.1⟩
 
 /-- **Theorem B (`δ = 0`).** Let `B` have order `2k`, `d(r) = 2k − 2`, and let `Q` be a path of
 `G = B − r` whose ends are neighbours of `r` and whose other vertices are not, such that every
@@ -725,8 +825,326 @@ theorem exists_decomp_of_connector (B : SimpleGraph W) [DecidableRel B.Adj] {k :
     rcases hqQ with ⟨h, -⟩ | ⟨h, -⟩
     · exact Or.inl h
     · exact Or.inr h
-  exact connector_core B hk hr Q D hDends hsize.1 att lo hor qQ hqQ' iQ hlo_iQ hQdes π hπdes
-    hπinj hπdeg hπQ lam hlam hstar
+  exact connector_core B hk hr Q D hDends hsize.1 att lo hor qQ hqQ' iQ hlo_iQ hQdes none
+    (fun _ h => absurd h (by simp)) π (fun j hj _ => hπdes j hj)
+    (fun j j' hj hj' _ _ => hπinj j j' hj hj') (fun j hj _ => hπdeg j hj)
+    (fun j hj _ => hπQ j hj) lam hlam (by simpa using hstar)
+
+/-- **Theorem B (`δ = 1`).** As `exists_decomp_of_connector`, but `Q` has one vertex `y` other than
+its ends that is a neighbour of `r`; one far end is then unpaired, and the condition reads
+`⌊(h̃_t + 1)/2⌋ + [t ≤ λ] + t ≤ k + 1` or `⌊(h̃_{t+1} + 1)/2⌋ + [t ≤ λ] + 2t ≤ k + 1`. -/
+theorem exists_decomp_of_connector_mid (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ}
+    (hk : 2 ≤ k) (hW : Fintype.card W = 2 * k) (r : W) (hr : B.degree r + 2 = 2 * k)
+    (Q : GPath (starDel B r)) (hq1 : B.Adj r Q.src) (hq2 : B.Adj r Q.tgt) (y : W)
+    (hy : y ∈ Q.walk.support) (hyr : B.Adj r y) (hy1 : y ≠ Q.src) (hy2 : y ≠ Q.tgt)
+    (hQint : ∀ v ∈ Q.walk.support, B.Adj r v → v = Q.src ∨ v = Q.tgt ∨ v = y)
+    (hodd : ∀ x, B.Adj r x → (delList (starDel B r) Q.edges).degree x % 2 = 1)
+    (lam : ℕ)
+    (hlam : ∑ v ∈ Q.walk.support.toFinset,
+      ((delList (starDel B r) Q.edges).degree v + 1) / 2 ≤ lam)
+    (hstar : ∀ t, 3 ≤ t → t ≤ k - 1 →
+      (#((heavyNbrs B r t).filter (fun x => x ∉ Q.walk.support)) + 1) / 2 +
+          (if t ≤ lam then 1 else 0) + t ≤ k + 1 ∨
+      (#((heavyNbrs B r (t + 1)).filter (fun x => x ∉ Q.walk.support)) + 1) / 2 +
+          (if t ≤ lam then 1 else 0) + 2 * t ≤ k + 1) :
+    ∃ D : PathDecomp B, D.size = k ∧ D.ends r = 2 := by
+  classical
+  obtain ⟨D, hDends, hsize⟩ := exists_lovasz_connector B hW r hr Q hodd
+  set P := D.paths.get with hP
+  have hends1 : ∀ v, D.ends v ≤ 1 := fun v => by rw [hDends v]; split_ifs <;> omega
+  have hend_pos : ∀ i v, 1 ≤ (P i).endsAt v → 1 ≤ D.ends v :=
+    fun i v h => h.trans (D.endsAt_le_ends v i)
+  have hend_uniq : ∀ i j v, 1 ≤ (P i).endsAt v → 1 ≤ (P j).endsAt v → i = j := by
+    intro i j v hi hj
+    by_contra hij
+    have := D.two_le_ends_of_ne hij hi hj
+    have := hends1 v
+    omega
+  have hend_adj : ∀ i v, 1 ≤ (P i).endsAt v → B.Adj r v := by
+    intro i v h
+    have := hend_pos i v h
+    rw [hDends v] at this
+    by_contra hn; rw [if_neg hn] at this; omega
+  have hpathOf : ∀ v, B.Adj r v → ∃ i, 1 ≤ (P i).endsAt v := by
+    intro v hv
+    have h1 : D.ends v = 1 := by rw [hDends v, if_pos hv]
+    rw [D.ends_eq_sum_get] at h1
+    obtain ⟨j, -, hj⟩ := exists_ne_zero_of_sum_ne_zero (h1.trans_ne one_ne_zero)
+    exact ⟨j, Nat.one_le_iff_ne_zero.mpr hj⟩
+  have hsrc : ∀ i, 1 ≤ (P i).endsAt (P i).src := fun i => (P i).endsAt_src
+  have htgt : ∀ i, 1 ≤ (P i).endsAt (P i).tgt := fun i => (P i).endsAt_tgt
+  have hend_cases : ∀ i v, 1 ≤ (P i).endsAt v → (P i).src = v ∨ (P i).tgt = v := by
+    intro i v h
+    unfold GPath.endsAt at h
+    by_contra hn
+    push Not at hn
+    simp [hn.1, hn.2] at h
+  let oth : Fin D.paths.length → W → W := fun j v =>
+    if (P j).src = v then (P j).tgt else (P j).src
+  have hoth : ∀ j v, 1 ≤ (P j).endsAt v →
+      ((P j).src = v ∧ oth j v = (P j).tgt) ∨ ((P j).tgt = v ∧ oth j v = (P j).src) := by
+    intro j v h
+    rcases hend_cases j v h with h' | h'
+    · exact Or.inl ⟨h', if_pos h'⟩
+    · by_cases h'' : (P j).src = v
+      · exact Or.inl ⟨h'', if_pos h''⟩
+      · exact Or.inr ⟨h', if_neg h''⟩
+  have hoth_ne : ∀ j v, 1 ≤ (P j).endsAt v → oth j v ≠ v := by
+    intro j v h
+    rcases hoth j v h with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · rw [h2, ← h1]; exact (P j).src_ne_tgt.symm
+    · rw [h2, ← h1]; exact (P j).src_ne_tgt
+  have hoth_end : ∀ j v, 1 ≤ (P j).endsAt v → 1 ≤ (P j).endsAt (oth j v) := by
+    intro j v h
+    rcases hoth j v h with ⟨-, h2⟩ | ⟨-, h2⟩ <;> rw [h2]
+    exacts [htgt j, hsrc j]
+  -- two vertices that are both ends of a path are its two ends
+  have hboth : ∀ j u v, 1 ≤ (P j).endsAt u → 1 ≤ (P j).endsAt v → u ≠ v → oth j u = v := by
+    intro j u v hu hv huv
+    rcases hoth j u hu with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rcases hend_cases j v hv with h3 | h3
+    · exact absurd (h1.symm.trans h3) huv
+    · exact h2.trans h3
+    · exact h2.trans h3
+    · exact absurd (h1.symm.trans h3) huv
+  let att0 : Fin D.paths.length → W := fun j =>
+    if B.degree (P j).tgt ≤ B.degree (P j).src then (P j).src else (P j).tgt
+  let lo0 : Fin D.paths.length → W := fun j =>
+    if B.degree (P j).tgt ≤ B.degree (P j).src then (P j).tgt else (P j).src
+  have hor0 : ∀ j, (att0 j = (P j).src ∧ lo0 j = (P j).tgt) ∨
+      (att0 j = (P j).tgt ∧ lo0 j = (P j).src) := by
+    intro j
+    simp only [att0, lo0]
+    split_ifs
+    · exact Or.inl ⟨rfl, rfl⟩
+    · exact Or.inr ⟨rfl, rfl⟩
+  have hdeg0 : ∀ j, B.degree (lo0 j) ≤ B.degree (att0 j) := by
+    intro j
+    show B.degree (if B.degree (P j).tgt ≤ B.degree (P j).src then (P j).tgt else (P j).src) ≤
+      B.degree (if B.degree (P j).tgt ≤ B.degree (P j).src then (P j).src else (P j).tgt)
+    by_cases h : B.degree (P j).tgt ≤ B.degree (P j).src
+    · rw [if_pos h, if_pos h]; exact h
+    · rw [if_neg h, if_neg h]; omega
+  have hatt0_end : ∀ j, 1 ≤ (P j).endsAt (att0 j) := by
+    intro j; rcases hor0 j with ⟨h, -⟩ | ⟨h, -⟩ <;> rw [h]; exacts [hsrc j, htgt j]
+  have hq12 : Q.src ≠ Q.tgt := Q.src_ne_tgt
+  obtain ⟨iy, hiy⟩ := hpathOf y hyr
+  obtain ⟨i1, hi1⟩ := hpathOf Q.src hq1
+  obtain ⟨i2, hi2⟩ := hpathOf Q.tgt hq2
+  have hqQ'' : ∀ v ∈ Q.walk.support, B.Adj r v → v = Q.src ∨ v = Q.tgt ∨ v = y := hQint
+  -- the generic finishing step: an attachment plan for `connector_core`
+  have finish : ∀ (att lo π : Fin D.paths.length → W) (qQ : W) (iQ jU : Fin D.paths.length),
+      (∀ j, (att j = (P j).src ∧ lo j = (P j).tgt) ∨ (att j = (P j).tgt ∧ lo j = (P j).src)) →
+      (qQ = Q.src ∨ qQ = Q.tgt) → lo iQ = qQ → jU ≠ iQ →
+      (∀ v ∈ Q.walk.support, B.Adj r v → v ≠ qQ → ∃ j, att j = v) →
+      (∀ j, j ≠ iQ → j ≠ jU → ∃ j', att j' = π j) →
+      (∀ j j', j ≠ iQ → j' ≠ iQ → j ≠ jU → j' ≠ jU → π j = π j' → j = j') →
+      (∀ j, j ≠ iQ → j ≠ jU → B.degree (lo j) ≤ B.degree (π j)) →
+      (∀ j, j ≠ iQ → j ≠ jU → π j ∉ Q.walk.support) →
+      ∃ D' : PathDecomp B, D'.size = k ∧ D'.ends r = 2 := by
+    intro att lo π qQ iQ jU hor hqQ hiQ hjUQ hQdes hπdes hπinj hπdeg hπQ
+    have ne : ∀ j, some jU ≠ some j → j ≠ jU := fun j h h' => h (h' ▸ rfl)
+    exact connector_core B hk hr Q D hDends hsize att lo hor qQ hqQ iQ hiQ hQdes (some jU)
+      (fun j h => by cases h; exact hjUQ) π (fun j hj hu => hπdes j hj (ne j hu))
+      (fun j j' hj hj' hu hu' => hπinj j j' hj hj' (ne j hu) (ne j' hu'))
+      (fun j hj hu => hπdeg j hj (ne j hu)) (fun j hj hu => hπQ j hj (ne j hu)) lam hlam
+      (by simpa using hstar)
+  -- off-`Q` facts for paths with no end on `Q`
+  have hoff : ∀ j, j ≠ iy → j ≠ i1 → j ≠ i2 → ∀ v, 1 ≤ (P j).endsAt v → v ∉ Q.walk.support := by
+    intro j hjy hj1 hj2 v hv hvQ
+    rcases hQint v hvQ (hend_adj j v hv) with h | h | h
+    · exact hj1 (hend_uniq j i1 v hv (h ▸ hi1))
+    · exact hj2 (hend_uniq j i2 v hv (h ▸ hi2))
+    · exact hjy (hend_uniq j iy v hv (h ▸ hiy))
+  by_cases hA : oth iy y = Q.src ∨ oth iy y = Q.tgt
+  · -- Case A: `y` and a connector end `q_Q` are the two ends of one path
+    obtain ⟨qQ, qO, hqQO, hyQ⟩ : ∃ qQ qO, ((qQ = Q.src ∧ qO = Q.tgt) ∨ (qQ = Q.tgt ∧ qO = Q.src)) ∧
+        oth iy y = qQ := by
+      rcases hA with h | h
+      · exact ⟨Q.src, Q.tgt, Or.inl ⟨rfl, rfl⟩, h⟩
+      · exact ⟨Q.tgt, Q.src, Or.inr ⟨rfl, rfl⟩, h⟩
+    have hqOr : B.Adj r qO := by rcases hqQO with ⟨-, h⟩ | ⟨-, h⟩ <;> rw [h]; exacts [hq2, hq1]
+    obtain ⟨iO, hiO⟩ := hpathOf qO hqOr
+    have hqQend : 1 ≤ (P iy).endsAt qQ := hyQ ▸ hoth_end iy y hiy
+    have hqQO_ne : qQ ≠ qO := by rcases hqQO with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> rw [h1, h2]; exacts [hq12, hq12.symm]
+    have hiOy : iO ≠ iy := by
+      intro h; subst h
+      have := hboth iO y qO hiy hiO (by rcases hqQO with ⟨-, h⟩ | ⟨-, h⟩ <;> rw [h]; exacts [hy2, hy1])
+      exact hqQO_ne (hyQ.symm.trans this)
+    let att : Fin D.paths.length → W := fun j => if j = iy then y else if j = iO then qO else att0 j
+    let lo : Fin D.paths.length → W := fun j =>
+      if j = iy then qQ else if j = iO then oth iO qO else lo0 j
+    have hor : ∀ j, (att j = (P j).src ∧ lo j = (P j).tgt) ∨ (att j = (P j).tgt ∧ lo j = (P j).src) := by
+      intro j
+      by_cases h1 : j = iy
+      · subst h1; simp only [att, lo, if_pos rfl]
+        rcases hoth j y hiy with ⟨a, b⟩ | ⟨a, b⟩
+        · exact Or.inl ⟨a.symm, hyQ ▸ b⟩
+        · exact Or.inr ⟨a.symm, hyQ ▸ b⟩
+      · by_cases h2 : j = iO
+        · subst h2; simp only [att, lo, if_neg h1, if_pos rfl]
+          rcases hoth j qO hiO with ⟨a, b⟩ | ⟨a, b⟩
+          · exact Or.inl ⟨a.symm, b⟩
+          · exact Or.inr ⟨a.symm, b⟩
+        · simp only [att, lo, if_neg h1, if_neg h2]; exact hor0 j
+    have hatt_end : ∀ j, 1 ≤ (P j).endsAt (att j) := by
+      intro j; rcases hor j with ⟨h, -⟩ | ⟨h, -⟩ <;> rw [h]; exacts [hsrc j, htgt j]
+    have hatt_inj : Function.Injective att := fun i j h =>
+      hend_uniq i j (att i) (hatt_end i) (h ▸ hatt_end j)
+    have hj12 : ∀ j, j ≠ iy → j ≠ iO → j ≠ i1 ∧ j ≠ i2 := by
+      intro j hy' hO
+      rcases hqQO with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · refine ⟨fun h => hy' (h ▸ hend_uniq i1 iy _ hi1 (h1 ▸ hqQend)), fun h => hO (h ▸ hend_uniq i2 iO _ hi2 (h2 ▸ hiO))⟩
+      · refine ⟨fun h => hO (h ▸ hend_uniq i1 iO _ hi1 (h2 ▸ hiO)), fun h => hy' (h ▸ hend_uniq i2 iy _ hi2 (h1 ▸ hqQend))⟩
+    refine finish att lo att qQ iy iO hor (by rcases hqQO with ⟨h, -⟩ | ⟨h, -⟩ <;> [exact Or.inl h; exact Or.inr h])
+      (by simp [lo]) hiOy ?_ (fun j _ _ => ⟨j, rfl⟩) (fun j j' _ _ _ _ h => hatt_inj h) ?_ ?_
+    · intro v hv hvr hvq
+      rcases hQint v hv hvr with h | h | h
+      · rcases hqQO with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · exact absurd (h.trans h1.symm) hvq
+        · exact ⟨iO, by simp [att, hiOy, h, h2]⟩
+      · rcases hqQO with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · exact ⟨iO, by simp [att, hiOy, h, h2]⟩
+        · exact absurd (h.trans h1.symm) hvq
+      · exact ⟨iy, by simp [att, h]⟩
+    · intro j hjy hjO
+      have e1 : att j = att0 j := by simp [att, hjy, hjO]
+      have e2 : lo j = lo0 j := by simp [lo, hjy, hjO]
+      rw [e1, e2]; exact hdeg0 j
+    · intro j hjy hjO
+      have e1 : att j = att0 j := by simp [att, hjy, hjO]
+      rw [e1]
+      exact hoff j hjy (hj12 j hjy hjO).1 (hj12 j hjy hjO).2 _ (hatt0_end j)
+  · -- Case B: `y`'s path has its other end off `Q`; it is the unpaired one
+    push Not at hA
+    have hi1y : i1 ≠ iy := fun h => hA.1 (hboth iy y Q.src hiy (h ▸ hi1) hy1)
+    have hi2y : i2 ≠ iy := fun h => hA.2 (hboth iy y Q.tgt hiy (h ▸ hi2) hy2)
+    obtain ⟨qQ, iQ, qO, iO, hqQ, hiQe, hiOe, hqQO, hdegc, hiQy, hiOy, hio12⟩ : ∃ qQ iQ qO iO,
+        ((qQ = Q.src ∧ qO = Q.tgt) ∨ (qQ = Q.tgt ∧ qO = Q.src)) ∧
+        1 ≤ (P iQ).endsAt qQ ∧ 1 ≤ (P iO).endsAt qO ∧ qQ ≠ qO ∧
+        (iO ≠ iQ → B.degree (oth iO qO) ≤ B.degree (oth iQ qQ)) ∧ iQ ≠ iy ∧ iO ≠ iy ∧
+        ((iQ = i1 ∧ iO = i2) ∨ (iQ = i2 ∧ iO = i1)) := by
+      by_cases hd : B.degree (oth i2 Q.tgt) ≤ B.degree (oth i1 Q.src)
+      · exact ⟨Q.src, i1, Q.tgt, i2, Or.inl ⟨rfl, rfl⟩, hi1, hi2, hq12, fun _ => hd, hi1y, hi2y,
+          Or.inl ⟨rfl, rfl⟩⟩
+      · exact ⟨Q.tgt, i2, Q.src, i1, Or.inr ⟨rfl, rfl⟩, hi2, hi1, hq12.symm, fun _ => by omega,
+          hi2y, hi1y, Or.inr ⟨rfl, rfl⟩⟩
+    let att : Fin D.paths.length → W := fun j =>
+      if j = iQ then oth iQ qQ else if j = iO then qO else if j = iy then y else att0 j
+    let lo : Fin D.paths.length → W := fun j =>
+      if j = iQ then qQ else if j = iO then oth iO qO else if j = iy then oth iy y else lo0 j
+    let π : Fin D.paths.length → W := fun j =>
+      if j = iO ∧ iO ≠ iQ then oth iQ qQ else att j
+    have hor : ∀ j, (att j = (P j).src ∧ lo j = (P j).tgt) ∨ (att j = (P j).tgt ∧ lo j = (P j).src) := by
+      intro j
+      by_cases h1 : j = iQ
+      · subst h1; simp only [att, lo, if_pos rfl]
+        rcases hoth j qQ hiQe with ⟨a, b⟩ | ⟨a, b⟩
+        · exact Or.inr ⟨b, a.symm⟩
+        · exact Or.inl ⟨b, a.symm⟩
+      · by_cases h2 : j = iO
+        · subst h2; simp only [att, lo, if_neg h1, if_pos rfl]
+          rcases hoth j qO hiOe with ⟨a, b⟩ | ⟨a, b⟩
+          · exact Or.inl ⟨a.symm, b⟩
+          · exact Or.inr ⟨a.symm, b⟩
+        · by_cases h3 : j = iy
+          · subst h3; simp only [att, lo, if_neg h1, if_neg h2, if_pos rfl]
+            rcases hoth j y hiy with ⟨a, b⟩ | ⟨a, b⟩
+            · exact Or.inl ⟨a.symm, b⟩
+            · exact Or.inr ⟨a.symm, b⟩
+          · simp only [att, lo, if_neg h1, if_neg h2, if_neg h3]; exact hor0 j
+    have hatt_end : ∀ j, 1 ≤ (P j).endsAt (att j) := by
+      intro j; rcases hor j with ⟨h, -⟩ | ⟨h, -⟩ <;> rw [h]; exacts [hsrc j, htgt j]
+    have hatt_inj : Function.Injective att := fun i j h =>
+      hend_uniq i j (att i) (hatt_end i) (h ▸ hatt_end j)
+    have hiQ12 : iQ = i1 ∨ iQ = i2 := by rcases hio12 with ⟨h, -⟩ | ⟨h, -⟩; exacts [Or.inl h, Or.inr h]
+    have hattO : ∃ j, att j = qO := by
+      by_cases hOQ : iO = iQ
+      · refine ⟨iQ, ?_⟩
+        simp only [att, if_pos rfl]
+        exact hboth iQ qQ qO hiQe (hOQ ▸ hiOe) hqQO
+      · exact ⟨iO, by simp [att, hOQ]⟩
+    have hπ_att : ∀ j, j ≠ iQ → j ≠ iy → ∃ j', att j' = π j ∧ j' ≠ iy ∧
+        (j' = iQ ↔ (j = iO ∧ iO ≠ iQ)) := by
+      intro j hj hjy
+      by_cases hc : j = iO ∧ iO ≠ iQ
+      · exact ⟨iQ, by simp [att, π, hc], hiQy, by simp [hc]⟩
+      · exact ⟨j, by simp [π, hc], hjy, by simp [hj, hc]⟩
+    refine finish att lo π qQ iQ iy hor
+      (by rcases hqQ with ⟨h, -⟩ | ⟨h, -⟩ <;> [exact Or.inl h; exact Or.inr h])
+      (by simp [lo]) (Ne.symm hiQy) ?_ ?_ ?_ ?_ ?_
+    · intro v hv hvr hvq
+      rcases hQint v hv hvr with h | h | h
+      · rcases hqQ with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · exact absurd (h.trans h1.symm) hvq
+        · rw [h, ← h2]; exact hattO
+      · rcases hqQ with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · rw [h, ← h2]; exact hattO
+        · exact absurd (h.trans h1.symm) hvq
+      · refine ⟨iy, ?_⟩
+        rw [h]; simp [att, Ne.symm hiQy, Ne.symm hiOy]
+    · intro j hj hjy
+      obtain ⟨j', h, -⟩ := hπ_att j hj hjy
+      exact ⟨j', h⟩
+    · intro j j' hj hj' hjy hjy' h
+      obtain ⟨a, ha, -, ha'⟩ := hπ_att j hj hjy
+      obtain ⟨b, hb, -, hb'⟩ := hπ_att j' hj' hjy'
+      have hab : a = b := hatt_inj (ha.trans (h.trans hb.symm))
+      subst hab
+      by_cases hc : a = iQ
+      · exact (ha'.mp hc).1.trans (hb'.mp hc).1.symm
+      · have hj1 : ¬ (j = iO ∧ iO ≠ iQ) := fun h' => hc (ha'.mpr h')
+        have hj2 : ¬ (j' = iO ∧ iO ≠ iQ) := fun h' => hc (hb'.mpr h')
+        have e1 : π j = att j := by simp [π, hj1]
+        have e2 : π j' = att j' := by simp [π, hj2]
+        exact hatt_inj (e1.symm.trans (h.trans e2))
+    · intro j hj hjy
+      by_cases hc : j = iO ∧ iO ≠ iQ
+      · have e1 : π j = oth iQ qQ := by simp [π, hc]
+        have e2 : lo j = oth iO qO := by simp [lo, hj, hc.1, hc.2]
+        rw [e1, e2]; exact hdegc hc.2
+      · have hjO : j ≠ iO := fun h => hc ⟨h, h ▸ hj⟩
+        have e1 : π j = att0 j := by simp [π, hc, att, hj, hjO, hjy]
+        have e2 : lo j = lo0 j := by simp [lo, hj, hjO, hjy]
+        rw [e1, e2]; exact hdeg0 j
+    · intro j hj hjy hm'
+      obtain ⟨a, ha, hay, ha'⟩ := hπ_att j hj hjy
+      have hadj : B.Adj r (π j) := ha ▸ hend_adj a _ (hatt_end a)
+      rcases hQint _ hm' hadj with h | h | h
+      · -- `π j = Q.src`
+        have := hend_uniq a i1 _ (ha ▸ hatt_end a) (h ▸ hi1)
+        subst this
+        rcases hqQ with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · -- `qQ = Q.src`: then `a = iQ` and `att iQ = oth iQ qQ ≠ qQ`
+          have haQ : a = iQ := hend_uniq a iQ _ (ha ▸ hatt_end a) (h ▸ h1 ▸ hiQe)
+          subst haQ
+          have : att a = oth a qQ := by simp [att]
+          exact hoth_ne a qQ hiQe (this ▸ ha.trans (h.trans h1.symm))
+        · -- `qO = Q.src`
+          have haO : a = iO := hend_uniq a iO _ (ha ▸ hatt_end a) (h ▸ h2 ▸ hiOe)
+          by_cases hOQ : a = iQ
+          · exact hj ((ha'.mp hOQ).1.trans (haO.symm.trans hOQ))
+          · have h1' := (not_congr ha').mp hOQ
+            have : π j = att j := by simp [π, h1']
+            have hja : j = a := hatt_inj (this.symm.trans ha.symm)
+            subst hja
+            exact h1' ⟨haO, haO ▸ hOQ⟩
+      · have := hend_uniq a i2 _ (ha ▸ hatt_end a) (h ▸ hi2)
+        subst this
+        rcases hqQ with ⟨h1, h2⟩ | ⟨h1, h2⟩
+        · have haO : a = iO := hend_uniq a iO _ (ha ▸ hatt_end a) (h ▸ h2 ▸ hiOe)
+          by_cases hOQ : a = iQ
+          · exact hj ((ha'.mp hOQ).1.trans (haO.symm.trans hOQ))
+          · have h1' := (not_congr ha').mp hOQ
+            have : π j = att j := by simp [π, h1']
+            have hja : j = a := hatt_inj (this.symm.trans ha.symm)
+            subst hja
+            exact h1' ⟨haO, haO ▸ hOQ⟩
+        · have haQ : a = iQ := hend_uniq a iQ _ (ha ▸ hatt_end a) (h ▸ h1 ▸ hiQe)
+          subst haQ
+          have : att a = oth a qQ := by simp [att]
+          exact hoth_ne a qQ hiQe (this ▸ ha.trans (h.trans h1.symm))
+      · -- `π j = y`, an end of `iy` only
+        exact hay (hend_uniq a iy _ (ha ▸ hatt_end a) (h ▸ hiy))
 
 end thmB
 
@@ -759,6 +1177,34 @@ theorem test1At_of_connector (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V} 
   exact test1At_of_decomp J hV hzr
     (exists_decomp_of_connector (delVert J z) hk hW ⟨r, hzr.ne'⟩ (by simp only at hdeg; omega)
       Q hq1 hq2 hQint hodd lam hlam (by convert hstar))
+
+/-- **Theorem B (`δ = 1`), spine form.** -/
+theorem test1At_of_connector_mid (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V} {k : ℕ}
+    (hk : 2 ≤ k) (hV : Fintype.card V = 2 * k + 1) (hzr : J.Adj z r)
+    (hr : J.degree r + 2 = 2 * k + 1)
+    (Q : GPath (starDel (delVert J z) ⟨r, hzr.ne'⟩))
+    (hq1 : (delVert J z).Adj ⟨r, hzr.ne'⟩ Q.src) (hq2 : (delVert J z).Adj ⟨r, hzr.ne'⟩ Q.tgt)
+    (y : {v | v ≠ z}) (hy : y ∈ Q.walk.support) (hyr : (delVert J z).Adj ⟨r, hzr.ne'⟩ y)
+    (hy1 : y ≠ Q.src) (hy2 : y ≠ Q.tgt)
+    (hQint : ∀ v ∈ Q.walk.support, (delVert J z).Adj ⟨r, hzr.ne'⟩ v →
+      v = Q.src ∨ v = Q.tgt ∨ v = y)
+    (hodd : ∀ x, (delVert J z).Adj ⟨r, hzr.ne'⟩ x →
+      (delList (starDel (delVert J z) ⟨r, hzr.ne'⟩) Q.edges).degree x % 2 = 1)
+    (lam : ℕ)
+    (hlam : ∑ v ∈ Q.walk.support.toFinset,
+      ((delList (starDel (delVert J z) ⟨r, hzr.ne'⟩) Q.edges).degree v + 1) / 2 ≤ lam)
+    (hstar : ∀ t, 3 ≤ t → t ≤ k - 1 →
+      (#((heavyNbrs (delVert J z) ⟨r, hzr.ne'⟩ t).filter (fun x => x ∉ Q.walk.support)) + 1) / 2 +
+          (if t ≤ lam then 1 else 0) + t ≤ k + 1 ∨
+      (#((heavyNbrs (delVert J z) ⟨r, hzr.ne'⟩ (t + 1)).filter
+          (fun x => x ∉ Q.walk.support)) + 1) / 2 + (if t ≤ lam then 1 else 0) + 2 * t ≤ k + 1) :
+    Test1At J z r := by
+  have hW : Fintype.card {v | v ≠ z} = 2 * k := by rw [card_delVert, hV]; omega
+  have hdeg := delVert_degree (J := J) z ⟨r, hzr.ne'⟩
+  rw [if_pos hzr.symm] at hdeg
+  exact test1At_of_decomp J hV hzr
+    (exists_decomp_of_connector_mid (delVert J z) hk hW ⟨r, hzr.ne'⟩ (by simp only at hdeg; omega)
+      Q hq1 hq2 y hy hyr hy1 hy2 hQint hodd lam hlam (by convert hstar))
 
 end test1B
 
