@@ -141,7 +141,18 @@ EMM sufficiency work is **stopped**.
       - 3 need r as a child;
       - 6 are the fat thetas.
     - (T2) at n ≤ 10: 194,425 of the 197,067 no-data roots are in tier 1.
-    - **Candidate conjecture: "cherry L_N"**, which is L_N plus 2-chains. This is what the tier-1 bases need.- **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
+    - **Candidate conjecture: "cherry L_N"**, which is L_N plus 2-chains. This is what the tier-1 bases need.
+  - **Milestone 2 (9b5035b, merged; axioms checked):**
+    - Lean:
+      - root moves M1/M2 (`test1At_of_move1/2`, re-proved from fan_single), which keep z the unique even vertex and **can create matching data**;
+      - `CherryLN` and `test1At_of_cherryLN`.
+    - **Coverage at n ≤ 9 of the 8,112 no-data roots:**
+      - L_N via root moves: 6,532;
+      - twin reduction: 642;
+      - cherry data, which needs CherryLN: 928;
+      - longer linkages: 10.
+    - Order 11 (exhaustive, 12.8M no-data roots): tier 1 is 98.85%. Every tier-4/5 root has a twin pair and is certified by the twin reduction.
+    - *Correction:* the twin-reduced hypothesis is the rooted (T1)-floor of B − x − y, not plain Gallai, except when r is a twin.- **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
   - **Milestone (61abb4e; audit A40 applied, no error in any proof):**
     - Lean: `leaf_tails` (multi-tail leaf theorem with sparse heads) and `lovasz_avoid_leafTails` (L_N(m) when all tails but one are leaves).
     - Paper: Lemma R (a pre-committed end path) and Prop 6.3 (Criterion R ⇒ L_N(2), via `steerK_good`).
