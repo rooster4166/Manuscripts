@@ -1,0 +1,630 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\TRN}{\mathrm{TRN}}
+\newcommand{\TRNE}{\mathrm{TRN}_{\mathrm E}}
+\newcommand{\NA}{\mathrm{NA}}
+\newcommand{\EE}{\mathrm{EE}}
+\emergencystretch=3em
+
+\title[The tight transfer TRN]{The tight transfer TRN:\\ the failure mechanism, the core that
+Conjecture N needs,\\ a trivial-chain strengthening, and the hard residual}
+\author{Gallai project (cloud session \texttt{claude/trn})}
+\date{28 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ have at most one vertex $g$ of positive even degree, let $x,y$ be odd and non-adjacent,
+and let $u\in N(g)\cap N(y)$ with $u\ne x$. The tight transfer $\TRN$ asks: if $G-gu$ has a
+Lov\'asz decomposition whose path ending at $y$ avoids $x$, does $G$ have one? By~\cite{CN},
+$\TRN$ and neighbour avoidance $\NA$ imply Conjecture~N, which gives DL(1). \emph{We do not prove
+$\TRN$.} We prove the following.
+\begin{itemize}
+\item \emph{The failure mechanism, exactly.} Let $\cD'$ be a good decomposition of $G-gu$ and $P_y$
+its path through $yu$. Fan's transfer of $\cD'$ fails exactly when $P_y$ is not the path
+$Q'(y)$ ending at $y$, the forced chain reaches the end $e$ of $P_y$ on $y$'s side, and $x\in
+V(P_y)$ (Proposition~\ref{prop:fail}). The chain depends only on the half-paths at $u$, so
+re-pairing at $u$ changes $P_y$ but not the chain (Lemma~\ref{lem:halves}).
+\item \emph{Transfers and outright cases} (Section~\ref{sec:tools}).
+  \begin{itemize}
+  \item A transfer that keeps $x$ and $y$ separated (formalised).
+  \item The exchange lemma of~\cite{L1I}, now also for $y\sim g$.
+  \item Two rotations at $y$, and re-pairing at $u$.
+  \item The conclusion of $\TRN$ holds with no hypothesis when $\mathrm{dist}(x,y)\ge3$, or when
+  $d(g)=2$ and $N(g)$ is independent (both formalised).
+  \end{itemize}
+\item \emph{The core} (formalised). Conjecture~N follows from $\TRN$ restricted to a core: the
+instances that its induction reaches, with N available on smaller graphs. A core instance is
+all-tight, its child keeps a witness, $\mathrm{dist}(x,y)=2$, and $N(g)$ is not an independent pair
+(Theorem~\ref{thm:core}). At order $9$ the core holds $91{,}890$ of the $490{,}923$ tests.
+\item \emph{A trivial-chain strengthening} (computed). In all $490{,}923$ order-$9$ tests some good
+decomposition of $G-gu$ has a trivial chain, i.e.\ $G$ has a good decomposition in which $gu$ is
+terminal at $u$ ($\TRNE$). The same holds on random graphs of orders $11$, $13$ and on an order-$11$
+slice. But $\TRNE$ implies the open conjecture EE (Proposition~\ref{prop:ee}), so it is not a proof
+route.
+\item \emph{The residual} (computed, exhaustive at order $7$, sampled at order $9$). Re-decomposing
+the chain paths, $Q'(y)$ and $gu$ repairs every failing $\cD'$ except in a \emph{hard core}: the
+chain meets $y$ at its first step and $u\notin Q'(y)$. In the hard core the repair still succeeds
+for $92.5\%$ of the failures at order~$7$. The smallest unrepairable core pairs have order~$7$
+(Section~\ref{sec:residual}).
+\end{itemize}
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A vertex is \emph{even} if its degree is positive and even, and
+\emph{odd} if its degree is odd. A \emph{Lov\'asz decomposition} of a graph with at most one even
+vertex is a partition of its edges into paths such that every vertex $v$ is an end of exactly
+$d(v)\bmod2$ of them~\cite{L68}. For an odd vertex $c$ we write $Q(c)$ for the path ending at $c$;
+its other end is its \emph{far end}. The even vertex is always called $g$. An \emph{instance}
+$(G,c,A)$ is \emph{good} if some Lov\'asz decomposition has $V(Q(c))\cap A=\emptyset$.
+
+\begin{conjecture}[$\TRN$; {\cite[Conjecture~4.5]{CN}}]\label{conj:trn}
+Let $g$ be the only even vertex of $G$, let $x,y$ be odd and non-adjacent, and let $u\in N(g)\cap
+N(y)$ with $u\ne x$. If $(G-gu,y,\{x\})$ is good, then $(G,y,\{x\})$ is good.
+\lean{TightTransferNOn}
+\end{conjecture}
+
+For $y\not\sim g$ this is the tight transfer TR of~\cite[Conjecture~4.1]{L1I} with $A=\{x\}$. For
+$y\sim g$ it is the counterpart TightTransferAdj introduced in~\cite{CN}.
+
+\subsection*{Why it matters} By~\cite[Theorem~4.6]{CN}, $\TRN$ and $\NA$ imply Conjecture~N, and N
+reduces DL(1) to near twins~\cite[Prop.~9.2]{DL}. TR in set form also gives \texttt{L1Blocked} from
+ST~\cite{L1I}. The data are clean. $\TRN$ has no violation in $490{,}923$ order-$9$ tests,
+$236{,}891$ with $y\not\sim g$ and $254{,}032$ with $y\sim g$ (Table~\ref{tab:counts} recomputes
+them), and none in $831{,}785$ tests on two order-$11$ slices~\cite{CN}.
+
+\subsection*{The setting} Throughout, $K=G-gu$. In $K$ the vertex $u$ is the only possible even
+vertex (it has degree $d_G(u)-1\ge2$), $g$ is odd, and $g\not\sim u$. A \emph{good} $\cD'$ is a
+Lov\'asz decomposition of $K$ with $x\notin V(Q'(y))$. Fan's lemma restores $gu$; the
+\emph{transfer} of $\cD'$ is the resulting decomposition of $G$, and it is \emph{good} when its
+path ending at $y$ avoids $x$. The difficulty is that $y\in N_K(u)$: with a leaf hung at $y$, the
+vertex $y$ is a blank of $u$, and Fan's inequality is the equality $b(g)=1=|Z(u)|$~\cite{TF}.
+
+\subsection*{Results}
+\begin{enumerate}
+\item Section~\ref{sec:mech}: the exact failure condition (Proposition~\ref{prop:fail}) and the
+half-path invariance of the forced chain (Lemma~\ref{lem:halves}).
+\item Section~\ref{sec:tools}: proved transfers and outright cases. Lemma~\ref{lem:sep} and
+Proposition~\ref{prop:outright} are formalised.
+\item Section~\ref{sec:core}: the core of $\TRN$ and the formal reduction
+$\text{N}\Leftarrow\text{core}\wedge\NA$ (Theorem~\ref{thm:core}).
+\item Section~\ref{sec:trne}: the trivial-chain form $\TRNE$, its data, and $\TRNE\Rightarrow\EE$
+(Proposition~\ref{prop:ee}).
+\item Sections~\ref{sec:class}--\ref{sec:residual}: the exhaustive classification of failing
+pairs $(G,\cD')$ and the residual.
+\item Section~\ref{sec:lean}: formalisation. Section~\ref{sec:open}: what remains.
+\end{enumerate}
+
+\subsection*{Status}
+\begin{itemize}
+\item \emph{Proved and formalised} (Lean, no \texttt{sorry}, axioms \texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}): Lemma~\ref{lem:sep},
+Proposition~\ref{prop:outright}(i),(ii), Theorem~\ref{thm:core}.
+\item \emph{Proved on paper}: Proposition~\ref{prop:fail}, Lemma~\ref{lem:halves},
+Lemmas~\ref{lem:exchange}--\ref{lem:repair}, Proposition~\ref{prop:outright}(iii),
+Proposition~\ref{prop:ee}.
+\item \emph{Computed}, exhaustively in the stated range: Sections~\ref{sec:trne}--\ref{sec:residual}.
+No proof depends on a computation.
+\item \emph{Open}: $\TRN$, its core, and $\TRNE$.
+\end{itemize}
+
+\section{Fan's forced chain}\label{sec:prelim}
+
+For a path decomposition $\cD$ let $b_\cD(v)$ be the number of path ends at $v$, and $Z_\cD(w)$
+the set of neighbours of $w$ with no end.
+
+\begin{lemma}[Fan's lemma with vertex sets~{\cite{Fan05}, \cite[Lemma~2.2]{RD}}]\label{lem:fan}
+Let $t\ne w$ be non-adjacent vertices of $H$ and $\cD$ a decomposition of $H$ with
+$b_\cD(t)>|Z_\cD(w)|$. Then $H+tw$ has a decomposition $\cD^+$ with
+$b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_w$, every path of which lies in $V(P)\cup\{w\}$ for some
+$P\in\cD$.\lean{fan\_single\_supp}
+\end{lemma}
+
+In $K=G-gu$ every neighbour of $u$ is odd and has one end, so $Z(u)=\emptyset<1=b(g)$ and the
+lemma applies with $t=g$, $w=u$. Since $b\le1$ everywhere, the chain of its proof is
+\emph{forced}~\cite[Prop.~2.1]{TF}. For an end $v$ of a path $P$ containing $u$, let $\sigma(v)$ be
+the vertex immediately before $u$ when $P$ is read from $v$; then $\sigma(v)\in N_K(u)$. The chain is
+$x_0=g$, $x_{j+1}=\sigma(x_j)$, and it stops at the first $x_k$ whose path avoids $u$. Executing it
+\emph{re-routes} the path $P_j$ of $\cD'$ ending at $x_j$ for $j<k$: if $P_j=x_j\,W\,x_{j+1}\,u\,W'$,
+it becomes $x_{j+1}\,W^{-1}\,x_j\,u\,W'$. Then $u$ is appended to $P_k$.
+
+\begin{lemma}\label{lem:chain}
+\begin{enumerate}[label=(\roman*)]
+\item $\sigma$ is injective, and the chain consists of distinct vertices.
+\item Re-routing keeps vertex sets. A path of $\cD'$ through $u$ is never appended to.
+\item After execution, for $1\le j\le k$, the unique end at $x_j$ lies on the re-routed $P_{j-1}$;
+$g$ has no end, and $u$ has one end, on $P_k+x_ku$. No other end moves.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) If $\sigma(v)=\sigma(v')=p$ with $v\ne v'$, the edge $pu$ lies on the paths of $v$ and $v'$, so
+these are one path with ends $v,v'$. Reading it from $v'$ reverses it, so the vertex before $u$
+read from $v'$ is the one after $u$ read from $v$, which is not $p$. So $\sigma$ is injective. Now
+$x_0=g\notin N_K(u)\supseteq\sigma(\cdot)$. If $x_i=x_j$ with $i<j$ and $i$ least, then $i>0$ and
+$\sigma(x_{i-1})=\sigma(x_{j-1})$, so $x_{i-1}=x_{j-1}$, against the choice of $i$. Every $x_j$
+with $j\ge1$ is a neighbour of $u$, hence odd with one end, so the chain is defined until it stops.
+
+(ii) A re-routing permutes the vertices of one path. A path that contains $u$ cannot receive $u$
+again. (iii) Re-routing $P_j$ replaces its end $x_j$ by $x_{j+1}$. Appending to $P_k$ replaces
+the end $x_k$ by $u$.
+\end{proof}
+
+\section{The failure mechanism}\label{sec:mech}
+
+Fix a good $\cD'$. Let $P_y$ be the path of $\cD'$ containing the edge $yu$. If $P_y\ne Q'(y)$, then
+$y$ is interior to $P_y$, because its only end lies on $Q'(y)$. So $P_y$ read from one of its ends
+has $y$ immediately before $u$; call that end $e$, the \emph{$y$-side end}, and write
+\[
+P_y=e\,S\,a\,y\,u\,R\,f\qquad(\text{possibly }e=a\text{, with }S\text{ empty}).
+\]
+The part $e\,S\,a\,y\,u$ is the \emph{$e$-half} and $u\,R\,f$ the \emph{partner half}.
+
+\begin{proposition}[the failure mechanism]\label{prop:fail}
+Let $\cD'$ be good and $\cD$ its transfer.
+\begin{enumerate}[label=(\alph*)]
+\item If $P_y=Q'(y)$, that is, $Q'(y)$ begins with $yu$, the chain avoids $y$ and $\cD$ is good.
+\item Otherwise the chain passes through $y$ if and only if it passes through $e$. In that case
+$e\in\{g\}\cup N_K(u)$, $y$ immediately follows $e$ in the chain, and the path of $\cD$ ending at
+$y$ has vertex set $V(P_y)$. If the chain avoids $e$, the path of $\cD$ ending at $y$ lies in
+$V(Q'(y))\cup\{u\}$.
+\end{enumerate}
+Hence $\cD$ is good if and only if the chain avoids $e$ or $x\notin V(P_y)$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:chain}(iii), $y$ has its end on the re-routed $P_{i-1}$ if $y=x_i$ with $i\ge1$,
+and otherwise on $Q'(y)$, modified only by re-routing or by appending $u$. Now $y=x_i=\sigma(x_{i-1})$
+says that $y$ is the vertex before $u$ on $P_{i-1}$ read from $x_{i-1}$. Then $P_{i-1}$ contains $yu$,
+so $P_{i-1}=P_y$, and $x_{i-1}$ is the end from which $y$ precedes $u$.
+\begin{itemize}
+\item In case (a) that end is $y$ itself, and $x_{i-1}=y=x_i$ contradicts Lemma~\ref{lem:chain}(i).
+\item In case (b) it is $e$, and the re-routed $P_y$ has vertex set $V(P_y)$ by
+Lemma~\ref{lem:chain}(ii). Every chain vertex other than $x_0=g$ is some $\sigma(\cdot)\in N_K(u)$.
+\end{itemize}
+The last sentence follows because $u\ne x$.
+\end{proof}
+
+So the transfer fails exactly in the configuration of~\cite[Cor.~2.3]{TF}: with a leaf at $y$, the
+blank $y$ of $u$ is reached through its unique ``predecessor'' $e$. The proposition sharpens
+\cite[Lemma~3.2]{L1I} (a chain avoiding $y$ suffices) to an equivalence, for every good $\cD'$.
+
+Call the paths of $\cD'$ through $u$ \emph{$u$-paths}. Each splits at $u$ into two \emph{halves},
+from an end to $u$. A \emph{re-pairing at $u$} replaces the $u$-paths by another pairing of the same
+halves into pairs that meet only in $u$.
+
+\begin{lemma}[half-path invariance]\label{lem:halves}
+A re-pairing at $u$ gives a Lov\'asz decomposition $\cD''$ of $K$ with the same end counts and
+the same forced chain. If $u\notin V(Q'(y))$, then $Q''(y)=Q'(y)$. In case (b), when the chain
+reaches $e$, the transfer of $\cD''$ has $y$'s path on $V(h_e)\cup V(h')$, where $h_e$ is the
+$e$-half and $h'$ its new partner.
+\end{lemma}
+
+\begin{proof}
+Each pair of halves meeting only in $u$ is a path, so $\cD''$ decomposes $K$, and its ends are those
+of $\cD'$. The value $\sigma(v)$ is read off the half from $v$ to $u$. A chain vertex's path avoids
+$u$ in $\cD''$ if and only if it does in $\cD'$, since the paths avoiding $u$ are unchanged. So the
+chain is the same. The rest is Proposition~\ref{prop:fail} applied to $\cD''$.
+\end{proof}
+
+\section{Transfers that do survive, and outright cases}\label{sec:tools}
+
+\begin{lemma}[separation survives]\label{lem:sep}
+If $K$ has a Lov\'asz decomposition in which no path contains both $x$ and $y$, then $(G,y,\{x\})$
+is good.\lean{avoid\_of\_separating\_child}
+\end{lemma}
+
+\begin{proof}
+Apply Lemma~\ref{lem:fan}. The path of $\cD$ ending at $y$ lies in $V(P)\cup\{u\}$ for a path $P$
+of $\cD'$. That $P$ contains $y$ (as $y\ne u$), so it misses $x$; and $x\ne u$.
+\end{proof}
+
+The next lemma is~\cite[Lemma~4.3]{L1I}. Its proof never uses $y\not\sim g$, so it holds in both
+cases of $\TRN$.
+
+\begin{lemma}[exchange]\label{lem:exchange}
+Let $\cD'$ be good, with $P_y\ne Q'(y)$, the chain reaching $e$, and $u\notin V(Q'(y))$. If
+$V(P_y)\cap V(Q'(y))=\{y\}$, then $G$ has a Lov\'asz decomposition with $Q(y)=yu$.
+\end{lemma}
+
+\begin{proof}
+Let $e=x_{i-1}$ and $y=x_i$. Since $Q'(y)$ avoids $u$, the chain stops at $y$ ($k=i$). The far end
+$q$ of $Q'(y)$ is not an earlier chain vertex, since the chain would have stopped there.
+\begin{itemize}
+\item The transfer contains $R=Q'(y)+yu$, with ends $q,u$, and the re-routed $P_y$, with vertex
+set $V(P_y)$ and ends $y,f'$.
+\item Replace these two paths by the edge $yu$ and the union of $P_y$ (re-routed) and $Q'(y)$,
+glued at $y$. The union is a path from $f'$ to $q$, because the two vertex sets meet only in $y$.
+\end{itemize}
+Edges and ends are unchanged.
+\end{proof}
+
+\begin{lemma}[rotations at $y$]\label{lem:rot}
+Let $\cD'$ be good with $e=g$, so the path ending at $g$ is $P_0=P_y=g\,S\,a\,y\,u\,R\,f$. Let
+$u\notin V(Q'(y))$ and write $Q'(y)=y\,b\,T\,q$.
+\begin{enumerate}[label=(\alpha*)]
+\item[($\alpha$)] If $V(gSa)\cap V(bTq)=\emptyset$ and $x\notin V(uRf)$, then $(G,y,\{x\})$ is good,
+with $Q(y)=y\,u\,R\,f$.
+\item[($\beta$)] If $V(uRf)\cap V(bTq)=\emptyset$ and $x\notin V(gSa)$, then $(G,y,\{x\})$ is good,
+with $Q(y)=y\,a\,S^{-1}\,g\,u$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+($\alpha$) Replace $P_0$ and $Q'(y)$ by $g\,S\,a\,y\,b\,T\,q$ and $y\,u\,R\,f$. Both are paths, the
+ends are unchanged, and $y$'s path avoids $x$. The new path ending at $g$ avoids $u$, so the chain
+is trivial, and appending $gu$ gives the claim.
+($\beta$) Replace them by $y\,a\,S^{-1}\,g$ and $f\,R^{-1}\,u\,y\,b\,T\,q$. Now $y$'s path ends at
+$g$ and avoids $u$, so the chain is trivial and $Q(y)=y\,a\,S^{-1}\,g\,u$.
+\end{proof}
+
+\begin{lemma}[re-pairing at $u$]\label{lem:repair}
+Let $\cD'$ be good, with the chain reaching $e$ and $x$ on the partner half of $P_y$. Suppose the
+halves at $u$ can be re-paired so that the new partner of the $e$-half avoids $x$, and, if $u\in
+V(Q'(y))$, so does the new partner of $y$'s half. Then $(G,y,\{x\})$ is good.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:halves}, $\cD''$ is good: $y$'s path is $y$'s half and its new partner, both
+avoiding $x$. Its transfer has $y$'s path on $V(h_e)\cup V(h')$, which avoids $x$.
+\end{proof}
+
+\begin{proposition}[outright cases]\label{prop:outright}
+In the setting of $\TRN$, $(G,y,\{x\})$ is good in each of the following cases. In (i) and (ii)
+no hypothesis on $G-gu$ is needed.
+\begin{enumerate}[label=(\roman*)]
+\item $x$ and $y$ have no common neighbour.\lean{avoid\_of\_farApart}
+\item $d(g)=2$ and the two neighbours of $g$ are non-adjacent.\lean{avoid\_of\_degTwo\_indep}
+\item $d(y)=1$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) Separation~\cite[Thm.~6.1]{RD}: some Lov\'asz decomposition of $G$ has no path through both.
+(ii) Let $N(g)=\{a,b\}$. Since $u\in\{a,b\}$ and $u\notin\{x,y\}$, $\{a,b\}\ne\{x,y\}$. In
+$H=G-ga-gb+ab$ there is no even vertex and $x\not\sim y$. $L_1$~\cite[Thm.~6.3]{RD} gives a Lov\'asz
+decomposition of $H$ with $x\notin Q(y)$. Subdividing $ab$ by $g$~\cite[Lemma~4.3]{CN} gives one of
+$G$. (iii) Then $N(y)=\{u\}$, so every $Q'(y)$ begins with $yu$; apply
+Proposition~\ref{prop:fail}(a).
+\end{proof}
+
+\section{The core of TRN}\label{sec:core}
+
+The proof of Conjecture~N from $\TRN$~\cite[Thm.~4.6]{CN} is an induction on $\sum_vd(v)$. It
+applies $\TRN$ only after every other step has failed, and with the induction hypothesis at hand.
+We record exactly what it needs.
+
+\begin{definition}[the core]\label{def:core}
+A \emph{core instance} of $\TRN$ is a $\TRN$ instance $(G,g,x,y,u)$ with the following properties.
+\begin{enumerate}[label=(C\arabic*)]
+\item \emph{Induction.} Conjecture~N holds on every graph of smaller degree sum on the same vertex
+set.
+\item \emph{All-tight.} Every neighbour of $g$ other than $x,y$ is adjacent to $y$.
+\item \emph{Witness.} Some $w\in N(y)$ with $w\ne u$ is not adjacent to $x$.
+\item \emph{Distance two.} $x$ and $y$ have a common neighbour.
+\item \emph{Not a split.} $N(g)$ is not a pair of non-adjacent vertices.
+\end{enumerate}
+The \emph{core of $\TRN$} is $\TRN$ for core instances.\lean{TightTransferNCore}
+\end{definition}
+
+\begin{theorem}\label{thm:core}
+The core of $\TRN$ and the degree-two case $N(g)=\{x,y\}$ of~N imply Conjecture~N. Hence the
+core of $\TRN$ and $\NA$ imply Conjecture~N.
+\lean{conjN\_of\_core, conjN\_of\_core\_neighbourAvoid, tightTransferNCore\_of}
+\end{theorem}
+
+\begin{proof}
+Follow the induction of~\cite[Thm.~4.6]{CN} on the degree sum.
+\begin{itemize}
+\item No even vertex: $L_1$.
+\item A non-tight target: Case~I, whose child keeps the witness.
+\item The remaining cases ($N(g)\subseteq\{x,y,w_0\}$): a split and $L_1$, or the degree-two case.
+\end{itemize}
+In the step that used $\TRN$ we have a tight target $u$ whose child keeps a witness, so (C3)
+holds, and (C2) holds because no non-tight target exists. If $x,y$ have no common neighbour,
+Proposition~\ref{prop:outright}(i) finishes; if $N(g)$ is an independent pair,
+Proposition~\ref{prop:outright}(ii) finishes. Otherwise (C4) and (C5) hold. The child is good by
+induction, and (C1) is the induction hypothesis, so the core applies.
+\end{proof}
+
+So any proof of $\TRN$ for core instances, and any proof that uses N on smaller graphs, is enough
+for Conjecture~N. Table~\ref{tab:counts} shows that the core is about a fifth of the tests at
+order~$9$; most tests are excluded by (C2).
+
+\begin{table}[ht]
+\caption{$\TRN$ tests (child good) and the core, exhaustive over the one-even graphs
+of~\cite{STL}. Each excluded test is counted under the first of (C2)--(C5) that fails.}
+\label{tab:counts}\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+order & tests $y\not\sim g$ & tests $y\sim g$ & core $y\not\sim g$ & core $y\sim g$ &
+\multicolumn{2}{r}{excluded by (C2), (C3), (C4), (C5)}\\
+\midrule
+$5$ & $4$ & $10$ & $0$ & $10$ & \multicolumn{2}{r}{$2,\ 2,\ 0,\ 0$}\\
+$7$ & $787$ & $1{,}060$ & $114$ & $380$ & \multicolumn{2}{r}{$1{,}097,\ 125,\ 56,\ 75$}\\
+$9$ & $236{,}891$ & $254{,}032$ & $36{,}728$ & $55{,}162$ &
+\multicolumn{2}{r}{$370{,}094,\ 12{,}150,\ 6{,}345,\ 10{,}444$}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The core instances at order $9$ have $d(g)\in\{2,4,6\}$ for $y\not\sim g$ ($10{,}893$, $23{,}266$,
+$2{,}569$) and $d(g)\in\{2,4,6,8\}$ for $y\sim g$ ($7{,}276$, $32{,}842$, $13{,}646$, $1{,}398$). By
+(C5), the core instances with $d(g)=2$ have $g$ on a triangle. That is the third obstruction shape
+of~\cite[\S6]{CN}.
+
+\section{A trivial-chain strengthening}\label{sec:trne}
+
+Say that $\cD'$ has a \emph{trivial chain} if its path ending at $g$ avoids $u$. Then Fan's step only
+appends $gu$, so $\cD$ is good. Equivalently, $G$ has a good Lov\'asz decomposition in which $gu$ is
+the terminal edge at $u$: delete $gu$ to go back.
+
+\begin{conjecture}[$\TRNE$]\label{conj:trne}
+In the setting of $\TRN$, if $(G-gu,y,\{x\})$ is good, then some good decomposition of $G-gu$ has a
+trivial chain.
+\end{conjecture}
+
+\begin{table}[ht]
+\caption{$\TRN$ and $\TRNE$. ``Undecided'' means a node budget of $2\cdot10^6$ was hit.}\label{tab:trne}
+\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+range & graphs & $\TRN$ tests & $\TRN$ violations & $\TRNE$ fails\\
+\midrule
+orders $5,7,9$, exhaustive & all one-even graphs & $14$, $1{,}847$, $490{,}923$ & $0$ & $0$\\
+orders $11,13$, random & $400$ & $39{,}098$ & $0$ & $0$ (1 undecided)\\
+order $11$, \texttt{geng} slice $17/2000$ & all in the slice & $365{,}665$ & $0$ & $0$\\
+order $11$, \texttt{geng} slice $517/2000$ & all in the slice & $466{,}120$ & $0$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+$\TRNE$ implies $\TRN$, and also the re-choice statement of~\cite{L1I}: some good $\cD'$ has a
+chain avoiding $y$. The computation is a two-path oracle query: in $K$, does some Lov\'asz decomposition have $Q(y)\not\ni
+x$ and $Q(g)\not\ni u$ at once? At order $7$ it agrees with the minimum over the full enumeration
+of good $\cD'$: the shortest forced chain always has length one
+(\texttt{data/instances57.txt}). Among single extremal choices, ``a good $\cD'$ with shortest
+chain'' is the only rule tested whose minimisers all transfer. The other keys we tried were
+$|Q'(y)|$, the length of the path ending at $g$, $Q'(y)$ ending at $g$, and $|Q'(y)\cap N(u)|$;
+each has failing minimisers at order~$7$. But $\TRNE$ is not a proof route on its own.
+
+\begin{proposition}\label{prop:ee}
+$\TRNE$ implies the end-edge conjecture EE~\cite[Conj.~EE]{MS}: if $g$ is the only even vertex
+and $u\in N(g)$, then $gu$ is the terminal edge at $u$ of some Lov\'asz decomposition.
+\end{proposition}
+
+\begin{proof}
+If $d(u)=1$ every Lov\'asz decomposition will do. Otherwise $d(u)\ge3$ is odd; take $y\in
+N(u)\setminus\{g\}$, which is odd. Add a disjoint edge $xx'$. Then $x$ is odd, $x\not\sim y$ and
+$x\ne u$. Every Lov\'asz decomposition of the new $G-gu$ has $x\notin Q(y)$, since $x$ lies in
+another component. $\TRNE$ gives a Lov\'asz decomposition with $gu$ terminal at $u$; restrict it to
+$G$.
+\end{proof}
+
+EE is open exactly when $u$ and $g$ have at least two common neighbours~\cite{PE}. So a proof of
+$\TRNE$ would include a proof of EE, and $\TRN$ must be proved with non-trivial chains in general.
+The construction of Proposition~\ref{prop:ee} is the only point where $x$ is far from $y$. When
+$\mathrm{dist}(x,y)\ge3$, $\TRN$ itself is trivial (Proposition~\ref{prop:outright}(i)).
+
+\section{Classification of the failing pairs}\label{sec:class}
+
+\emph{This section is computational.} For every $\TRN$ test we enumerate all good $\cD'$, run the
+forced chain, and classify each $\cD'$ whose transfer is bad. For a bad $\cD'$ we record:
+\begin{itemize}
+\item $i$, the step at which the chain meets $y$; $i=1$ means $e=g$;
+\item whether $x$ is on the $e$-half or on the partner half;
+\item whether $u\in Q'(y)$;
+\item whether the child has a witness;
+\item whether $d(g)=2$ with $g$ on a triangle;
+\item which repairs succeed:
+  \begin{itemize}
+  \item exch: Lemma~\ref{lem:exchange};
+  \item rot: some rotation at $y$, along any path through $y$, then plain Fan; this contains
+  Lemma~\ref{lem:rot};
+  \item rep: Lemma~\ref{lem:repair};
+  \item loc: some re-decomposition of the union of the chain paths, $Q'(y)$ and $gu$ into paths
+  with the same ends, $g$'s end moved to $u$, with $y$'s path avoiding $x$ and the other paths
+  of $\cD'$ kept.
+  \end{itemize}
+\end{itemize}
+The first three are proved moves. ``loc'' is a finite search. It contains plain Fan,
+Lemma~\ref{lem:exchange} and Lemma~\ref{lem:rot}, which only use the chain paths and $Q'(y)$. The
+general rotation and the re-pairing may use other paths, so loc does not contain them.
+
+\begin{table}[ht]
+\caption{Bad pairs $(G,\cD')$ at order $7$ (exhaustive; \texttt{data/classify7*.txt}).}\label{tab:class7}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & all tests & core tests\\
+\midrule
+tests / tests with a bad $\cD'$ & $1{,}847$ / $1{,}367$ & $494$ / $428$\\
+bad $\cD'$ & $31{,}477$ & $14{,}753$\\
+\quad with $y\sim g$ & $24{,}332$ & $13{,}255$\\
+\quad with $i=1$ ($e=g$) / $i\ge2$ & $18{,}994$ / $12{,}483$ & $8{,}522$ / $6{,}231$\\
+\quad with $x$ on the $e$-half / partner half & $7{,}361$ / $24{,}116$ & $3{,}176$ / $11{,}577$\\
+\quad with $u\in Q'(y)$ & $8{,}228$ & $4{,}623$\\
+repaired by exch / rot / rep & $1{,}363$ / $5{,}273$ / $342$ & $595$ / $1{,}960$ / $96$\\
+repaired by loc & $30{,}489$ & $14{,}367$\\
+repaired by some move & $30{,}491$ & $14{,}369$\\
+repaired by none & $986$ & $384$\\
+\quad all with $i=1$ and $u\notin Q'(y)$ & $986$ & $384$\\
+\quad with $y\sim g$ / $d(g)=2$ on a triangle / child witness & $846$ / $170$ / $788$ & $354$ / $170$ / $384$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At order $5$ there are $4$ bad pairs, all repaired. At order $9$ we ran the classification on the
+first $4{,}000$ graphs of the list (the sparser ones), skipping tests with more than $20{,}000$ good
+$\cD'$: ORDER9SUMMARY (\texttt{data/classify9\_first4000.txt}).
+
+\begin{itemize}
+\item \emph{Validation.} The enumerator of good decompositions and the forced-chain simulation
+(\texttt{dec.h} of~\cite{L1I}, \texttt{chainlist.cpp}) were checked against an independent Python
+brute force (\texttt{brute.py}). It uses a different enumeration: repeatedly take the first unused
+edge and list every path through it. Its Fan simulation is separate. On all $14$ and $1{,}847$
+tests of orders $5$ and $7$, the triples (number of good $\cD'$, number with chain avoiding $y$,
+number with good transfer) agree. Every transfer and every repaired decomposition is checked to be
+a Lov\'asz decomposition (\texttt{check\_decomp}).
+\item \emph{Rotations alone are weak.} A single rotation at $y$ repairs $17\%$ of the bad
+$\cD'$, re-pairing at $u$ about $1\%$. Restricted to tests whose child has a witness, the counts are
+$4{,}393$, $342$ and $24{,}152$ (loc) of $24{,}942$ (\texttt{data/repairs7\_witness.txt}).
+\end{itemize}
+
+\section{The residual}\label{sec:residual}
+
+The data single out one configuration.
+
+\begin{definition}\label{def:hard}
+A good $\cD'$ is in the \emph{hard core} if its path ending at $g$ is $P_y=g\,S\,a\,y\,u\,R\,f$
+(so the chain meets $y$ at its first step) and $Q'(y)$ avoids $u$.
+\end{definition}
+
+For such $\cD'$ the chain is $g\to y$ and stops, and the chain paths are $P_0$ and $Q'(y)$. So
+``loc'' asks for a re-decomposition of $P_0\cup Q'(y)+gu$ into two paths with ends
+$\{f,q,y,u\}$. Lemmas~\ref{lem:exchange} and~\ref{lem:rot} are three of these
+re-decompositions.
+
+\emph{Observation} (computed, order $7$ exhaustive). All $18{,}265$ bad $\cD'$ outside the hard
+core are repaired by loc ($9{,}288$ in the core). In the hard core, $12{,}224$ of the $13{,}212$ bad
+$\cD'$ are repaired by loc and $2$ more only by re-pairing at $u$ ($5{,}079$ and $2$ of $5{,}465$ in
+the core). The other $986$ ($384$ in the core) are repaired by none of the moves: every repair must
+change a path outside $P_0\cup Q'(y)$ and, for re-pairing, outside the $u$-paths.
+
+\begin{example}[the smallest core residual, $y\sim g$]\label{ex:FsObO}
+$G=$ \texttt{FsObO}, with edges $01,02,03,14,16,25,26,46$, and $g=4$, $y=1$, $x=2$, $u=6$.
+\begin{itemize}
+\item $N(g)=\{1,6\}$, so $g$ has degree two on the triangle $g\,y\,u$. The child keeps the witness
+$4$, $x$ and $y$ share the neighbours $0$ and $6$, and the instance is a core instance.
+\item Take $\cD'=\{1\,0,\ 2\,5,\ 3\,0\,2\,6\,1\,4\}$. Then $P_0=4\,1\,6\,2\,0\,3$ is $g\,y\,u\,x\,0\,3$
+and $Q'(y)=1\,0$.
+\item The transfer has $Q(y)=1\,4\,6\,2\,0\,3\ni x$.
+\item Every re-decomposition of $P_0\cup Q'(y)+gu$ into two paths with ends $3,0,1,6$ puts $x$ on
+$y$'s path or repeats a vertex. The obstruction is $q=0\in R$: $Q'(y)$ returns to the far side of
+$u$, beyond $x$.
+\item Good decompositions exist, for example $\{1\,4,\ 0\,1\,6\,2,\ 3\,0\,2\,5\}$, with a trivial
+chain and $Q(y)=1\,4\,6$. Reaching one from $\cD'$ changes the path $2\,5$, which is not a chain
+path.
+\end{itemize}
+\end{example}
+
+\begin{example}[core residuals with $y\not\sim g$]\label{ex:FsQnO}
+\begin{itemize}
+\item $G=$ \texttt{FsQnO}, with edges $01,02,03,05,06,14,16,25,26,45,46$, and $g=6$ ($d(g)=4$),
+$y=5$, $x=1$, $u=4$. Take $\cD'=\{5\,0,\ 1\,6\,0\,2,\ 3\,0\,1\,4\,5\,2\,6\}$, so that
+$P_0=g\,2\,y\,u\,x\,0\,3$ and $Q'(y)=5\,0$. As in Example~\ref{ex:FsObO}, the far end $0$ of $Q'(y)$
+lies on $R$ beyond $x$.
+\item $G=$ \texttt{FsRLO}, with edges $01,02,03,05,06,14,15,26,45,46$, and $g=2$, $y=1$, $x=6$, $u=0$.
+Here $N(g)=\{u,x\}$ with $u\sim x$ and $y\not\sim g$: an even vertex of degree two on a triangle
+through $x$, as in the five N-instances left uncertified in~\cite{CN} (there $d(y)=5$, here
+$d(y)=3$). Take $\cD'=\{1\,4,\ 2\,6\,4\,5\,1\,0\,3,\ 5\,0\,6\}$.
+Then $P_0=g\,x\,4\,5\,y\,u\,3$, with $x$ on the $e$-half, and $Q'(y)=1\,4$ meets $S$ at $4$.
+\end{itemize}
+\end{example}
+
+The pattern in all three: in the hard core, $Q'(y)$ and $P_0$ cross on the side of $x$, and the
+crossing can be undone only by moving a third path. We did not find a rule that names that third
+path.
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/TRN.lean} (Lean 4, Mathlib) has no \texttt{sorry}. Every theorem below
+depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the full
+library builds ($18{,}420$ jobs).
+
+\begin{center}\small
+\begin{tabular}{ll}
+\toprule
+statement & Lean\\
+\midrule
+Lemma~\ref{lem:sep} & \texttt{avoid\_of\_separating\_child}\\
+Proposition~\ref{prop:outright}(i) & \texttt{avoid\_of\_farApart}\\
+Proposition~\ref{prop:outright}(ii) & \texttt{avoid\_of\_degTwo\_indep}\\
+Definition~\ref{def:core} & \texttt{ConjNBelow}, \texttt{TightTransferNCore}\\
+Theorem~\ref{thm:core} & \texttt{conjN\_of\_core}, \texttt{conjN\_of\_core\_neighbourAvoid}\\
+$\TRN\Rightarrow$ core & \texttt{tightTransferNCore\_of}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item \emph{Library results used:} \texttt{fan\_single\_supp}, \texttt{separation},
+\texttt{lovasz\_avoid\_nonadj}, \texttt{splitOff\_facts}, \texttt{avoid\_of\_splitOff},
+\texttt{avoid\_free\_target}, and the helpers of \texttt{ConjN.lean}.
+\item \emph{The static condition} ($e\notin\{g\}\cup N_K(u)$, in the leaf graph) was already
+formalised as \texttt{l1\_tight\_transfer}~\cite{TF}, with no hypothesis $y\not\sim g$.
+\item \emph{Not formalised:} Proposition~\ref{prop:fail}, Lemmas~\ref{lem:halves}--\ref{lem:repair},
+Proposition~\ref{prop:ee}. These are statements about the forced chain itself, which the library
+handles only through \texttt{fan\_exists\_chain}, and about disjoint unions.
+\end{itemize}
+
+\section{What remains}\label{sec:open}
+\begin{enumerate}
+\item \emph{The core of $\TRN$} (Definition~\ref{def:core}). With (C1), a proof may use
+Conjecture~N on smaller graphs.
+\item \emph{The hard core.} For a bad $\cD'$ outside the hard core, prove that loc always succeeds,
+or find the explicit moves. For the hard core, name the third path that a repair must move. Both
+are suggested by the data and neither is proved.
+\item \emph{$\TRNE$ without EE.} Proposition~\ref{prop:ee} uses only instances with $x$ in another
+component. $\TRNE$ restricted to $\mathrm{dist}(x,y)=2$ does not obviously contain EE.
+\end{enumerate}
+
+\section{Computations}\label{sec:comp}
+
+Scripts are in \texttt{manuscripts/trn/scripts}, outputs in \texttt{manuscripts/trn/data}.
+\texttt{build.sh} compiles the tools against the oracle headers of~\cite{L1I}
+(\texttt{lind.h}, \texttt{orc2.h}, \texttt{dec.h}). \texttt{run.sh} regenerates the data in
+minutes, and \texttt{classify9.sh} the order-$9$ sample in hours. The graphs are the one-even
+lists of~\cite{STL} and, for the random runs, \texttt{randg.py} of~\cite{L1I} (seed $11$).
+\begin{itemize}
+\item \texttt{trne.cpp}: $\TRN$ tests and $\TRNE$ by the two-path oracle \texttt{orc2}. The test
+counts agree with~\cite{CN}.
+\item \texttt{trnbud.cpp}: the same with a node budget, for random graphs and the order-$11$ slice.
+\item \texttt{chain.cpp}, \texttt{chainlist.cpp}: full enumeration of good $\cD'$ with forced
+chains.
+\item \texttt{brute.py}: the independent check.
+\item \texttt{core.cpp}: Table~\ref{tab:counts}.
+\item \texttt{classify.cpp}: Tables~\ref{tab:class7} and the order-$9$ sample; \texttt{summarize.py}
+aggregates its output.
+\item \texttt{rules.cpp}, \texttt{minchain.cpp}: extremal rules and chain lengths.
+\item \texttt{rot.cpp}, \texttt{halves.cpp}, \texttt{local.cpp}, \texttt{localshow.cpp}: single
+repairs.
+\item \texttt{show.cpp}: lists every good $\cD'$ of one test, with chain and transfer.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{CN} Conjecture N, \texttt{manuscripts/conj-n}.
+\bibitem{DL} The disjunctive avoidance conjecture for one pair, \texttt{manuscripts/dl-one}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
+B} 93 (2005) 117--125.
+\bibitem{L1I} Lov\'asz's induction for $L_1^*$, \texttt{manuscripts/l1-induction}.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc. Colloq.,
+Tihany, 1966), Academic Press, 1968, 231--236.
+\bibitem{MS} Multi-pair separation, \texttt{manuscripts/multi-sep}.
+\bibitem{PE} Prescribed end edges, \texttt{manuscripts/prescribed-end}.
+\bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
+\bibitem{STL} Star-terminal Lov\'asz decompositions, \texttt{manuscripts/stl}.
+\bibitem{TF} Fan's lemma at equality, \texttt{manuscripts/tight-fan}.
+\end{thebibliography}
+\end{document}
