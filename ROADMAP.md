@@ -128,7 +128,14 @@ EMM sufficiency work is **stopped**.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
 - **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
-- **dense-root** (session_01FxXpVhCWRJY7ccwLFEHd8q, branch `claude/dense-root`, new): Test1 at roots of degree n − 2, which steering provably cannot reach (`not_steerK_triangle`). Approach: re-tight's Lovász + matching with T-join parity repair, plus an exact coverage check of MR's dense theorems.
+- **dense-root** (session_01FxXpVhCWRJY7ccwLFEHd8q, branch `claude/dense-root`): **finished** (bc24fad). Manuscript `manuscripts/dense-root` (10 pp.); audits A39, A39b and A39c, all findings applied.
+  - Test1 at roots of degree n − 2. Proved in Lean:
+    - Theorem A: B − r has ≤ 1 even vertex. This is re-tight Thm 3.1 without the Eulerian hypothesis.
+    - Theorem B: one admissible connector, with d(z) = n − 3 and s ∈ N(z).
+    - The family lemma and Hall reassembly with defect 2, for any B.
+  - Order 9: A ∪ B covers 1,630 of 1,756 roots. But MR Prop 139 (unrefereed) already claims all 1,756 there, so A and B are new only for n ≥ 11.
+  - Open: several connectors, roots with no admissible connector, and the dense middle (residual families with n = 15, 17 are undecided; probably needs a detachment or exchange argument).
+  - Original brief: Test1 at roots of degree n − 2, which steering provably cannot reach (`not_steerK_triangle`). Approach: re-tight's Lovász + matching with T-join parity repair, plus an exact coverage check of MR's dense theorems.
   - **Milestone 1 (6243d77, merged; build green; axioms checked).** Lean `DenseRoot.lean`:
     - `famReassemble`, a family lemma that works for any B;
     - `hallReassemble`, Hall with defect 2;
