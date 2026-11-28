@@ -1,0 +1,5 @@
+instances 43400 not certified 0
+route {'pre': 28547, 'joint': 14853}
+edges of P {1: 34688, 2: 7689, 3: 926, 4: 88, 5: 9}
+moves {0: 5077, 1: 3058, 2: 3339, 3: 4224, 4: 5756, 5: 6466, 6: 6207, 7: 4904, 8: 2675, 9: 1215, 10: 304, 11: 123, 12: 8, 13: 41, 14: 3}
+single-edge P (r1count.py, search only): 38908 of 43400 at order 8
