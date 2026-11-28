@@ -33,6 +33,15 @@
 \newcommand{\TWELVEFAIL}{none (all witnesses verified)}
 \newcommand{\TRIDATA}{two-token schedules settle $40{,}454$, separation none (there $a$ and $b$ always share the neighbour $w$), $1{,}145$ are not settled (one of them is the odd semi-clique, settled by Proposition~\ref{prop:semi}), and $20$ searches hit the budget. So at $d(z)=4$ and $n=10$, Pyber's theorem and Corollary~\ref{cor:pair}(b) settle $306{,}086$ of the $307{,}231$ instances. The schedules are computed; the implication from a schedule is proved in Lean}
 
+\newcommand{\TONEDATA}{Every (T1) instance of order at most $9$ ($3$-connected $J$ with exactly one
+even vertex; $1$, $28$ and $5{,}231$ graphs, matching A8's counts; $4+126+25{,}210$ instances) was
+tested. Every one of the $17{,}228$ instances with matching data has a matching base. Of the
+other $8{,}112$, a spanning-tree join with $r$ a root works at $8{,}103$, and $r$ a child at three
+(the cone over $K_{2,6}$ at both hubs, and one relative). The remaining six are the instances of
+Example~\ref{ex:t1theta}, where no all-odd base exists. Every lift is verified; $r$ gets two ends
+in $24{,}782$ cases and four in $552$ (\texttt{data/tb1\_odd\_le9.txt})}
+\newcommand{\ALLODDTEN}{PENDING}
+
 \title[The three-end test]{The three-end test of the spine:\\ exact data, two direct lifts, and the floor}
 \author{Gallai project}
 \date{28 November 2026 (working draft, session \texttt{claude/test2})}
@@ -67,6 +76,12 @@ triangle lift, but the side condition differs: (T1) asks for a connected auxilia
 no universal-twin pair. Twin-free data do not always exist, even outside odd semi-cliques. At deletion degree four the floor lift needs a single DL(1) pair. There,
 separation and two-token steering, both proved in Lean, settle $98.5\%$ of the sampled order-$10$
 instances with data.
+
+The forest lift has an all-odd twin for (T1), also in Lean: delete $z$ and a forest $N(z)$-join, and
+the remaining graph has no even vertex. Through their matching bases, both spine tests at
+$d(z)=2m$ become one fixed avoidance plus $m-1$ disjunctions in a graph without even vertices. We
+state this common base as a conjecture (Conjecture~\ref{conj:common}). It has no universal-twin
+exception, since such twins cannot occur in all-odd graphs.
 
 \emph{Computed.} The general forest base exists at all $717{,}942$ instances. At four of them,
 $J-z$ is a fat theta ($K_{2,7}$ and a relative). There the base needs $r$ to be a child in the
@@ -144,6 +159,8 @@ Floor $\Rightarrow$ (T2); floor lift (Theorem~\ref{thm:floor}) & proved; Lean
 \texttt{test2At\_of\_floor}, \texttt{floor\_of\_floorBase}\\
 Floor-lift converse (Proposition~\ref{prop:floorconv}) & proved; Lean for matchings
 (\texttt{matchingFloorBase\_of\_terminal})\\
+All-odd lift for (T1), and its matching case (Theorem~\ref{thm:oddlift}, Corollary~\ref{cor:oddmatch}) & proved; Lean
+\texttt{test1At\_of\_oddBase}, \texttt{test1At\_of\_matchingOdd}\\
 DL $\Rightarrow$ (T2) at roots with twin-free matching data (Corollary~\ref{cor:dl}) & proved; Lean
 \texttt{test2At\_of\_disjL1}\\
 $d(z)=4$: (T2) from one avoidance; from separation or a two-token schedule (\S\ref{sec:range}) &
@@ -151,8 +168,9 @@ proved; Lean \texttt{test2At\_of\_pair\_farApart}, \texttt{\_steer2}\\
 Odd semi-cliques (Proposition~\ref{prop:semi}) & proved from OSB Thm~4 (unrefereed, uses JM)\\
 Pyber / Fan ranges (Corollary~\ref{cor:lit}) & proved from the literature (restated floor forms)\\
 Forest base at all instances, $n\le 10$ (\S\ref{sec:lift}) & computed, every lift verified\\
-Conjecture~\ref{conj:base} (forest base), Conjecture~\ref{conj:two} (two constraints, all-odd) &
-conjectured; no counterexample\\
+Conjecture~\ref{conj:base} (forest base), Conjecture~\ref{conj:two} (two constraints, all-odd),
+Conjecture~\ref{conj:common} (common all-odd base) & conjectured; no counterexample (computed
+ranges in \S\S\ref{sec:allodd}--\ref{sec:conj})\\
 Cones (\S\ref{sec:cones}) & characterisation proved; data computed\\
 \bottomrule
 \end{tabular}
@@ -426,7 +444,7 @@ conditions hold.
 By exhaustive search, the same happens at one more graph of order $10$
 (\texttt{I??CFx\textasciitilde\textasciitilde w}, both orientations). These are the only four instances of order
 at most $10$ without a base rooted at $r$. Compare the cone over $K_{2,6}$ for the (T1) forest base
-(direct-test1 Example~4.7); for (T2) the extra freedom of making $r$ a child suffices.
+(direct-test1, example ``the forest base can fail''); for (T2) the extra freedom of making $r$ a child suffices.
 \end{example}
 
 \subsection*{Data} (\texttt{scripts/tb2.py}; bases searched with \texttt{tools/route\_ext.c} query~C,
@@ -542,6 +560,77 @@ $m=2$ the regime is narrow. It reaches $37$ of the $685$ instances with matching
 (all $37$ with $d(z)=4$, of $408$ there, and none of the $277$ with $d(z)=6$). It reaches none of
 the $14{,}434$ with matching data in a $20{,}000$-instance sample at order $10$.
 
+\section{The all-odd twin for (T1)}\label{sec:allodd}
+
+In (T1), $z$ is the only even vertex of $J$ (so $n$ is odd), and the even vertices of $B=J-z$ are
+exactly $T=N(z)$, with $r$ included. So the forest lift of \S\ref{sec:lift} has a twin for (T1) that
+needs no leaf.
+
+\begin{theorem}[the all-odd lift for (T1); Lean \texttt{twoEnds\_of\_oddBase}, \texttt{test1At\_of\_oddBase}]\label{thm:oddlift}
+Let $z$ be the only even vertex of $J$, let $r\in N(z)$, and let $\Phi$ be a forest $N(z)$-join of
+$B=J-z$, rooted with $r$ a root. Then $H=B-E(\Phi)$ has no even vertex. If some Lov\'asz
+decomposition of $H$ satisfies (i) and (ii) of Theorem~\ref{thm:lift}, then $B$ has a decomposition
+into $(n-1)/2$ paths with $1+d_\Phi(r)\ge2$ ends at $r$. So (T1) holds at $(J,z,r)$.
+\end{theorem}
+
+\begin{proof}
+A vertex of $N(z)$ is even in $B$ and loses an odd number $d_\Phi(v)$ of edges. Every other vertex
+is odd in $B$ and loses an even number. So every vertex of $H$ is odd, and a Lov\'asz decomposition
+$D_0$ of $H$ has one end at each vertex and $(n-1)/2$ paths. Lemma~\ref{lem:step} appends $\Phi$
+without changing the number of paths. The root $r$ loses no end and gains $c(r)=d_\Phi(r)$, which is
+odd, hence at least one.
+\end{proof}
+
+(As in Definition~\ref{def:data}, $r$ may also be a child with $c(r)\ge2$; only the rooted case is
+formalised.) The triangle lift of direct-test1 keeps an edge $zw$ and leaves one even vertex $w$.
+This lift deletes all of $z$ and leaves none.
+
+\begin{corollary}[the matching case; Lean \texttt{oddBase\_of\_matching}, \texttt{test1At\_of\_matchingOdd}]\label{cor:oddmatch}
+Let $z$ be the only even vertex of $J$, let $r\in N(z)$, and let $M_0$ be a perfect matching of
+$J[N(z)]$ by edges of $J$, with $r$ matched to $a_0$. Suppose some Lov\'asz decomposition of
+$H=(J-z)-M_0$ has $r\notin V(Q(a_0))$ and, for every other pair $ab$ of $M_0$, $a\notin V(Q(b))$ or
+$b\notin V(Q(a))$. Then (T1) holds at $(J,z,r)$.
+\end{corollary}
+
+\begin{proof}
+Orient every other pair by a disjunct that holds (Lean \texttt{orientPairs}), and root $r$'s pair
+at $r$. A matching has no siblings, so (ii) is empty, and Theorem~\ref{thm:oddlift} applies.
+\end{proof}
+
+The (T2) matching base \eqref{eq:match} has the same form. Its graph $M$ is $(J-z)-M_0$ with the
+pendant edge $zr$ added, again with no even vertex, and its conditions are the same: $r\notin
+V(Q(a_0))$ and one disjunction per other pair. So at $d(z)=2m$ both spine tests reduce, through
+their matching bases, to one fixed avoidance and $m-1$ disjunctions in a graph without even vertices
+(Conjecture~\ref{conj:common} below).
+
+\begin{example}[no all-odd base]\label{ex:t1theta}
+Let $J=K_{3,6}+h_2h_3$, with hubs $h_1,h_2,h_3$ and leaves $\ell_1,\dots,\ell_6$. Its only even
+vertex is $z=h_1$, and $J$ is $3$-connected. Let $r$ be a leaf. In $B=J-z$ every leaf has degree
+two, so every forest $N(z)$-join $\Phi$ meets each leaf in exactly one edge. In particular
+$d_\Phi(r)=1$, so $r$ cannot be a child with two children; it is a root, with its hub as only child.
+Say $r$ is joined to $h_2$. Let $A$ ($r\in A$) and $C$ be the leaves joined to $h_2$ and to $h_3$.
+\begin{itemize}[leftmargin=*]
+\item If $h_2h_3\notin\Phi$, then $|A|,|C|$ are even, and $H$ is the double star with centres
+$h_3$ (leaves $A$) and $h_2$ (leaves $C$). The leaves of $A-r$ are siblings, children of $h_2$. Each
+of their paths avoids $h_2$, so it ends at $h_3$ or continues to another leaf of $A$, which must be
+$r$. Hence $|A-r|\le2$ and $|A|=2$, $|C|=4$. The component $h_3C$ of $\Phi$ has at least three
+sibling leaves in $C$ (rooted at $h_3$, or at a leaf $c_0$). Their paths avoid $h_3$, so each ends
+at $h_2$ or continues to $c_0$; at most two can, a contradiction.
+\item If $h_2h_3\in\Phi$, then $|A|,|C|$ are odd and $H$ is the disjoint union of the stars
+$h_2C$ and $h_3A$. The leaves of $C$ are siblings (children of $h_3$), and a Lov\'asz decomposition
+of the star $h_2C$ puts two of them on one path unless $|C|=1$. Then $|A|=5$, and the four siblings
+$A-r$ lie in the star $h_3A$, which has only three paths, one of them through $r$; two
+siblings share a path.
+\end{itemize}
+So no all-odd base exists at these six instances, by any forest and rooting. (T1) holds there, by
+A8's exhaustive check at $|J|=9$. Conversely, the cone over $K_{2,6}$ with $r$ a hub, where the
+(T1) forest base of direct-test1 fails (its example ``the forest base can fail''), does have an
+all-odd base, with $r$ a child.
+\end{example}
+
+\emph{Data} (\texttt{scripts/tb1\_odd.py}; route\_ext query~C with masks $\{v,p(v)\}$; every base is
+checked, the forest is appended, and the result is verified as a (T1) decomposition). \TONEDATA.
+
 \section{The base conjecture}\label{sec:conj}
 
 \begin{conjecture}[forest base for (T2)]\label{conj:base}
@@ -572,6 +661,39 @@ Each constraint alone is $L_1$. \texttt{scripts/allodd\_pairs.py} checks Conject
 exactly on every connected all-odd graph of order $6$ ($13$ graphs, $428$ choices) and $8$ ($224$
 graphs, $43{,}400$ choices): there are no failures.
 
+Both matching bases, for (T1) (Corollary~\ref{cor:oddmatch}) and for (T2) \eqref{eq:match}, are
+instances of one statement.
+
+\begin{conjecture}[the common all-odd base]\label{conj:common}
+Let $G$ be connected with every degree odd, and let $a_1b_1,\dots,a_jb_j$ be pairwise disjoint pairs
+of non-adjacent vertices.
+\begin{enumerate}[label=(\alph*)]
+\item (\emph{fixed}) Some Lov\'asz decomposition of $G$ has $a_i\notin V(Q(b_i))$ for every $i$.
+\item (\emph{free}) Some Lov\'asz decomposition of $G$ has, for every $i$, $a_i\notin V(Q(b_i))$ or
+$b_i\notin V(Q(a_i))$.
+\end{enumerate}
+\end{conjecture}
+
+The fixed form implies the free form and every mixed form (some pairs fixed, the others free). The
+two matching bases at $d(z)=2m$ are the mixed form with one fixed pair and $m-1$ free ones;
+Conjecture~\ref{conj:two} is the mixed form with $j=2$. For $j=1$ both forms are $L_1$.
+
+\emph{No exception.} DL, for graphs with one even vertex, must exclude pairs of universal twins
+(Lean \texttt{UnivTwins}: $a,b$ non-adjacent, and every other vertex of their component adjacent to
+both), since such twins lie on every path (Lean \texttt{univTwins\_every\_path}). In an all-odd graph
+there are no such pairs: a component $C$ has even order, so a vertex adjacent to all of $C-\{a,b\}$
+has even degree $|C|-2$. So Conjecture~\ref{conj:common} needs no twin condition, unlike the floor
+base (Corollary~\ref{cor:dl}).
+
+\emph{Data} (\texttt{scripts/allodd\_dl.c}). The program enumerates Lov\'asz decompositions by
+depth-first search with exact parity, degree and component pruning and memoised failures. It
+decides every set of constraints exactly, and searches a free set through its fixed orientations.
+Every connected all-odd graph of order $10$ ($32{,}851$ graphs), with every choice of two or three
+disjoint non-adjacent pairs, fixed (every orientation) and free, and the mixed forms with one fixed
+pair: \ALLODDTEN. The search agrees with route\_ext (query~A) on all $2{,}340+1{,}560$ fixed sets of
+order $6$ and all $188{,}160$ fixed pair sets of order $8$, with adjacent pairs admitted so that
+failures occur ($784$, $675$ and $21{,}425$ failures; no disagreement).
+
 \subsection*{Where the base sits among the constrained Lov\'asz statements}
 \begin{center}
 \begin{tabular}{p{0.21\textwidth}p{0.2\textwidth}p{0.26\textwidth}p{0.23\textwidth}}
@@ -583,10 +705,12 @@ NA & no even vertex & one, $x\sim c$ & proved (Lean)\\
 N, TRN & one even vertex $g$ & one fixed avoidance & open; N $\Leftarrow$ TRN (Lean)\\
 DL($j$) & $\le1$ even vertex & $j$ disjunctive pairs & open; universal-twin exception\\
 (T1) triangle base, $d(z)=2m$ & one even vertex $w$ & DL($m-1$) & open\\
+\textbf{(T1) all-odd matching base}, $d(z)=2m$ & \textbf{no} even vertex & one fixed + DL($m-1$),
+no twin exception & open; Conjecture~\ref{conj:common}\\
 \textbf{(T2) floor base}, $d(z)=2m$ & one even vertex $w$ & DL($m-1$) & open; $m=2$ mostly by
 separation/steering\\
-\textbf{(T2) matching base}, $d(z)=2m$ & \textbf{no} even vertex & one fixed + DL($m-1$) & open; each
-alone is $L_1$\\
+\textbf{(T2) matching base}, $d(z)=2m$ & \textbf{no} even vertex & one fixed + DL($m-1$),
+no twin exception & open; each alone is $L_1$; Conjecture~\ref{conj:common}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -639,6 +763,8 @@ instances at $n=6,8,10$. All hold, and all $20$ tight instances of \S\ref{sec:da
 \item \emph{Proved, Lean.} Two lifts (Theorems~\ref{thm:lift}, \ref{thm:floor}); floor $\Rightarrow$
 (T2); DL $\Rightarrow$ (T2) at roots with twin-free matching data; $d(z)=4$ from one avoidance,
 separation, or a two-token schedule. All with standard axioms (\texttt{data/axioms.txt}).
+\item \emph{Proved, Lean.} The all-odd lift for (T1) and its matching case
+(\texttt{test1At\_of\_oddBase}, \texttt{test1At\_of\_matchingOdd}).
 \item \emph{Proved, Lean, matching case.} Both converses: \texttt{matchingFloorBase\_of\_terminal}, and
 \texttt{forestBase2\_matching\_of\_test2}, which takes a (T2) decomposition of \texttt{delVert J z} with a
 terminal matching and returns \texttt{ForestBase2 J z r}. The core is \texttt{PathDecomp.drop\_terminal},
@@ -647,12 +773,14 @@ which removes a terminal edge and keeps every other path.
 unrefereed); the literature ranges (from restated floor theorems); the cone characterisation.
 \item \emph{Computed.} (T2) exhaustively to order $10$, with (T2) and slack witnesses; the general
 forest base at every instance there;
-the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $8$.
+the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $8$;
+the (T1) all-odd base to order $9$; Conjecture~\ref{conj:common} with $j\le3$ at order $10$.
 \item \emph{Open.}
 \begin{itemize}
 \item Conjecture~\ref{conj:base}, in particular for $J$ with no matching data.
-\item Conjecture~\ref{conj:two}, and its multi-pair form (one fixed avoidance with DL($j$) in all-odd
-graphs).
+\item Conjecture~\ref{conj:common} (which contains Conjecture~\ref{conj:two}); it would give both
+spine tests at every root with matching data (applied to each component; a pair split between two
+components is satisfied automatically).
 \item The floor for $J-z$ outside odd semi-cliques, which is the Bonamy--Perrett question on this class.
 \item The forest cases of the converses in Lean; transferring the lifts to $k$-token schedules
 (the multi-token session's \texttt{steerK\_good} is stated for general tail systems).
@@ -669,6 +797,10 @@ python3 scripts/tb2.py ROUTE_EXT < instances        # forest base, lift verified
 python3 scripts/tb2_floor.py ROUTE_EXT inst|data < instances
 python3 scripts/dz4_cover.py ROUTE_EXT 200000 < instances
 python3 scripts/allodd_pairs.py ROUTE_EXT < graphs
+python3 scripts/tb1_odd.py ROUTE_EXT < graphs   # (T1) all-odd base
+gcc -O2 -o allodd_dl scripts/allodd_dl.c
+nauty-geng -q -c 10 | ./allodd_dl -d 0 -b 50000000   # Conj. common
+./t2 -s < g6 | python3 scripts/verify_t2.py --require-slack
 \end{verbatim}
 
 \begin{thebibliography}{99}
