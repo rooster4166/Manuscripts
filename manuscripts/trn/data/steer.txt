@@ -1,0 +1,18 @@
+order 5
+mode N: instances 12, move (T) available 3, undecided 0; all-tight 10, of which (T) 3
+mode N onlyY=1: instances 12, schedule 3, undecided 0; all-tight 10, of which schedule 3
+mode N onlyY=0: instances 12, schedule 3, undecided 0; all-tight 10, of which schedule 3
+mode RESID onlyY=0: instances 4, schedule 2, undecided 0; all-tight 4, of which schedule 2
+mode CORETESTS onlyY=0: instances 10, schedule 2, undecided 0; all-tight 10, of which schedule 2
+order 7
+mode N: instances 1161, move (T) available 287, undecided 0; all-tight 403, of which (T) 131
+mode N onlyY=1: instances 1161, schedule 287, undecided 0; all-tight 403, of which schedule 131
+mode N onlyY=0: instances 1161, schedule 840, undecided 0; all-tight 403, of which schedule 216
+mode RESID onlyY=0: instances 235, schedule 120, undecided 0; all-tight 235, of which schedule 120
+mode CORETESTS onlyY=0: instances 494, schedule 189, undecided 0; all-tight 494, of which schedule 189
+order 9
+mode N: instances 263264, move (T) available 59630, undecided 0; all-tight 52070, of which (T) 19438
+mode N onlyY=1: instances 263264, schedule 59630, undecided 0; all-tight 52070, of which schedule 19438
+mode N onlyY=0: instances 263264, schedule 238265, undecided 0; all-tight 52070, of which schedule 41447
+mode RESID onlyY=0: instances 38055, schedule 29558, undecided 0; all-tight 38055, of which schedule 29558
+mode CORETESTS onlyY=0: instances 91890, schedule 65962, undecided 0; all-tight 91890, of which schedule 65962
