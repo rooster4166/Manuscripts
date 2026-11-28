@@ -1,0 +1,7 @@
+# Conjecture J via joint paths with a certified remainder K0 = F - E(P): scripts/jcert.c (option bc)
+# (L) an end of P isolated in K0 (<= 1 even vertex: Lovasz);  (C) K0 2-connected, no odd vertex of degree |V(K0)|-1
+# (Conjecture 31);  (B) block criterion BC on K0 (PC on blocks).  The first certified P is solved exactly; witness
+# P + decomposition of K0 checked by scripts/jwcheck.py (independent).
+order 6: all-odd graphs 13 instances 428 joined 374 certified: Lovasz 204 Conj31 94 BC 76 uncertified 0; certified-but-not-tight 0
+order 8: all-odd graphs 224 instances 43400 joined 40538 certified: Lovasz 12176 Conj31 14435 BC 13927 uncertified 0; certified-but-not-tight 0
+witness check orders 6+8: checked 40912 joint decompositions: all valid

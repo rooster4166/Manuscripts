@@ -1,0 +1,23 @@
+# PC with at most one zero: every profile b (b == d mod 2, 1 <= b <= d off the zero) on a 2-connected graph, n <= 8.
+# (DB) holds automatically (parity slack argument, Lemma 2.3); the test is realisability.  scripts/pc_test.c modes 0, 1.
+Z=0 n=4 profiles 21 with-DB 21 realisable 21 DB-but-not-realisable 0 undecided 0
+Z=0 n=5 profiles 149 with-DB 149 realisable 149 DB-but-not-realisable 0 undecided 0
+Z=0 n=6 profiles 3643 with-DB 3643 realisable 3643 DB-but-not-realisable 0 undecided 0
+Z=0 n=7 profiles 89224 with-DB 89224 realisable 89224 DB-but-not-realisable 0 undecided 0
+Z=1 n=4 profiles 12 with-DB 12 realisable 12 DB-but-not-realisable 0 undecided 0
+Z=1 n=5 profiles 257 with-DB 257 realisable 257 DB-but-not-realisable 0 undecided 0
+Z=1 n=6 profiles 3960 with-DB 3960 realisable 3960 DB-but-not-realisable 0 undecided 0
+Z=1 n=7 profiles 145714 with-DB 145714 realisable 145714 DB-but-not-realisable 0 undecided 0
+n=8 Z=0: profiles 5381974 with-DB 5381974 realisable 5381974 DB-but-not-realisable 0 undecided 0
+n=8 Z=1: profiles 8672600 with-DB 8672600 realisable 8672600 DB-but-not-realisable 0 undecided 0
+# independent witness check (scripts/wcheck31.py --profile), files for Z=0 n=4..8 then Z=1 n=4..8:
+checked 21 witnesses: all valid
+checked 149 witnesses: all valid
+checked 3643 witnesses: all valid
+checked 89224 witnesses: all valid
+checked 5381974 witnesses: all valid
+checked 12 witnesses: all valid
+checked 257 witnesses: all valid
+checked 3960 witnesses: all valid
+checked 145714 witnesses: all valid
+checked 8672600 witnesses: all valid

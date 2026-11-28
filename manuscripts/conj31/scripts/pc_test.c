@@ -3,7 +3,7 @@
  *   pc_test MAXZ [bmax [witness_file]] < graphs.g6
  *
  * For every graph read (intended: 2-connected), every set Z of exactly MAXZ
- * vertices of positive even degree (MAXZ = 1 or 2), and every profile b with
+ * vertices of positive even degree (MAXZ = 0, 1 or 2), and every profile b with
  *   b(z) = 0 for z in Z,  b(x) == d(x) mod 2,  1 <= b(x) <= min(d(x), bmax)  otherwise,
  * compare "b is realisable" (exact solver) with the degree bound
  *   (DB)  d(x) + b(x) <= sum_y b(y)  for every x.
@@ -79,9 +79,9 @@ int main(int argc, char **argv) {
           isz[ev[i]] = isz[ev[j]] = 1;
           rec(0);
         }
-    } else {
+    } else if (maxz == 1) {
       for (int i = 0; i < ne; i++) { memset(isz, 0, sizeof isz); isz[ev[i]] = 1; rec(0); }
-    }
+    } else { memset(isz, 0, sizeof isz); rec(0); }
   }
   printf("profiles %ld with-DB %ld realisable %ld DB-but-not-realisable %ld undecided %ld\n",
          nprof, ndb, nreal, nbad, nund);
