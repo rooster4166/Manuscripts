@@ -52,6 +52,11 @@ Session `claude/nodata`. Manuscript: `nodata.tex` / `nodata.pdf` (working draft)
   code. The two input modes (direct J, and B = J − z) now agree exactly.
 * `ndsolve.h` first lacked the degree bound `d_R(v) ≤ 2P − need(v)` and the per-component edge
   bound, which made some searches explode. Adding them changed running times, not answers.
+* The universality mode `-U` first stopped a root's tier-3 enumeration at the first linkage that
+  was a base (an unguarded early return; audit A41, F17), so its tier-3 counts covered only part of
+  the structures. It is fixed (`!univ` guard), and `univ_t1_le9_summary.txt` and
+  `star_hall_t1_le9.txt` are from the fixed code: 278,296 of 1,239,486 tier-3 structures fail.
+  Tiers 1, 2 and 4 were unaffected.
 * Later, after the `nd.c` data runs, `ndsolve.h` was given a fail-first branching order
   (constrained vertices first) and a larger failure memo (2^22). That made the order-10 runs of
   `fl.c` feasible. It is exact either way. Re-running `nd -t1` on n ≤ 9 with the new header gives
@@ -63,7 +68,7 @@ Session `claude/nodata`. Manuscript: `nodata.tex` / `nodata.pdf` (working draft)
     gcc -O2 -march=native -o scripts/nd scripts/nd.c
     gcc -O2 -march=native -o scripts/fl scripts/fl.c
     gcc -O2 -o scripts/oddfilter scripts/oddfilter.c
-    (nauty-geng -q -C -d3 7; nauty-geng -q -C -d3 9) | scripts/nd -t1 > nd_t1_le9.txt
+    (for n in 5 7 9; do nauty-geng -q -C -d3 $n; done) | scripts/nd -t1 > nd_t1_le9.txt
     for i in 0 1 2; do nauty-geng -q -C 10 $i/3 | scripts/nd -t1 -b > t1_11_$i.txt; done
     (nauty-geng -q -C -d3 6; nauty-geng -q -C -d3 8; nauty-geng -q -C -d3 10) | scripts/nd -t2 > nd_t2.txt
     python3 scripts/verify_nd.py < nd_t1_le9.txt

@@ -66,7 +66,9 @@ family of pairs $c\leftarrow a$ ($a\notin Q(c)$) and \emph{2-chains} $a\leftarro
 contains $L_N$, and it is exactly what the forest lift needs when $\Phi$ is a matching plus
 2-paths. It has no counterexample on the families tested to order $10$. Its natural extensions
 fail on small graphs: 3-chains (order $6$), set avoidance along a route, and stars or claws
-(K$_{1,3}$ rooted at a leaf) without a Hall condition. We found no reduction of CL to $L_N$.
+(K$_{1,3}$ rooted at a leaf) without a Hall condition. The Hall condition is necessary, but it is
+not sufficient: a claw with a 2-chain (order $8$), and a star with a 2-chain and a pair (order
+$8$), fail with it. We found no reduction of CL to $L_N$.
 \end{abstract}
 
 \maketitle
@@ -151,7 +153,8 @@ $2.5\%$ sample of tier $1$)\\
 Root moves reach matching data at \RMNINEREACH{}/\NDNINE{} roots, $n\le9$ (\S\ref{sec:moves}) &
 computed (moves proved)\\
 Conjecture~\ref{conj:CL} (CL) & conjectured; tested (\S\ref{sec:evidence})\\
-3-chains, routes, stars and claws without (H1) & counterexamples (\S\ref{sec:limits})\\
+3-chains, routes; stars and claws without (H1), and with it in three-unit systems &
+counterexamples (\S\ref{sec:limits})\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -230,8 +233,8 @@ $2{,}288$ and $8$ roots.
 \item \emph{Universality} at order $\le9$, over every structure. Tier-1 structures have no failure
 ($0$ of $179{,}152$). Linkages with a path of length $\ge3$ fail $88$ times out of $351{,}032$; the
 failures have paths of length $3$ or $4$, lie in six graphs with $d(z)=4$, and occur at $19$ roots,
-all of tier $1$. Tier-3 structures ($r$ a root, sibling excess $\ge1$) fail at $32{,}706$ of
-$88{,}148$, and tier-4 structures ($r$ a child) at $124{,}925$ of $779{,}400$
+all of tier $1$. Tier-3 structures ($r$ a root, sibling excess $\ge1$) fail at $278{,}296$ of
+$1{,}239{,}486$, and tier-4 structures ($r$ a child) at $124{,}925$ of $779{,}400$
 (\texttt{data/univ\_t1\_le9\_summary.txt}).
 \item Hence, at order $\le9$, the tier of a root is decided by structure alone. Tier $1$ holds iff
 $B$ has a cherry linkage of $T$, and tier $\le2$ iff it has a linkage: at every tier-2 root every
@@ -459,7 +462,7 @@ one 3-chain & $45{,}268$ & $0$ & \FLCTEN\\
 3-chain + pair & $260{,}176$ & $18$ (order $6$), $4$ (order $8$) & --\\
 route (set avoidance) & $18{,}190$ & $558$, all with $cb\in E$ & --\\
 stars: one; + pair; + 2-chain; two & & only where (H1) fails & \FLSTEN\\
-claw; claw + pair & & only where (H1) fails & --\\
+claw; claw + pair & & only where (H1) fails & claw: $10{,}583{,}100$ sets, only the $716$ violating (H1) fail\\
 claw + 2-chain & $129{,}804$ ($n=8$) & $199$; $9$ with (H1) & --\\
 \bottomrule
 \end{tabular}
@@ -505,9 +508,11 @@ By (ii) they are distinct, and each has exactly one end in $X$.
 For $K_{1,3}$ with centre $w$ and leaves $x,y,u$, the star $u\leftarrow\{x,y\}$ violates (H1). This is
 the mechanism of the fat theta: sibling leaves pendant at a hub. At order $\le8$ a star alone, a
 star with a pair or a 2-chain, two stars, a claw, and a claw with a pair fail only where some vertex
-with two children violates (H1). By the lemma they do fail there. At real instances, (H1) explains
-$786$ of the $804$ failing structures with one vertex of two children ($n\le9$). The other $18$
-come from a claw interacting with 2-chains. The smallest abstract example is:
+with two children violates (H1); these families have one or two units. By the lemma they do fail
+there. At real instances ($n\le9$, every tier-3 structure), (H1) explains $59{,}953$ of the
+$60{,}920$ failing structures with exactly one vertex of two children. The other $967$ come from
+the interaction of that vertex with the other components; $295$ of them contain no claw. The
+smallest abstract examples are:
 
 \begin{example}[a claw fails with (H1)]
 $F$ on $\{0,\dots,7\}$ with edges $05,06,07,15,26,37,47,57,67$ (degrees $3,1,1,1,1,3,3,5$), the claw
@@ -515,10 +520,19 @@ $5\leftarrow6\leftarrow\{3,4\}$ and the 2-chain $7\leftarrow1\leftarrow2$. (H1) 
 there is no satisfying Lov\'asz decomposition (both solvers).
 \end{example}
 
-So a sibling version of CL needs more than (H1) as soon as claws occur, and claws are exactly what
-the tier-3 roots need (\S\ref{sec:data}). For stars, the data support the version ``pairs,
-2-chains and stars, every star satisfying (H1)''. At order $\le8$ it has no failure; at order $10$:
-\FLSTARTEN. Stars do not help at tier $3$, however. A forest whose sibling sets are all stars has
+\begin{example}[a star fails with (H1); audit A41, F18]\label{ex:star3}
+$F$ on $\{0,\dots,7\}$ with edges $05,06,07,15,25,37,46,67$ (degrees $3,1,1,1,1,3,3,3$), the star
+$7\leftarrow\{1,2\}$, the 2-chain $5\leftarrow6\leftarrow3$ and the pair $4\leftarrow0$. (H1) holds at
+$7$ and any two of the three units are satisfiable together, but no Lov\'asz decomposition (there
+are $60$) satisfies all three (both solvers; the audit enumerated all $60$). The audit found six
+such configurations at real roots of order $9$.
+\end{example}
+
+So a sibling version of CL needs more than (H1), for claws (which are what the tier-3 roots need,
+\S\ref{sec:data}) and for stars alike. With at most two units the star families have no failure
+outside (H1) at order $\le8$ (at order $10$: \FLSTARTEN), but three units already break it
+(Example~\ref{ex:star3}). The families tested here have at most two units, except
+2-chain + two pairs. Stars do not help at tier $3$, however. A forest whose sibling sets are all stars has
 maximum degree $2$, so it is a linkage, and a tier-3 root has none.
 
 \subsection{Relation to \texorpdfstring{$L_N$}{L\_N}}
@@ -549,7 +563,8 @@ The precise open statements are:
 spine induction.
 \item Root moves for (T2), where three ends are needed at $r$; the moves above are proved for (T1)
 only.
-\item A sibling version of CL for claws. (H1) is necessary there but not sufficient.
+\item A sibling version of CL, for claws and for stars. (H1) is necessary but not sufficient
+(Examples 5.6 and~\ref{ex:star3}).
 This is needed only at twin-free roots with no linkage: none at order $\le9$, and $906$ at order
 $11$.
 \end{enumerate}
