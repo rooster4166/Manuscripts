@@ -10,7 +10,8 @@ sample at order 10, every certificate executed and checked. Conjectured: MTL2, C
 Theorem A without sparseness is false (counterexamples of orders 7 and 9, ln.tex §7).
 
 **Audit A40** (`research/audit/A40-ln.md`): no error in any proof; Lean pass; computations pass
-(independent solver, every certificate re-checked and re-executed). Its findings were applied:
+(independent solver, every certificate re-checked and re-executed). A follow-up audit of the revision (`research/audit/A40-followup-ln.md`) found no error, gap or
+overclaim; its wording fixes were applied. A40's findings, as applied:
 Criterion R now requires that P not end at a_j (the gap it found) and includes the leaf variant; the
 claims about tails without sparseness were corrected; §5 is marked informal; the MTL2 count at n = 7
 (no static conditions, even heads allowed) is 483, not 399.

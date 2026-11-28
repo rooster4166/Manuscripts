@@ -1,0 +1,3 @@
+graphs 32851, sample 3000 (distinct 2859), graphs with no admissible quadruple 2
+mean edges: graph-uniform 22.590 (sd 3.74), quadruple-weighted 21.351 (sd 3.59), sample 21.382
+z-score of the sample mean: vs graph-uniform -17.7, vs quadruple-weighted 0.5

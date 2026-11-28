@@ -1,0 +1,2 @@
+../../../manuscripts/ln/data/routeR_order8.txt lines 43400 bad 0 {'b-ell(c_j leaf, a_j near stem)': 3044, 'b-leafvariant, a_j interior of P': 797, 'a': 14853, 'b-leafvariant': 2589, 'b-ell(c_j leaf, a_j near stem), a_j interior of P': 639, 'b-ell': 19182, 'b-ell, a_j interior of P': 2296}
+../../../manuscripts/ln/data/routeR_order10_sample.txt lines 3000 bad 0 {'b-ell': 2004, 'b-ell(c_j leaf, a_j near stem)': 94, 'b-ell, a_j interior of P': 54, 'a': 737, 'b-leafvariant': 100, 'b-leafvariant, a_j interior of P': 5, 'b-ell(c_j leaf, a_j near stem), a_j interior of P': 6}

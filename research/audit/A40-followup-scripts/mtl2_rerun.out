@@ -1,0 +1,12 @@
+n=6 [noTS evenx]      40 SAT 
+n=6 [noTS]      40 SAT 
+n=6 [TS]       8 SAT 
+n=7 [noTS evenx]     483 SAT 
+n=7 [noTS]     399 SAT 
+n=7 [TS]      84 SAT 
+n=8 [noTS evenx]    1192 SAT 
+n=8 [noTS]    1192 SAT 
+n=8 [TS]     385 SAT 
+n=9 [noTS evenx]   38100 SAT 
+n=9 [noTS]   30912 SAT 
+n=9 [TS]   11040 SAT 

@@ -47,10 +47,11 @@ and a vertex at distance $\ge3$ from it.
 $\ge3$ from their heads and the heads are sparse.
 \item \emph{Lemma R (pre-committed end path).} Fix one end path in advance, a path $P$ from $c_i$
 avoiding $a_i$. If $P$ ends at $c_j$ and avoids $a_j$, any parity decomposition of $F-E(P)$ finishes
-the instance; this is a two-even-vertex existence problem with no constraint at all. Otherwise a
-parity decomposition of $F-E(P)$ with a leaf hung at $c_j$ that keeps a single leaf tail finishes it.
-\emph{Criterion R} asks for such a $P$ together with a token schedule of~\cite{MT} for what is
-left; by the transfer theorem of~\cite{MT} it implies $L_N(2)$ for that instance.
+the instance; this is a two-even-vertex existence problem with no constraint at all. If $P$ does
+not end at $c_j$, a parity decomposition of $F-E(P)$ with a leaf hung at $c_j$ that keeps a single
+leaf tail finishes it. \emph{Criterion R} asks for such a $P$, not ending at $a_j$, together with a
+token schedule of~\cite{MT} for what is left; by the transfer theorem of~\cite{MT} it implies
+$L_N(2)$ for that instance.
 \item \emph{Computation.} Criterion~R holds at all $43{,}400$ instances of order $8$ and at a random
 sample of $3{,}000$ instances of order $10$. Every certificate was executed move by move, from an
 exact solution of the bottom graph, and the resulting decomposition was checked. By comparison, the two-tail token schedules
@@ -270,7 +271,7 @@ only a single leaf tail does.
 
 \begin{lemma}[Lemma R]\label{lem:R}
 Let $(F;c_1,a_1;c_2,a_2)$ be an instance of $L_N(2)$, let $\{i,j\}=\{1,2\}$, and let $P$ be a path
-of $F$ with one end $c_i$, other end $p$, and $a_i\notin V(P)$. Put $K_0=F-E(P)$.
+of $F$ with at least one edge, one end $c_i$, other end $p$, and $a_i\notin V(P)$. Put $K_0=F-E(P)$.
 \begin{enumerate}[label=(\alph*)]
 \item If $p=c_j$, $a_j\notin V(P)$, and $K_0$ has a parity decomposition, then $F$ has a Lov\'asz
 decomposition with $Q(c_1)=Q(c_2)=P$.
@@ -326,17 +327,21 @@ An instance that satisfies Criterion R satisfies $L_N(2)$.
 
 \begin{proof}
 In (a) there is no tail, and the transfer theorem~\cite[Thm.~2.7]{MT} (\texttt{steerK\_good}) gives
-a parity decomposition of $K_0$; Lemma~\ref{lem:R}(a) finishes. In (b), (TS) of~\cite{MT} holds
-because $a_j\notin\{\ell,c_j\}$ (respectively $a_j\notin\{c_j,w\}$). (TI) holds in $K$: the leaf has
-a single neighbour, $a_j\not\sim c_j$ (respectively $a_j\not\sim w$), and $a_j$ is odd in $K$. For
-the last point, $a_j\ne c_i$ because the pairs are disjoint, and $a_j\ne p$; so $a_j$ is either off
-$P$ or an interior vertex of $P$, which loses two edges. The transfer theorem gives a parity
+a parity decomposition of $K_0$; Lemma~\ref{lem:R}(a) finishes. In (b), recall that a tail
+of~\cite[Def.~2.1]{MT} is a triple $(c,s,x)$ of a leaf, its stem and the avoided vertex; the single
+tail $\tau$ is live in $K$, as its leaf edge is present. (TS) of~\cite{MT} holds because
+$a_j\notin\{\ell,c_j\}$ (respectively $a_j\notin\{c_j,w\}$). (TI) holds in $K$: the leaf has a
+single neighbour, $a_j\not\sim c_j$ (respectively $a_j\not\sim w$), and $a_j$ is odd in $K$. For the
+last point, $a_j\ne c_j$ (so the leaf edge at $c_j$ does not change its degree), $a_j\ne c_i$
+because the pairs are disjoint, and $a_j\ne p$; so $a_j$ is either off $P$ or an interior vertex of
+$P$, which loses two edges. The transfer theorem gives a parity
 decomposition of $K$ in which no path contains both the leaf of $\tau$ and $a_j$. This is the
 hypothesis of Lemma~\ref{lem:R}(b), which finishes.
 \end{proof}
 
-The condition $p\ne a_j$ is needed. If $p=a_j$, then $a_j$ is a token, (TI) fails, and a schedule
-can suppress $a_j$ and put it on the leaf path. Allowing $P$ to end at $a_j$, the independent
+The condition $p\ne a_j$ is needed for this argument (not for the truth of $L_N(2)$). If $p=a_j$
+and $d_F(a_j)\ge3$, then $a_j$ is a token, (TI) fails, and a schedule can suppress $a_j$ and put it
+on the leaf path. Allowing $P$ to end at $a_j$, the independent
 mutation test of audit~A40 found $317$ failing executions among $2{,}808$ schedules on random
 instances of order $8$; this is also the bug described in Section~\ref{sec:comp}. Our certificates
 do not rely on Proposition~\ref{prop:R}: each one is executed move by move, the bottom is solved
@@ -369,8 +374,11 @@ with \texttt{lnlib.check\_witness}.
 \subsection*{Results}
 Instances of $L_N(2)$: connected graphs with all degrees odd, and an unordered pair of disjoint
 ordered pairs $(c_1,a_1),(c_2,a_2)$ with $c_i\not\sim a_i$. Order $8$: $43{,}400$ instances
-(exhaustive). Order $10$: $3{,}000$ instances drawn uniformly over the $32{,}851$ connected all-odd
-graphs and then over the pairs (\texttt{sample10.py}, seed $11$).
+(exhaustive). Order $10$: $3{,}000$ instances (\texttt{sample10.py}, seed $11$). Each draw takes a
+graph uniformly from the $32{,}851$ connected all-odd graphs and four distinct vertices uniformly,
+and is repeated from scratch when $c_1\sim a_1$ or $c_2\sim a_2$. Graphs are therefore weighted by
+their number of admissible quadruples, which under-represents dense graphs (mean edge count $21.4$
+in the sample against $22.6$ over the graphs; audit~A40 follow-up).
 
 \begin{center}\footnotesize
 \begin{tabular}{@{}lrr@{}}
@@ -381,7 +389,7 @@ two-tail token schedule, one-tail fin~\cite{MT} & $31{,}532$ ($72.7\%$) & proved
 two-tail token schedule, Theorem~A as fin & $31{,}532$ & proved\\
 two-tail token schedule, MTL2 as fin & $32{,}837$ ($75.7\%$) & conditional on Conj.~\ref{conj:mtl}\\
 joint decomposition $Q(c_1)=Q(c_2)$ avoiding $a_1,a_2$ (exact) & $40{,}538$ ($93.4\%$) & --\\
-Lemma R(a) with a free schedule & $40{,}532$ ($93.4\%$) & proved (Lemma~\ref{lem:R})\\
+Lemma R(a) with a free schedule & $40{,}532$ ($93.4\%$) & proved (Prop.~\ref{prop:R})\\
 schedules $\cup$ R(a) & $42{,}904$ ($98.9\%$) & proved\\
 \textbf{Criterion R} & $\mathbf{43{,}400}$ \textbf{(all)} & proved (Prop.~\ref{prop:R}); executed\\
 \bottomrule
@@ -486,8 +494,10 @@ Corollary~\ref{cor:B} & \texttt{lovasz\_avoid\_leafTails}, \texttt{KeepsTails.av
 \bottomrule
 \end{tabular}
 \end{center}
-Lemma~\ref{lem:R} is not formalised; its proof is two lines of end counting plus the pendant-leaf
-lemma, both in the library (\texttt{PathDecomp.add\_path}, \texttt{Retract.delete\_supp}).
+Lemma~\ref{lem:R} and Proposition~\ref{prop:R} are not formalised. The proof of the lemma uses
+only end counting and the pendant-leaf lemma, both of which are in the library
+(\texttt{PathDecomp.add\_path} and \texttt{Retract.delete\_supp}). The proposition adds the
+transfer theorem, which is also in Lean (\texttt{steerK\_good}).
 
 \begin{thebibliography}{9}
 \bibitem{CLT} Gallai project, \emph{Constrained Lov\'asz decompositions}, \texttt{manuscripts/clt}.
