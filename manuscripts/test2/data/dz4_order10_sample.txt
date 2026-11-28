@@ -1,0 +1,7 @@
+FAR 846
+STEER 6512
+budget hits 2
+d(z)=4 instances 8621
+no data 1154
+not covered 109
+with data 7467

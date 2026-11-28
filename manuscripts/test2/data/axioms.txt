@@ -10,3 +10,7 @@
 'Gallai.test2At_of_pairAvoid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.test2At_of_pair_farApart' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.test2At_of_pair_steer2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.PathDecomp.drop_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.drop_pairs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.matchingFloorBase_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.forestBase2_matching_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
