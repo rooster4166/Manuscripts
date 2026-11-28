@@ -58,6 +58,7 @@ Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixab
    - **F2 (ERROR).** One wrong cross-reference: eulerian-cone "Theorem 2.3" is Theorem 3.3.
    - **F3 (GAP).** A verification gap: `verify_family.py` does not check the Lovász property. I checked all 15,140 −L witnesses, and all are Lovász families.
    - **F4 (OVERCLAIM).** §6 says the open part has 3 ≤ u ≤ k − 2, but the paper's own u = 1 near-regular graphs are outside (∗∗) and outside Thm 170.
+   - **New datum.** One of the 58 undecided order-10 roots is a genuine failure of the method (exhaustive, §4), below the range of Prop 4.1 but inside Cor 168 (F7).
    - **F5 (GAP).** Provenance: the shipped −L/−T outputs are not bit-reproducible from the committed `ret.c`, the budgets in `retL_10` are mixed, and there are no generator commands for the order-12/16 samples.
    - The other findings are minor wording.
 
@@ -120,7 +121,7 @@ Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixab
 | Validation: −z at orders 6, 8: 256 roots, 51 NO, 0 disagreements | SOUND | Re-run with `compare_z.py`. All 256 were also re-decided independently by `zcheck.py`. |
 | Validation: −z at order 10: 10,017 YES, 234 UNK at 2·10⁷ | SOUND | No NO answer was tested at order 10. The 11 graphs (90 roots) with p(B) = k were not reached (F9). |
 | Table 1, all rows | SOUND | Recomputed with own code and identical to `coverage.py`; `cov_10.txt` reproduces byte for byte. Side remark: at orders 8 and 10 the "lit." roots are a subset of (∗∗). |
-| 14,054 / 77 / 10 graphs / u ≥ 8 / 19 (m ≥ 39) / 58 (m ∈ {36, 37, 38}) | SOUND | 49 UNK at 2·10⁸ and 28 at 2·10⁷ (the 19 and the 9 roots of `I]~vvvz}w`). One undecided root, `ITm~vvz}w` r = 0, has 22,764,672 Lovász decompositions (§4). |
+| 14,054 / 77 / 10 graphs / u ≥ 8 / 19 (m ≥ 39) / 58 (m ∈ {36, 37, 38}) | SOUND | 49 UNK at 2·10⁸ and 28 at 2·10⁷ (the 19 and the 9 roots of `I]~vvvz}w`). The auditor decided one of the 58 (`ITm~vvz}w`, r = 0): an exhaustive search over all 22,764,672 Lovász decompositions × 16 orientations shows the method **fails** (§4). |
 | 13,507 (95.6%), 13,984, 147 | SOUND | Each of the 147 has minimum neighbour degree 6, u = 3, m ∈ {31, 32, 33}, and is YES. None is in tw ≤ 3 or K₅-minor-free either (m > 24 = 3n − 6), so "outside all three" holds even for the full literature list. |
 | −T sharpness, order 8 | SOUND numbers; ERROR in description | 218 work and 16 fail, ⇔ (∗∗). The failures are the roots of `G]zn^[`, `G]~vvs` and `G]~v~w` (u = 7, 7, 8), see F1. |
 | −T sharpness, order 10 | SOUND | 9,905 lines: 9,884 DONE (9,869 (∗∗) with every D working, 15 ¬(∗∗) with some D failing) and 21 UNK. |
@@ -180,7 +181,8 @@ Date: 2026-11-27. Referee stance: adversarial. Grades: **SOUND**, **GAP** (fixab
   - **Fix.** Add the two rules with one-line soundness arguments.
 - **F7 (OVERCLAIM, mild, abstract l. 51–54).**
   - "Its failures are dense: near-complete graphs force Hamiltonian Lovász paths, which are compatible with nothing."
-  - At order 10 no failure is decided by search: all 77 non-successes are UNK. The 19 with m ≥ 39 fail by Prop 4.1. For the 58 with m ∈ {36, 37, 38}, the Hamiltonian argument does not apply: m(G) = 28–30 < 4 · 8 does not force a Hamiltonian path.
+  - In the shipped data, no order-10 failure is decided by search: all 77 non-successes are UNK. The 19 with m ≥ 39 fail by Prop 4.1. For the 58 with m ∈ {36, 37, 38}, the Hamiltonian argument does not apply: m(G) = 28–30 < 4 · 8 does not force a Hamiltonian path.
+  - The auditor decided one of the 58 exhaustively (`ITm~vvz}w`, r = 0, m = 36; §4): the method **fails** there. So failures do occur below the Prop 4.1 range, and the paper can say so once the 58 are decided. There, 15% of the Lovász decompositions have no Hamiltonian path and still fail, so "force Hamiltonian Lovász paths" is not the whole mechanism.
   - At order 8 the mechanism is real: every Lovász decomposition at the 16 failing roots contains a Hamiltonian path (`ham_frac.py`: 960, 1,920 and 2,816 decompositions, all with one).
   - "Complementary" is fine as a description of regimes. But the abstract does not say that MR is unrefereed, and it does not mention that at n = 16 the method is undecided at u = 4–6, below Thm 170.
   - **Fix.** "Its known failures are dense …; at order 10, 58 dense roots remain undecided." Add "(unrefereed)" after the MR citation in the abstract.
@@ -230,7 +232,13 @@ Since the theorem is also checked in Lean, these runs are sanity checks of the s
 - **Independent enumerator vs ret −T.** The decomposition counts and minmu agree on 22 + 234 + 615 roots. A third, pure-Python enumeration (`ham_frac.py`) agrees at the four roots I tried (15, 960, 1,920, 2,816).
 - **−L vs ret −L.** YES/NO agree at all 256 roots of orders 6 and 8: 16 NO, all within Cor 168. My exhaustive enumeration confirms the 16 NO. The committed `ret.c −L` on a 150-graph order-10 sample (222 roots) gives YES everywhere, as shipped.
 - **−z.** `zcheck.py` re-decides p(B) ≤ k − 1 by its own exhaustive search for all 102 + 6 graphs: 256/256 agree, including all 51 NO.
-- **One undecided order-10 root.** `ITm~vvz}w`, r = 0, has 22,764,672 Lovász decompositions (enumerated in 170 s). An exhaustive −L run of the 58 undecided roots is therefore feasible, at about 10–15 CPU-minutes per root with `lovcheck -l`. That would turn "undecided" into a decision. Not done here, for CPU reasons; see the result line below.
+- **One of the 58 undecided order-10 roots, decided.** `ITm~vvz}w`, r = 0 (m = 36, u = 8) has **22,764,672** Lovász decompositions. `lovcheck` enumerated them in 170 s.
+  - The exhaustive −L run took 13 CPU-minutes. It tried every decomposition and all 16 orientations, with an exact general matching, and found **no family with k − 2 = 3 pairs**: the method **fails** there.
+  - The path–trivial matching is ≤ 1 for every D and every orientation.
+  - 19,332,864 of the decompositions (84.9%) contain a Hamiltonian path of G. The other 3,431,808 contain none and still fail, so the Hamiltonian mechanism does not explain this failure on its own.
+  - `lovcheck`'s −L agrees with `ret −L` at all 256 roots of orders 6 and 8, including the 16 NO.
+  - So at least one of the 58 is a genuine failure outside the range of Prop 4.1. It lies inside Cor 168 (u = 8 ≥ 5), so the abstract's "succeeds at every root outside Cor 168" survives.
+  - The other 57 can be decided the same way, at about 15 CPU-minutes each. Not done here, because the CPU was shared.
 
 ## 5. Addendum: commit 376ea05 (landed during the audit)
 
@@ -277,3 +285,4 @@ The new M16 sentence ("two runs of 3·10⁹ nodes … still undecided") matches 
   - The results table says the Lemma 2.2 count is inside the Lean proof of Thm 3.1.
   - The intro now reads "at least two paths".
   - The two 3·10⁹-node order-16 runs finished undecided, and the manuscript says so.
+- **New datum (§4, after the report).** The manuscript (§5.2, abstract), E32 and synthesis §29 now record the exhaustively decided failure at `ITm~vvz}w` r = 0, the 15% of decompositions there with no Hamiltonian path, and 57 (not 58) undecided roots.

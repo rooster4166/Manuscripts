@@ -81,4 +81,5 @@ import GallaiLean.RETight
 import GallaiLean.DLOne
 import GallaiLean.ConjN
 import GallaiLean.ConjNFar
+import GallaiLean.NeighbourAvoid
 import GallaiLean.TRN

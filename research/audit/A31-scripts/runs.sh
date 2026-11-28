@@ -79,7 +79,7 @@ python3 -I $A/verify_lovasz.py $T/rL10s.txt
 head -2 $T/whatsnew.txt | $T/lovcheck -noL -c 300000
 tail -2 $T/whatsnew.txt | timeout 900 $T/lovcheck -noL -c 100000
 # one of the 58 undecided order-10 roots: count, then exhaustive -L
-echo "ITm~vvz}w 0" | $T/lovcheck -noL
+echo "ITm~vvz}w 0" | $T/lovcheck -noL   # stderr: decompositions with a Hamiltonian path
 echo "ITm~vvz}w 0" | $T/lovcheck -l
 # commit 376ea05 (landed during the audit): order-12 random numbers
 mkdir -p $T/snap2; git archive 376ea05 manuscripts/re-tight | tar -x -C $T/snap2

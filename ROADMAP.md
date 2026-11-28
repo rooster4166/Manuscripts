@@ -127,6 +127,20 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **na** (session_01FxXpVhLSRHGoH9FHpDU66p, branch `claude/na`): **NA PROVED** (ba80a1c, merged; build green; axioms checked by the coordinator).
+  - **Lean** `neighbourAvoidOn` (NeighbourAvoid.lean). Corollaries:
+    - `conjNDegTwoOn`: the degree-two case of N, unconditional;
+    - **`conjN_of_tightTransferN : TRN ⇒ Conjecture N`**;
+    - `conjN_of_TR`.
+  - **Proof:**
+    1. Hang a pendant leaf at y, so that the property becomes a vertex-set property.
+    2. Fan with vertex sets then allows targets in N[c].
+    3. Steer the Case-I chain by a parity trail lemma.
+    4. Use L1 for the back-steps.
+  - **Strengthening:** the proof needs only that y's component in G − x contains a non-neighbour of x. This weak condition is exactly the boundary at orders 4 and 6.
+  - **Data:** all 1.3M order-10 instances constructed and verified.
+  - Manuscript and audit pending.
+- **trn** (session_01FxXpVf3UQSh4TMBMYT3AEH, branch `claude/trn`, new): prove TRN, tight transfer for A = {x}, in both cases y ≁ g and y ~ g. **TRN is now the only missing piece: TRN ⇒ Conjecture N (Lean) ⇒ DL(1)** (Prop 9.2, paper). I sent the NA technique to the session.
 - **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
   - **Milestone 1 (82a43a7, merged; build green; axioms checked).** Lean `conjN_of_TR_neighbourAvoid`: **Conjecture N ⇐ TR (l1-induction Conj 4.1) + TR for tails adjacent to g + NA**.
   - NA is neighbour avoidance in all-odd graphs: if x ~ y and y has a neighbour w ≠ x with w ≁ x, then Q(y) can avoid x.

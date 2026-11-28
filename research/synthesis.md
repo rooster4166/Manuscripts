@@ -771,7 +771,7 @@ Example: two non-adjacent apexes joined to a 4-regular expander. This lies outsi
 
 **Data** (validated exact checker; scope in E32).
 - Order 10: Theorem 3.1 covers 13,507 of the 14,131 degree-(n − 2) roots (95.6%). With Thm 170 and the literature it covers 13,984.
-- The method with the best D succeeds at 14,054. The rest lie in 10 near-complete graphs inside Cor 168; 19 of those roots are provable failures.
+- The method with the best D succeeds at 14,054. The rest lie in 10 near-complete graphs inside Cor 168: 19 provable failures (Prop 4.1), 1 more failure decided exhaustively by audit A31 (`ITm~vvz}w` r = 0, below the Prop 4.1 range), 57 undecided.
 - Order 12 samples: the method succeeds at every root run outside Thm 170 (1,912 roots).
 - Order 16, k = 8, with u vertices of degree 14 and the rest of degree 12: the method is undecided for u = 5, 6, still below Thm 170.
 
@@ -781,3 +781,20 @@ Example: two non-adjacent apexes joined to a 4-regular expander. This lies outsi
 - the rest, unproved: (∗∗) fails and fewer than k − 1 vertices have degree n − 2. This includes near-regular graphs where only r has degree n − 2, and there the method works at once in all tests. The method struggles only in its dense part, with all degrees ≈ n − 4 and 3 … k − 2 vertices of degree n − 2.
 
 In the middle, a trivial end of degree n − 4 is compatible with exactly one Lovász path, so Lovász families need a near-permutation structure. General families with more pieces exist; the checker finds them. The missing tool is a Lovász theorem with control of which vertices each path misses, of terminal-matching type, or a detachment lemma with a single high-degree vertex.
+
+## 30. NA proved (na session, coordinator-verified, 2026-11-27 23:50)
+
+**Theorem (NA).** In a graph with no even vertex, suppose x ~ y and y has a neighbour w ≠ x with w ≁ x. Then some Lovász decomposition has x ∉ V(Q(y)).
+- Lean: `neighbourAvoidOn` (NeighbourAvoid.lean); standard axioms, no sorry. It proves exactly conj-n's `NeighbourAvoidOn`.
+- The coordinator checked the statement and the axioms after the merge.
+
+**Mechanism.** This is new, and it is the first tool to get past a tight-target obstruction:
+1. Attach a pendant leaf ℓ at y. Then y is the only even vertex, and the goal becomes "no path contains both ℓ and x". That is a vertex-set property.
+2. Run Lovász Case I with targets outside {ℓ, x}. Targets in N[c] are allowed, because Fan's lemma with vertex sets preserves vertex-set properties.
+3. A parity trail lemma in G − x steers the chain so that it ends with an isolated target.
+4. L1 seeds the Fan back-steps.
+
+**Consequences (Lean).**
+- `conjN_of_tightTransferN`: TRN ⇒ Conjecture N.
+- With dl-one Prop 9.2 (paper), TRN ⇒ DL(1).
+- The open core for the triangle-base and DL route has shrunk to **TRN**, the tight transfer for one forbidden vertex, together with the multi-pair step DL(k).

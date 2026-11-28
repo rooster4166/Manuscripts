@@ -1,5 +1,12 @@
 # GallaiLean
 
+## Neighbour avoidance NA: proved (cloud session, branch `claude/na`)
+
+Manuscript `manuscripts/na`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,420 jobs).
+
+| File | Content |
+|---|---|
+| `NeighbourAvoid.lean` | **`neighbourAvoid`**, **`neighbourAvoidOn : NeighbourAvoidOn V`** (conj-n Conjecture 4.2, now a theorem). **`avoid_packed_of_reach`** (set form, extending `lovasz_avoid_set`): `Y` packed, `y ∉ Y` odd, a vertex `w` of positive degree with no neighbour in `Y` joined to `y` by a walk avoiding `Y` ⇒ a Lovász decomposition meeting `Y` at most once per path with `Q(y) ∩ Y = ∅`; `avoid_of_reach` (single vertex). **`avoid_iff_reach`** (the exact boundary: `Q(y)` can avoid `x` iff the component of `y` in `G − x` is not inside `N(x)`), with the converse **`mem_pathEndingAt_of_component_sub`** (count ends in the component against edges from `x`). Consequences: **`conjNDegTwoOn`** (degree-two case of N, unconditional), **`conjN_of_tightTransferN`** (TRN ⇒ N), **`conjN_of_TR`** (TR ∧ `TightTransferAdj` ⇒ N). Machinery: `Steer` (steered Case-I chain, inductive), `fan_step_meetsOnce` (one Fan step keeping `MeetsOnce X` for a target `∉ X`; the body of `sep_case_even`), `steer_meetsOnce` (the chain, for any edge-deletion-stable base property), `steer_of_inv` (walking along a subgraph `S` with odd vertices in a set `A` of free vertices), `exists_toggle_walk`, `even_card_odd_reachable`, `exists_inv_subgraph` (farthest odd vertex `t`, toggled shortest paths), `offX`/`offX_degree` (`K` minus the edges at `X`), `apexSep_meetsOnce` (deleting the leaf of `apex G {c}` keeping a packed set), `list_sum_lt_sum`, `list_sum_finset_sum`. |
 ## The tight transfer TRN: the core that Conjecture N needs (cloud session, branch `claude/trn`)
 
 Manuscript `manuscripts/trn`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,420 jobs).
