@@ -10,15 +10,20 @@
      S   star      u <- {x, y}   (cherry rooted at its centre): u notin Q(x), Q(y); Q(x) != Q(y)
      R   route     c -> {x, b}   (route c x b appended at c):  x, b notin Q(c)
    (forest edges ax, xb, ... are non-edges of F; the vertices of a unit are distinct).
-   Families (flag -f): k = one K; c = one C3; s = one S; r = one R;
+     L   claw      a <- v <- {b, c} (K_{1,3} rooted at a leaf): a notin Q(v); v notin Q(b), Q(c);
+                   Q(b) != Q(c)
+   Families (flag -f): k = one K; c = one C3; s = one S; r = one R; l = one L;
                        kp = K + disjoint P; kk = two disjoint K; sp = S + disjoint P;
-                       rp = R + disjoint P; kpp = K + two disjoint P (slow).
+                       rp = R + disjoint P; kpp = K + two disjoint P; lp = L + P; sk = S + K;
+                       lk = L + K; cp = C3 + P; ss = two disjoint S.
    Phase 1: -d random Lovasz decompositions strike the sets they satisfy (coverage bitsets);
    phase 2: every set still standing is decided by the exact solver of ndsolve.h (route-
    respecting masks encode exactly (i), (ii); the route R is encoded as a mask {c, x, b} at c).
    A set left infeasible is a genuine counterexample and is printed (FAIL ...), with, for stars,
    whether the star Hall condition (H1) holds:  every component C of F - u has
-   |{x, y} cap C| <= (|C| - e(u, C)) / 2.
+   |{x, y} cap C| <= (|C| - e(u, C)) / 2   (u the centre, x, y its two children; for a claw
+   the centre is v).  Phase-2 searches first try 12 randomly relabelled budgeted solves (a
+   success is a certificate) and then an exhaustive exact search.
    usage: fl -f FAMILY [-d dives] [-s seed] < graph6 */
 #include <stdio.h>
 #include "ndsolve.h"
@@ -45,6 +50,7 @@ static int read_g6(const char *s) {
 }
 
 /* ---------------- random Lovasz decompositions (phase 1) ---------------- */
+static int perm[MAXN], iperm[MAXN];
 static uint64_t rs = 88172645463325252ULL;
 static uint64_t rnd(void) { rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17; return rs; }
 static int E_u[64], E_v[64], m;
@@ -101,8 +107,32 @@ static int dive(u64 rem, u32 ended) {
   dlen[dnp] = 1; dpath[dnp][0] = s;
   return dgrow(s, s, rem, ended, 1u << s);
 }
+/* a random Lovasz decomposition: solve a randomly relabelled copy exactly (ndsolve.h, which
+   returns the first decomposition in its search order) and map it back; with probability 1/2
+   use a randomised dive instead (cheap on sparse graphs) */
+
+/* relabel F randomly into the solver (perm: F -> solver labels) */
+static void load_relabelled(void) {
+  for (int v = 0; v < n; v++) perm[v] = v;
+  for (int v = n - 1; v > 0; v--) { int j = rnd() % (v + 1); int t = perm[v]; perm[v] = perm[j]; perm[j] = t; }
+  for (int v = 0; v < n; v++) iperm[perm[v]] = v;
+  sinit(n);
+  int eo[64]; for (int e = 0; e < m; e++) eo[e] = e;
+  for (int e = m - 1; e > 0; e--) { int j = rnd() % (e + 1); int t = eo[e]; eo[e] = eo[j]; eo[j] = t; }
+  for (int k = 0; k < m; k++) sadd(perm[E_u[eo[k]]], perm[E_v[eo[k]]]);
+  sneed = (1u << n) - 1;
+}
+static void read_solution(void) {
+  for (int i = 0; i < wn; i++) {
+    u32 mk = 0; for (int j = 0; j < wlen[i]; j++) mk |= 1u << iperm[wpath[i][j]];
+    int a = iperm[wpath[i][0]], b = iperm[wpath[i][wlen[i] - 1]];
+    Qm[a] = mk; Qm[b] = mk; part[a] = b; part[b] = a;
+  }
+}
+/* a random Lovasz decomposition: a randomised dive; if it fails, an exact solve of a randomly
+   relabelled copy with a node budget */
 static int random_decomp(void) {
-  for (int tries = 0; tries < 50; tries++) {
+  for (int tries = 0; tries < 20; tries++) {
     dnodes = 0; dcap = 20000; dnp = 0;
     u64 full = m == 64 ? ~0ULL : ((1ULL << m) - 1);
     if (dive(full, 0)) {
@@ -113,6 +143,13 @@ static int random_decomp(void) {
       }
       return 1;
     }
+  }
+  for (int tries = 0; tries < 5; tries++) {
+    load_relabelled();
+    sbudget = 50000;
+    int ok = srun();
+    sbudget = 0;
+    if (ok) { read_solution(); return 1; }
   }
   return 0;
 }
@@ -133,6 +170,11 @@ static void gen_units(int type) {
         if (b < c && nonadj(a, b) && nonadj(a, c)) { unit u = {'S', {a, b, c, -1}}; U[nu_++] = u; }
       } else if (type == 'R') {      /* route c x b at c: (c, x, b) = (a, b, c) */
         if (nonadj(a, b) && nonadj(b, c)) { unit u = {'R', {a, b, c, -1}}; U[nu_++] = u; }
+      } else if (type == 'L') {      /* claw rooted at a leaf: (a, v, b, c), v child of a, b, c children of v */
+        for (int d = c + 1; d < n; d++) {
+          if (d == a || d == b) continue;
+          if (nonadj(a, b) && nonadj(b, c) && nonadj(b, d)) { unit u = {'L', {a, b, c, d}}; U[nu_++] = u; }
+        }
       } else if (type == 'C') {
         for (int d = 0; d < n; d++) {
           if (d == a || d == b || d == c) continue;
@@ -153,6 +195,8 @@ static int sat_unit(const unit *u) {
   case 'C': return !(Qm[v[1]] >> v[0] & 1) && !(Qm[v[2]] >> v[1] & 1) && !(Qm[v[3]] >> v[2] & 1);
   case 'S': return !(Qm[v[1]] >> v[0] & 1) && !(Qm[v[2]] >> v[0] & 1) && part[v[1]] != v[2];
   case 'R': return !(Qm[v[0]] >> v[1] & 1) && !(Qm[v[0]] >> v[2] & 1);
+  case 'L': return !(Qm[v[1]] >> v[0] & 1) && !(Qm[v[2]] >> v[1] & 1) && !(Qm[v[3]] >> v[1] & 1)
+                   && part[v[2]] != v[3];
   }
   return 0;
 }
@@ -165,9 +209,27 @@ static void encode_unit(const unit *u) {
   case 'C': crv[v[1]] |= 1u << v[0]; crv[v[2]] |= 1u << v[1]; crv[v[3]] |= 1u << v[2]; break;
   case 'S': crv[v[1]] |= 1u << v[0]; crv[v[2]] |= 1u << v[0]; break;
   case 'R': crv[v[0]] |= (1u << v[1]) | (1u << v[2]); break;
+  case 'L': crv[v[1]] |= 1u << v[0]; crv[v[2]] |= 1u << v[1]; crv[v[3]] |= 1u << v[1]; break;
   }
 }
+static void encode_perm(const unit *u) {
+  unit w = *u;
+  for (int i = 0; i < 4; i++) if (w.v[i] >= 0) w.v[i] = perm[w.v[i]];
+  encode_unit(&w);
+}
 static int exact(const unit *a, const unit *b, const unit *c) {
+  /* randomised budgeted attempts (a success is a certificate; failures prove nothing) */
+  for (int t = 0; t < 12; t++) {
+    load_relabelled();
+    if (a) encode_perm(a);
+    if (b) encode_perm(b);
+    if (c) encode_perm(c);
+    sbudget = 20000;
+    int ok = srun();
+    sbudget = 0;
+    if (ok) return 1;
+  }
+  /* exhaustive exact search, original labels */
   sinit(n);
   for (int e = 0; e < m; e++) sadd(E_u[e], E_v[e]);
   sneed = (1u << n) - 1;
@@ -182,13 +244,15 @@ static int exact(const unit *a, const unit *b, const unit *c) {
 
 static int h1_ok(const unit *s) {
   int u = s->v[0];
+  int c1 = s->v[1], c2 = s->v[2];
+  if (s->type == 'L') { u = s->v[1]; c1 = s->v[2]; c2 = s->v[3]; }
   u32 all = ((1u << n) - 1) & ~(1u << u), seen = 0;
   for (int v = 0; v < n; v++) {
     if (!(all >> v & 1) || (seen >> v & 1)) continue;
     u32 c = 1u << v, fr = c;
     while (fr) { int x = __builtin_ctz(fr); fr &= fr - 1; u32 nb = adj[x] & all & ~c; c |= nb; fr |= nb; }
     seen |= c;
-    int k = (c >> s->v[1] & 1) + (c >> s->v[2] & 1);
+    int k = (c >> c1 & 1) + (c >> c2 & 1);
     int e = __builtin_popcount(adj[u] & c);
     if (2 * k > __builtin_popcount(c) - e) return 0;
   }
@@ -218,6 +282,12 @@ int main(int argc, char **argv) {
   else if (!strcmp(fam, "sp")) { T1 = 'S'; T2 = 'P'; }
   else if (!strcmp(fam, "rp")) { T1 = 'R'; T2 = 'P'; }
   else if (!strcmp(fam, "kpp")) { T1 = 'K'; T2 = 'P'; T3 = 'P'; }
+  else if (!strcmp(fam, "l")) T1 = 'L';
+  else if (!strcmp(fam, "lp")) { T1 = 'L'; T2 = 'P'; }
+  else if (!strcmp(fam, "sk")) { T1 = 'S'; T2 = 'K'; }
+  else if (!strcmp(fam, "lk")) { T1 = 'L'; T2 = 'K'; }
+  else if (!strcmp(fam, "cp")) { T1 = 'C'; T2 = 'P'; }
+  else if (!strcmp(fam, "ss")) { T1 = 'S'; T2 = 'S'; }
   else { fprintf(stderr, "unknown family\n"); return 1; }
   long long ngraphs = 0, nsets = 0, nfail = 0, nexact = 0, nfail_h1 = 0, nfail_noh1 = 0;
   static unit A[20000], Bu[20000];
@@ -249,8 +319,8 @@ int main(int argc, char **argv) {
     }
     for (int i = 0; i < na; i++) for (int w = 0; w < (words ? words : 1); w++) cov[i][w] = 0;
     /* phase 1 */
-    for (int d = 0; d < dives; d++) {
-      if (!random_decomp()) break;
+    for (int d = 0, fails = 0; d < dives && fails < 4 * dives; d++) {
+      if (!random_decomp()) { fails++; d--; continue; }
       for (int i = 0; i < na; i++) {
         if (!sat_unit(&A[i])) continue;
         if (!T2) { cov[i][0] = 1; continue; }
@@ -275,7 +345,7 @@ int main(int argc, char **argv) {
         nexact++;
         if (!exact(&A[i], 0, 0)) {
           nfail++;
-          int h = (A[i].type == 'S') ? h1_ok(&A[i]) : -1;
+          int h = (A[i].type == 'S' || A[i].type == 'L') ? h1_ok(&A[i]) : -1;
           if (h == 1) nfail_h1++; else if (h == 0) nfail_noh1++;
           printf("FAIL %s", g6); print_unit(&A[i]);
           if (h >= 0) printf(" H1=%d", h);
@@ -293,7 +363,7 @@ int main(int argc, char **argv) {
           nexact++;
           if (!exact(&A[i], &Bu[j], 0)) {
             nfail++;
-            int h = (A[i].type == 'S') ? h1_ok(&A[i]) : -1;
+            int h = (A[i].type == 'S' || A[i].type == 'L') ? h1_ok(&A[i]) : -1;
             if (h == 1) nfail_h1++; else if (h == 0) nfail_noh1++;
             printf("FAIL %s", g6); print_unit(&A[i]); print_unit(&Bu[j]);
             if (h >= 0) printf(" H1=%d", h);
@@ -318,7 +388,7 @@ int main(int argc, char **argv) {
     }
   }
   fprintf(stderr, "SUMMARY family=%s graphs=%lld sets=%lld exact=%lld failures=%lld", fam, ngraphs, nsets, nexact, nfail);
-  if (T1 == 'S') fprintf(stderr, " (H1 holds at %lld of them, fails at %lld)", nfail_h1, nfail_noh1);
+  if (T1 == 'S' || T1 == 'L') fprintf(stderr, " (H1 holds at %lld of them, fails at %lld)", nfail_h1, nfail_noh1);
   fprintf(stderr, "\n");
   return 0;
 }

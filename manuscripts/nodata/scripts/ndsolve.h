@@ -43,7 +43,8 @@ static int clen;
 #define MSIZE (1u << MBITS)
 typedef struct { u64 rem; u32 ended; u32 stamp; } ment;
 static ment *mtab; static u32 mstamp = 1; static u32 mcount;
-static long long snodes;
+static long long snodes, sbudget;   /* sbudget > 0: abort after that many nodes (sabort = 1) */
+static int sabort;
 static inline u32 midx(u64 r, u32 e) {
   u64 h = r * 0x9E3779B97F4A7C15ULL ^ ((u64)e * 0xC2B2AE3D27D4EB4FULL + 0x165667B19E3779F9ULL);
   h ^= h >> 29;
@@ -72,6 +73,7 @@ static inline int popc64(u64 x) { return __builtin_popcountll(x); }
 static int ssolve(u64 rem, u32 ended);
 
 static int sgrow(int s, int cur, u64 rem, u32 ended, u32 pm, u32 block) {
+  if (sabort) return 0;
   u64 ex = rem & sinc[cur];
   while (ex) {
     int e = __builtin_ctzll(ex); ex &= ex - 1;
@@ -99,6 +101,7 @@ static int ssolve(u64 rem, u32 ended) {
   if (!todo) return rem == 0;
   if (!rem) return 0;
   snodes++;
+  if (sbudget && snodes > sbudget) { sabort = 1; return 0; }
   int best = -1, bd = 999;
   int P = __builtin_popcount(todo) / 2;
   int dg[SMAXN];
@@ -144,7 +147,7 @@ static int ssolve(u64 rem, u32 ended) {
   clen = 0; cpath[clen++] = best;
   int ok = sgrow(best, best, rem, ended, 1u << best, (1u << best) | crv[best]);
   clen = savelen;
-  if (!ok) mput(rem, ended);
+  if (!ok && !sabort) mput(rem, ended);
   return ok;
 }
 
@@ -163,6 +166,7 @@ static void sadd(int u, int v) {
 /* run: returns 1 if a solution exists; the witness is wpath[0..wn) */
 static int srun(void) {
   mreset();
+  snodes = 0; sabort = 0;
   wn = 0; clen = 0;
   u64 full = sm == 64 ? ~0ULL : ((1ULL << sm) - 1);
   return ssolve(full, 0);
