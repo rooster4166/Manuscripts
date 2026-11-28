@@ -1,0 +1,15 @@
+0 {'roots': 4, 'data': 4, 'ok': 4, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 4, 'pm_ok': 4}
+1 {'roots': 8, 'data': 8, 'ok': 8, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 12, 'pm_ok': 12}
+2 {'roots': 12, 'data': 12, 'ok': 12, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 20, 'pm_ok': 20}
+3 {'roots': 16, 'data': 16, 'ok': 16, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 28, 'pm_ok': 27}
+4 {'roots': 20, 'data': 16, 'ok': 16, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 28, 'pm_ok': 27}
+5 {'roots': 24, 'data': 20, 'ok': 20, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 32, 'pm_ok': 31}
+6 {'roots': 28, 'data': 24, 'ok': 24, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 36, 'pm_ok': 35}
+7 {'roots': 32, 'data': 28, 'ok': 28, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 40, 'pm_ok': 39}
+8 {'roots': 36, 'data': 32, 'ok': 32, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 44, 'pm_ok': 43}
+9 {'roots': 40, 'data': 32, 'ok': 32, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 44, 'pm_ok': 43}
+10 {'roots': 44, 'data': 32, 'ok': 32, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 44, 'pm_ok': 43}
+11 {'roots': 48, 'data': 36, 'ok': 36, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 48, 'pm_ok': 47}
+12 {'roots': 52, 'data': 36, 'ok': 36, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 48, 'pm_ok': 47}
+13 {'roots': 56, 'data': 40, 'ok': 40, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 52, 'pm_ok': 51}
+FINAL {'roots': 56, 'data': 40, 'ok': 40, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 52, 'pm_ok': 51}

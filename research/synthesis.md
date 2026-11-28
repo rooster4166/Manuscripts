@@ -798,3 +798,45 @@ In the middle, a trivial end of degree n − 4 is compatible with exactly one Lo
 - `conjN_of_tightTransferN`: TRN ⇒ Conjecture N.
 - With dl-one Prop 9.2 (paper), TRN ⇒ DL(1).
 - The open core for the triangle-base and DL route has shrunk to **TRN**, the tight transfer for one forbidden vertex, together with the multi-pair step DL(k).
+
+## 31. The all-odd lift: Test1 and Test2 meet in graphs with no even vertex (coordinator, 2026-11-28 04:10)
+
+**Observation (coordinator; paper argument below; computation in `research/coordinator/`).** Let z be the unique even vertex of J, with d(z) = 2m, and fix a root r ∈ N(z). Suppose Φ is a perfect matching of J[N(z)] in which r is matched to a0. More generally, Φ may be a forest T-join of B = J − z with T = N(z), having r as a root and a0 as its child.
+
+**H is all-odd.** Put B = J − z and H = B − Φ. Every vertex of H has odd degree:
+- v ∈ N(z) loses one edge to z and an odd number d_Φ(v) of edges of Φ;
+- any other vertex loses an even number of edges.
+
+So H has a Lovász decomposition with k = (n − 1)/2 paths, and every vertex ends exactly one path.
+
+**The lift.** Append each Φ-edge p(v)v at the end v of Q(v). By forest stepping (direct-test1 Lemma 4.1), the result is a decomposition of B into k paths provided that
+- (i) p(v) ∉ Q(v) for every non-root v, and
+- (ii) siblings lie on different paths.
+
+The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 ends, and **(T1) holds at r.**
+
+**What is needed.**
+- In the matching case the conditions are: Q(a0) ∌ r, a fixed orientation; and, for each other pair, the disjunction a_i ∉ Q(b_i) or b_i ∉ Q(a_i).
+- All of these conditions live in an **all-odd** graph, where every single condition is a theorem (L1, `lovasz_avoid_nonadj`).
+- Only the **compatibility** of the conditions is open.
+
+**Data.** Random 3-connected J of orders 7, 9 and 11:
+- d(z) = 4: a base at 40 of 40 roots with matching data;
+- d(z) = 6: a base at 54 of 54;
+- 0 lift failures.
+
+**The same structure for (T2).** test2 found the same structure for (T2) (`test2At_of_forestBase2`, Lean): there T = N(z) includes r, and M is all-odd.
+
+**So both spine tests reduce, by Φ-lifts, to one problem: all-odd DL(k).** Let H be all-odd and let (a_i, b_i) be disjoint non-adjacent pairs, some with a fixed orientation. Find one Lovász decomposition that satisfies all the conditions.
+- **Why this setting is easier.** There is no even vertex, so the tight-Fan obstruction of the one-even setting (DL, N, TRN) is absent.
+- **Known exceptions.** In K_{2k} minus a perfect matching, every Lovász decomposition consists of Hamiltonian paths, and the pairs fail. Universal-twin-type exceptions may also occur.
+- **Tools.**
+  - NA together with its set form (`avoid_packed_iff_reach`);
+  - the separation theorems (packed sets);
+  - multi-token steering, where in the all-odd setting the only tokens are leaf stems;
+  - conjecture MT.
+
+**Caveats.**
+- Matching data needs a perfect matching of J[N(z)]. The forest version needs a forest T-join of B with T = N(z) and r a root.
+- The forest version fails on the cone over K_{2,6}: siblings meet at a star centre. That case is covered by the literature (planar).
+- The converse (base ⇔ (T1) with Φ terminal at the parents) should hold by end-counting, as in direct-test1 Prop 4.3. Not yet checked.

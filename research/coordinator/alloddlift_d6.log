@@ -1,0 +1,6 @@
+13 {'roots': 56, 'data': 40, 'ok': 40, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 52, 'pm_ok': 51}
+FINAL {'roots': 56, 'data': 40, 'ok': 40, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 52, 'pm_ok': 51}
+9 {'roots': 60, 'data': 54, 'ok': 54, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 162, 'pm_ok': 157}
+FINAL {'roots': 60, 'data': 54, 'ok': 54, 'parity_bad': 0, 'lift_fail': 0, 'pm_tested': 162, 'pm_ok': 157}
+
+[exited with code 0]
