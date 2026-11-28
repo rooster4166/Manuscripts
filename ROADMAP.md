@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **ae** (session_01FxXpVhf4r9q9qWGLxUmZSS, branch `claude/ae`, new): prove Conjecture AE using prescribed-end Lovász (PC with ≤ 1 zero, Lean) and a reattachment matching at g; then the twin case of PC.
 - **conj31** (session_01FxXpViHUMX8C6wcVqFLhLh, branch `claude/conj31`, new): prove two-even Conjecture 31 (a 2-connected two-even graph is tight unless an odd vertex is universal), and derive Conjecture J from it by choosing the path P. Conjecture AE if time permits. Together with the gluing lemmas, J and AE give L_N(2).
   - **Milestone (e64843f, merged; build green; axioms checked):**
     - **Computed:**
