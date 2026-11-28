@@ -1,0 +1,12 @@
+progress 500
+progress 1000
+progress 1500
+progress 2000
+progress 2500
+progress 3000
+progress 3500
+progress 4000
+progress 4500
+progress 5000
+progress 5500
+verified 5700 schedules, 51613 moves in all
