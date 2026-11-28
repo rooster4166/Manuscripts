@@ -157,7 +157,7 @@ EMM sufficiency work is **stopped**.
     - **Milestone 3/4 (70b189f; audit A37 applied, no error):**
       - **the all-odd (T1) lift in Lean** (Test1AllOdd.lean: `test1At_of_oddBase`, `test1At_of_matchingOdd`; axioms checked by the coordinator);
       - an all-odd base exists at every (T1) instance with n ≤ 9 except six: J = K_{3,6} + an edge, at a leaf root (Example ex:t1theta), where (T1) still holds;
-      - the common all-odd base conjecture (one fixed + m − 1 free) has no structural exception. Its exhaustive order-10 run is about 95% done, with no failures so far.
+      - the common all-odd base conjecture (one fixed + m − 1 free) has no structural exception. Its exhaustive order-10 run is about 95% done. The outcome is not yet known: the earlier "no failures so far" was withdrawn, because the output was block-buffered.
       - d(z) = 4 by proved tools: 478 of 554 at order 8 (86%, `dz4_order8.txt`). Order-10 sample: 7,358 of 7,467 (98.5%; separation 846, schedules 6,512, 109 open), in `dz4_order10_sample.txt` as committed at 7cfa4c0. The exhaustive triangle subcase is 40,454 of 41,599.
       - (T2) at d(z) = 6 and 8 is already closed in the collection: MR Thms 123 and 128, audit A8; Thm 128 is conditional on FHZ/CFZ. So (T2)'s own frontier lies beyond d = 8.
 - **multi-token** (session_01FxXpVe8F7KxYF5L5TwFwZ2, branch `claude/multi-token`, new): extend NA/trn steering to k pairs at once (one token per leaf-bearing vertex, plus one at w). The target is the triangle base at d(z) = 6, i.e. the dense T(6)-i residual. That is the real frontier, since DL(1) only reaches d(z) = 4, which is already known.
