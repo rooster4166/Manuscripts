@@ -9,13 +9,15 @@ In both cases (T1) at the new state implies (T1) at the old one (Fan's single-ed
 `fan_single`: the restored vertex rho has no neighbour without an end, or at most one, while the
 other end of the restored edge has at least two).  A state has *matching data* if J'[T'] has a
 perfect matching; then L_N gives (T1) there (Lean `test1At_of_matchingOdd`).
-usage: python3 rootmove2.py [maxdepth] < ND lines
+usage: python3 rootmove2.py [maxdepth] [-p] < ND lines   (-p: one line per instance:
+  RM g6 z r level twinR twinO reached moves)
 """
 import sys
 from collections import Counter, deque
 import networkx as nx
 
 maxdepth = int(sys.argv[1]) if len(sys.argv) > 1 else 6
+perline = len(sys.argv) > 2 and sys.argv[2] == "-p"   # print one RM line per instance
 
 
 def has_pm(G, S):
@@ -67,6 +69,8 @@ for line in sys.stdin:
             for name, G2, rho2 in moves(G, z, rho):
                 q.append((G2, rho2, d + 1, hist + name))
     st[(level, "data via " + found if found else "no data reachable")] += 1
+    if perline:
+        print("RM", g6, z, r, level, int(f[10]), int(f[11]), "1" if found else "0", found or "-", flush=True)
 agg = Counter()
 for (lev, k), v in st.items():
     agg[(lev, "reached" if k.startswith("data") else "not")] += v

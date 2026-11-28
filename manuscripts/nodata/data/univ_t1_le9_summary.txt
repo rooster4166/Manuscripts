@@ -1,0 +1,1 @@
+UNIV tier1 0/179152 tier2 88/351032 tier3 32706/88148 tier4 124925/779400 (failures/structures)

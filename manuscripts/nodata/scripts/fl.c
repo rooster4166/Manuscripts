@@ -24,7 +24,9 @@
    |{x, y} cap C| <= (|C| - e(u, C)) / 2   (u the centre, x, y its two children; for a claw
    the centre is v).  Phase-2 searches first try 12 randomly relabelled budgeted solves (a
    success is a certificate) and then an exhaustive exact search.
-   usage: fl -f FAMILY [-d dives] [-s seed] < graph6 */
+   -H: do not search unstruck sets in which a vertex with two children violates (H1) (they fail by
+   the Hall lemma); count them instead.
+   usage: fl -f FAMILY [-d dives] [-s seed] [-H] < graph6 */
 #include <stdio.h>
 #include "ndsolve.h"
 
@@ -289,7 +291,9 @@ int main(int argc, char **argv) {
   else if (!strcmp(fam, "cp")) { T1 = 'C'; T2 = 'P'; }
   else if (!strcmp(fam, "ss")) { T1 = 'S'; T2 = 'S'; }
   else { fprintf(stderr, "unknown family\n"); return 1; }
-  long long ngraphs = 0, nsets = 0, nfail = 0, nexact = 0, nfail_h1 = 0, nfail_noh1 = 0;
+  long long ngraphs = 0, nsets = 0, nfail = 0, nexact = 0, nfail_h1 = 0, nfail_noh1 = 0, nskipH1 = 0;
+  int skipH1 = 0;
+  for (int i = 1; i < argc; i++) if (!strcmp(argv[i], "-H")) skipH1 = 1;
   static unit A[20000], Bu[20000];
   static u64 cov[20000][160];        /* coverage: per first unit, bitset over second units (or pairs of P) */
   while (fgets(g6, sizeof g6, stdin)) {
@@ -321,19 +325,21 @@ int main(int argc, char **argv) {
     /* phase 1 */
     for (int d = 0, fails = 0; d < dives && fails < 4 * dives; d++) {
       if (!random_decomp()) { fails++; d--; continue; }
+      /* the second-level units satisfied by this decomposition, once */
+      static u64 satB[160]; static int sj[20000]; int ns = 0;
+      if (T2 && words) {
+        for (int w = 0; w < words; w++) satB[w] = 0;
+        for (int j = 0; j < nb; j++) if (sat_unit(&Bu[j])) sj[ns++] = j;
+        if (!T3) for (int x = 0; x < ns; x++) satB[sj[x] >> 6] |= 1ULL << (sj[x] & 63);
+        else for (int x = 0; x < ns; x++) for (int y = 0; y < ns; y++) {
+          int idx = sj[x] * nb + sj[y]; satB[idx >> 6] |= 1ULL << (idx & 63);
+        }
+      }
       for (int i = 0; i < na; i++) {
         if (!sat_unit(&A[i])) continue;
         if (!T2) { cov[i][0] = 1; continue; }
         if (!words) continue;
-        if (!T3) {
-          for (int j = 0; j < nb; j++) if (sat_unit(&Bu[j])) cov[i][j >> 6] |= 1ULL << (j & 63);
-        } else {
-          static int sj[2000]; int ns = 0;
-          for (int j = 0; j < nb; j++) if (sat_unit(&Bu[j])) sj[ns++] = j;
-          for (int x = 0; x < ns; x++) for (int y = 0; y < ns; y++) {
-            int idx = sj[x] * nb + sj[y]; cov[i][idx >> 6] |= 1ULL << (idx & 63);
-          }
-        }
+        for (int w = 0; w < words; w++) cov[i][w] |= satB[w];
       }
     }
     /* phase 2 */
@@ -342,6 +348,7 @@ int main(int argc, char **argv) {
       if (!T2) {
         nsets++;
         if (cov[i][0]) continue;
+        if (skipH1 && (A[i].type == 'S' || A[i].type == 'L') && !h1_ok(&A[i])) { nskipH1++; continue; }
         nexact++;
         if (!exact(&A[i], 0, 0)) {
           nfail++;
@@ -360,6 +367,8 @@ int main(int argc, char **argv) {
         if (!T3) {
           nsets++;
           if (cov[i][j >> 6] >> (j & 63) & 1) continue;
+          if (skipH1 && (((A[i].type == 'S' || A[i].type == 'L') && !h1_ok(&A[i])) ||
+                         ((Bu[j].type == 'S' || Bu[j].type == 'L') && !h1_ok(&Bu[j])))) { nskipH1++; continue; }
           nexact++;
           if (!exact(&A[i], &Bu[j], 0)) {
             nfail++;
@@ -389,6 +398,7 @@ int main(int argc, char **argv) {
   }
   fprintf(stderr, "SUMMARY family=%s graphs=%lld sets=%lld exact=%lld failures=%lld", fam, ngraphs, nsets, nexact, nfail);
   if (T1 == 'S' || T1 == 'L') fprintf(stderr, " (H1 holds at %lld of them, fails at %lld)", nfail_h1, nfail_noh1);
+  if (skipH1) fprintf(stderr, " unstruck sets violating (H1), not searched (they fail by the Hall lemma): %lld", nskipH1);
   fprintf(stderr, "\n");
   return 0;
 }
