@@ -16,7 +16,8 @@
                        kp = K + disjoint P; kk = two disjoint K; sp = S + disjoint P;
                        rp = R + disjoint P; kpp = K + two disjoint P; lp = L + P; sk = S + K;
                        lk = L + K; cp = C3 + P; ss = two disjoint S.
-   Phase 1: -d random Lovasz decompositions strike the sets they satisfy (coverage bitsets);
+   Phase 1: -d random Lovasz decompositions strike the sets they satisfy (coverage bitsets); every
+   decomposition found later in phase 2 also strikes every set it satisfies;
    phase 2: every set still standing is decided by the exact solver of ndsolve.h (route-
    respecting masks encode exactly (i), (ii); the route R is encoded as a mask {c, x, b} at c).
    A set left infeasible is a genuine counterexample and is printed (FAIL ...), with, for stars,
@@ -231,16 +232,19 @@ static int exact(const unit *a, const unit *b, const unit *c) {
     sbudget = 20000;
     int ok = srun();
     sbudget = 0;
-    if (ok) return 1;
+    if (ok) { read_solution(); return 1; }
   }
   /* exhaustive exact search, original labels */
+  for (int v = 0; v < n; v++) { perm[v] = v; iperm[v] = v; }
   sinit(n);
   for (int e = 0; e < m; e++) sadd(E_u[e], E_v[e]);
   sneed = (1u << n) - 1;
   if (a) encode_unit(a);
   if (b) encode_unit(b);
   if (c) encode_unit(c);
-  return srun();
+  int ok = srun();
+  if (ok) read_solution();
+  return ok;
 }
 /* the masks of different units are disjoint vertex sets, so crv[s] & crv[w] != 0 only inside a
    unit; inside a unit it forbids exactly the pairings that (i) already forbids, or two siblings
@@ -261,6 +265,29 @@ static int h1_ok(const unit *s) {
     if (2 * k > __builtin_popcount(c) - e) return 0;
   }
   return 1;
+}
+
+/* coverage of the current graph: per first unit, a bitset over second units (or pairs of them) */
+static unit A[20000], Bu[20000];
+static u64 cov[20000][160];
+static int na, nb, words, T1g, T2g, T3g;
+/* strike every set satisfied by the decomposition in Qm / part */
+static void strike_current(void) {
+  static u64 satB[160]; static int sj[20000]; int ns = 0;
+  if (T2g && words) {
+    for (int w = 0; w < words; w++) satB[w] = 0;
+    for (int j = 0; j < nb; j++) if (sat_unit(&Bu[j])) sj[ns++] = j;
+    if (!T3g) for (int x = 0; x < ns; x++) satB[sj[x] >> 6] |= 1ULL << (sj[x] & 63);
+    else for (int x = 0; x < ns; x++) for (int y = 0; y < ns; y++) {
+      int idx = sj[x] * nb + sj[y]; satB[idx >> 6] |= 1ULL << (idx & 63);
+    }
+  }
+  for (int i = 0; i < na; i++) {
+    if (!sat_unit(&A[i])) continue;
+    if (!T2g) { cov[i][0] = 1; continue; }
+    if (!words) continue;
+    for (int w = 0; w < words; w++) cov[i][w] |= satB[w];
+  }
 }
 
 static void print_unit(const unit *u) {
@@ -296,8 +323,7 @@ int main(int argc, char **argv) {
   long long ngraphs = 0, nsets = 0, nfail = 0, nexact = 0, nfail_h1 = 0, nfail_noh1 = 0, nskipH1 = 0;
   int skipH1 = 0;
   for (int i = 1; i < argc; i++) if (!strcmp(argv[i], "-H")) skipH1 = 1;
-  static unit A[20000], Bu[20000];
-  static u64 cov[20000][160];        /* coverage: per first unit, bitset over second units (or pairs of P) */
+
   while (fgets(g6, sizeof g6, stdin)) {
     g6[strcspn(g6, "\r\n")] = 0;
     if (!g6[0] || !read_g6(g6)) continue;
@@ -314,11 +340,12 @@ int main(int argc, char **argv) {
     for (int a = 0; a < n; a++) for (int b = a + 1; b < n; b++) if (adj[a] >> b & 1) {
       E_u[m] = a; E_v[m] = b; inc[a] |= 1ULL << m; inc[b] |= 1ULL << m; m++;
     }
-    gen_units(T1); int na = nu_; memcpy(A, U, na * sizeof(unit));
-    int nb = 0;
+    T1g = T1; T2g = T2; T3g = T3;
+    gen_units(T1); na = nu_; memcpy(A, U, na * sizeof(unit));
+    nb = 0;
     if (T2) { gen_units(T2); nb = nu_; memcpy(Bu, U, nb * sizeof(unit)); }
     /* third unit (kpp): pairs again, the same list as Bu */
-    int words = T2 ? (T3 ? ((nb * nb + 63) / 64) : ((nb + 63) / 64)) : 1;
+    words = T2 ? (T3 ? ((nb * nb + 63) / 64) : ((nb + 63) / 64)) : 1;
     if (words > 160) {
       /* kpp at n = 10: too many pair-pairs for the bitset; fall back to per-set phase 2 only */
       words = 0;
@@ -327,22 +354,7 @@ int main(int argc, char **argv) {
     /* phase 1 */
     for (int d = 0, fails = 0; d < dives && fails < 4 * dives; d++) {
       if (!random_decomp()) { fails++; d--; continue; }
-      /* the second-level units satisfied by this decomposition, once */
-      static u64 satB[160]; static int sj[20000]; int ns = 0;
-      if (T2 && words) {
-        for (int w = 0; w < words; w++) satB[w] = 0;
-        for (int j = 0; j < nb; j++) if (sat_unit(&Bu[j])) sj[ns++] = j;
-        if (!T3) for (int x = 0; x < ns; x++) satB[sj[x] >> 6] |= 1ULL << (sj[x] & 63);
-        else for (int x = 0; x < ns; x++) for (int y = 0; y < ns; y++) {
-          int idx = sj[x] * nb + sj[y]; satB[idx >> 6] |= 1ULL << (idx & 63);
-        }
-      }
-      for (int i = 0; i < na; i++) {
-        if (!sat_unit(&A[i])) continue;
-        if (!T2) { cov[i][0] = 1; continue; }
-        if (!words) continue;
-        for (int w = 0; w < words; w++) cov[i][w] |= satB[w];
-      }
+      strike_current();
     }
     /* phase 2 */
     for (int i = 0; i < na; i++) {
@@ -352,7 +364,7 @@ int main(int argc, char **argv) {
         if (cov[i][0]) continue;
         if (skipH1 && (A[i].type == 'S' || A[i].type == 'L') && !h1_ok(&A[i])) { nskipH1++; continue; }
         nexact++;
-        if (!exact(&A[i], 0, 0)) {
+        if (exact(&A[i], 0, 0)) strike_current(); else {
           nfail++;
           int h = (A[i].type == 'S' || A[i].type == 'L') ? h1_ok(&A[i]) : -1;
           if (h == 1) nfail_h1++; else if (h == 0) nfail_noh1++;
@@ -372,7 +384,7 @@ int main(int argc, char **argv) {
           if (skipH1 && (((A[i].type == 'S' || A[i].type == 'L') && !h1_ok(&A[i])) ||
                          ((Bu[j].type == 'S' || Bu[j].type == 'L') && !h1_ok(&Bu[j])))) { nskipH1++; continue; }
           nexact++;
-          if (!exact(&A[i], &Bu[j], 0)) {
+          if (exact(&A[i], &Bu[j], 0)) strike_current(); else {
             nfail++;
             int h = (A[i].type == 'S' || A[i].type == 'L') ? h1_ok(&A[i]) : -1;
             if (h == 1) nfail_h1++; else if (h == 0) nfail_noh1++;
@@ -388,7 +400,7 @@ int main(int argc, char **argv) {
             int idx = j * nb + k;
             if (words && (cov[i][idx >> 6] >> (idx & 63) & 1)) continue;
             nexact++;
-            if (!exact(&A[i], &Bu[j], &Bu[k])) {
+            if (exact(&A[i], &Bu[j], &Bu[k])) strike_current(); else {
               nfail++;
               printf("FAIL %s", g6); print_unit(&A[i]); print_unit(&Bu[j]); print_unit(&Bu[k]);
               printf("\n"); fflush(stdout);

@@ -14,3 +14,4 @@ open Gallai
 #print axioms Gallai.test1At_of_move2'
 #print axioms Gallai.lN_of_cherryLN
 #print axioms Gallai.test1At_of_LN_matching
+#print axioms Gallai.forestLN_far_chain
