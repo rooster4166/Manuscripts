@@ -8,6 +8,8 @@ written), **ERROR** (false as stated), **NIT** (wording, citation, bookkeeping).
   - new untracked files: `lean/GallaiLean/MultiTokenObstruct.lean`, `data/runs/*_undec_open*.txt` and,
     briefly, `resid_O10_undec_EK2K3_seed{7,11}.txt`;
   - `data/runs/resid_O10_undec_EK2K3.txt` deleted from the working tree.
+- The branch also moved during the audit, from 2afae07 to b8b15a3 (9914d37 … b8b15a3, below). Commits
+  4e9b5bb and b8b15a3 are the other session's interim snapshots of this report; I committed nothing.
 - So I audited a clean `git archive 2afae07` export in my scratch directory. The Lean build and
   axiom check ran in the live tree, where `MultiToken.lean` and `DirectTest1.lean` are byte-identical
   to the commit.
@@ -178,8 +180,8 @@ wrongly.**
 - *Data check.* My exact search found 0 violations of the statement:
   - 1,597 roots (order 9, 3-connected) and 20 (order 7);
   - every one-even graph of order 9 with δ ≥ 3: 1,651 roots at d(z) = 6, and 230 at d(z) = 8 (k = 3);
-  - 51 random roots at order 11 with d(z) = 10 (k = 4) and t = 3. This is the only parity at which
-    t = 3 < k arises, since t = n − 1 − d(r) is odd.
+  - 51 random roots at order 11 with d(z) = 10 (k = 4) and t = 3. At odd order t = n − 1 − d(r) is
+    odd, so t = 3 < k needs k ≥ 4.
 
 **M4 (GAP, computational claim). `mt_verify.py` never checks the Test1 lift.**
 - *What.* Line 242 calls `verify_test1(J, z, r, paths)` and discards its result. `tb.verify_test1`
@@ -389,8 +391,13 @@ and Fut~w (2).
 - *"None" verdicts.* My exact, uncapped search confirms every one: 69, 14, 18 and 6 roots, with no
   schedule in any of 3,088 / 376 / 912 / 360 instances.
 - *Per-root comparison* (`cmp_roots.py`) with my search capped at 2·10⁶ states per instance (mtok's
-  2·10⁶ nodes bound its distinct states): RESIDCMP. In `resid_O10`, graphs 0, 4, 12 and 19:
-  R10CMP.
+  2·10⁶ nodes bound its distinct states):
+  - all of `resid_O8` (180 roots, about 45 min on 3 cores): identical, 72 scheduled, 69 none,
+    39 undecided under both, with no conflict;
+  - a `resid_O10` sample, graphs 0, 4, 12 and 19 (one each of ∅, K2, K3, C4; 24 roots): identical,
+    13 / 6 / 5.
+- *Not run:* the other 20 `resid_O10` graphs and the E28 graphs in full. Their "none" roots are all
+  confirmed (above).
 
 **Proposition 6.1 data and the frozen table** (`agg_resid.py`).
 - 1,597 roots with one non-neighbour at order 9, all unscheduled. The other 992 unscheduled roots
@@ -424,6 +431,27 @@ README and the Lean README section agrees with the data files and with my recomp
 - 7,529 / 10,118 (74%), 76,474, 882, 72 / 180, 109 / 144, 10 / 48, 7,558, 91, 1,597 / 2,589, 260,
   181 / 324, 18,426 jobs, 2,860,182;
 - the exceptions are M1 (what the "undecided" counts mean) and M4 ("including the Test1 lift").
+
+## After 2afae07 (not audited; consistency only)
+
+Commits 9914d37 … b8b15a3 (03:53–04:30) change the manuscript, scripts and data, partly in response
+to an interim snapshot of this report. I did not audit them. Compared with the findings above, as
+of b8b15a3:
+- **Addressed:**
+  - M1: Table 3 has a "Prop. 6.1" column, and its numbers equal mine. The §6 bullet and "What
+    remains" item 1 are corrected. Two more `resid_O10` roots are scheduled at budget 2·10⁷ (seeds 7,
+    11), so 33 / 3 are left undecided.
+  - M4: `mt_verify.py` now asserts `verify_test1`.
+  - M5: Remark 4.3 cites Proposition 6.1, with the per-shape counts 15, 10, 5, 9, 3 and
+    1, 4, 4, 3, 2, 4, which match mine.
+- **Not addressed:**
+  - M2: the statement of Theorem 4.2 is unchanged.
+  - M3: the paper proof of Proposition 6.1 is unchanged. Proposition 6.1 now cites a Lean proof
+    (`not_steerK_triangle`, `not_steerK` in `MultiTokenObstruct.lean`, not audited). If that proof is
+    sound, the statement is formal, but the paper proof still needs the corrected split.
+  - M8: `[DT, §5]`, twice, and `[T6, E28]`.
+- **New and not audited:** the all-odd lift (Section "aodd", Propositions `aoddlift` and `aoddobs`),
+  the d(z) = 4 runs, `MultiTokenObstruct.lean`, and the changed `mtok.cpp`.
 
 ## Reproduced (commands)
 
@@ -486,3 +514,45 @@ d(z) = 6 remains, as the paper says, unproved.
 
 Recommended: M5 (cite Proposition 6.1 in Remark 4.3), M6 (scope and counting of the MT test,
 Remark 6.3), M7 (commit the tamper test), M8 (DT §6.3, E28 source, the d(z) = 4 citation), M9–M15.
+
+## Response (authors, after the audit)
+
+Each finding, with where it is fixed (manuscript numbering unchanged).
+- **M1** fixed in 3d7f0ca, before the final report: Table 3 has a "Prop. 6.1" column; the §6 bullet,
+  Remark 4.3, "What remains" item 1 and the README use the corrected counts (|O| = 8: 75 without /
+  33 undecided; |O| = 10: 30 / 3 after the seed reruns; E28: 30 / 8). The frozen table now says that
+  it covers search-proved roots only.
+- **M2** fixed: Theorem 4.2 now concludes Test1 only "if d_J(r) ≥ 3 (for example if J is
+  3-connected)", and the proof cites the counterexample `Lsech?H?GA_B?@`. `pattern.py` skips roots
+  with d(r) < 3; the counts are unchanged (882 / 10,118 and 6 / 40), and the counterexample is no
+  longer reported.
+- **M3** fixed: the proof of Proposition 6.1 is rewritten with the current set
+  A(K) = {v ∈ V(J) − r : d_K(v) > 0, v ≁_K r} (Lean `nonNbr`). Before the first entry no move adds a
+  vertex to A(K), and every removal takes one out; the suppression case splits on the current
+  adjacency of p to r. Proposition 7.2 refers to the same set and split.
+- **M4** fixed in 28376e6 (`assert verify_test1(...)`). The precedence slip in the leaf-deletion
+  assertion is fixed too. All verifications were rerun after both fixes (`scripts/reverify.sh`;
+  `data/runs/reverify_summary.txt`), and all pass.
+- **M5**: the abstract and Remark 4.3 rest on Proposition 6.1. The hash caveat is replaced by the
+  confirmation from this audit's exact search.
+- **M6**: §6 states the scope of the test (distinct stems and avoided vertices), gives the three-tail
+  counts unordered (92, 1,026; ordered 552, 6,156), and reports this audit's extension (37,707 and
+  17,213 instances, 0 failures). Remark 6.3 assumes distinct stems and disposes of the case
+  N(g) = {c₁, c₂}.
+- **M7**: the tamper test now cites `A36-scripts/tamper.py`, run with seeds 1–3 against the fixed
+  executor (`manuscripts/multi-token/data/runs/J7_tamper_seed*.txt`; the schedules are
+  `J7_s1_sched.txt`). It accepts 38 corruptions, all valid (33 swaps, 5 suppressions), and rejects
+  352, all invalid, which is the same as this audit's run.
+- **M8**: [DT, §6] / [DT, §6.3]; E28 is cited as the experiments-log entry; d(z) = 4 cites synthesis
+  §28 (two-step descent, `emc_four`).
+- **M9**: the status labels exclude Remark 2.8 and Example 3.3. "Coverage" is labelled as a theorem
+  on paper with a computed count. "Removals" is defined (retirements, suppressions, isolating drops).
+  The wording of move (M) is fixed, and "almost every" becomes 42 of 53.
+- **M10**: Proposition 4.1 assumes d_J(w) ≥ 3. **M11**: Example 3.3 is "the shortest schedule
+  (MAXLEN=8)". **M12**: the explore cap and this audit's uncapped recheck are disclosed. **M13**: the
+  order-7 cone sentence is a parenthetical remark (every J there is a cone).
+- **M14**: §8 and the Lean docstring say that `triangleBase_of_steerK` exports the last clause, the
+  first being proved inside. The duplicated `omit` lines are removed. `ex33_steerK.lean` (with its
+  Decidable instances) is cited in §8.
+- **M15**: `axioms_mt.lean` now lists all 22 theorems and lemmas of the §8 table, all on the
+  standard axioms. `lake build` is green (18,428 jobs).

@@ -1,0 +1,13 @@
+J7_s1_verify.txt: verified 130 schedules, 632 moves in all
+J7_pattern_verify.txt: verified 6 schedules, 24 moves in all
+J9_pattern_verify.txt: verified 882 schedules, 3857 moves in all
+resid_O8_verify.txt: verified 72 schedules, 2802 moves in all
+J9_aodd_verify.txt: verified 5700 schedules, 51613 moves in all
+resid_O10_verify.txt: verified 109 schedules, 5055 moves in all
+resid_O10_seed_verify.txt: verified 4 schedules, 235 moves in all
+e28_hard_verify.txt: verified 10 schedules, 502 moves in all
+resid_O8_aodd_b2e6_verify.txt: verified 14 schedules, 569 moves in all
+resid_O10_aodd_b2e6_verify.txt: verified 59 schedules, 3015 moves in all
+resid_O8_aodd_b2e5_verify.txt: verified 10 schedules, 418 moves in all
+resid_O10_aodd_b2e5_verify.txt: verified 54 schedules, 2702 moves in all
+J9_s1_verify.txt: verified 76474 schedules, 596500 moves in all
