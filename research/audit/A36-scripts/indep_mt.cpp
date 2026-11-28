@@ -27,7 +27,7 @@ static const int MAXN = 30;
 static int N, KT;                 // vertices of M+, number of tails
 static int Cc[8], Ss[8], Xx[8];   // tails
 static u64 A[MAXN];
-static int SUPP = 1, DROP = 1, TERM = 0;
+static int SUPP = 1, DROP = 1, TERM = 0, FIRSTONLY = 0;   // FIRSTONLY: 'scheduled' := has a legal first move
 static long long CAP = 0, visitedCount = 0;
 static bool capHit = false;
 static int minPhi;
@@ -59,6 +59,7 @@ struct Mv { char t; int p, q, r; };
 static vector<Mv> path, found;
 
 static bool dfs() {
+  if (FIRSTONLY && !path.empty()) { found = path; return true; }
   u64 tok = 0;
   for (int v = 0; v < N; v++) { int d = dg(v); if (d > 0 && d % 2 == 0) tok |= 1ULL << v; }
   int nlive = 0; u64 X = 0; bool live[8];
@@ -150,6 +151,7 @@ int main(int argc, char** argv) {
   if (getenv("SUPP")) SUPP = atoi(getenv("SUPP"));
   if (getenv("DROP")) DROP = atoi(getenv("DROP"));
   if (getenv("TERM")) TERM = atoi(getenv("TERM"));
+  if (getenv("FIRSTONLY")) FIRSTONLY = atoi(getenv("FIRSTONLY"));
   int PRINT = getenv("PRINT") ? atoi(getenv("PRINT")) : 0;
   int STOPDATA = getenv("STOPDATA") ? atoi(getenv("STOPDATA")) : 0;
   long long roots = 0, rsched = 0, rund = 0, datas = 0, dsched = 0, insts = 0, isched = 0, iund = 0;
