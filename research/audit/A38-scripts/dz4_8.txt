@@ -1,0 +1,13 @@
+FAR 128
+STEER 466
+STEER_not_FAR 350
+covered 478
+data 554
+hypothesis_holds 548
+inst 637
+inst_all 948
+nodata 83
+
+real	0m33.553s
+user	0m33.420s
+sys	0m0.024s

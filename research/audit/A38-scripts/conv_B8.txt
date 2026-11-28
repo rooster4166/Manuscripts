@@ -1,0 +1,1 @@
+mode B file c8.g6 graphs 5850 {'B_T2': 11272, 'B_adm': 12261, 'B_agree': 35425, 'B_inst': 35425, 'B_pos': 32800, 'lifts': 32800, 'strip_equal': 32800}

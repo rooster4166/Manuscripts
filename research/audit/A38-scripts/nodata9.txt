@@ -1,0 +1,10 @@
+NO FOREST BASE: H??F~z~ r = 6 d(z) = 8 all-odd (a): False (b): True
+NO FOREST BASE: H??F~z~ r = 7 d(z) = 8 all-odd (a): False (b): True
+NO FOREST BASE: H?AFvx~ r = 8 d(z) = 6 all-odd (a): False (b): True
+('nodata_roots', 4) 1611
+('nodata_roots', 6) 796
+('nodata_roots', 8) 31
+allodd 3
+forest 2435
+no_forest 3
+nodata_roots 2438

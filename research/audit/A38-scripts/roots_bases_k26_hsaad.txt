@@ -1,0 +1,16 @@
+K26: n=9 m=20 z=8 d(z)=8 N(z)=[0, 1, 2, 3, 4, 5, 6, 7] independent=False kappa=3
+  r=0 d_J(r)=7 data=False tri=False forest=False thru_r=False ao_a=False ao_a_forests=32 ao_a_rootings=128 ao_b=True ao_b_forests=32 ao_b_rootings=300 t1=True
+  r=1 d_J(r)=7 data=False tri=False forest=False thru_r=False ao_a=False ao_a_forests=32 ao_a_rootings=128 ao_b=True ao_b_forests=32 ao_b_rootings=300 t1=True
+  r=2 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+  r=3 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+  r=4 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+  r=5 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+  r=6 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+  r=7 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=32 ao_a_rootings=112 ao_b=False ao_b_forests=32 ao_b_rootings=0 t1=True
+HsaAD~}: n=9 m=19 z=7 d(z)=6 N(z)=[0, 2, 3, 4, 5, 6] independent=False kappa=3
+  r=0 d_J(r)=7 data=False tri=False forest=False thru_r=False ao_a=False ao_a_forests=56 ao_a_rootings=128 ao_b=True ao_b_forests=56 ao_b_rootings=358 t1=True
+  r=2 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=56 ao_a_rootings=112 ao_b=False ao_b_forests=56 ao_b_rootings=0 t1=True
+  r=3 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=56 ao_a_rootings=112 ao_b=False ao_b_forests=56 ao_b_rootings=0 t1=True
+  r=4 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=56 ao_a_rootings=112 ao_b=False ao_b_forests=56 ao_b_rootings=0 t1=True
+  r=5 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=56 ao_a_rootings=112 ao_b=False ao_b_forests=56 ao_b_rootings=0 t1=True
+  r=6 d_J(r)=3 data=False tri=False forest=True thru_r=True ao_a=True ao_a_forests=56 ao_a_rootings=104 ao_b=False ao_b_forests=56 ao_b_rootings=0 t1=True

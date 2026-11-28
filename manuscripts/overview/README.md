@@ -5,9 +5,13 @@ and reduction paper: the spine, the five reversible lifts, cones, the constraine
 dense T(6)-i frontier, a dependency diagram (TikZ) and a table of headline theorems with Lean names,
 axiom records and audits.
 
-New here (paper only, not in Lean): the converses of the all-odd (T1) lift, the (T2) forest lift and
-the floor lift (Props 3.11, 3.15, 3.17), and the all-odd lift with the root as a child of the forest
+New here (paper only, not in Lean): the converse of the all-odd (T1) lift (Prop 3.11), independent
+proofs and checks of the (T2) forest and floor converses (Props 3.15, 3.17; these are also test2
+Props 4.6 and 5.2, in Lean for matchings), and the all-odd lift with the root as a child of the forest
 (Theorem 3.10(b)), which settles the three order-9 roots where every forest base fails (Example 3.12).
+
+Audit: `research/audit/A38-overview.md` (2 ERROR, 5 OVERCLAIM, 1 GAP, 19 MINOR; all addressed, see the
+response section there).
 
 ## Scripts (`scripts/`, Python 3 + networkx)
 

@@ -1,0 +1,1 @@
+mode C file c7.g6 graphs 614 {'C_agree': 70904, 'C_inst': 70904, 'C_pos': 45292, 'lifts': 45292, 'strip_equal': 45292}

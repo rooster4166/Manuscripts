@@ -1,0 +1,1 @@
+mode A file one_even9_k3.g6 graphs 277 {'A_agree': 44675, 'A_inst': 44675, 'A_pos': 39507, 'lifts': 39507, 'strip_equal': 39507}

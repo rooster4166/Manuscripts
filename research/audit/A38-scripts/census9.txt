@@ -1,0 +1,28 @@
+('ao_matching_root', 4) 7572
+('ao_matching_root', 6) 8340
+('ao_matching_root', 8) 1224
+('data', 4) 11389
+('data', 6) 10118
+('data', 8) 1265
+('deg_r', 4, 3) 3415
+('deg_r', 4, 5) 7438
+('deg_r', 4, 7) 2147
+('deg_r', 6, 3) 2975
+('deg_r', 6, 5) 6183
+('deg_r', 6, 7) 1756
+('deg_r', 8, 3) 345
+('deg_r', 8, 5) 717
+('deg_r', 8, 7) 234
+('graphs', 4) 3250
+('graphs', 6) 1819
+('graphs', 8) 162
+('graphs_pmNz', 4) 1893
+('graphs_pmNz', 6) 1390
+('graphs_pmNz', 8) 153
+('nodata', 4) 1611
+('nodata', 6) 796
+('nodata', 8) 31
+('roots', 4) 13000
+('roots', 6) 10914
+('roots', 8) 1296
+graphs 5231

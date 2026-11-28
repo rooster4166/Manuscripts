@@ -1,0 +1,8 @@
+('base', 6) 8340
+('base_deg', 6, 3) 1739
+('base_deg', 6, 5) 5055
+('base_deg', 6, 7) 1546
+('roots', 6) 8340
+('roots_deg', 6, 3) 1739
+('roots_deg', 6, 5) 5055
+('roots_deg', 6, 7) 1546

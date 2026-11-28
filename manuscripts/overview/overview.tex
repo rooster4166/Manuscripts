@@ -53,8 +53,10 @@ on $3$-connected graphs.
 \item \emph{The lifts.} Each test follows from one constrained Lov\'asz decomposition, a
 \emph{base}, of an auxiliary graph. There are three lifts for (T1) (triangle, forest, all-odd) and two
 for (T2) (forest, floor). Every lift is reversible: for fixed data, a base exists if and only if the
-test holds with a prescribed \emph{terminal} matching or forest. Four of the five lifts are in Lean.
-The all-odd lift is proved on paper only, and the converses of three lifts are proved here.
+test holds with a prescribed \emph{terminal} matching or forest (for the floor lift: the floor bound,
+which is stronger than (T2)). Four of the five lifts are in Lean.
+The all-odd lift is proved on paper only. Its converse is proved here; the converses of the two (T2)
+lifts are proved in the (T2) manuscript, and in Lean for matchings, and are re-proved here.
 \item \emph{Cones} (Lean). (T1) at the apex of a cone is rooted Gallai for Eulerian graphs. This
 reaches the classes covered by the literature, and also roots of degree $n-2$ under a
 degree condition.
@@ -62,8 +64,9 @@ degree condition.
 constraint that occurs is a theorem, and so is every single sibling constraint except at a one-edge
 component. The tools are separation, $L_1$, neighbour avoidance with its exact
 boundary, leaf exchange, free targets and steering. With one even vertex $g$, single constraints are
-proved outside an explicit core: DL(1) for $a,b\in N(g)$ with a common neighbour, which Conjecture~N
-reduces to near twins (N follows from TRN), and the blocked case of $L_1^*$, which follows from CLT-B1.
+\emph{reduced} to an explicit core, and proved in several special cases. The core consists of DL(1)
+for $a,b\in N(g)$ with a common neighbour, and the blocked case of $L_1^*$, which follows from CLT-B1.
+TRN implies Conjecture~N (Lean), N reduces DL(1) to near twins, and near twins are open.
 What is open beyond that is \emph{compatibility}: several constraints in one decomposition, DL$(k)$
 and its all-odd form. The obstructions are proved: universal twins, the cocktail-party barrier, the
 cone over $K_{2,6}$ for forest bases, and the absence of steering schedules at roots of degree
@@ -74,8 +77,8 @@ $k$-token steering cannot reach roots of degree $|J|-2$. The asymptotic dense th
 Gir\~ao--Granet--K\"uhn--Osthus needs linear minimum degree and has a $o(n)$ error, so it does not
 apply.
 \end{itemize}
-New here, besides the consolidation: the three converses; the all-odd lift with the root as a
-child of the forest, which gives (T1) at the three order-$9$ roots where every forest base fails;
+New here, besides the consolidation: the converse of the all-odd lift, with independent proofs and
+checks of the (T2) converses; the all-odd lift with the root as a child of the forest, which gives (T1) at the three order-$9$ roots where every forest base fails;
 and a list of disagreements between the component documents. Nothing conjectural is upgraded.
 \end{abstract}
 
@@ -152,7 +155,7 @@ Every statement was compared with its component manuscript and with the Lean sou
 definitions, the hypotheses and the conclusion of the named declaration, at commit \texttt{8f2c998}
 of the coordinator branch. The Lean library was \emph{not} rebuilt for this paper, because the
 container could not download the Lean toolchain. The axiom column of Table~\ref{tab:thms} cites the
-recorded checks and audits instead. The three new converses
+recorded checks and audits instead. The three converses
 (Propositions~\ref{prop:alloddconv}, \ref{prop:t2conv} and~\ref{prop:floorconv}) and
 Example~\ref{ex:allodd} were also checked by an independent exhaustive computation
 (\texttt{manuscripts/overview/scripts}; \S\ref{sec:comp}). Where components disagree, \S\ref{sec:disc}
@@ -164,8 +167,8 @@ Gallai's conjecture is equivalent to (T1) and (T2) on $3$-connected graphs
 graph with at most one even vertex. Each condition of a base is a single end-path avoidance or a
 distinctness of two end paths, and the lift is reversible (\S\ref{sec:lifts}). On cones, (T1) is
 rooted Gallai for Eulerian graphs (\S\ref{sec:cones}). Every single avoidance that occurs in an
-all-odd graph is a theorem, and so is every one in a graph with one even vertex outside an explicit
-core. What is open is making several of them hold in one decomposition (\S\ref{sec:clt}). The first configuration where this cannot be avoided is deletion
+all-odd graph is a theorem; in a graph with one even vertex the single avoidances are reduced to an
+explicit core. What is open is making several of them hold in one decomposition (\S\ref{sec:clt}). The first configuration where this cannot be avoided is deletion
 degree $6$ with a dense neighbourhood (\S\ref{sec:frontier}). Figure~\ref{fig:deps} shows the
 dependencies; Table~\ref{tab:thms} lists the headline theorems.
 
@@ -182,7 +185,8 @@ dependencies; Table~\ref{tab:thms} lists the headline theorems.
   L/.style={-{Stealth[length=2mm]}, thick},
   P/.style={-{Stealth[length=2mm]}, thick, dashed},
   X/.style={-{Stealth[length=2mm]}, thick, red, dotted},
-  E/.style={{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick}]
+  E/.style={{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick},
+  S/.style={thin, gray}]
 % row 0
 \node[op, text width=7.2cm] (G) at (0,0) {\textbf{Gallai's conjecture} $\Longleftrightarrow$ (T1) $\wedge$ (T2) on $3$-connected $J$\\ \texttt{gallai\_iff\_spineTests'}};
 % row 1
@@ -196,7 +200,7 @@ dependencies; Table~\ref{tab:thms} lists the headline theorems.
 \node[op] (F2) at (3.9,-3.9) {(T2) forest base\\ $=$ (T2) $+$ terminal forest};
 \node[op] (FL) at (6.5,-3.9) {floor base\\ $=$ floor $+$ terminal forest};
 % row 3
-\node[pr] (LIT) at (-6.5,-6.0) {literature (planar, tw$\,\le3$, $\Delta\le4$, \dots);\\ $d(r)=n-2$ with $(\ast\ast)$};
+\node[pr] (LIT) at (-6.5,-6.0) {literature (planar, tw$\,\le3$, $\Delta\le4$, \dots); Lean: $d(r)=n-2$ with $(\ast\ast)$};
 \node[pr] (SK) at (-3.9,-6.0) {$k$-token schedule\\ \texttt{steerK\_good}};
 \node[op] (AODL) at (-1.3,-6.0) {all-odd DL$(k)$\\ (Problem~\ref{prob:allodd})};
 \node[op] (DL) at (1.3,-6.0) {DL$(k)$\\ \texttt{DisjL1}};
@@ -217,7 +221,8 @@ dependencies; Table~\ref{tab:thms} lists the headline theorems.
 \draw[L] (FB) -- (T1);
 \draw[L] (F2) -- (T2);
 \draw[L] (FL) -- (T2);
-\draw[L] (LIT) -- (RE);
+\draw[P] ([xshift=-7mm]LIT.north) -- node[left]{\tiny lit.} ([xshift=-7mm]RE.south);
+\draw[L] ([xshift=7mm]LIT.north) -- node[right]{\tiny $(\ast\ast)$} ([xshift=7mm]RE.south);
 \draw[L] (SK) -- (TB);
 \draw[L] (DL) -- (TB);
 \draw[L] (DL) -- (FL);
@@ -225,7 +230,7 @@ dependencies; Table~\ref{tab:thms} lists the headline theorems.
 \draw[P] (AODL) -- (F2);
 \draw[L] (S2) -- (FL);
 \draw[L] (ONE) -- (SK);
-\draw[P] (DL1) -- (DL);
+\draw[S] (DL1) -- node[above, sloped]{\tiny $k=1$} (DL);
 \draw[P] (N) -- (DL1);
 \draw[L] (TRN) -- (N);
 \draw[L] (L1S) -- (DL);
@@ -240,7 +245,9 @@ act: the frontier is the first case of DL$(2)$ and of all-odd DL$(2)$, and \text
 steering at roots of degree $|J|-2$. DL$(k)$ gives the triangle base when $M$ is connected and the floor base when no pair is a pair of
 universal twins (Theorem~\ref{thm:dlboth}). The arrow from $L_1^*$ to DL$(k)$ covers only one pair with
 $a\not\sim g$ or $b\not\sim g$ (direct-test1 Prop.~7.2). The one-pair theorem at $d(z)=4$ is the floor
-base with one pair. Every base box is equivalent to its test with
+base with one pair. The thin grey line is not an implication: it marks DL(1) as the case $k=1$ of
+DL$(k)$. The box at the lower left feeds RE by a dashed arrow (the literature cases, through the Lean
+leaf and double lemmas) and a solid arrow (the degree-$(n-2)$ theorem in Lean). Every base box is equivalent to its test with
 terminal structure (\S\ref{sec:lifts}).}\label{fig:deps}
 \end{figure}
 
@@ -259,7 +266,9 @@ path decomposition into at most $n/2$ paths with at least three ends at $r$.
 \lean{Test2At}}
 \end{definition}
 
-In (T1) $n$ is odd, and the even vertices of $B=J-z$ are exactly the neighbours of $z$. In (T2) $n$
+In Lean the hypothesis ``$z$ is the only even vertex'' reads \texttt{Even (J.degree v) $\leftrightarrow$ v = z},
+so degree $0$ counts as even and isolated vertices are excluded; for $3$-connected $J$ this makes no
+difference. In (T1) $n$ is odd, and the even vertices of $B=J-z$ are exactly the neighbours of $z$. In (T2) $n$
 is even, the even vertices of $B$ are $N(z)-r$, and $r$ is odd in $B$. In both tests the budget is the
 Gallai bound $\lceil|B|/2\rceil$.
 
@@ -276,7 +285,7 @@ matching cut.
 
 \begin{proof}[Proof outline (spine \S\S3--7)]
 (i)$\Rightarrow$(ii) uses the bridge double: Gallai's bound for two copies of $J-z$ joined at
-$r$, together with the leaf at $r$ (spine Lemma~7.2; Lean \lean{spineTests_of_gallai}).
+$r$, together with the leaf at $r$ (spine Lemmas~7.1--7.2, Prop.~7.3; Lean \lean{spineTests_of_gallai}).
 (ii)$\Rightarrow$(iii) is trivial. For (iii)$\Rightarrow$(i) there are five steps.
 \begin{enumerate}[leftmargin=*]
 \item \emph{Marked path numbers} (MR Thm~1). The marked bound on $2$-connected graphs and a three-end
@@ -291,7 +300,8 @@ all odd is cut off.
 $z$ joined to the even vertices and the root gives a $3$-connected $J$ on which (T1) or (T2) fails.
 \end{enumerate}
 Lov\'asz's theorem and Hall's theorem are the only external inputs. Both are proved in the library or
-in Mathlib. Audits A1, A2 and A14 found no gap in MR; A15 audited the spine paper.
+in Mathlib. Audits A1, A2 and A14 found no error in MR (A1 and A2 record expository gaps and interface items);
+A15 found no mathematical error in the spine paper.
 \end{proof}
 
 \begin{remark}[grading by the deletion degree]\label{rem:grading}
@@ -396,8 +406,8 @@ Lemma~\ref{lem:step} with one-edge components.
 \begin{proposition}[the converse; direct-test1 Prop.~2.2]\label{prop:triconv}
 For fixed data $(r,w,M_0)$: $M$ has a Lov\'asz decomposition satisfying~\eqref{eq:disj} if and only if
 $J-z$ has a decomposition into at most $k$ paths, with at least two ends at $r$, in which every edge of
-$M_0$ is terminal. \st{paper; checked exhaustively by audit A28 on $444$ data choices at order $7$ and
-$1{,}148$ at order $9$}
+$M_0$ is terminal. \st{paper; checked by audit A28 exhaustively on the $444$ data choices at order $7$, and on
+$1{,}148$ data choices of random graphs of order $9$}
 \end{proposition}
 
 So the \emph{triangle base} is (T1) with a prescribed terminal matching of $N(z)-\{r,w\}$. It is a
@@ -438,11 +448,13 @@ parents. \st{paper}
 Let $J$ be the cone over $K_{2,6}$: the hubs $r,r'$ are joined to $y_1,\dots,y_6$, and $z$ is joined to
 all eight. Then $J$ is $3$-connected, $z$ is its only even vertex, $d(z)=8$ and $k=4$. At $r$ and $r'$
 there is no triangle data. No choice of $w$, of a forest $T$-join and of a rooting gives a forest base,
-yet (T1) holds. The same failure occurs at one root of \texttt{HsaAD\textasciitilde\}} (order $9$,
-$d(z)=6$, $N(z)$ independent). \st{paper, with a hand proof for $K_{2,6}$; computed by two independent
+yet (T1) holds. The same failure occurs at the root $r=0$ of \texttt{HsaAD\textasciitilde\}} (order $9$,
+$d(z)=6$, $d(r)=7$). There $J[N(z)]$ is a star $K_{1,4}$ centred at $r$ plus an isolated vertex, so
+$N(z)-r$ is independent; direct-test1 Ex.~4.7 says ``$N(z)$ independent'', which is not right
+(\S\ref{sec:disc}). \st{paper, with a hand proof for $K_{2,6}$; computed by two independent
 exhaustive searches} At order $9$ the forest base exists at $2{,}435$ of the $2{,}438$ roots without
 triangle data; these three are the exceptions \st{computed}. The variant in which $\Phi$ passes through
-$r$ also fails there (synthesis \S25). By contrast, $K_{3,4}+x_1x_2$ has no triangle data but has forest
+$r$ also fails there (synthesis \S25 for the cone; A38 for \texttt{HsaAD\textasciitilde\}}). By contrast, $K_{3,4}+x_1x_2$ has no triangle data but has forest
 bases at every root (direct-test1 Ex.~4.6).
 \end{example}
 
@@ -460,7 +472,8 @@ $B$ whose odd-degree vertices are exactly $N(z)$, and root it so that either
 \end{enumerate}
 Put $H=B-E(\Phi)$. Then $H$ is all-odd, with no isolated vertex. If $H$ has a Lov\'asz decomposition
 with (i) $p(v)\notin V(Q(v))$ for every non-root $v$ and (ii) $Q(x)\ne Q(y)$ for siblings $x,y$, then
-(T1) holds at $(J,z,r)$. \st{paper: case (a) is synthesis \S31; case (b) is new here. Not in Lean}
+(T1) holds at $(J,z,r)$. \st{new: case (a) is the coordinator's observation in synthesis \S31 (a research note, not a
+manuscript), case (b) is new here; the proof below is the first written one. Not in Lean}
 \end{theorem}
 
 \begin{proof}
@@ -524,11 +537,16 @@ Example~\ref{ex:k26}, Conjecture~\ref{conj:tri}'s data and the forest data at or
 \emph{at order $9$, every root of every $3$-connected $J$ with exactly one even vertex has a triangle, a
 forest or an all-odd base}. The scope is that of the component runs: the triangle-base run over
 all roots with data, the forest run over the $2{,}438$ roots without data, and the three roots here.
+Audit A38 reproduced the statement independently and exactly over all $25{,}210$ roots of the
+$5{,}231$ graphs.
 \end{example}
 
 The coordinator's random runs (\texttt{research/coordinator/alloddlift.py}, matching data, case (a),
 $3$-connected $J$ of orders $7$, $9$, $11$) found a base at $40$ of $40$ roots with data at $d(z)=4$,
-and at $54$ of $54$ at $d(z)=6$, with no lift failure. \st{computed}
+and at $54$ of $54$ at $d(z)=6$, with no lift failure; the enumeration of Lov\'asz decompositions was
+capped at $4{,}000$. \st{computed} Audit A38 found, by exact search, a case-(a) matching base at all
+$8{,}340$ order-$9$ roots with $d(z)=6$ in graphs where $J[N(z)]$ has a perfect matching, including
+all $1{,}546$ such roots of degree $|J|-2$. \st{computed: A38}
 
 \subsection{The (T2) lifts}\label{sec:t2}
 
@@ -546,7 +564,7 @@ $d_{J-z}(r)$ is odd, and it is at least $1$. If it is $1$, split a path through 
 $d_{J-z}(r)\ge3$. In every case $r$ ends at least three paths and at most $n/2$ paths are used.
 \end{proof}
 
-\begin{theorem}[(T2) forest lift]\label{thm:t2forest}
+\begin{theorem}[(T2) forest lift; test2 Thm.~4.5]\label{thm:t2forest}
 Let $T=N(z)-r$, and let $\Phi$ be a forest of $J-z$ whose odd-degree vertices are exactly $N(z)$
 ($r$ included), rooted so that if $r$ is a child then $c(r)\ge2$. Put $M=L-E(\Phi)=J-zT-E(\Phi)$. Then
 $M$ is all-odd, with no isolated vertex, and $z$ is a leaf at $r$. If $M$ has a Lov\'asz decomposition
@@ -561,7 +579,10 @@ all-odd on $n$ vertices, and its Lov\'asz decompositions have $n/2$ paths. Lemma
 gives $n/2$ paths with $b(r)=1-[r\text{ is a child}]+c(r)\ge2$. Then apply Lemma~\ref{lem:leaf2}.
 \end{proof}
 
-\begin{proposition}[the (T2) forest converse]\label{prop:t2conv} \st{new}
+\begin{proposition}[the (T2) forest converse]\label{prop:t2conv} \st{paper: test2 Prop.~4.6 proves
+the form for $J-z$ (at least three ends at $r$, when $r$ is a root with $d_\Phi(r)=1$ or a child with
+$c(r)\ge2$); the leaf-graph form for every admissible rooting is proved here. Lean for matchings:
+\lean{forestBase2_matching_of_test2}}
 For a fixed $\Phi$ and rooting as in Theorem~\ref{thm:t2forest}, $M$ has a Lov\'asz decomposition with
 (i) and (ii) if and only if the leaf graph $L$ has a decomposition into at most $n/2$ paths in which
 $\Phi$ is terminal at parents. Every such decomposition has at least two ends at $r$, so it gives (T2).
@@ -578,7 +599,7 @@ Lemma~\ref{lem:leaf2} then gives (T2).
 So the (T2) forest base is (T2), in the leaf form of Lemma~\ref{lem:leaf2}, with a terminal forest
 $N(z)$-join.
 
-\begin{theorem}[the floor lift]\label{thm:floor}
+\begin{theorem}[the floor lift; test2 Thm.~5.1, Lemma~3.1]\label{thm:floor}
 Let $B$ be a graph whose vertices of even degree, degree $0$ included, are exactly $w$ and the
 vertices of $T$ ($w\notin T$); then $|B|$ is odd. Let $\Phi$ be
 a forest of $B$ whose odd-degree vertices are exactly $T$, rooted with $w$ never a child. If $B-E(\Phi)$
@@ -589,7 +610,8 @@ bound $p(J-z)\le(n-2)/2$ follows, and with it (T2), by splitting one path at $r$
 case \lean{floor_of_matchingBase}}
 \end{theorem}
 
-\begin{proposition}[the floor converse]\label{prop:floorconv} \st{new}
+\begin{proposition}[the floor converse; test2 Prop.~5.2]\label{prop:floorconv} \st{paper; the proof here is
+independent. Lean for matchings: \lean{matchingFloorBase_of_terminal}}
 For fixed $(w,T,\Phi)$ and rooting, the floor base exists if and only if $B$ has a decomposition into at
 most $(|B|-1)/2$ paths in which $\Phi$ is terminal at parents.
 \end{proposition}
@@ -606,10 +628,10 @@ than (T2). It fails at every \emph{tight} instance, where $p(J-z)=n/2$. Through 
 $20$ tight instances, and in each $J-z$ is an odd semi-clique \st{computed: test2, exhaustive}. The
 floor route therefore cannot cover (T2) everywhere, and the forest lift is needed there.
 
-\begin{theorem}[deletion degree $4$ from one pair]\label{thm:t2d4}
+\begin{theorem}[deletion degree $4$ from one pair; test2 Prop.~6.1, Cor.~6.2]\label{thm:t2d4}
 Let $N(z)=\{r,w,a,b\}$ with $ab\in E$. If $(J-z)-ab$, whose only even vertex is $w$, has a Lov\'asz
-decomposition with $a\notin V(Q(b))$, then (T2) holds at $(J,z,r)$. This is the case if $a,b$ have no
-common neighbour in $(J-z)-ab$ (by separation), or if $((J-z)-ab,b,\{a\})$ has a two-token schedule
+decomposition with $a\notin V(Q(b))$, then (T2) holds at $(J,z,r)$. If moreover $d_J(w)\ge3$, this is the case when $a,b$ have no
+common neighbour in $(J-z)-ab$ (by separation), or when $((J-z)-ab,b,\{a\})$ has a two-token schedule
 (\S\ref{sec:steer}). \st{Lean: \lean{test2At_of_pairAvoid}, \lean{test2At_of_pair_farApart},
 \lean{test2At_of_pair_steer2}}
 \end{theorem}
@@ -618,13 +640,19 @@ common neighbour in $(J-z)-ab$ (by separation), or if $((J-z)-ab,b,\{a\})$ has a
 \begin{itemize}[leftmargin=*]
 \item (T2) holds at all $717{,}942$ instances with $n\le10$ (every $3$-connected $J$ with exactly two
 adjacent even vertices, both orientations), and every witness was verified independently.
+\item Exactly $20$ instances are tight, and they are exactly those in which $J-z$ is an odd
+semi-clique (test2 \S2).
 \item The (T2) forest base exists at every instance of orders $8$ and $10$. At order $10$, $4$ of the
-$716{,}984$ instances need case $c(r)\ge2$ with $r$ a child (\texttt{forestbase2\_order10\_nonroot.txt}).
-\item At order $8$, Theorem~\ref{thm:t2d4} settles $478$ of the $554$ instances with $d(z)=4$ that have
-data (\texttt{dz4\_order8.txt}).
+$716{,}984$ instances need case $c(r)\ge2$ with $r$ a child; there $J-z$ is a fat theta, $K_{2,7}$ or a
+relative (test2 Ex.~4.7; \texttt{forestbase2\_order10\_nonroot.txt}).
+\item Theorem~\ref{thm:t2d4} settles $478$ of the $554$ instances with $d(z)=4$ that have data at order
+$8$ (\texttt{dz4\_order8.txt}), and $7{,}358$ of the $7{,}467$ in the order-$10$ sample ($98.5\%$;
+\path{dz4_order10_sample.txt}, two budget hits).
 \end{itemize}
-A (T2) manuscript is not yet in the repository; the statements above are read from
-\texttt{Test2Lift.lean}.
+The statements of this subsection are those of the (T2) manuscript \texttt{manuscripts/test2} (audit
+A37) and of \texttt{Test2Lift.lean}, \texttt{Test2Converse.lean}. The (T2) manuscript also records that
+twin-free matching data, needed in Theorem~\ref{thm:dlboth}(b), do not always exist, even outside odd
+semi-cliques.
 
 \subsection{DL gives both tests wherever data exist}
 
@@ -646,8 +674,8 @@ edges of $J-z$. Assume $d_J(r)\ge3$.
 \item If $z$ is the only even vertex and the graph $M$ of Definition~\ref{def:tri} is connected, (T1)
 holds at $r$. \st{Lean: \lean{test1At_of_disjL1}}
 \item If $z,r$ are the only even vertices, $z\sim r$, and no pair of $M_0$ is a pair of universal twins
-of $(J-z)-M_0$, then (T2) holds at $r$. The proof goes through the matching case of the floor lift.
-\st{Lean: \lean{test2At_of_disjL1}}
+of $(J-z)-M_0$, then (T2) holds at $r$. The proof goes through the matching case of the floor lift
+(test2 Cor.~5.3). \st{Lean: \lean{test2At_of_disjL1}}
 \end{enumerate}
 \end{theorem}
 
@@ -776,7 +804,8 @@ open, and the obstructions.
 Let $\cD$ decompose $K$, $t\ne u$, $tu\notin E(K)$, and suppose $b_\cD(t)$ is larger than the number of
 neighbours $x$ of $u$ with $b_\cD(x)=0$. Then $K+tu$ has a decomposition $\cD^+$ with $|\cD^+|=|\cD|$,
 $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$, and a bijection $\cD\to\cD^+$ that keeps vertex sets, except
-that one path gains $u$. \st{Lean: \lean{fan_single_supp}} The end-path form (clt Thm.~5.1: ends outside
+that one path gains $u$ \st{paper}. Lean proves the containment form: every path of $\cD^+$ lies in a
+path of $\cD$ plus $u$ \st{Lean: \lean{fan_single_supp}}; this is what the applications use. The end-path form (clt Thm.~5.1: ends outside
 $\{u,v\}\cup N(u)$ are kept) is \st{Lean: \lean{fan_single_track}}.
 \end{lemma}
 
@@ -845,15 +874,15 @@ Let $g$ be the even vertex and $u\in N(g)$ with $u\notin\{a,b\}$ and $u\not\sim 
 decomposition of $G-gu$ with $a\notin V(Q(b))$ gives one of $G$ with the same property
 \st{Lean: \lean{avoid_free_target}}. If $u$ is adjacent to neither $a$ nor $b$, the disjunction is
 carried with the same disjunct \st{Lean: \lean{disjL1_free_target}}. More generally, Case I carries any
-avoidance and distinctness system across a target $u$ with no constrained vertex in $N[u]\cup\{g\}$
-\st{Lean: \lean{csys_caseI}}.
+avoidance and distinctness system across a target $u$ that is not avoided and has no constrained vertex
+in $N[u]\cup\{g\}$ \st{Lean: \lean{csys_caseI}}.
 \end{proposition}
 
 Proved cases of DL(1) \st{Lean: \lean{avoid_leaf}, \lean{disjL1_leaf}, \lean{avoid_deg_two},
 \lean{disjL1_deg_two}}:
 \begin{itemize}[leftmargin=*]
 \item $a$ is a leaf at $g$, outside universal twins;
-\item $N(g)=\{a,b\}$ with $g$ the only common neighbour of $a$ and $b$ (dl-one Thms.~5.1, 6.1).
+\item $N(g)=\{a,b\}$ with $g$ the only common neighbour of $a$ and $b$ (dl-one Thm.~5.1, Cor.~6.2).
 \end{itemize}
 Also proved: the prescribed end edge in all-odd graphs \st{Lean: \lean{lovasz_endEdge}}, and EE when
 $|N(u)\cap N(z)|\le1$ \st{Lean: \lean{ee_atMostOneCommon}}.
@@ -876,13 +905,16 @@ are the current even vertices. The moves are as follows.
 \item[(M)] A token $p$ moves along $pu$ to an odd $u$ that is not the leaf or the avoided vertex of a live
 tail and has no other token neighbour in $K-pu$.
 \item[(D)] A live tail whose stem has become odd is dropped: delete $cs$.
-\item[(S)] A token of degree $2$ with non-adjacent neighbours is suppressed.
+\item[(S)] A token $p$ with $N(p)=\{a,b\}$, $a\not\sim b$, neither $a$ nor $b$ the leaf of a tail, and
+$\{a,b\}\ne\{x,s\}$ for every live tail, is suppressed: $K'=K-pa-pb+ab$.
 \end{itemize}
 A schedule ends with at most one token and at most one live tail. \st{Lean: \lean{SteerK}}
 \end{definition}
 
 \begin{theorem}[transfer theorem; multi-token Thms.~2.7, 3.1, Cor.~3.2]\label{thm:steerK}
-A $k$-token schedule from the even set gives a parity decomposition in which, for every live tail, no
+Let the tails satisfy the static conditions (TS) and $K$ the invariant (TI) of multi-token Def.~2.1:
+leaves and avoided vertices of different tails do not interfere, and every live tail has $c$ a leaf at
+$s$, $x$ odd and $x\not\sim s$. Then a $k$-token schedule from the even set gives a parity decomposition in which, for every live tail, no
 path contains both its leaf and its avoided vertex \st{Lean: \lean{steerK_good}}. For triangle data,
 orient each pair, $y_i$ and $x_i$, and hang $\ell_i$ at $y_i$. A schedule in the leaf graph $M^+$ gives a
 triangle base with $x_i\notin V(Q(y_i))$ for all $i$, and hence (T1) when $d_J(r)\ge3$
@@ -897,8 +929,10 @@ two-token schedule \st{Lean: \lean{conjN_of_core2}}.
 \item At order $9$, $d(z)=6$, over all $1{,}819$ $3$-connected $J$, some data choice and orientation has
 a $k$-token schedule at $7{,}529$ of the $10{,}118$ roots with data ($74\%$). All $76{,}474$ schedules were
 executed and verified independently.
-\item On the residual families the counts are $72$ of $180$ roots ($|O|=8$) and $109$ of $144$ ($|O|=10$);
-on the E28 hard graphs, $10$ of $48$.
+\item On multi-token's residual families, generated with \texttt{gen\_resid.py} and its own seeds (not the
+direct-test1 families), the counts are $72$ of $180$ roots ($|O|=8$) and $109$ of $144$ ($|O|=10$, with a
+$C_4$ subfamily at $|O|=8$); on the E28 hard graphs, $10$ of $48$. These are the counts of the committed
+run files; ROADMAP milestone~1 recorded an earlier run ($71$, $107$).
 \item On the all-odd lift, steering finds schedules at only $2{,}101$ of $8{,}340$ roots at order $9$
 ($25\%$).
 \end{itemize}
@@ -914,13 +948,16 @@ common neighbour, which lies outside $L_1^*$.
 \item \textbf{Conjecture N} (dl-one Conj.~9.1; Lean \lean{ConjNOn}). Let $x,y$ be odd and non-adjacent,
 and let $y$ have a neighbour $w\ne g$ with $w\not\sim x$. Then $Q(y)$ can avoid $x$. TRN implies N
 \st{Lean: \lean{conjN_of_tightTransferN}}, using NA. N reduces DL(1) to \emph{near twins}, pairs with
-$N(a)-g=N(b)-g$ \st{paper: dl-one Prop.~9.2}. So TRN does \emph{not} give DL(1) outright
-(\S\ref{sec:disc}).
+$N(a)-g=N(b)-g$ \st{paper: dl-one Prop.~9.2}, and near twins are open. So TRN does \emph{not} give
+DL(1) outright (\S\ref{sec:disc}).
 \item \textbf{TRN} (trn Conj.~1.2; Lean \lean{TightTransferNOn}). For $u\in N(g)\cap N(y)$, $u\ne x$:
 if $(G-gu,y,\{x\})$ is good, so is $(G,y,\{x\})$. The failure mechanism of Fan's transfer is exact (trn
 Prop.~3.1). The residual is the unscheduled core.
-\item \textbf{$L_1^*$ and L1Blocked} (l1star Conjs.~1.2, 1.3; Lean \lean{L1Star}, \lean{L1Blocked}). For
-odd $c$ and $A$ disjoint from $N[c]\cup N(g)$, $Q(c)$ can avoid $A$. The general form reduces to blocked
+\item \textbf{$L_1^*$ and L1Blocked}. For odd $c$ and $A$ disjoint from $N[c]\cup N(g)$ (and not
+containing $c$), $Q(c)$ can avoid $A$: this is the general form, l1star Conj.~1.3, Lean
+\lean{L1StarGen}; the form with $|A|\le2$ is l1star Conj.~1.2, Lean \lean{L1Star}; the blocked case
+($c\notin N(g)$ and every neighbour of $g$ has a neighbour in $A-g$) is l1star \S4, Lean
+\lean{L1Blocked}. The general form reduces to blocked
 instances \st{Lean: \lean{l1starGen_of_blocked}}. L1Blocked implies EE and $L_\infty$ \st{Lean:
 \lean{ee_of_l1Blocked}, \lean{lInfty_of_l1Blocked}}, and follows from TR together with ST \st{Lean:
 \lean{l1Blocked_of_someTarget}}.
@@ -937,9 +974,18 @@ the disjunction~\eqref{eq:disj} for the unoriented pairs, together with the sibl
 forest?
 \end{problem}
 Each avoidance condition alone is a theorem ($L_1$), and so is each distinctness condition outside
-one-edge components ($L_1$, Lemma~\ref{lem:np}). No precise exception list has been formulated, so this is
-stated as a problem rather than a conjecture. The bases behind Theorems~\ref{thm:allodd}
-and~\ref{thm:t2forest} are instances of it.
+one-edge components ($L_1$, Lemma~\ref{lem:np}). The DL exception cannot occur here: a component $C$ of
+an all-odd graph has even order (its degrees are odd and sum to an even number), so a non-adjacent pair
+with $N(a)=N(b)=V(C)-\{a,b\}$ would have even degree $|C|-2$ (coordinator, synthesis \S31 as
+corrected). So all-odd DL may have no structural exception at all. The smallest case, one fixed and
+one disjunctive pair in a connected all-odd graph, is test2 Conj.~7.2; it was checked exactly on every
+connected all-odd graph of orders $6$ and $8$ ($428$ and $43{,}400$ choices) with no failure
+\st{computed: test2; reproduced at order 6 by A37}. Larger cases are untested, and no exception list
+has been formulated, so this is stated as a problem rather than a conjecture. The bases behind
+Theorems~\ref{thm:allodd} and~\ref{thm:t2forest} are instances of it.
+\item \textbf{The (T2) forest base} (test2 Conj.~7.1): every instance has a forest $N(z)$-join, rooted with
+$r$ a root or with $c(r)\ge2$, and a base. It holds at all $717{,}942$ instances of order $\le10$
+\st{computed: test2}.
 \item \textbf{MT} (multi-token Conj.~6.2): the multi-tail leaf lemma with any number of live tails. There
 are no failures with two tails on every connected graph of order $\le9$ \st{computed}.
 \item \textbf{RE} for $2$-connected Eulerian graphs of even order, and \textbf{UC} (\S\ref{sec:cones}).
@@ -962,8 +1008,13 @@ Lov\'asz-plus-matching method (re-tight Prop.~4.1).
 triangle data with $k$ pairs. If $r$ has fewer than $k$ non-neighbours in $J-r$, then no data choice and
 orientation at $r$ has a $k$-token schedule. At $d(z)=6$ this is every root of degree $|J|-2$.
 \st{Lean: \lean{not_steerK_triangle}, needing only $d(w)\ge2$; abstract invariant \lean{not_steerK}}
-For the all-odd lift the same invariant gives no schedule when $r$ has at most $k-2$ non-neighbours
-\st{paper: synthesis \S31; the abstract invariant is in Lean, this instance is not}.
+For the all-odd lift with matching data ($k$ pairs, one of them $\{r,a_0\}$ with the fixed orientation,
+and a leaf hung at one vertex of each pair) the same invariant gives no schedule when $r$ has $t\le k-2$
+non-neighbours in $J-r$. The start has $k$ tokens, $k$ live tails, one live tail avoiding $r$ (the tail at $a_0$), and $t+1$ available
+non-neighbours ($a_0$ is no longer adjacent to $r$). So the first inequality of \lean{not_steerK} reads
+$t+3\le k+1$, and the second $t+4\le 2k$, which follows for $k\ge2$. \st{the start count is in the
+docstring of \texttt{MultiTokenObstruct.lean}, where it is said to be applied on paper only; the arithmetic
+was checked in A38; not formalised}
 \item \emph{Two-token steering} has no schedule when $N(y)\subseteq N[g]$ in an all-tight instance (trn
 Prop.~6.10) \st{paper; A35}.
 \item \emph{Refuted statements banked}: EMM and EMM$_3$; PEE away from $z$; ST$'$; RR$^*$;
@@ -991,8 +1042,10 @@ is the generic situation in the dense regime (direct-test1 \S7.1), both orientat
 are outside $L_1^*$, because admissibility requires the avoided vertex to be non-adjacent to $w$. The all-odd lift
 reduces (T1) to all-odd DL$(2)$ with one fixed orientation. Each condition alone is then a theorem
 ($L_1$);
-only compatibility is open. \st{computed: triangle bases at all residual roots tested
-(Conjecture~\ref{conj:tri}); all-odd bases at $54$ of $54$ roots, exact search (synthesis \S31)}
+only compatibility is open. \st{computed: triangle bases at all roots of the direct-test1 residual families and E28 graphs
+(Conjecture~\ref{conj:tri}); all-odd matching bases at $54$ of $54$ roots of random graphs (synthesis
+\S31, capped search) and at all $8{,}340$ order-$9$ roots with $d(z)=6$ and matching data (A38, exact);
+not searched on the residual families}
 
 \emph{(T2) at the same configuration.} (T2) at $d(z)=6$ is known (MR Thm~123, collection, A8). But the
 uniform route of \S\ref{sec:t2} reaches it only through the same two-pair compatibility: DL$(2)$ in
@@ -1024,7 +1077,11 @@ for this move set.
 \item \emph{All-odd steering is weaker}: $25\%$ of the order-$9$ roots, against $74\%$, and the
 degree-$(n-2)$ obstruction survives.
 \end{enumerate}
-The bases themselves exist at all these roots. The limitation is the method, not the target.
+Wherever the bases were searched for, they exist: triangle bases at every root of the direct-test1
+residual families, which include the clt graph, and of the E28 graphs; all-odd matching bases at every
+order-$9$ root with $d(z)=6$, including all those of degree $|J|-2$ (A38). Multi-token's own residual
+seeds were not searched for bases. So, as far as it was tested, the limitation is the method, not the
+target.
 
 \subsection{What a successful method must do}
 \begin{enumerate}[leftmargin=*]
@@ -1036,15 +1093,22 @@ more constraints are adjacent tails and tails with a common neighbour in $N(g)$ 
 no sequence of single-token moves, drops and suppressions does this. A successful method needs one of:
 a move that removes a token at a vertex of large degree; an end lemma with two even vertices
 (multi-token \S8); or a non-inductive argument, such as an exchange argument or a theorem about dense
-graphs.
+graphs. A first method of this kind is in progress in the dense-root session (milestone~1, merged; no
+manuscript or audit yet). It is a Lov\'asz-plus-matching theorem at roots of degree $|J|-2$, under the
+degree condition of the type of Theorem~\ref{thm:degstar} and the hypothesis that $B-r$ has at most
+one even vertex \st{Lean: \lean{exists_decomp_of_oneEven}, \lean{test1At_of_oneEven}}. In (T1) that
+hypothesis forces $z$ to be adjacent to all but at most one vertex of $B-\{r,s\}$, where $s$ is the
+non-neighbour of $r$, so it is a near-cone condition. With a parity repair that is not formalised, the method succeeds at all
+$1{,}756$ roots of degree $n-2$ at order $9$, $d(z)=6$ \st{computed: dense-root README}.
 \item \emph{Respect the true exceptions}: universal twins (DL), and the cocktail-party barrier, which
 says the last move cannot be a Fan transfer.
 \item \emph{Be at least as strong as the test with terminal structure.} The lifts are reversible
 (Propositions~\ref{prop:triconv}, \ref{prop:forestconv}, \ref{prop:alloddconv}, \ref{prop:t2conv},
 \ref{prop:floorconv}). A proof of the base is therefore a proof of (T1) with a terminal matching or
 forest, and on cones the base statements contain RE (Remark~\ref{rem:cones}).
-\item \emph{Work at bounded degree.} In the residual $d(z)=6$ and $\delta(B)\ge6$ are bounded, while
-$|J|$ is unbounded. The density is local, in $N(z)$, not global.
+\item \emph{Work without global density.} In the residual only $d(z)=6$ is bounded. The minimum degree
+is only known to be at least $6$ ($\delta(B)\ge6$), so it need not grow with $|J|$, and $|J|$ is
+unbounded. The density is local, in $N(z)$, not global.
 \end{enumerate}
 
 \subsection{Comparison with the asymptotic dense literature}\label{sec:lit}
@@ -1060,8 +1124,8 @@ The comparison shows why this does not touch the frontier:
 \item The error term $o(n)$ is fatal for the spine, which needs the exact bound $\lceil|B|/2\rceil$. The
 collection shows that the dense linear-deletion regime is as hard as Gallai (OSB Cor.~44, as recorded
 in STATUS \S3.2 and audited in A4, with a quantifier note). So exactness, not density, is the issue.
-\item The hypothesis is linear minimum degree. In the residual only $N(z)$ is dense; the degrees are
-bounded and $|J|$ is not.
+\item The hypothesis is linear minimum degree. In the residual only $N(z)$ is dense; the minimum degree
+is only known to be at least $6$, which need not be linear in $|J|$.
 \item What may transfer is the method. Absorption and robust decompositions are non-inductive, which is
 the kind of tool item~2 above asks for.
 \end{itemize}
@@ -1077,8 +1141,8 @@ Table~\ref{tab:thms} lists every headline theorem used above. \emph{Axioms}: ``s
 recorded \texttt{\#print axioms} output is \texttt{[propext, Classical.choice, Quot.sound]}. The source of
 the record is given in brackets:
 \begin{itemize}[leftmargin=*]
-\item ax: the session's axiom file (\texttt{manuscripts/spine/SpineAxioms.lean},
-\texttt{manuscripts/\{test2, trn, multi-token\}/data/axioms.txt});
+\item ax: the session's recorded output: spine \S8 (the output of
+\path{manuscripts/spine/SpineAxioms.lean}) and \path{manuscripts/{test2,trn,multi-token}/data/axioms.txt};
 \item R: the session's section of \texttt{lean/README.md};
 \item A$n$: audit $n$ re-ran the check.
 \end{itemize}
@@ -1094,21 +1158,22 @@ statement & Lean (file) & axioms & audit\\
 \midrule\endfirsthead
 \toprule statement & Lean (file) & axioms & audit\\ \midrule\endhead
 \bottomrule\endfoot
-Spine, Thm.~\ref{thm:spine} & \lean{gallai_iff_spineTests'} (Separator) & std [ax] & A14, A15\\
-Lov\'asz's theorem & \lean{lovaszStatement} (Lovasz) & std [ax, A24] & A15 (statement), A24 (axioms)\\
+Spine, Thm.~\ref{thm:spine} & \lean{gallai_iff_spineTests'} (Separator) & std [ax: spine \S8] & A14, A15\\
+Lov\'asz's theorem & \lean{lovaszStatement} (Lovasz) & std [ax: spine \S8; A24] & A15 (statement), A24 (axioms)\\
 Triangle lift, Thm.~\ref{thm:tri} & \lean{test1At_of_triangleBase} (DirectTest1) & std [R, A28] & A28\\
 Forest lift, Thm.~\ref{thm:forest} & \lean{test1At_of_forestBase} (ForestLift) & std [R] & none (coordinator check, synth.\ \S25)\\
-DL $\Rightarrow$ (T1), Thm.~\ref{thm:dlboth}(a) & \lean{test1At_of_disjL1} (TriangleBase) & std [R] & A28 (re-check \S7)\\
-(T2) forest lift, Thm.~\ref{thm:t2forest} & \lean{test2At_of_forestBase2} (Test2Lift) & std [ax] & none\\
-Floor lift, Thm.~\ref{thm:floor} & \lean{floor_of_floorBase}, \lean{test2At_of_floor}, \lean{test2At_of_floorBase} (Test2Lift) & std [ax] & none\\
-DL $\Rightarrow$ (T2), Thm.~\ref{thm:dlboth}(b) & \lean{test2At_of_disjL1} (Test2Lift) & std [ax] & none\\
-(T2) at $d(z)=4$, Thm.~\ref{thm:t2d4} & \lean{test2At_of_pairAvoid}, \lean{test2At_of_pair_farApart}, \lean{test2At_of_pair_steer2} (Test2Lift) & std [ax] & none\\
+DL $\Rightarrow$ (T1), Thm.~\ref{thm:dlboth}(a) & \lean{test1At_of_disjL1} (TriangleBase) & std [R] & none (A28 \S7 lists TriangleBase.lean as not audited)\\
+(T2) forest lift, Thm.~\ref{thm:t2forest} & \lean{test2At_of_forestBase2} (Test2Lift) & std [ax] & A37\\
+Floor lift, Thm.~\ref{thm:floor} & \lean{floor_of_floorBase}, \lean{test2At_of_floor}, \lean{test2At_of_floorBase} (Test2Lift) & std [ax] & A37\\
+(T2) converses, matching case, Props.~\ref{prop:t2conv}, \ref{prop:floorconv} & \lean{forestBase2_matching_of_test2}, \lean{matchingFloorBase_of_terminal} (Test2Converse) & std [ax, A37] & A37 (axioms; faithfulness not audited)\\
+DL $\Rightarrow$ (T2), Thm.~\ref{thm:dlboth}(b) & \lean{test2At_of_disjL1} (Test2Lift) & std [ax] & A37\\
+(T2) at $d(z)=4$, Thm.~\ref{thm:t2d4} & \lean{test2At_of_pairAvoid}, \lean{test2At_of_pair_farApart}, \lean{test2At_of_pair_steer2} (Test2Lift) & std [ax] & A37\\
 All-odd lift, Thm.~\ref{thm:allodd} & --- (not formalised) & --- & this paper (A38)\\
 Cones, Prop.~\ref{prop:cone}(c) & \lean{test1_fullCone_iff} (EulerianCone) & std [R, A30] & A30\\
 Cone tests, Thm.~\ref{thm:conespine} & \lean{fullConeTests_iff}, \lean{rootedDecomp_of_spineTestsNMC}, \lean{rootedDecomp_of_gallai} (EulerianCone) & std [R, A30] & A30\\
 Leaf, double, Lemma~\ref{lem:leafdbl} & \lean{rootedDecomp_iff_addLeaf}, \lean{rootedDecomp_of_dbl} (EulerianCone) & std [R, A30] & A30\\
 Degree $n-2$, Thm.~\ref{thm:degstar} & \lean{exists_decomp_of_degStar}, \lean{rootedDecomp_of_degStar} (RETight) & std [A31] & A31\\
-Fan with vertex sets, Lemma~\ref{lem:fan} & \lean{fan_single_supp} (FanSupport) & std [R] & A16\\
+Fan with vertex sets, Lemma~\ref{lem:fan} (containment form) & \lean{fan_single_supp} (FanSupport) & std [R] & A16\\
 Separation, Thm.~\ref{thm:sep} & \lean{separation_set}, \lean{separation} (Separation) & std [R] & A16 (statements; not rebuilt)\\
 $L_1$, Thm.~\ref{thm:L1} & \lean{lovasz_avoid_set}, \lean{lovasz_avoid_nonadj} (Separation) & std [R] & A16\\
 NA, Thm.~\ref{thm:na} & \lean{neighbourAvoidOn}, \lean{avoid_iff_reach}, \lean{avoid_packed_iff_reach} (NeighbourAvoid) & std [R, A33] & A33\\
@@ -1124,7 +1189,7 @@ $L_1^*$ from blocked; EE, $L_\infty$ & \lean{l1starGen_of_blocked}, \lean{ee_of_
 L1Blocked $\Leftarrow$ TR + ST & \lean{l1Blocked_of_someTarget} (L1Induction) & std [A25] & A25\\
 CLT-B1 $\Rightarrow$ $L_1^*$ & \lean{l1StarGen_of_cltB1} (ConstrainedLovasz) & std [A27] & A27\\
 CP$(m)$ barrier & \lean{cocktail_fan_barrier} (FanBarrier) & std [R] & A12\\
-STL, RR, Rem.~\ref{rem:other} & \lean{gallai_of_stl} (StarTerminal); \lean{gallai_of_routeRR} (RouteSystem) & std [A20; R] & A20; A16\\
+STL, RR, Rem.~\ref{rem:other} & \lean{gallai_of_stl} (StarTerminal); \lean{gallai_of_routeRR} (RouteSystem) & std [A20; R] & A20; A16 (RouteSystem statements)\\
 (T1) at $d(z)=4$ & \lean{test1_deg_four} (TightFan) & std [A24] & A24\\
 \end{longtable}}
 
@@ -1157,27 +1222,43 @@ support Example~\ref{ex:allodd}. Each runs in minutes; the logs are committed.
 These were found while checking this paper and were sent to the coordinator. The text above follows the
 primary source in each case.
 \begin{enumerate}[leftmargin=*]
-\item \emph{TRN and DL(1).} Synthesis \S30 and ROADMAP say ``TRN $\Rightarrow$ Conjecture N
+\item \emph{TRN and DL(1).} Synthesis \S30 and ROADMAP said ``TRN $\Rightarrow$ Conjecture N
 $\Rightarrow$ DL(1) (Prop.~9.2)''. dl-one Prop.~9.2 says only that N reduces DL(1) to near twins. The na,
-trn and conj-n manuscripts state this correctly.
+trn and conj-n manuscripts state this correctly. \emph{Corrected by the coordinator in
+\texttt{c58bf5f}.}
 \item \emph{The $K_{2k}-$PM exception in synthesis \S31.} The sentence ``in $K_{2k}$ minus a perfect
 matching, every Lov\'asz decomposition consists of Hamiltonian paths'' cannot refer to an all-odd
 graph: $K_{2k}-$PM is $(2k-2)$-regular, so every vertex is even. The proved $K_{2k}-$PM obstructions are
 the Fan barrier and re-tight Prop.~4.1. The DL twin instance is $K_{2k+1}$ minus a perfect matching of
-a $K_{2k}$ (\S\ref{sec:obstr}).
+a $K_{2k}$ (\S\ref{sec:obstr}). \emph{Corrected in \texttt{c58bf5f}}: universal twins cannot occur in
+all-odd graphs (Problem~\ref{prob:allodd}).
 \item \emph{The cone over $K_{2,6}$ and the all-odd lift.} Synthesis \S31 says the forest version of the
 all-odd lift fails on this cone. That holds with $r$ a root. With $r$ a child having two children it
 succeeds (Example~\ref{ex:allodd}).
 \item \emph{multi-token} labels Prop.~6.1 ``proved on paper''. Lean now proves it
 (\lean{not_steerK_triangle}, commit \texttt{9914d37}). The manuscript has no section on the all-odd
 lift, although the Lean docstring cites ``Prop.~7.2''. ROADMAP milestone~1 gives $71/180$ and
-$107/144$ for the residual families; the manuscript and README give $72/180$ and $109/144$.
-\item \emph{(T2) at $d(z)=4$.} ROADMAP: ``$98.5\%$ of an order-$10$ sample''. The file
-\lean{test2/data/dz4_order10_sample.txt} is empty. The order-$8$ file gives $478$ of $554$, and only
-that is cited here.
+$107/144$ for the residual families; the manuscript, the README and the committed run files give
+$72/180$ and $109/144$, which are cited here (coordinator agreed).
+\item \emph{(T2) at $d(z)=4$.} ROADMAP: ``$98.5\%$ of an order-$10$ sample''. At commit
+\texttt{8f2c998} the file \texttt{test2/data/dz4\_order10\_sample.txt} was empty. \emph{Resolved}: the
+data were committed in \texttt{7cfa4c0} ($7{,}358$ of $7{,}467$), and both figures are cited in
+\S\ref{sec:t2}.
 \item \emph{``Frontier for both tests.''} (T2) at $d(z)=6$ and $8$ is closed in the collection (MR
-Thms~123, 128; A8). It is a frontier for (T2) only in the sense of \S\ref{sec:frontier}: the uniform
+Thms~123, 128; A8; $d=8$ is conditional, Remark~\ref{rem:grading}). It is a frontier for (T2) only in the sense of \S\ref{sec:frontier}: the uniform
 lifts need the same two-pair compatibility there.
+\item \emph{\texttt{HsaAD\textasciitilde\}} in direct-test1.} Ex.~4.7 says that $N(z)$ is independent;
+Rem.~4.8 says, correctly, that the even subgraph of $B$ is a star with four leaves at $r$ plus an isolated
+vertex. Only $N(z)-r$ is independent (A38, F1).
+\item \emph{The star in direct-test1 Ex.~4.7.} It says that $H=J-\{z,r\}$ is ``the star with centre
+$r$''; the centre is $r'$, as the case analysis that follows uses.
+\item \emph{Theorem numbers in \texttt{Test2Lift.lean}.} The docstrings cite the (T2) manuscript one
+section behind its compiled numbering: forest lift ``Thm.~3.2'' (Thm.~4.5), stepping ``Lemma~3.1''
+(Lemma~4.4), floor lift ``Thm.~4.1'' (Thm.~5.1), DL ``Cor.~4.4'' (Cor.~5.3), one pair ``Prop.~5.3'' and
+``Cor.~5.4'' (Prop.~6.1, Cor.~6.2). \texttt{Test2Converse.lean} cites ``Prop.~4.5(a)'' for Prop.~4.6.
+\item \emph{The all-odd steering obstruction.} The synthesis \S31 addendum says the invariant of
+\lean{not_steerK} is generalised in Lean to cover the all-odd lift; the Lean docstring says that this
+instance is applied on paper only. The paper follows the Lean (\S\ref{sec:obstr}).
 \end{enumerate}
 
 \begin{thebibliography}{99}

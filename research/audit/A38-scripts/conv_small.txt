@@ -1,0 +1,8 @@
+mode A file c5.g6 graphs 21 {'A_agree': 29, 'A_inst': 29, 'A_pos': 22, 'fullenum': 29, 'lifts': 22, 'strip_equal': 46}
+mode A file c7.g6 graphs 853 {'A_agree': 5945, 'A_inst': 5945, 'A_pos': 4014, 'fullenum': 5945, 'lifts': 4014, 'strip_equal': 23676}
+mode B file c4.g6 graphs 6 {}
+mode B file c6.g6 graphs 112 {'B_T2': 215, 'B_adm': 231, 'B_agree': 576, 'B_inst': 576, 'B_pos': 514, 'fullenum': 576, 'lifts': 514, 'strip_equal': 2954}
+mode C file c3.g6 graphs 2 {'C_agree': 10, 'C_inst': 10, 'C_pos': 1, 'fullenum': 10, 'lifts': 1, 'strip_equal': 2}
+mode C file c5.g6 graphs 21 {'C_agree': 647, 'C_inst': 647, 'C_pos': 138, 'fullenum': 647, 'lifts': 138, 'strip_equal': 355}
+mode C file c4.g6 graphs 6 {'C_agree': 31, 'C_inst': 31, 'C_pos': 24, 'fullenum': 31, 'lifts': 24, 'strip_equal': 57}
+mode C file c6.g6 graphs 112 {'C_agree': 5958, 'C_inst': 5958, 'C_pos': 4027, 'fullenum': 5958, 'lifts': 4027, 'strip_equal': 26059}

@@ -1,0 +1,10 @@
+('base', 4) 11389
+('base', 6) 10118
+('base', 8) 1265
+('data_roots', 4) 11389
+('data_roots', 6) 10118
+('data_roots', 8) 1265
+
+real	17m54.606s
+user	49m2.440s
+sys	0m0.451s
