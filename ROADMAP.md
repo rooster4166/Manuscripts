@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **conj31** (session_01FxXpViHUMX8C6wcVqFLhLh, branch `claude/conj31`, new): prove two-even Conjecture 31 (a 2-connected two-even graph is tight unless an odd vertex is universal), and derive Conjecture J from it by choosing the path P. Conjecture AE if time permits. Together with the gluing lemmas, J and AE give L_N(2).
 - **conj-r** (session_01FxXpVfZD4refE9qYaAiYHm, branch `claude/conj-r`, new): prove Conjecture R and hence L_N(2). Steps: a canonical pre-committed path, schedule existence, Lean for Lemma R and Prop 6.3, then m = 3.
   - **Lean (1e58948, merged; build green; axioms checked by the coordinator):** `LemmaR.lean` has `lemmaR`, `lemmaR_leaf`, `CriterionR` and `ln2_of_criterionR`. **`ln2_of_conjR : ConjR → LN2`**: L_N(2) now reduces in Lean to Conjecture R. LN2 is stated faithfully: all-odd G, four distinct vertices, both pairs non-adjacent.
   - **Lean `JointR.lean`:** proved cases of the joint form (leaf, suppression, steering, invariant, cardinality). Also `ConjAE` and `ln2_of_leaf_at_head`.
