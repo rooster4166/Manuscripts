@@ -1,0 +1,1692 @@
+OK B G??XU[ A 2 4 A 3 7 A 6 5 P=2-6-7 3-5-4 moves=1
+OK B G??XU[ A 2 7 A 3 4 A 5 6 P=2-6-4 3-5-7 moves=1
+OK B G?Cic{ A 1 3 A 2 7 A 6 4 P=2-5 6-3-7 moves=3
+OK B G?Cic{ A 1 3 A 2 7 A 6 5 P=1-6-7 2-5-4 moves=1
+OK B G?Cic{ A 1 4 A 2 7 A 6 5 P=1-6-7 2-5-4 moves=1
+OK B G?Cic{ A 1 5 A 2 7 A 6 4 P=2-5-4 6-7 moves=3
+OK B G?Cic{ A 1 7 A 2 3 A 5 6 P=1-6-3 2-5-7 moves=1
+OK B G?Cic{ A 1 7 A 2 4 A 5 3 P=1-6 5-4-7 moves=3
+OK B G?Cic{ A 1 7 A 2 4 A 5 6 P=1-6-3 2-5-7 moves=1
+OK B G?Cic{ A 1 7 A 2 6 A 5 3 P=1-6-3 5-7 moves=3
+OK B G?CX]_ A 0 4 A 2 5 A 3 6 P=0-7 2-6-4 moves=2
+OK B G?CX]_ A 0 5 A 2 4 A 3 6 P=0-7 2-6-5 moves=2
+OK B G?CX]_ A 1 4 A 2 5 A 3 6 P=1-7 2-6-4 moves=2
+OK B G?CX]_ A 1 5 A 2 4 A 3 6 P=1-7 2-6-5 moves=2
+OK B G?CX]_ A 2 4 A 3 6 A 7 5 P=2-6 3-5-4 moves=4
+OK B G?CX]_ A 2 5 A 3 6 A 7 4 P=2-6 3-4-5 moves=4
+OK B G?CzDs A 1 7 A 3 2 A 4 6 P=1-6-2 3-7 moves=5
+OK B G?CzDs A 1 7 A 3 6 A 4 2 P=1-6-2 4-7 moves=5
+OK B G?D`|s A 0 6 A 1 2 A 5 7 P=0-7-3 5-2-6 moves=4
+OK B G?LT@{ A 0 2 A 1 7 A 6 3 P=1-5 6-2-7 moves=4
+OK B G?LT@{ A 0 2 A 1 7 A 6 4 P=1-5 6-2-7 moves=4
+OK B G?LT@{ A 0 2 A 1 7 A 6 5 P=0-6-7 1-5-3 moves=3
+OK B G?LT@{ A 0 3 A 1 7 A 6 5 P=0-6-7 1-5-3 moves=3
+OK B G?LT@{ A 0 4 A 1 7 A 6 5 P=0-6-7 1-5-3 moves=3
+OK B G?LT@{ A 0 5 A 1 7 A 6 3 P=1-5-3 6-7-2 moves=3
+OK B G?LT@{ A 0 5 A 1 7 A 6 4 P=1-5-3 6-7-2 moves=3
+OK B G?LT@{ A 0 7 A 1 2 A 5 6 P=0-6-2 1-5-7 moves=3
+OK B G?LT@{ A 0 7 A 1 3 A 5 2 P=0-6 5-3-7 moves=4
+OK B G?LT@{ A 0 7 A 1 3 A 5 4 P=0-6 5-3-7 moves=4
+OK B G?LT@{ A 0 7 A 1 3 A 5 6 P=0-6-2 1-5-7 moves=3
+OK B G?LT@{ A 0 7 A 1 4 A 5 6 P=0-6-2 1-5-7 moves=3
+OK B G?LT@{ A 0 7 A 1 6 A 5 2 P=0-6-2 5-7-3 moves=3
+OK B G?LT@{ A 0 7 A 1 6 A 5 4 P=0-6-2 5-7-3 moves=3
+OK B G?NBjs A 0 1 A 4 6 A 5 7 P=4-7-2 5-1-6 moves=5
+OK B G@O}Bs A 0 1 A 5 7 A 6 4 P=5-2 6-1-7 moves=5
+OK B G@O}Bs A 0 7 A 2 4 A 3 6 P=0-6-1 2-3-7 moves=4
+OK B G@O}Bs A 0 7 A 2 6 A 3 4 P=0-6-1 3-2-7 moves=4
+OK B G?D`|s A 0 2 A 1 6 A 7 5 P=0-7-6 1-5-2-7-3 moves=1
+OK B G?Ox|k A 0 5 A 1 6 A 4 7 P=0-7-6 1-4-5-7-2 moves=3
+OK B G?Ox|k A 0 5 A 1 6 A 7 4 P=0-7-6 1-4-5-7-2 moves=3
+OK B G?Ox|k A 0 6 A 1 5 A 4 7 P=0-7-5 1-4-6-7-2 moves=3
+OK B G?Ox|k A 0 6 A 1 5 A 7 4 P=0-7-5 1-4-6-7-2 moves=3
+OK B G?LT@{ A 0 3 A 1 7 A 6 4 P=0-6-7 1-5-3-4-2 moves=1
+OK B G?LT@{ A 0 4 A 1 7 A 6 3 P=0-6-7 1-5-3-4 moves=1
+OK B G?LT@{ A 0 7 A 1 2 A 5 4 P=0-6 1-5-3-4-7 moves=1
+OK B G?LT@{ A 0 7 A 1 4 A 5 2 P=0-6-2-4 1-5-7 moves=1
+OK B G?djjk A 0 6 A 3 5 A 4 7 P=0-4-3-7-5 3-6-7-1 moves=3
+OK B G?djjk A 0 7 A 3 5 A 4 6 P=0-4-3-6-5 3-7-6-1 moves=3
+OK B G@Q@x{ A 0 6 A 1 7 A 4 5 P=0-5-7 1-4-6-2 moves=3
+OK B G@Q@x{ A 0 6 A 1 7 A 5 4 P=0-5-7 1-4-6-2 moves=3
+OK B G@Q@x{ A 0 7 A 1 6 A 4 5 P=0-5-6 1-4-7-2 moves=3
+OK B G@Q@x{ A 0 7 A 1 6 A 5 4 P=0-5-6 1-4-7-2 moves=3
+OK B G@O}Bs A 0 7 A 2 1 A 3 4 P=0-6 2-3-5-4-7 moves=2
+OK B G@O}Bs A 0 7 A 2 4 A 3 1 P=0-6-1-4 2-7 moves=5
+OK B G@rJ|w A 2 4 A 3 5 A 6 7 P=2-3-7-5 3-6-2-7-4-1 moves=5
+OK B G@rJ|w A 2 4 A 3 5 A 7 6 P=2-3-6-5 3-7-2-6-4-0 moves=5
+OK B G@rJ|w A 2 5 A 3 4 A 6 7 P=2-3-7-4 3-6-2-7-5-1 moves=5
+OK B G@rJ|w A 2 5 A 3 4 A 7 6 P=2-3-6-4 3-7-2-6-5-0 moves=5
+OK B G@NMnK A 2 5 A 3 7 A 4 6 P=2-3-6-7 3-4-5-6-0 moves=4
+OK B G@NMnK A 2 6 A 3 5 A 4 7 P=2-4-5-7-0 3-2-7-6 moves=4
+OK B G`Kzzw A 0 2 A 1 3 A 6 7 P=0-1-7-3-4 1-6-2-4-7-5 moves=5
+OK B G`Kzzw A 0 2 A 1 3 A 7 6 P=0-1-6-3-4 1-7-2-4-6-5 moves=5
+OK B G`Kzzw A 0 2 A 1 4 A 6 7 P=0-1-7-4-3 1-6-2-3-7-5 moves=5
+OK B G`Kzzw A 0 2 A 1 4 A 7 6 P=0-1-6-4-3 1-7-2-3-6-5 moves=5
+OK B G`Kzzw A 0 2 A 1 5 A 6 7 P=0-1-7-5-3 1-6-2-3-7-4 moves=5
+OK B G`Kzzw A 0 2 A 1 5 A 7 6 P=0-1-6-5-3 1-7-2-3-6-4 moves=5
+OK B G`Kzzw A 0 3 A 1 2 A 6 7 P=0-1-7-2-4 1-6-3-4-7-5 moves=5
+OK B G`Kzzw A 0 3 A 1 2 A 7 6 P=0-1-6-2-4 1-7-3-4-6-5 moves=5
+OK B G`Kzzw A 0 3 A 1 4 A 6 7 P=0-1-7-4-2 1-6-3-2-7-5 moves=5
+OK B G`Kzzw A 0 3 A 1 4 A 7 6 P=0-1-6-4-2 1-7-3-2-6-5 moves=5
+OK B G`Kzzw A 0 3 A 1 5 A 6 7 P=0-1-7-5-2 1-6-3-2-7-4 moves=5
+OK B G`Kzzw A 0 3 A 1 5 A 7 6 P=0-1-6-5-2 1-7-3-2-6-4 moves=5
+OK B G`Kzzw A 0 4 A 1 2 A 6 7 P=0-1-7-2-3 1-6-4-3-7-5 moves=5
+OK B G`Kzzw A 0 4 A 1 2 A 7 6 P=0-1-6-2-3 1-7-4-3-6-5 moves=5
+OK B G`Kzzw A 0 4 A 1 3 A 6 7 P=0-1-7-3-2 1-6-4-2-7-5 moves=5
+OK B G`Kzzw A 0 4 A 1 3 A 7 6 P=0-1-6-3-2 1-7-4-2-6-5 moves=5
+OK B G`Kzzw A 0 4 A 1 5 A 6 7 P=0-1-7-5-2 1-6-3-2-7-4 moves=5
+OK B G`Kzzw A 0 4 A 1 5 A 7 6 P=0-1-6-5-2 1-7-3-2-6-4 moves=5
+OK B G`Kzzw A 0 5 A 1 2 A 6 7 P=0-1-7-2-3 1-6-4-3-7-5 moves=5
+OK B G`Kzzw A 0 5 A 1 2 A 7 6 P=0-1-6-2-3 1-7-4-3-6-5 moves=5
+OK B G`Kzzw A 0 5 A 1 3 A 6 7 P=0-1-7-3-2 1-6-4-2-7-5 moves=5
+OK B G`Kzzw A 0 5 A 1 3 A 7 6 P=0-1-6-3-2 1-7-4-2-6-5 moves=5
+OK B G`Kzzw A 0 5 A 1 4 A 6 7 P=0-1-7-4-2 1-6-3-2-7-5 moves=5
+OK B G`Kzzw A 0 5 A 1 4 A 7 6 P=0-1-6-4-2 1-7-3-2-6-5 moves=5
+OK B G??GnK A 0 5 A 3 7 A 4 6 P=0-7 3-6-5 moves=1
+OK B G??GnK A 0 6 A 3 5 A 4 7 P=0-7-1 3-6-7-2 moves=0
+OK B G??GnK A 1 5 A 3 7 A 4 6 P=1-7 3-6-5 moves=1
+OK B G??GnK A 1 6 A 3 5 A 4 7 P=1-7-0 3-6-7-2 moves=0
+OK B G??GnK A 2 5 A 3 7 A 4 6 P=2-7 3-6-5 moves=1
+OK B G??GnK A 2 6 A 3 5 A 4 7 P=2-7-0 3-6-7-1 moves=0
+OK B G??HmG A 0 1 A 2 5 A 4 7 P=0-7-5 2-6 moves=1
+OK B G??HmG A 0 1 A 3 5 A 4 7 P=0-7-5 3-6 moves=1
+OK B G??HmG A 0 2 A 3 5 A 4 7 P=0-7-1 3-6 moves=1
+OK B G??HmG A 0 3 A 2 5 A 4 7 P=0-7-1 2-6 moves=1
+OK B G??HmG A 0 5 A 2 1 A 4 6 P=0-7 2-6-3 moves=1
+OK B G??HmG A 0 5 A 2 3 A 4 6 P=0-7 2-6-5 moves=1
+OK B G??HmG A 0 5 A 2 7 A 4 6 P=0-7 2-6-3 moves=1
+OK B G??HmG A 0 5 A 3 1 A 4 6 P=0-7 3-6-2 moves=1
+OK B G??HmG A 0 5 A 3 2 A 4 6 P=0-7 3-6-5 moves=1
+OK B G??HmG A 0 5 A 3 7 A 4 6 P=0-7 3-6-2 moves=1
+OK B G??HmG A 0 6 A 2 5 A 4 7 P=0-7-1 2-6 moves=1
+OK B G??HmG A 0 6 A 3 5 A 4 7 P=0-7-1 3-6 moves=1
+OK B G??HmG A 1 0 A 2 5 A 4 7 P=1-7-5 2-6 moves=1
+OK B G??HmG A 1 0 A 3 5 A 4 7 P=1-7-5 3-6 moves=1
+OK B G??HmG A 1 2 A 3 5 A 4 7 P=1-7-0 3-6 moves=1
+OK B G??HmG A 1 3 A 2 5 A 4 7 P=1-7-0 2-6 moves=1
+OK B G??HmG A 1 5 A 2 0 A 4 6 P=1-7 2-6-3 moves=1
+OK B G??HmG A 1 5 A 2 3 A 4 6 P=1-7 2-6-5 moves=1
+OK B G??HmG A 1 5 A 2 7 A 4 6 P=1-7 2-6-3 moves=1
+OK B G??HmG A 1 5 A 3 0 A 4 6 P=1-7 3-6-2 moves=1
+OK B G??HmG A 1 5 A 3 2 A 4 6 P=1-7 3-6-5 moves=1
+OK B G??HmG A 1 5 A 3 7 A 4 6 P=1-7 3-6-2 moves=1
+OK B G??HmG A 1 6 A 2 5 A 4 7 P=1-7-0 2-6 moves=1
+OK B G??HmG A 1 6 A 3 5 A 4 7 P=1-7-0 3-6 moves=1
+OK B G??XU[ A 0 5 A 2 7 A 3 4 P=0-7 2-6-4-5 moves=1
+OK B G??XU[ A 0 5 A 2 7 A 3 6 P=0-7 2-6-4 moves=1
+OK B G??XU[ A 0 6 A 2 4 A 3 7 P=0-7-1 2-6-7-5 moves=0
+OK B G??XU[ A 0 6 A 2 5 A 3 7 P=0-7-1 2-6-7-4 moves=1
+OK B G??XU[ A 1 5 A 2 7 A 3 4 P=1-7 2-6-4-5 moves=1
+OK B G??XU[ A 1 5 A 2 7 A 3 6 P=1-7 2-6-4 moves=1
+OK B G??XU[ A 1 6 A 2 4 A 3 7 P=1-7-0 2-6-7-5 moves=0
+OK B G??XU[ A 1 6 A 2 5 A 3 7 P=1-7-0 2-6-7-4 moves=1
+OK B G??X]O A 0 4 A 2 1 A 3 6 P=0-7 2-6-4 moves=2
+OK B G??X]O A 0 4 A 2 5 A 3 1 P=0-7 2-6 moves=2
+OK B G??X]O A 0 4 A 2 5 A 3 6 P=0-7 2-6-4 moves=2
+OK B G??X]O A 0 4 A 2 5 A 3 7 P=0-7-1 2-6 moves=0
+OK B G??X]O A 0 4 A 2 7 A 3 6 P=0-7 2-6-4 moves=2
+OK B G??X]O A 0 5 A 2 4 A 3 6 P=0-7 2-6-5 moves=1
+OK B G??X]O A 0 5 A 2 7 A 3 6 P=0-7 2-6-4 moves=2
+OK B G??X]O A 0 6 A 2 5 A 3 4 P=0-7 2-6-4-7-1 moves=0
+OK B G??X]O A 0 6 A 2 5 A 3 7 P=0-7-1 2-6 moves=0
+OK B G??X]O A 1 4 A 2 0 A 3 6 P=1-7 2-6-4 moves=2
+OK B G??X]O A 1 4 A 2 5 A 3 0 P=1-7 2-6 moves=2
+OK B G??X]O A 1 4 A 2 5 A 3 6 P=1-7 2-6-4 moves=2
+OK B G??X]O A 1 4 A 2 5 A 3 7 P=1-7-0 2-6 moves=0
+OK B G??X]O A 1 4 A 2 7 A 3 6 P=1-7 2-6-4 moves=2
+OK B G??X]O A 1 5 A 2 4 A 3 6 P=1-7 2-6-5 moves=1
+OK B G??X]O A 1 5 A 2 7 A 3 6 P=1-7 2-6-4 moves=2
+OK B G??X]O A 1 6 A 2 5 A 3 4 P=1-7 2-6-4-7-0 moves=0
+OK B G??X]O A 1 6 A 2 5 A 3 7 P=1-7-0 2-6 moves=0
+OK B G??X]O A 2 4 A 3 6 A 7 5 P=2-6 3-5-4 moves=3
+OK B G??X]O A 2 5 A 3 4 A 7 6 P=2-6-4 3-5 moves=3
+OK B G??yso A 0 5 A 1 7 A 2 6 P=0-7 1-6-3 moves=2
+OK B G??yso A 0 6 A 1 5 A 2 7 P=0-7-3 1-6 moves=2
+OK B G??y{{ A 0 5 A 1 7 A 2 6 P=0-7-6-3 1-6-5 moves=3
+OK B G??y{{ A 0 6 A 1 5 A 2 7 P=0-7-5 1-6-7-3 moves=3
+OK B G?Ca[W A 0 4 A 1 5 A 2 7 P=0-7-5 1-6 moves=2
+OK B G?Ca[W A 0 4 A 1 5 A 3 6 P=0-7 1-6-4 moves=2
+OK B G?Ca[W A 0 4 A 1 7 A 3 6 P=0-7 1-6-4 moves=2
+OK B G?Ca[W A 0 4 A 2 7 A 3 5 P=0-7 2-5-6 moves=1
+OK B G?Ca[W A 0 4 A 2 7 A 3 6 P=0-7 2-5-6-1 moves=1
+OK B G?Ca[W A 0 5 A 1 4 A 2 6 P=0-7 1-6-5 moves=2
+OK B G?Ca[W A 0 5 A 1 4 A 3 7 P=0-7-4 1-6 moves=2
+OK B G?Ca[W A 0 5 A 1 7 A 2 6 P=0-7 1-6-4 moves=2
+OK B G?Ca[W A 0 5 A 2 4 A 3 7 P=0-7-4 2-5 moves=1
+OK B G?Ca[W A 0 5 A 2 6 A 3 7 P=0-7-4 2-5 moves=1
+OK B G?Ca[W A 0 6 A 1 4 A 3 7 P=0-7-4 1-6 moves=2
+OK B G?Ca[W A 0 6 A 1 5 A 2 7 P=0-7-4 1-6 moves=2
+OK B G?Ca[W A 1 4 A 2 6 A 3 5 P=1-6 2-5-7 moves=1
+OK B G?Ca[W A 1 4 A 2 6 A 3 7 P=1-6 2-5-7-0 moves=1
+OK B G?Ca[W A 1 5 A 2 4 A 3 6 P=1-6-4 2-5 moves=1
+OK B G?Ca[W A 1 5 A 2 7 A 3 6 P=1-6-4 2-5 moves=1
+OK B G?Ca{{ A 0 5 A 1 7 A 2 6 P=0-7-6-3 1-6-5 moves=2
+OK B G?Ca{{ A 0 6 A 1 5 A 2 7 P=0-7-5 1-6-7-3 moves=2
+OK B G?Cic{ A 0 5 A 1 7 A 2 3 P=0-7 1-6-3-4 moves=1
+OK B G?Cic{ A 0 5 A 1 7 A 2 4 P=0-7 1-6-3-4-5 moves=1
+OK B G?Cic{ A 0 5 A 1 7 A 2 6 P=0-7 1-6-3 moves=3
+OK B G?Cic{ A 0 6 A 1 3 A 2 7 P=0-7-3 1-6-7-4 moves=2
+OK B G?Cic{ A 0 6 A 1 4 A 2 7 P=0-7-3 1-6-7-5 moves=1
+OK B G?Cic{ A 0 6 A 1 5 A 2 7 P=0-7-3 1-6-7-4 moves=2
+OK B G?Ciko A 0 3 A 1 5 A 2 4 P=0-7-4-5 1-6 moves=2
+OK B G?Ciko A 0 3 A 1 5 A 2 7 P=0-7-4 1-6 moves=1
+OK B G?Ciko A 0 4 A 1 3 A 2 6 P=0-7 1-6-5 moves=2
+OK B G?Ciko A 0 4 A 1 7 A 2 6 P=0-7 1-6-5 moves=2
+OK B G?Ciko A 0 5 A 1 3 A 2 6 P=0-7 1-6-5 moves=2
+OK B G?Ciko A 0 5 A 1 7 A 2 6 P=0-7 1-6-5 moves=2
+OK B G?Ciko A 0 6 A 1 5 A 2 4 P=0-7-3 1-6-3-4-7 moves=0
+OK B G?Ciko A 0 6 A 1 5 A 2 7 P=0-7-3 1-6 moves=2
+OK B G?Ciko A 1 3 A 2 6 A 7 5 P=1-6 2-5-4 moves=3
+OK B G?Ciko A 1 5 A 2 4 A 7 6 P=1-6-3 2-5 moves=3
+OK B G?L@|k A 0 5 A 1 6 A 4 7 P=0-7-6 1-5-7-2 moves=4
+OK B G?CzDs A 0 6 A 1 2 A 5 7 P=0-7-2 1-6-7-3 moves=2
+OK B G?KydC A 0 2 A 1 7 A 4 6 P=0-7 1-6-3 moves=4
+OK B G?KydC A 0 2 A 1 7 A 5 6 P=0-7 1-6-3 moves=4
+OK B G?KydC A 0 6 A 1 3 A 4 7 P=0-7-2 1-6 moves=4
+OK B G?KydC A 0 6 A 1 3 A 5 7 P=0-7-2 1-6 moves=4
+OK B G@LCH{ A 0 5 A 1 7 A 2 6 P=0-6-7-3 1-5 moves=4
+OK B G@LCH{ A 0 5 A 1 7 A 3 6 P=0-6-7-2 1-5 moves=4
+OK B G@LCH{ A 0 5 A 1 7 A 4 6 P=0-6-7-2 1-5 moves=4
+OK B G@LCH{ A 0 7 A 1 6 A 2 5 P=0-6 1-5-7-3 moves=4
+OK B G@LCH{ A 0 7 A 1 6 A 3 5 P=0-6 1-5-7-2 moves=4
+OK B G@LCH{ A 0 7 A 1 6 A 4 5 P=0-6 1-5-7-2 moves=4
+OK A G?KydC A 1 5 A 3 2 A 6 4 P=1-6-3 moves=0
+OK A G?Ciko A 1 3 A 2 7 A 4 0 P=1-6-5-2 moves=0
+OK A G@Q@x{ A 0 7 A 2 4 A 5 1 P=0-5-6-2 moves=0
+OK A G??H}[ A 2 0 A 3 7 A 4 1 P=2-6-3 moves=0
+OK A G??Xuw A 1 6 A 2 0 A 3 4 P=1-7-3 moves=0
+OK A G@NE^c A 0 4 A 6 3 A 7 5 P=0-6 moves=9
+OK A G??xvo A 0 4 A 1 5 A 3 2 P=0-7-1 moves=0
+OK A G?Lrm[ A 3 7 A 5 4 A 6 0 P=3-5 moves=6
+OK A G@Ky{{ A 0 3 A 1 4 A 7 2 P=0-7-6-1 moves=0
+OK A G??X]O A 0 4 A 1 5 A 6 7 P=0-7-1 moves=0
+OK A G@Ue^c A 2 1 A 4 0 A 5 3 P=2-3-4 moves=7
+OK A G?Ffvo A 1 4 A 3 2 A 6 5 P=1-6-3 moves=6
+OK A G??G^{ A 3 2 A 4 1 A 5 0 P=3-7-4 moves=3
+OK A G??yso A 0 3 A 1 2 A 5 7 P=0-7-4-6-1 moves=0
+OK A G@LIn? A 0 6 A 4 1 A 5 2 P=0-7-2-4 moves=3
+OK A G@UBZk A 0 7 A 2 4 A 5 3 P=0-5 moves=4
+OK A G??Xuw A 0 4 A 2 1 A 5 6 P=0-7-3-6-2 moves=0
+OK A G?Chno A 0 5 A 3 2 A 6 4 P=0-7-3 moves=5
+OK A G??yso A 2 1 A 3 0 A 6 7 P=2-5-3 moves=1
+OK A G@NM^{ A 1 4 A 2 0 A 5 3 P=1-6-7-2 moves=6
+OK A G@QNno A 0 3 A 2 5 A 7 6 P=0-6-2 moves=8
+OK A G??X]O A 0 5 A 3 2 A 6 7 P=3-5-6 moves=0
+OK A G@NMnK A 1 0 A 3 7 A 6 2 P=1-5-6-3 moves=6
+OK A G?Ca[W A 3 1 A 4 2 A 7 6 P=3-4 moves=1
+OK A G?Cx~K A 2 3 A 6 0 A 7 4 P=2-6 moves=4
+OK A GFznno A 0 1 A 5 3 A 7 6 P=0-6-2-5 moves=9
+OK A GKeZzw A 0 6 A 4 1 A 5 2 P=0-3-4 moves=7
+OK A G@Ky{{ A 0 4 A 2 6 A 3 1 P=0-7-3-5-2 moves=6
+OK A G??X]O A 1 5 A 3 4 A 6 7 P=3-5-6 moves=0
+OK A G@TZ\[ A 0 1 A 2 4 A 6 3 P=0-7-2 moves=4
+OK A G@LY~{ A 0 5 A 2 6 A 3 1 P=0-7-2 moves=7
+OK A G@Q@x{ A 3 5 A 4 2 A 7 1 P=3-6-4 moves=5
+OK A G??H}[ A 4 3 A 5 1 A 7 2 P=4-6-7-5 moves=3
+OK A G?Cx~K A 0 2 A 1 6 A 4 7 P=0-7-1 moves=0
+OK A G??H}[ A 0 6 A 2 4 A 3 5 P=2-6-3 moves=0
+OK A G@Uu^K A 1 5 A 2 4 A 6 3 P=1-6-7-2 moves=6
+OK A G?Ca{{ A 1 3 A 4 2 A 5 0 P=1-6-4 moves=2
+OK A G?NFf{ A 1 0 A 3 5 A 6 4 P=1-7-3 moves=8
+OK A G@UBZk A 1 5 A 4 7 A 6 0 P=1-4 moves=7
+OK A G?Cic{ A 1 4 A 2 7 A 3 5 P=1-6-7-3 moves=2
+OK A G@NENo A 1 4 A 2 5 A 7 6 P=1-6-0-7-2 moves=3
+OK A G?Ca[W A 0 4 A 2 6 A 3 5 P=0-7-5-2 moves=0
+OK A G@Umf? A 2 1 A 3 5 A 6 7 P=2-3 moves=6
+OK A G?LVBw A 0 7 A 3 2 A 6 4 P=0-6-1-5-3 moves=2
+OK A G@LZ][ A 4 0 A 5 2 A 6 3 P=4-7-5 moves=8
+OK A G?CzDs A 1 7 A 2 0 A 5 6 P=1-6-2 moves=2
+OK A G??y{{ A 0 5 A 6 2 A 7 1 P=0-7 moves=1
+OK A G@U^^W A 0 4 A 3 7 A 5 2 P=0-5-3 moves=6
+OK A G@Umf? A 2 4 A 3 0 A 6 7 P=2-3 moves=6
+OK A GK~vno A 0 1 A 2 3 A 7 6 P=0-5-6-2 moves=9
+OK A G?Dbv{ A 2 1 A 3 5 A 4 0 P=2-7-3 moves=7
+OK A G?Kx}[ A 1 2 A 3 7 A 6 0 P=1-7-4-5-6 moves=6
+OK A G??xvo A 2 4 A 5 0 A 6 1 P=2-5 moves=3
+OK A G@^EL_ A 3 6 A 5 2 A 7 1 P=3-4-1-5 moves=4
+OK A G??X]O A 2 0 A 5 7 A 6 1 P=2-6-5 moves=0
+OK A G@NM~W A 4 1 A 5 3 A 6 2 P=4-2-7-5 moves=7
+OK A G??X]O A 0 6 A 2 1 A 4 3 P=0-7-4 moves=0
+OK A GBY|v{ A 0 2 A 1 6 A 3 4 P=0-7-4-1 moves=8
+OK A G?Cxv? A 1 4 A 2 0 A 7 3 P=1-7-2 moves=0
+OK A G_KunS A 0 5 A 3 1 A 6 2 P=0-6-3 moves=6
+OK A G@o}nK A 2 1 A 5 0 A 7 3 P=2-5 moves=10
+OK A G@Q^Fo A 0 2 A 3 1 A 5 6 P=0-5-3 moves=2
+OK A G@OZNo A 1 3 A 6 4 A 7 5 P=1-6 moves=4
+OK A G@QuVo A 0 1 A 4 5 A 7 6 P=0-6-4 moves=5
+OK A G@LY~{ A 0 5 A 3 1 A 6 2 P=0-7-3 moves=7
+OK A GGC^Bw A 0 5 A 1 4 A 3 2 P=0-6-2-1 moves=1
+OK A G?NV^g A 1 0 A 2 3 A 4 7 P=1-7-2 moves=7
+OK A G?NBjs A 2 0 A 4 6 A 5 7 P=2-7-4 moves=3
+OK A G?CzT_ A 0 1 A 3 6 A 4 7 P=0-7-3 moves=4
+OK A G?CzDs A 1 0 A 3 6 A 4 2 P=1-6-7-4 moves=4
+OK A G?Chno A 3 5 A 4 2 A 6 7 P=3-7-4 moves=4
+OK A G??W~o A 1 2 A 4 3 A 6 0 P=1-7-4 moves=4
+OK A G@U^NK A 3 0 A 4 7 A 5 2 P=3-4 moves=6
+OK A G?NBjs A 2 5 A 4 6 A 7 0 P=2-4 moves=5
+OK A G@UuV? A 0 2 A 4 7 A 6 3 P=0-6-4 moves=4
+OK A G_Ku^c A 3 6 A 4 1 A 7 5 P=3-4 moves=8
+OK A G@HYv? A 2 1 A 3 4 A 6 5 P=2-3 moves=5
+OK A G@Q^^g A 2 4 A 3 1 A 6 7 P=2-7-3 moves=6
+OK A G?LuBs A 2 3 A 4 5 A 7 0 P=2-4 moves=6
+OK A G@]~f{ A 2 1 A 3 0 A 6 5 P=2-5-7-3 moves=6
+OK A G??Xuw A 2 4 A 3 1 A 6 0 P=2-6-3 moves=0
+OK A G?Ca[W A 0 4 A 5 3 A 6 2 P=0-7-5 moves=1
+OK A G@UeNo A 3 0 A 4 2 A 7 6 P=3-4 moves=8
+OK A G@UBZk A 0 7 A 2 1 A 5 4 P=0-5-6-2 moves=0
+OK A G?CZC{ A 0 4 A 2 3 A 5 6 P=0-7-6-2 moves=0
+OK A G@HYv? A 1 2 A 3 4 A 6 7 P=1-5-3 moves=4
+OK A G?Ciko A 1 7 A 2 6 A 4 0 P=1-6-3-4 moves=3
+OK A G@ouNo A 0 3 A 4 5 A 7 6 P=0-4 moves=8
+OK A G@QJjs A 0 7 A 4 3 A 5 1 P=0-5-6-1-4 moves=0
+OK A G??G~W A 0 4 A 2 5 A 3 1 P=0-7-2 moves=0
+OK A G??X}s A 1 6 A 4 3 A 7 2 P=1-7-4 moves=2
+OK A G@Um^{ A 1 0 A 2 6 A 3 5 P=1-7-5-2 moves=6
+OK A G@U^NK A 0 4 A 1 5 A 3 7 P=0-7-1 moves=6
+OK A G@OZNo A 1 2 A 5 0 A 6 4 P=1-4-5 moves=4
+OK A G@HYv? A 0 3 A 4 1 A 5 2 P=0-7-2-4 moves=2
+OK A G?LZf? A 2 5 A 4 0 A 6 7 P=2-4 moves=5
+OK A GBMm][ A 1 0 A 3 5 A 7 2 P=1-6-4-3 moves=9
+OK A G_KunS A 1 2 A 5 0 A 6 4 P=1-6-5 moves=6
+OK A G@Um~W A 1 2 A 3 0 A 6 7 P=1-7-4-3 moves=5
+OK A GGC^Bw A 3 1 A 5 6 A 7 0 P=3-4-7-5 moves=2
+OK A G??Xuw A 0 1 A 3 4 A 5 2 P=0-7-3 moves=2
+OK A G??xvo A 0 2 A 4 3 A 7 6 P=0-7-4 moves=2
+OK A G?Dj~g A 3 5 A 4 2 A 6 0 P=3-7-1-6-4 moves=5
+OK A GGCyv? A 2 3 A 5 1 A 7 4 P=2-5 moves=5
+OK A G??X]O A 4 0 A 6 1 A 7 3 P=4-6 moves=3
+OK A G??X]O A 1 2 A 4 0 A 7 3 P=1-7-4 moves=0
+OK A G?LVBw A 1 4 A 3 0 A 7 6 P=1-5-3 moves=7
+OK A G@TZ\[ A 1 0 A 2 4 A 3 6 P=1-6-2 moves=3
+OK A G@Oy~K A 1 3 A 4 7 A 5 0 P=1-6-4 moves=5
+OK A G?LuBs A 0 2 A 1 4 A 5 7 P=0-6-7-1 moves=1
+OK A G?]uf? A 1 0 A 5 6 A 7 4 P=1-4-2-5 moves=5
+OK A G?LZf? A 0 5 A 2 3 A 7 6 P=0-7-2 moves=4
+OK A G??GnK A 3 0 A 6 2 A 7 4 P=3-6 moves=1
+OK A GGCZ^c A 0 1 A 2 5 A 7 4 P=0-7-2 moves=4
+OK A G?NVN{ A 3 0 A 4 6 A 5 2 P=3-7-4 moves=7
+OK A G?CZC{ A 2 3 A 4 1 A 6 0 P=2-6-7-4 moves=0
+OK A GKL\][ A 0 5 A 4 1 A 6 3 P=0-7-4 moves=9
+OK A G?Ca[W A 0 3 A 1 7 A 2 6 P=0-7-5-2 moves=0
+OK A G_Ku^c A 1 3 A 4 7 A 6 2 P=1-6-4 moves=7
+OK B G??X]O A 0 5 A 2 4 A 3 6 P=0-7 2-6-5 moves=1
+OK A G?Ox|k A 3 2 A 5 0 A 6 1 P=3-7-5 moves=6
+OK A G?LuBs A 2 0 A 3 6 A 4 1 P=2-7-3 moves=4
+OK A G?CXMs A 2 1 A 5 0 A 6 3 P=2-6-5 moves=2
+OK A G?Cjls A 2 4 A 5 0 A 7 1 P=2-5 moves=4
+OK A G@QBzw A 0 6 A 2 1 A 3 5 P=0-5-7-2 moves=4
+OK A G?]unK A 3 0 A 5 1 A 7 4 P=3-5 moves=7
+OK A G_KunS A 0 5 A 6 2 A 7 3 P=0-6 moves=9
+OK A G??W~o A 0 5 A 1 3 A 7 6 P=0-7-1 moves=0
+OK A G?CZC{ A 1 2 A 3 0 A 5 6 P=1-6-7-3 moves=3
+OK A G@Q^^g A 3 1 A 5 2 A 7 6 P=3-7-0-6-5 moves=6
+OK A G@TcJs A 0 3 A 2 1 A 4 5 P=0-6-5-2 moves=4
+OK A G@rJlk A 1 3 A 5 2 A 6 0 P=1-5 moves=6
+OK A G?Ku@{ A 2 0 A 4 6 A 5 1 P=2-7-4 moves=6
+OK A G?C`~{ A 4 1 A 5 3 A 6 0 P=4-7-5 moves=6
+OK A G@Q^Fo A 2 4 A 3 6 A 7 5 P=2-3 moves=7
+OK A G@rJlk A 3 0 A 4 2 A 7 1 P=3-6-1-4 moves=5
+OK A G?Ku@{ A 2 6 A 4 5 A 7 1 P=2-7-4 moves=5
+OK A G@QNf{ A 0 1 A 2 4 A 5 3 P=0-7-2 moves=7
+OK A G?LZnK A 0 5 A 3 2 A 6 4 P=0-7-6-3 moves=5
+OK A G?N^V{ A 0 3 A 1 4 A 6 5 P=0-5-7-1 moves=6
+OK A G?Cjdw A 0 4 A 1 2 A 7 6 P=0-7-3-6-1 moves=0
+OK A G?Ciko A 1 3 A 4 0 A 7 5 P=1-6-5-4 moves=1
+OK A G??W~o A 1 6 A 3 2 A 5 7 P=1-7-3 moves=3
+OK A G?CX]_ A 2 7 A 5 1 A 6 3 P=2-6-4-3-5 moves=0
+OK A G?Ciko A 1 4 A 3 0 A 6 2 P=1-6-3 moves=4
+OK A G?Cjdw A 1 0 A 3 5 A 4 6 P=1-6-3 moves=4
+OK A G?Cjdw A 2 0 A 3 1 A 7 6 P=2-7-3 moves=4
+OK A G???^c A 1 5 A 6 0 A 7 4 P=1-7-6 moves=1
+OK A GGE^^g A 2 3 A 4 7 A 5 1 P=2-6-4 moves=9
+OK A G@U}~o A 1 5 A 4 2 A 7 6 P=1-6-4 moves=7
+OK A G?CzDs A 3 2 A 4 6 A 7 5 P=3-4 moves=6
+OK A G?Djvc A 2 3 A 5 7 A 6 0 P=2-5 moves=5
+OK A G?LT@{ A 1 3 A 6 5 A 7 0 P=1-5-7 moves=1
+OK A G???F{ A 1 5 A 2 3 A 6 0 P=1-7-2 moves=0
+OK A G?Cic{ A 2 6 A 3 0 A 4 1 P=2-5-4-3 moves=0
+OK A G@UBZk A 1 3 A 5 2 A 7 4 P=1-6-5 moves=4
+OK A G@p\nK A 4 3 A 5 2 A 6 1 P=4-5 moves=7
+OK A G?NNfc A 0 3 A 6 4 A 7 5 P=0-5-1-6 moves=6
+OK A G@]~no A 1 5 A 2 0 A 6 4 P=1-4-2 moves=6
+OK A G@NMnK A 2 1 A 6 4 A 7 3 P=2-3-6 moves=8
+OK A G?LR^c A 2 1 A 3 0 A 7 5 P=2-4-3 moves=6
+OK A G?CXMs A 0 2 A 4 1 A 7 5 P=0-7-4 moves=1
+OK A G@UenS A 3 7 A 4 2 A 5 1 P=3-4 moves=7
+OK A GB]ln{ A 2 1 A 3 0 A 6 4 P=2-4-7-3 moves=8
+OK A G??XU[ A 1 6 A 2 4 A 5 0 P=1-7-5 moves=2
+OK A GGC^Bw A 4 2 A 5 1 A 7 0 P=4-3-7-5 moves=2
+OK A G@LZ][ A 0 6 A 3 1 A 5 2 P=0-7-4-3 moves=8
+OK A G?]u~W A 1 3 A 2 6 A 4 5 P=1-7-5-2 moves=5
+OK A G@QBzw A 0 6 A 4 3 A 5 2 P=0-5-7-4 moves=4
+OK A G@QBzw A 1 3 A 4 2 A 7 0 P=1-4 moves=7
+OK A G@Q@x{ A 0 6 A 1 2 A 4 3 P=0-5-7-4-1 moves=0
+OK A G??y{{ A 1 2 A 4 3 A 5 0 P=1-6-4 moves=1
+OK A GGCy~K A 1 0 A 3 7 A 4 2 P=1-2-5-3 moves=6
+OK A G`L|~o A 1 2 A 3 0 A 6 7 P=1-7-3 moves=8
+OK A G@QBzw A 4 3 A 5 2 A 7 0 P=4-6-5 moves=6
+OK A G??X]O A 1 6 A 2 7 A 4 0 P=1-7-4 moves=0
+OK A G?Db~o A 1 4 A 2 3 A 7 6 P=1-6-2 moves=7
+OK A G??Wv{ A 1 4 A 2 5 A 6 0 P=1-7-2 moves=0
+OK A G?Cxv? A 3 7 A 4 2 A 5 1 P=3-4 moves=4
+OK A G@Q^N{ A 0 1 A 2 4 A 6 3 P=0-7-2 moves=6
+OK A G?L@|k A 1 6 A 3 2 A 5 4 P=1-5 moves=3
+OK A G?@zv{ A 2 0 A 3 1 A 5 6 P=2-6-7-3 moves=4
+OK A G@HYv? A 0 3 A 2 5 A 4 7 P=0-7-2 moves=2
+OK A G@Lz~o A 3 0 A 4 1 A 7 5 P=3-2-5-4 moves=4
+OK A G??XU[ A 1 0 A 2 7 A 6 5 P=1-7-6 moves=0
+OK A G??y{{ A 0 3 A 2 7 A 4 1 P=0-7-4 moves=2
+OK A G???F{ A 0 1 A 3 4 A 5 2 P=0-7-3 moves=0
+OK A G@NMnK A 3 7 A 4 0 A 6 2 P=3-4 moves=6
+OK A G?Ciko A 1 4 A 2 7 A 5 0 P=1-6-5-2 moves=0
+OK A G@NE^c A 1 3 A 6 2 A 7 5 P=1-6 moves=9
+OK A G??zts A 2 4 A 3 0 A 5 7 P=2-6-7-3 moves=4
+OK A G?Lrm[ A 0 3 A 2 1 A 4 6 P=0-7-6-2 moves=2
+OK A GKLk}[ A 4 1 A 6 2 A 7 3 P=4-6 moves=7
+OK A G??HmG A 0 4 A 1 3 A 7 2 P=0-7-1 moves=0
+OK A G??Xuw A 0 5 A 1 6 A 3 4 P=0-7-1 moves=0
+OK A G?Cxv? A 2 4 A 5 6 A 7 3 P=2-5 moves=5
+OK A GHU[~{ A 1 5 A 3 0 A 4 2 P=1-4-6-7-3 moves=6
+OK A G?Lzu[ A 1 3 A 4 0 A 5 6 P=1-6-2-4 moves=4
+OK A G?Ciko A 0 4 A 2 1 A 5 7 P=0-7-3-6-5-2 moves=0
+OK A G`L|~o A 1 3 A 4 0 A 7 6 P=1-7-2-6-4 moves=8
+OK A G?CzT_ A 1 4 A 5 0 A 7 6 P=1-6-2-5 moves=2
+OK A G?LZf? A 0 6 A 2 3 A 7 4 P=0-7-2 moves=0
+OK A GKK}][ A 0 4 A 2 7 A 5 1 P=0-3-5-2 moves=3
+OK A G?Lrm[ A 0 6 A 1 4 A 3 7 P=0-7-1 moves=5
+OK A GGCyv? A 2 3 A 6 5 A 7 4 P=2-1-6 moves=5
+OK A G?Ca[W A 2 4 A 3 1 A 6 7 P=2-5-6 moves=0
+OK A G?B~vo A 2 1 A 3 0 A 6 7 P=2-7-3 moves=3
+OK A G@ouNo A 0 1 A 4 3 A 6 2 P=0-4 moves=7
+OK A G@QuVo A 0 2 A 4 5 A 6 7 P=0-7-4 moves=5
+OK A GGCy~K A 0 1 A 6 2 A 7 3 P=0-7-6 moves=7
+OK A GGE^^g A 0 4 A 2 5 A 7 6 P=0-6-1-2 moves=6
+OK A G@OZNo A 0 2 A 5 1 A 7 6 P=0-7-3-5 moves=5
+OK A G??yso A 0 2 A 4 3 A 7 1 P=0-7-4 moves=0
+OK A G?Cic{ A 1 3 A 5 0 A 7 2 P=1-6-7-5 moves=1
+OK A G??y{{ A 0 2 A 1 5 A 4 3 P=0-7-6-1 moves=0
+OK A G@HYv? A 1 3 A 5 0 A 7 6 P=1-5 moves=4
+OK A G?Cz\k A 1 2 A 5 0 A 6 3 P=1-6-4-3-5 moves=1
+OK A GGE^Vc A 3 0 A 6 5 A 7 4 P=3-4-6 moves=7
+OK B G?L@|k A 0 6 A 3 1 A 4 7 P=0-7-5 3-7-6 moves=5
+OK A G@UfMs A 0 3 A 2 1 A 4 5 P=0-6-2 moves=5
+OK A G??GnK A 3 7 A 5 0 A 6 1 P=3-6-5 moves=1
+OK A G?Cxv? A 1 0 A 3 7 A 5 6 P=1-7-2-5 moves=3
+OK A G@UuV? A 2 0 A 5 4 A 7 3 P=2-5 moves=6
+OK A G?NV^g A 1 0 A 4 5 A 6 3 P=1-6-4 moves=7
+OK A G?Cic{ A 3 5 A 6 4 A 7 2 P=3-6 moves=2
+OK A G@^EL_ A 0 2 A 4 5 A 6 3 P=0-6-1-4 moves=4
+OK A G??HmG A 0 6 A 1 4 A 2 3 P=0-7-1 moves=0
+OK A G@UuV? A 2 0 A 3 7 A 5 1 P=2-3 moves=7
+OK A G?NBjs A 0 6 A 1 2 A 5 4 P=0-5-1 moves=0
+OK A G??yso A 2 3 A 4 1 A 5 7 P=2-5-4 moves=2
+OK A G?Djvc A 0 6 A 2 3 A 4 1 P=0-7-2 moves=4
+OK A G@UfMs A 2 7 A 3 6 A 4 5 P=2-6-1-4 moves=5
+OK A G?NNng A 0 4 A 3 2 A 6 7 P=0-7-3 moves=7
+OK A G?CZC{ A 1 5 A 2 0 A 6 3 P=1-6-2 moves=0
+OK A G?djjk A 0 2 A 1 3 A 4 7 P=0-4-5-7-1 moves=4
+OK A G?Cx~K A 1 6 A 2 3 A 4 7 P=2-6-5-4 moves=4
+OK A G@p\nK A 0 2 A 6 4 A 7 3 P=0-6 moves=6
+OK A G@NENo A 2 5 A 3 1 A 6 7 P=2-4-7-3 moves=2
+OK A G@pTNo A 1 0 A 5 7 A 6 4 P=1-5 moves=6
+OK A G?LRNo A 1 4 A 5 2 A 6 3 P=1-5 moves=4
+OK A GJ]\\k A 0 4 A 5 1 A 6 3 P=0-7-3-5 moves=7
+OK A G?Cx~K A 2 0 A 6 1 A 7 3 P=2-6 moves=4
+OK A GKLk}[ A 1 6 A 5 3 A 7 2 P=1-7-5 moves=8
+OK A G?Kq\_ A 1 0 A 6 3 A 7 4 P=1-6 moves=2
+OK A G?Chno A 0 2 A 3 5 A 6 4 P=0-7-3 moves=5
+OK A G@QF~{ A 0 4 A 2 5 A 3 1 P=0-6-7-2 moves=5
+OK A G?Ff~{ A 0 4 A 2 1 A 5 3 P=0-6-7-2 moves=6
+OK A G?]Bjk A 0 6 A 4 7 A 5 2 P=4-1-6-5 moves=2
+OK A G@UfMs A 1 5 A 2 4 A 3 6 P=1-6-2 moves=6
+OK A G_Ku^c A 0 4 A 1 3 A 5 7 P=0-6-7-1 moves=6
+OK A G?djjk A 0 1 A 2 4 A 3 5 P=2-6-3 moves=5
+OK A G??HmG A 1 3 A 4 6 A 5 2 P=1-7-5-4 moves=0
+OK A G??HmG A 1 0 A 2 5 A 7 6 P=1-7 moves=2
+OK A G?LT@{ A 0 2 A 1 4 A 5 6 P=0-6-7-5-1 moves=0
+OK A GGCyv? A 1 0 A 3 2 A 6 5 P=1-6-4-5-3 moves=3
+OK A G?Djfo A 3 0 A 4 1 A 6 5 P=3-4 moves=5
+OK A G?Kq\_ A 0 4 A 2 6 A 7 1 P=0-7-2 moves=0
+OK A GPLYy{ A 0 5 A 3 1 A 6 2 P=0-2-4-7-3 moves=7
+OK A G@HYv? A 3 0 A 4 1 A 6 7 P=3-2-4 moves=3
+OK A G@Q^^g A 0 2 A 5 1 A 6 3 P=0-5 moves=7
+OK A G?LZf? A 2 1 A 3 7 A 6 0 P=2-4-3 moves=4
+OK A G?Lrm[ A 1 2 A 3 7 A 6 0 P=1-5-3 moves=5
+OK A G??W~o A 0 5 A 1 3 A 2 4 P=0-7-1 moves=0
+OK A G?`rzw A 2 3 A 4 5 A 6 7 P=2-7-4 moves=4
+OK A G??y{{ A 0 1 A 3 4 A 7 2 P=0-7-5-3 moves=4
+OK A G?Ff~{ A 1 3 A 2 0 A 5 4 P=1-6-7-2 moves=6
+OK A GGCyv? A 0 2 A 1 5 A 6 7 P=0-7-1 moves=3
+OK A G?Kq\_ A 2 0 A 3 1 A 5 4 P=2-4-3 moves=3
+OK A G?NVFo A 2 0 A 3 1 A 6 7 P=2-7-3 moves=4
+OK A G?Cxv? A 0 5 A 3 2 A 6 1 P=0-7-2-6 moves=3
+OK A GGCy~K A 3 1 A 6 2 A 7 4 P=3-6 moves=5
+OK A GI]t|w A 3 2 A 4 5 A 6 7 P=3-7-4 moves=12
+OK A GKL\][ A 0 1 A 2 7 A 3 6 P=0-6-2 moves=7
+OK A G???F{ A 0 5 A 1 3 A 6 2 P=0-7-1 moves=0
+OK A G@Qu^{ A 0 4 A 1 5 A 3 6 P=0-7-6-1 moves=5
+OK A G@HYv? A 2 5 A 6 0 A 7 4 P=2-3-6 moves=3
+OK A G??W~o A 4 0 A 5 1 A 6 2 P=4-5 moves=4
+OK A G?Ca[W A 1 0 A 4 2 A 7 3 P=1-6-4 moves=1
+OK A G?]uf? A 3 2 A 6 5 A 7 4 P=3-6 moves=6
+OK A G?]Bjk A 0 3 A 1 2 A 7 4 P=0-5-6-1 moves=6
+OK A GGE^Vc A 2 0 A 4 1 A 5 6 P=2-6-4 moves=7
+OK A G?CzDs A 0 3 A 6 5 A 7 1 P=0-7-6 moves=4
+OK A G@LIn? A 1 0 A 4 6 A 5 2 P=1-5-4 moves=4
+OK A G`\|ls A 3 1 A 4 0 A 7 5 P=3-5-4 moves=12
+OK A G?LRnS A 0 6 A 1 4 A 3 7 P=0-7-1 moves=5
+OK A G??yso A 0 4 A 1 7 A 3 2 P=0-7-3 moves=0
+OK A G@Q@x{ A 1 7 A 3 5 A 4 0 P=1-4-6-3 moves=0
+OK A GGCZ^c A 1 0 A 2 3 A 7 5 P=1-6-7-2 moves=4
+OK A G@TcJs A 0 2 A 3 5 A 4 6 P=0-6-7-3 moves=3
+OK A G??W~o A 4 1 A 6 0 A 7 5 P=4-6 moves=3
+OK A G?KqLs A 2 3 A 4 0 A 7 5 P=2-4 moves=5
+OK A G?CX]_ A 0 2 A 1 4 A 7 5 P=0-7-1 moves=0
+OK A G?CXMs A 0 6 A 1 3 A 2 5 P=0-7-1 moves=0
+OK A G??HmG A 0 6 A 3 4 A 7 2 P=0-7 moves=0
+OK A G?Ciko A 1 4 A 2 0 A 7 6 P=1-6-5-2 moves=0
+OK A GBY\][ A 1 6 A 3 4 A 5 2 P=1-3 moves=7
+OK A G@QuVo A 0 1 A 2 6 A 4 5 P=0-5-2 moves=6
+OK A G?Cic{ A 3 0 A 5 6 A 7 2 P=3-4-5 moves=3
+OK A GKL\][ A 2 5 A 4 1 A 6 3 P=2-4 moves=7
+OK A G@]}ms A 0 4 A 1 2 A 7 5 P=0-5-6-1 moves=6
+OK A GGCyv? A 2 4 A 5 1 A 7 6 P=2-5 moves=4
+OK A G?LZf? A 3 0 A 5 7 A 6 4 P=3-5 moves=5
+OK A G?KqLs A 0 4 A 1 5 A 3 6 P=0-7-6-1 moves=0
+OK A G@rJlk A 0 6 A 1 3 A 4 7 P=0-7-5-1 moves=7
+OK A G@rJlk A 0 2 A 3 5 A 4 7 P=0-7-6-3 moves=6
+OK A G?Ca{{ A 0 1 A 2 3 A 4 5 P=0-7-5-2 moves=0
+OK A G??GnK A 2 1 A 3 4 A 5 0 P=2-7-6-3 moves=0
+OK A G???^c A 2 6 A 4 7 A 5 0 P=4-6-5 moves=0
+OK A G??y{{ A 0 5 A 1 7 A 2 3 P=1-6-5-2 moves=0
+OK A G@UuV? A 1 0 A 3 7 A 5 6 P=1-4-3 moves=5
+OK A G?Cb|w A 1 4 A 2 3 A 7 6 P=1-6-2 moves=1
+OK A G@LIn? A 1 0 A 2 6 A 5 7 P=1-7-2 moves=5
+OK A G?Kq\_ A 0 6 A 4 7 A 5 1 P=0-7-2-5 moves=1
+OK A G?Fbrs A 1 2 A 5 7 A 6 0 P=1-5 moves=7
+OK A G??HmG A 1 0 A 3 2 A 4 7 P=1-7-5-6-3 moves=0
+OK A G?CzT_ A 1 3 A 4 2 A 5 0 P=1-6-4 moves=2
+OK A G?Ffvo A 0 1 A 4 2 A 7 6 P=0-6-4 moves=5
+OK A G@Ci\_ A 0 6 A 2 4 A 7 1 P=0-7-2 moves=0
+OK A G@pTNo A 0 2 A 1 3 A 6 4 P=0-4-1 moves=6
+OK A G?Chno A 0 5 A 2 3 A 4 6 P=0-7-2 moves=4
+OK A G@LZ}w A 0 6 A 1 3 A 2 7 P=0-7-1 moves=6
+OK A G?KydC A 3 2 A 5 1 A 7 4 P=3-5 moves=4
+OK A G?Djfo A 3 1 A 4 2 A 6 7 P=3-7-4 moves=3
+OK A G@^EL_ A 0 4 A 5 2 A 7 6 P=0-5 moves=6
+OK A G@UBZk A 1 5 A 2 4 A 3 0 P=1-6-2 moves=6
+OK A G?Ca{{ A 0 1 A 3 2 A 4 5 P=0-7-6-3 moves=4
+OK A G??X]O A 1 3 A 2 5 A 6 7 P=1-7-4-6-2 moves=0
+OK A G?NVVc A 2 1 A 6 5 A 7 4 P=2-6 moves=9
+OK A G@Oq^o A 0 5 A 2 1 A 3 4 P=0-7-2 moves=4
+OK A G@Ky{{ A 1 3 A 2 7 A 6 0 P=1-6-4-5-2 moves=6
+OK A G@UfMs A 0 4 A 3 1 A 7 5 P=0-7-3 moves=7
+OK A G@QJjs A 0 2 A 5 1 A 6 4 P=0-5 moves=8
+OK A G@pTNo A 0 3 A 2 1 A 4 5 P=0-7-2 moves=5
+OK A G?CXMs A 4 0 A 6 3 A 7 5 P=4-5-6 moves=2
+OK A G@o}nK A 2 6 A 3 1 A 7 4 P=2-3 moves=6
+OK A G?Ciko A 1 5 A 4 6 A 7 2 P=1-6-3-7 moves=1
+OK A G@NMf? A 2 6 A 3 5 A 4 1 P=2-3 moves=6
+OK A G@UeNo A 1 3 A 2 0 A 5 4 P=1-7-2 moves=6
+OK A G??GnK A 0 6 A 3 2 A 4 7 P=3-6-5-4 moves=0
+OK A G@Q^Vc A 2 4 A 5 1 A 6 3 P=2-3-5 moves=5
+OK A G?D`|s A 0 2 A 5 4 A 6 1 P=0-7-6-5 moves=4
+OK A G@]~f{ A 0 2 A 1 5 A 4 6 P=0-7-6-1 moves=8
+OK A G???F{ A 1 4 A 3 2 A 5 6 P=1-7-3 moves=0
+OK A G?Ciko A 0 6 A 2 3 A 7 5 P=0-7-4-5-2 moves=0
+OK A G?CX]_ A 0 6 A 1 4 A 3 2 P=0-7-1 moves=0
+OK A G?Cic{ A 0 2 A 3 5 A 6 4 P=0-7-3 moves=1
+OK A GGCyv? A 1 5 A 3 0 A 7 6 P=1-6-3 moves=4
+OK A GBY|v{ A 0 3 A 2 1 A 5 6 P=0-5-7-6-2 moves=5
+OK A G?Ca[W A 1 2 A 5 4 A 6 7 P=1-6-5 moves=1
+OK A G@Uu^K A 1 2 A 5 4 A 7 3 P=1-6-5 moves=9
+OK B G??X]O A 1 5 A 2 7 A 3 6 P=1-7 2-6-4 moves=2
+OK A G?KydC A 3 2 A 5 1 A 6 4 P=3-5 moves=4
+OK A G@UfMs A 2 7 A 3 1 A 5 4 P=2-5 moves=5
+OK A G@o}nK A 0 5 A 3 1 A 7 4 P=0-6-3 moves=6
+OK A G@Uu^K A 0 2 A 1 3 A 5 4 P=0-6-1 moves=7
+OK A GGCy~K A 2 6 A 4 7 A 5 0 P=4-3-6-5 moves=4
+OK A G??z|w A 0 1 A 2 4 A 7 6 P=0-7-5-6-2 moves=2
+OK A G@LZ][ A 4 1 A 5 0 A 7 3 P=4-5 moves=6
+OK A G??X]O A 0 1 A 5 2 A 7 3 P=0-7-4-5 moves=0
+OK A G?CzT_ A 0 1 A 4 2 A 7 5 P=0-7-3-4 moves=2
+OK A G?Db~o A 2 4 A 3 0 A 7 5 P=2-6-3 moves=5
+OK A G?Ku@{ A 1 4 A 2 0 A 3 6 P=1-6-7-2 moves=2
+OK A G??G~W A 1 5 A 4 3 A 7 6 P=1-7-4 moves=1
+OK A G??xvo A 3 1 A 4 2 A 7 6 P=3-5-4 moves=4
+OK A G@Ue^c A 2 6 A 3 5 A 4 0 P=2-3 moves=4
+OK A GGC^Bw A 0 1 A 4 2 A 6 3 P=0-6 moves=5
+OK A G@VL~W A 1 6 A 4 2 A 7 3 P=1-4 moves=9
+OK A G??HmG A 1 0 A 2 5 A 3 4 P=1-7-5-6-3 moves=0
+OK A G??X]O A 2 4 A 3 1 A 7 6 P=2-6-5-3 moves=0
+OK A G@`ZZk A 1 3 A 5 2 A 7 0 P=1-5 moves=8
+OK A G?KydC A 3 1 A 4 0 A 6 5 P=3-4 moves=4
+OK A GKLk}[ A 0 5 A 1 6 A 2 7 P=0-7-1 moves=6
+OK A G@Ue^c A 0 2 A 6 3 A 7 5 P=0-6 moves=9
+OK A GHM]}w A 0 3 A 1 4 A 7 6 P=0-6-1 moves=5
+OK A G@UeNo A 3 1 A 4 6 A 5 7 P=3-7-4 moves=7
+OK A G?]Bjk A 0 3 A 2 5 A 4 6 P=0-5-7-1-4 moves=3
+OK A G?Ku@{ A 1 5 A 2 6 A 4 0 P=1-6-7-4 moves=4
+OK A GGC^Bw A 0 2 A 1 5 A 4 6 P=0-6-1 moves=5
+OK A G@Ue^c A 5 1 A 6 2 A 7 4 P=5-6 moves=9
+OK A G@p\nK A 1 0 A 3 4 A 5 2 P=1-5-3 moves=5
+OK A GGE^Vc A 2 0 A 4 1 A 5 7 P=2-7-3-4 moves=5
+OK A G@Ue^c A 2 6 A 4 0 A 5 7 P=2-7-1-4 moves=5
+OK A G?Cjls A 2 4 A 6 0 A 7 1 P=2-6 moves=5
+OK A G@NMf? A 2 1 A 6 5 A 7 3 P=2-3-6 moves=4
+OK A G?Djfo A 3 2 A 5 0 A 6 4 P=3-4-5 moves=3
+OK A G@LZ][ A 1 3 A 2 7 A 4 0 P=1-5-4-2 moves=7
+OK A G?Cxv? A 0 2 A 1 5 A 4 7 P=0-7-1 moves=0
+OK A G@Q^^g A 0 4 A 1 2 A 6 7 P=0-5-7-1 moves=9
+OK A G?Cb|w A 0 1 A 5 4 A 6 7 P=0-7-5 moves=1
+OK A G@QNf{ A 2 1 A 4 0 A 5 3 P=2-7-4 moves=7
+OK A G?Ca[W A 1 7 A 2 3 A 5 4 P=1-6-5-2 moves=0
+OK A G?]u~W A 1 3 A 2 0 A 7 6 P=1-6-4-2 moves=5
+OK A G@`ZZk A 0 5 A 1 3 A 7 4 P=0-4-6-1 moves=4
+OK A G?LR^c A 0 1 A 2 3 A 4 5 P=0-7-2 moves=6
+OK A G??Xuw A 1 6 A 2 7 A 5 0 P=1-7-5 moves=0
+OK A G?Chno A 0 5 A 3 2 A 4 1 P=0-7-3 moves=2
+OK A G@Q^Fo A 0 4 A 1 3 A 5 7 P=0-7-1 moves=6
+OK A G??Xuw A 2 3 A 5 1 A 6 7 P=2-6-4-7-5 moves=1
+OK A G?Ffvo A 0 1 A 3 2 A 6 7 P=0-7-3 moves=5
+OK A G?NFno A 1 4 A 2 0 A 5 3 P=1-6-2 moves=6
+OK A G?Ca[W A 2 1 A 3 5 A 4 0 P=2-5-6-4 moves=0
+OK A G?Ciko A 4 0 A 5 7 A 6 2 P=4-5 moves=4
+OK A G?NNng A 0 2 A 3 5 A 4 1 P=0-6-3 moves=7
+OK A G?Cic{ A 0 5 A 3 2 A 4 1 P=0-7-3 moves=2
+OK A G?CzT_ A 2 0 A 5 1 A 6 7 P=2-5 moves=4
+OK A G?Cb|w A 0 2 A 3 1 A 4 5 P=0-7-3 moves=4
+OK A G@QuVo A 1 3 A 4 0 A 6 7 P=4-6 moves=6
+OK A G?`rzw A 1 0 A 4 2 A 7 6 P=1-6-4 moves=4
+OK A G@QBzw A 0 7 A 2 4 A 5 1 P=0-5-6-2 moves=4
+OK A G@NEF{ A 2 0 A 3 5 A 4 1 P=2-4-7-3 moves=2
+OK A G?L@|k A 2 1 A 3 0 A 7 4 P=2-6-3 moves=5
+OK A G?Cx~K A 4 7 A 5 0 A 6 1 P=4-3-5 moves=4
+OK A G?L@|k A 0 6 A 3 1 A 7 4 P=0-7-3 moves=2
+OK A G@LIn? A 0 1 A 5 3 A 6 2 P=0-7-2-4-5 moves=2
+OK A G@UenS A 5 1 A 6 2 A 7 3 P=5-6 moves=6
+OK A G@TcJs A 1 6 A 2 0 A 3 5 P=1-7-2 moves=5
+OK A G@HYv? A 0 1 A 2 6 A 3 4 P=0-7-2 moves=5
+OK A G@QJjs A 0 6 A 3 4 A 5 7 P=0-5 moves=4
+OK A G?Kq\_ A 1 3 A 5 4 A 6 7 P=1-6-5 moves=0
+OK A G?djjk A 0 7 A 3 2 A 4 6 P=0-4-5-6-3 moves=0
+OK A G?LR^c A 2 0 A 4 1 A 7 5 P=2-4 moves=6
+OK A G??yso A 3 2 A 4 0 A 6 7 P=3-6-4 moves=2
+OK A G?NNng A 0 1 A 3 5 A 7 4 P=0-6-3 moves=8
+OK A G??GnK A 1 2 A 3 7 A 4 6 P=1-7-5-4 moves=0
+OK A G?NVFo A 2 1 A 3 0 A 6 4 P=2-4-3 moves=4
+OK A G@rJ|w A 1 0 A 5 2 A 6 7 P=1-4-7-5 moves=10
+OK A G@Oq^o A 0 6 A 4 3 A 5 7 P=0-7-4 moves=5
+OK A G@Q^Vc A 3 6 A 4 0 A 5 2 P=3-5-4 moves=3
+OK B G??GnK A 0 5 A 3 7 A 4 6 P=0-7 3-6-5 moves=1
+OK A G?]uf? A 0 3 A 1 2 A 4 5 P=0-6-1 moves=6
+OK A G?LRnS A 0 1 A 5 2 A 6 4 P=0-7-6-5 moves=5
+OK A G@UfMs A 1 3 A 2 0 A 7 5 P=1-6-2 moves=8
+OK A GI]t|w A 2 3 A 5 4 A 7 1 P=2-6-0-5 moves=7
+OK A G@Ci\_ A 2 1 A 3 6 A 7 5 P=2-3 moves=4
+OK A G@UeNo A 3 5 A 4 2 A 7 6 P=3-4 moves=8
+OK A G??X]O A 3 1 A 4 2 A 7 6 P=3-5-4 moves=1
+OK A G?@z~o A 3 0 A 4 1 A 7 6 P=3-6-4 moves=2
+OK A G?Chf{ A 1 4 A 2 0 A 5 3 P=1-7-2 moves=2
+OK A G??y{{ A 3 4 A 5 0 A 7 2 P=3-6-5 moves=5
+OK A G??W~o A 2 6 A 4 0 A 5 1 P=2-7-4 moves=5
+OK A G?Cz\k A 2 3 A 4 7 A 5 0 P=2-6-4 moves=4
+OK A G?Fnno A 0 3 A 1 2 A 5 7 P=0-6-5-4-7-1 moves=5
+OK A G??G~W A 0 5 A 1 3 A 4 2 P=0-7-1 moves=0
+OK A G?CzDs A 2 3 A 4 1 A 5 7 P=2-7-4 moves=5
+OK A G?Fnf{ A 0 3 A 2 1 A 5 6 P=0-6-7-2 moves=6
+OK A G?CXMs A 2 3 A 6 4 A 7 5 P=2-6 moves=1
+OK A G@QJjs A 1 3 A 2 4 A 6 0 P=1-6-2 moves=6
+OK A G?Djfo A 2 1 A 3 5 A 6 7 P=2-7-3 moves=5
+OK A G@LCH{ A 0 2 A 3 6 A 7 1 P=0-6-7 moves=6
+OK A G?Ciko A 0 5 A 3 1 A 7 6 P=0-7-3 moves=0
+OK A G@NE^c A 1 3 A 5 7 A 6 2 P=1-6-5 moves=5
+OK A G@UenS A 2 0 A 5 3 A 6 4 P=2-5 moves=9
+OK A G@Umf? A 2 0 A 3 7 A 6 4 P=2-3 moves=6
+OK A G_Ku^c A 2 3 A 5 1 A 7 4 P=2-5 moves=8
+OK A G?LRNo A 0 2 A 4 1 A 7 5 P=0-7-4 moves=5
+OK A G??yso A 1 4 A 2 6 A 5 0 P=1-6-3-5 moves=0
+OK A G?Ku@{ A 4 5 A 6 2 A 7 1 P=4-7-6 moves=3
+OK A G??X]O A 0 3 A 1 6 A 7 2 P=0-7-1 moves=0
+OK A G?D`|s A 0 3 A 4 2 A 6 1 P=0-7-4 moves=5
+OK A G@QNno A 1 2 A 3 4 A 6 7 P=1-7-3 moves=8
+OK A G??Xuw A 1 5 A 4 3 A 7 2 P=1-7-4 moves=2
+OK A G?Dj~g A 1 3 A 4 0 A 6 7 P=1-7-5-4 moves=7
+OK A G??GnK A 0 3 A 2 1 A 4 6 P=0-7-2 moves=0
+OK A G`L|~o A 1 4 A 2 0 A 6 7 P=1-7-2 moves=8
+OK A G??yso A 1 0 A 3 4 A 7 5 P=1-6-3 moves=1
+OK A G?Djvc A 0 3 A 6 5 A 7 4 P=0-7 moves=7
+OK A G??W~o A 2 4 A 5 0 A 7 6 P=2-7-3-5 moves=1
+OK A G@\r|w A 2 1 A 3 0 A 7 6 P=2-4-6-3 moves=10
+OK A G?Cx~K A 1 3 A 2 4 A 6 0 P=1-7-2 moves=6
+OK A G??Wv{ A 0 6 A 1 2 A 3 4 P=0-7-1 moves=0
+OK A G?Cz\k A 0 6 A 2 3 A 5 1 P=0-7-2 moves=4
+OK A G?Ca[W A 1 7 A 2 4 A 6 0 P=1-6-5-2 moves=0
+OK A GGC^Bw A 0 7 A 3 1 A 5 6 P=3-4-7-5 moves=1
+OK A G???^c A 1 4 A 3 0 A 5 7 P=1-7-3 moves=0
+OK A G@HYv? A 0 1 A 2 6 A 7 3 P=0-7-2 moves=0
+OK A GCLZZ[ A 4 1 A 5 2 A 7 3 P=4-6-5 moves=9
+OK A G@UBZk A 0 6 A 2 1 A 4 7 P=0-5-7-2 moves=4
+OK A G?Dj~g A 0 4 A 3 1 A 6 7 P=0-7-3 moves=8
+OK A GBXz~o A 1 2 A 6 0 A 7 5 P=1-5-6 moves=6
+OK A G?CXMs A 2 0 A 6 4 A 7 5 P=2-6 moves=1
+OK A G??G~W A 2 4 A 5 0 A 6 7 P=2-7-5 moves=1
+OK A G@UuV? A 1 2 A 3 0 A 7 4 P=1-4-3 moves=5
+OK A G?Ch~c A 3 1 A 4 2 A 6 0 P=3-4 moves=4
+OK A G?@zv{ A 0 5 A 3 1 A 4 2 P=0-7-3 moves=3
+OK A G?L@|k A 0 6 A 3 1 A 5 2 P=0-7-3 moves=2
+OK A G?Djvc A 1 3 A 2 4 A 7 5 P=1-6-2 moves=7
+OK A G??XU[ A 0 2 A 6 5 A 7 3 P=0-7-6 moves=1
+OK A G?CzDs A 2 0 A 4 1 A 5 6 P=2-6-7-4 moves=4
+OK A G?]Bjk A 3 0 A 5 1 A 6 4 P=3-6-5 moves=3
+OK A G@OZNo A 0 3 A 2 1 A 5 7 P=0-7-2 moves=5
+OK A GB^nf{ A 0 1 A 3 5 A 6 4 P=0-7-4-2-3 moves=8
+OK A G?LRF{ A 0 5 A 3 1 A 4 6 P=0-7-3 moves=2
+OK A G@o}nK A 1 2 A 5 0 A 7 4 P=1-4-5 moves=6
+OK A G?Cxv? A 1 3 A 5 0 A 7 4 P=1-7-2-5 moves=0
+OK A G?NFf{ A 2 0 A 3 1 A 4 6 P=2-4-7-6-3 moves=1
+OK A G@Oy~K A 1 3 A 6 2 A 7 4 P=1-6 moves=5
+OK A G@UeF{ A 1 5 A 3 0 A 4 2 P=1-7-3 moves=6
+OK A G?CzDs A 0 2 A 1 7 A 6 5 P=0-7-6 moves=0
+OK A G?Fnf{ A 0 4 A 1 2 A 5 3 P=0-7-1 moves=6
+OK A G??GnK A 0 5 A 4 6 A 7 3 P=0-7 moves=1
+OK A G?CzT_ A 0 5 A 3 2 A 7 1 P=0-7-3 moves=0
+OK A G??G^{ A 2 1 A 3 5 A 6 0 P=2-7-3 moves=0
+OK A G???^c A 4 1 A 5 7 A 6 2 P=4-6-5 moves=0
+OK A G??GnK A 0 6 A 1 5 A 4 3 P=0-7-1 moves=0
+OK A G@Ue^c A 0 3 A 2 1 A 4 7 P=0-7-2 moves=6
+OK A G@NM^{ A 1 4 A 2 0 A 6 3 P=1-5-7-2 moves=6
+OK A G?Db~o A 0 6 A 1 2 A 5 7 P=0-7-1 moves=3
+OK A G@UenS A 1 3 A 2 0 A 4 6 P=1-6-7-2 moves=6
+OK A GGCyv? A 3 0 A 4 7 A 6 5 P=3-6 moves=5
+OK A G?Cjls A 0 6 A 1 7 A 3 5 P=0-7-3 moves=5
+OK A G@Q^^g A 0 2 A 1 5 A 3 4 P=0-6-1 moves=7
+OK A G??z|w A 0 2 A 3 4 A 7 1 P=0-7-5-3 moves=3
+OK A G@LIn? A 0 3 A 2 1 A 7 5 P=0-7-2 moves=3
+OK A G_Ku^c A 3 2 A 4 0 A 5 1 P=3-4 moves=6
+OK A G@^EL_ A 1 7 A 3 5 A 6 4 P=1-4-3 moves=5
+OK A G?]u~W A 3 0 A 4 5 A 7 6 P=3-6-4 moves=10
+OK A G@Ue^c A 1 2 A 5 4 A 6 3 P=1-6-5 moves=6
+OK A G?LVBw A 0 5 A 1 2 A 7 6 P=0-6-1 moves=5
+OK A G?Ffvo A 2 3 A 4 1 A 6 5 P=2-6-4 moves=6
+OK A G?Chf{ A 3 2 A 4 6 A 5 1 P=3-7-4 moves=3
+OK A G@HYv? A 1 3 A 6 0 A 7 5 P=1-6 moves=4
+OK A G?Kq\_ A 4 0 A 6 3 A 7 1 P=4-6 moves=3
+OK A GJ]\\k A 0 1 A 3 6 A 7 4 P=0-5-4-3 moves=8
+OK A G?Cb|w A 1 7 A 4 0 A 5 3 P=1-6-4 moves=4
+OK A G@TcJs A 2 4 A 5 3 A 7 0 P=2-5 moves=5
+OK A G?LZf? A 0 6 A 4 1 A 5 7 P=0-7-2-4 moves=4
+OK A G??XU[ A 2 0 A 4 1 A 7 3 P=2-6-4 moves=1
+OK A G?CXMs A 2 5 A 4 0 A 6 3 P=2-6-7-3-4 moves=3
+OK A G???^c A 2 6 A 4 7 A 5 3 P=4-6-5 moves=0
+OK A G??Xuw A 0 6 A 1 4 A 2 5 P=0-7-1 moves=0
+OK A G`Kzzw A 0 2 A 5 1 A 6 7 P=5-2-6 moves=6
+OK A G?Djfo A 0 2 A 3 1 A 5 6 P=0-7-3 moves=5
+OK A G@Q^Fo A 3 0 A 4 2 A 7 6 P=3-5-4 moves=7
+OK A G?L@|k A 3 0 A 5 4 A 7 1 P=3-6-5 moves=5
+OK A G??XU[ A 2 7 A 5 1 A 6 3 P=2-6-4-5 moves=0
+OK A G??W~o A 3 2 A 4 0 A 5 7 P=3-5 moves=4
+OK A G?N^V{ A 1 4 A 2 5 A 3 0 P=1-7-2 moves=7
+OK A G@Ue^c A 0 4 A 1 5 A 2 6 P=0-6-1 moves=5
+OK A G@Kz|w A 0 3 A 2 1 A 7 6 P=2-3-7 moves=2
+OK A G?Chno A 1 5 A 3 0 A 4 6 P=1-7-3 moves=4
+OK A G@Ci\_ A 0 6 A 4 1 A 5 3 P=0-7-3-4 moves=2
+OK A G??H}[ A 0 3 A 1 5 A 2 7 P=0-7-1 moves=0
+OK A G@Oq^o A 1 3 A 2 6 A 4 5 P=1-7-2 moves=6
+OK A G?D`|s A 1 7 A 3 5 A 4 0 P=1-5-6-4 moves=4
+OK A G?KqLs A 1 3 A 4 6 A 5 7 P=1-6-5 moves=2
+OK A G?Dj~g A 1 4 A 2 0 A 7 6 P=1-5-6-2 moves=5
+OK A G@Oy~K A 1 5 A 2 6 A 7 4 P=1-7-2 moves=4
+OK A G???F{ A 1 3 A 4 0 A 5 2 P=1-7-4 moves=0
+OK A G?Djvc A 3 2 A 5 6 A 7 4 P=3-4-5 moves=4
+OK A G?Lrm[ A 0 6 A 1 4 A 2 3 P=0-7-1 moves=5
+OK A G?LRNo A 1 2 A 4 5 A 6 7 P=1-7-4 moves=5
+OK A G@^EL_ A 2 6 A 3 1 A 4 0 P=2-3 moves=5
+OK A G?KydC A 1 4 A 3 7 A 6 2 P=1-6-3 moves=3
+OK A G?Cjls A 0 1 A 4 2 A 5 7 P=0-7-4 moves=2
+OK A G??G^{ A 0 2 A 1 6 A 5 3 P=0-7-1 moves=0
+OK A G?LVBw A 1 4 A 2 5 A 6 7 P=1-7-2 moves=6
+OK A G?Ox|k A 2 3 A 4 0 A 5 1 P=2-6-5-4 moves=5
+OK A G?djjk A 0 7 A 3 1 A 4 2 P=0-4-3 moves=4
+OK B G?D`|s A 0 2 A 1 6 A 5 7 P=0-7-6-3 5-6-2 moves=3
+OK A G???F{ A 0 3 A 1 6 A 4 2 P=0-7-1 moves=0
+OK A G?NVFo A 0 2 A 1 3 A 7 5 P=0-5-1 moves=7
+OK A G?N^^o A 0 3 A 1 4 A 7 5 P=0-5-1 moves=6
+OK A G??W~o A 2 5 A 3 4 A 7 6 P=2-7-3 moves=2
+OK A GGCyv? A 3 0 A 4 1 A 6 2 P=3-4 moves=4
+OK A G?Ku@{ A 3 6 A 4 5 A 7 1 P=3-7-4 moves=5
+OK A G@pTNo A 1 2 A 3 0 A 7 5 P=1-5-3 moves=6
+OK A G?]Bjk A 1 5 A 2 0 A 6 4 P=1-6-2 moves=3
+OK A G?Cjls A 4 2 A 6 0 A 7 1 P=4-3-6 moves=5
+OK A G@pTNo A 3 1 A 6 4 A 7 5 P=3-2-6 moves=7
+OK A G???F{ A 2 1 A 3 5 A 6 0 P=2-7-3 moves=0
+OK A G??yso A 2 1 A 4 3 A 5 7 P=2-5-4 moves=2
+OK A G?Cz\k A 0 5 A 3 2 A 4 1 P=0-7-3 moves=6
+OK A G??yso A 1 5 A 2 3 A 4 0 P=1-6-4 moves=3
+OK A G?Cic{ A 1 2 A 4 6 A 5 3 P=1-6-7-5 moves=3
+OK A G@QBzw A 2 1 A 3 5 A 6 7 P=2-6-4-7-3 moves=4
+OK A G@LZ}w A 1 4 A 2 5 A 6 0 P=1-5-6 moves=4
+OK A G??G~W A 1 4 A 3 5 A 6 2 P=1-7-5-6 moves=0
+OK A G@Q@x{ A 0 4 A 1 6 A 5 3 P=1-4-7-5 moves=0
+OK A G??GnK A 3 0 A 4 7 A 6 1 P=3-6-5-4 moves=0
+OK A G?NBjs A 1 4 A 5 3 A 7 0 P=1-5 moves=7
+OK A G?LRF{ A 0 1 A 3 2 A 5 6 P=0-7-3 moves=3
+OK A GB^nno A 1 2 A 3 5 A 6 4 P=1-4-3 moves=7
+OK A G?Cjdw A 1 5 A 3 0 A 6 4 P=1-6-3 moves=0
+OK A G@LY~{ A 0 6 A 1 3 A 5 2 P=0-7-1 moves=7
+OK A G@UuV? A 3 0 A 4 7 A 5 6 P=3-4 moves=6
+OK A G?KqLs A 0 2 A 3 6 A 5 4 P=0-7-3 moves=4
+OK A G@]}ms A 2 0 A 4 6 A 5 1 P=2-4 moves=8
+OK A G?]unK A 0 4 A 1 5 A 3 2 P=0-6-1 moves=6
+OK A G?KydC A 3 7 A 4 1 A 6 2 P=3-4 moves=4
+OK A G_Ku^c A 2 0 A 3 6 A 4 1 P=2-4-3 moves=4
+OK A G?Ciko A 0 5 A 4 2 A 7 6 P=0-7-4 moves=2
+OK A G?LT@{ A 5 0 A 6 4 A 7 1 P=5-7-6 moves=5
+OK A GBh|~o A 2 1 A 3 0 A 6 7 P=2-7-3 moves=8
+OK A G?Cic{ A 1 7 A 2 3 A 6 0 P=1-6 moves=0
+OK A G??G~W A 3 0 A 5 2 A 6 1 P=3-6-5 moves=0
+OK A G@UenS A 0 2 A 4 6 A 5 3 P=0-7-4 moves=8
+OK A GKeZzw A 0 6 A 1 5 A 2 4 P=0-4-7-1 moves=7
+OK A G@Q^Fo A 1 2 A 4 3 A 5 7 P=1-7-4 moves=7
+OK A G@Ue^c A 0 2 A 6 3 A 7 4 P=0-6 moves=8
+OK A G?Cb|w A 1 4 A 3 5 A 6 7 P=1-6-2-7-3 moves=4
+OK A G@NMf? A 3 0 A 5 2 A 7 4 P=3-4-5 moves=4
+OK A G@pTNo A 2 5 A 3 4 A 6 1 P=2-3 moves=6
+OK A G@Umf? A 0 4 A 1 3 A 5 6 P=0-6-1 moves=6
+OK A G??GnK A 0 1 A 4 3 A 5 2 P=0-7-5-4 moves=0
+OK A G@Tzs{ A 0 3 A 2 4 A 7 1 P=0-7-5-2 moves=5
+OK A G?Cjdw A 0 2 A 1 3 A 6 4 P=0-7-3-6 moves=0
+OK A G??W~o A 4 3 A 5 2 A 7 6 P=4-5 moves=3
+OK A G??HmG A 2 1 A 3 7 A 4 0 P=2-6-3 moves=0
+OK A G??G~W A 1 5 A 2 0 A 7 3 P=1-7-2 moves=0
+OK A G?Ca{{ A 1 3 A 2 6 A 4 0 P=1-6-4 moves=3
+OK A GJ]\\k A 3 6 A 4 0 A 5 1 P=3-7-2-4 moves=7
+OK A G?NV^g A 0 1 A 3 2 A 5 4 P=0-5-3 moves=5
+OK A G??y{{ A 4 3 A 5 0 A 7 2 P=4-6-5 moves=5
+OK A G?Lzu[ A 2 1 A 3 7 A 4 0 P=2-4-5-3 moves=7
+OK A G@LAN{ A 2 1 A 3 5 A 4 0 P=2-4-7-3 moves=2
+OK A G@LZ][ A 0 1 A 3 6 A 7 2 P=0-7-4-3 moves=4
+OK A G??XU[ A 0 4 A 1 3 A 2 7 P=0-7-1 moves=0
+OK A GKeZzw A 1 3 A 2 5 A 6 0 P=1-2 moves=8
+OK A G??GnK A 0 6 A 4 2 A 7 3 P=0-7-5-4 moves=0
+OK A G`\t|w A 0 2 A 5 4 A 6 1 P=0-6-3-5 moves=7
+OK A G@o}nK A 1 5 A 4 2 A 7 3 P=1-4 moves=7
+OK A G?Cjls A 0 2 A 1 4 A 5 7 P=0-7-6-1 moves=0
+OK A G@ouNo A 0 5 A 2 4 A 7 6 P=0-7-2 moves=7
+OK A G?Cz\k A 0 4 A 1 5 A 3 2 P=0-7-6-1 moves=0
+OK A G???F{ A 1 2 A 3 6 A 4 0 P=1-7-3 moves=0
+OK A G@Oq^o A 0 1 A 4 3 A 6 7 P=0-7-4 moves=6
+OK A G??Xuw A 0 4 A 5 1 A 7 6 P=0-7-5 moves=1
+OK A G@pTNo A 1 2 A 5 4 A 6 3 P=1-5 moves=5
+OK A G@NE^c A 0 2 A 4 1 A 5 7 P=0-7-6-4 moves=6
+OK A G??yso A 3 0 A 6 5 A 7 1 P=3-6 moves=3
+OK A G@UuV? A 0 4 A 1 5 A 2 6 P=0-6-1 moves=6
+OK A G??Wv{ A 0 3 A 4 2 A 6 5 P=0-7-4 moves=3
+OK A GGCyv? A 2 0 A 5 1 A 7 3 P=2-5 moves=5
+OK A G?CzT_ A 1 4 A 3 2 A 6 7 P=1-6 moves=5
+OK A G??Xuw A 4 3 A 5 0 A 6 1 P=4-5 moves=4
+OK A G?Cz\k A 2 3 A 4 1 A 6 0 P=2-5-4 moves=4
+OK A G?Cjdw A 4 1 A 5 3 A 7 6 P=4-5 moves=6
+OK A G?Cxv? A 1 0 A 3 7 A 6 5 P=1-7-2-6 moves=2
+OK A G?Cjdw A 0 4 A 1 2 A 6 5 P=0-7-3-6-1 moves=0
+OK A G@Oq^o A 2 1 A 3 6 A 5 4 P=2-3 moves=5
+OK A G_Ku^c A 1 5 A 2 0 A 3 6 P=1-6-4-2 moves=5
+OK A G?N^^o A 1 4 A 2 5 A 7 6 P=1-6-2 moves=8
+OK A G??X}s A 1 3 A 2 0 A 5 7 P=1-7-6-2 moves=0
+OK A GGE^Vc A 4 1 A 6 3 A 7 5 P=4-5-0-6 moves=6
+OK A G?LuBs A 1 4 A 5 7 A 6 2 P=1-5 moves=4
+OK A G??H}[ A 0 6 A 3 2 A 5 1 P=0-7-5 moves=3
+OK A GHeZ}w A 3 0 A 5 1 A 6 7 P=3-7-5 moves=9
+OK A GKXk{{ A 1 7 A 4 3 A 6 2 P=1-5-4 moves=8
+OK A G?Kq\_ A 3 2 A 4 5 A 6 7 P=3-4 moves=5
+OK A G??X}s A 1 6 A 3 2 A 4 0 P=1-7-3 moves=4
+OK A G@Lzv{ A 3 0 A 4 1 A 5 6 P=3-6-7-4 moves=5
+OK A G?Ciko A 0 2 A 1 5 A 7 6 P=0-7-3-6-1 moves=0
+OK A G?LRnS A 0 2 A 6 4 A 7 3 P=0-7-6 moves=5
+OK A G?CzT_ A 2 4 A 5 0 A 7 1 P=2-5 moves=6
+OK A G?LRF{ A 0 2 A 3 1 A 5 4 P=0-7-3 moves=5
+OK A GBXz~o A 0 2 A 4 3 A 7 6 P=0-7-1-6-4 moves=8
+OK A G@Umf? A 0 2 A 5 1 A 6 7 P=0-5 moves=6
+OK A G?Ca{{ A 1 4 A 5 3 A 7 2 P=1-6-5 moves=1
+OK A G???^c A 1 6 A 3 5 A 4 0 P=1-7-3 moves=0
+OK A GGCy~K A 2 6 A 3 1 A 7 4 P=2-5-3 moves=4
+OK A G??X]O A 1 2 A 4 0 A 6 3 P=1-7-4 moves=1
+OK A G@NEF{ A 0 1 A 5 2 A 6 3 P=0-7-5 moves=7
+OK A G?Dj~g A 1 2 A 4 0 A 7 6 P=1-6-4 moves=6
+OK A G??zts A 0 6 A 1 4 A 2 3 P=0-7-2 moves=3
+OK A G?Ox|k A 1 7 A 4 3 A 6 0 P=1-4-6 moves=3
+OK A G@ouNo A 1 0 A 4 2 A 5 7 P=1-7-4 moves=6
+OK A G@Ci\_ A 0 2 A 1 7 A 6 3 P=1-6 moves=4
+OK A G@UfMs A 0 3 A 6 4 A 7 5 P=0-6 moves=8
+OK A G?LuBs A 0 5 A 2 1 A 3 6 P=0-6-7-2 moves=5
+OK A GGCZ^c A 3 0 A 5 1 A 7 4 P=3-5 moves=8
+OK A G@QuVo A 0 2 A 3 6 A 5 1 P=0-5-3 moves=4
+OK A G@QuVo A 0 3 A 4 2 A 5 7 P=0-7-4 moves=8
+OK A G?Ca[W A 0 5 A 2 4 A 6 7 P=2-5-6 moves=2
+OK A G@rJlk A 1 0 A 3 4 A 5 2 P=1-6-3 moves=5
+OK A G?]Bjk A 0 2 A 5 1 A 6 4 P=0-5 moves=4
+OK A G@OZNo A 0 2 A 3 1 A 5 7 P=0-7-3 moves=2
+OK A G??yso A 0 2 A 4 3 A 5 6 P=0-7-4 moves=1
+OK A GGCyv? A 1 4 A 2 3 A 6 0 P=1-2 moves=6
+OK A G??GnK A 0 4 A 6 1 A 7 3 P=0-7-6 moves=1
+OK A G?NFf{ A 1 0 A 3 2 A 6 4 P=1-7-3 moves=8
+OK A G@Oq^o A 1 0 A 5 4 A 6 7 P=1-7-2-5 moves=3
+OK A G??X}s A 0 6 A 4 3 A 7 5 P=0-7-4 moves=1
+OK A G@Ue^c A 1 2 A 3 6 A 7 5 P=1-7-3 moves=6
+OK A G@LAN{ A 0 1 A 2 6 A 5 3 P=0-7-2 moves=5
+OK A G?Dj~g A 1 0 A 5 3 A 6 7 P=1-7-5 moves=9
+OK A G?]uf? A 1 5 A 4 0 A 6 7 P=1-4 moves=6
+OK A G?Fbrs A 0 4 A 2 3 A 7 5 P=0-5-2 moves=6
+OK A G?Fbrs A 1 0 A 2 3 A 5 6 P=1-6-2 moves=2
+OK A G??X}s A 0 1 A 2 4 A 7 5 P=0-7-6-2 moves=0
+OK A G@U^^W A 0 4 A 2 1 A 6 3 P=0-6-2 moves=6
+OK A G??yso A 1 7 A 3 4 A 5 0 P=1-6-3 moves=2
+OK A G?Cic{ A 0 3 A 1 5 A 2 4 P=0-7-6-1 moves=0
+OK A G@NMf? A 3 5 A 4 7 A 6 2 P=3-4 moves=7
+OK A G?Djvc A 1 2 A 6 5 A 7 4 P=1-6 moves=5
+OK A G?LZnK A 1 3 A 4 6 A 5 0 P=1-5-4 moves=7
+OK A G?Ca{{ A 0 6 A 2 7 A 5 1 P=0-7-5 moves=0
+OK A GKK}][ A 2 7 A 5 0 A 6 3 P=2-5 moves=7
+OK A GKXk{{ A 0 4 A 1 3 A 6 2 P=0-7-5-1 moves=5
+OK A G@UeNo A 0 2 A 3 5 A 4 6 P=0-7-3 moves=6
+OK A G?LT@{ A 0 2 A 3 6 A 4 5 P=0-6-7-4 moves=3
+OK A G?@z~o A 2 3 A 4 1 A 7 5 P=2-5-4 moves=2
+OK A G?Lrm[ A 2 1 A 3 7 A 5 0 P=2-5-3 moves=7
+OK A G?Cjdw A 0 5 A 3 1 A 4 6 P=0-7-3 moves=4
+OK A G_KunS A 2 6 A 3 1 A 5 4 P=2-4-3 moves=7
+OK A G@NEF{ A 0 3 A 1 4 A 2 6 P=0-7-1 moves=7
+OK A G@Q@x{ A 0 4 A 5 2 A 6 1 P=0-5 moves=6
+OK A G??HmG A 0 3 A 1 2 A 6 7 P=0-7-1 moves=0
+OK A G?KqLs A 2 6 A 3 0 A 5 7 P=2-7-3 moves=3
+OK A G???F{ A 1 3 A 2 6 A 4 0 P=1-7-2 moves=0
+OK A G@ouNo A 3 0 A 5 4 A 6 2 P=3-5 moves=8
+OK A G@LAN{ A 1 2 A 3 6 A 5 0 P=1-7-3 moves=6
+OK A G@TcJs A 4 2 A 6 1 A 7 5 P=4-7-6 moves=5
+OK A G?NFno A 0 4 A 3 2 A 7 6 P=0-6-3 moves=6
+OK A G?Cb|w A 3 2 A 4 1 A 5 0 P=3-6-5-7-4 moves=2
+OK A G@QNf{ A 1 2 A 3 4 A 6 5 P=1-7-3 moves=5
+OK A G@HYv? A 2 5 A 4 1 A 7 6 P=2-4 moves=5
+OK A G?Lzu[ A 1 2 A 3 7 A 5 6 P=1-6-3 moves=5
+OK A G?LR^c A 0 1 A 3 2 A 5 4 P=0-7-3 moves=6
+OK A G?Ca[W A 1 4 A 3 2 A 6 7 P=1-6 moves=0
+OK A G?LRnS A 0 1 A 2 3 A 5 7 P=0-7-2 moves=4
+OK A G???F{ A 0 4 A 3 2 A 6 1 P=0-7-3 moves=0
+OK A G?KydC A 2 1 A 3 0 A 6 5 P=2-4-3 moves=3
+OK A G?NVFo A 2 3 A 4 1 A 7 5 P=2-4 moves=5
+OK A G?Ca[W A 1 0 A 6 2 A 7 3 P=1-6 moves=1
+OK A G???^c A 1 4 A 6 2 A 7 5 P=1-7-6 moves=1
+OK A G?NFf{ A 1 3 A 4 0 A 5 6 P=1-6-7-4 moves=5
+OK A G?CzT_ A 2 1 A 3 0 A 6 5 P=2-5-3 moves=5
+OK A G?Kx}[ A 0 6 A 1 5 A 2 7 P=0-7-1 moves=0
+OK A G??X]O A 4 0 A 5 7 A 6 1 P=4-5 moves=3
+OK A G?]u~W A 2 3 A 4 0 A 7 6 P=2-5-6-4 moves=9
+OK A G?]unK A 1 5 A 2 0 A 6 4 P=1-7-2 moves=5
+OK A G@U}~o A 2 1 A 3 0 A 5 7 P=2-7-3 moves=7
+OK A G??X}s A 0 6 A 4 1 A 7 2 P=0-7-4 moves=2
+OK A G@Q^Fo A 0 3 A 2 4 A 6 5 P=0-6-2 moves=2
+OK A G?Ku@{ A 0 4 A 1 7 A 6 5 P=0-6-1 moves=0
+OK A G??H}[ A 2 0 A 3 5 A 4 1 P=2-6-3 moves=0
+OK A G?LT@{ A 0 5 A 3 1 A 4 6 P=0-6-7-3 moves=3
+OK A G??zts A 3 1 A 4 0 A 7 5 P=3-6-4 moves=6
+OK A G??XU[ A 0 5 A 2 4 A 3 6 P=0-7-6-2 moves=0
+OK A G?LuBs A 0 5 A 3 1 A 6 4 P=0-6-7-3 moves=0
+OK A G`\|ls A 0 2 A 6 1 A 7 5 P=0-7-3-5-6 moves=7
+OK A G?Ciko A 0 4 A 6 2 A 7 1 P=0-7-3-6 moves=0
+OK A G?CzT_ A 0 3 A 2 4 A 6 5 P=0-7-2 moves=1
+OK A G?Cz\k A 2 4 A 6 3 A 7 1 P=2-6 moves=7
+OK A G@LIn? A 2 5 A 6 0 A 7 4 P=2-3-6 moves=4
+OK A G@UeNo A 1 5 A 3 0 A 7 6 P=1-4-3 moves=7
+OK A G@OZNo A 3 1 A 5 7 A 6 4 P=3-5 moves=6
+OK A G?Db~o A 1 0 A 2 3 A 6 7 P=1-6-4-7-2 moves=4
+OK A G?Ky|[ A 0 2 A 1 5 A 7 3 P=0-7-6-1 moves=0
+OK A G@Q^Fo A 0 2 A 4 3 A 6 5 P=0-5-4 moves=6
+OK A G??HmG A 1 3 A 4 7 A 6 0 P=1-7-5-6 moves=0
+OK A GFznno A 1 0 A 4 6 A 5 3 P=1-3-2-4 moves=7
+OK A G@QBzw A 3 1 A 4 0 A 6 7 P=3-7-4 moves=7
+OK A G@rJ|w A 1 2 A 4 3 A 6 7 P=1-5-7-4 moves=10
+OK A G@rJlk A 1 2 A 3 4 A 6 0 P=1-5-6-3 moves=6
+OK A G?Cxv? A 0 3 A 5 7 A 6 1 P=0-7-2-6 moves=1
+OK A G??H}[ A 4 1 A 5 3 A 6 0 P=4-6-7-5 moves=3
+OK A G@O}Bs A 0 1 A 5 7 A 6 3 P=5-4-1-6 moves=3
+OK A G@LAN{ A 1 2 A 5 4 A 6 3 P=1-6-7-5 moves=2
+OK A GHU\}w A 1 0 A 5 2 A 6 7 P=1-7-5 moves=6
+OK A G?Cb|w A 0 6 A 3 2 A 4 5 P=0-7-3 moves=4
+OK A G?LuBs A 1 0 A 2 3 A 4 6 P=1-7-2 moves=6
+OK A GGE^^g A 4 0 A 5 2 A 7 6 P=4-6-5 moves=9
+OK A G??H}[ A 2 7 A 5 1 A 6 0 P=2-6-5 moves=1
+OK A G@rJlk A 2 5 A 3 0 A 7 4 P=2-6-7-3 moves=4
+OK A G?CXMs A 0 6 A 2 7 A 5 1 P=0-7-3-5 moves=3
+OK A G?CX]_ A 0 3 A 4 1 A 7 6 P=0-7 moves=3
+OK A GGCyv? A 1 0 A 2 6 A 5 7 P=1-2 moves=5
+OK A G@O}Bs A 3 1 A 4 6 A 7 0 P=3-5-4 moves=5
+OK A G@HYv? A 2 1 A 4 7 A 5 0 P=2-4 moves=5
+OK A G?LT@{ A 1 2 A 6 5 A 7 0 P=1-5-7 moves=1
+OK A G?NBjs A 0 3 A 1 4 A 7 5 P=0-5-1 moves=4
+OK A G?Djfo A 0 2 A 4 6 A 5 3 P=0-7-4 moves=4
+OK A G?Djvc A 0 2 A 3 1 A 4 7 P=0-7-3 moves=4
+OK A G@LCH{ A 0 3 A 1 7 A 6 2 P=0-6-5-1 moves=0
+OK A G?Ch~c A 3 5 A 4 0 A 6 1 P=3-4 moves=4
+OK A G?NFno A 0 1 A 3 2 A 5 7 P=0-7-3 moves=6
+OK A GGE^^g A 0 1 A 5 2 A 6 3 P=0-5 moves=6
+OK A G@Uu^K A 2 6 A 3 7 A 4 0 P=2-3 moves=6
+OK A G@Q@x{ A 0 6 A 2 4 A 5 1 P=0-5-7-2 moves=0
+OK A G?Ca[W A 1 0 A 2 7 A 5 4 P=1-6-5-2 moves=0
+OK A G?CZC{ A 1 7 A 2 0 A 5 6 P=1-6-2 moves=0
+OK A G?L@|k A 1 0 A 2 5 A 4 7 P=1-5-6-4 moves=4
+OK A G??X}s A 0 3 A 4 1 A 5 7 P=0-7-6-4 moves=3
+OK A G?Cxv? A 2 4 A 3 7 A 6 1 P=2-5-3 moves=4
+OK A G@UeF{ A 3 0 A 5 1 A 6 2 P=3-7-5 moves=6
+OK A G_KunS A 1 4 A 3 7 A 6 2 P=1-6-3 moves=6
+OK A G@rJlk A 3 5 A 4 7 A 6 0 P=3-2-7-6 moves=7
+OK A G?`rzw A 1 4 A 2 3 A 6 0 P=1-5-2 moves=7
+OK A GGC^Bw A 0 4 A 2 5 A 7 6 P=0-6-2 moves=4
+OK A G?LRnS A 1 0 A 2 3 A 4 6 P=1-6-2 moves=5
+OK A G@LAN{ A 0 4 A 1 2 A 3 6 P=0-7-1 moves=5
+OK A G@Q^Fo A 0 1 A 5 2 A 7 6 P=0-5 moves=8
+OK A G?Cb|w A 1 7 A 2 4 A 3 0 P=1-6-2 moves=3
+OK A G@^EL_ A 4 0 A 5 2 A 7 6 P=4-1-6-5 moves=3
+OK A G?Kq\_ A 0 2 A 1 3 A 7 6 P=0-7 moves=0
+OK A G?Chno A 3 5 A 4 2 A 6 0 P=3-4 moves=5
+OK A G??yso A 2 1 A 3 0 A 7 5 P=2-5-3 moves=2
+OK A G?CX]_ A 1 6 A 2 5 A 4 0 P=1-7-3-5-4 moves=1
+OK A G@HYv? A 1 2 A 3 0 A 4 7 P=1-5-3 moves=4
+OK A G@Uu^K A 0 3 A 6 2 A 7 4 P=0-6 moves=6
+OK A G??yso A 2 3 A 5 1 A 7 6 P=2-5 moves=1
+OK A G?LR^c A 3 2 A 5 4 A 6 0 P=3-5 moves=5
+OK A G?Chno A 0 1 A 4 6 A 7 5 P=0-7-4 moves=1
+OK A G?NNfc A 0 1 A 2 3 A 5 6 P=0-6-2 moves=5
+OK A G?Djfo A 2 0 A 3 1 A 7 6 P=2-6-3 moves=4
+OK A G@Umf? A 1 2 A 4 0 A 7 5 P=1-4 moves=6
+OK A G?]Bjk A 5 3 A 6 4 A 7 0 P=5-7 moves=2
+OK A G??GnK A 1 4 A 3 7 A 5 0 P=1-7-5 moves=1
+OK A G@O}Bs A 1 0 A 4 3 A 5 7 P=1-7-4 moves=6
+OK A G?N^^o A 2 1 A 3 6 A 5 7 P=2-7-3 moves=6
+OK A G@O}Bs A 2 0 A 4 3 A 5 1 P=2-7-1-4 moves=6
+OK A G@NMf? A 4 0 A 5 2 A 7 3 P=4-5 moves=7
+OK A G?Fbrs A 0 6 A 1 4 A 3 2 P=0-5-2-7-1 moves=1
+OK A G?Lzu[ A 3 0 A 4 1 A 5 6 P=3-6-4 moves=9
+OK A G?Fnf{ A 0 2 A 1 3 A 4 6 P=0-6-7-1 moves=5
+OK A G?NVFo A 2 3 A 4 0 A 5 6 P=2-4 moves=6
+OK A G??X]O A 1 6 A 2 0 A 3 4 P=2-6-5-3 moves=0
+OK A G_KunS A 3 0 A 6 2 A 7 5 P=3-6 moves=9
+OK A G?Ku@{ A 1 7 A 3 0 A 6 4 P=1-6 moves=5
+OK A G@U^NK A 2 5 A 3 1 A 6 4 P=2-3 moves=6
+OK A G?LZnK A 2 5 A 3 1 A 7 4 P=2-6-3 moves=8
+OK A G?CXMs A 0 3 A 2 7 A 5 1 P=0-7-4-5 moves=3
+OK A G@pTNo A 1 6 A 2 5 A 3 4 P=1-7-2 moves=6
+OK A G@UuV? A 3 0 A 5 1 A 7 4 P=3-5 moves=7
+OK A GB^nno A 1 2 A 3 0 A 6 4 P=1-4-3 moves=7
+OK A G?Ox|k A 0 2 A 3 4 A 5 1 P=0-7-3 moves=6
+OK A G??yso A 4 0 A 6 5 A 7 1 P=4-6 moves=3
+OK A G?Fnf{ A 1 4 A 3 2 A 6 5 P=1-5-7-3 moves=5
+OK A G?CzT_ A 0 1 A 4 2 A 5 6 P=0-7-3-4 moves=2
+OK A G?]uf? A 0 3 A 2 1 A 7 4 P=0-5-2 moves=4
+OK A G@QBzw A 2 4 A 3 5 A 7 6 P=2-6-1-7-3 moves=4
+OK A G@Oy~K A 1 5 A 3 0 A 7 4 P=1-6-3 moves=4
+OK A G@LIn? A 0 2 A 3 5 A 7 4 P=0-7 moves=5
+OK A G@OZNo A 0 3 A 2 1 A 7 5 P=0-7-2 moves=3
+OK A G??GnK A 2 4 A 3 5 A 6 0 P=2-7-6-3 moves=0
+OK A G?CXMs A 0 6 A 2 4 A 3 1 P=0-7-3 moves=0
+OK A G??HmG A 2 7 A 3 1 A 6 0 P=2-6-3 moves=0
+OK A G@QNno A 1 0 A 4 6 A 7 5 P=1-4 moves=9
+OK A GGCyv? A 1 5 A 2 0 A 3 7 P=1-2 moves=6
+OK A G@LZ}w A 3 0 A 5 2 A 6 7 P=3-4-7-1-5 moves=8
+OK A G@ouNo A 1 2 A 3 0 A 5 4 P=1-7-3 moves=5
+OK A G???F{ A 0 1 A 2 6 A 5 4 P=0-7-2 moves=0
+OK A G??Xuw A 2 4 A 3 0 A 5 1 P=2-6-3 moves=3
+OK A G?]u~W A 0 2 A 5 4 A 6 7 P=0-7-5 moves=6
+OK A G@UuV? A 1 5 A 3 7 A 6 2 P=1-4-3 moves=6
+OK A G@QuVo A 2 0 A 3 1 A 5 7 P=2-5 moves=6
+OK A G@Q^^g A 2 5 A 3 4 A 6 7 P=2-7-3 moves=6
+OK A G?CzT_ A 0 1 A 4 2 A 5 7 P=0-7-3-4 moves=2
+OK A G?@zv{ A 0 1 A 3 2 A 5 6 P=0-7-6-3 moves=4
+OK A G?DzvK A 0 1 A 2 4 A 5 6 P=0-7-6-2 moves=6
+OK A G?Ciko A 4 0 A 5 1 A 6 2 P=4-5 moves=4
+OK A G?Ciko A 1 7 A 3 2 A 6 4 P=1-6-3 moves=3
+OK A G@NMf? A 1 4 A 3 5 A 6 7 P=1-6-3 moves=5
+OK A G??z|w A 4 1 A 5 0 A 6 7 P=4-7-5 moves=7
+OK A G@Oq^o A 0 2 A 4 5 A 6 7 P=0-7-4 moves=6
+OK A G??W~o A 4 2 A 6 1 A 7 5 P=4-6 moves=3
+OK A GCLZZ[ A 0 2 A 4 1 A 6 3 P=0-3-4 moves=8
+OK A G??G~W A 0 5 A 1 2 A 6 7 P=0-7-1 moves=0
+OK A G???F{ A 0 3 A 5 4 A 6 2 P=0-7-5 moves=0
+OK A G?CXMs A 0 3 A 1 4 A 7 5 P=0-7-1 moves=0
+OK A G?Cjdw A 1 4 A 3 2 A 5 0 P=1-6-3 moves=2
+OK A G@Umf? A 1 0 A 6 5 A 7 3 P=1-6 moves=6
+OK A G??G^{ A 3 5 A 4 1 A 6 2 P=3-7-4 moves=3
+OK A G?NFno A 3 0 A 5 7 A 6 4 P=3-6-5 moves=6
+OK A G?CXMs A 1 3 A 2 4 A 6 0 P=1-7-6-2 moves=0
+OK A G`\t|w A 0 5 A 1 2 A 7 6 P=0-6-4-1 moves=11
+OK A G?CzT_ A 1 3 A 4 0 A 5 7 P=1-6-4 moves=2
+OK A GJ]\\k A 0 3 A 5 1 A 7 4 P=0-6-4-5 moves=7
+OK A G@Q^Vc A 0 1 A 2 5 A 3 4 P=0-6-2 moves=4
+OK A G?@z~o A 1 4 A 2 0 A 6 7 P=1-5-3-7-2 moves=6
+OK A G??zts A 0 5 A 4 2 A 7 1 P=0-7-4 moves=3
+OK A G??Xuw A 0 5 A 2 1 A 4 3 P=0-7-3-6-2 moves=0
+OK A G?NBjs A 3 1 A 4 0 A 7 5 P=3-6-7-4 moves=5
+OK A G@UuV? A 0 1 A 2 6 A 3 7 P=0-5-2 moves=5
+OK A G@Ky{{ A 0 3 A 4 1 A 7 2 P=0-7-5-6-4 moves=3
+OK A G?Db~o A 3 2 A 4 0 A 7 5 P=3-4 moves=2
+OK A G?]uf? A 3 0 A 5 1 A 7 6 P=3-5 moves=6
+OK A G?Djvc A 0 5 A 3 1 A 4 2 P=0-7-3 moves=4
+OK A G?Cx~K A 3 7 A 4 1 A 6 0 P=3-5-6-4 moves=3
+OK A G@N~vo A 0 3 A 1 4 A 5 6 P=0-6-1 moves=8
+OK A G???F{ A 0 3 A 2 4 A 5 1 P=0-7-2 moves=0
+OK A G???^c A 1 0 A 4 2 A 5 7 P=1-7-6-4 moves=0
+OK A G@NE^c A 2 6 A 3 5 A 4 0 P=2-3 moves=7
+OK A G?NFno A 0 3 A 2 1 A 7 5 P=0-6-2 moves=8
+OK A G@Oq^o A 2 4 A 5 0 A 7 6 P=2-5 moves=6
+OK A G?Ku@{ A 3 1 A 4 5 A 7 0 P=3-7-4 moves=5
+OK A G?LR^c A 0 2 A 3 6 A 4 5 P=0-7-3 moves=6
+OK A G?Chno A 1 6 A 2 3 A 4 0 P=1-7-2 moves=4
+OK A GGCyv? A 3 2 A 6 0 A 7 5 P=3-6 moves=6
+OK A G@UuV? A 0 4 A 5 1 A 6 2 P=0-5 moves=6
+OK A G?Cjdw A 4 1 A 5 3 A 6 0 P=4-5 moves=5
+OK A G@^EL_ A 2 5 A 6 3 A 7 1 P=2-4-1-6 moves=4
+OK A G?Cjls A 2 0 A 3 5 A 4 1 P=2-6-3 moves=5
+OK A G??HmG A 1 4 A 3 0 A 5 2 P=1-7-5-6-3 moves=0
+OK A G@O}Bs A 0 4 A 5 7 A 6 2 P=5-4-1-6 moves=3
+OK A G?LVBw A 0 3 A 5 2 A 6 4 P=0-6-1-5 moves=3
+OK A G??XU[ A 2 7 A 4 1 A 6 0 P=2-6-4 moves=2
+OK A G??GnK A 2 4 A 3 0 A 6 1 P=2-7-6-3 moves=0
+OK A G?Kq\_ A 0 5 A 2 3 A 7 1 P=0-7-2 moves=0
+OK A G_KunS A 3 2 A 4 6 A 5 0 P=3-6-5 moves=7
+OK A G@UBZk A 3 6 A 4 7 A 5 2 P=3-4 moves=4
+OK A G??W~o A 0 6 A 1 5 A 2 3 P=0-7-1 moves=0
+OK A G?Djfo A 1 0 A 3 2 A 7 6 P=1-6-3 moves=4
+OK A G?Chf{ A 0 5 A 2 3 A 4 6 P=0-7-2 moves=3
+OK A G@QNno A 0 3 A 1 2 A 4 6 P=0-6-1 moves=4
+OK A G?NNfc A 1 3 A 4 7 A 6 5 P=1-5-4 moves=5
+OK A G?Ff~{ A 1 0 A 3 2 A 5 4 P=1-6-7-3 moves=6
+OK A G_Ku^c A 0 4 A 3 1 A 7 5 P=0-7-3 moves=7
+OK A G??HmG A 5 1 A 6 4 A 7 3 P=5-6 moves=2
+OK A G?NVFo A 2 1 A 4 0 A 5 6 P=2-4 moves=6
+OK A G@QJjs A 0 2 A 3 5 A 4 6 P=0-5-4 moves=6
+OK A G?NV^g A 1 4 A 5 2 A 6 3 P=1-5 moves=6
+OK A G@Q@x{ A 2 5 A 3 4 A 6 1 P=2-6-7-3 moves=3
+OK A G?Kq\_ A 3 1 A 4 7 A 6 2 P=3-4 moves=5
+OK A G???^c A 0 1 A 3 6 A 5 2 P=0-7-3 moves=0
+OK A G@Ci\_ A 0 4 A 5 3 A 6 7 P=0-7-2-5 moves=1
+OK A G@pTNo A 4 2 A 6 3 A 7 5 P=4-0-6 moves=7
+OK A G??Wv{ A 1 4 A 5 0 A 6 2 P=1-7-5 moves=2
+OK A G_KunS A 0 3 A 1 5 A 4 6 P=0-6-7-1 moves=6
+OK A G?]Bjk A 1 0 A 3 2 A 4 7 P=1-6-7-3 moves=6
+OK A G@OZNo A 0 2 A 3 4 A 5 7 P=0-7-3 moves=2
+OK A G?Kq\_ A 0 5 A 1 3 A 7 6 P=0-7-2-4-6-1 moves=0
+OK A G?Cjdw A 0 4 A 1 5 A 6 7 P=0-7-2-6-1 moves=0
+OK A GGCZ^c A 4 1 A 5 7 A 6 0 P=4-5 moves=7
+OK A G?Cx~K A 0 4 A 2 3 A 5 1 P=0-7-2 moves=6
+OK A G?Cz\k A 1 5 A 3 0 A 4 2 P=1-6-4-3 moves=2
+OK A G@Ci\_ A 1 7 A 4 0 A 5 3 P=1-6-4 moves=4
+OK A G??z|w A 4 3 A 6 0 A 7 1 P=4-5-6 moves=3
+OK A GI]t|w A 1 6 A 2 0 A 4 5 P=1-3-5-2 moves=7
+OK A G_KunS A 0 3 A 2 6 A 4 1 P=0-7-2 moves=6
+OK A G@]~no A 3 0 A 4 6 A 5 1 P=3-2-4 moves=6
+OK A G?Dbv{ A 0 6 A 4 2 A 5 3 P=0-7-4 moves=6
+OK A G?Cx~K A 2 4 A 5 0 A 7 3 P=2-5 moves=4
+OK A GGE^^g A 2 4 A 5 1 A 6 7 P=2-7-5 moves=10
+OK A G@UBZk A 0 1 A 4 7 A 5 2 P=0-5-6-4 moves=6
+OK A G??X]O A 0 1 A 2 3 A 7 5 P=0-7-4-6-2 moves=0
+OK A GBMm][ A 1 5 A 3 7 A 6 2 P=1-6-4-3 moves=5
+OK A G?Cic{ A 3 2 A 4 1 A 5 0 P=3-4 moves=4
+OK A G@Q@x{ A 0 2 A 1 5 A 4 3 P=0-5-6-4 moves=0
+OK A G??XU[ A 2 0 A 3 7 A 6 5 P=2-6-4-5-3 moves=0
+OK A G?Ffvo A 0 2 A 1 4 A 7 6 P=0-6-1 moves=8
+OK A G??HmG A 0 1 A 2 3 A 4 7 P=0-7-5-6-2 moves=0
+OK A G@]}ms A 1 0 A 5 7 A 6 2 P=1-4-3-5 moves=6
+OK A G?Cic{ A 0 3 A 2 4 A 6 5 P=0-7-5-2 moves=0
+OK A G@QNf{ A 0 1 A 3 5 A 6 4 P=0-7-3 moves=5
+OK A G??XU[ A 0 5 A 4 2 A 7 3 P=0-7-4 moves=1
+OK A G??X]O A 1 0 A 2 4 A 7 5 P=1-7 moves=3
+OK A G?D`|s A 0 6 A 2 1 A 5 7 P=0-7-2 moves=1
+OK A G?]u~W A 4 0 A 5 1 A 6 7 P=4-2-7-5 moves=9
+OK A G@LAN{ A 0 2 A 1 4 A 6 3 P=0-7-1 moves=6
+OK A G@OZNo A 1 5 A 2 0 A 6 7 P=1-7-2 moves=6
+OK A G?@z~o A 4 3 A 5 7 A 6 0 P=4-6-1-5 moves=4
+OK A G??W~o A 0 2 A 3 1 A 7 5 P=0-7-3 moves=2
+OK A G?CZC{ A 0 5 A 3 6 A 7 2 P=0-7-3 moves=4
+OK A G?LRNo A 1 3 A 4 6 A 5 0 P=1-7-4 moves=6
+OK A G?Db~o A 1 4 A 3 2 A 7 6 P=1-6-3 moves=5
+OK A G?D`|s A 2 0 A 4 5 A 7 1 P=2-6-4 moves=5
+OK A G@UuV? A 0 1 A 6 2 A 7 4 P=0-6 moves=5
+OK A G@QuVo A 1 3 A 2 0 A 7 6 P=1-7-2 moves=6
+OK A G??HmG A 2 5 A 3 1 A 4 0 P=2-6-3 moves=0
+OK A G@OZNo A 0 2 A 4 6 A 7 5 P=0-7-4 moves=4
+OK A G?LZ~W A 0 4 A 2 5 A 7 6 P=0-7-1-6-2 moves=3
+OK A G?Ky|[ A 0 5 A 2 6 A 7 1 P=0-7-4-2 moves=6
+OK A G?LRnS A 0 2 A 3 7 A 6 4 P=0-7-6 moves=6
+OK A G@`ZZk A 0 6 A 2 5 A 3 4 P=2-6-7-3 moves=5
+OK A G?CZC{ A 4 0 A 5 1 A 7 2 P=4-3-7-5 moves=2
+OK A G??z|w A 4 3 A 5 0 A 6 7 P=4-7-5 moves=7
+OK A G???F{ A 1 0 A 2 5 A 6 3 P=1-7-2 moves=0
+OK A G??X}s A 2 7 A 4 1 A 6 0 P=2-6-4 moves=2
+OK A G?LT@{ A 0 3 A 1 7 A 2 5 P=0-6-7-2 moves=2
+OK A G??W~o A 0 5 A 2 4 A 7 6 P=0-7-2 moves=0
+OK A G?NVVc A 0 1 A 5 6 A 7 4 P=0-5 moves=7
+OK A G@UBZk A 5 1 A 6 3 A 7 4 P=5-6 moves=5
+OK A G?Ca[W A 3 0 A 5 4 A 6 7 P=3-4-6 moves=1
+OK A G@VL~W A 0 4 A 5 3 A 6 1 P=0-5 moves=5
+OK A G?Cxv? A 2 1 A 6 0 A 7 4 P=2-6 moves=5
+OK A G?LZ~W A 3 7 A 4 1 A 5 0 P=3-4 moves=9
+OK A G?djjk A 0 7 A 3 5 A 4 1 P=0-4-3 moves=4
+OK A G?LVBw A 1 0 A 2 5 A 7 6 P=1-7-2 moves=6
+OK A G@LIn? A 0 4 A 1 2 A 3 7 P=0-7-1 moves=5
+OK A G??yso A 0 6 A 1 2 A 5 7 P=1-6-3-5 moves=0
+OK A G??H}[ A 3 5 A 6 0 A 7 2 P=3-6 moves=1
+OK A GGCyv? A 1 5 A 3 0 A 4 7 P=1-6-3 moves=4
+OK A G?Kq\_ A 1 3 A 5 0 A 7 4 P=1-6-5 moves=1
+OK A G?Kx}[ A 1 6 A 2 0 A 3 7 P=2-4-5-6-3 moves=5
+OK A G@NENo A 2 5 A 3 0 A 6 7 P=2-4-7-3 moves=2
+OK A G@Oy~K A 2 6 A 3 7 A 5 1 P=2-3 moves=5
+OK A G?Kq\_ A 0 3 A 2 1 A 4 5 P=0-7-2 moves=3
+OK A G?KydC A 1 4 A 2 0 A 5 7 P=1-6-7-2 moves=3
+OK A G?Lrm[ A 0 6 A 2 7 A 4 1 P=0-7-4 moves=4
+OK A GGCyv? A 2 6 A 4 0 A 7 3 P=2-5-4 moves=4
+OK A G??HmG A 1 6 A 2 7 A 3 4 P=2-6-3 moves=0
+OK A GKXk{{ A 0 4 A 1 3 A 2 7 P=0-6-7-5-1 moves=6
+OK A G@O}Bs A 0 1 A 4 2 A 6 3 P=0-6-7-4 moves=0
+OK A G?Cjls A 3 2 A 5 7 A 6 0 P=3-4-5 moves=3
+OK A G@TcJs A 2 6 A 3 0 A 7 5 P=2-3 moves=8
+OK A G??G~W A 1 0 A 2 3 A 6 7 P=1-7-2 moves=0
+OK A G?Lzu[ A 0 4 A 2 7 A 3 1 P=0-7-5-3 moves=6
+OK A G??G^{ A 0 4 A 1 6 A 3 2 P=0-7-1 moves=0
+OK A GGCZ^c A 2 0 A 3 1 A 4 7 P=2-6-7-3 moves=5
+OK A G??X]O A 2 0 A 3 4 A 6 1 P=2-6-5-3 moves=0
+OK A G??X]O A 1 5 A 4 2 A 7 6 P=1-7-4 moves=0
+OK A G?Djfo A 0 6 A 3 2 A 7 5 P=0-7-3 moves=3
+OK A G?Kq\_ A 1 0 A 3 2 A 4 7 P=1-6-4-3 moves=2
+OK A G??X]O A 2 1 A 3 4 A 5 0 P=2-6-5-3 moves=0
+OK A GPLYy{ A 1 4 A 3 0 A 5 2 P=1-6-5 moves=9
+OK A G@HYv? A 0 1 A 2 5 A 4 3 P=0-7-2 moves=5
+OK A G?NV^g A 3 0 A 5 4 A 6 7 P=3-7-5 moves=9
+OK A G?Fnno A 0 4 A 3 1 A 5 7 P=0-7-3 moves=7
+OK A G?NVFo A 0 1 A 2 3 A 7 6 P=0-6-2 moves=5
+OK A G??G~W A 2 6 A 3 5 A 4 0 P=2-7-5-4 moves=3
+OK A G?Djvc A 1 4 A 3 0 A 7 5 P=1-6-3 moves=7
+OK A G?LR^c A 0 3 A 1 2 A 5 4 P=0-7-1 moves=4
+OK A G?Ku@{ A 0 5 A 3 1 A 6 4 P=0-6-7-3 moves=0
+OK A G?NBjs A 0 1 A 3 2 A 7 5 P=0-5-6-3 moves=5
+OK A G???F{ A 1 4 A 2 0 A 5 3 P=1-7-2 moves=0
+OK A G@]}ms A 0 2 A 4 6 A 5 1 P=0-7-3-4 moves=8
+OK A G`L|~o A 0 3 A 2 1 A 7 6 P=0-6-4-2 moves=7
+OK A G??X]O A 4 3 A 5 1 A 6 7 P=4-5 moves=2
+OK A G??HmG A 0 2 A 1 4 A 3 7 P=0-7-1 moves=0
+OK A G?Cjdw A 2 3 A 5 1 A 6 0 P=2-5 moves=5
+OK A G??z|w A 0 6 A 2 3 A 7 1 P=0-7-5-2 moves=3
+OK A GGCyv? A 3 2 A 4 1 A 7 6 P=3-4 moves=6
+OK A G@QuVo A 0 2 A 1 5 A 3 6 P=0-6-1 moves=6
+OK A G?]uf? A 1 3 A 6 2 A 7 5 P=1-6 moves=6
+OK A G?CzT_ A 1 0 A 2 3 A 5 6 P=1-6-2 moves=2
+OK A G@Q^Fo A 2 0 A 3 4 A 5 7 P=2-7-3 moves=3
+OK A G_Ku^c A 1 2 A 4 0 A 7 5 P=1-6-4 moves=7
+OK A G?Ca{{ A 0 6 A 3 5 A 7 1 P=0-7-3 moves=4
+OK A G_KunS A 1 2 A 3 0 A 5 4 P=1-6-3 moves=7
+OK A G?D`|s A 0 2 A 1 6 A 5 3 P=0-7-6-5 moves=0
+OK A G???^c A 0 5 A 1 2 A 3 6 P=0-7-1 moves=0
+OK A G?NFno A 2 1 A 4 0 A 5 7 P=2-7-4 moves=4
+OK A G?Ciko A 1 4 A 3 0 A 7 5 P=1-6-3 moves=1
+OK A GHM]}w A 4 0 A 5 1 A 7 2 P=4-5 moves=8
+OK A G?Ch~c A 0 6 A 1 2 A 5 7 P=0-7-1 moves=0
+OK A G?LRNo A 0 4 A 5 2 A 7 6 P=0-7-1-5 moves=4
+OK A G?KydC A 0 1 A 2 3 A 5 7 P=0-7-2 moves=5
+OK A G@Oq^o A 2 6 A 3 0 A 5 7 P=2-5 moves=5
+OK A G?NV^g A 1 2 A 3 0 A 4 7 P=1-7-3 moves=5
+OK A G@]}ms A 0 3 A 2 1 A 7 5 P=0-5-2 moves=5
+OK A G??W~o A 0 1 A 2 6 A 3 4 P=0-7-2 moves=0
+OK A G@UeNo A 2 6 A 4 0 A 5 3 P=2-3-4 moves=6
+OK A G?Kq\_ A 2 3 A 4 0 A 5 1 P=2-4 moves=5
+OK A G?]u~W A 0 3 A 5 1 A 6 2 P=0-5 moves=7
+OK A G?KqLs A 5 0 A 6 3 A 7 1 P=5-6 moves=5
+OK A G?Cjls A 2 1 A 5 0 A 6 4 P=2-5 moves=3
+OK A G@LCH{ A 1 0 A 2 6 A 4 5 P=1-5-7-2 moves=5
+OK A G??X]O A 3 6 A 4 1 A 7 2 P=3-5-4 moves=2
+OK A G??HmG A 4 3 A 5 1 A 6 0 P=4-5 moves=2
+OK A GGCy~K A 1 3 A 6 0 A 7 4 P=1-6 moves=5
+OK A GCLZZ[ A 1 4 A 5 2 A 7 3 P=1-7 moves=4
+OK A G@^EL_ A 1 0 A 3 6 A 4 5 P=1-4-3 moves=4
+OK A G?KydC A 3 1 A 6 2 A 7 4 P=3-6 moves=3
+OK A G?L@|k A 0 4 A 1 6 A 3 2 P=0-7-5-1 moves=0
+OK A G@QNno A 2 5 A 3 1 A 4 0 P=2-3 moves=7
+OK A G??x~{ A 0 5 A 1 6 A 2 4 P=0-7-1 moves=0
+OK A G??Xuw A 1 5 A 2 3 A 4 0 P=1-7-4-6-2 moves=0
+OK A G?Cz\k A 1 4 A 2 3 A 6 0 P=1-6-2 moves=6
+OK A GXT[{{ A 0 5 A 1 6 A 2 7 P=0-7-4-1 moves=6
+OK A G??W~o A 2 6 A 4 0 A 7 5 P=2-7-4 moves=2
+OK A G?Cxv? A 3 1 A 4 7 A 6 5 P=3-6 moves=4
+OK A G??xvo A 1 6 A 2 3 A 4 0 P=1-7-2 moves=5
+OK A G@QJjs A 0 6 A 1 3 A 5 2 P=0-5-4-1 moves=2
+OK A G_KunS A 4 0 A 5 7 A 6 2 P=4-2-5 moves=5
+OK A G@Q^^g A 0 1 A 4 3 A 7 6 P=0-6-4 moves=7
+OK A G?CX]_ A 1 2 A 3 0 A 7 5 P=1-7-3 moves=0
+OK A G?Cjdw A 3 0 A 4 2 A 6 5 P=3-4 moves=4
+OK A G?Ca{{ A 1 0 A 3 5 A 6 2 P=1-6-3 moves=4
+OK A G@QNf{ A 3 1 A 4 2 A 5 6 P=3-6-7-4 moves=4
+OK A G@Oq^o A 3 0 A 4 2 A 5 1 P=3-7-1-4 moves=5
+OK A GBY|~o A 2 0 A 4 3 A 6 1 P=2-5-4 moves=6
+OK A G?Ch~c A 0 1 A 2 3 A 5 7 P=0-7-6-2 moves=4
+OK A G@NENo A 0 2 A 3 6 A 4 5 P=0-7-3 moves=6
+OK A G?Ca[W A 1 5 A 2 3 A 6 0 P=1-6 moves=0
+OK A G@Ci\_ A 1 3 A 2 6 A 5 7 P=1-6-5 moves=4
+OK A G@Ci\_ A 1 2 A 6 0 A 7 4 P=1-6 moves=2
+OK A G?LT@{ A 0 2 A 1 3 A 6 5 P=0-6-7-5-1 moves=0
+OK A G@NMnK A 5 2 A 6 4 A 7 3 P=5-6 moves=10
+OK A G?Dj~g A 0 3 A 1 2 A 7 6 P=0-7-5-6-1 moves=3
+OK A G?Kx}[ A 2 7 A 3 0 A 4 1 P=2-4-5-3 moves=6
+OK A G?CzT_ A 3 0 A 4 1 A 5 7 P=3-4 moves=4
+OK A G?Djvc A 0 3 A 1 2 A 5 7 P=0-7-1 moves=2
+OK A G?]Bjk A 0 2 A 3 5 A 4 6 P=0-5-7-1-4 moves=3
+OK A G@Q^Vc A 1 5 A 2 0 A 3 4 P=1-6-2 moves=5
+OK A G?Cjls A 2 3 A 4 6 A 5 1 P=2-7-4 moves=5
+OK A G?D`|s A 2 3 A 4 5 A 6 0 P=2-6-4 moves=5
+OK A G?Cjls A 0 5 A 1 7 A 2 4 P=0-7-2 moves=4
+OK A G?Ch~c A 0 3 A 2 1 A 7 5 P=0-7-2 moves=1
+OK A G?Ciko A 2 6 A 5 3 A 7 1 P=2-5 moves=2
+OK A G?LT@{ A 0 7 A 5 2 A 6 4 P=0-6 moves=1
+OK A G@TZ\[ A 1 7 A 2 5 A 6 0 P=1-4-6-2 moves=7
+OK A G?Db~o A 0 1 A 2 3 A 5 7 P=0-7-2 moves=3
+OK A G?KydC A 4 1 A 6 2 A 7 3 P=4-3-6 moves=3
+OK A G??X]O A 3 7 A 4 0 A 6 1 P=3-5-4 moves=2
+OK A G@Q@x{ A 2 1 A 3 0 A 5 4 P=2-6-7-3 moves=3
+OK A G?CzT_ A 1 2 A 6 3 A 7 5 P=1-6 moves=2
+OK A G?Cjls A 0 6 A 4 2 A 7 1 P=0-7-4 moves=3
+OK A G@Ue^c A 2 1 A 3 0 A 5 4 P=2-3 moves=7
+OK A G@UuV? A 0 4 A 5 1 A 7 6 P=0-5 moves=6
+OK A G??zts A 1 4 A 3 2 A 5 0 P=1-6-3 moves=2
+OK A GGCZ^c A 1 5 A 3 0 A 4 2 P=1-2-7-3 moves=5
+OK A G??G^{ A 2 3 A 4 0 A 5 1 P=2-7-4 moves=3
+OK A G??y{{ A 0 3 A 1 7 A 4 2 P=0-7-4 moves=2
+OK A G???F{ A 1 6 A 3 2 A 5 0 P=1-7-3 moves=0
+OK A GGCyv? A 3 0 A 5 1 A 6 2 P=3-5 moves=5
+OK A G?Cjdw A 0 5 A 1 2 A 4 6 P=0-7-3-6-1 moves=0
+OK A G@Q^^g A 1 5 A 2 0 A 4 7 P=1-7-2 moves=7
+OK A G?Ky|[ A 0 5 A 2 6 A 4 1 P=0-7-4-2 moves=6
+OK A G??G~W A 0 6 A 2 1 A 5 3 P=0-7-2 moves=0
+OK A G@Ci\_ A 1 2 A 4 7 A 5 0 P=1-6-4 moves=3
+OK A G?Cjdw A 1 5 A 4 2 A 6 0 P=1-6-3-4 moves=0
+OK A G?Ca[W A 0 6 A 2 4 A 3 7 P=0-7-5-2 moves=0
+OK A G??XU[ A 0 3 A 1 2 A 5 6 P=0-7-1 moves=0
+OK A G?Db~o A 0 6 A 2 1 A 4 5 P=0-7-2 moves=4
+OK A G@Lz~o A 1 4 A 2 0 A 7 6 P=1-6-2 moves=5
+OK A G@Ky{{ A 0 5 A 3 1 A 7 2 P=0-7-4-6-3 moves=3
+OK A G?Kq\_ A 0 5 A 2 6 A 7 1 P=0-7-2 moves=0
+OK A G??X}s A 0 3 A 2 4 A 7 5 P=0-7-6-2 moves=0
+OK A G?Kx}[ A 0 6 A 1 5 A 3 7 P=0-7-1 moves=0
+OK A G@UenS A 0 1 A 4 5 A 6 2 P=0-7-4 moves=8
+OK A G?CzDs A 0 2 A 1 3 A 6 4 P=0-7-6-1 moves=0
+OK A G@Q^^g A 3 0 A 5 2 A 7 6 P=3-7-1-6-5 moves=6
+OK A GKK}][ A 1 5 A 3 2 A 4 0 P=1-6-4-3 moves=5
+OK A G?Djvc A 0 1 A 3 2 A 6 5 P=0-7-3 moves=7
+OK A G???F{ A 4 2 A 5 1 A 6 0 P=4-7-5 moves=0
+OK A G??x~{ A 1 6 A 3 2 A 5 0 P=1-7-5 moves=3
+OK A GJ]^N{ A 0 4 A 1 5 A 3 6 P=0-6-7-2-1 moves=8
+OK A G@]}ms A 1 0 A 6 4 A 7 2 P=1-6 moves=8
+OK A GBY|~o A 1 2 A 3 0 A 6 7 P=1-7-3 moves=8
+OK A G?LZf? A 2 1 A 5 6 A 7 3 P=2-4-5 moves=5
+OK A G?Ox|k A 1 7 A 3 2 A 6 0 P=1-4-5-3 moves=3
+OK A G??G^{ A 3 1 A 4 2 A 6 0 P=3-7-4 moves=3
+OK A G?NNfc A 0 2 A 3 1 A 4 7 P=0-7-3 moves=5
+OK A G@HYv? A 0 3 A 2 1 A 6 7 P=0-7-2 moves=3
+OK A G?Cic{ A 0 1 A 5 6 A 7 2 P=0-7-5 moves=4
+OK A G??G~W A 3 5 A 4 1 A 6 7 P=3-6 moves=3
+OK A G?Cxv? A 0 4 A 6 5 A 7 3 P=0-7-2-6 moves=0
+OK A G?CzT_ A 4 1 A 5 0 A 7 6 P=4-5 moves=4
+OK A G??G~W A 0 2 A 1 4 A 3 7 P=0-7-1 moves=0
+OK A G@Lzv{ A 0 2 A 4 1 A 6 5 P=0-7-5-4 moves=7
+OK A G?Cxv? A 0 3 A 6 1 A 7 4 P=0-7-2-6 moves=0
+OK A G???^c A 1 3 A 6 2 A 7 5 P=1-7-6 moves=1
+OK A G?LRNo A 0 3 A 1 4 A 7 6 P=0-7-1 moves=5
+OK A G@LCH{ A 1 7 A 4 5 A 6 3 P=1-5-6 moves=4
+OK A G?Kx}[ A 0 4 A 2 7 A 5 1 P=2-4-6-5 moves=5
+OK A G?D`|s A 1 6 A 4 0 A 7 5 P=1-5-2-7-4 moves=1
+OK A G@OZNo A 0 3 A 5 2 A 6 7 P=0-7-4-5 moves=3
+OK A G??X}s A 2 3 A 5 7 A 6 1 P=2-6-5 moves=2
+OK A G?Cxv? A 0 3 A 5 1 A 7 4 P=0-7-2-5 moves=0
+OK A G??HmG A 2 3 A 4 6 A 5 0 P=2-6-5 moves=0
+OK A G_KunS A 0 3 A 1 2 A 5 4 P=0-6-7-1 moves=5
+OK A G@rJlk A 0 1 A 3 5 A 4 2 P=0-7-2-3 moves=7
+OK A GGE^^g A 0 3 A 1 5 A 4 7 P=0-7-1 moves=5
+OK A G??X]O A 2 3 A 6 1 A 7 5 P=2-6 moves=1
+OK A G@LCH{ A 1 3 A 2 5 A 7 0 P=1-5-7 moves=6
+OK A G??zts A 2 3 A 4 1 A 7 5 P=2-6-4 moves=6
+OK A G@Q@x{ A 1 3 A 5 2 A 6 0 P=1-4-6-5 moves=4
+OK A G@rJlk A 2 5 A 3 1 A 6 4 P=2-6-7-3 moves=3
+OK A G?Ciko A 4 1 A 6 0 A 7 2 P=4-3-6 moves=3
+OK A GK~vno A 0 2 A 4 6 A 5 7 P=0-3-7-1-4 moves=10
+OK A G@p\nK A 2 0 A 4 7 A 6 1 P=2-3-5-4 moves=5
+OK A G??yso A 2 4 A 3 0 A 5 7 P=2-5-3 moves=2
+OK A G?L@|k A 5 4 A 6 0 A 7 1 P=5-6 moves=6
+OK A G@QBzw A 0 6 A 1 2 A 3 4 P=0-5-7-1 moves=4
+OK A G?Fnf{ A 2 1 A 3 5 A 6 4 P=2-7-3 moves=8
+OK A G@LCH{ A 2 6 A 3 5 A 4 1 P=2-4-7-3 moves=2
+OK A G?LT@{ A 2 3 A 6 4 A 7 1 P=2-6 moves=4
+OK A G?LVBw A 0 4 A 2 3 A 7 6 P=0-6-2 moves=5
+OK A G@UBZk A 0 6 A 3 1 A 4 2 P=0-5-7-3 moves=3
+OK A G??XU[ A 0 5 A 1 2 A 4 3 P=0-7-1 moves=0
+OK A G@OZNo A 0 4 A 2 1 A 5 7 P=0-7-2 moves=5
+OK A G@NMnK A 2 6 A 3 1 A 4 7 P=2-7-5-4-3 moves=2
+OK A G?djjk A 1 4 A 2 3 A 5 0 P=1-5-6-2 moves=6
+OK A G@O}Bs A 2 1 A 3 6 A 4 0 P=2-3 moves=6
+OK A G@QNf{ A 2 0 A 3 1 A 4 6 P=2-6-7-3 moves=4
+OK A G??GnK A 0 5 A 6 4 A 7 3 P=0-7-6 moves=1
+OK A G?Lrm[ A 0 5 A 1 2 A 4 6 P=0-7-6-1 moves=5
+OK A G?Kq\_ A 2 1 A 4 7 A 6 3 P=2-4 moves=5
+OK A G?]unK A 2 3 A 5 1 A 6 4 P=2-5 moves=7
+OK A G@TcJs A 3 0 A 5 7 A 6 2 P=3-2-5 moves=4
+OK A G?Cxv? A 0 4 A 2 1 A 5 6 P=0-7-2-5 moves=0
+OK A G???F{ A 3 1 A 4 5 A 6 0 P=3-7-4 moves=0
+OK A G@LIn? A 1 2 A 3 0 A 7 5 P=1-6-3 moves=4
+OK A G?KqLs A 0 5 A 6 2 A 7 1 P=0-7-6 moves=3
+OK A G@QNno A 0 1 A 3 4 A 6 7 P=0-7-3 moves=8
+OK A G?B~vo A 0 2 A 1 3 A 7 6 P=0-6-1 moves=5
+OK A G??yso A 2 0 A 3 4 A 5 1 P=2-5-3 moves=0
+OK A G@LCH{ A 0 3 A 1 7 A 6 4 P=0-6-5-1 moves=0
+OK A G@TZ\[ A 0 6 A 1 7 A 4 2 P=0-7-4 moves=5
+OK A G?Lrm[ A 1 2 A 6 4 A 7 3 P=1-6 moves=7
+OK A G@Oq^o A 2 6 A 4 3 A 5 1 P=2-7-1-4 moves=5
+OK A G?L@|k A 1 7 A 3 2 A 6 0 P=1-5-6-3 moves=2
+OK A G?CXMs A 2 7 A 4 1 A 6 0 P=2-6-5-4 moves=2
+OK A G???^c A 3 2 A 5 7 A 6 0 P=3-7-6 moves=0
+OK A G??XU[ A 0 5 A 2 7 A 6 1 P=0-7-6 moves=0
+OK A GCLZZ[ A 0 4 A 1 3 A 2 5 P=1-6-4-7-2 moves=7
+OK A G?Cic{ A 0 4 A 3 1 A 6 5 P=0-7-3 moves=2
+OK A GLvnno A 0 2 A 3 5 A 6 4 P=0-4-1-7-3 moves=8
+OK A G@Q@x{ A 4 0 A 5 3 A 6 1 P=4-6-5 moves=5
+OK A G??yso A 1 3 A 2 4 A 6 0 P=1-6 moves=3
+OK A G@U^NK A 0 3 A 2 4 A 5 1 P=0-6-2 moves=6
+OK A GBZ~vo A 0 3 A 1 2 A 5 6 P=0-6-4-1 moves=8
+OK A G?NNfc A 2 1 A 5 3 A 7 4 P=2-4-5 moves=5
+OK A G@pTNo A 3 0 A 4 5 A 6 7 P=3-7-4 moves=6
+OK A G?CX]_ A 0 5 A 1 4 A 2 7 P=0-7-1 moves=0
+OK A G?Cic{ A 2 7 A 3 1 A 6 5 P=2-5-4-3 moves=1
+OK A G?LZf? A 1 0 A 5 6 A 7 3 P=1-5 moves=6
+OK A G?L@|k A 1 2 A 4 5 A 6 0 P=1-5-6 moves=3
+OK A G@NMf? A 1 0 A 4 6 A 5 2 P=1-5-4 moves=5
+OK A G?CX]_ A 0 5 A 1 6 A 7 2 P=0-7-1 moves=0
+OK A G??Wv{ A 1 2 A 4 0 A 5 6 P=1-7-4 moves=3
+OK A G??z|w A 3 2 A 5 1 A 6 0 P=3-5 moves=3
+OK A G?]uf? A 0 1 A 4 7 A 6 5 P=0-5-2-4 moves=5
+OK A G@ouNo A 1 5 A 2 4 A 7 6 P=1-7-2 moves=7
+OK A G?Kq\_ A 2 3 A 4 0 A 7 1 P=2-4 moves=5
+OK A G?NFno A 0 3 A 4 5 A 7 6 P=0-6-2-4 moves=5
+OK A G?CXMs A 0 5 A 1 4 A 3 2 P=0-7-1 moves=0
+OK A G??G~W A 2 5 A 4 3 A 6 1 P=2-7-4 moves=1
+OK A GGCy~K A 3 7 A 4 0 A 5 1 P=3-5-6-4 moves=3
+OK A G@OZNo A 2 0 A 4 3 A 5 7 P=2-7-4 moves=5
+OK A G??XU[ A 1 4 A 3 0 A 5 2 P=1-7-5-3 moves=0
+OK A G@\r|w A 0 5 A 1 2 A 7 6 P=0-7-3-6-1 moves=3
+OK A GJ]\\k A 0 4 A 1 7 A 3 6 P=0-6-2-1 moves=5
+OK A G?]uf? A 2 6 A 3 7 A 5 4 P=2-4-3 moves=6
+OK A G??yso A 0 3 A 2 6 A 5 7 P=0-7-4-5-2 moves=0
+OK A GBY|~o A 2 0 A 5 1 A 7 6 P=2-6-5 moves=6
+OK A G?L@|k A 0 2 A 3 5 A 7 1 P=0-7-3 moves=5
+OK A GLvnf{ A 2 0 A 3 5 A 4 6 P=2-1-7-6-3 moves=9
+OK A G?Cx~K A 0 6 A 2 3 A 7 4 P=0-7-2 moves=1
+OK A GBXz~o A 0 1 A 3 4 A 7 5 P=0-7-2-5-3 moves=8
+OK A G@TcJs A 2 1 A 5 0 A 6 3 P=2-5 moves=6
+OK A GHU\}w A 0 4 A 1 6 A 7 2 P=0-7-1 moves=7
+OK A G?Kq\_ A 1 5 A 2 0 A 3 6 P=1-6-4-2 moves=1
+OK A GGCyv? A 1 4 A 2 3 A 6 7 P=1-2 moves=5
+OK B G?D`|s A 0 2 A 1 6 A 7 5 P=0-7-6-3 1-5-2 moves=4
+OK A G@NMnK A 1 0 A 3 5 A 6 4 P=1-7-6-3 moves=6
+OK A G?Ox|k A 3 1 A 5 0 A 7 4 P=3-6-5 moves=7
+OK A G??G~W A 1 4 A 3 7 A 6 2 P=1-7-5-6 moves=0
+OK A G@QBzw A 2 4 A 3 5 A 7 0 P=2-3 moves=7
+OK A G@UfMs A 2 0 A 4 5 A 6 3 P=2-3-4 moves=7
+OK A G?KqLs A 0 5 A 3 1 A 6 2 P=0-7-3 moves=2
+OK A G?]uf? A 0 1 A 3 2 A 6 7 P=0-5-3 moves=6
+OK A G?LZnK A 1 0 A 3 2 A 4 6 P=1-6-3 moves=6
+OK A G?Ca[W A 2 4 A 6 3 A 7 1 P=2-5-6 moves=1
+OK A G?Kq\_ A 0 2 A 3 1 A 7 6 P=0-7-3 moves=0
+OK A G??G~W A 1 2 A 3 7 A 4 0 P=1-7-4 moves=0
+OK A G@VL~W A 4 2 A 5 3 A 6 1 P=4-5 moves=8
+OK A G??G~W A 0 1 A 4 3 A 5 2 P=0-7-4 moves=4
+OK A G?KydC A 1 7 A 5 0 A 6 4 P=1-6-3-5 moves=0
+OK A G?Ca[W A 0 4 A 2 1 A 6 7 P=0-7-5-2 moves=0
+OK A G?]unK A 1 0 A 4 5 A 7 3 P=1-4 moves=6
+OK A G@Lzv{ A 0 4 A 2 1 A 5 6 P=0-7-6-2 moves=7
+OK A GGC^Bw A 2 5 A 3 0 A 4 6 P=2-7-3 moves=5
+OK A G@rJlk A 2 4 A 5 3 A 6 0 P=2-6-5 moves=7
+OK A G`\t|w A 3 1 A 4 5 A 7 6 P=3-6-4 moves=12
+OK A G?LRF{ A 2 3 A 4 5 A 6 0 P=2-7-4 moves=4
+OK A G@UBZk A 4 0 A 5 2 A 6 3 P=4-6-5 moves=4
+OK A G?LVBw A 0 7 A 1 4 A 5 6 P=0-6-1 moves=5
+OK A G@U^^W A 3 1 A 5 2 A 7 6 P=3-4-6-5 moves=9
+OK A G?CzT_ A 0 3 A 2 1 A 5 7 P=0-7-2 moves=2
+OK A G@QNno A 1 3 A 5 7 A 6 4 P=1-4-5 moves=7
+OK A G?]unK A 0 2 A 5 4 A 7 3 P=0-5 moves=6
+OK A G?NNng A 1 4 A 3 0 A 6 7 P=1-7-3 moves=7
+OK A G@Q^^g A 0 1 A 2 4 A 6 3 P=0-6-2 moves=6
+OK A G@pTNo A 2 0 A 3 1 A 6 7 P=2-7-3 moves=6
+OK A G@Q^Vc A 0 4 A 1 2 A 6 3 P=0-6-1 moves=5
+OK A G?CzDs A 0 4 A 2 3 A 7 1 P=0-7-2 moves=5
+OK A G??GnK A 4 3 A 5 1 A 6 2 P=4-5 moves=1
+OK A G???F{ A 1 3 A 2 0 A 5 6 P=1-7-2 moves=0
+OK A GBh|~o A 3 4 A 5 7 A 6 1 P=3-5 moves=9
+OK A G@ouNo A 1 0 A 2 6 A 4 3 P=1-7-2 moves=7
+OK A G@QuVo A 0 1 A 2 4 A 3 6 P=0-5-2 moves=3
+OK A G?Ch~c A 0 2 A 3 5 A 6 1 P=0-7-3 moves=5
+OK A G@Q^^g A 0 1 A 2 5 A 3 6 P=0-5-3 moves=7
+OK A GBh|~o A 1 6 A 4 3 A 7 5 P=1-5-4 moves=8
+OK A G@Oq^o A 0 5 A 3 1 A 6 7 P=0-7-3 moves=5
+OK A G?CzDs A 0 6 A 3 2 A 7 1 P=0-7-3 moves=4
+OK A GGCyv? A 1 4 A 5 7 A 6 0 P=1-2-5 moves=5
+OK A G@QBzw A 4 2 A 5 1 A 6 7 P=4-7-5 moves=7
+OK A G??z|w A 0 5 A 4 3 A 7 1 P=0-7-2-6-4 moves=4
+OK A G??Wv{ A 1 2 A 4 3 A 5 6 P=1-7-4 moves=3
+OK A G?CXMs A 1 4 A 5 0 A 6 3 P=1-7-3-5 moves=2
+OK A G?LZnK A 0 5 A 1 3 A 4 7 P=0-7-1 moves=6
+OK A G@Q^Fo A 2 5 A 3 1 A 4 0 P=2-3 moves=5
+OK A G?Lrm[ A 2 3 A 5 0 A 6 4 P=2-4-7-5 moves=6
+OK A G??yso A 2 7 A 4 3 A 5 1 P=2-5-4 moves=0
+OK A G@`ZZk A 0 3 A 1 2 A 7 4 P=0-4-5-1 moves=4
+OK A G@pTNo A 2 5 A 3 1 A 6 4 P=2-3 moves=6
+OK A G@UeNo A 1 0 A 5 4 A 6 3 P=1-6-5 moves=3
+OK A G??G~W A 1 0 A 2 6 A 3 5 P=1-7-2 moves=0
+OK A G?CXMs A 3 1 A 4 2 A 5 7 P=3-5 moves=4
+OK A G??W~o A 1 4 A 2 0 A 7 6 P=1-7-2 moves=0
+OK A G@OZNo A 1 2 A 4 6 A 5 7 P=1-7-4 moves=6
+OK A G@UeNo A 2 1 A 4 0 A 6 3 P=2-3-4 moves=6
+OK A G??W~o A 0 3 A 5 2 A 6 1 P=0-7-4-5 moves=1
+OK A G??XU[ A 2 0 A 3 1 A 5 6 P=2-6-4-5-3 moves=0
+OK A G@pTNo A 2 1 A 3 4 A 7 6 P=2-3 moves=8
+OK A G?LZ^{ A 1 4 A 2 3 A 6 0 P=1-5-6-7-2 moves=7
+OK A G?C`~{ A 1 4 A 2 3 A 5 0 P=1-7-2 moves=6
+OK A G??HmG A 0 4 A 3 2 A 6 7 P=0-7-5-6-3 moves=0
+OK A G??Wv{ A 0 5 A 1 3 A 4 2 P=0-7-1 moves=0
+OK A GHU[~{ A 1 6 A 3 0 A 5 2 P=1-7-3 moves=8
+OK A G?@zv{ A 1 0 A 2 4 A 6 5 P=1-5-7-2 moves=4
+OK A G?Kq\_ A 0 4 A 3 2 A 5 7 P=0-7-3 moves=2
+OK A G?Ca{{ A 0 3 A 6 2 A 7 1 P=0-7 moves=1
+OK A G@ouNo A 3 1 A 5 4 A 6 7 P=3-7-2-5 moves=2
+OK A G?LuBs A 2 3 A 4 0 A 7 5 P=2-4 moves=7
+OK A G?CZC{ A 0 4 A 3 2 A 7 1 P=0-7-3 moves=4
+OK A G?Cx~K A 0 2 A 3 7 A 5 1 P=0-7-6-5 moves=5
+OK A G??Wv{ A 0 1 A 2 4 A 6 5 P=0-7-2 moves=0
+OK A G?LZf? A 3 2 A 6 0 A 7 5 P=3-6 moves=5
+OK A GKL\][ A 0 4 A 1 6 A 2 3 P=0-7-1 moves=5
+OK A G?CzT_ A 1 4 A 3 6 A 5 7 P=1-6-2-5 moves=4
+OK A G?KqLs A 2 1 A 5 0 A 6 4 P=2-5 moves=3
+OK A G?KydC A 1 5 A 3 2 A 7 4 P=1-6-3 moves=2
+OK A GKLk}[ A 3 1 A 5 0 A 7 2 P=3-4-5 moves=6
+OK A G?Ku@{ A 0 3 A 6 5 A 7 1 P=0-6 moves=5
+OK A GGC^Bw A 3 2 A 6 5 A 7 0 P=3-7-1-6 moves=3
+OK A G?Cic{ A 1 0 A 2 7 A 3 5 P=1-6-3-4-5-2 moves=0
+OK A G?CzT_ A 3 0 A 4 7 A 5 6 P=3-4 moves=4
+OK A G@pTNo A 0 5 A 3 1 A 6 4 P=0-7-3 moves=6
+OK A G@Qu^{ A 2 4 A 5 1 A 6 3 P=2-7-5 moves=7
+OK A G?Cxv? A 3 1 A 4 7 A 5 6 P=3-5 moves=4
+OK A G@N]v{ A 2 1 A 4 0 A 6 5 P=2-7-5-4 moves=7
+OK A G?Djvc A 2 4 A 5 7 A 6 0 P=2-5 moves=5
+OK A GHeZ}w A 0 3 A 1 5 A 2 4 P=0-4-6-1 moves=8
+OK A G@Ue^c A 0 4 A 2 1 A 7 5 P=0-5-2 moves=5
+OK A G?Ch~c A 1 6 A 2 0 A 7 4 P=1-7-2 moves=2
+OK A G?LR^c A 3 0 A 4 1 A 7 5 P=3-4 moves=7
+OK A G?Kx}[ A 0 6 A 2 1 A 7 3 P=0-7-4-2 moves=1
+OK A G??G^{ A 1 6 A 4 3 A 5 2 P=1-7-4 moves=3
+OK A G?]Bjk A 0 1 A 3 2 A 4 6 P=0-5-6-3 moves=2
+OK A G?CzDs A 3 1 A 4 0 A 5 7 P=3-5 moves=5
+OK A G@TcJs A 1 2 A 5 7 A 6 4 P=1-5 moves=6
+OK A G?L@|k A 0 6 A 1 4 A 5 2 P=0-7-5-1 moves=0
+OK A GJ]\\k A 1 5 A 2 0 A 3 6 P=1-4-6-2 moves=11
+OK A G?Ku@{ A 2 3 A 4 6 A 5 1 P=2-7-4 moves=6
+OK A G?LRNo A 0 5 A 1 2 A 3 6 P=0-7-1 moves=5
+OK A G?Lzu[ A 2 7 A 4 1 A 5 6 P=2-6-4 moves=9
+OK A G?CZC{ A 3 0 A 4 2 A 7 1 P=3-5-7-4 moves=2
+OK A G?Cz\k A 0 6 A 1 4 A 3 2 P=0-7-5-3 moves=5
+OK A G?B~vo A 1 4 A 3 0 A 6 7 P=1-7-3 moves=3
+OK A G@o}nK A 0 5 A 3 1 A 6 4 P=0-6-3 moves=5
+OK A G??H}[ A 2 4 A 3 7 A 6 0 P=2-6-3 moves=0
+OK A GJ]\\k A 0 3 A 6 1 A 7 4 P=0-5-4-6 moves=7
+OK A G?LZnK A 2 0 A 3 1 A 4 6 P=2-6-3 moves=4
+OK A GGC^Bw A 0 4 A 3 2 A 5 6 P=0-6-1-7-3 moves=4
+OK A G@Uu^K A 0 1 A 2 4 A 3 6 P=0-6-5-2 moves=6
+OK A G@NMf? A 1 2 A 3 0 A 7 4 P=1-6-3 moves=5
+OK A G@Um~W A 1 3 A 4 0 A 7 6 P=1-6-4 moves=10
+OK A G??y{{ A 3 0 A 4 1 A 7 2 P=3-5-6-4 moves=4
+OK A G?CzT_ A 1 4 A 2 0 A 7 5 P=1-6-2 moves=1
+OK A G@NE^c A 0 4 A 2 1 A 5 7 P=0-6-7-2 moves=6
+OK A GB^nno A 1 2 A 5 7 A 6 4 P=1-3-4-5 moves=8
+OK A G@Q@x{ A 0 6 A 1 7 A 3 5 P=1-4-6-3 moves=3
+OK A G?Kx}[ A 0 2 A 1 4 A 3 7 P=0-7-1 moves=0
+OK A G?Cz\k A 1 2 A 4 7 A 6 3 P=1-6-4 moves=3
+OK A G?Lzu[ A 0 5 A 1 4 A 7 2 P=0-7-1 moves=3
+OK A G?NNfc A 0 3 A 1 2 A 5 6 P=0-6-1 moves=5
+OK A G@TZ\[ A 0 4 A 1 7 A 3 6 P=0-7-2-3 moves=2
+OK A G?Cic{ A 3 0 A 6 4 A 7 2 P=3-6 moves=2
+OK A G?LZnK A 3 0 A 4 1 A 5 2 P=3-4 moves=5
+OK A G?LRNo A 3 1 A 5 0 A 6 7 P=3-7-2-6-5 moves=3
+OK A G??W~o A 0 6 A 4 2 A 7 5 P=0-7-4 moves=2
+OK A G@`ZZk A 0 5 A 4 7 A 6 3 P=0-4 moves=5
+OK A G?Cjdw A 0 2 A 1 7 A 3 5 P=0-7-3 moves=0
+OK A G?CX]_ A 3 2 A 4 7 A 6 1 P=3-4 moves=4
+OK A GHU\}w A 2 5 A 3 1 A 6 7 P=2-6-0-7-3 moves=5
+OK A G??H}[ A 2 0 A 3 7 A 5 1 P=2-6-3 moves=0
+OK A G@Ci\_ A 3 1 A 4 0 A 6 7 P=3-4 moves=4
+OK A G@UfMs A 0 2 A 3 6 A 5 1 P=0-7-3 moves=6
+OK A G?CzT_ A 2 3 A 5 0 A 7 1 P=2-5 moves=6
+OK A G?LVBw A 2 1 A 4 5 A 6 7 P=2-7-4 moves=4
+OK A GK~vno A 1 0 A 2 3 A 5 4 P=1-2-7-3-5 moves=8
+OK A G@LY~{ A 4 1 A 5 2 A 6 0 P=4-6-7-5 moves=9
+OK A G@OZNo A 0 5 A 1 3 A 6 4 P=0-7-1 moves=6
+OK A G???F{ A 0 4 A 5 1 A 6 2 P=0-7-5 moves=0
+OK A G??HmG A 4 2 A 5 3 A 6 1 P=4-5 moves=2
+OK A G?Cx~K A 0 5 A 1 6 A 7 3 P=0-7-1 moves=0
+OK A G@Ci\_ A 0 2 A 3 6 A 5 1 P=0-7-3 moves=4
+OK A GHeZ}w A 0 3 A 5 2 A 7 6 P=0-7-4-6-5 moves=8
+OK A G`Kzzw A 0 4 A 3 1 A 7 6 P=3-4-7 moves=6
+OK A G@LIn? A 0 3 A 2 5 A 7 4 P=0-7-2 moves=0
+OK A G@UBZk A 0 6 A 1 3 A 5 2 P=0-5-7-1 moves=4
+OK A G@UenS A 0 1 A 4 5 A 7 3 P=0-7-4 moves=6
+OK A G?Lrm[ A 0 6 A 1 2 A 7 3 P=0-7-1 moves=4
+OK A G??H}[ A 1 5 A 4 2 A 6 0 P=1-7-4 moves=1
+OK A G?Ca{{ A 0 5 A 1 4 A 2 7 P=0-7-6-1 moves=0
+OK A G@ouNo A 0 2 A 3 1 A 7 5 P=0-7-3 moves=6
+OK A G?Chf{ A 0 2 A 4 6 A 5 1 P=0-7-4 moves=3
+OK A GKLk}[ A 0 5 A 1 6 A 2 3 P=0-3-4-7-1 moves=7
+OK A G??H}[ A 0 4 A 1 6 A 7 2 P=0-7-1 moves=0
+OK A G??GnK A 2 6 A 3 7 A 4 1 P=2-7-5-4 moves=0
+OK A G??XU[ A 2 0 A 4 3 A 5 1 P=2-6-4 moves=1
+OK A G???F{ A 0 6 A 3 1 A 4 2 P=0-7-3 moves=0
+OK A G@Umf? A 0 1 A 3 7 A 6 2 P=0-6-3 moves=5
+OK A G?NVN{ A 1 0 A 3 6 A 5 2 P=1-7-3 moves=6
+OK A G?NFno A 3 0 A 4 6 A 7 5 P=3-4 moves=7
+OK A G??z|w A 0 3 A 1 2 A 7 6 P=0-7-4-6-1 moves=0
+OK A G@NMf? A 2 1 A 4 6 A 5 3 P=2-4 moves=7
+OK A G?djjk A 1 3 A 6 0 A 7 4 P=1-5-6 moves=8
+OK A G@p\nK A 2 1 A 4 7 A 5 0 P=2-3-5-4 moves=4
+OK A G?DzvK A 0 3 A 5 6 A 7 4 P=0-7-5 moves=5
+OK A G@O}Bs A 1 3 A 2 0 A 7 5 P=1-7-2 moves=5
+OK A G@Ky{{ A 2 6 A 3 0 A 4 1 P=2-5-7-3 moves=5
+OK A G?NFno A 0 2 A 3 1 A 5 4 P=0-6-3 moves=5
+OK A G@U}~o A 1 5 A 4 0 A 6 2 P=1-4 moves=6
+OK A G?Ca{{ A 1 7 A 2 6 A 4 5 P=1-6-4 moves=3
+OK A G?Cxv? A 0 5 A 2 1 A 3 7 P=0-7-2 moves=2
+OK A G?NNng A 0 2 A 4 1 A 5 3 P=0-5-4 moves=6
+OK A GGCyv? A 3 1 A 4 2 A 5 7 P=3-4 moves=4
+OK A G?KqLs A 2 1 A 3 0 A 5 7 P=2-7-3 moves=3
+OK A G?Ca{{ A 3 1 A 6 0 A 7 2 P=3-6 moves=2
+OK A G???^c A 2 6 A 3 4 A 7 5 P=2-7-3 moves=0
+OK A G?Chno A 3 0 A 4 6 A 5 7 P=3-7-4 moves=4
+OK A G?Ciko A 0 5 A 2 7 A 6 4 P=0-7-3-6 moves=0
+OK A G@LAN{ A 1 2 A 5 4 A 6 0 P=1-6-7-5 moves=2
+OK A G??xvo A 1 3 A 4 0 A 6 7 P=1-7-4 moves=2
+OK A G??X]O A 2 5 A 3 6 A 4 1 P=2-6-4 moves=3
+OK A GJ]^^g A 0 4 A 5 1 A 6 7 P=0-7-3-5 moves=11
+OK A G?Cic{ A 1 7 A 2 0 A 5 6 P=1-6-3-4-5-2 moves=0
+OK A G?Dj~g A 3 1 A 4 7 A 5 0 P=3-6-4 moves=5
+OK A G@TcJs A 0 4 A 1 6 A 5 7 P=0-6-5 moves=4
+OK A G?Cz\k A 0 5 A 4 1 A 6 3 P=0-7-3-4 moves=1
+OK A G???^c A 1 4 A 2 6 A 3 0 P=1-7-2 moves=0
+OK A G??XU[ A 4 1 A 5 6 A 7 2 P=4-5 moves=2
+OK A G@VL~W A 4 0 A 5 3 A 7 6 P=4-6-5 moves=11
+OK A G?LZf? A 3 0 A 4 6 A 5 7 P=3-4 moves=5
+OK A GBMm][ A 1 5 A 2 6 A 7 3 P=1-7-4-2 moves=5
+OK A G@TZ\[ A 2 1 A 5 0 A 6 3 P=2-7-5 moves=8
+OK B G@`ZZk A 2 5 A 3 6 A 7 4 P=2-6-4-0 3-7-5-1 moves=5
+OK A G@N~vo A 3 0 A 4 1 A 7 6 P=3-2-6-4 moves=5
+OK A G@UfMs A 1 3 A 6 4 A 7 2 P=1-6 moves=9
+OK A G_Ku^c A 0 4 A 2 1 A 5 7 P=0-7-2 moves=6
+OK A G?CzT_ A 0 1 A 4 2 A 7 6 P=0-7-3-4 moves=2
+OK A G?CZC{ A 0 4 A 3 2 A 5 6 P=0-7-3 moves=3
+OK A G???F{ A 0 1 A 4 6 A 5 2 P=0-7-4 moves=0
+OK A G??G~W A 3 2 A 5 1 A 6 0 P=3-6-5 moves=0
+OK A G??X]O A 1 4 A 5 2 A 7 6 P=1-7 moves=1
+OK A G@o}nK A 2 0 A 3 4 A 5 1 P=2-3 moves=6
+OK A G??HmG A 0 3 A 4 1 A 6 7 P=0-7-5-4 moves=0
+OK A G@LCH{ A 0 2 A 4 5 A 7 1 P=0-6-7-4 moves=4
+OK A G?D`|s A 2 1 A 5 7 A 6 0 P=2-5 moves=4
+OK A G?Ch~c A 1 6 A 4 2 A 7 5 P=1-7-3-4 moves=1
+OK A G?KqLs A 3 0 A 4 1 A 5 7 P=3-7-4 moves=5
+OK A G??X]O A 0 4 A 3 2 A 6 1 P=3-5-6 moves=2
+OK A G???^c A 1 6 A 3 0 A 5 4 P=1-7-3 moves=0
+OK A GKLk}[ A 0 5 A 3 1 A 6 2 P=0-3 moves=7
+OK A G@NM^{ A 1 0 A 2 6 A 3 5 P=1-5-7-2 moves=6
+OK A G?Kq\_ A 2 1 A 5 4 A 7 6 P=2-5 moves=5
+OK A G?Cic{ A 0 4 A 1 5 A 7 2 P=0-7-6-1 moves=0
+OK A G@O}Bs A 1 2 A 6 4 A 7 5 P=1-6 moves=7
+OK A G?]Bjk A 0 4 A 1 3 A 5 2 P=0-5-6-1 moves=3
+OK A G@UfMs A 2 4 A 3 6 A 7 5 P=2-3 moves=5
+OK A G@\r|w A 2 0 A 3 1 A 4 5 P=2-5-6-3 moves=6
+OK A G@Ue^c A 1 5 A 2 4 A 3 0 P=1-7-2 moves=6
+OK A G@O}Bs A 4 3 A 6 2 A 7 5 P=4-1-6 moves=2
+OK A GKLk}[ A 1 6 A 3 7 A 5 0 P=1-2-4-3 moves=5
+OK A G?CX]_ A 1 6 A 2 3 A 7 4 P=1-7 moves=0
+OK A G@UeNo A 0 2 A 1 3 A 4 5 P=0-7-1 moves=6
+OK A G?LVBw A 1 3 A 5 2 A 7 6 P=1-5 moves=8
+OK A G??X]O A 2 5 A 4 1 A 7 3 P=2-6-4 moves=2
+OK A G?NBjs A 3 0 A 4 1 A 5 2 P=3-4 moves=6
+OK A G`Kzzw A 2 1 A 3 0 A 6 7 P=2-4-5-7-3 moves=9
+OK A G??H}[ A 2 3 A 4 1 A 6 0 P=2-6-4 moves=1
+OK A GGE^Vc A 1 5 A 4 7 A 6 3 P=1-6-4 moves=6
+OK A G@NENo A 0 2 A 1 4 A 3 6 P=0-6-1 moves=6
+OK A G???F{ A 4 2 A 5 3 A 6 0 P=4-7-5 moves=0
+OK A G?Lzu[ A 0 1 A 3 2 A 5 6 P=0-7-6-3 moves=8
+OK A G@LIn? A 3 1 A 4 0 A 5 2 P=3-4 moves=6
+OK A GGCZ^c A 5 2 A 6 3 A 7 4 P=5-6 moves=8
+OK A G??W~o A 0 4 A 5 7 A 6 1 P=0-7-3-6 moves=1
+OK A GGC^Bw A 0 2 A 5 1 A 6 3 P=0-6 moves=5
+OK A G?CX]_ A 2 3 A 4 0 A 5 1 P=2-6-4 moves=1
+OK A G?DzvK A 2 3 A 4 1 A 5 6 P=2-7-6-4 moves=7
+OK A G??x~{ A 0 5 A 2 3 A 6 1 P=0-7-6 moves=3
+OK A G?Djvc A 1 0 A 2 4 A 5 7 P=1-6-7-2 moves=5
+OK A G?Cjdw A 1 3 A 2 0 A 7 6 P=1-6-2 moves=1
+OK A G??G~W A 0 3 A 4 1 A 6 2 P=0-7-4 moves=1
+OK A G?Ca[W A 2 6 A 4 5 A 7 3 P=2-5-7 moves=1
+OK A G?NVFo A 0 2 A 3 6 A 7 5 P=0-5-3 moves=5
+OK A G?Djvc A 3 5 A 6 0 A 7 4 P=3-6 moves=5
+OK A G??XU[ A 1 0 A 2 5 A 7 3 P=1-7-6-2 moves=0
+OK A G?Cz\k A 3 6 A 5 1 A 7 4 P=3-5 moves=4
+OK A G`\|ls A 3 1 A 4 6 A 7 5 P=3-5-4 moves=12
+OK A G@rJ|w A 0 6 A 2 5 A 4 3 P=0-7-2 moves=6
+OK A G@LIn? A 2 5 A 3 0 A 7 6 P=2-3 moves=4
+OK A G@NMf? A 2 5 A 3 0 A 4 7 P=2-3 moves=6
+OK A G?Cz\k A 1 7 A 4 2 A 5 0 P=1-6-4 moves=4
+OK A G@Ci\_ A 2 1 A 6 0 A 7 5 P=2-5-6 moves=2
+OK A G?Ox|k A 0 6 A 4 2 A 5 1 P=0-7-5-4 moves=5
+OK A G??yso A 0 1 A 4 2 A 6 5 P=0-7-4 moves=1
+OK A G@Ue^c A 2 1 A 3 6 A 7 5 P=2-3 moves=8
+OK A G???^c A 4 0 A 5 2 A 6 3 P=4-6-5 moves=0
+OK A G?CX]_ A 0 1 A 3 6 A 5 2 P=0-7-3 moves=3
+OK A G?Djvc A 0 3 A 1 4 A 5 7 P=0-7-1 moves=2
+OK B G`Kzzw A 0 2 A 1 5 A 7 6 P=0-1-6-5-3 1-7-2-3-6-4 moves=5
+OK B GBXzv{ A 2 1 A 4 3 A 5 6 P=2-3-6-4-7 4-2-5-7-6-1 moves=7

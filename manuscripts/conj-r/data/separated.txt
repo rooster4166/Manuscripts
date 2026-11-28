@@ -1,0 +1,9 @@
+# Separated instances (c1, c2 in different components of F - {a1, a2}), sepcls.py, in this order of precedence:
+#  B Corollary B; G Theorem G (G1-G3, with G3 using NA's boundary); G4leaf: c_i is a leaf whose stem is a_j (reduces to AE, Proposition 7.3);
+#  G4other: a cut vertex a_j separates, none of the above; 2cut: neither a_1 nor a_2 alone separates c1 from c2.
+order 6: {'sep': 54, 'G': 20, 'G4leaf': 30, 'B': 2, '2cut': 2}
+order 8: {'sep': 2862, 'G4leaf': 1579, '2cut': 214, 'G4other': 45, 'G': 682, 'B': 342}
+order 10: {'sep': 417988, 'B': 37170, 'G4leaf': 292643, 'G': 58283, '2cut': 25569, 'G4other': 4323}
+# order 10: Criterion R (manuscripts/ln/scripts/routeR.py, with its executor) was run on the 31,897 separated instances that are
+# neither B, nor G without G3's NA clause, nor G4leaf (a superset of G4other + 2cut above): all 31,897 certified and executed;
+# lengths of P: 27,877 x 1, 2,791 x 2, 1,208 x 3, 14 x 4, 7 x 5 (all of type 'pre', i.e. Lemma R(b)).

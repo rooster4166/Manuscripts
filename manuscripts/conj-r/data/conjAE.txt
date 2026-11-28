@@ -1,0 +1,12 @@
+# Conjecture AE (avoid the even vertex): K has exactly one vertex g of positive even degree, c is odd, c != g, c not adjacent to g;
+# some Lovasz decomposition of K has g not on Q(c).  Query 'A c g' (lnsolve3), witnesses re-checked by wcheck.c.
+## (1) the G4leaf separated instances (c_i a leaf at a_j): K = F - c_i, g = a_j, c = c_j (aeq.py)
+order 6: 30 queries: witnesses checked 30, unsat 0, undecided 0, failures 0
+order 8: 1582 queries: witnesses checked 1582, unsat 0, undecided 0, failures 0
+order 10: 292838 queries: witnesses checked 292838, unsat 0, undecided 0, failures 0
+## (2) exhaustive: every graph of order n (gen.c) with exactly one vertex g of positive even degree, every odd c != g, c not adjacent to g, in the component of g (aegen.py)
+n = 5: 8 queries: witnesses checked 8, unsat 0, undecided 0, failures 0
+n = 6: 8 queries: witnesses checked 8, unsat 0, undecided 0, failures 0
+n = 7: 354 queries: witnesses checked 354, unsat 0, undecided 0, failures 0
+n = 8: 354 queries: witnesses checked 354, unsat 0, undecided 0, failures 0
+n = 9: 47354 queries: witnesses checked 47354, unsat 0, undecided 0, failures 0
