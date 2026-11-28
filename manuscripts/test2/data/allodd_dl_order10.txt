@@ -1,0 +1,57 @@
+# allodd_dl.c (final version), Conjecture conj:common: every connected all-odd graph (nauty-geng -c, filtered),
+# every choice of 2 or 3 disjoint non-adjacent pairs; X = fixed (every orientation), F = free, XF/XF2 = one fixed + free.
+# options -f 23xyuv -d 0 (order 10 also -b 50000000 per targeted search; no search hit the budget).
+## order 6
+graphs 13
+F2: sets 107, fail 0, undecided 0
+F3: sets 12, fail 0, undecided 0
+X2: sets 428, fail 0, undecided 0
+X3: sets 96, fail 0, undecided 0
+XF: sets 428, fail 0, undecided 0
+XF2: sets 72, fail 0, undecided 0
+## order 8
+graphs 224
+F2: sets 10850, fail 0, undecided 0
+F3: sets 10508, fail 0, undecided 0
+X2: sets 43400, fail 0, undecided 0
+X3: sets 84064, fail 0, undecided 0
+XF: sets 43400, fail 0, undecided 0
+XF2: sets 63048, fail 0, undecided 0
+## order 10 (32,851 graphs), four slices (round-robin lines of the geng output); started 06:15 UTC, 4 cores
+# slice 0
+graphs 8212
+F2: sets 1283907, fail 0, undecided 0
+F3: sets 3203520, fail 0, undecided 0
+X2: sets 5135628, fail 0, undecided 0
+X3: sets 25628160, fail 0, undecided 0
+XF: sets 5135628, fail 0, undecided 0
+XF2: sets 19221120, fail 0, undecided 0
+# FAIL/UNDEC lines: 0
+# slice 1
+graphs 8213
+F2: sets 1284301, fail 0, undecided 0
+F3: sets 3207422, fail 0, undecided 0
+X2: sets 5137204, fail 0, undecided 0
+X3: sets 25659376, fail 0, undecided 0
+XF: sets 5137204, fail 0, undecided 0
+XF2: sets 19244532, fail 0, undecided 0
+# FAIL/UNDEC lines: 0
+# slice 2
+graphs 8213
+F2: sets 1290030, fail 0, undecided 0
+F3: sets 3230300, fail 0, undecided 0
+X2: sets 5160120, fail 0, undecided 0
+X3: sets 25842400, fail 0, undecided 0
+XF: sets 5160120, fail 0, undecided 0
+XF2: sets 19381800, fail 0, undecided 0
+# FAIL/UNDEC lines: 0
+# slice 3
+graphs 8213
+F2: sets 1284249, fail 0, undecided 0
+F3: sets 3206827, fail 0, undecided 0
+X2: sets 5136996, fail 0, undecided 0
+X3: sets 25654616, fail 0, undecided 0
+XF: sets 5136996, fail 0, undecided 0
+XF2: sets 19240962, fail 0, undecided 0
+# FAIL/UNDEC lines: 0
+## order 10 totals: F2 5,142,487; F3 12,848,069; X2 20,569,948; X3 102,784,552; XF 20,569,948; XF2 77,088,414 sets (239,003,418 in all); fail 0, undecided 0
