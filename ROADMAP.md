@@ -135,7 +135,18 @@ EMM sufficiency work is **stopped**.
       - the profile conjecture PC exhaustive at n ≤ 8;
       - **Conjecture J: joint-path certificates with a BC remainder at every one of the 20,151,960 joined order-10 instances**, witnesses checked.
     - **Lean `Conj31.lean`:** profile realisability, the degree bound and where it fails, the moves TR/NEW/SUP/TRI, and `conj31_of_profileConj` (PC ⇒ Conj 31).
-    - **Open:** PC itself. Its irreducible instances are mostly twin zeros, an L_N-type problem, so the reduction may be circular there.- **conj-r** (session_01FxXpVfZD4refE9qYaAiYHm, branch `claude/conj-r`, new): prove Conjecture R and hence L_N(2). Steps: a canonical pre-committed path, schedule existence, Lean for Lemma R and Prop 6.3, then m = 3.
+    - **Open:** PC itself. Its irreducible instances are mostly twin zeros, an L_N-type problem, so the reduction may be circular there.
+  - **Finished** (cdae8fc). Manuscript `manuscripts/conj31`; audit A43 applied (0 errors, 1 overclaim fixed). **Conjecture 31, J and AE are NOT proved; AE was not attempted.**
+    - **Lean (`Conj31Up.lean`), a reusable theorem:** *PC with ≤ 1 zero.* Every profile b ≡ d (mod 2) with b ≤ d and b ≥ 1 except at ≤ 1 even vertex is realisable in any graph without isolated vertices. This is Lovász with prescribed end counts. `realisesProfile_of_no_zero` / `_of_one_zero`; axioms checked.
+    - **Paper:**
+      - PC ⇔ minimal profiles off the DB boundary, plus the boundary configuration;
+      - exact gluing at cut vertices;
+      - **PC + Conjecture P ⇒ Conjecture J.**
+    - **Computed:**
+      - BC ⇔ tight for every connected two-even graph with n ≤ 10;
+      - PC (two zeros) holds for all 6.8M profiles at n ≤ 8;
+      - J is certified at every joined order-10 instance.
+    - **Core:** the twin case of PC, which is L_N-type.- **conj-r** (session_01FxXpVfZD4refE9qYaAiYHm, branch `claude/conj-r`, new): prove Conjecture R and hence L_N(2). Steps: a canonical pre-committed path, schedule existence, Lean for Lemma R and Prop 6.3, then m = 3.
   - **Lean (1e58948, merged; build green; axioms checked by the coordinator):** `LemmaR.lean` has `lemmaR`, `lemmaR_leaf`, `CriterionR` and `ln2_of_criterionR`. **`ln2_of_conjR : ConjR → LN2`**: L_N(2) now reduces in Lean to Conjecture R. LN2 is stated faithfully: all-odd G, four distinct vertices, both pairs non-adjacent.
   - **Lean `JointR.lean`:** proved cases of the joint form (leaf, suppression, steering, invariant, cardinality). Also `ConjAE` and `ln2_of_leaf_at_head`.
   - **Conjecture J** (joint path): if c1 and c2 are joined in F − {a1, a2}, some Lovász decomposition has c1 and c2 as the two ends of one path avoiding a1 and a2. **Exhaustive at orders 6, 8 and 10: all 20,151,960 joined order-10 instances, every witness checked.**

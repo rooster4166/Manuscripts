@@ -894,3 +894,44 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 - Cones (RE).
 - (T2) at d ≥ 10.
 - The lifts are all in Lean. Data existence and the exceptional families need separate treatment.
+
+## 33. State of the programme (coordinator, 2026-11-28 15:05)
+
+This supersedes §28 as the orientation summary. All Lean results use only the standard axioms, and each has been audited (A25–A43).
+
+**Reductions of Gallai in Lean.** Spine ⇒ (T1) + (T2). The lifts below are all in Lean and all reversible:
+- triangle, forest, all-odd (T1) (root or child), and (T2) forest/floor;
+- L_N ⇒ (T1) at matching-data roots (`test1At_of_matchingOdd`, `test1At_of_LN_matching`), and likewise (T2);
+- CherryLN ⇒ L_N and CherryLN ⇒ (T1) at cherry-data roots;
+- root moves M1 and M2 create matching data;
+- twin reductions;
+- the fat-theta family;
+- L_N(2) ⇐ Conjecture R (`ln2_of_conjR`);
+- dense-root Theorems A and B;
+- the degree-(n − 2) RE theorem;
+- cones ⇔ RE.
+
+**THE CORE**, a family of constrained Lovász statements:
+1. **L_N, and its extension CL (cherry L_N), in all-odd graphs.**
+   - L_N(2) reduces to three pieces:
+     - **Conjecture J** (joint path, certified at n ≤ 10);
+     - **Conjecture AE** (avoid the even vertex, exhaustive at n ≤ 9);
+     - **gluing** for the remaining separations: Thm G is on paper; a cut vertex outside it and the 2-cut cases remain.
+   - J ⇐ PC (the two-zero profile conjecture) + Conjecture P (path choice).
+   - **PC's irreducible core is the twin case, which is again L_N-type.** So L_N(2) and PC feed into each other.
+   - The natural next step is a joint induction that treats them as one family, or an argument special to twins.
+2. **Data.** Every statement in the family holds without exception through order 10, or order 9 for AE:
+   - L_N / conj:common: 239M sets;
+   - J: 20.2M instances;
+   - CL families: up to 158M sets;
+   - Conj 31: 0.8M graphs.
+3. **Outside the core:**
+   - roots without matching data, handled by root moves (78% at order 11), twins, and cherry and sibling data. The sibling version needs more than the Hall condition (H1).
+   - (T2) at d ≥ 10.
+   - Cones, which follow from L_N where B has a perfect matching.
+
+**Process notes.**
+- Every forwarded or peer claim was checked before use. Seven coordinator corrections are recorded (§§30–31 and ROADMAP).
+- Every merge went through the build gate.
+- Audits A25–A43 were all applied.
+- Usage is near the weekly limit, so parallel sessions are kept to one or two.
