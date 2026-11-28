@@ -16,6 +16,8 @@ for k in 5 7; do ./chainlist < $O/one_even_$k.g6 | sort > /tmp/trn_cl$k.txt; pyt
 # random graphs, orders 11 and 13 (400 graphs, seed 11)
 python3 randg.py 400 11 11 13 > /tmp/trn_r1113.g6
 ./trnbud 2000000 < /tmp/trn_r1113.g6 > $D/random_11_13.txt
+# (slow, about 15 minutes) the same graph by graph, with no budget and 300 s per graph
+# ./random_nobudget.sh 300 > $D/random_11_13_nobudget.txt
 # the core of Definition 5.1
 ( for k in 5 7 9; do echo "order $k"; ./core < $O/one_even_$k.g6; done ) > $D/core.txt
 # instance-level classes and extremal rules (orders 5, 7)
