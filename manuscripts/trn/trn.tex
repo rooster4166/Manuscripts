@@ -27,7 +27,7 @@
 \emergencystretch=3em
 
 \title[The tight transfer TRN]{The tight transfer TRN:\\ the failure mechanism, the core that
-Conjecture N needs,\\ a trivial-chain strengthening, and the hard residual}
+Conjecture N needs,\\ two-token steering, and the residual}
 \author{Gallai project (cloud session \texttt{claude/trn})}
 \date{28 November 2026 (working draft)}
 
@@ -36,36 +36,36 @@ Conjecture N needs,\\ a trivial-chain strengthening, and the hard residual}
 Let $G$ have at most one vertex $g$ of positive even degree, let $x,y$ be odd and non-adjacent,
 and let $u\in N(g)\cap N(y)$ with $u\ne x$. The tight transfer $\TRN$ asks: if $G-gu$ has a
 Lov\'asz decomposition whose path ending at $y$ avoids $x$, does $G$ have one? By~\cite{CN},
-$\TRN$ and neighbour avoidance $\NA$ imply Conjecture~N, which gives DL(1). \emph{We do not prove
-$\TRN$.} We prove the following.
+$\TRN$ and neighbour avoidance $\NA$ imply Conjecture~N, and $\NA$ is now a theorem~\cite{NA}. So
+$\TRN$ is the only missing piece of Conjecture~N, which reduces DL(1) to near twins. \emph{We do
+not prove $\TRN$.} We prove the following.
 \begin{itemize}
 \item \emph{The failure mechanism, exactly.} Let $\cD'$ be a good decomposition of $G-gu$ and $P_y$
 its path through $yu$. Fan's transfer of $\cD'$ fails exactly when $P_y$ is not the path
 $Q'(y)$ ending at $y$, the forced chain reaches the end $e$ of $P_y$ on $y$'s side, and $x\in
-V(P_y)$ (Proposition~\ref{prop:fail}). The chain depends only on the half-paths at $u$, so
-re-pairing at $u$ changes $P_y$ but not the chain (Lemma~\ref{lem:halves}).
-\item \emph{Transfers and outright cases} (Section~\ref{sec:tools}).
-  \begin{itemize}
-  \item A transfer that keeps $x$ and $y$ separated (formalised).
-  \item The exchange lemma of~\cite{L1I}, now also for $y\sim g$.
-  \item Two rotations at $y$, and re-pairing at $u$.
-  \item The conclusion of $\TRN$ holds with no hypothesis when $\mathrm{dist}(x,y)\ge3$, or when
-  $d(g)=2$ and $N(g)$ is independent (both formalised).
-  \end{itemize}
-\item \emph{The core} (formalised). Conjecture~N follows from $\TRN$ restricted to a core: the
-instances that its induction reaches, with N available on smaller graphs. A core instance is
-all-tight, its child keeps a witness, $\mathrm{dist}(x,y)=2$, and $N(g)$ is not an independent pair
-(Theorem~\ref{thm:core}). At order $9$ the core holds $91{,}890$ of the $490{,}923$ tests.
-\item \emph{A trivial-chain strengthening} (computed). In all $490{,}923$ order-$9$ tests some good
-decomposition of $G-gu$ has a trivial chain, i.e.\ $G$ has a good decomposition in which $gu$ is
-terminal at $u$ ($\TRNE$). The same holds on random graphs of orders $11$, $13$ and on an order-$11$
-slice. But $\TRNE$ implies the open conjecture EE (Proposition~\ref{prop:ee}), so it is not a proof
-route.
-\item \emph{The residual} (computed, exhaustive at order $7$, sampled at order $9$). Re-decomposing
-the chain paths, $Q'(y)$ and $gu$ repairs every failing $\cD'$ except in a \emph{hard core}: the
-chain meets $y$ at its first step and $u\notin Q'(y)$. In the hard core the repair still succeeds
-for $92.5\%$ of the failures at order~$7$. The smallest unrepairable core pairs have order~$7$
-(Section~\ref{sec:residual}).
+V(P_y)$ (Proposition~\ref{prop:fail}). The chain depends only on the half-paths at $u$
+(Lemma~\ref{lem:halves}).
+\item \emph{Transfers and outright cases} (Section~\ref{sec:tools}), two of them formalised.
+\item \emph{The core} (formalised). Conjecture~N follows from $\TRN$ restricted to core instances.
+These satisfy everything the induction for N has at hand when it applies $\TRN$: $G$ is an instance
+of N, N holds on smaller graphs, the instance is all-tight, its child keeps a witness,
+$\mathrm{dist}(x,y)=2$, and $N(g)$ is not an independent pair (Theorem~\ref{thm:core}). At order
+$9$, $90{,}056$ of the $490{,}923$ tests are core tests.
+\item \emph{Two-token steering} (formalised). Hang a leaf $\ell$ at $y$ and put a token on each of
+the two even vertices $g$ and $y$ of the leaf graph. Suppose the tokens can be moved along edges,
+never onto $x$ or $\ell$ and never onto a neighbour of the other token, until one of them reaches a
+vertex with no edge left. Then $G$ has a Lov\'asz decomposition whose path ending at $y$ avoids $x$,
+with no hypothesis on $G-gu$ (Theorem~\ref{thm:steer}). The step of $\TRN$ is exactly the forbidden
+move. So Conjecture~N follows from $\TRN$ restricted to core instances with no such schedule
+(Theorem~\ref{thm:core2}). At order $9$ schedules exist for $64{,}291$ of the $90{,}056$ core tests,
+and for $238{,}265$ of the $263{,}264$ instances of N.
+\item \emph{A trivial-chain strengthening} (computed). In every test we ran, some good
+decomposition of $G-gu$ has a trivial chain ($\TRNE$). A proof of $\TRNE$ in full would prove the
+open conjecture EE (Proposition~\ref{prop:ee}).
+\item \emph{The residual} (computed). For each failing $\cD'$ we test four repairs. At order $7$
+(exhaustive) a local re-decomposition repairs every failing $\cD'$ outside a \emph{hard core}: the
+chain meets $y$ at its first step and $u\notin Q'(y)$. In a sample at order $9$ this fails for
+$24{,}176$ of $30{,}217{,}696$ failing $\cD'$ outside the hard core (Section~\ref{sec:residual}).
 \end{itemize}
 \end{abstract}
 \maketitle
@@ -79,7 +79,13 @@ $d(v)\bmod2$ of them~\cite{L68}. For an odd vertex $c$ we write $Q(c)$ for the p
 its other end is its \emph{far end}. The even vertex is always called $g$. An \emph{instance}
 $(G,c,A)$ is \emph{good} if some Lov\'asz decomposition has $V(Q(c))\cap A=\emptyset$.
 
-\begin{conjecture}[$\TRN$; {\cite[Conjecture~4.5]{CN}}]\label{conj:trn}
+\begin{conjecture}[N; {\cite[Conjecture~1.1]{CN}, \cite[Conjecture~9.1]{DL}}]\label{conj:n}
+Let $G$ have at most one even vertex $g$, let $x,y$ be odd and non-adjacent, and suppose that
+$W(G,y,x)=N(y)\setminus(N(x)\cup\{g\})$ is non-empty. Then $(G,y,\{x\})$ is good.
+\lean{ConjNOn}
+\end{conjecture}
+
+\begin{conjecture}[$\TRN$; {\cite[Conjecture~4.1]{CN}}]\label{conj:trn}
 Let $g$ be the only even vertex of $G$, let $x,y$ be odd and non-adjacent, and let $u\in N(g)\cap
 N(y)$ with $u\ne x$. If $(G-gu,y,\{x\})$ is good, then $(G,y,\{x\})$ is good.
 \lean{TightTransferNOn}
@@ -88,11 +94,12 @@ N(y)$ with $u\ne x$. If $(G-gu,y,\{x\})$ is good, then $(G,y,\{x\})$ is good.
 For $y\not\sim g$ this is the tight transfer TR of~\cite[Conjecture~4.1]{L1I} with $A=\{x\}$. For
 $y\sim g$ it is the counterpart TightTransferAdj introduced in~\cite{CN}.
 
-\subsection*{Why it matters} By~\cite[Theorem~4.6]{CN}, $\TRN$ and $\NA$ imply Conjecture~N, and N
-reduces DL(1) to near twins~\cite[Prop.~9.2]{DL}. TR in set form also gives \texttt{L1Blocked} from
-ST~\cite{L1I}. The data are clean. $\TRN$ has no violation in $490{,}923$ order-$9$ tests,
-$236{,}891$ with $y\not\sim g$ and $254{,}032$ with $y\sim g$ (Table~\ref{tab:counts} recomputes
-them), and none in $831{,}785$ tests on two order-$11$ slices~\cite{CN}.
+\subsection*{Why it matters} By~\cite[Theorem~4.6]{CN}, $\TRN$ and $\NA$ imply Conjecture~N, and
+$\NA$ is proved and formalised in~\cite{NA}. Conjecture N reduces DL(1) to near
+twins~\cite[Prop.~9.2]{DL}. TR in set form also gives \texttt{L1Blocked} from ST~\cite{L1I}. The data
+are clean. $\TRN$ has no violation in $490{,}923$ order-$9$ tests, $236{,}891$ with $y\not\sim g$ and
+$254{,}032$ with $y\sim g$ (Table~\ref{tab:counts} recomputes them), and none in $831{,}785$ tests on
+two order-$11$ slices (Table~\ref{tab:trne}).
 
 \subsection*{The setting} Throughout, $K=G-gu$. In $K$ the vertex $u$ is the only possible even
 vertex (it has degree $d_G(u)-1\ge2$), $g$ is odd, and $g\not\sim u$. A \emph{good} $\cD'$ is a
@@ -106,13 +113,16 @@ vertex $y$ is a blank of $u$, and Fan's inequality is the equality $b(g)=1=|Z(u)
 \item Section~\ref{sec:mech}: the exact failure condition (Proposition~\ref{prop:fail}) and the
 half-path invariance of the forced chain (Lemma~\ref{lem:halves}).
 \item Section~\ref{sec:tools}: proved transfers and outright cases. Lemma~\ref{lem:sep} and
-Proposition~\ref{prop:outright} are formalised.
-\item Section~\ref{sec:core}: the core of $\TRN$ and the formal reduction
-$\text{N}\Leftarrow\text{core}\wedge\NA$ (Theorem~\ref{thm:core}).
+Proposition~\ref{prop:outright}(i),(ii) are formalised.
+\item Section~\ref{sec:core}: the core of $\TRN$ and the formal reduction of N to it
+(Theorem~\ref{thm:core}).
+\item Section~\ref{sec:steer}: two-token steering (Theorem~\ref{thm:steer}), the leaf-tail lemma
+(Lemma~\ref{lem:leaftail}), the reduction of N to the unscheduled core (Theorem~\ref{thm:core2}),
+all formalised, and the coverage data.
 \item Section~\ref{sec:trne}: the trivial-chain form $\TRNE$, its data, and $\TRNE\Rightarrow\EE$
 (Proposition~\ref{prop:ee}).
-\item Sections~\ref{sec:class}--\ref{sec:residual}: the exhaustive classification of failing
-pairs $(G,\cD')$ and the residual.
+\item Sections~\ref{sec:class}--\ref{sec:residual}: the classification of failing pairs
+$(G,\cD')$, exhaustive at order $7$ and sampled at order $9$, and the residual.
 \item Section~\ref{sec:lean}: formalisation. Section~\ref{sec:open}: what remains.
 \end{enumerate}
 
@@ -120,13 +130,14 @@ pairs $(G,\cD')$ and the residual.
 \begin{itemize}
 \item \emph{Proved and formalised} (Lean, no \texttt{sorry}, axioms \texttt{propext},
 \texttt{Classical.choice}, \texttt{Quot.sound}): Lemma~\ref{lem:sep},
-Proposition~\ref{prop:outright}(i),(ii), Theorem~\ref{thm:core}.
-\item \emph{Proved on paper}: Proposition~\ref{prop:fail}, Lemma~\ref{lem:halves},
-Lemmas~\ref{lem:exchange}--\ref{lem:repair}, Proposition~\ref{prop:outright}(iii),
-Proposition~\ref{prop:ee}.
-\item \emph{Computed}, exhaustively in the stated range: Sections~\ref{sec:trne}--\ref{sec:residual}.
-No proof depends on a computation.
-\item \emph{Open}: $\TRN$, its core, and $\TRNE$.
+Proposition~\ref{prop:outright}(i),(ii), Theorem~\ref{thm:core}, Lemmas~\ref{lem:leaftail},
+\ref{lem:step2} and~\ref{lem:sched}, Theorems~\ref{thm:steer} and~\ref{thm:core2}.
+\item \emph{Proved on paper}: Lemma~\ref{lem:chain}, Proposition~\ref{prop:fail},
+Lemma~\ref{lem:halves}, Lemmas~\ref{lem:exchange}--\ref{lem:repair},
+Proposition~\ref{prop:outright}(iii), Proposition~\ref{prop:first}, Proposition~\ref{prop:ee}.
+\item \emph{Computed}, in the stated ranges: the coverage of steering (Section~\ref{sec:steer}) and
+Sections~\ref{sec:trne}--\ref{sec:residual}. No proof depends on a computation.
+\item \emph{Open}: $\TRN$, its core, its unscheduled core, and $\TRNE$.
 \end{itemize}
 
 \section{Fan's forced chain}\label{sec:prelim}
@@ -141,13 +152,20 @@ $b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_w$, every path of which lies in $V(P)\cup
 $P\in\cD$.\lean{fan\_single\_supp}
 \end{lemma}
 
-In $K=G-gu$ every neighbour of $u$ is odd and has one end, so $Z(u)=\emptyset<1=b(g)$ and the
-lemma applies with $t=g$, $w=u$. Since $b\le1$ everywhere, the chain of its proof is
-\emph{forced}~\cite[Prop.~2.1]{TF}. For an end $v$ of a path $P$ containing $u$, let $\sigma(v)$ be
-the vertex immediately before $u$ when $P$ is read from $v$; then $\sigma(v)\in N_K(u)$. The chain is
-$x_0=g$, $x_{j+1}=\sigma(x_j)$, and it stops at the first $x_k$ whose path avoids $u$. Executing it
-\emph{re-routes} the path $P_j$ of $\cD'$ ending at $x_j$ for $j<k$: if $P_j=x_j\,W\,x_{j+1}\,u\,W'$,
-it becomes $x_{j+1}\,W^{-1}\,x_j\,u\,W'$. Then $u$ is appended to $P_k$.
+Let $G$ have the only even vertex $g$ and let $u\in N(g)$. In $K=G-gu$ every neighbour of $u$ is
+odd and has one end, so $Z(u)=\emptyset<1=b(g)$ and the lemma applies with $t=g$, $w=u$. Since
+$b\le1$ everywhere, the chain of its proof is \emph{forced}~\cite[Prop.~2.1]{TF}. For an end $v$ of
+a path $P$ containing $u$, let $\sigma(v)$ be the vertex immediately before $u$ when $P$ is read from
+$v$; then $\sigma(v)\in N_K(u)$. The chain is $x_0=g$, $x_{j+1}=\sigma(x_j)$, and it stops at the
+first $x_k$ whose path avoids $u$. Executing it \emph{re-routes} the path $P_j$ ending at $x_j$ for
+$j<k$: if $P_j=x_j\,W\,x_{j+1}\,u\,W'$, it becomes $x_{j+1}\,W^{-1}\,x_j\,u\,W'$. Then $u$ is appended
+to $P_k$.
+
+The path $P_j$ may already have been re-routed at its other end, when its two ends are $x_m$ and
+$x_j$ with $m<j$. The rule then acts on the current version. Re-routing at $x_m$ does not change the
+segment from $x_j$ to $u$, so $\sigma(x_j)$ is the same whether it is read on the original path or
+on the current one. This happens: at order $7$, in $11{,}522$ of the $152{,}264$ good $\cD'$ (\texttt{rerouted2.cpp};
+the audit~\cite{A34} found the same count).
 
 \begin{lemma}\label{lem:chain}
 \begin{enumerate}[label=(\roman*)]
@@ -190,7 +208,8 @@ $e\in\{g\}\cup N_K(u)$, $y$ immediately follows $e$ in the chain, and the path o
 $y$ has vertex set $V(P_y)$. If the chain avoids $e$, the path of $\cD$ ending at $y$ lies in
 $V(Q'(y))\cup\{u\}$.
 \end{enumerate}
-Hence $\cD$ is good if and only if the chain avoids $e$ or $x\notin V(P_y)$.
+Hence, in case (b), $\cD$ is good if and only if the chain avoids $e$ or $x\notin V(P_y)$.
+The statements of (b) about vertex sets do not use that $\cD'$ is good.
 \end{proposition}
 
 \begin{proof}
@@ -202,13 +221,20 @@ so $P_{i-1}=P_y$, and $x_{i-1}$ is the end from which $y$ precedes $u$.
 \item In case (a) that end is $y$ itself, and $x_{i-1}=y=x_i$ contradicts Lemma~\ref{lem:chain}(i).
 \item In case (b) it is $e$, and the re-routed $P_y$ has vertex set $V(P_y)$ by
 Lemma~\ref{lem:chain}(ii). Every chain vertex other than $x_0=g$ is some $\sigma(\cdot)\in N_K(u)$.
+\item Conversely, in case (b), suppose the chain reaches $e=x_j$. The unique end at $e$ lies on
+$P_y$, which contains $u$, so the chain does not stop at $e$. The segment of $P_y$ from $e$ to $u$
+is unchanged by any earlier re-routing (Section~\ref{sec:prelim}), so $x_{j+1}=\sigma(e)=y$.
 \end{itemize}
-The last sentence follows because $u\ne x$.
+For the last sentence of (b), $y$'s end stays on $Q'(y)$, which is at most re-routed or extended by
+$u$. In case (b), if the chain avoids $e$, then $y$'s path lies in $V(Q'(y))\cup\{u\}$, which avoids
+$x$ since $\cD'$ is good and $u\ne x$. If it reaches $e$, then $y$'s path has vertex set $V(P_y)$.
+This gives the criterion. None of these vertex-set arguments uses that $\cD'$ is good.
 \end{proof}
 
 So the transfer fails exactly in the configuration of~\cite[Cor.~2.3]{TF}: with a leaf at $y$, the
 blank $y$ of $u$ is reached through its unique ``predecessor'' $e$. The proposition sharpens
-\cite[Lemma~3.2]{L1I} (a chain avoiding $y$ suffices) to an equivalence, for every good $\cD'$.
+\cite[Lemma~3.2]{TF} $=$ \cite[Lemma~2.2]{L1I} (a chain avoiding $y$ suffices) to an equivalence,
+for every good $\cD'$.
 
 Call the paths of $\cD'$ through $u$ \emph{$u$-paths}. Each splits at $u$ into two \emph{halves},
 from an end to $u$. A \emph{re-pairing at $u$} replaces the $u$-paths by another pairing of the same
@@ -225,7 +251,8 @@ $e$-half and $h'$ its new partner.
 Each pair of halves meeting only in $u$ is a path, so $\cD''$ decomposes $K$, and its ends are those
 of $\cD'$. The value $\sigma(v)$ is read off the half from $v$ to $u$. A chain vertex's path avoids
 $u$ in $\cD''$ if and only if it does in $\cD'$, since the paths avoiding $u$ are unchanged. So the
-chain is the same. The rest is Proposition~\ref{prop:fail} applied to $\cD''$.
+chain is the same. The rest is Proposition~\ref{prop:fail}(b) applied to $\cD''$. Its vertex-set
+statements hold whether or not $\cD''$ is good.
 \end{proof}
 
 \section{Transfers that do survive, and outright cases}\label{sec:tools}
@@ -240,7 +267,7 @@ Apply Lemma~\ref{lem:fan}. The path of $\cD$ ending at $y$ lies in $V(P)\cup\{u\
 of $\cD'$. That $P$ contains $y$ (as $y\ne u$), so it misses $x$; and $x\ne u$.
 \end{proof}
 
-The next lemma is~\cite[Lemma~4.3]{L1I}. Its proof never uses $y\not\sim g$, so it holds in both
+The next lemma is~\cite[Lemma~4.2]{L1I}. Its proof never uses $y\not\sim g$, so it holds in both
 cases of $\TRN$.
 
 \begin{lemma}[exchange]\label{lem:exchange}
@@ -253,7 +280,7 @@ Let $e=x_{i-1}$ and $y=x_i$. Since $Q'(y)$ avoids $u$, the chain stops at $y$ ($
 $q$ of $Q'(y)$ is not an earlier chain vertex, since the chain would have stopped there.
 \begin{itemize}
 \item The transfer contains $R=Q'(y)+yu$, with ends $q,u$, and the re-routed $P_y$, with vertex
-set $V(P_y)$ and ends $y,f'$.
+set $V(P_y)$ and ends $y,f'$. Here $f'=f$ unless $P_y$ was also re-routed at $f$.
 \item Replace these two paths by the edge $yu$ and the union of $P_y$ (re-routed) and $Q'(y)$,
 glued at $y$. The union is a path from $f'$ to $q$, because the two vertex sets meet only in $y$.
 \end{itemize}
@@ -311,74 +338,329 @@ Proposition~\ref{prop:fail}(a).
 
 \section{The core of TRN}\label{sec:core}
 
-The proof of Conjecture~N from $\TRN$~\cite[Thm.~4.6]{CN} is an induction on $\sum_vd(v)$. It
-applies $\TRN$ only after every other step has failed, and with the induction hypothesis at hand.
-We record exactly what it needs.
+The proof of Conjecture~N from $\TRN$~\cite[Thm.~4.6]{CN} is an induction on $\sum_vd(v)$, run on
+an instance of N. It applies $\TRN$ only after every other step has failed, and with the induction
+hypothesis at hand. We record what holds at that point.
 
 \begin{definition}[the core]\label{def:core}
 A \emph{core instance} of $\TRN$ is a $\TRN$ instance $(G,g,x,y,u)$ with the following properties.
-\begin{enumerate}[label=(C\arabic*)]
+\begin{enumerate}[label=(C\arabic*),start=0]
+\item \emph{An instance of N.} Some $w\in N(y)\setminus\{g\}$ is not adjacent to $x$; that is,
+$W(G,y,x)\ne\emptyset$.
 \item \emph{Induction.} Conjecture~N holds on every graph of smaller degree sum on the same vertex
 set.
 \item \emph{All-tight.} Every neighbour of $g$ other than $x,y$ is adjacent to $y$.
-\item \emph{Witness.} Some $w\in N(y)$ with $w\ne u$ is not adjacent to $x$.
+\item \emph{Witness.} Some $w\in N(y)$ with $w\ne u$ is not adjacent to $x$ ($w=g$ is allowed).
 \item \emph{Distance two.} $x$ and $y$ have a common neighbour.
 \item \emph{Not a split.} $N(g)$ is not a pair of non-adjacent vertices.
 \end{enumerate}
 The \emph{core of $\TRN$} is $\TRN$ for core instances.\lean{TightTransferNCore}
 \end{definition}
 
+Conditions (C0) and (C3) differ exactly when $y\sim g$, $g\not\sim x$ and $N(y)\setminus\{g\}
+\subseteq N(x)$: then the only child witness is $g$, and $(G,y,x)$ is not an instance of N.
+
 \begin{theorem}\label{thm:core}
-The core of $\TRN$ and the degree-two case $N(g)=\{x,y\}$ of~N imply Conjecture~N. Hence the
-core of $\TRN$ and $\NA$ imply Conjecture~N.
+The core of $\TRN$ and the degree-two case $N(g)=\{x,y\}$ of~N imply Conjecture~N. Hence the core
+of $\TRN$ and $\NA$ imply Conjecture~N, and since $\NA$ is a theorem~\cite{NA}, the core of $\TRN$
+alone implies Conjecture~N.
 \lean{conjN\_of\_core, conjN\_of\_core\_neighbourAvoid, tightTransferNCore\_of}
 \end{theorem}
 
 \begin{proof}
-Follow the induction of~\cite[Thm.~4.6]{CN} on the degree sum.
+Follow the induction of~\cite[Thm.~4.6]{CN} on the degree sum, for an instance $(G,y,x)$ of N with a
+witness $w_0\in W(G,y,x)$.
 \begin{itemize}
 \item No even vertex: $L_1$.
 \item A non-tight target: Case~I, whose child keeps the witness.
 \item The remaining cases ($N(g)\subseteq\{x,y,w_0\}$): a split and $L_1$, or the degree-two case.
 \end{itemize}
 In the step that used $\TRN$ we have a tight target $u$ whose child keeps a witness, so (C3)
-holds, and (C2) holds because no non-tight target exists. If $x,y$ have no common neighbour,
-Proposition~\ref{prop:outright}(i) finishes; if $N(g)$ is an independent pair,
+holds; (C0) holds through $w_0$, and (C2) holds because no non-tight target exists. If $x,y$ have
+no common neighbour, Proposition~\ref{prop:outright}(i) finishes; if $N(g)$ is an independent pair,
 Proposition~\ref{prop:outright}(ii) finishes. Otherwise (C4) and (C5) hold. The child is good by
-induction, and (C1) is the induction hypothesis, so the core applies.
+induction, and (C1) is the induction hypothesis, so the core applies. The degree-two case is $\NA$
+by~\cite[Lemma~4.4]{CN}.
 \end{proof}
 
 So any proof of $\TRN$ for core instances, and any proof that uses N on smaller graphs, is enough
-for Conjecture~N. Table~\ref{tab:counts} shows that the core is about a fifth of the tests at
-order~$9$; most tests are excluded by (C2).
+for Conjecture~N. The induction needs $\TRN$ for one tight target with a witness per instance, not
+for every one, so even the core asks for more than is used. Table~\ref{tab:counts} shows that the
+core is under a fifth of the tests at order~$9$; most tests are excluded by (C2).
 
 \begin{table}[ht]
-\caption{$\TRN$ tests (child good) and the core, exhaustive over the one-even graphs
-of~\cite{STL}. Each excluded test is counted under the first of (C2)--(C5) that fails.}
+\caption{$\TRN$ tests (child good) and the core, exhaustive over the connected one-even graphs
+of~\cite{STL}. Each excluded test is counted under the first of (C2), (C3), (C4), (C5), (C0) that
+fails. Condition (C1), the induction hypothesis, is not a property of the test and is not checked;
+``core test'' means (C0), (C2)--(C5) and a good child.}
 \label{tab:counts}\small
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
 order & tests $y\not\sim g$ & tests $y\sim g$ & core $y\not\sim g$ & core $y\sim g$ &
-\multicolumn{2}{r}{excluded by (C2), (C3), (C4), (C5)}\\
+excluded by (C2), (C3), (C4), (C5), (C0)\\
 \midrule
-$5$ & $4$ & $10$ & $0$ & $10$ & \multicolumn{2}{r}{$2,\ 2,\ 0,\ 0$}\\
-$7$ & $787$ & $1{,}060$ & $114$ & $380$ & \multicolumn{2}{r}{$1{,}097,\ 125,\ 56,\ 75$}\\
-$9$ & $236{,}891$ & $254{,}032$ & $36{,}728$ & $55{,}162$ &
-\multicolumn{2}{r}{$370{,}094,\ 12{,}150,\ 6{,}345,\ 10{,}444$}\\
+$5$ & $4$ & $10$ & $0$ & $10$ & $2,\ 2,\ 0,\ 0,\ 0$\\
+$7$ & $787$ & $1{,}060$ & $114$ & $366$ & $1{,}097,\ 125,\ 56,\ 75,\ 14$\\
+$9$ & $236{,}891$ & $254{,}032$ & $36{,}728$ & $53{,}328$ &
+$370{,}094,\ 12{,}150,\ 6{,}345,\ 10{,}444,\ 1{,}834$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The core instances at order $9$ have $d(g)\in\{2,4,6\}$ for $y\not\sim g$ ($10{,}893$, $23{,}266$,
-$2{,}569$) and $d(g)\in\{2,4,6,8\}$ for $y\sim g$ ($7{,}276$, $32{,}842$, $13{,}646$, $1{,}398$). By
-(C5), the core instances with $d(g)=2$ have $g$ on a triangle. That is the third obstruction shape
-of~\cite[\S6]{CN}.
+The core tests at order $9$ have $d(g)\in\{2,4,6\}$ for $y\not\sim g$ ($10{,}893$, $23{,}266$,
+$2{,}569$) and $d(g)\in\{2,4,6,8\}$ for $y\sim g$ ($6{,}312$, $31{,}972$, $13{,}646$, $1{,}398$). By
+(C5), the core tests with $d(g)=2$ have $g$ on a triangle. That is the third obstruction shape
+of~\cite[\S6]{CN}. All $1{,}834$ tests excluded only by (C0) have $y\sim g$.
+
+\section{Two-token steering}\label{sec:steer}
+
+This section proves the conclusion of $\TRN$ outright, with no hypothesis on $G-gu$, for most core
+instances. The idea is the one~\cite{NA} uses for $\NA$. Hang a leaf $\ell$ at $y$ and run Lov\'asz's
+induction in the leaf graph, with the targets chosen in advance. The condition ``no path contains
+both $\ell$ and $x$'' concerns vertex sets only, since $\ell$ lies on one path, so Fan's lemma
+carries it back through every step whose target is not $\ell$ or $x$. In $\NA$ there is no even
+vertex, so the leaf graph has one even vertex, $y$. Here it has two, $g$ and $y$, and each step must
+keep Fan's inequality with two even vertices~\cite[\S10(3)]{NA}.
+
+A \emph{parity decomposition} of a graph $H$ is a path decomposition with $b(v)=d_H(v)\bmod2$ for
+every $v$; with at most one even vertex this is a Lov\'asz decomposition. For $X\subseteq V(H)$, a
+decomposition \emph{meets $X$ at most once} if no path contains two vertices of $X$. Throughout,
+$G^+=G+y\ell$ with $\ell$ a new vertex, and $X=\{\ell,x\}$. The even vertices of $G^+$ are $g$ and
+$y$, whose degree is $d_G(y)+1\ge2$.
+
+\begin{lemma}[the leaf tail]\label{lem:leaftail}
+Let $H$ have at most one even vertex, let $c$ be a leaf of $H$ with neighbour $w$, and let
+$x\notin\{c,w\}$ be odd with $x\not\sim w$. Then $(H,c,\{x\})$ is good. The neighbour $w$ may be the
+even vertex.\lean{avoid\_leafTail}
+\end{lemma}
+
+If $w$ is odd, then $w\in W(H,c,x)$, so this is Conjecture~N for leaf tails. For $w=g$ the witness
+set is empty and N says nothing.
+
+\begin{proof}
+Induction on the degree sum.
+\begin{itemize}
+\item \emph{No even vertex.} Then $c\not\sim x$, and $L_1$~\cite[Thm.~6.3]{RD} gives $x\notin
+Q(c)$.
+\item \emph{A target outside $\{x,c,w\}$.} Let $g$ be the even vertex; $g\ne c$ since $d(c)=1$, and
+$g\ne x$. Suppose $g$ has a neighbour $u\notin\{x,c,w\}$. Then $u\not\sim c$. In $H-gu$, $c$ is still
+a leaf at $w$, $x$ is odd and not adjacent to $w$, and only $u$ can be even. By induction
+$(H-gu,c,\{x\})$ is good. Apply Fan's step from $g$ to $u$ to a good decomposition, as in
+Section~\ref{sec:prelim}. The vertex $c$ is not a chain vertex, since $c\ne g$ and $c\notin N(u)$.
+By Lemma~\ref{lem:chain}(ii),(iii), $c$'s end stays on its path, which is at most re-routed or
+extended by $u\ne x$. So the new path ending at $c$ avoids $x$. (This is the free-target transfer
+of~\cite[Prop.~7.1]{DL}; Lean \texttt{avoid\_free\_target}.)
+\item \emph{Otherwise} $N(g)\subseteq\{x,c,w\}$. If $g=w$, then $x\notin N(g)$, as $x\not\sim w$, so
+$N(g)\subseteq\{c\}$ and $d(g)\le1$, which is impossible. So $g\ne w$, $c\notin N(g)$ and
+$N(g)\subseteq\{x,w\}$. Since $d(g)$ is even and positive, $N(g)=\{x,w\}$ with $x\not\sim w$. Then
+Proposition~\ref{prop:outright}(ii) applies to $(H,g,x,c,w)$, since $w\in N(g)\cap N(c)$, $w\ne
+x$, and $c,x$ are odd and non-adjacent.
+\end{itemize}
+No tight target occurs, so $\TRN$ is never needed.
+\end{proof}
+
+\begin{lemma}[one Fan step with two even vertices]\label{lem:step2}
+Let the even vertices of $H$ lie in $\{z,o\}$, with $z$ even. Let $u\in N(z)$ with $u\notin X\cup
+\{o\}$, and suppose $u\not\sim o$ in $H-uz$. If $H-uz$ has a parity decomposition that meets $X$ at
+most once, then so has $H$.\lean{fan\_step\_two}
+\end{lemma}
+
+\begin{proof}
+Let $H'=H-uz$ and let $\cD'$ be the given decomposition.
+\begin{itemize}
+\item \emph{Degrees.} In $H'$ the vertex $z$ is odd, of degree $d_H(z)-1\ge1$, so $b_{\cD'}(z)=1$.
+The vertex $u$ is odd in $H$, since $u\notin\{z,o\}$ has positive degree, so it is even or isolated
+in $H'$. All other degrees are unchanged. So the even vertices of $H'$ lie in $\{u,o\}$.
+\item \emph{Fan's hypothesis.} A neighbour $v$ of $u$ in $H'$ is neither $u$ nor $o$, and has
+positive degree. So $v$ is odd and $b_{\cD'}(v)=1$. Hence $Z_{\cD'}(u)=\emptyset$ and
+$b_{\cD'}(z)=1>|Z_{\cD'}(u)|$.
+\item \emph{The step.} Lemma~\ref{lem:fan} with $t=z$ and $w=u$ gives a decomposition $\cD$ of $H$
+with $b_\cD=b_{\cD'}-\mathbf 1_z+\mathbf 1_u$. This is $0$ at the even vertex $z$, $1$ at the odd
+vertex $u$ (where $b_{\cD'}(u)=0$), and $d_H\bmod2$ elsewhere.
+\item \emph{The invariant.} Every path of $\cD$ lies in $V(P)\cup\{u\}$ for some $P\in\cD'$, and
+$u\notin X$. So $\cD$ meets $X$ at most once.\qedhere
+\end{itemize}
+\end{proof}
+
+If $u\sim o$ in $H-uz$, then $Z(u)\ni o$ and Fan's inequality can become the equality $1=1$ of
+$\TRN$. That is the one step the lemma excludes.
+
+\begin{definition}[two-token schedule]\label{def:sched}
+Let $K$ be a graph, $X\subseteq V(K)$, and $a\ne b$ two vertices outside $X$ carrying a
+\emph{token} each. A \emph{move} of the token at $a$ deletes an edge $au$ of $K$ with
+\[
+u\notin X,\qquad u\ne b,\qquad u\not\sim b\text{ in }K-au,
+\]
+and puts the token on $u$. The move \emph{retires} the token if $u$ is isolated in $K-au$. A
+\emph{schedule from $(a,b)$ avoiding $X$} is a sequence of moves, each by either token in the current
+graph, whose last move retires a token. Formally (\texttt{Steer2}): either a move at $a$ retires its
+token; or some move at $a$ to $u$ is followed by a schedule from $(u,b)$ in $K-au$; or there is a
+schedule from $(b,a)$.\lean{Steer2}
+\end{definition}
+
+\begin{lemma}[a schedule gives a decomposition]\label{lem:sched}
+Let $a\ne b$ lie outside $X$, let the even vertices of $K$ lie in $\{a,b\}$, and let $K$ have a
+schedule from $(a,b)$ avoiding $X$. Suppose that every graph $K'$ with at most one even vertex,
+obtained from $K$ by deleting edges with no end in $X$, has a Lov\'asz decomposition meeting $X$ at
+most once. Then $K$ has a parity decomposition meeting $X$ at most once.\lean{steer2\_meetsOnce}
+\end{lemma}
+
+\begin{proof}
+Induction on the length of the schedule. By symmetry let the first move be at $a$, deleting $au$.
+Every token position lies outside $X$, so no deleted edge has an end in $X$.
+\begin{itemize}
+\item If $a$ is not even in $K$, then $K$ itself has at most one even vertex, $b$, and the
+hypothesis applies to $K$.
+\item Let $a$ be even, and $K'=K-au$. As in the proof of Lemma~\ref{lem:step2}, the even vertices of
+$K'$ lie in $\{u,b\}$, and $u\ne b$, $u\notin X$.
+\item If the move retires the token, $u$ is isolated in $K'$, so $K'$ has at most one even vertex,
+and the hypothesis gives a Lov\'asz decomposition of $K'$ meeting $X$ at most once.
+\item Otherwise the remaining moves form a schedule from $(u,b)$ in $K'$, and the graphs obtained
+from $K'$ by deleting edges with no end in $X$ are such graphs for $K$. By induction $K'$ has a
+parity decomposition meeting $X$ at most once.
+\end{itemize}
+In the last two cases, Lemma~\ref{lem:step2} with $z=a$, $o=b$ carries the decomposition to $K$.
+\end{proof}
+
+\begin{theorem}[two-token steering]\label{thm:steer}
+Let $g$ be the only even vertex of $G$, and let $x,y$ be odd and non-adjacent. If $G^+=G+y\ell$ has
+a schedule from $(g,y)$ avoiding $\{\ell,x\}$, then $(G,y,\{x\})$ is good. Nothing is assumed about
+$G-gu$ or about $W(G,y,x)$.\lean{avoid\_of\_steer2}
+\end{theorem}
+
+\begin{proof}
+We have $g\ne y$, and $g,y\notin X=\{\ell,x\}$, since $x$ is odd. The even vertices of $G^+$ are $g$
+and $y$. We check the hypothesis of Lemma~\ref{lem:sched}. Let $K'$ have at most one even vertex
+and arise from $G^+$ by deleting edges with no end in $X$. The edge $y\ell$ and all edges at $x$
+are kept. So $\ell$ is a leaf of $K'$ at $y$, $x$ has its $G$-degree, which is odd, and $x\not\sim y$.
+Lemma~\ref{lem:leaftail} with $c=\ell$ and $w=y$ gives a Lov\'asz decomposition of $K'$ with
+$x\notin Q(\ell)$; here $y$ may be even in $K'$. Only one path contains $\ell$, so the decomposition
+meets $X$ at most once. Lemma~\ref{lem:sched} gives a parity decomposition $\cD^+$ of $G^+$ in which
+the path $P_\ell$ through $\ell$ avoids $x$. In $\cD^+$, $b(\ell)=1$, $b(y)=0$ and $b(v)=d_G(v)\bmod2$
+for every other $v$. Deleting $\ell$ gives a Lov\'asz decomposition of $G$ with
+$Q(y)=P_\ell-\ell$~\cite[Lemma~2.3]{NA}, which avoids $x$.
+\end{proof}
+
+\begin{example}[a schedule in which both tokens move]\label{ex:FsRDG}
+$G=$ \texttt{FsRDG}, with edges 01, 02, 03, 05, 06, 14, 15, 26, 56, and $g=2$, $y=0$, $x=4$, $u=6$. Here
+$N(g)=\{0,6\}$, so $g$ has degree two on the triangle $g\,y\,u$, and the test is a core test.
+\begin{enumerate}
+\item The $y$-token moves from $0$ to $1$. Indeed $1\notin\{x,\ell\}$, and $1\not\sim2$.
+\item The $g$-token moves from $2$ to $0$. The $y$-token has left $0$, and the edge $01$ is gone.
+\item The $g$-token moves from $0$ to $3$, a leaf at $0$, and retires.
+\end{enumerate}
+The bottom graph has the edges $05,06,0\ell,14,15,26,56$ and one even vertex, $1$. Take the
+decomposition $\{0\,5,\ \ell\,0\,6,\ 2\,6\,5\,1\,4\}$, whose $\ell$-path avoids $4$. Undo the moves.
+\begin{itemize}
+\item Step 3 appends $3$ to the path ending at $0$: $3\,0\,5$.
+\item Step 2: the path ending at $2$ avoids $0$, so $0$ is appended: $0\,2\,6\,5\,1\,4$.
+\item Step 1 is Fan's step from $0$ to $1$. The path ending at $0$ contains $1$, so the chain is
+$0\to5$. Re-routing gives $5\,6\,2\,0\,1\,4$, and $1$ is appended to the path ending at $5$:
+$1\,5\,0\,3$.
+\end{itemize}
+Deleting $\ell$ leaves $\{1\,5\,0\,3,\ 0\,6,\ 5\,6\,2\,0\,1\,4\}$, a Lov\'asz decomposition of $G$ with
+$Q(y)=0\,6\not\ni4$.
+\end{example}
+
+\begin{remark}[$\TRN$ is the forbidden move]\label{rem:forbidden}
+In $G^+$, Lov\'asz's step at $g$ with target $u$ is the move of the $g$-token from $g$ to $u$. In
+$\TRN$ we have $u\sim y$, so $u$ is adjacent to the $y$-token and the move is forbidden. In $G^+-gu$
+the vertex $y$ is a blank of $u$, and $b(g)=1=|Z(u)|$: the equality of Section~\ref{sec:intro}.
+Steering goes around that step by moving the $y$-token. In an all-tight instance it has to start
+that way (Proposition~\ref{prop:first}).
+
+With no even vertex, as in $\NA$, $G^+$ has the single even vertex $y$, and a schedule of the
+$y$-token alone is a steering sequence of~\cite[Def.~3.1]{NA}. Here the second token is $g$. If only
+the $y$-token moves, the schedule is a trail $y=y_0,y_1,\dots,y_k$ of distinct edges with every
+$y_i$ ($i\ge1$) outside $N[g]\cup\{x\}$, ending at a vertex left isolated. We call this
+\emph{move~(T)}.
+\end{remark}
+
+\begin{definition}[the unscheduled core]\label{def:core2}
+A core instance is \emph{unscheduled} if $G^+$ has no schedule from $(g,y)$ avoiding $\{\ell,x\}$.
+\lean{TightTransferNCore2}
+\end{definition}
+
+\begin{theorem}\label{thm:core2}
+$\TRN$ for unscheduled core instances implies Conjecture~N.
+\lean{conjN\_of\_core2, tightTransferNCore\_of\_core2}
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:steer}, every scheduled core instance satisfies the conclusion of $\TRN$. So
+$\TRN$ for unscheduled core instances gives the core of $\TRN$, and Theorem~\ref{thm:core} with
+$\NA$~\cite{NA} finishes.
+\end{proof}
+
+\begin{proposition}[the first move]\label{prop:first}
+In an all-tight instance (C2), every move available at the start is a move of the $y$-token from $y$
+to a vertex of $N(y)\setminus N[g]$. In particular, if $N(y)\subseteq N[g]$, then $G^+$ has no
+schedule.
+\end{proposition}
+
+\begin{proof}
+A move of the $g$-token goes to some $q\in N(g)$ with $q\notin\{x,y\}$. By (C2), $q\sim y$, and the
+edge $qy$ is not $gq$, so it survives the deletion; the move is forbidden. A move of the $y$-token
+goes to some $q\in N_{G^+}(y)\setminus\{x,\ell,g\}$ with $q\not\sim g$ after deleting $yq$. Since
+$qg\ne yq$, this means $q\notin N(g)$.
+\end{proof}
+
+\begin{table}[ht]
+\caption{Two-token schedules, exhaustive over the connected one-even graphs of~\cite{STL}
+(\texttt{data/steer.txt}, \texttt{data/steer\_core\_stats.txt}). Entries are ``with a schedule /
+total''. An instance of N is a triple $(G,y,x)$ as in Conjecture~\ref{conj:n} with $g$ present. A
+core triple is a triple with at least one core test. The search budget ($2\cdot10^6$ nodes) was
+never hit.}\label{tab:steer}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order & instances of N & all-tight instances & core tests & core triples & move (T) alone\\
+\midrule
+$5$ & $3$ / $12$ & $3$ / $10$ & $2$ / $10$ & $2$ / $7$ & $3$ / $12$\\
+$7$ & $840$ / $1{,}161$ & $216$ / $403$ & $177$ / $480$ & $123$ / $256$ & $287$ / $1{,}161$\\
+$9$ & $238{,}265$ / $263{,}264$ & $41{,}447$ / $52{,}070$ & $64{,}291$ / $90{,}056$ & $29{,}874$ /
+$38{,}651$ & $59{,}630$ / $263{,}264$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Some observations on Table~\ref{tab:steer}:
+\begin{itemize}
+\item Steering does not use the induction. It settles $90.5\%$ of the instances of N at order $9$
+outright, and $71.4\%$ of the core tests.
+\item The fraction grows with the order: $20\%$, $37\%$ and $71\%$ of the core tests at orders $5$,
+$7$, $9$.
+\item In every schedule found, the first move is by the $y$-token, as
+Proposition~\ref{prop:first} requires.
+\item Of the unscheduled core triples, $3$ of $5$, $63$ of $133$ and $4{,}048$ of $8{,}777$ (orders
+$5$, $7$, $9$) have $N(y)\subseteq N[g]$, so they have no legal first move.
+\end{itemize}
+
+\begin{example}[no first move]\label{ex:FqHTg}
+$G=$ \texttt{FqHTg}, with edges 01, 02, 06, 13, 15, 24, 26, 35, 36, 56, and $g=6$, $y=1$, $x=2$. Then
+$N(g)=\{0,2,3,5\}$, $N(y)=\{0,3,5\}$ and $N(x)=\{0,4,6\}$. Each $u\in\{0,3,5\}$ gives a core test:
+the instance is all-tight, $3$ or $5$ is a witness other than $u$, $0$ is a common neighbour, and
+the child is good. Since $N(y)\subseteq N(g)$, no token can move (Proposition~\ref{prop:first}).
+$\TRN$ holds here: for $u=0$, $24$ of the $36$ good $\cD'$ transfer, for example
+$\{1\,3\,5,\ 2\,0\,1\,5\,6\,3,\ 4\,2\,6\}$, which has a trivial chain and gives $Q(y)=1\,3\,5$.
+Smaller unscheduled core instances exist. At order $5$, \texttt{Dqw} ($6$ edges) has a first move but
+no schedule; at order $7$ the smallest have $8$ edges.
+\end{example}
+
+\subsection*{Verification} \texttt{steer2.cpp} searches for schedules by depth-first search with
+memoisation; \texttt{steer.cpp} is an independent search for move~(T), and the two agree on
+move~(T) at all three orders. \texttt{steer\_verify.py} executes a schedule as in the proof of
+Theorem~\ref{thm:steer}. It applies the moves, finds a decomposition of the bottom graph by brute
+force, undoes the moves by Fan's forced chain, checks Fan's hypothesis $b(t)=1$, $Z(w)=\emptyset$ at
+every step, and checks that the final object is a Lov\'asz decomposition of $G$ with $x\notin Q(y)$.
+It shares no code with the C++ tools. It verified all $3$ and $840$ schedules at orders $5$ and $7$,
+and VERIFY9.
 
 \section{A trivial-chain strengthening}\label{sec:trne}
 
-Say that $\cD'$ has a \emph{trivial chain} if its path ending at $g$ avoids $u$. Then Fan's step only
-appends $gu$, so $\cD$ is good. Equivalently, $G$ has a good Lov\'asz decomposition in which $gu$ is
-the terminal edge at $u$: delete $gu$ to go back.
+Say that $\cD'$ has a \emph{trivial chain} if its path ending at $g$ avoids $u$ ($k=0$). Then Fan's
+step only appends $gu$, so $\cD$ is good. Equivalently, $G$ has a good Lov\'asz decomposition in
+which $gu$ is the terminal edge at $u$: delete $gu$ to go back.
 
 \begin{conjecture}[$\TRNE$]\label{conj:trne}
 In the setting of $\TRN$, if $(G-gu,y,\{x\})$ is good, then some good decomposition of $G-gu$ has a
@@ -386,31 +668,38 @@ trivial chain.
 \end{conjecture}
 
 \begin{table}[ht]
-\caption{$\TRN$ and $\TRNE$. ``Undecided'' means a node budget of $2\cdot10^6$ was hit.}\label{tab:trne}
+\caption{$\TRN$ and $\TRNE$. The random graphs are \texttt{randg.py} of~\cite{L1I} (seed $11$),
+with a node budget of $2\cdot10^6$; see the text for the undecided cases.}\label{tab:trne}
 \small
 \begin{tabular}{@{}llrrr@{}}
 \toprule
 range & graphs & $\TRN$ tests & $\TRN$ violations & $\TRNE$ fails\\
 \midrule
-orders $5,7,9$, exhaustive & all one-even graphs & $14$, $1{,}847$, $490{,}923$ & $0$ & $0$\\
-orders $11,13$, random & $400$ & $39{,}098$ & $0$ & $0$ (1 undecided)\\
+orders $5,7,9$, exhaustive & connected one-even & $14$, $1{,}847$, $490{,}923$ & $0$ & $0$\\
+orders $11,13$, random & $400$ & $39{,}098$ & $0$ & $0$\\
 order $11$, \texttt{geng} slice $17/2000$ & all in the slice & $365{,}665$ & $0$ & $0$\\
 order $11$, \texttt{geng} slice $517/2000$ & all in the slice & $466{,}120$ & $0$ & $0$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\emph{The random run.} With the budget, one test was undecided for $\TRNE$ (\texttt{LUIiOg?gICW\^{}XK},
+$g=6$, $y=10$, $x=3$, $u=1$). Without a budget, $\TRNE$ holds there, and in all $96$ tests of that
+graph. A further $101$ candidate tests were dropped from the $39{,}098$ because the goodness of the
+child was undecided at the budget. RANDOM101
+
 $\TRNE$ implies $\TRN$, and also the re-choice statement of~\cite{L1I}: some good $\cD'$ has a
-chain avoiding $y$. The computation is a two-path oracle query: in $K$, does some Lov\'asz decomposition have $Q(y)\not\ni
-x$ and $Q(g)\not\ni u$ at once? At order $7$ it agrees with the minimum over the full enumeration
-of good $\cD'$: the shortest forced chain always has length one
-(\texttt{data/instances57.txt}). Among single extremal choices, ``a good $\cD'$ with shortest
-chain'' is the only rule tested whose minimisers all transfer. The other keys we tried were
-$|Q'(y)|$, the length of the path ending at $g$, $Q'(y)$ ending at $g$, and $|Q'(y)\cap N(u)|$;
-each has failing minimisers at order~$7$. But $\TRNE$ is not a proof route on its own.
+chain avoiding $y$. The computation is a two-path oracle query: in $K$, does some Lov\'asz
+decomposition have $Q(y)\not\ni x$ and $Q(g)\not\ni u$ at once? At order $7$ it agrees with the
+minimum over the full enumeration of good $\cD'$: in every test the shortest forced chain is trivial
+(\texttt{data/instances57.txt}). We also tested twelve single extremal choices of a good $\cD'$: the
+minimum and the maximum of $|Q'(y)|$, of the chain length, of $|P_0|$ and of $|V(Q'(y))\cap N(u)|$;
+$Q'(y)$ beginning with $yu$, then the shortest; $Q'(y)$ ending at $g$; the fewest $u$-paths; and the
+longest $P_y$. Only ``a good $\cD'$ with the shortest chain'' has all its minimisers transfer at
+order~$7$; each of the others fails on some test.
 
 \begin{proposition}\label{prop:ee}
-$\TRNE$ implies the end-edge conjecture EE~\cite[Conj.~EE]{MS}: if $g$ is the only even vertex
+$\TRNE$ implies the end-edge conjecture EE~\cite[Conjecture~1.5]{PE}: if $g$ is the only even vertex
 and $u\in N(g)$, then $gu$ is the terminal edge at $u$ of some Lov\'asz decomposition.
 \end{proposition}
 
@@ -422,10 +711,11 @@ another component. $\TRNE$ gives a Lov\'asz decomposition with $gu$ terminal at 
 $G$.
 \end{proof}
 
-EE is open exactly when $u$ and $g$ have at least two common neighbours~\cite{PE}. So a proof of
-$\TRNE$ would include a proof of EE, and $\TRN$ must be proved with non-trivial chains in general.
-The construction of Proposition~\ref{prop:ee} is the only point where $x$ is far from $y$. When
-$\mathrm{dist}(x,y)\ge3$, $\TRN$ itself is trivial (Proposition~\ref{prop:outright}(i)).
+EE is open only when $u$ and $g$ have at least two common neighbours~\cite[Theorem~5.1 and \S7]{PE}. So a proof of
+$\TRNE$ in full would include a proof of EE. The construction of Proposition~\ref{prop:ee} puts $x$
+in another component, far from $y$. When $\mathrm{dist}(x,y)\ge3$, $\TRN$ itself is trivial
+(Proposition~\ref{prop:outright}(i)), and the core has $\mathrm{dist}(x,y)=2$. We do not know whether
+$\TRNE$ restricted to the core contains EE.
 
 \section{Classification of the failing pairs}\label{sec:class}
 
@@ -439,16 +729,16 @@ forced chain, and classify each $\cD'$ whose transfer is bad. For a bad $\cD'$ w
 \item whether $d(g)=2$ with $g$ on a triangle;
 \item which repairs succeed:
   \begin{itemize}
-  \item exch: Lemma~\ref{lem:exchange};
-  \item rot: some rotation at $y$, along any path through $y$, then plain Fan; this contains
-  Lemma~\ref{lem:rot};
-  \item rep: Lemma~\ref{lem:repair};
+  \item exch: the hypothesis of Lemma~\ref{lem:exchange};
+  \item rot: some rotation at $y$, along any path through $y$, then plain Fan. This is a checked
+  computation; its restriction to $P_0$ is Lemma~\ref{lem:rot};
+  \item rep: the hypothesis of Lemma~\ref{lem:repair};
   \item loc: some re-decomposition of the union of the chain paths, $Q'(y)$ and $gu$ into paths
   with the same ends, $g$'s end moved to $u$, with $y$'s path avoiding $x$ and the other paths
   of $\cD'$ kept.
   \end{itemize}
 \end{itemize}
-The first three are proved moves. ``loc'' is a finite search. It contains plain Fan,
+exch and rep are proved moves. ``loc'' is a finite search. It contains plain Fan,
 Lemma~\ref{lem:exchange} and Lemma~\ref{lem:rot}, which only use the chain paths and $Q'(y)$. The
 general rotation and the re-pairing may use other paths, so loc does not contain them.
 
@@ -459,42 +749,50 @@ general rotation and the re-pairing may use other paths, so loc does not contain
 \toprule
  & all tests & core tests\\
 \midrule
-tests / tests with a bad $\cD'$ & $1{,}847$ / $1{,}367$ & $494$ / $428$\\
-bad $\cD'$ & $31{,}477$ & $14{,}753$\\
-\quad with $y\sim g$ & $24{,}332$ & $13{,}255$\\
-\quad with $i=1$ ($e=g$) / $i\ge2$ & $18{,}994$ / $12{,}483$ & $8{,}522$ / $6{,}231$\\
-\quad with $x$ on the $e$-half / partner half & $7{,}361$ / $24{,}116$ & $3{,}176$ / $11{,}577$\\
-\quad with $u\in Q'(y)$ & $8{,}228$ & $4{,}623$\\
-repaired by exch / rot / rep & $1{,}363$ / $5{,}273$ / $342$ & $595$ / $1{,}960$ / $96$\\
-repaired by loc & $30{,}489$ & $14{,}367$\\
-repaired by some move & $30{,}491$ & $14{,}369$\\
-repaired by none & $986$ & $384$\\
-\quad all with $i=1$ and $u\notin Q'(y)$ & $986$ & $384$\\
-\quad with $y\sim g$ / $d(g)=2$ on a triangle / child witness & $846$ / $170$ / $788$ & $354$ / $170$ / $384$\\
+tests / tests with a bad $\cD'$ & $1{,}847$ / $1{,}367$ & $480$ / $414$\\
+bad $\cD'$ & $31{,}477$ & $14{,}540$\\
+\quad with $y\sim g$ & $24{,}332$ & $13{,}042$\\
+\quad with $i=1$ ($e=g$) / $i\ge2$ & $18{,}994$ / $12{,}483$ & $8{,}309$ / $6{,}231$\\
+\quad with $x$ on the $e$-half / partner half & $7{,}361$ / $24{,}116$ & $3{,}176$ / $11{,}364$\\
+\quad with $u\in Q'(y)$ & $8{,}228$ & $4{,}578$\\
+repaired by exch / rot / rep & $1{,}363$ / $5{,}273$ / $342$ & $561$ / $1{,}926$ / $96$\\
+repaired by loc & $30{,}489$ & $14{,}218$\\
+repaired by some move & $30{,}491$ & $14{,}220$\\
+repaired by none & $986$ & $320$\\
+\quad all with $i=1$ and $u\notin Q'(y)$ & $986$ & $320$\\
+\quad with $y\sim g$ / $d(g)=2$ on a triangle / child witness & $846$ / $170$ / $788$ & $290$ / $106$ / $320$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-At order $5$ there are $4$ bad pairs, all repaired. At order $9$ we ran the classification on the
-first $4{,}000$ graphs of the list (the sparser ones), skipping tests with more than $20{,}000$ good
-$\cD'$: ORDER9SUMMARY (\texttt{data/classify9\_first4000.txt}).
+At order $5$ there are $4$ bad pairs, all repaired. At order $9$ we ran the classification of all
+tests on the first $4{,}000$ of the $11{,}936$ graphs of the list (those have $8$ to $25$ edges),
+skipping tests with more than $20{,}000$ good $\cD'$ (\texttt{data/classify9\_first4000.txt}):
+\begin{itemize}
+\item $98{,}614$ tests classified, $59{,}212$ skipped;
+\item $63{,}254{,}161$ bad $\cD'$, of which $59{,}114{,}393$ are repaired by some move and
+$58{,}670{,}619$ by loc;
+\item $4{,}139{,}768$ repaired by none, all with $u\notin Q'(y)$; of these, $24{,}176$ have $i\ge2$.
+\end{itemize}
 
 \begin{itemize}
 \item \emph{Validation.} The enumerator of good decompositions and the forced-chain simulation
-(\texttt{dec.h} of~\cite{L1I}, \texttt{chainlist.cpp}) were checked against an independent Python
-brute force (\texttt{brute.py}). It uses a different enumeration: repeatedly take the first unused
-edge and list every path through it. Its Fan simulation is separate. On all $14$ and $1{,}847$
-tests of orders $5$ and $7$, the triples (number of good $\cD'$, number with chain avoiding $y$,
-number with good transfer) agree. Every transfer and every repaired decomposition is checked to be
-a Lov\'asz decomposition (\texttt{check\_decomp}).
+(\texttt{dec.h} of~\cite{L1I}, \texttt{chainlist.cpp}) were checked against a Python brute force
+(\texttt{brute.py}) on all $14$ and $1{,}847$ tests of orders $5$ and $7$: the triples (number of
+good $\cD'$, number with chain avoiding $y$, number with good transfer) agree. \texttt{brute.py}
+enumerates differently (repeatedly take the first unused edge and list every path through it), so it
+validates the enumerator. Its Fan simulation is the same sequential algorithm as \texttt{dec.h}.
+\texttt{chain.cpp} checks every transfer, and \texttt{rot.cpp} every rotated $\cD''$, to be a
+Lov\'asz decomposition (\texttt{check\_decomp}). \texttt{classify.cpp} counts exch and rep from
+their hypotheses and loc by a search that does not build the decomposition. The audit~\cite{A34}
+recomputed Table~\ref{tab:class7} with independent code. That code computes the transfer by a closed
+formula on transitions, and it builds and checks every object.
 \item \emph{Rotations alone are weak.} A single rotation at $y$ repairs $17\%$ of the bad
 $\cD'$, re-pairing at $u$ about $1\%$. Restricted to tests whose child has a witness, the counts are
 $4{,}393$, $342$ and $24{,}152$ (loc) of $24{,}942$ (\texttt{data/repairs7\_witness.txt}).
 \end{itemize}
 
 \section{The residual}\label{sec:residual}
-
-The data single out one configuration.
 
 \begin{definition}\label{def:hard}
 A good $\cD'$ is in the \emph{hard core} if its path ending at $g$ is $P_y=g\,S\,a\,y\,u\,R\,f$
@@ -506,40 +804,55 @@ For such $\cD'$ the chain is $g\to y$ and stops, and the chain paths are $P_0$ a
 $\{f,q,y,u\}$. Lemmas~\ref{lem:exchange} and~\ref{lem:rot} are three of these
 re-decompositions.
 
-\emph{Observation} (computed, order $7$ exhaustive). All $18{,}265$ bad $\cD'$ outside the hard
-core are repaired by loc ($9{,}288$ in the core). In the hard core, $12{,}224$ of the $13{,}212$ bad
-$\cD'$ are repaired by loc and $2$ more only by re-pairing at $u$ ($5{,}079$ and $2$ of $5{,}465$ in
-the core). The other $986$ ($384$ in the core) are repaired by none of the moves: every repair must
-change a path outside $P_0\cup Q'(y)$ and, for re-pairing, outside the $u$-paths.
-
-\begin{example}[the smallest core residual, $y\sim g$]\label{ex:FsObO}
-$G=$ \texttt{FsObO}, with edges $01,02,03,14,16,25,26,46$, and $g=4$, $y=1$, $x=2$, $u=6$.
+\emph{Observation} (computed).
 \begin{itemize}
-\item $N(g)=\{1,6\}$, so $g$ has degree two on the triangle $g\,y\,u$. The child keeps the witness
-$4$, $x$ and $y$ share the neighbours $0$ and $6$, and the instance is a core instance.
-\item Take $\cD'=\{1\,0,\ 2\,5,\ 3\,0\,2\,6\,1\,4\}$. Then $P_0=4\,1\,6\,2\,0\,3$ is $g\,y\,u\,x\,0\,3$
-and $Q'(y)=1\,0$.
-\item The transfer has $Q(y)=1\,4\,6\,2\,0\,3\ni x$.
-\item Every re-decomposition of $P_0\cup Q'(y)+gu$ into two paths with ends $3,0,1,6$ puts $x$ on
-$y$'s path or repeats a vertex. The obstruction is $q=0\in R$: $Q'(y)$ returns to the far side of
-$u$, beyond $x$.
-\item Good decompositions exist, for example $\{1\,4,\ 0\,1\,6\,2,\ 3\,0\,2\,5\}$, with a trivial
-chain and $Q(y)=1\,4\,6$. Reaching one from $\cD'$ changes the path $2\,5$, which is not a chain
-path.
+\item \emph{Order $7$, exhaustive.} All $18{,}265$ bad $\cD'$ outside the hard core are repaired by
+loc ($9{,}243$ in the core). In the hard core, $12{,}224$ of the $13{,}212$ bad $\cD'$ are repaired
+by loc, and $2$ more only by re-pairing at $u$ ($4{,}975$ and $2$ of $5{,}297$ in the core). The
+other $986$ ($320$ in the core) are repaired by none of the moves. Every repair of these must change
+a path outside $P_0\cup Q'(y)$ and, for re-pairing, outside the $u$-paths.
+\item \emph{Order $9$, the sample above.} Outside the hard core the pattern breaks: of $30{,}217{,}696$
+bad $\cD'$, loc repairs $30{,}193{,}520$, and the other $24{,}176$ (all with $i\ge2$ and $u\notin
+Q'(y)$) are repaired by none of the moves. In the hard core, $28{,}477{,}099$ of $33{,}036{,}465$ are
+repaired by loc, $28{,}920{,}873$ by some move.
+\end{itemize}
+So ``loc succeeds outside the hard core'' is an order-$7$ phenomenon. The condition $u\notin Q'(y)$
+held for every unrepaired $\cD'$ in both ranges.
+
+A failing $\cD'$ is a property of one decomposition of the child. Steering does not look at the
+child, and the two residuals are different: the next example is unrepairable for its $\cD'$ but has a
+schedule.
+
+\begin{example}[a core residual with $y\sim g$]\label{ex:FqJPo}
+$G=$ \texttt{FqJPo}, with edges 01, 02, 05, 13, 15, 24, 26, 35, 36, 46, and $g=4$, $y=2$, $x=3$, $u=6$.
+\begin{itemize}
+\item $N(g)=\{2,6\}$, so $g$ has degree two on the triangle $g\,y\,u$. The vertex $0$ is an N-witness,
+$6$ is a common neighbour of $x$ and $y$, and the test is a core test.
+\item Take $\cD'=\{0\,1\,3,\ 1\,5\,3\,6\,2\,4,\ 2\,0\,5\}$. Then $P_0=4\,2\,6\,3\,5\,1$ is
+$g\,y\,u\,x\,5\,1$, and $Q'(y)=2\,0\,5$.
+\item The transfer has $Q(y)=2\,4\,6\,3\,5\,1\ni x$.
+\item Every re-decomposition of $P_0\cup Q'(y)+gu$ into two paths with the required ends puts $x$ on
+$y$'s path. The obstruction is $q=5\in R$: $Q'(y)$ returns to the far side of $u$, beyond $x$. No
+rotation and no re-pairing works, and the hypothesis of exch fails.
+\item $G^+$ has the schedule $y$-token $2\to0$, then $g$-token $4\to2\to6\to4$, which retires it.
+Theorem~\ref{thm:steer} turns it into $\{5\,0\,1\,3,\ 0\,2\,4\,6\,3\,5\,1,\ 6\,2\}$, with
+$Q(y)=6\,2\not\ni3$.
 \end{itemize}
 \end{example}
 
 \begin{example}[core residuals with $y\not\sim g$]\label{ex:FsQnO}
 \begin{itemize}
-\item $G=$ \texttt{FsQnO}, with edges $01,02,03,05,06,14,16,25,26,45,46$, and $g=6$ ($d(g)=4$),
+\item $G=$ \texttt{FsQnO}, with edges 01, 02, 03, 05, 06, 14, 16, 25, 26, 45, 46, and $g=6$ ($d(g)=4$),
 $y=5$, $x=1$, $u=4$. Take $\cD'=\{5\,0,\ 1\,6\,0\,2,\ 3\,0\,1\,4\,5\,2\,6\}$, so that
-$P_0=g\,2\,y\,u\,x\,0\,3$ and $Q'(y)=5\,0$. As in Example~\ref{ex:FsObO}, the far end $0$ of $Q'(y)$
-lies on $R$ beyond $x$.
-\item $G=$ \texttt{FsRLO}, with edges $01,02,03,05,06,14,15,26,45,46$, and $g=2$, $y=1$, $x=6$, $u=0$.
+$P_0=g\,2\,y\,u\,x\,0\,3$ and $Q'(y)=5\,0$. As in Example~\ref{ex:FqJPo}, the far end $0$ of $Q'(y)$
+lies on $R$ beyond $x$. Here $N(y)=\{0,2,4\}\subseteq N(g)$, so the instance is also unscheduled
+(Proposition~\ref{prop:first}).
+\item $G=$ \texttt{FsRLO}, with edges 01, 02, 03, 05, 06, 14, 15, 26, 45, 46, and $g=2$, $y=1$, $x=6$, $u=0$.
 Here $N(g)=\{u,x\}$ with $u\sim x$ and $y\not\sim g$: an even vertex of degree two on a triangle
 through $x$, as in the five N-instances left uncertified in~\cite{CN} (there $d(y)=5$, here
 $d(y)=3$). Take $\cD'=\{1\,4,\ 2\,6\,4\,5\,1\,0\,3,\ 5\,0\,6\}$.
-Then $P_0=g\,x\,4\,5\,y\,u\,3$, with $x$ on the $e$-half, and $Q'(y)=1\,4$ meets $S$ at $4$.
+Then $P_0=g\,x\,4\,5\,y\,u\,3$, with $x$ on the $e$-half, and $Q'(y)=1\,4$ meets $S$ at $4$. This
+instance has a schedule: $y$-token $1\to4$, $g$-token $2\to0\to3$.
 \end{itemize}
 \end{example}
 
@@ -549,9 +862,9 @@ path.
 
 \section{Formalisation}\label{sec:lean}
 
-\texttt{lean/GallaiLean/TRN.lean} (Lean 4, Mathlib) has no \texttt{sorry}. Every theorem below
-depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the full
-library builds ($18{,}420$ jobs).
+\texttt{lean/GallaiLean/TRN.lean} and \texttt{lean/GallaiLean/TRNSteer.lean} (Lean 4, Mathlib) have
+no \texttt{sorry}. Every theorem below depends only on \texttt{propext}, \texttt{Classical.choice}
+and \texttt{Quot.sound}, and the full library builds ($18{,}424$ jobs).
 
 \begin{center}\small
 \begin{tabular}{ll}
@@ -564,6 +877,13 @@ Proposition~\ref{prop:outright}(ii) & \texttt{avoid\_of\_degTwo\_indep}\\
 Definition~\ref{def:core} & \texttt{ConjNBelow}, \texttt{TightTransferNCore}\\
 Theorem~\ref{thm:core} & \texttt{conjN\_of\_core}, \texttt{conjN\_of\_core\_neighbourAvoid}\\
 $\TRN\Rightarrow$ core & \texttt{tightTransferNCore\_of}\\
+Lemma~\ref{lem:leaftail} & \texttt{avoid\_leafTail}\\
+Lemma~\ref{lem:step2} & \texttt{fan\_step\_two}\\
+Definition~\ref{def:sched} & \texttt{Steer2}\\
+Lemma~\ref{lem:sched} & \texttt{steer2\_meetsOnce}\\
+Theorem~\ref{thm:steer} & \texttt{avoid\_of\_steer2} (the leaf graph is \texttt{apex G \{y\}})\\
+Definition~\ref{def:core2} & \texttt{TightTransferNCore2}\\
+Theorem~\ref{thm:core2} & \texttt{conjN\_of\_core2}, \texttt{tightTransferNCore\_of\_core2}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -571,22 +891,32 @@ $\TRN\Rightarrow$ core & \texttt{tightTransferNCore\_of}\\
 \begin{itemize}
 \item \emph{Library results used:} \texttt{fan\_single\_supp}, \texttt{separation},
 \texttt{lovasz\_avoid\_nonadj}, \texttt{splitOff\_facts}, \texttt{avoid\_of\_splitOff},
-\texttt{avoid\_free\_target}, and the helpers of \texttt{ConjN.lean}.
+\texttt{avoid\_free\_target}, \texttt{meetsOnce\_of\_cover}, \texttt{apex\_degree\_some},
+\texttt{conjNDegTwoOn} (NA, from~\cite{NA}), and the helpers of \texttt{ConjN.lean}.
+\item \emph{Statement of Theorem~\ref{thm:core2}:} \texttt{conjN\_of\_core2 (hT :
+TightTransferNCore2 V) : ConjNOn V}. Here \texttt{TightTransferNCore2} is $\TRN$ with the hypotheses
+(C0)--(C5) and the hypothesis \texttt{¬ Steer2 (leafX x) (apex G \{y\}) (some g) (some y)}.
 \item \emph{The static condition} ($e\notin\{g\}\cup N_K(u)$, in the leaf graph) was already
 formalised as \texttt{l1\_tight\_transfer}~\cite{TF}, with no hypothesis $y\not\sim g$.
-\item \emph{Not formalised:} Proposition~\ref{prop:fail}, Lemmas~\ref{lem:halves}--\ref{lem:repair},
-Proposition~\ref{prop:ee}. These are statements about the forced chain itself, which the library
-handles only through \texttt{fan\_exists\_chain}, and about disjoint unions.
+\item \emph{Not formalised:} Lemma~\ref{lem:chain}, Proposition~\ref{prop:fail},
+Lemmas~\ref{lem:halves}, \ref{lem:exchange}, \ref{lem:rot}, \ref{lem:repair},
+Proposition~\ref{prop:outright}(iii), Proposition~\ref{prop:first} and Proposition~\ref{prop:ee}.
+These are statements about the forced chain itself, which the library handles only through
+\texttt{fan\_exists\_chain}, about disjoint unions, and about the first move.
 \end{itemize}
 
 \section{What remains}\label{sec:open}
 \begin{enumerate}
-\item \emph{The core of $\TRN$} (Definition~\ref{def:core}). With (C1), a proof may use
-Conjecture~N on smaller graphs.
-\item \emph{The hard core.} For a bad $\cD'$ outside the hard core, prove that loc always succeeds,
-or find the explicit moves. For the hard core, name the third path that a repair must move. Both
-are suggested by the data and neither is proved.
-\item \emph{$\TRNE$ without EE.} Proposition~\ref{prop:ee} uses only instances with $x$ in another
+\item \emph{The unscheduled core of $\TRN$} (Definition~\ref{def:core2}). By
+Theorem~\ref{thm:core2} it is all of Conjecture~N. With (C1), a proof may use Conjecture~N on smaller
+graphs. About half of its instances have no legal first move (Proposition~\ref{prop:first}).
+\item \emph{Tight moves.} A schedule may not move a token onto a neighbour of the other token. A
+rule that allows some such moves, for example when the tight Fan step of~\cite{TF} succeeds for the
+decomposition at hand, would enlarge Table~\ref{tab:steer}. The intermediate graphs have two even
+vertices, so (C1) does not apply to them directly.
+\item \emph{The hard core.} Name the third path that a repair must move. At order $9$, also
+explain the $24{,}176$ unrepaired $\cD'$ with $i\ge2$.
+\item \emph{$\TRNE$ on the core.} Proposition~\ref{prop:ee} uses only instances with $x$ in another
 component. $\TRNE$ restricted to $\mathrm{dist}(x,y)=2$ does not obviously contain EE.
 \end{enumerate}
 
@@ -595,25 +925,34 @@ component. $\TRNE$ restricted to $\mathrm{dist}(x,y)=2$ does not obviously conta
 Scripts are in \texttt{manuscripts/trn/scripts}, outputs in \texttt{manuscripts/trn/data}.
 \texttt{build.sh} compiles the tools against the oracle headers of~\cite{L1I}
 (\texttt{lind.h}, \texttt{orc2.h}, \texttt{dec.h}). \texttt{run.sh} regenerates the data in
-minutes, and \texttt{classify9.sh} the order-$9$ sample in hours. The graphs are the one-even
-lists of~\cite{STL} and, for the random runs, \texttt{randg.py} of~\cite{L1I} (seed $11$).
+minutes, and \texttt{classify9.sh} the order-$9$ sample in hours; intermediate files go to
+\texttt{/tmp}. The graphs are the connected one-even lists of~\cite{STL} ($7$, $130$ and $11{,}936$
+graphs; the audit~\cite{A34} checked them against \texttt{geng -c}) and, for the random runs,
+\texttt{randg.py} of~\cite{L1I} (seed $11$). $\TRN$ reduces to connected graphs: $g$, $u$, $y$ lie in
+one component, and if $x$ lies in another, any Lov\'asz decomposition is good.
 \begin{itemize}
 \item \texttt{trne.cpp}: $\TRN$ tests and $\TRNE$ by the two-path oracle \texttt{orc2}. The test
 counts agree with~\cite{CN}.
-\item \texttt{trnbud.cpp}: the same with a node budget, for random graphs and the order-$11$ slice.
+\item \texttt{trnbud.cpp}: the same with a node budget, for random graphs and the order-$11$ slices.
 \item \texttt{chain.cpp}, \texttt{chainlist.cpp}: full enumeration of good $\cD'$ with forced
-chains.
-\item \texttt{brute.py}: the independent check.
+chains. \texttt{brute.py}: the Python check.
 \item \texttt{core.cpp}: Table~\ref{tab:counts}.
-\item \texttt{classify.cpp}: Tables~\ref{tab:class7} and the order-$9$ sample; \texttt{summarize.py}
+\item \texttt{classify.cpp}: Table~\ref{tab:class7} and the order-$9$ sample; \texttt{summarize.py}
 aggregates its output.
 \item \texttt{rules.cpp}, \texttt{minchain.cpp}: extremal rules and chain lengths.
 \item \texttt{rot.cpp}, \texttt{halves.cpp}, \texttt{local.cpp}, \texttt{localshow.cpp}: single
-repairs.
+repairs. \texttt{repair.cpp}, \texttt{repair2.cpp}: the nearest good $\cD''$ with a chain avoiding
+$y$, by the number of vertices whose transitions change. \texttt{feat.cpp}, \texttt{clean.cpp}:
+per-test features, and whether some good $\cD'$ has $x\notin P_y$. These last four were exploratory;
+no number in the text comes from them.
+\item \texttt{steer.cpp}, \texttt{steer2.cpp}: move~(T) and two-token schedules
+(Table~\ref{tab:steer}); \texttt{steer\_stats.py}: the core triples and
+Proposition~\ref{prop:first}; \texttt{steer\_verify.py}: the independent execution of schedules.
 \item \texttt{show.cpp}: lists every good $\cD'$ of one test, with chain and transfer.
 \end{itemize}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
+\bibitem{A34} Audit A34 of this manuscript, \texttt{research/audit/A34-trn.md}.
 \bibitem{CN} Conjecture N, \texttt{manuscripts/conj-n}.
 \bibitem{DL} The disjunctive avoidance conjecture for one pair, \texttt{manuscripts/dl-one}.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
@@ -621,7 +960,7 @@ B} 93 (2005) 117--125.
 \bibitem{L1I} Lov\'asz's induction for $L_1^*$, \texttt{manuscripts/l1-induction}.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc. Colloq.,
 Tihany, 1966), Academic Press, 1968, 231--236.
-\bibitem{MS} Multi-pair separation, \texttt{manuscripts/multi-sep}.
+\bibitem{NA} Neighbour avoidance, \texttt{manuscripts/na}.
 \bibitem{PE} Prescribed end edges, \texttt{manuscripts/prescribed-end}.
 \bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
 \bibitem{STL} Star-terminal Lov\'asz decompositions, \texttt{manuscripts/stl}.

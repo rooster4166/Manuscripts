@@ -1,0 +1,6 @@
+order 5
+core triples 7: schedule 2 (first move by the y-token in 2; with N(y) in N[g] 0), no schedule 5 (with N(y) in N[g] 3)
+order 7
+core triples 256: schedule 123 (first move by the y-token in 123; with N(y) in N[g] 0), no schedule 133 (with N(y) in N[g] 63)
+order 9
+core triples 38651: schedule 29874 (first move by the y-token in 29874; with N(y) in N[g] 0), no schedule 8777 (with N(y) in N[g] 4048)

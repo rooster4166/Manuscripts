@@ -77,14 +77,16 @@ int main(int argc, char** argv) {
           for (int v = 0; v < G.N; v++) if (G.has(g, v) && v != x && v != y && !G.has(y, v)) alltight2 = false;
           bool ind2 = false;
           if (G.deg(g) == 2) { int a = __builtin_ctz(G.adj[g]), b = 31 - __builtin_clz(G.adj[g]); ind2 = !G.has(a, b); }
-          if (!alltight2 || (G.adj[x] & G.adj[y]) == 0 || ind2) continue;
+          if (!alltight2 || (G.adj[x] & G.adj[y]) == 0 || ind2 || !W) continue;   // W != 0 is (C0)
           int sched = -1;
           for (int u = 0; u < G.N; u++) {
             if (u == x || !G.has(g, u) || !G.has(y, u)) continue;
             if (!(G.adj[y] & ~G.adj[x] & ~(1u << u))) continue;
             Gr H = G; H.del(g, u);
             if (orc::avoid(H, y, 1u << x) != 1) continue;
-            if (sched < 0) sched = schedulable(G, g, y, x);
+            if (sched < 0) { sched = schedulable(G, g, y, x);
+              if (getenv("SHOWCORE")) { printf("CORE %s g=%d y=%d x=%d sched=%d m=%d", line, g, y, x, sched, G.nedges());
+                if (sched == 1) for (auto& m : best) printf(" %d:%d-%d", m[0], m[1], m[2]); printf("\n"); } }
             inst++; if (sched == 1) ok++; else if (sched == 2) und++;
             tight++; if (sched == 1) tightok++;
           }

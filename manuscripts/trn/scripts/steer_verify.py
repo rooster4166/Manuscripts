@@ -77,4 +77,5 @@ cnt = 0
 for line in sys.stdin:
     if line.startswith('SCHED'):
         check(line); cnt += 1
+        if cnt % 100 == 0: print('progress', cnt, file=sys.stderr, flush=True)
 print('verified', cnt, 'schedules')
