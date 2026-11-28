@@ -49,8 +49,8 @@ $P$ from $c_i$ avoiding $a_i$, so that what is left of the problem has a single 
 schedule, then $L_N(2)$ holds. If $P$ ends at $c_j$ and avoids $a_j$, what is left is a
 two-even-vertex existence problem with no constraint at all.
 \item \emph{Computation.} Criterion~R holds at all $43{,}400$ instances of order $8$ and at a random
-sample of $3{,}000$ instances of order $10$. Every certificate was executed by an independent
-program, and the resulting decomposition was checked. By comparison, the two-tail token schedules
+sample of $3{,}000$ instances of order $10$. Every certificate was executed move by move, from an
+exact solution of the bottom graph, and the resulting decomposition was checked. By comparison, the two-tail token schedules
 of~\cite{MT} cover $72.7\%$ of the instances of order~$8$.
 \end{itemize}
 We explain why every Fan-type induction for $L_N(2)$ is a two-token problem, and why two tokens
@@ -199,7 +199,7 @@ Without it the residual is an even vertex $g$ whose neighbours are all heads, fo
 $N(g)=\{x_1,x_2\}$ with $x_i$ avoided by tail $i$. With $x_1\not\sim x_2$ one can suppress $g$; the
 configurations that resist are the triangle $g\,x_1\,x_2$ and the case where each $x_i$ is the stem
 of the other tail. Both reduce to a symmetric form of $L_1$ at distance two, which is open
-(route-descent Rem.~V.4). The statement without sparseness held in every test
+(the remark on the limits of the leaf trick in~\cite{RD}). The statement without sparseness held in every test
 (Section~\ref{sec:comp}, Conjecture~\ref{conj:mtl}).
 \end{remark}
 
@@ -230,7 +230,7 @@ make tokens.
 \begin{itemize}
 \item As a leaf tail, the constraint at $c$ needs a leaf at $c$, which makes $c$ a token.
 \item As a general tail $\mathrm{av}(c,a)$, it survives a Fan step only if the target avoids
-$N[c]$~\cite[Thm.~3.2]{CLT}.
+$N[c]$ (``Fan transfers carry systems'' in~\cite{CLT}).
 \end{itemize}
 Either way the moving token must avoid the neighbourhood of the other tail's vertex $c$, and it can
 retire only at a vertex all of whose edges it deletes. In a dense graph no such vertex is reachable;
@@ -348,9 +348,32 @@ schedules $\cup$ R(a) & $42{,}904$ ($98.9\%$) & proved\\
 \end{tabular}
 \end{center}
 
-At order $10$, Criterion R holds at all $3{,}000$ sampled instances; every certificate was executed
-and verified (\texttt{data/routeR\_order10\_sample.txt}). The breakdown into (a) and (b) and the
-length of $P$ are recorded per instance.
+At order $10$, Criterion R holds at all $3{,}000$ sampled instances. Every certificate at both
+orders was executed and the final decomposition verified (\texttt{data/routeR\_order8.txt},
+\texttt{data/routeR\_order10\_sample.txt}, with summaries). The certificates found:
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+order & instances & (a) joint & (b) one tail & $P$ a single edge\\
+\midrule
+$8$ (all) & $43{,}400$ & $14{,}853$ & $28{,}547$ & $34{,}688$\\
+$10$ (sample) & $3{,}000$ & $737$ & $2{,}263$ & $2{,}778$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The search tries $i=1$ first and short paths first, so these counts describe the certificates found,
+not minimal ones. Restricted to a single edge $P$ (with either $i$), Criterion R holds at $38{,}908$
+of the $43{,}400$ instances of order $8$ (\texttt{r1count.py}); longer paths are needed for the rest. Schedules have up to $14$ moves at order $8$ and $19$ at order $10$.
+
+\emph{A bug found by the executor.} A first version of the search (\texttt{precommit.py}) let $P$ end
+at $a_j$. Then $a_j$ is a token, and a suppression of that token can put $a_j$ on the leaf path. The
+executor rejected $287$ of its order-$8$ certificates. The search now forbids $P$ to end at $a_j$ and
+never suppresses a head, as in the invariant (TI) of~\cite{MT}; all numbers above are from the
+corrected search, and every certificate was executed.
+
+\emph{Solver validation.} \texttt{lnsolve} agreed with the brute force on $1{,}500$ random instances of
+order $\le7$ ($880$ satisfiable, $620$ not), and on $600$ instances with the joined-ends constraint;
+every witness was re-checked (\texttt{data/validation.txt}).
 
 \emph{The two-leaf-tail statement} (Conjecture~\ref{conj:mtl}) is exhaustive for $n\le9$: every
 connected graph with at most one even vertex, every pair of leaf tails $(c_i,w_i,x_i)$ with
