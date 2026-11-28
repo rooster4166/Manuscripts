@@ -75,3 +75,6 @@ graph 74 GEzV~{ graphs=3829 allodd=74 pairs=2052 na=1530 weak=1833 weak_not_na=3
 graph 75 GEzvek graphs=3832 allodd=75 pairs=2088 na=1564 weak=1869 weak_not_na=305 neither=219 construct_ok=1869 exact_good=0 exact_bad=219 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 76 GEzne[ graphs=3850 allodd=76 pairs=2124 na=1597 weak=1905 weak_not_na=308 neither=219 construct_ok=1905 exact_good=0 exact_bad=219 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 77 GQ~vvg graphs=3876 allodd=77 pairs=2164 na=1629 weak=1945 weak_not_na=316 neither=219 construct_ok=1945 exact_good=0 exact_bad=219 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+graph 78 GQ~~~{ graphs=3882 allodd=78 pairs=2212 na=1645 weak=1965 weak_not_na=320 neither=247 construct_ok=1965 exact_good=0 exact_bad=247 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+graphs=3898 allodd=78 pairs=2212 na=1645 weak=1965 weak_not_na=320 neither=247 construct_ok=1965 exact_good=0 exact_bad=247 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+exit=0
