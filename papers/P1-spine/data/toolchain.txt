@@ -1,0 +1,8 @@
+# Toolchain used for axioms.expected and paper.pdf (28 November 2026)
+lean-toolchain: leanprover/lean4:v4.36.0
+mathlib: tag v4.36.0, commit fc4f59e577feb1a4956671bc04ac18aaaf8cd842 (lean/lake-manifest.json)
+library build: 18452 jobs, Build completed successfully, no sorry
+pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian)
+LaTeX packages: amsart, amsmath, amssymb, amsthm, lmodern, geometry, enumitem, booktabs, longtable, hyperref
+python: Python 3.13.18 (standard library only)
+no computed data: P1 makes no computer-assisted claims

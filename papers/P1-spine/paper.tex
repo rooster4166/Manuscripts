@@ -1,0 +1,2312 @@
+\documentclass[11pt]{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
+\DeclareUnicodeCharacter{2227}{\ensuremath{\wedge}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
+\DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+\DeclareUnicodeCharacter{2115}{\ensuremath{\mathbb{N}}}
+\DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\to}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\leq}}
+\DeclareUnicodeCharacter{1D9C}{\ensuremath{^{\mathrm{c}}}}
+\DeclareUnicodeCharacter{2260}{\ensuremath{\neq}}
+\DeclareUnicodeCharacter{2209}{\ensuremath{\notin}}
+\DeclareUnicodeCharacter{27E8}{\ensuremath{\langle}}
+\DeclareUnicodeCharacter{27E9}{\ensuremath{\rangle}}
+\DeclareUnicodeCharacter{2228}{\ensuremath{\vee}}
+\DeclareUnicodeCharacter{00AC}{\ensuremath{\neg}}
+\DeclareUnicodeCharacter{2295}{\ensuremath{\oplus}}
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[hidelinks]{hyperref}
+
+\emergencystretch=3em
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\let\oldunderscore\_
+\renewcommand{\_}{\oldunderscore\allowbreak}
+\newcommand{\lean}[1]{\textup{(Lean: {\small\texttt{#1}})}}
+\newcommand{\leanst}[1]{\par{\raggedright\small\textup{(Lean: \texttt{#1})}\par}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\fl}[1]{\left\lfloor #1\right\rfloor}
+\newcommand{\cl}[1]{\left\lceil #1\right\rceil}
+\newcommand{\MBU}{\mathrm{MB}}
+\newcommand{\RT}{\mathrm{RT}}
+\newcommand{\TA}{\mathrm{A}}
+\newcommand{\TB}{\mathrm{B}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Ev}{\operatorname{Ev}}
+\newcommand{\ind}[1]{[\,#1\,]}
+
+\newcommand{\RE}{\mathrm{RE}}
+\newcommand{\pr}{p_r}
+
+\title[A machine-checked reduction of Gallai's conjecture]{A machine-checked reduction of Gallai's
+path decomposition conjecture to two rooted tests on $3$-connected graphs}
+\author{[Author]}
+\date{November 2026}
+
+\begin{document}
+
+\begin{abstract}
+Gallai's conjecture asserts that the edges of every connected graph on $n$ vertices can be
+partitioned into at most $\lceil n/2\rceil$ paths. We prove that the conjecture is equivalent to two
+rooted deletion tests on $3$-connected graphs. Let $J$ be $3$-connected, let $z\in V(J)$, and
+suppose that $J-z$ has no matching cut. Test (T1): if $z$ is the only vertex of even degree, then for
+every neighbour $r$ of $z$ the graph $J-z$ has a path decomposition into at most $(|V(J)|-1)/2$
+paths, at least two of which end at $r$. Test (T2): if $z$ and a neighbour $r$ of $z$ are the only
+vertices of even degree, then $J-z$ has a path decomposition into at most $|V(J)|/2$ paths, at least
+three of which end at $r$. The proof follows the author's marked-reduction manuscript (Theorems 59,
+113 and 114 there) in the simplified form of its formalisation. We include a self-contained proof of
+Lov\'asz's theorem on graphs with at most one vertex of even degree, in the strong form in which
+every odd vertex is an end of exactly one path, derived from Fan's addible-edge lemma, which we also
+prove. On a cone $J=B+z$ over a graph $B$, test (T1) at the apex is exactly the rooted Gallai
+statement RE for the Eulerian base: $B$ has a decomposition into at most $|V(B)|/2$ paths with two
+ends at any prescribed vertex. Hence the reduction needs RE on $2$-connected Eulerian graphs of
+even order without a matching cut, and Gallai's conjecture implies RE. Every result is formalised in
+Lean~4 with Mathlib. The equivalence is a single theorem with no hypotheses that depends only on the
+standard axioms. The only result we quote without proof is Hall's marriage theorem.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path} is a sequence of distinct vertices $v_0v_1\cdots
+v_k$ with $k\ge1$ and $v_{i-1}v_i$ an edge for every $i$; its \emph{ends} are $v_0$ and $v_k$. A
+\emph{path decomposition} of a graph $G$ is a family of paths whose edge sets partition $E(G)$, and
+the \emph{path number} $p(G)$ is the least size of a path decomposition ($p(G)=0$ when $G$ has no
+edges).
+
+\begin{quote}
+\textbf{Gallai's conjecture.} If $G$ is connected and $|V(G)|=n$, then $p(G)\le\lceil n/2\rceil$.
+\end{quote}
+
+The conjecture is attributed to Gallai and was published by Lov\'asz~\cite{L68}. The bound is
+attained: for $k\ge1$, $K_{2k+1}$ has $k(2k+1)$ edges and a path in it has at most $2k$ edges, so
+$p(K_{2k+1})\ge k+1=\lceil (2k+1)/2\rceil$. Lov\'asz~\cite{L68} proved the conjecture for graphs
+with at most one vertex of even degree (Theorem~\ref{thm:lovasz} below). The parity condition was
+weakened by Pyber~\cite{Pyb96} (the even-degree vertices induce a forest) and by
+Fan~\cite{Fan05} (each block of the subgraph induced by the even-degree vertices is triangle-free
+with maximum degree at most three), and further parity classes were treated by Botler and
+Sambinelli~\cite{BS21}. Among other classes, the conjecture is known for graphs of maximum degree at
+most five (Bonamy and Perrett~\cite{BP19}) and for graphs of treewidth at most three (Botler,
+Sambinelli, Coelho and Lee~\cite{BSCL20}). It is open in general.
+
+\subsection*{The reduction}
+We present one chain of reductions, the \emph{spine}, from the author's marked-reduction
+manuscript~\cite{MR} (cited as MR). It reduces Gallai's conjecture to two \emph{rooted deletion
+tests} on $3$-connected graphs, and it runs in both directions. Recall that $G$ is
+\emph{$k$-connected} if $|V(G)|\ge k+1$ and $G-X$ is connected for every $X\subseteq V(G)$ with
+$|X|<k$, and that $G$ has a \emph{matching cut} if $V(G)$ can be split into two nonempty sets so
+that every vertex has at most one neighbour on the other side.
+
+\begin{definition}[the deletion tests]\label{def:tests}
+Let $J$ be a graph, $z\in V(J)$ and $n=|V(J)|$. A vertex is \emph{even} or \emph{odd} according to
+the parity of its degree.
+\begin{itemize}[leftmargin=3.2em]
+\item[(T1)] If $z$ is the only even vertex of $J$, then for every neighbour $r$ of $z$ the graph
+$J-z$ has a path decomposition into at most $(n-1)/2$ paths, at least two of which end at $r$.
+\item[(T2)] For every neighbour $r$ of $z$: if $z$ and $r$ are the only two even vertices of $J$,
+then $J-z$ has a path decomposition into at most $n/2$ paths with at least three path ends at $r$.
+\end{itemize}
+\end{definition}
+
+A path has two distinct ends, so ``at least three path ends at $r$'' means that at least three of
+the paths end at $r$. The number of odd vertices of a graph is even, so in (T1) $n$ is odd and in
+(T2) $n$ is even. In both tests the budget is therefore $\lceil |V(J-z)|/2\rceil$, the Gallai bound
+for $J-z$.
+
+\begin{theorem}[main theorem; MR Theorem 114]\label{thm:main}
+The following are equivalent.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Gallai's conjecture.
+\item \textup{(T1)} and \textup{(T2)} hold for every $3$-connected graph $J$ and every
+$z\in V(J)$.
+\item \textup{(T1)} and \textup{(T2)} hold for every $3$-connected graph $J$ and every
+$z\in V(J)$ such that $J-z$ has no matching cut.
+\end{enumerate}
+\leanst{Gallai.gallai\_iff\_spineTests'}
+\end{theorem}
+
+The proof of (iii)$\Rightarrow$(i) uses the tests only at special instances, the \emph{parity
+apexes} of Section~\ref{sec:thm114}; Corollary~\ref{cor:mincex} states what a smallest
+counterexample looks like.
+
+\subsection*{Why the tests are restrictive}
+In a $3$-connected graph every vertex has degree at least three. In (T1) every vertex other than $z$
+is odd, and in (T2) every vertex other than $z,r$ is odd. So a test graph is as close as possible to
+the graphs covered by Lov\'asz's theorem: $J$ itself has at most two even vertices and, if it has
+one, $p(J)\le\fl{n/2}$ by Lov\'asz. Deleting $z$ makes exactly its neighbours change parity. In
+(T1) the even vertices of $J-z$ are precisely the neighbours of $z$, and $r$ is one of them; in (T2)
+they are the neighbours of $z$ other than $r$, and $r$ becomes odd. Thus the whole difficulty of the
+conjecture is concentrated in one deleted vertex and its neighbourhood, inside a graph with no
+$2$-separations, no matching cut after the deletion, and odd degrees everywhere else. The
+\emph{deletion degree} $d_J(z)$ is at least four (it is even and at least three). The tests are
+equivalent to the conjecture, so they are exactly as hard as the conjecture; their value is that
+every potential counterexample is forced into this rigid shape.
+
+\subsection*{Lov\'asz's theorem}
+Lov\'asz's theorem is the base case of the reduction, and we prove it here in the following strong
+form.
+
+\begin{theorem}[Lov\'asz~\cite{L68}, strong form]\label{thm:lovasz-intro}
+If at most one vertex of $G$ has positive even degree, then $G$ has a path decomposition in which
+every vertex of odd degree is an end of exactly one path and no other vertex is an end. In
+particular $p(G)\le\fl{|V(G)|/2}$ whenever $G$ has at most one vertex of even degree.
+\leanst{Gallai.lovasz\_ends, Gallai.lovaszStatement}
+\end{theorem}
+
+The proof (Section~\ref{sec:lovasz}) is a short induction whose only tool is Fan's addible-edge
+lemma~\cite[Lemma~3.4]{Fan05}. We include a complete proof of Fan's lemma by an exchange argument
+along chains of paths, so that the paper does not depend on Lov\'asz's path-and-cycle theorem. This
+derivation is that of the working note~\cite{LF}. We do not know whether it appears in the
+literature.
+
+\subsection*{Cones and rooted Gallai for Eulerian graphs}
+A graph is \emph{Eulerian} if all its degrees are even; connectivity is stated separately. For a
+graph $B$ on $n$ vertices and $r\in V(B)$ let $\pr(B)$ be the least size of a decomposition of $B$
+with at least one path ending at $r$ (when $d_B(r)>0$). If $B$ is Eulerian, every such decomposition has at least two
+paths ending at $r$, by parity.
+
+\begin{definition}[rooted Gallai for Eulerian graphs]\label{def:RE}
+$\RE(B,r)$: $\pr(B)\le n/2$, for a $2$-connected Eulerian graph $B$ of even order $n$ and $r\in
+V(B)$.
+\end{definition}
+
+The \emph{cone} $B+z$ adds a vertex $z$ adjacent to every vertex of $B$.
+
+\begin{theorem}[cones; Section~\ref{sec:cones}]\label{thm:cones-intro}
+Let $B$ be a graph of order $n$ and $J=B+z$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $J$ is $3$-connected if and only if $B$ is $2$-connected, and $J-z$ has a matching cut if and
+only if $B$ has one.
+\item \textup{(T1)} holds at $(J,z)$ if and only if: when $n$ is even and $B$ is Eulerian, $B$
+has, for every $r\in V(B)$, a decomposition into at most $n/2$ paths with at least two ends at $r$.
+\textup{(T2)} always holds at $(J,z)$.
+\item Assertion \textup{(iii)} of Theorem~\ref{thm:main} implies $\RE(B,r)$ for every $2$-connected
+Eulerian graph $B$ of even order without a matching cut and every $r$. Conversely, for $B$ of even
+order, \textup{(T1)} and \textup{(T2)} hold at every vertex of $B+z$ if and only if $\RE(B,r)$ holds
+for every $r$ whenever $B$ is Eulerian.
+\item Gallai's conjecture implies $\pr(B)\le n/2$ for every connected Eulerian graph $B$ of even
+order $n$ and every vertex $r$ of positive degree; in particular it implies RE.
+\end{enumerate}
+\leanst{Gallai.kConnected\_three\_fullCone\_iff, Gallai.hasMatchingCut\_delVert\_fullCone\_iff,
+Gallai.test1\_fullCone\_iff, Gallai.test2\_fullCone\_apex,
+Gallai.rootedDecomp\_of\_spineTestsNMC, Gallai.fullConeTests\_iff,
+Gallai.rootedDecomp\_of\_gallai}
+\end{theorem}
+
+So, at the apex of a cone, the spine asks exactly for RE on the $2$-connected Eulerian graphs of even
+order without a matching cut, and
+\[
+\text{Gallai}\ \Longrightarrow\ \RE\ \Longrightarrow\ \text{Gallai for $2$-connected Eulerian
+graphs of even order.}
+\]
+This correspondence is taken from the working note~\cite{EC}, Section~2, where cones were first
+singled out as a test case.
+
+\subsection*{The chain of reductions}
+The proof of Theorem~\ref{thm:main} has six steps.
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \emph{Lov\'asz's theorem} (Section~\ref{sec:lovasz}), from Fan's lemma.
+\item \emph{Marked path numbers} (Section~\ref{sec:marked}; MR Theorem~1). Each mark in a set $S$ may
+absorb one path ending there; $q(F,S)$ counts the paths that are not absorbed. The marked bound
+$q(F,S)\le\fl{(|V(F)|-|S|)/2}$ implies Gallai's bound with one mark. On graphs whose $2$-connected
+blocks are small, it follows from the marked bound on $2$-connected graphs and a three-end condition.
+\item \emph{Block transfer and matching cuts} (Section~\ref{sec:transfer}; MR \S2, Lemma~6,
+Theorem~7). The block transfer is proved by induction through leaves and cut vertices. A
+$2$-connected graph with a matching cut satisfies the marked bound once smaller blocks do.
+\item \emph{Theorem 59} (Section~\ref{sec:thm59}). Two rooted assertions on $2$-connected graphs
+without a matching cut imply the marked bound everywhere, order by order.
+\item \emph{Separating pairs} (Section~\ref{sec:sep}; MR Theorem~113). A component behind a
+separating pair whose vertices are all odd can be cut off, which reduces the rooted assertions to
+smaller graphs.
+\item \emph{Deletion tests} (Section~\ref{sec:thm114}; MR Theorem~114). At a smallest failure of the
+rooted assertions, adding a vertex $z$ adjacent to all even vertices and the root gives a
+$3$-connected graph on which a deletion test fails.
+\end{enumerate}
+Section~\ref{sec:cones} treats cones, Section~\ref{sec:use} explains how the reduction is meant to
+be used, and Section~\ref{sec:lean} describes the formalisation.
+
+\subsection*{Status of the results}
+Every numbered theorem, proposition, lemma and corollary is proved in the text. The only result
+quoted without proof is Hall's marriage theorem~\cite{Hall35}, used once
+(Lemma~\ref{lem:hall}). There are no computer-assisted claims. Every result is also formalised in
+Lean, with the few exceptions listed in Section~\ref{sec:lean}, which are formalised only in the
+special form the main theorem uses or not at all. The formalisation is an independent check and is
+not needed to read the paper. Conjectures are labelled as such.
+
+\subsection*{Formalisation and relation to MR}
+The whole chain is formalised in Lean~4~\cite{Lean4} with Mathlib~\cite{Mathlib}. The theorem
+\texttt{Gallai.gallai\_iff\_spineTests'} states Theorem~\ref{thm:main}. It has no hypotheses and
+depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}
+(Section~\ref{sec:lean}). The formal proof follows MR, but in several places it is organised
+differently or more simply, and we follow the formal proof at each of them. The project records
+these departures in its audit reports (A14 and A15), in the module documentation of
+\texttt{MarkedBlocks.lean}, in the proofs in \texttt{ThreeConnected.lean}, and in the section
+``Deviations from the manuscript proof'' of \texttt{lean/README.md}:
+\begin{itemize}
+\item a single assignment lemma proved with Hall's theorem (Lemma~\ref{lem:hall}) replaces two
+arguments of MR~\S2.1, the private-leaf identity and the odd-mark rank inequality (A14);
+\item the bridge formula of MR~\S2 is not needed: a bridge whose sides both have at least two
+vertices gives a cut vertex with two large sides, or else ends in a leaf (\texttt{MarkedBlocks.lean});
+\item the matching cut with connected shores is obtained from components
+(Lemma~\ref{lem:shores}) rather than from an inclusion-minimal disconnecting submatching (A14);
+\item the induction of Theorem~59 runs explicitly on the bound for the order of the
+$2$-connected blocks (Theorem~\ref{thm:59}); MR's phrase ``induct on the order of a two-connected
+block'' says this, and the formal statement makes it explicit (A14);
+\item singletons of odd order are handled by the two-mark cone and forgetting one mark
+(Proposition~\ref{prop:classC}) instead of adjoining a degree-two vertex and trimming (A14);
+\item the matching-cut step needs only connectivity (Theorem~\ref{thm:mc}; A14);
+\item the forward direction of Theorem~\ref{thm:main} is proved directly from the bridge double
+(Lemma~\ref{lem:gallai-rooted}); the bridge and diamond identities of MR~\S17 are not used
+(see the proofs of \texttt{test1\_of\_gallai} and \texttt{test2\_of\_gallai});
+\item in the separator theorem a single root analysis (Lemma~\ref{lem:root}) serves all cases, and
+the four sub-cases of the even/even case become at most two grafts (Lemma~\ref{lem:lift-ee};
+\texttt{lean/README.md}).
+\end{itemize}
+The project's audits A1 and A2 of MR found no error but recorded gaps in its exposition. We use the
+corrected statements throughout. Theorem~59 is stated with an explicit marked-bound conclusion (A2,~F1).
+Theorem~113 is stated, as A2 (F7) recommends, without minimality and without excluding matching
+cuts; its second hypothesis is the marked bound $(\MBU_{n-2})$, which F7's hypothesis (both tests
+below order $n$) implies by Theorem~59. The marked tests on blocks
+without a matching cut are derived for every nonempty marking, not only for even marks (A1, G1 and
+G7). The instances of order $m+1$ used by Theorem~59 are named (A1,~G10). Only the two-part case of
+MR Theorem~7, a matching cut, is used (A1,~G6). Single-vertex deletions are covered in the apex lemma
+(A2,~F6). MR Theorem~57 and the doubling identities of MR~\S17 (A1, G8 and G9) are not needed.
+
+The present paper supersedes three working notes of the project for citation: the spine
+paper~\cite{SP}, which contains Sections~\ref{sec:prelim} and~\ref{sec:marked}--\ref{sec:thm114}
+in an earlier form; the note~\cite{LF} on Lov\'asz's theorem; and Section~2 of~\cite{EC}. None of
+the arguments here depends on those notes or on MR: every proof is given in full.
+
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{Graphs}
+For a graph $G$ we write $V(G)$, $E(G)$, $d_G(v)$ and $N_G(v)$, and call $|V(G)|$ the
+\emph{order} of $G$. A vertex $v$ is \emph{even} or \emph{odd} according to the parity of $d_G(v)$;
+a vertex of degree $0$ is even. $\Ev(G)$ is the set of even vertices. By the handshake lemma the
+number of odd vertices is even. For $U\subseteq V(G)$, $G[U]$ is the induced subgraph and
+$G-X=G[V(G)\setminus X]$. A \emph{leaf} is a vertex of degree one.
+
+$G$ is \emph{$k$-connected} if $|V(G)|\ge k+1$ and $G-X$ is connected for every $X\subseteq V(G)$
+with $|X|<k$ \lean{Gallai.KConnected}. Thus $G$ is $2$-connected if and only if it has at least three
+vertices, is connected, and has no \emph{cut vertex}, that is, no $x$ with $G-x$ disconnected. (The
+block transfer in Lean states its tests with this no-cut-vertex form, \texttt{TwoConnected}, and
+converts it with \texttt{Gallai.TwoConnected.kConnected}.) If
+$x$ is a cut vertex of a connected graph $G$, then $V(G)\setminus\{x\}=C\sqcup D$ with $C,D$
+nonempty and no edge between $C$ and $D$; we call $(C,D)$ a \emph{separation at $x$}. We say that
+the $2$-connected blocks of $G$ have order at most $m$ if $|U|\le m$ for every $U\subseteq V(G)$ such
+that $G[U]$ is $2$-connected \lean{Gallai.SmallBlocks}.
+
+\begin{lemma}\label{lem:kconn}
+Let $G$ be $k$-connected. Then $d_G(v)\ge k$ for every $v$; $G$ is connected if $k\ge1$; and
+$G-z$ is connected for every vertex $z$ if $k\ge2$.
+\leanst{Gallai.KConnected.le\_degree, Gallai.KConnected.connected,
+Gallai.KConnected.delVert\_connected}
+\end{lemma}
+
+\begin{proof}
+If $d_G(v)<k$, then $|N_G(v)\cup\{v\}|\le k<|V(G)|$, so some $w$ is neither $v$ nor a neighbour of
+$v$; but $v$ is isolated in $G-N_G(v)$, which has fewer than $k$ deleted vertices and contains $w$, a
+contradiction. The other two claims are the cases $X=\emptyset$ and $X=\{z\}$ of the definition.
+\end{proof}
+
+Three constructions recur. The graph $G^x$ is $G$ with a new vertex (a \emph{private leaf}) adjacent
+only to $x$ \lean{Gallai.addLeaf}. For $S\subseteq V(G)$, the \emph{cone} $G+z(S)$ is $G$ with a new
+vertex $z$ adjacent exactly to the vertices of $S$ \lean{Gallai.apex, Gallai.cone}. For
+$z\in V(J)$, $J-z$ is the subgraph induced on $V(J)\setminus\{z\}$
+\lean{Gallai.delVert}.
+
+A \emph{matching cut} of $G$ is a partition $V(G)=X\sqcup Y$ with $X,Y\ne\emptyset$ such that every
+vertex has at most one neighbour on the other side; equivalently, the edges between $X$ and $Y$
+form a (possibly empty) matching \lean{Gallai.HasMatchingCut}. The class $\cC$ consists of the
+$2$-connected graphs without a matching cut \lean{Gallai.InClassC}.
+
+\subsection{Decompositions and ends}
+Paths are as in Section~\ref{sec:intro}; a path and its reversal are the same path. We write $V(P)$
+and $E(P)$ for the vertices and edges of a path $P$, and regard a decomposition $D$ as a list of
+paths, so $|D|$ is its number of paths \lean{Gallai.PathDecomp}. Every graph has a decomposition
+(its edges, one per path), so $p(G)$ is attained. For a path $P$ and a vertex $v$ let
+$b_P(v)\in\{0,1\}$ be the number of ends of $P$ at $v$. For a family $D$ of paths let
+$b_D(v)=\sum_{P\in D}b_P(v)$, the number of paths of $D$ ending at $v$ \lean{Gallai.PathDecomp.ends}.
+Put $\ind{\phi}=1$ if $\phi$ holds and $0$ otherwise.
+
+\begin{lemma}[parity]\label{lem:parity}
+For every decomposition $D$ of $G$ and every vertex $v$:
+$\sum_{u}b_D(u)=2|D|$, $b_D(v)\le d_G(v)$, and $b_D(v)\equiv d_G(v)\pmod 2$.
+\leanst{Gallai.PathDecomp.sum\_ends, Gallai.PathDecomp.ends\_mod\_two,
+Gallai.PathDecomp.ends\_le\_degree}
+\end{lemma}
+
+\begin{proof}
+Each path has exactly two ends. A path $P$ through $v$ contains two edges at $v$ if $v$ is internal
+and one if $v$ is an end, so $P$ contains $2\ind{v\in V(P)}-b_P(v)$ edges at $v$. The edges at $v$
+are partitioned among the paths, so $d_G(v)=2\,|\{P\in D:v\in V(P)\}|-b_D(v)$. This gives the
+parity, and $b_D(v)\le |\{P:v\in V(P)\}|\le d_G(v)$ because every path through $v$ contains an edge
+at $v$.
+\end{proof}
+
+\begin{lemma}[splitting and joining]\label{lem:split}
+Let $D$ be a decomposition of $G$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $v$ is an internal vertex of $P\in D$, replacing $P$ by its two subpaths ending at $v$ gives
+a decomposition $D'$ with $|D'|=|D|+1$, $b_{D'}(v)=b_D(v)+2$ and $b_{D'}(u)=b_D(u)$ for $u\ne v$.
+\item If $b_D(v)<d_G(v)$, then $v$ is an internal vertex of some path of $D$.
+\item If $P,Q$ are paths ending at $v$ with $V(P)\cap V(Q)=\{v\}$, then $P\cup Q$ is a path whose ends
+are the other ends of $P$ and $Q$.
+\end{enumerate}
+\leanst{Gallai.PathDecomp.exists\_split, Gallai.PathDecomp.exists\_internal\_of\_ends\_lt,
+Gallai.GPath.exists\_join}
+\end{lemma}
+
+\begin{proof}
+(a) and (c) are immediate. For (b), if $v$ is internal to no path, every path through $v$ ends at
+$v$ and contains exactly one edge at $v$, so $d_G(v)=b_D(v)$.
+\end{proof}
+
+\begin{lemma}[two and three ends]\label{lem:ends}
+Let $D$ be a decomposition of $G$, $x\in V(G)$ and $k\ge0$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $d_G(x)$ is even and positive and $|D|+\ind{b_D(x)=0}\le k$, then some decomposition $D'$
+has $|D'|\le k$ and $b_{D'}(x)\ge2$.
+\item If $d_G(x)$ is odd and at least $3$ and $|D|\le k$, then some decomposition $D'$ has
+$|D'|\le k+1$ and $b_{D'}(x)\ge3$.
+\end{enumerate}
+\leanst{Gallai.exists\_two\_ends, Gallai.exists\_three\_ends}
+\end{lemma}
+
+\begin{proof}
+(a) If $b_D(x)=0<d_G(x)$, split at an internal visit of $x$ (Lemma~\ref{lem:split}); the result has
+$|D|+1\le k$ paths and two ends at $x$. Otherwise $b_D(x)\ge1$ is even by Lemma~\ref{lem:parity},
+so $b_D(x)\ge2$ and $|D|\le k$. (b) If $b_D(x)\ge3$ take $D'=D$. Otherwise $b_D(x)=1$ by parity, and
+$1<3\le d_G(x)$, so we may split at an internal visit of $x$.
+\end{proof}
+
+For a decomposition $D$ of $G$ and a vertex $x$ put $\lambda_D(x)=|D|+\ind{b_D(x)=0}$
+\lean{Gallai.leafCost}.
+
+\begin{lemma}[private leaves]\label{lem:leaf}
+Let $x\in V(G)$ and let $\ell$ be the private leaf of $G^x$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item Every decomposition $D'$ of $G^x$ yields a decomposition $D$ of $G$ with either
+$|D|\le|D'|$ and $b_D(x)=b_{D'}(x)+1$, or $|D|\le|D'|-1$ and $b_D(x)=b_{D'}(x)-1$.
+\item For every decomposition $D$ of $G$, $p(G^x)\le\lambda_D(x)$.
+\item Some decomposition $D$ of $G$ has $\lambda_D(x)\le p(G^x)$.
+\end{enumerate}
+\leanst{Gallai.PathDecomp.trim\_ends, Gallai.pathNumber\_addLeaf\_le, Gallai.exists\_leafCost\_le}
+\end{lemma}
+
+\begin{proof}
+(a) The edge $x\ell$ lies on one path $Q$, and $\ell$ is an end of $Q$. If $Q=x\ell$, delete $Q$:
+one path fewer, and $x$ loses the end of $Q$. Otherwise delete $\ell$ from $Q$: the new path ends at
+$x$, where $Q$ did not end. (b) If $b_D(x)\ge1$, extend one path ending at $x$ by the edge $x\ell$;
+otherwise add $x\ell$ as a new path. (c) Apply (a) to a decomposition $D'$ of size $p(G^x)$. In the
+first case $b_D(x)\ge1$ and $\lambda_D(x)=|D|\le p(G^x)$; in the second
+$\lambda_D(x)\le|D|+1\le p(G^x)$.
+\end{proof}
+
+\section{Lov\'asz's theorem from Fan's addible-edge lemma}\label{sec:lovasz}
+
+Lov\'asz~\cite{L68} proved his theorem through a more general statement on decompositions into
+paths and cycles. We derive it, in the strong form of Theorem~\ref{thm:lovasz-intro}, from Fan's
+addible-edge lemma~\cite[Lemma~3.4]{Fan05}. To keep the paper self-contained we prove Fan's lemma
+too (Lemmas~\ref{lem:chain-exec}--\ref{lem:fan}). The proof is an exchange argument along chains of
+paths; it does not use Lov\'asz's theorem, so there is no circularity. It is the proof formalised in
+\texttt{Fan.lean} and \texttt{FanMoves.lean}.
+
+\subsection{Fan's lemma}
+Throughout this subsection $K$ is a graph, $D$ a decomposition of $K$, and $u\in V(K)$. A path
+of $D$ has two distinct ends, so $b_D(x)$ is the number of paths of $D$ with an end at $x$.
+
+\begin{definition}[predecessors and chains]\label{def:chain}
+Let $x\ne u$ and let $P\in D$ be a path with an end at $x$ and with $u\in V(P)$. Traverse $P$
+starting from $x$; the vertex visited immediately before $u$ is the \emph{predecessor of $x$ via
+$P$}. It is a neighbour of $u$, since consecutive vertices of $P$ are adjacent. A \emph{chain from
+$t$} is a sequence $x_0=t,x_1,\dots,x_k$ ($k\ge0$) of distinct vertices, all different from $u$, such
+that $x_i$ is the predecessor of $x_{i-1}$ via some path of $D$ for $1\le i\le k$, and some path of
+$D$ with an end at $x_k$ does not contain $u$.
+\leanst{Gallai.FanPred, Gallai.FanAvoid, Gallai.FanChain}
+\end{definition}
+
+\begin{lemma}[executing a chain]\label{lem:chain-exec}
+Let $t\ne u$ with $tu\notin E(K)$, and suppose that a chain from $t$ exists. Then $K+tu$ has a
+decomposition $D^+$ with $|D^+|=|D|$, $b_{D^+}(t)=b_D(t)-1$, $b_{D^+}(u)=b_D(u)+1$ and
+$b_{D^+}(w)=b_D(w)$ for every other vertex $w$.
+\leanst{Gallai.fan\_exec, Gallai.PathDecomp.append\_move, Gallai.PathDecomp.reroute\_move,
+Gallai.fanChain\_transport}
+\end{lemma}
+
+\begin{proof}
+Induction on the length $k$ of the chain, for all $K$, $D$ and $t$ at once.
+
+If $k=0$, some path $P\in D$ has an end at $t$ and avoids $u$. Extending $P$ at $t$ by the edge $tu$
+gives a path, since $u\notin V(P)$. Replacing $P$ by it gives $D^+$: the end of $P$ at $t$ moves to
+$u$, and nothing else changes.
+
+Let $k\ge1$. Some path $P\in D$ has an end at $t$, contains $u$, and reads
+$P=t\cdots x_1\,u\cdots s$ from $t$, where $s\ne t$ is its other end. Let $P'$ be the walk that
+traverses the segment of $P$ from $x_1$ back to $t$, then the edge $tu$, and then the rest of $P$
+from $u$ to $s$. It has the same vertices as $P$, each once, so it is a path, with ends $x_1$ and
+$s$. Its edges are those of $P$ with $x_1u$ replaced by $tu$. Hence $D_1=D-P+P'$ is a decomposition
+of $K_1=K-x_1u+tu$ with $|D_1|=|D|$, $b_{D_1}(t)=b_D(t)-1$, $b_{D_1}(x_1)=b_D(x_1)+1$, and all
+other end counts unchanged. In $K_1$ the vertex $x_1$ is not adjacent to $u$, and $x_1\ne u$.
+
+We claim that $x_1,\dots,x_k$ is a chain from $x_1$ in $D_1$. All paths of $D$ other than $P$ are
+paths of $D_1$. A path used in the chain at a vertex $x_i$ with $i\ge1$ has an end at $x_i\ne t$. If
+that path is $P$, then $x_i=s$, and $P$ is used to read a predecessor of $s$. Read from $s$, the
+path $P$ is $s\cdots w\,u\,x_1\cdots t$, and $P'$ is $s\cdots w\,u\,t\cdots x_1$. Both agree up to
+$u$, so the predecessor of $s$ is $w$ in both. Finally, the path with an end at $x_k$ avoiding $u$ is
+not $P$, since $P$ contains $u$. This proves the claim.
+
+By induction, $K_1+x_1u=K+tu$ has a decomposition $D^+$ of size $|D_1|=|D|$ in which an end has moved
+from $x_1$ to $u$ relative to $D_1$. Combined with the first step, an end has moved from $t$ to $u$.
+\end{proof}
+
+\begin{lemma}[existence of a chain]\label{lem:chain-exists}
+Let $t\ne u$ with $tu\notin E(K)$, and put $Z=\{w\in N_K(u): b_D(w)=0\}$. If $b_D(t)>|Z|$, then a
+chain from $t$ exists.
+\leanst{Gallai.fan\_exists\_chain}
+\end{lemma}
+
+\begin{proof}
+Suppose not. Let $R$ be the set of vertices $x$ for which there is a sequence $t=x_0,\dots,x_j=x$
+of distinct vertices with $x_i$ the predecessor of $x_{i-1}$ via a path of $D$ for $1\le i\le j$.
+Then $t\in R$, and:
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item $R$ is closed under predecessors: if $x\in R$ is reached by the sequence $L$ and $z$ is a
+predecessor of $x$, then either $z$ lies on $L$ and is reached by a prefix of $L$, or $L,z$ reaches
+$z$.
+\item Every path of $D$ with an end in $R$ contains $u$, since otherwise a chain would exist.
+\item Every vertex of $R\setminus\{t\}$ is a predecessor, hence a neighbour of $u$. So $u\notin R$
+(a vertex is not its own neighbour, and $t\ne u$), and $t\notin N_K(u)$.
+\end{enumerate}
+For a path $P\in D$ let $e_P$ be the number of ends of $P$ in $R$ and $f_P$ the number of edges of
+$P$ joining $u$ to a vertex of $R$. We claim $e_P\le f_P$. If $P$ has an end $x\in R$, then $u\in
+V(P)$ by (2) and $u\ne x$ by (3); the predecessor $z$ of $x$ via $P$ lies in $R$ by (1), and $zu$ is
+an edge of $P$ on the $x$-side of $u$. If both ends of $P$ lie in $R$, then $u$ is an internal
+vertex of $P$, and the two edges obtained, one on each side of $u$, are distinct. This proves the
+claim. Each edge of $K$ lies on exactly one path of $D$, so
+\[
+\sum_{x\in R}b_D(x)=\sum_{P\in D}e_P\le\sum_{P\in D}f_P=|N_K(u)\cap R|.
+\]
+Every $w\in N_K(u)\cap R$ either lies in $Z$ or has $b_D(w)\ge1$, and $t\notin N_K(u)$. Hence
+$|N_K(u)\cap R|\le|Z|+\sum_{x\in R\setminus\{t\}}b_D(x)$. Comparing with the display gives
+$b_D(t)\le|Z|$, a contradiction.
+\end{proof}
+
+\begin{lemma}[Fan~{\cite[Lemma~3.4]{Fan05}}]\label{lem:fan}
+Let $uv\in E(G)$, let $G'=G-uv$, and let $D'$ be a decomposition of $G'$. If
+\[
+b_{D'}(v)>\bigl|\{w\in N_{G'}(u): b_{D'}(w)=0\}\bigr|,
+\]
+then $G$ has a decomposition $D$ with $|D|=|D'|$, $b_D(u)=b_{D'}(u)+1$, $b_D(v)=b_{D'}(v)-1$ and
+$b_D(w)=b_{D'}(w)$ for every other vertex $w$.
+\leanst{Gallai.fan\_single}
+\end{lemma}
+
+\begin{proof}
+Apply Lemma~\ref{lem:chain-exists} with $K=G'$ and $t=v$; here $v\ne u$ and $uv\notin E(G')$. Then
+apply Lemma~\ref{lem:chain-exec}; note $G'+uv=G$.
+\end{proof}
+
+The statement agrees with Fan's Lemma~3.4 as it is quoted in the literature, for instance
+in~\cite{BS21}.
+
+\subsection{Lov\'asz's theorem}
+
+\begin{theorem}[Lov\'asz, strong form; Theorem~\ref{thm:lovasz-intro}]\label{thm:lovasz-strong}
+If at most one vertex of $G$ has positive even degree, then $G$ has a decomposition $D$ with
+$b_D(v)=d_G(v)\bmod 2$ for every vertex $v$.
+\leanst{Gallai.lovasz\_ends}
+\end{theorem}
+
+\begin{proof}
+Strong induction on $\nu(G)=\sum_v d_G(v)+\ind{G\text{ has no vertex of positive even degree}}$,
+over all finite graphs. Deleting an edge $xy$ lowers the degrees of $x$ and $y$ by one and changes
+no other degree. In each case below the claimed decomposition has the right end counts at every
+vertex; we check the vertices whose counts change.
+
+\emph{Case I: some vertex $z$ has positive even degree.} Choose a neighbour $u$ of $z$ and put
+$G'=G-uz$. In $G'$ the vertex $z$ is odd. The vertex $u$ has positive degree and $u\ne z$, so it is
+odd in $G$, and in $G'$ it is even (possibly isolated). Every other vertex keeps its parity. So $u$
+is the only possible vertex of positive even degree in $G'$, and $\nu(G')\le\nu(G)-1$. By induction
+$G'$ has a decomposition $D'$ with $b_{D'}=d_{G'}\bmod2$; thus $b_{D'}(u)=0$ and $b_{D'}(z)=1$.
+Every neighbour of $u$ in $G'$ has positive degree and differs from $u$, so it is odd and has an
+end. The right-hand side in Lemma~\ref{lem:fan}, applied to the edge $uz$ with $v=z$, is therefore
+$0<1=b_{D'}(z)$. The lemma adds $uz$ and moves an end from $z$ to $u$. The result has $b(u)=1$ and
+$b(z)=0$, matching the parities in $G$.
+
+\emph{Case II: every vertex of positive degree is odd, and some $x$ has $d_G(x)\ge3$.} Choose a
+neighbour $u$ of $x$, and let $H$ be $G-ux$ with a new leaf $\ell$ attached at $u$. In $H$ the vertex
+$u$ keeps its degree, $\ell$ has degree $1$, and $x$ has positive even degree $d_G(x)-1\ge2$. So $x$
+is the unique vertex of positive even degree in $H$, and $\nu(H)=\nu(G)-1$: the degree sum is the
+same and the indicator drops. By induction $H$ has a decomposition $D_H$ with $b_{D_H}=d_H\bmod2$;
+in particular $b(x)=0$, $b(u)=1$ and $b(\ell)=1$. The leaf is an end of its path. Deleting $\ell$
+gives a decomposition $D'$ of $G'=G-ux$: if the leaf path was the single edge $u\ell$, it disappears
+together with its end at $u$; otherwise the shortened path gains an end at $u$. So $b_{D'}(u)\in
+\{0,2\}$, and all other end counts are unchanged.
+\begin{itemize}
+\item If $b_{D'}(u)=0$, add $ux$ as a new one-edge path.
+\item If $b_{D'}(u)=2$, every neighbour of $x$ in $G'$ has an end: $u$ has two, and the others are
+odd. Lemma~\ref{lem:fan}, applied to the edge $xu$ with the roles $(u,v)$ played by $(x,u)$, adds
+$ux$ and moves an end from $u$ to $x$.
+\end{itemize}
+In both cases the result has $b(u)=b(x)=1$.
+
+\emph{Case III: every vertex has degree at most $1$, and there is an edge $ux$.} Then $G-ux$ again
+has no vertex of positive even degree and $\nu(G-ux)=\nu(G)-2$. Decompose it by induction and add
+$ux$ as a one-edge path.
+
+\emph{Case IV: $G$ has no edges.} The empty decomposition works.
+
+The cases are exhaustive. If no vertex has positive even degree and no vertex has degree at least
+$3$, every degree is $0$ or $1$.
+\end{proof}
+
+\begin{theorem}[Lov\'asz~\cite{L68}]\label{thm:lovasz}
+If a graph $G$ on $N$ vertices has at most one vertex of even degree (vertices of degree $0$ count as
+even), then $p(G)\le\fl{N/2}$.
+\leanst{Gallai.lovaszStatement}
+\end{theorem}
+
+\begin{proof}
+At most one vertex has positive even degree, so Theorem~\ref{thm:lovasz-strong} gives $D$ with
+$2|D|=\sum_v b_D(v)=o$, the number of odd vertices (Lemma~\ref{lem:parity}). Since $o$ is even and
+$o\le N$, we get $|D|=o/2\le\fl{N/2}$.
+\end{proof}
+
+Besides the statement itself we use the following tight form.
+
+\begin{corollary}[tight form]\label{cor:lovasz}
+Let $G$ be a graph and $U\subseteq V(G)$ a set containing both ends of every edge. If at most one
+vertex of $U$ is even, then $G$ has a decomposition $D$ with $2|D|=|\{v:d_G(v)\text{ odd}\}|$ and
+$b_D(v)=\ind{d_G(v)\text{ odd}}$ for every $v$. In particular $|D|=\fl{|U|/2}$.
+\leanst{Gallai.lovasz\_tight, Gallai.lovasz\_on}
+\end{corollary}
+
+\begin{proof}
+$G[U]$ has the same edges and degrees on $U$, so Theorem~\ref{thm:lovasz} gives a decomposition $D$
+with $2|D|\le 2\fl{|U|/2}$. All odd vertices lie in $U$; let $o$ be their number, which is even. If
+$U$ has no even vertex then $o=|U|\ge 2\fl{|U|/2}$; if it has one then $|U|=o+1$ is odd and
+$2\fl{|U|/2}=o$. In both cases $2|D|\le o$. On the other hand $2|D|=\sum_v b_D(v)\ge o$, since every
+odd vertex has $b_D\ge1$ by parity. Hence equality holds throughout: every odd vertex is an end of
+exactly one path and no other vertex is an end.
+\end{proof}
+
+\section{Marked path numbers and the marked tests}\label{sec:marked}
+
+This section follows MR~\S1. Its main result, Theorem~\ref{thm:transfer}, is the sufficiency half
+of MR Theorem~1 in the finite-order form needed for Theorem~59; it is proved in
+Section~\ref{sec:transfer}.
+
+\subsection{The marked number}
+
+\begin{definition}[marked partitions]\label{def:marked}
+Let $F$ be a graph and $S\subseteq V(F)$ a set of \emph{marks}. A \emph{marked partition} of
+$(F,S)$ is a pair $(D,\sigma)$ where $D$ is a decomposition of $F$ and $\sigma$ is an injective
+partial map from the paths of $D$ to $S$ such that $\sigma(P)$ is an end of $P$ whenever $\sigma(P)$
+is defined. A path in the domain of $\sigma$ is \emph{assigned} (to the mark $\sigma(P)$). The
+\emph{cost} of $(D,\sigma)$ is the number of unassigned paths, and the \emph{marked number}
+$q(F,S)$ is the least cost of a marked partition of $(F,S)$. The \emph{marked bound} for $(F,S)$ is
+\begin{equation}\label{eq:mb}
+q(F,S)\le\fl{(|V(F)|-|S|)/2}.
+\end{equation}
+\leanst{Gallai.MarkedPartition, Gallai.markedNumber}
+\end{definition}
+
+Thus $q(F,\emptyset)=p(F)$. Since $\sigma$ is injective, a mark absorbs at most one path, and since
+$\sigma$ is a map, each path is absorbed by at most one mark.
+
+\begin{lemma}\label{lem:marked-basic}
+Let $F$ be a graph, $S\subseteq V(F)$ and $x,y\in V(F)$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $p(F)\le q(F,S)+|S|$.
+\item If $S'\subseteq S$ then $q(F,S)\le q(F,S')$.
+\item $q(F,S)\le q(F,S\cup\{y\})+1$.
+\item If some decomposition $D$ has $b_D(x)\ge1$, then $q(F,\{x\})\le|D|-1$.
+\item Some decomposition $D$ of $F$ has $\lambda_D(x)\le q(F,\{x\})+1$.
+\end{enumerate}
+\leanst{Gallai.pathNumber\_le\_markedNumber\_add, Gallai.markedNumber\_anti,
+Gallai.markedNumber\_le\_insert, Gallai.markedNumber\_singleton\_add\_one,
+Gallai.exists\_leafCost\_le\_markedNumber}
+\end{lemma}
+
+\begin{proof}
+(a) In a marked partition of cost $c$ at most $|S|$ paths are assigned, so $|D|\le c+|S|$.
+(b) A marked partition of $(F,S')$ is one of $(F,S)$. (c) In an optimal marked partition of
+$(F,S\cup\{y\})$, unassign the path assigned to $y$, if any. (d) Assign one path ending at $x$ to
+$x$. (e) Let $(D,\sigma)$ be optimal for $(F,\{x\})$. If some path is assigned to $x$, then
+$b_D(x)\ge1$ and $\lambda_D(x)=|D|=q(F,\{x\})+1$. Otherwise $\lambda_D(x)\le|D|+1=q(F,\{x\})+1$.
+\end{proof}
+
+By (a), the marked bound with a single mark gives $p(F)\le\fl{(|V(F)|-1)/2}+1=\cl{|V(F)|/2}$, which
+is Gallai's bound. MR shows conversely that Gallai's conjecture implies the marked bound for every
+connected $F$ and nonempty $S$ (the doubled cone $W(F,S)$ of MR~\S1; Lean:
+\texttt{Gallai.gallai\_iff\_markedBound}). We do not need this converse.
+
+\subsection{The cone inequality}
+
+\begin{lemma}[cone inequality; MR \S1]\label{lem:cone}
+Let $X=F+z(S)$. Every decomposition $D$ of $X$ satisfies
+\[
+|S|+2q(F,S)+b_D(z)\le 2|D|.
+\]
+\leanst{Gallai.le\_outEnds, Gallai.apex\_outEnds\_bound}
+\end{lemma}
+
+\begin{proof}
+A path contains $z$ at most once. Split every path of $D$ at $z$ whenever $z$ is one of its internal
+vertices (Lemma~\ref{lem:split}(a)). The result $D^*$ has $b_{D^*}(v)=b_D(v)$ for every $v\ne z$, and
+in $D^*$ every path through $z$ ends at $z$ and so contains exactly one edge $zs$ ($s\in S$). Every
+edge $zs$ lies on exactly one path of $D^*$, and that path contains no other edge at $z$. Hence the
+paths of $D^*$ through $z$ correspond bijectively to $S$ via their edge at $z$. For such a path $P$
+with edge $zs$: if $P\ne zs$, then $P-z$ is a path of $F$ with end $s$, and we assign it to $s$; if
+$P=zs$ we discard it. The paths of $D^*$ avoiding $z$ are paths of $F$ and stay unassigned. This is
+a marked partition of $(F,S)$: its edges are those of $X$ except the edges at $z$, and distinct paths
+receive distinct marks. Its cost is the number $a$ of paths of $D^*$ avoiding $z$, so $q(F,S)\le a$.
+Every path of $D^*$ through $z$ has exactly one end other than $z$, and every other path has two, so
+\[
+2|D|-b_D(z)=\sum_{v\ne z}b_D(v)=\sum_{v\ne z}b_{D^*}(v)=|S|+2a\ge|S|+2q(F,S).\qedhere
+\]
+\end{proof}
+
+(In fact $\min_D(2|D|-b_D(z))=|S|+2q(F,S)$, the identity of MR~\S1 \lean{Gallai.minOutEnds\_eq}.
+Only the inequality is used.)
+
+\subsection{The assignment lemma}
+The following lemma replaces both the private-leaf identity and the odd-mark rank inequality of
+MR~\S2.1.
+
+\begin{lemma}[assignment lemma]\label{lem:hall}
+Let $D$ be a decomposition of $F$ and let $T,O\subseteq V(F)$. Suppose $b_D(v)\ge1$ for every
+$v\in T$ and $b_D(v)\ge2$ for every $v\in T\setminus O$. Then
+\[
+q(F,T)+|T|\le|D|+\fl{|O|/2}.
+\]
+\leanst{Gallai.markedNumber\_add\_card\_le}
+\end{lemma}
+
+\begin{proof}
+Let $k=\fl{|O|/2}$. Form a bipartite graph between $T$ and the set of slots consisting of the paths
+of $D$ together with $k$ dummy slots: a mark $v$ is adjacent to every path of $D$ ending at $v$ and to
+every dummy slot. We check Hall's condition. Let $s\subseteq T$ be nonempty, and let $N(s)$ be the
+set of paths of $D$ with an end in $s$. The paths ending in $s$ carry at least
+$\sum_{v\in s}b_D(v)\ge 2|s|-|s\cap O|$ ends in $s$, and each path has at most two ends, so
+$2|N(s)|\ge 2|s|-|s\cap O|\ge 2|s|-|O|$. Hence $|N(s)|\ge|s|-|O|/2$, and since $|N(s)|$ is an
+integer, $|N(s)|\ge|s|-k$. So $s$ has at least $|N(s)|+k\ge|s|$ neighbours. By Hall's theorem~\cite{Hall35} there
+is an injective map $f$ from $T$ to the slots with $f(v)$ adjacent to $v$. Assign each path $P$ of
+the form $P=f(v)$ to $v$. This is a marked partition of $(F,T)$: $v$ is an end of $f(v)$, and
+distinct marks receive distinct paths because $f$ is injective. At most $k$ marks are sent to dummy
+slots, so at least $|T|-k$ paths are assigned, and the cost is at most $|D|-|T|+k$.
+\end{proof}
+
+In applications $O$ is a set of odd vertices, which always have an end by parity, and the marks outside $O$ are even vertices with at least one end, hence with two.
+
+\subsection{The marked tests}
+
+\begin{definition}[tests and the bounded marked bound]\label{def:MB}
+For $m\ge0$ we consider three assertions.
+\begin{itemize}[leftmargin=4em]
+\item[$(\TA_m)$] For every $2$-connected graph $F$ with $|V(F)|\le m$ and every nonempty
+$S\subseteq V(F)$, the marked bound \eqref{eq:mb} holds.
+\item[$(\TB_m)$] For every $2$-connected graph $J$ with $|V(J)|=2k+1\le m$ and $p(J)=k+1$, and for
+every odd vertex $x$ of $J$, some decomposition of $J$ has exactly $k+1$ paths and at least three ends
+at $x$.
+\item[$(\MBU_m)$] For every connected graph $F$ whose $2$-connected blocks have order at most $m$,
+and every nonempty $S\subseteq V(F)$, the marked bound \eqref{eq:mb} holds.
+\end{itemize}
+\leanst{Gallai.MarkedTwoConnTestUpTo, Gallai.ThreeEndsTestUpTo, Gallai.MarkedBoundUpTo}
+\end{definition}
+
+\begin{theorem}[block transfer; MR Theorem 1, finite form]\label{thm:transfer}
+For every $m\ge0$, $(\TA_m)$ and $(\TB_m)$ imply $(\MBU_m)$.
+\leanst{Gallai.mbOn\_of\_testsUpTo, Gallai.markedBoundUpTo\_of\_tests}
+\end{theorem}
+
+\begin{remark}
+With $m$ unbounded, Theorem~\ref{thm:transfer} and Lemma~\ref{lem:marked-basic}(a) show that the
+two tests on all $2$-connected graphs imply Gallai's conjecture. MR Theorem~1 also proves the
+converse, so that Gallai's conjecture is equivalent to the two tests (Lean:
+\texttt{Gallai.gallai\_iff\_tests}). The spine needs only the sufficiency, and only in the
+finite-order form above, because Theorem~59 feeds it tests of bounded order.
+\end{remark}
+
+\section{Block transfer and matching cuts}\label{sec:transfer}
+
+This section proves Theorem~\ref{thm:transfer} (MR~\S2, ``Bridges, pendant edges and cut
+vertices'' and ``Transfer through a block tree'') and the matching-cut case of MR Theorem~7 with
+Lemma~6 (Theorem~\ref{thm:mc}).
+
+\subsection{Partial marked partitions}
+Let $G$ be a graph, $E'\subseteq E(G)$ and $T\subseteq V(G)$. A \emph{partial marked partition of
+$E'$ with marks $T$} is a list $M$ of paths of $G$ whose edge sets partition $E'$, together with an
+injective partial assignment $\sigma$ of paths to marks in $T$, each assigned mark being an end of
+its path; its cost $c(M)$ is the number of unassigned paths \lean{Gallai.PMP}. If $U\subseteq V(G)$
+and $E'=E(G[U])$, then every path of $M$ lies in $G[U]$ (each of its vertices is on one of its
+edges), so a partial marked partition of $E(G[U])$ with marks $T\subseteq U$ is exactly a marked
+partition of $(G[U],T)$. We say a mark $x$ is \emph{used} by $M$ if some path is assigned to it.
+
+\begin{lemma}[gluing at a vertex]\label{lem:glue}
+Let $U_1,U_2\subseteq V(G)$ with $U_1\cap U_2=\{x\}$, and let $E_1,E_2$ be disjoint edge sets with
+both ends of every edge of $E_i$ in $U_i$. Let $M_i$ be a partial marked partition of $E_i$ with
+marks $T$ and cost $c_i$. Then $E_1\cup E_2$ has a partial marked partition $M$ as follows.
+\begin{enumerate}[label=\textup{(G\arabic*)},leftmargin=3.2em]
+\item If $x$ is used by at most one of $M_1,M_2$: marks $T$ and $c(M)=c_1+c_2$.
+\item In general: marks $T$ and $c(M)\le c_1+c_2+1$.
+\item If $M_1$ has a path $P$ ending at $x$ that is not assigned to $x$: marks $T$ and
+$c(M)\le c_1+c_2$.
+\item In general: marks $T\setminus\{x\}$ and $c(M)\le c_1+c_2+1$.
+\item If $x$ is used by at most one of $M_1,M_2$, $M_1$ has an unassigned path $P$ ending at $x$, and
+$M_2$ has a path $R$ ending at $x$ that is not assigned to $x$: marks $T$ and $c(M)\le c_1+c_2-1$.
+\item If $x$ is not used by $M_2$, $M_1$ has two distinct unassigned paths $P,Q$ ending at $x$, and
+$M_2$ has a path $R$ with $x$ as an internal vertex: marks $T$ and $c(M)\le c_1+c_2-1$.
+\end{enumerate}
+\leanst{Gallai.glue0, Gallai.glue1, Gallai.glueJ, Gallai.glueU, Gallai.glueEnd,
+Gallai.glueSplit}
+\end{lemma}
+
+\begin{proof}
+Every path of $M_i$ has all its vertices in $U_i$, so a path of $M_1$ and a path of $M_2$ meet at
+most in $x$, and a mark used by both $M_1$ and $M_2$ lies in $U_1\cap U_2$, hence equals $x$.
+
+(G1) Take the union; the assignment stays injective since $x$ is the only possible common mark.
+(G2) Unassign the path of $M_1$ assigned to $x$ (if any), at cost at most one, and apply (G1).
+(G3) If $x$ is not used by $M_2$, apply (G1). Otherwise let $Q\in M_2$ be assigned to $x$; then $Q$
+ends at $x$. Replace $P$ and $Q$ by the path $P\cup Q$ (Lemma~\ref{lem:split}(c)) and give it the
+assignment of $P$. That assignment, if any, is an end of $P$ other than $x$, hence an end of $P\cup
+Q$. The path $Q$ was assigned, so the cost is $c_1+c_2$; the mark $x$ is now used at most by $M_1$.
+(G4) Unassign $x$ on both sides. If $x$ was used by both, by $P_1\in M_1$ and $P_2\in M_2$, replace
+them by the unassigned path $P_1\cup P_2$; two assigned paths become one unassigned path. Otherwise
+at most one path becomes unassigned.
+(G5) Take the union (G1), and replace $P$ and $R$ by $P\cup R$ with the assignment of $R$, which is
+an end of $R$ other than $x$. The unassigned path $P$ disappears and the assignment status of $R$ is
+inherited, so the cost drops by one.
+(G6) Take the union (G1). Split $R$ at $x$ into $R_1,R_2$, each ending at $x$; the assignment of $R$,
+if any, is an end of $R$ other than $x$ and goes to the half containing it. Replace $P,Q,R$ by
+$P\cup R_1$ and $Q\cup R_2$, where $P\cup R_1$ inherits the assignment of $R_1$ and $Q\cup R_2$ that
+of $R_2$. Before, $P$ and $Q$ cost two and $R$ cost $\ind{R\text{ unassigned}}$; after, the two new
+paths cost $1+\ind{R\text{ unassigned}}$.
+\end{proof}
+
+\begin{lemma}[pendant edges]\label{lem:pendant-edge}
+Let $M$ be a partial marked partition of $E'$ with marks $T$ and cost $c$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \emph{(trimming)} Let $xy\in E'$ be the only edge of $E'$ at $y$, with $y\notin T$. Then
+$E'\setminus\{xy\}$ has a partial marked partition $M'$ with marks $T$ such that one of the following
+holds: (i) $c(M')=c-1$, and $M'$ has one path fewer than $M$; (ii) $c(M')=c$, $M'$ has one path
+fewer than $M$, and $x$ is not used by $M'$; (iii) $c(M')=c$, $M'$ has as many paths as $M$, and
+$M'$ has a path ending at $x$ that is not assigned to $x$.
+\item \emph{(attaching)} Let $wv\in E(G)\setminus E'$ where $w$ lies on no path of $M$, and let
+$o$ be either ``none'' or the mark $w$, where in the second case $w\in T\setminus\{v\}$ and $w$ is not
+used by $M$. Then $E'\cup\{wv\}$ has a partial marked partition with marks $T\setminus\{v\}$ and cost
+$c+\ind{o=\text{none}}$.
+\end{enumerate}
+\leanst{Gallai.PMP.exists\_trim, Gallai.attach\_pendant}
+\end{lemma}
+
+\begin{proof}
+(a) Let $Q$ be the path containing $xy$; since $y$ has no other edge, $y$ is an end of $Q$. If
+$Q=xy$, then $Q$ is unassigned or assigned to $x$ (as $y\notin T$); deleting $Q$ gives (i) or (ii).
+Otherwise $Q=yx\cdots t$ with $t\ne x$, and $Q$ is unassigned or assigned to $t$. Deleting $y$ from
+$Q$ gives a path ending at $x$ with the same assignment, which is (iii).
+(b) If $v$ is used, by $P$, then $P$ ends at $v$ and avoids $w$; replace $P$ by $P\cup vw$ with
+assignment $o$. Otherwise add the path $wv$ with assignment $o$. In both cases $v$ is no longer used,
+the only assignment introduced is $o$, and the cost changes by $\ind{o=\text{none}}$ (in the first
+case $P$ was assigned).
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:transfer}}
+Fix $m$ and assume $(\TA_m)$ and $(\TB_m)$. We prove by strong induction on $n$:
+\begin{quote}
+$(\ast)_n$: if $G$ is connected of order $n$ and its $2$-connected blocks have order at most $m$,
+then $q(G,S)\le\fl{(n-|S|)/2}$ for every nonempty $S\subseteq V(G)$.
+\end{quote}
+A $2$-connected induced subgraph of an induced subgraph of $G$ is a $2$-connected induced subgraph of
+$G$. So the induction hypothesis gives the marked bound for every connected induced subgraph
+$G[U']$ with $|U'|<n$ and every nonempty set of marks in $U'$. Let $G$ and $S$ be as in $(\ast)_n$.
+We go through the steps below in order; each step either proves the bound or passes the
+information that it did not apply to the next one \lean{Gallai.mbOn\_of\_testsUpTo}.
+
+\emph{Step 0: $n\le2$} \lean{Gallai.baseStep}. Then $G$ has no edge or a single edge $ab$ with
+$\{a,b\}=V(G)$. In the second case assign the path $ab$ to a mark. Either way $q(G,S)=0$.
+
+\emph{Step 1: $G$ is $2$-connected} \lean{Gallai.twoConnStep}. Then $n\le m$ and $(\TA_m)$
+applies.
+
+\emph{Step 2: $G$ has a cut vertex $x$ with a separation $(C,D)$ such that $|C|,|D|\ge2$.} This is
+Lemma~\ref{lem:cut} below.
+
+\emph{Step 3: $G$ has a leaf $w$, with neighbour $v$, and it is not the case that both $S=\{v\}$
+and $n$ is even.} This is Lemma~\ref{lem:leafstep}.
+
+\emph{Step 4: $S=\{v\}$ and $G$ has two distinct leaves $w,w'$ adjacent to $v$.} This is
+Lemma~\ref{lem:doubleleaf}.
+
+\emph{Step 5: none of Steps 0--4 applies.} Then $n\ge3$ and $G$ is not $2$-connected, so $G$ has a
+cut vertex $x$ and a separation $(C,D)$ at $x$. Since Step~2 does not apply, one side, say $C=\{a\}$,
+is a single vertex; then $N_G(a)\subseteq\{x\}$, and $a$ is a leaf at $x$ since $G$ is connected. So
+$G$ has a leaf. By Step~3, every leaf $w$ is adjacent to the unique mark $v$, where $S=\{v\}$ and $n$
+is even. By Step~4 there is only one leaf, $w$. Now $J=G-w$ is connected with $n-1\ge3$ vertices
+(as $n$ is even and at least three). If $J$ had a cut vertex, Lemma~\ref{lem:residue} would give a
+separation of $G$ as in Step~2 or a second leaf of $G$; both are excluded. So $J$ is $2$-connected,
+and Lemma~\ref{lem:pendant} gives the bound. This completes the induction, given the five lemmas
+below. Theorem~\ref{thm:transfer} is $(\ast)_n$ for all $n$.\qed
+
+\medskip
+In Lemmas~\ref{lem:cut}--\ref{lem:pendant}, $G$ and $S$ are as in $(\ast)_n$ and the marked bound
+holds for every connected induced subgraph of order less than $n$. Lemma~\ref{lem:residue} is a
+statement about any connected graph.
+
+\begin{lemma}[cut vertices; MR p.~5]\label{lem:cut}
+If $G$ has a separation $(C,D)$ at $x$ with $|C|,|D|\ge2$, then $q(G,S)\le\fl{(n-|S|)/2}$.
+\leanst{Gallai.cutStep}
+\end{lemma}
+
+\begin{proof}
+Put $U_1=C\cup\{x\}$, $U_2=D\cup\{x\}$ and $G_i=G[U_i]$. Then $|U_i|\ge3$, $U_1\cap U_2=\{x\}$,
+$|U_1|+|U_2|=n+1$, and $E(G)=E(G_1)\sqcup E(G_2)$. Each $G_i$ is connected: for $c\in C$, a path of $G$
+from $c$ to a vertex of $D$ must pass through $x$, and its part from $c$ to the first visit of $x$ lies
+in $G_1$; so every vertex of $C$ is joined to $x$ in $G_1$, and symmetrically every vertex of $D$ is
+joined to $x$ in $G_2$. In
+particular $x$ has a neighbour $y_i\in U_i\setminus\{x\}$. Let $S_i=S\cap U_i$. The graph
+$G_1^+=G[U_1\cup\{y_2\}]$ is $G_1$ plus the pendant edge $xy_2$ (the only neighbour of $y_2$ in
+$U_1$ is $x$). It is connected and has $|U_1|+1\le n-1$ vertices, since $|U_2|\ge3$. The same holds
+for $G_2^+=G[U_2\cup\{y_1\}]$. All the graphs $G_1,G_2,G_1^+,G_2^+$ are connected induced subgraphs of
+order less than $n$. We glue with Lemma~\ref{lem:glue} (with $E_i=E(G_i)$ and the marks $T$ named in
+each case), and the result is a marked partition of $(G,S)$ whenever its marks are $S$.
+
+\emph{Case 1: $x\in S$.} Let $r_i=|U_i|-|S_i|$, the number of unmarked vertices of $U_i$. Then
+$n-|S|=r_1+r_2$ because $x$ is counted in both $S_1$ and $S_2$.
+
+(1a) Both $r_i$ odd. Marked partitions $M_i$ of $(G_i,S_i)$ cost at most $(r_i-1)/2$. By (G2) the
+union costs at most $(r_1-1)/2+(r_2-1)/2+1=(r_1+r_2)/2$.
+
+(1b) $r_1$ even (the case $r_2$ even is symmetric). The mark set $S_1$ does not contain $y_2$, and
+$q(G_1^+,S_1)\le\fl{(r_1+1)/2}=r_1/2$. Take an optimal $M^+$ and trim the pendant edge $xy_2$
+(Lemma~\ref{lem:pendant-edge}(a), $y_2\notin S_1$). Let $M_2$ be optimal for $(G_2,S_2)$, of cost at
+most $\fl{r_2/2}$. In outcome (i) the trimmed $M_1$ costs at most $r_1/2-1$, and (G2) gives at most
+$r_1/2+\fl{r_2/2}$. In outcome (ii) $x$ is not used by $M_1$, and (G1) gives the same bound. In
+outcome (iii) $M_1$ has a path ending at $x$ not assigned to $x$, and (G3) gives the same bound. As
+$r_1$ is even, $r_1/2+\fl{r_2/2}=\fl{(r_1+r_2)/2}$.
+
+\emph{Case 2: $x\notin S$.} Let $r_i=|U_i|-1-|S_i|$, the number of unmarked vertices of $U_i$ other
+than $x$. Then $n-|S|=r_1+r_2+1$.
+
+(2a) Some $r_i$ odd, say $r_1$. Mark $x$ on both sides: $q(G_i,S_i\cup\{x\})\le\fl{r_i/2}$. By (G4)
+with $T=S\cup\{x\}$ the union is a marked partition of $(G,S)$ of cost at most
+$\fl{r_1/2}+\fl{r_2/2}+1=(r_1+1)/2+\fl{r_2/2}=\fl{(r_1+r_2+1)/2}$.
+
+(2b) Both $r_i$ even and both $S_i$ nonempty. Then $q(G_i,S_i)\le\fl{(r_i+1)/2}=r_i/2$, $x$ is used
+by neither side, and (G1) gives $(r_1+r_2)/2=\fl{(r_1+r_2+1)/2}$.
+
+(2c) Both $r_i$ even and $S_1=\emptyset$ (the case $S_2=\emptyset$ is symmetric). Then $S=S_2\ne\emptyset$,
+$r_1=|U_1|-1$, and $M_2$ optimal for $(G_2,S_2)$ costs at most $r_2/2$. In $G_1^+$ mark only $x$:
+$q(G_1^+,\{x\})\le\fl{|U_1|/2}=r_1/2$. Take an optimal $M^+$ (marks $\{x\}$, at most one assigned
+path) and trim $xy_2$. We claim that $G_1$ has a decomposition $M_1$, viewed as a partial marked
+partition with marks $S$ and no assigned path, such that either
+($\alpha$) $|M_1|\le c(M^+)$, or
+($\beta$) $|M_1|\le c(M^+)+1$ and $M_1$ has two distinct paths ending at $x$.
+In outcome (i) a path was deleted and $|M^+|\le c(M^+)+1$, so ($\alpha$) holds. In outcome (ii) the
+deleted path was the only assigned one, so $|M_1|=|M^+|-1=c(M^+)$. In outcome (iii) the path $L$
+ending at $x$ is unassigned (its assignment is not $x$, and $x$ is the only mark). If $x$ is used by
+some path $Q\ne L$ of the trimmed partition, then $L$ and $Q$ both end at $x$ and
+$|M_1|=|M^+|=c(M^+)+1$, which is ($\beta$). Otherwise nothing is assigned and $|M_1|=c(M^+)$.
+
+In case ($\alpha$), (G1) gives cost at most $r_1/2+r_2/2$. In case ($\beta$), $M_1$ has two
+unassigned paths $P,Q$ ending at $x$, and $x$ is used by neither side ($x\notin S$). If some path $R$
+of $M_2$ ends at $x$, (G5) gives cost at most $(r_1/2+1)+r_2/2-1$. Otherwise no path of $M_2$ ends at
+$x$, while $x$ has the edge $xy_2$ in $G_2$; by Lemma~\ref{lem:split}(b) some path of $M_2$ has $x$
+as an internal vertex, and (G6) gives the same bound. In all cases the cost is at most
+$(r_1+r_2)/2=\fl{(n-|S|)/2}$.
+
+The cases are exhaustive: for $x\in S$, either some $r_i$ is even or both are odd; for $x\notin S$,
+either some $r_i$ is odd, or both are even and then both $S_i$ are nonempty or one is empty (not
+both, as $S\ne\emptyset$).
+\end{proof}
+
+\begin{lemma}[leaves; MR pp.~4--5]\label{lem:leafstep}
+Let $n\ge3$ and let $w$ be a leaf of $G$ with neighbour $v$. Unless $S=\{v\}$ and $n$ is even,
+$q(G,S)\le\fl{(n-|S|)/2}$.
+\leanst{Gallai.leafStep}
+\end{lemma}
+
+\begin{proof}
+$G-w$ is connected of order $n-1$ (a path between two vertices other than $w$ cannot pass through
+the leaf $w$), and $E(G)=E(G-w)\sqcup\{wv\}$. In each case we take an optimal
+marked partition $M$ of $G-w$ for the stated marks and add the edge $wv$.
+\begin{enumerate}[label=(L\arabic*),leftmargin=3em]
+\item $w\in S$ and $S\ne\{w\}$. Marks $S\setminus\{w\}$: $c(M)\le\fl{(n-1-(|S|-1))/2}$. Add the path
+$wv$ assigned to $w$.
+\item $S=\{w\}$. Marks $\{v\}$: $c(M)\le\fl{(n-2)/2}$. Attach $wv$ with $o=w$
+(Lemma~\ref{lem:pendant-edge}(b), marks $\{v,w\}$); the result has marks $\{w\}$ and the same cost,
+at most $\fl{(n-1)/2}$.
+\item $w\notin S$, $v\in S$ and $S\ne\{v\}$. Marks $S\setminus\{v\}$:
+$c(M)\le\fl{(n-1-(|S|-1))/2}$. Add the path $vw$ assigned to $v$.
+\item $S=\{v\}$; then $n$ is odd by hypothesis. Marks $\{v\}$: $c(M)\le\fl{(n-2)/2}=(n-3)/2$.
+Attach $wv$ with $o=$ none: cost at most $(n-1)/2=\fl{(n-1)/2}$.
+\item $w,v\notin S$. Marks $S\cup\{v\}$: $c(M)\le\fl{(n-1-|S|-1)/2}=\fl{(n-|S|)/2}-1$. Attach $wv$
+with $o=$ none; the result has marks $S$ and cost at most $\fl{(n-|S|)/2}$.
+\end{enumerate}
+These cases are exhaustive.
+\end{proof}
+
+\begin{lemma}[two leaves at the only mark]\label{lem:doubleleaf}
+If $S=\{v\}$ and $w\ne w'$ are leaves adjacent to $v$, then $q(G,\{v\})\le\fl{(n-1)/2}$.
+\leanst{Gallai.doubleLeafStep}
+\end{lemma}
+
+\begin{proof}
+$G-w-w'$ is connected (no path between two other vertices passes through a leaf), contains $v$, and
+has order $n-2$. An optimal marked partition of
+$(G-w-w',\{v\})$ costs at most $\fl{(n-3)/2}$. Add the unassigned path $wvw'$.
+\end{proof}
+
+\begin{lemma}[the pendant configuration; MR p.~5]\label{lem:pendant}
+Let $n$ be even, $S=\{v\}$, $w$ a leaf at $v$, and suppose $J=G-w$ is $2$-connected. Then
+$q(G,\{v\})\le\fl{(n-1)/2}$.
+\leanst{Gallai.pendantStep}
+\end{lemma}
+
+\begin{proof}
+Write $n=2k+2$, so $|V(J)|=2k+1$, and the target is $k$. As $J$ is a $2$-connected induced subgraph
+of $G$, whose $2$-connected blocks have order at most $m$, we have $2k+1\le m$. By $(\TA_m)$,
+$q(J,\{v\})\le\fl{2k/2}=k$, so $p(J)\le k+1$ by Lemma~\ref{lem:marked-basic}(a). If $p(J)\le k$,
+take an optimal decomposition of $J$ and add the path $vw$ assigned to $v$; the cost is at most $k$.
+Otherwise $p(J)=k+1$, and we find a decomposition $D$ of $J$ with $|D|=k+1$ and $b_D(v)\ge2$. If
+$d_J(v)$ is odd this is $(\TB_m)$. If $d_J(v)$ is even, take an optimal marked partition
+$(D,\sigma)$ of $(J,\{v\})$; it costs at most $k$ and has at most one assigned path, while
+$|D|\ge p(J)=k+1$. Hence $|D|=k+1$ and $v$ is used, so $b_D(v)\ge1$, and $b_D(v)\ge2$ by parity.
+Now two distinct paths $P_1,P_2$ of $D$ end at $v$. Assign $P_2$ to $v$ and extend $P_1$ by the edge
+$vw$. This is a marked partition of $(G,\{v\})$ with $k+1$ paths, one assigned, so it costs $k$.
+\end{proof}
+
+As in MR, an even $d_J(v)$ causes no difficulty: an optimal marked partition already has two ends
+at $v$.
+
+\begin{lemma}[the residue; MR p.~6]\label{lem:residue}
+Let $w$ be a leaf of a connected graph $G$ with neighbour $v$, and suppose $J=G-w$ has a cut vertex
+$x'$ with a separation $(C',D')$. Then $G$ has a separation with both sides of size at least two, or
+$G$ has a leaf other than $w$.
+\leanst{Gallai.residue\_sep}
+\end{lemma}
+
+\begin{proof}
+If $x'=v$: then $(C',D'\cup\{w\})$ is a separation of $G$ at $v$, since $w$ is adjacent only to $v$.
+The second side has at least two vertices. If $|C'|\ge2$ we are done; otherwise $C'=\{a\}$, and $a$
+is a leaf of $G$ at $v$ with $a\ne w$. If $x'\ne v$: by symmetry $v\in C'$, and $(C'\cup\{w\},D')$ is
+a separation of $G$ at $x'$, since the only neighbour of $w$ lies in $C'$. The first side has at
+least two vertices. If $|D'|\ge2$ we are done; otherwise $D'=\{b\}$ is a leaf of $G$ at $x'$, and
+$b\ne w$. (A singleton side $\{a\}$ of a separation at $x$ in a connected graph is a leaf at $x$,
+since all its neighbours lie in $\{x\}$.)
+\end{proof}
+
+\subsection{Matching cuts}
+
+\begin{lemma}[connected shores]\label{lem:shores}
+A connected graph $B$ with a matching cut has a matching cut $(X,Y)$ such that $B[X]$ and $B[Y]$ are
+connected.
+\leanst{Gallai.exists\_connected\_matchingCut}
+\end{lemma}
+
+\begin{proof}
+Let $(X_0,Y_0)$ be a matching cut. Say a set $Z$ has the \emph{matching property} if every vertex has
+at most one neighbour on the other side of $(Z,V(B)\setminus Z)$; this is symmetric in $Z$ and its
+complement. If $Z$ has it and $K\subseteq Z$ is a union of components of $B[Z]$, then $K$ has it: a
+vertex of $K$ has no neighbour in $Z\setminus K$, so its neighbours outside $K$ are its neighbours
+outside $Z$; a vertex of $Z\setminus K$ has no neighbour in $K$; and a vertex outside $Z$ has its
+neighbours in $K$ among its neighbours in $Z$. Let $C$ be the component of $B[X_0]$ containing some
+$y_0\in X_0$; then $C$ has the matching property. Pick $z_0\in Y_0$, so $z_0\notin C$, and let $X$ be
+the component of $B-C$ containing $z_0$; it has the matching property because $V(B)\setminus C$
+does. Put $Y=V(B)\setminus X$. Then $X\ni z_0$ and $Y\supseteq C\ni y_0$ are nonempty, $B[X]$ is
+connected, and $B[Y]$ is connected: it consists of $C$ and the components of $B-C$ other than $X$,
+and each of these has an edge to $C$ because $B$ is connected and its only neighbours outside itself
+lie in $C$.
+\end{proof}
+
+For $A\subseteq V(B)$ let $L_A(B)$ be $B$ with a private leaf $a'$ attached at every $a\in A$
+\lean{Gallai.leafGraph}.
+
+\begin{lemma}[trimming the leaves]\label{lem:trimleaves}
+Every decomposition $D$ of $L_A(B)$ yields a decomposition $D'$ of $B$ with
+$|D'|+|\{a\in A:b_{D'}(a)=0\}|\le|D|$.
+\leanst{Gallai.leafGraph\_trim}
+\end{lemma}
+
+\begin{proof}
+A leaf edge $aa'$ can occur in a path only at one of its ends, with $a'$ as the end. Delete all leaf
+edges from every path. A path consisting only of leaf edges is a single leaf edge, and it disappears;
+every other path $P$ becomes a path $P^\circ$ of $B$, and for each leaf edge $aa'$ removed from $P$,
+the vertex $a$ is an end of $P^\circ$. The result $D'$ is a decomposition of $B$. If $a\in A$ has
+$b_{D'}(a)=0$, then the path of $D$ containing $aa'$ cannot have survived, so it was the single edge
+$aa'$. These deleted paths are distinct for distinct $a$, which gives the inequality.
+\end{proof}
+
+\begin{lemma}[MR Lemma 6, matching-cut form]\label{lem:lemma6}
+Let $(X,Y)$ be a matching cut of $B$ with crossing edges $a_1b_1,\dots,a_tb_t$, where $a_i\in X$ and
+$b_i\in Y$, and let $A\subseteq V(B)$ and $H=L_A(B)$. Let $H_X$ be the subgraph of $H$ induced on $X$
+and the leaves of $A\cap X$, and $H_Y$ likewise. If $M_X$ is a marked partition of
+$(H_X,\{a_1,\dots,a_t\})$ and $M_Y$ one of $(H_Y,\{b_1,\dots,b_t\})$, then
+$p(H)\le c(M_X)+c(M_Y)+t$.
+\leanst{Gallai.lemma6}
+\end{lemma}
+
+\begin{proof}
+The $a_i$ are distinct and the $b_i$ are distinct, by the matching property. The edges of $H$ are
+those of $H_X$, those of $H_Y$, and the $t$ crossing edges. For each $i$, let $P_i$ be the path of
+$M_X$ assigned to $a_i$ and $Q_i$ the path of $M_Y$ assigned to $b_i$, when they exist, and replace
+them by the single path $P_i\cdot a_ib_i\cdot Q_i$ (just $a_ib_i$, or $a_ib_i$ extended on one side,
+when one or both do not exist). This is a path because $P_i\subseteq H_X$ and $Q_i\subseteq H_Y$ are
+vertex-disjoint and end at $a_i$ and $b_i$. Distinct $i$ use distinct paths, since the assignments are
+injective. The result is a decomposition of $H$ consisting of the $c(M_X)+c(M_Y)$ unassigned paths and
+$t$ new paths.
+\end{proof}
+
+\begin{theorem}[MR Theorem 7, matching-cut case]\label{thm:mc}
+Let $B$ be a connected graph of order $n$ with a matching cut, and assume $(\MBU_{n-1})$. Then
+$q(B,S)\le\fl{(n-|S|)/2}$ for every $S\subseteq V(B)$, including $S=\emptyset$. In particular
+$p(B)\le\fl{n/2}$.
+\leanst{Gallai.matchingCut\_markedBound}
+\end{theorem}
+
+\begin{proof}
+Take a matching cut $(X,Y)$ with connected shores (Lemma~\ref{lem:shores}), with crossing edges
+$a_ib_i$ as in Lemma~\ref{lem:lemma6}; $t\ge1$ since $B$ is connected. Split $S=A\sqcup O$ into its
+even vertices $A$ and odd vertices $O$; let $\alpha=|A|$ and $o=|O|$. Let $H=L_A(B)$ and $H_X,H_Y$ as in
+Lemma~\ref{lem:lemma6}. The graph $H_X$ is connected ($B[X]$ is, and leaves are attached to it). A
+$2$-connected induced subgraph of $H_X$ has minimum degree at least two, so it contains no leaf and
+lies in $B[X]$; hence the $2$-connected blocks of $H_X$ have order at most $|X|\le n-1$. The same holds
+for $H_Y$. By $(\MBU_{n-1})$ with the nonempty mark sets $\{a_i\}$ and $\{b_i\}$,
+\[
+q(H_X,\{a_i\})\le\fl{\tfrac{|X|+|A\cap X|-t}2},\qquad q(H_Y,\{b_i\})\le\fl{\tfrac{|Y|+|A\cap Y|-t}2}.
+\]
+By Lemma~\ref{lem:lemma6}, $H$ has a decomposition $D$ with
+$|D|\le(n+\alpha-2t)/2+t=(n+\alpha)/2$, hence $|D|\le\fl{(n+\alpha)/2}$. By
+Lemma~\ref{lem:trimleaves} there is a decomposition $D'$ of $B$ with $|D'|+\zeta\le|D|$, where
+$\zeta=|\{v\in A:b_{D'}(v)=0\}|$. Let $T=\{v\in A:b_{D'}(v)\ge1\}\cup O$, so
+$|T|=\alpha-\zeta+o$. Every vertex of $O$ has odd degree, hence an end, and every vertex of $T\setminus O$ is
+an even vertex with an end, hence with two (Lemma~\ref{lem:parity}). Lemma~\ref{lem:hall} and
+Lemma~\ref{lem:marked-basic}(b) give
+\[
+q(B,S)\le q(B,T)\le|D'|+\fl{o/2}-|T|\le\fl{\tfrac{n+\alpha}2}-\zeta+\fl{\tfrac o2}-(\alpha-\zeta+o)
+=\fl{\tfrac{n-\alpha}2}-\cl{\tfrac o2}\le\fl{\tfrac{n-\alpha-o}2}.
+\]
+The last step holds because $\fl{\mu}+\cl{\nu}\ge\fl{\mu+\nu}$ with $\mu=(n-\alpha-o)/2$ and
+$\nu=o/2$. For $S=\emptyset$ this reads $p(B)=q(B,\emptyset)\le\fl{n/2}$.
+\end{proof}
+
+\section{The class \texorpdfstring{$\cC$}{C} and Theorem 59}\label{sec:thm59}
+
+\begin{definition}[rooted assertions; MR \S17]\label{def:rooted}
+Let $B$ be a graph of order $n$ and $x\in V(B)$. We say $B$ \emph{passes the rooted test at $x$},
+written $\RT(B,x)$, if both of the following hold:
+\begin{enumerate}[label=\textup{(R\arabic*)},leftmargin=3em]
+\item if $n$ and $d_B(x)$ are even, some decomposition $D$ of $B$ has $|D|\le n/2$ and $b_D(x)\ge2$;
+\item if $n$ and $d_B(x)$ are odd, some decomposition $D$ of $B$ has $|D|\le\fl{n/2}+1$ and
+$b_D(x)\ge3$.
+\end{enumerate}
+For $N\ge0$, $(\RT_N)$ is the assertion that $\RT(B,x)$ holds for every $B\in\cC$ with
+$|V(B)|\le N$ and every $x\in V(B)$.
+\leanst{Gallai.RootedAt, Gallai.RootedTestsUpTo}
+\end{definition}
+
+In MR notation, (R1) is $F_2(B,x)\le k$ for $n=2k$ and (R2) is $F_3(B,x)\le k+1$ for $n=2k+1$.
+
+\begin{theorem}[MR Theorem 59, finite-order form]\label{thm:59}
+For every $m\ge0$, $(\RT_{m+1})$ implies $(\MBU_m)$.
+\leanst{Gallai.thm59 : Gallai.Thm59Statement}
+\end{theorem}
+
+This is the form recommended by audit A2 (finding F1): the conclusion is the marked bound
+\eqref{eq:mb}, not only Gallai's bound, on every connected graph whose $2$-connected blocks have
+order at most $m$. The proof uses the rooted tests only on members of $\cC$ of order $n\le m$ and on
+cones $B+z(S)$ over $|S|\ge2$ marks of such members, of order $n+1\le m+1$ (A1, G10).
+
+\begin{lemma}[cones stay in $\cC$]\label{lem:coneC}
+If $B\in\cC$ and $S\subseteq V(B)$ with $|S|\ge2$, then $B+z(S)\in\cC$.
+\leanst{Gallai.apex\_inClassC}
+\end{lemma}
+
+\begin{proof}
+Let $X=B+z(S)$; it has at least four vertices. $X-z=B$ is connected; $X-v$ for $v\in V(B)$ consists
+of the connected graph $B-v$ and the vertex $z$, which keeps a neighbour in $S\setminus\{v\}\ne\emptyset$;
+and $X$ itself is connected. So $X$ is $2$-connected. Let $(P,Q)$ be a matching cut of $X$. If both
+$P\cap V(B)$ and $Q\cap V(B)$ were nonempty, they would form a matching cut of $B$. So $V(B)$ lies
+on one side, say $V(B)\subseteq P$, and then $Q=\{z\}$; but $z$ has $|S|\ge2$ neighbours in $P$, a
+contradiction.
+\end{proof}
+
+\begin{proposition}[the marked tests on $\cC$; MR \S17, first part of the proof of Theorem 59]
+\label{prop:classC}
+Assume $(\RT_{m+1})$ and let $B\in\cC$ have order $n\le m$. Then:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $q(B,S)\le\fl{(n-|S|)/2}$ for every nonempty $S\subseteq V(B)$;
+\item if $n=2k+1$ and $p(B)=k+1$, then for every odd vertex $x$ some decomposition of $B$ has exactly
+$k+1$ paths and at least three ends at $x$.
+\end{enumerate}
+\leanst{Gallai.markedBound\_of\_classC, Gallai.threeEnds\_of\_classC}
+\end{proposition}
+
+\begin{proof}
+We prove (a) in three steps.
+
+\emph{The cone step} \lean{Gallai.cone\_step}. Let $|S|=t\ge2$ with $n-t$ odd. By
+Lemma~\ref{lem:coneC}, $X=B+z(S)\in\cC$, and $|V(X)|=n+1\le m+1$, $d_X(z)=t$. If $n$ is even, then
+$t$ is odd and $n+1$ is odd, so (R2) for $X$ at $z$ gives a decomposition $D$ with
+$|D|\le n/2+1$ and $b_D(z)\ge3$. Lemma~\ref{lem:cone} gives $t+2q(B,S)\le 2|D|-b_D(z)\le n-1$. If
+$n$ is odd, then $t$ and $n+1$ are even, so (R1) gives $|D|\le(n+1)/2$ and $b_D(z)\ge2$, and again
+$t+2q(B,S)\le n-1$. In both cases $q(B,S)\le(n-1-t)/2=\fl{(n-t)/2}$, since $n-t$ is odd.
+
+\emph{Singletons} \lean{Gallai.singleton\_step}. Let $S=\{x\}$. If $n$ is even and $d_B(x)$ is
+even, (R1) at $x$ gives $D$ with $|D|\le n/2$ and $b_D(x)\ge2$, so
+$q(B,\{x\})\le n/2-1=\fl{(n-1)/2}$ by Lemma~\ref{lem:marked-basic}(d). If $n$ is even and $d_B(x)$ is
+odd, we first find a decomposition $D$ with $|D|\le n/2$: by (R1) at any even vertex, or, if every
+vertex is odd, by Lov\'asz's theorem (Theorem~\ref{thm:lovasz}). Then $b_D(x)\ge1$ by parity and
+again $q(B,\{x\})\le n/2-1$. If $n$ is odd, pick $y\ne x$ (as $n\ge3$). Then $n-2$ is odd, the cone
+step gives $q(B,\{x,y\})\le(n-3)/2$, and Lemma~\ref{lem:marked-basic}(c) gives
+$q(B,\{x\})\le(n-1)/2$.
+
+\emph{General $S$.} If $|S|=1$ use the singleton step, and if $|S|\ge2$ and $n-|S|$ is odd use the
+cone step. If $|S|\ge2$ and $n-|S|$ is even, remove a mark $s$: $S'=S\setminus\{s\}$ has
+$n-|S'|$ odd, and $q(B,S)\le q(B,S')$ by Lemma~\ref{lem:marked-basic}(b). If $|S'|\ge2$ the cone
+step gives $q(B,S')\le(n-|S'|-1)/2=(n-|S|)/2$. If $|S'|=1$ then $n$ is even and the singleton step
+gives $q(B,S')\le(n-2)/2=(n-|S|)/2$.
+
+(b) By (R2) at $x$ some $D$ has $|D|\le k+1$ and $b_D(x)\ge3$, and $|D|\ge p(B)=k+1$.
+\end{proof}
+
+MR treats odd singletons by adjoining a vertex $w$ adjacent to $x$ and one other vertex $y$, and
+applying (R1) at $w$; that graph is exactly the cone $B+z(\{x,y\})$, and the argument above replaces
+the trimming by Lemma~\ref{lem:marked-basic}(c).
+
+\begin{proof}[Proof of Theorem~\ref{thm:59}]
+Assume $(\RT_{m+1})$. We prove $(\MBU_j)$ for all $j\le m$ by strong induction on $j$. Fix $j\le m$
+and assume $(\MBU_{j'})$ for all $j'<j$. By Theorem~\ref{thm:transfer} it suffices to prove
+$(\TA_j)$ and $(\TB_j)$. Let $F$ be $2$-connected of order $n\le j$.
+\begin{itemize}
+\item If $F$ has a matching cut, then $(\MBU_{n-1})$ holds by induction ($n-1<j$), and
+Theorem~\ref{thm:mc} gives the marked bound for every $S$. For $S=\emptyset$ it gives
+$p(F)\le\fl{n/2}$, so if $n=2k+1$ then $p(F)\le k$, and $F$ does not satisfy the hypothesis
+$p(F)=k+1$ of $(\TB_j)$.
+\item Otherwise $F\in\cC$ and $n\le m$, and Proposition~\ref{prop:classC} gives both assertions.
+\end{itemize}
+This proves $(\TA_j)$ and $(\TB_j)$, hence $(\MBU_j)$; for $j=m$ it is the theorem.
+\end{proof}
+
+The induction runs on the bound for the order of the $2$-connected blocks, not on the order of the
+graph. This is necessary: the graphs $H_X,H_Y$ of Theorem~\ref{thm:mc} carry private leaves and may
+have order at least $n$; only their blocks are smaller (audit~A14).
+
+\begin{remark}[the converse]\label{rem:59conv}
+Gallai's conjecture implies $\RT(B,x)$ for every $2$-connected $B$ and every $x$
+(Lemma~\ref{lem:gallai-rooted} below, since $d_B(x)\ge2$ and an odd degree is then at least $3$).
+Together with Theorem~\ref{thm:59} for all $m$ and a single mark, this is MR Theorem~59: Gallai's
+conjecture is equivalent to $\RT(B,x)$ for all $B\in\cC$ and all $x$. We do not use the bridge and
+diamond doubles by which MR expresses the two assertions as ordinary path-number bounds.
+\end{remark}
+
+\section{Separating pairs: MR Theorem 113}\label{sec:sep}
+
+\begin{definition}\label{def:sepcomp}
+Let $B$ be a graph and $x\ne y$ vertices. A set $C\subseteq V(B)\setminus\{x,y\}$ is a
+\emph{separated component} for $\{x,y\}$ if $C$ is nonempty, $B[C]$ is connected, every neighbour of
+a vertex of $C$ lies in $C\cup\{x,y\}$, and $V(B)\setminus(C\cup\{x,y\})\ne\emptyset$. Thus $C$ is
+the vertex set of a component of $B-\{x,y\}$ and $\{x,y\}$ separates $C$ from the rest.
+\leanst{Gallai.IsSepComponent}
+\end{definition}
+
+\begin{theorem}[separator theorem; MR Theorem 113, a strengthening of A2, F7]\label{thm:sep}
+Let $B$ be a $2$-connected graph of order $n$ and assume $(\MBU_{n-2})$. Let $C$ be a separated
+component for $\{x,y\}$ all of whose vertices are odd in $B$, and let $r\in V(B)\setminus C$ (possibly
+$r\in\{x,y\}$). Then $\RT(B,r)$ holds.
+\leanst{Gallai.separatorStatement : Gallai.SeparatorStatement, Gallai.separator\_theorem}
+\end{theorem}
+
+MR states this at a smallest failure of the rooted tests; its proof uses only that $B$ is
+$2$-connected and $(\MBU_{n-2})$, which Theorem~\ref{thm:59} provides at a smallest failure. Neither
+minimality nor the absence of a matching cut is assumed.
+
+Throughout this section $B,n,x,y,C,r$ are as in Theorem~\ref{thm:sep}, and $V=V(B)$.
+
+\subsection{Setup}
+Let $A$ be the spanning subgraph of $B$ whose edges are the edges with at least one end in $C$,
+together with $xy$ if $xy\in E(B)$. Let $E$ be the spanning subgraph whose edges are the remaining
+edges of $B$: those with no end in $C$, other than $xy$ \lean{Gallai.sideA, Gallai.sideE}. Thus
+$E(B)=E(A)\sqcup E(E)$ and $d_B=d_A+d_E$. All edges of $A$ lie inside $C\cup\{x,y\}$; $d_A(c)=d_B(c)$
+and $d_E(c)=0$ for $c\in C$; and $d_A(v)=0$ for $v\notin C\cup\{x,y\}$. We call $x,y$ the
+\emph{ports}.
+
+\begin{lemma}\label{lem:sides}
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $E[V\setminus C]$ is connected.
+\item $d_E(x),d_E(y),d_A(x),d_A(y)$ are all positive.
+\item $|C|+\ind{d_A(x)\text{ odd}}+\ind{d_A(y)\text{ odd}}$ is even.
+\item $|C|\ge2$.
+\end{enumerate}
+\leanst{Gallai.sideE\_induce\_connected, Gallai.sideE\_port\_pos, Gallai.sideA\_port\_pos,
+Gallai.sideA\_parity, Gallai.two\_le\_card\_of\_odd}
+\end{lemma}
+
+\begin{proof}
+(a) We first claim: if $\{p,q\}=\{x,y\}$, $v\notin C$ and $v\ne q$, then $v$ is joined to $p$ by a
+path of $E$. Since $B$ is $2$-connected, $B-q$ has a path from $v$ to $p$. Follow it from $v$ until
+it first reaches $p$. Before that it cannot enter $C$, because the only vertices outside $C$ with
+neighbours in $C$ are $x$ and $y$, and $q$ is avoided. So this initial segment uses only edges with
+no end in $C$, and it does not use $xy$ because it avoids $q$; it is a path of $E$. Now fix
+$w\in V\setminus(C\cup\{x,y\})$. The claim with $p=x$, $q=y$ joins every $v\notin C$ with $v\ne y$,
+and in particular $w$, to $x$; so all these vertices are joined to $w$. The claim with $p=y$, $q=x$
+joins $w$ to $y$. Hence every vertex of $V\setminus C$ is joined to $w$ in $E$.
+
+(b) By (a), $x$ and $y$ are joined in $E$ to a vertex $w\in V\setminus(C\cup\{x,y\})$, so they have positive degree in $E$. Pick
+$c\in C$. In $B-y$ there is a path from $c$ to $w$; it leaves $C$ along an edge $c'u$ with $c'\in C$,
+$u\notin C$, so $u\in\{x,y\}$ and $u\ne y$. Thus $c'x\in E(A)$ and $d_A(x)>0$; similarly $d_A(y)>0$.
+
+(c) The odd vertices of $A$ are the vertices of $C$ (each has its odd $B$-degree) and those ports
+that are odd in $A$; their number is even.
+
+(d) If $C=\{c\}$, then $N_B(c)\subseteq\{x,y\}$ and $d_B(c)\ge2$ (Lemma~\ref{lem:kconn}), so
+$d_B(c)=2$, which is even.
+\end{proof}
+
+By (c), if $|C|$ is odd exactly one port is odd in $A$, and if $|C|$ is even the ports have the same
+parity in $A$. Write $|C|=2s+1$ or $|C|=2s$; by (d), $s\ge1$ in both cases.
+
+\subsection{Smaller rooted bounds and the root analysis}
+
+\begin{lemma}[smaller rooted bounds]\label{lem:small}
+Assume $(\MBU_{n-2})$. Let $W$ be a graph with all edges inside $U\subseteq V(W)$, such that $W[U]$
+is connected and $N:=|U|\le n-2$, and let $r\in U$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $N$ is even and $d_W(r)$ is even and positive, some decomposition $D$ of $W$ has
+$|D|\le N/2$ and $b_D(r)\ge2$.
+\item If $N$ is odd and $d_W(r)$ is odd and at least $3$, some $D$ has $|D|\le\fl{N/2}+1$ and
+$b_D(r)\ge3$.
+\item If $N$ is odd and $d_W(r)=1$, then $p(W)\le\fl{N/2}$.
+\end{enumerate}
+\leanst{Gallai.R2\_on (part (a); the 2 counts ends), Gallai.R3\_on (part (b)), Gallai.floor\_on (part (c))}
+\end{lemma}
+
+\begin{proof}
+We work in $W[U]$, which has the same edges and the same degrees on $U$. Its $2$-connected induced
+subgraphs have at most $N\le n-2$ vertices, so $(\MBU_{n-2})$ applies to it.
+
+(a) $q(W[U],\{r\})\le\fl{(N-1)/2}=N/2-1$. By Lemma~\ref{lem:marked-basic}(e) some $D$ has
+$\lambda_D(r)\le N/2$, and Lemma~\ref{lem:ends}(a) finishes.
+
+(b) Let $W'=W[U]^r$, with private leaf $\ell$. It is connected of order $N+1$, and its $2$-connected
+induced subgraphs avoid $\ell$ (which has degree one), so they have at most $N\le n-2$ vertices.
+Hence $q(W',\{r\})\le\fl{N/2}$, and by Lemma~\ref{lem:marked-basic}(e) some decomposition $D_1$ of
+$W'$ has $\lambda_{D_1}(r)\le\fl{N/2}+1$. In $W'$ the vertex $r$ has even positive degree
+$d_W(r)+1$, so Lemma~\ref{lem:ends}(a) gives $D_2$ with $|D_2|\le\fl{N/2}+1$ and $b_{D_2}(r)\ge2$.
+Trim the leaf (Lemma~\ref{lem:leaf}(a)). Either the result $D$ has $|D|\le\fl{N/2}+1$ and
+$b_D(r)\ge3$, or it has $|D|\le\fl{N/2}$ and $b_D(r)\ge1$; in the latter case
+Lemma~\ref{lem:ends}(b) with $k=\fl{N/2}$ gives the claim.
+
+(c) Let $a$ be the neighbour of $r$ and $T=U\setminus\{r\}$. Then $W[T]$ is connected (a path between
+two vertices of $T$ cannot pass through the degree-one vertex $r$), $a\in T$, and $|T|=N-1$. Hence
+$q(W[T],\{a\})\le\fl{(N-2)/2}=(N-3)/2$, and by Lemma~\ref{lem:marked-basic}(e) some decomposition
+$D_0$ of $W[T]$ has $\lambda_{D_0}(a)\le(N-1)/2$. By Lemma~\ref{lem:leaf}(b),
+$p(W[T]^a)\le(N-1)/2$. But $W[U]$ is $W[T]^a$ with $r$ as the private leaf, so
+$p(W)\le(N-1)/2=\fl{N/2}$.
+\end{proof}
+
+\begin{lemma}[root analysis]\label{lem:root}
+Assume $(\MBU_{n-2})$. Let $s\ge1$ and let $W$ be a graph on $V$ with all edges inside a set $U$,
+such that $W[U]$ is connected, $|U|=n-2s$ and $r\in U$. Suppose that
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $d_W(r)\equiv d_B(r)\pmod2$ and $d_W(r)>0$, and
+\item every decomposition $D_W$ of $W$ \emph{lifts}: $B$ has a decomposition $D$ with
+$|D|\le|D_W|+s$ and $b_D(r)=b_{D_W}(r)$.
+\end{enumerate}
+Then $\RT(B,r)$ holds.
+\leanst{Gallai.rootedAt\_of\_lift}
+\end{lemma}
+
+\begin{proof}
+We have $|U|\le n-2$ and $|U|\equiv n\pmod 2$. (R1): if $n$ and $d_B(r)$ are even, then $|U|$ and
+$d_W(r)$ are even, $d_W(r)>0$, and Lemma~\ref{lem:small}(a) gives $D_W$ with $|D_W|\le|U|/2$ and two
+ends at $r$; its lift has at most $|U|/2+s=n/2$ paths. (R2): let $n$ and $d_B(r)$ be odd, so $|U|$
+and $d_W(r)$ are odd. If $d_W(r)\ge3$, Lemma~\ref{lem:small}(b) and the lift give at most
+$\fl{|U|/2}+1+s=\fl{n/2}+1$ paths and three ends at $r$. If $d_W(r)=1$, Lemma~\ref{lem:small}(c)
+gives $D_W$ with at most $\fl{|U|/2}$ paths, whose lift $D$ has at most $\fl{n/2}$ paths. Since $B$
+is $2$-connected, $d_B(r)\ge2$, and $d_B(r)$ is odd, so $d_B(r)\ge3$; Lemma~\ref{lem:ends}(b) turns
+$D$ into a decomposition with at most $\fl{n/2}+1$ paths and three ends at $r$.
+\end{proof}
+
+\subsection{Path surgery}
+In the constructions below a \emph{path} is any sequence of at least two distinct vertices of $V$,
+regarded up to reversal; a family of paths whose edge sets partition $E(B)$ is a decomposition of $B$
+\lean{Gallai.TPath, Gallai.exists\_decomp\_of\_edgesM}. Edge sets are added as multisets, so an
+identity $E(M)=E(R_0)+E(A)$ for a family $M$ asserts in particular that no edge is repeated. For
+paths $P,Q$ and a vertex $p$, write $P\cdot Q$ for the concatenation when $P$ ends and $Q$ starts at
+$p$ and $V(P)\cap V(Q)=\{p\}$ (a path by Lemma~\ref{lem:split}(c)); a trivial piece consisting of $p$
+alone is allowed.
+
+\begin{lemma}[surgery]\label{lem:surgery}
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \emph{(substitution)} If a path $R$ contains the edge $ab$ and $T$ is a path from $a$ to $b$
+with $V(T)\cap V(R)\subseteq\{a,b\}$, then replacing $ab$ in $R$ by $T$ gives a path $R'$ with the
+same ends as $R$ and $E(R')=E(R)-ab+E(T)$.
+\item \emph{(cut and attach)} Let $R=R_a\cdot ab\cdot R_b$, where $R_a$ ends at $a$ and $R_b$ starts
+at $b$, and let $X$ and $Y$ be paths starting at $a$ and $b$ with $V(X)\cap V(R)\subseteq\{a,b\}$ and
+$V(Y)\cap V(R)\subseteq\{a,b\}$. Then $N_1=R_a\cdot X$ and $N_2=Y^{-1}\cdot R_b$ are paths with
+$E(N_1)+E(N_2)+ab=E(R)+E(X)+E(Y)$ and $b_{N_1}+b_{N_2}+\ind{\cdot=a}+\ind{\cdot=b}=b_R+b_X+b_Y$.
+\item \emph{(graft)} Let $R=q_1\cdot q_2$ be split at a vertex $p$, and let $X_1,X_2$ be paths starting
+at $p$ with $V(X_1)\cap V(q_1)=\{p\}$ and $V(X_2)\cap V(q_2)=\{p\}$. Then $N_1=q_1\cdot X_1$ and
+$N_2=X_2^{-1}\cdot q_2$ are paths with $E(N_1)+E(N_2)=E(R)+E(X_1)+E(X_2)$ and
+$b_{N_1}+b_{N_2}+2\ind{\cdot=p}=b_R+b_{X_1}+b_{X_2}$.
+\end{enumerate}
+\leanst{Gallai.exists\_subst\_list, Gallai.exists\_cut\_edge, Gallai.exists\_graft,
+Gallai.exists\_graft\_x}
+\end{lemma}
+
+\begin{proof}
+(a) Write $R=R_1\cdot ab\cdot R_2$, with $R_1$ ending at $a$ and $R_2$ starting at $b$ (either may
+be trivial). As $R$ is a path, $b\notin V(R_1)$ and $a\notin V(R_2)$, so $V(T)\cap V(R_1)=\{a\}$ and
+$V(T)\cap V(R_2)=\{b\}$, while $V(R_1)\cap V(R_2)=\emptyset$. Hence $R'=R_1\cdot T\cdot R_2$ is a path;
+its ends are the first vertex of $R_1$ and the last vertex of $R_2$, the ends of $R$.
+(b) $b\notin V(R_a)$ since $R$ is a path, so $V(R_a)\cap V(X)\subseteq\{a\}$, and $N_1$ is a path
+(Lemma~\ref{lem:split}(c)); similarly $a\notin V(R_b)$ gives $V(R_b)\cap V(Y)\subseteq\{b\}$ and $N_2$ is
+a path. The ends of $N_1$ are the first vertex of $R_a$ and the far end of $X$; those of $N_2$ are the
+far end of $Y$ and the last vertex of $R_b$. The ends of $R,X,Y$ are these four together with $a$ (an
+end of $X$) and $b$ (an end of $Y$), which gives the end identity; this includes the case $R_a=a$ or
+$R_b=b$, where $a$ or $b$ is also an end of $R$ and remains an end of $N_1$ or $N_2$. The edges of
+$N_1,N_2$ are those of $R$ except $ab$, together with those of $X$ and $Y$.
+(c) $N_1$ is a path because $V(q_1)\cap V(X_1)=\{p\}$, and $N_2$ because $V(X_2)\cap V(q_2)=\{p\}$.
+The ends of $N_1$ are the first vertex of $q_1$ and the far end of $X_1$; those of $N_2$ are the far
+end of $X_2$ and the last vertex of $q_2$. The ends of $R,X_1,X_2$ are these four together with the
+two ends of $X_1$ and $X_2$ at $p$; if $q_1$ (or $q_2$) is trivial, $p$ is an end of $R$ and of $N_1$
+(or $N_2$) as well, and the identity still holds. The edges are those of $R$, $X_1$ and $X_2$.
+\end{proof}
+
+When $R$ is a path of a family $L$ and the edge $ab$ (or the vertex $p$) lies on $R$, replacing $R$
+in $L$ by $R'$, or by $N_1,N_2$, changes the edge multiset and the end counts as stated.
+
+\subsection{The odd case}
+
+\begin{proposition}[$|C|$ odd]\label{prop:odd}
+If $|C|$ is odd, $\RT(B,r)$ holds.
+\leanst{Gallai.rootedAt\_oddComp}
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:sides}(c) exactly one port is odd in $A$; by symmetry it is $x$, and $y$ is even
+in $A$. Let $|C|=2s+1$ with $s\ge1$. On $C\cup\{x,y\}$ ($2s+3$ vertices) the only even vertex of $A$
+is $y$. By Corollary~\ref{cor:lovasz}, $A$ has a decomposition $D_A$ into $s+1$ paths with one end at
+each vertex of $C\cup\{x\}$ and no other ends. Let $P\in D_A$ be the path ending at $x$, read from
+$x$, and let $c$ be its other end. Then $c\ne x$ has an end, so $c\in C$. The other $s$ paths of
+$D_A$ have all their ends in $C$; in particular they have no end at $r$.
+
+\emph{Case 1: $y\notin V(P)$.} Let $W=E+xc$ and $U=(V\setminus C)\cup\{c\}$. The edge $xc$ is not an
+edge of $E$ ($c\in C$), $c$ is a leaf of $W$, all edges of $W$ lie in $U$, $W[U]$ is connected by
+Lemma~\ref{lem:sides}(a), and $|U|=n-2s$. \emph{Lift:} given $D_W$, let $R$ be its path through
+$xc$. Then $V(R)\subseteq U$ and $V(P)\subseteq C\cup\{x\}$, so $V(R)\cap V(P)\subseteq\{x,c\}$.
+Substitute $P$ for $xc$ in $R$ (Lemma~\ref{lem:surgery}(a)) and add the other $s$ paths of $D_A$.
+The edges are $E(E)+E(A)=E(B)$, the size is $|D_W|+s$, and the ends at $r$ are unchanged, since $R'$
+has the ends of $R$ and the added paths have no end at $r$. \emph{Root:} $d_W(r)=d_E(r)+\ind{r=x}$
+(as $r\ne c$), while $d_B(r)=d_E(r)+d_A(r)$ with $d_A(r)$ odd for $r=x$, even for $r=y$, and $0$
+otherwise. So $d_W(r)\equiv d_B(r)$. Moreover $d_W(r)>0$: for $r=x$ it is at least one, for $r=y$ it
+is $d_E(y)>0$, and otherwise $d_W(r)=d_B(r)\ge2$. Lemma~\ref{lem:root} applies.
+
+\emph{Case 2: $y\in V(P)$.} Write $P=T\cdot T'$ with $T$ from $x$ to $y$ and $T'$ from $y$ to $c$;
+both are nontrivial, and $V(T)\cap V(T')=\{y\}$. Let $W=E+xy+yc$ on the same $U$; neither edge is in
+$E$, so $W$ is a simple graph with $|U|=n-2s$, and $W[U]$ is connected. \emph{Lift:} given $D_W$,
+let $R$ be its path through $xy$. Now $V(T)\subseteq(C\cup\{x,y\})\setminus\{c\}$, so
+$V(T)\cap V(R)\subseteq V(T)\cap U\subseteq\{x,y\}$; substitute $T$ for $xy$. Let $R_1$ be the path
+of the new family through $yc$. Its vertices lie in $U\cup V(T)$, while $V(T')\subseteq(C\cup\{y\})$
+avoids $x$; so $V(T')\cap V(R_1)\subseteq\{y,c\}$, using $V(T')\cap V(T)=\{y\}$. Substitute $T'$ for
+$yc$ and add the other $s$ paths of $D_A$. As before the edges are
+$E(E)+E(T)+E(T')+E(D_A\setminus\{P\})=E(E)+E(A)=E(B)$, the size is $|D_W|+s$, and the ends at $r$ are
+unchanged. \emph{Root:}
+$d_W(r)=d_E(r)+\ind{r=x}+2\ind{r=y}$, which has the parity of $d_B(r)$ as in Case~1, and is
+positive (for $r=y$ it is at least two). Lemma~\ref{lem:root} applies.
+\end{proof}
+
+\subsection{The even case with odd ports}
+
+\begin{proposition}[$|C|$ even, both ports odd in $A$]\label{prop:evenodd}
+If $|C|$ is even and $d_A(x),d_A(y)$ are odd, $\RT(B,r)$ holds.
+\leanst{Gallai.rootedAt\_evenComp\_oddPorts}
+\end{proposition}
+
+\begin{proof}
+Let $|C|=2s$, $s\ge1$. Every vertex of $C\cup\{x,y\}$ is odd in $A$, so Corollary~\ref{cor:lovasz}
+gives $D_A$ with $s+1$ paths and one end at every vertex of $C\cup\{x,y\}$. Let $W=E+xy$ on
+$U=V\setminus C$ (the edge $xy$ is not in $E$ by definition). Then $|U|=n-2s$ and $W[U]$ is connected.
+\emph{Root:} $d_W(r)=d_E(r)+\ind{r\in\{x,y\}}$ and $d_A(x),d_A(y)$ are odd, so the parities agree;
+positivity is as before. \emph{Lift:} let $D_W$ be given and let $R$ be its path through $xy$. Every
+path of $D_W$ lies in $U$, and every path of $D_A$ in $C\cup\{x,y\}$, so they meet only in
+$\{x,y\}$. Let $X\in D_A$ be the path ending at $x$, read from $x$.
+
+\emph{Case 1: $X$ ends at $y$.} Substitute $X$ for $xy$ in $R$ and add the other $s$ paths of $D_A$,
+whose ends lie in $C$. The edges, size and ends at $r$ are as required.
+
+\emph{Case 2: $X$ does not end at $y$.} Let $Y\in D_A$ be the path ending at $y$, read from $y$. Then
+$Y\ne X$, $Y$ does not end at $x$ (the only end at $x$ is on $X$), and the other ends of $X$ and $Y$
+lie in $C$. Write $R=R_x\cdot xy\cdot R_y$ and cut and attach (Lemma~\ref{lem:surgery}(b)): replace
+$R$ by $N_1=R_x\cdot X$ and $N_2=Y^{-1}\cdot R_y$, and add the remaining $s-1$ paths of $D_A$. The
+edges are $E(E)+E(A)$ and the size is $|D_W|+1+(s-1)$. At $r\notin C$ we have
+$b_X(r)=\ind{r=x}$ and $b_Y(r)=\ind{r=y}$, so
+$b_{N_1}(r)+b_{N_2}(r)=b_R(r)$, and the added paths have no end at $r$. Lemma~\ref{lem:root}
+applies.
+\end{proof}
+
+\subsection{The even case with even ports}
+Let $|C|=2s$ with $s\ge1$, and suppose $d_A(x),d_A(y)$ are even. Fix
+$w_0\in V\setminus(C\cup\{x,y\})$.
+
+\begin{lemma}[local decompositions]\label{lem:local}
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $A$ has a decomposition $D^x$ with at most $s+1$ paths such that $b_{D^x}(v)=2\ind{v=x}$ for
+every $v\notin C$.
+\item The graph $A'=A+xw_0+w_0y$ has a decomposition $D'$ into $s+1$ paths, all inside
+$C\cup\{x,y,w_0\}$, with $b_{D'}(v)=\ind{v=x}+\ind{v=y}$ for every $v\notin C$.
+\end{enumerate}
+\leanst{Gallai.exists\_localX, Gallai.exists\_localA'}
+\end{lemma}
+
+\begin{proof}
+(a) Consider $A$ on $C\cup\{x,y\}$ and attach a private leaf at $x$. In $A[C\cup\{x,y\}]^x$
+($2s+3$ vertices) the leaf has degree $1$, $x$ has odd degree $d_A(x)+1$, the vertices of $C$ are
+odd, and $y$ is the only even vertex. By Theorem~\ref{thm:lovasz} its path number is at most $s+1$.
+Lemma~\ref{lem:leaf}(c) gives a decomposition $D_0$ of $A$ with $\lambda_{D_0}(x)\le s+1$, and
+Lemma~\ref{lem:ends}(a) ($d_A(x)$ is even and positive) gives $D^x$ with $|D^x|\le s+1$ and
+$b(x)\ge2$. Now $2|D^x|=\sum_v b(v)\ge b(x)+b(y)+\sum_{c\in C}b(c)\ge 2+b(y)+2s$, since every
+vertex of $C$ is odd and has an end. As $2|D^x|\le2s+2$, we get $b(x)=2$ and $b(y)=0$; vertices
+outside $C\cup\{x,y\}$ have degree $0$ in $A$ and no ends.
+
+(b) In $A$ the vertex $w_0$ is isolated, so $xw_0,w_0y$ are new edges. On $C\cup\{x,y,w_0\}$
+($2s+3$ vertices) the degrees in $A'$ are $d_A(x)+1$ and $d_A(y)+1$ (odd), $2$ at $w_0$, and odd on
+$C$. So $w_0$ is the only even vertex and Corollary~\ref{cor:lovasz} applies.
+\end{proof}
+
+\begin{lemma}[the lift]\label{lem:lift-ee}
+For every decomposition $D_E$ of $E$ there is a decomposition $D$ of $B$ with $|D|\le|D_E|+s$ and
+$b_D(v)=b_{D_E}(v)$ for every $v\notin C$.
+\leanst{Gallai.case1\_lift, Gallai.case2\_lift for the family $M$ below, with the ends preserved at
+the root $r$; the assembly of $D$ is the step \texttt{finish} in the proof of
+Gallai.rootedAt\_evenComp\_evenPorts}
+\end{lemma}
+
+\begin{proof}
+Since $d_E(x)>0$, some path $R_0\in D_E$ contains $x$; all paths of $D_E$ avoid $C$. It suffices to
+find a family $M$ of at most $s+1$ paths with $E(M)=E(R_0)+E(A)$ and $b_M(v)=b_{R_0}(v)$ for every
+$v\notin C$: then $D=(D_E\setminus\{R_0\})\cup M$.
+
+\emph{Case 1: $y\notin V(R_0)$.} Take $D^x$ from Lemma~\ref{lem:local}(a). Two distinct paths
+$X_1,X_2\in D^x$ end at $x$ (a path has at most one end there); read them from $x$. Their other ends
+lie in $C$. Split $R_0=q_1\cdot q_2$ at $x$. Since $V(X_i)\subseteq C\cup\{x,y\}$ and $R_0$ avoids
+$C\cup\{y\}$, we have $V(X_i)\cap V(R_0)=\{x\}$. Graft (Lemma~\ref{lem:surgery}(c)) and let $M$
+consist of $N_1=q_1\cdot X_1$, $N_2=X_2^{-1}\cdot q_2$ and the at most $s-1$ other paths of $D^x$.
+Then $E(M)=E(R_0)+E(A)$, and for $v\notin C$,
+$b_M(v)=b_{R_0}(v)+b_{X_1}(v)+b_{X_2}(v)-2\ind{v=x}=b_{R_0}(v)$, because the other paths of $D^x$
+have no end outside $C$.
+
+\emph{Case 2: $y\in V(R_0)$.} Take $D'$ from Lemma~\ref{lem:local}(b). The vertex $w_0$ has degree
+two in $A'$ and no end, so the path $R\in D'$ through $xw_0$ continues along $w_0y$. Read $R$ so that
+\[
+R=q\cdot(x\,w_0\,y)\cdot q'',
+\]
+where $q$ runs from an end of $R$ to $x$ and $q''$ from $y$ to the other end. As $R$ is a path, $q$
+avoids $w_0,y$ and $q''$ avoids $w_0,x$, so $V(q)\subseteq C\cup\{x\}$ and $V(q'')\subseteq C\cup\{y\}$,
+and $q,q''$ are disjoint. Let $\mathcal R=D'\setminus\{R\}$ ($s$ paths). Both edges at $w_0$ lie on
+$R$, so the paths of $\mathcal R$ lie in $C\cup\{x,y\}$, and
+\begin{equation}\label{eq:Aedges}
+E(\mathcal R)+E(q)+E(q'')=E(A),\qquad b_R(v)+b_{\mathcal R}(v)=\ind{v=x}+\ind{v=y}\ (v\notin C).
+\end{equation}
+Read $R_0$ so that $x$ comes before $y$: $R_0=q_1\cdot m\cdot q_3$, with $q_1$ from an end of $R_0$ to
+$x$, $m$ from $x$ to $y$, and $q_3$ from $y$ to the other end. Then $q_1$ avoids $y$, $q_3$ avoids
+$x$, $q_1$ and $q_3$ are disjoint, and all three avoid $C$. Write $t$ for the end of $R$ on $q''$
+(so $t=y$ if $q''$ is trivial, and $t\in C$ otherwise).
+
+\emph{Phase $x$.} We produce a path $P=u\cdot q_3$, where $u$ runs from an end of $P$ to $y$, and a
+family $M_1$ of $s$ paths, such that:
+\begin{enumerate}[label=(P\arabic*),leftmargin=3em]
+\item $V(u)\cap V(q'')\subseteq\{y\}$;
+\item every path of $M_1$ lies in $V(q_1)\cup C\cup\{x,y\}$;
+\item $E(P)+E(M_1)+E(q'')=E(R_0)+E(A)$;
+\item $b_P(v)+b_{M_1}(v)+\ind{v=t}=b_{R_0}(v)+\ind{v=y}$ for every $v\notin C$;
+\item $b_P(y)\le b_{R_0}(y)$.
+\end{enumerate}
+\emph{(x-a) $q$ is trivial}, i.e.\ $R$ starts at $x$. Take $P=R_0$ (so $u=q_1\cdot m$) and
+$M_1=\mathcal R$. (P1) holds as $u$ avoids $C$; (P2) is clear; (P3) is \eqref{eq:Aedges} with
+$E(q)=\emptyset$; (P4) follows from \eqref{eq:Aedges} since $b_R(v)=\ind{v=x}+\ind{v=t}$; (P5) is
+trivial.
+
+\emph{(x-b) $q$ is nontrivial.} Its first vertex, an end of $R$, lies in $C$, so $R$ has no end at
+$x$ (its other end $t$ is not $x$). By \eqref{eq:Aedges}, $b_{\mathcal R}(x)=1$; let $X\in\mathcal R$
+be the path ending at $x$, read from $x$. Graft at $x$ into $R_0=q_1\cdot(m\cdot q_3)$ with $X_1=X$
+and $X_2=q^{-1}$ (from $x$ back to the start of $q$). The hypotheses hold: $V(X)\cap V(q_1)=\{x\}$
+because $X\subseteq C\cup\{x,y\}$ while $q_1$ avoids $C$ and $y$; and $V(q)\cap V(m\cdot
+q_3)=\{x\}$ because $q\subseteq C\cup\{x\}$ while $m\cdot q_3$ avoids $C$. We obtain $N_1=q_1\cdot X$
+and $N_2=q\cdot m\cdot q_3$. Put $P=N_2$ with $u=q\cdot m$, and $M_1=\{N_1\}\cup(\mathcal
+R\setminus\{X\})$. (P1): $q$ and $q''$ are disjoint, and $m$ meets $q''\subseteq C\cup\{y\}$ only
+in $y$. (P2): $N_1\subseteq V(q_1)\cup V(X)$. (P3): $E(N_1)+E(N_2)=E(R_0)+E(X)+E(q)$, and with
+\eqref{eq:Aedges} the total is $E(R_0)+E(A)$. (P5): the ends of $P$ are the start of $q$ (in $C$)
+and the end of $q_3$, which is an end of $R_0$. (P4): for $v\notin C$, the graft identity gives
+$b_{N_1}(v)+b_{N_2}(v)=b_{R_0}(v)+b_X(v)+\ind{v=x}-2\ind{v=x}$, and
+$b_{\mathcal R}(v)=\ind{v=x}+\ind{v=y}-\ind{v=t}$ by \eqref{eq:Aedges}, since $R$ starts in $C$. Adding,
+$b_P(v)+b_{M_1}(v)=b_{R_0}(v)-\ind{v=x}+b_{\mathcal R}(v)=b_{R_0}(v)+\ind{v=y}-\ind{v=t}$.
+
+\emph{Phase $y$.}
+\emph{(y-a) $q''$ is trivial}, i.e.\ $t=y$. Take $M=\{P\}\cup M_1$: it has $s+1$ paths, (P3) gives
+$E(M)=E(R_0)+E(A)$, and (P4) gives $b_M(v)=b_{R_0}(v)$ for $v\notin C$.
+
+\emph{(y-b) $q''$ is nontrivial}, so $t\in C$. By (P4) at $v=y$ and (P5), $b_{M_1}(y)\ge1$; let
+$Y\in M_1$ end at $y$, read from $y$. Graft at $y$ into $P=u\cdot q_3$ with $X_1=q''$ (attached after
+$u$) and $X_2=Y$ (attached before $q_3$). The hypotheses hold: $V(q'')\cap V(u)=\{y\}$ by (P1); and
+$V(Y)\cap V(q_3)=\{y\}$ by (P2), since $q_3$ is disjoint from $q_1$ and avoids $C$ and $x$. We obtain
+$N_1=u\cdot q''$ and $N_2=Y^{-1}\cdot q_3$; let $M=\{N_1,N_2\}\cup(M_1\setminus\{Y\})$, with $s+1$
+paths. Its edges are $E(P)+E(q'')+E(M_1)=E(R_0)+E(A)$ by (P3). For $v\notin C$, using
+$b_{q''}(v)=\ind{v=y}$ (as $t\in C$) and (P4) with $\ind{v=t}=0$,
+\[
+b_M(v)=b_P(v)+\ind{v=y}+b_Y(v)-2\ind{v=y}+b_{M_1}(v)-b_Y(v)=b_{R_0}(v).
+\]
+This completes the construction of $M$ in all cases.
+\end{proof}
+
+The four sub-cases of MR (whether $q$ and $q''$ are trivial, and, when both are nontrivial, whether
+the $x$- and $y$-ended paths coincide) are covered by the two optional grafts: the path $Y$ of phase
+$y$ may well be the path $N_1$ created in phase $x$, and no separate argument is needed.
+
+\begin{proposition}[$|C|$ even, both ports even in $A$]\label{prop:eveneven}
+If $|C|$ is even and $d_A(x),d_A(y)$ are even, $\RT(B,r)$ holds.
+\leanst{Gallai.rootedAt\_evenComp\_evenPorts}
+\end{proposition}
+
+\begin{proof}
+Apply Lemma~\ref{lem:root} with $W=E$ and $U=V\setminus C$, of order $n-2s$; $E[U]$ is connected by
+Lemma~\ref{lem:sides}(a). For $r\notin C$, $d_A(r)$ is even (it is $d_A(x)$, $d_A(y)$ or $0$), so
+$d_E(r)\equiv d_B(r)$; and $d_E(r)>0$ (Lemma~\ref{lem:sides}(b) at the ports, $d_E(r)=d_B(r)\ge2$
+elsewhere). Lemma~\ref{lem:lift-ee} provides the lift.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:sep}]
+By Lemma~\ref{lem:sides}(c), either $|C|$ is odd (Proposition~\ref{prop:odd}, after exchanging $x$
+and $y$ if necessary), or $|C|$ is even and the ports are both odd (Proposition~\ref{prop:evenodd})
+or both even (Proposition~\ref{prop:eveneven}) in $A$.
+\end{proof}
+
+\section{The deletion tests on 3-connected graphs: MR Theorem 114}\label{sec:thm114}
+
+In this section we prove Theorem~\ref{thm:main}. Throughout, (T1) and (T2) are as in
+Definition~\ref{def:tests} \lean{Gallai.Test1, Gallai.Test2}; assertion (ii) of
+Theorem~\ref{thm:main} is \texttt{Gallai.SpineTests} and assertion (iii) is
+\texttt{Gallai.SpineTestsNMC}.
+
+\subsection{Gallai implies the tests}
+
+\begin{lemma}[the bridge double]\label{lem:bridge}
+Assume Gallai's conjecture. If $H$ is connected of even order $N$ and $r\in V(H)$, then
+$p(H^r)\le N/2$.
+\leanst{Gallai.dbl, Gallai.two\_mul\_pathNumber\_addLeaf\_le, Gallai.rootedTest\_of\_gallai}
+\end{lemma}
+
+\begin{proof}
+Let $\Delta$ consist of two disjoint copies $H_1,H_2$ of $H$, with copies $r_1,r_2$ of $r$, joined
+by the edge $r_1r_2$. It is connected of order $2N$, so $p(\Delta)\le N$. Let $D$ be a decomposition
+of $\Delta$ of size $p(\Delta)$. The bridge $r_1r_2$ lies on exactly one path $Q$, and every other
+path lies in $H_1$ or in $H_2$; let $D_i$ be the paths in $H_i$, so $|D_1|+|D_2|+1=|D|$. Write
+$Q=Q_1\cdot r_1r_2\cdot Q_2$ with $Q_i$ in $H_i$ (possibly trivial). Then $D_1\cup\{Q_1\cdot
+r_1r_2\}$ is a decomposition of $H_1$ with the private leaf $r_2$ at $r_1$, a copy of $H^r$, so
+$p(H^r)\le|D_1|+1$; likewise $p(H^r)\le|D_2|+1$. Hence $2p(H^r)\le|D|+1\le N+1$, and
+$p(H^r)\le\fl{(N+1)/2}=N/2$.
+\end{proof}
+
+\begin{lemma}[rooted bounds from Gallai]\label{lem:gallai-rooted}
+Assume Gallai's conjecture. Let $H$ be connected of order $N$ and $r\in V(H)$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $N$ is even and $d_H(r)$ is even and positive, some decomposition $D$ of $H$ has
+$|D|\le N/2$ and $b_D(r)\ge2$.
+\item If $N$ is odd and $d_H(r)$ is odd and at least $3$, some $D$ has $|D|\le(N+1)/2$ and
+$b_D(r)\ge3$.
+\end{enumerate}
+\leanst{the arguments of Gallai.test1\_of\_gallai and Gallai.test2\_of\_gallai, stated there for
+$H=J-z$}
+\end{lemma}
+
+\begin{proof}
+(a) By Lemma~\ref{lem:bridge}, $p(H^r)\le N/2$; Lemma~\ref{lem:leaf}(c) gives $D$ with
+$\lambda_D(r)\le N/2$, and Lemma~\ref{lem:ends}(a) finishes. (b) The graph $H^r$ is connected of even
+order $N+1$, and $r$ has even positive degree $d_H(r)+1$ in it. By (a), $H^r$ has a decomposition
+with at most $(N+1)/2$ paths and two ends at $r$. Trimming the leaf (Lemma~\ref{lem:leaf}(a)) gives a
+decomposition $D$ of $H$ with either $|D|\le(N+1)/2$ and $b_D(r)\ge3$, or $|D|\le(N-1)/2$ and
+$b_D(r)\ge1$. In the second case Lemma~\ref{lem:ends}(b) with $k=(N-1)/2$ gives at most $(N+1)/2$
+paths and three ends at $r$.
+\end{proof}
+
+\begin{proposition}[Gallai implies the tests]\label{prop:forward}
+If Gallai's conjecture holds, then \textup{(T1)} and \textup{(T2)} hold for every $3$-connected $J$
+and every $z\in V(J)$, whether or not $J-z$ has a matching cut.
+\leanst{Gallai.spineTests\_of\_gallai, Gallai.test1\_of\_gallai, Gallai.test2\_of\_gallai}
+\end{proposition}
+
+\begin{proof}
+Let $n=|V(J)|$. By Lemma~\ref{lem:kconn}, $J-z$ is connected and $d_J(v)\ge3$ for every $v$. For a
+neighbour $r$ of $z$ we have $d_{J-z}(r)=d_J(r)-1$ \lean{Gallai.delVert\_degree}.
+
+(T1) If $z$ is the only even vertex, the $n-1$ odd vertices are even in number, so $n$ is odd and
+$J-z$ has even order $n-1$. The vertex $r$ is odd in $J$ with $d_J(r)\ge3$, so $d_{J-z}(r)$ is even
+and at least two. Lemma~\ref{lem:gallai-rooted}(a) gives at most $(n-1)/2$ paths with two ends at
+$r$.
+
+(T2) If $z,r$ are the only even vertices, then $n-2$ is even, so $J-z$ has odd order $n-1$. Now
+$d_J(r)$ is even and at least three, hence at least four, so $d_{J-z}(r)$ is odd and at least three.
+Lemma~\ref{lem:gallai-rooted}(b) gives at most $n/2$ paths with three ends at $r$.
+\end{proof}
+
+By Remark~\ref{rem:59conv}, Lemma~\ref{lem:gallai-rooted} also shows that Gallai's conjecture
+implies $\RT(B,x)$ for all $2$-connected $B$.
+
+\subsection{The parity apex}
+
+\begin{lemma}[apex lemma; A2 \S4.2]\label{lem:apex}
+Let $B$ be $2$-connected and $S\subseteq V(B)$ with $|S|\ge3$. Suppose that for all distinct
+$x,y\in V(B)$, every vertex $v\notin\{x,y\}$ is joined to a vertex of $S\setminus\{x,y\}$ by a path of
+$B-\{x,y\}$ (equivalently, every component of $B-\{x,y\}$ meets $S$). Then $J=B+z(S)$ is
+$3$-connected.
+\leanst{Gallai.apex\_kConnected\_three}
+\end{lemma}
+
+\begin{proof}
+$|V(J)|=|V(B)|+1\ge4$. Let $X\subseteq V(J)$ with $|X|\le2$; we show $J-X$ is connected. If $z\in X$,
+then $J-X=B-(X\setminus\{z\})$ with $|X\setminus\{z\}|\le1$, which is connected because $B$ is
+$2$-connected. If $z\notin X$, it suffices to join every $v\in V(B)\setminus X$ to $z$ in $J-X$. If
+$|X|\le1$, pick $t\in S\setminus X$ (possible as $|S|\ge3$); $B-X$ is connected and contains a path
+from $v$ to $t$, which we extend by the edge $tz$. If $X=\{x,y\}$, the hypothesis gives a path of
+$B-\{x,y\}$ from $v$ to some $s\in S\setminus\{x,y\}$, extended by $sz$.
+\end{proof}
+
+\subsection{The tests imply Gallai}
+
+\begin{lemma}[few even vertices]\label{lem:fewEven}
+Let $B$ be $2$-connected of order $n$, let $r\in V(B)$, and suppose $S=\Ev(B)\cup\{r\}$ has at most
+two elements. Then $\RT(B,r)$ holds.
+\leanst{Gallai.rootedAt\_of\_few\_even}
+\end{lemma}
+
+\begin{proof}
+$d_B(r)\ge2$ by Lemma~\ref{lem:kconn}. (R1): let $n$ and $d_B(r)$ be even. In $B^r$ the leaf has
+degree $1$ and $r$ has odd degree $d_B(r)+1$; the even vertices of $B^r$ are those of
+$\Ev(B)\setminus\{r\}=S\setminus\{r\}$, at most one. By Theorem~\ref{thm:lovasz},
+$p(B^r)\le\fl{(n+1)/2}=n/2$. Lemma~\ref{lem:leaf}(c) and Lemma~\ref{lem:ends}(a) give at most $n/2$
+paths with two ends at $r$. (R2): let $n$ and $d_B(r)$ be odd. Then $\Ev(B)\subseteq
+S\setminus\{r\}$ has at most one element, so $p(B)\le\fl{n/2}$ by Theorem~\ref{thm:lovasz}. As
+$d_B(r)$ is odd and at least two, it is at least three, and Lemma~\ref{lem:ends}(b) gives at most
+$\fl{n/2}+1$ paths with three ends at $r$.
+\end{proof}
+
+\begin{proposition}[the deletion tests give the rooted tests; MR p.~129]\label{prop:rootedFromTests}
+Assume assertion \textup{(iii)} of Theorem~\ref{thm:main}. Let $B\in\cC$ have order $n$ and assume
+$(\MBU_{n-2})$. Then $\RT(B,r)$ holds for every $r\in V(B)$.
+\leanst{Gallai.rootedAt\_of\_tests}
+\end{proposition}
+
+\begin{proof}
+Let $S=\Ev(B)\cup\{r\}$. If $|S|\le2$, use Lemma~\ref{lem:fewEven}. If some separated component $C$
+for some pair $\{x,y\}$ has $r\notin C$ and only odd vertices, use Theorem~\ref{thm:sep}. Assume
+neither happens; so $|S|\ge3$.
+
+We check the hypothesis of Lemma~\ref{lem:apex} \lean{Gallai.exists\_sepComponent\_or}. Let
+$x\ne y$, $v\notin\{x,y\}$, and let $K$ be the vertex set of the component of $B-\{x,y\}$ containing
+$v$. If $K$ meets $S$, it contains a vertex of $S\setminus\{x,y\}$ joined to $v$ inside $K$.
+Otherwise $K$ is nonempty and connected, every neighbour of a vertex of $K$ lies in $K\cup\{x,y\}$,
+and some vertex of $S\setminus\{x,y\}$ (which exists as $|S|\ge3$) lies outside $K\cup\{x,y\}$; so
+$K$ is a separated component for $\{x,y\}$. It avoids $r\in S$, and all its vertices are odd since
+$\Ev(B)\subseteq S$. This is the excluded case. Hence $J=B+z(S)$ is $3$-connected by
+Lemma~\ref{lem:apex}. Moreover $J-z=B$ has no matching cut, as $B\in\cC$
+\lean{Gallai.not\_hasMatchingCut\_delVert\_apex}.
+
+The degrees in $J$ are $d_J(z)=|S|$, $d_J(v)=d_B(v)+1$ for $v\in S$ and $d_J(v)=d_B(v)$ otherwise.
+Let $o$ be the number of odd vertices of $B$, which is even.
+
+(R1) Let $n$ and $d_B(r)$ be even. Then $r\in\Ev(B)$, $S=\Ev(B)$ and $|S|=n-o$ is even. So $z$ is
+even, every vertex of $S$ becomes odd, and every other vertex stays odd: $z$ is the only even vertex
+of $J$, and $r$ is a neighbour of $z$. By (T1), $J-z=B$ has a decomposition into at most
+$(|V(J)|-1)/2=n/2$ paths with two ends at $r$.
+
+(R2) Let $n$ and $d_B(r)$ be odd. Then $r\notin\Ev(B)$ and $|S|=(n-o)+1$ is even, since $n-o$ is odd.
+So $z$ is even, $r$ becomes even, the vertices of $\Ev(B)$ become odd, and all others stay odd: $z$
+and $r$ are the only even vertices of $J$, and they are adjacent. By (T2), $B$ has a decomposition
+into at most $|V(J)|/2=(n+1)/2=\fl{n/2}+1$ paths with three ends at $r$.
+\end{proof}
+
+Since $|S|$ is even in both cases, $|S|\ge4$, so $d_J(z)\ge4$.
+
+\begin{theorem}[the tests imply Gallai]\label{thm:converse}
+Assertion \textup{(iii)} of Theorem~\ref{thm:main} implies Gallai's conjecture.
+\leanst{Gallai.gallai\_of\_spineTestsNMC}
+\end{theorem}
+
+\begin{proof}
+We show by strong induction on $n$ that every $B\in\cC$ of order $n$ satisfies $\RT(B,r)$ for every
+$r$. Let $B\in\cC$ have order $n$ (so $n\ge3$), and assume the claim for all orders below $n$; this
+is $(\RT_{n-1})$. Theorem~\ref{thm:59} with $m=n-2$ gives $(\MBU_{n-2})$, and
+Proposition~\ref{prop:rootedFromTests} gives $\RT(B,r)$.
+
+Hence $(\RT_N)$ holds for every $N$. Let $G$ be connected of order $N$ and $r\in V(G)$.
+Theorem~\ref{thm:59} with $m=N$ gives $(\MBU_N)$, which applies to $G$ because its $2$-connected
+blocks have order at most $N$. So $q(G,\{r\})\le\fl{(N-1)/2}$, and by
+Lemma~\ref{lem:marked-basic}(a), $p(G)\le\fl{(N-1)/2}+1=\cl{N/2}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+(i)$\Rightarrow$(ii) is Proposition~\ref{prop:forward}, (ii)$\Rightarrow$(iii) is trivial, and
+(iii)$\Rightarrow$(i) is Theorem~\ref{thm:converse}. The ingredients are Lov\'asz's theorem
+(Theorem~\ref{thm:lovasz}), Theorem~59 (Theorem~\ref{thm:59}) and Theorem~113
+(Theorem~\ref{thm:sep}) \lean{Gallai.gallai\_iff\_spineTests, Gallai.gallai\_iff\_spineTests'}.
+\end{proof}
+
+\section{Cones and rooted Gallai for Eulerian graphs}\label{sec:cones}
+
+For a graph $B$ with vertex set $W$, the \emph{cone} $J=B+z$ is the graph $B+z(W)$ of
+Section~\ref{sec:prelim}: the new vertex $z$ (the \emph{apex}) is joined to every vertex of $W$, and
+$J-z=B$ \lean{Gallai.fullCone}. Write $n=|W|$. For $r\in W$ we write $\mathrm{RD}(B,r)$ for the
+assertion that $B$ has a decomposition $D$ with $|D|\le n/2$ and $b_D(r)\ge2$
+\lean{Gallai.RootedDecomp}. When $d_B(r)$ is even and positive, $\mathrm{RD}(B,r)$ is equivalent
+to $\pr(B)\le n/2$, because $b_D(r)\ge1$ forces $b_D(r)\ge2$ by Lemma~\ref{lem:parity}. So
+$\RE(B,r)$ of Definition~\ref{def:RE} is $\mathrm{RD}(B,r)$ for $2$-connected Eulerian $B$ of even
+order. In the formalisation the apex is a new element of the vertex type, and $J-z$ is isomorphic
+rather than equal to $B$ \lean{Gallai.fullConeDelIso}; decompositions are transported along the
+isomorphism with their sizes and end counts \lean{Gallai.PathDecomp.exists\_of\_iso}.
+
+\begin{proposition}\label{prop:cone-par}
+$d_J(z)=n$ and $d_J(a)=d_B(a)+1$ for $a\in W$. Hence $z$ is the only even vertex of $J$ if and only
+if $n$ is even and $B$ is Eulerian.
+\leanst{Gallai.fullCone\_degree\_none, Gallai.fullCone\_degree\_some, Gallai.fullCone\_onlyEven\_iff}
+\end{proposition}
+
+\begin{proof}
+$N_J(z)=W$ and $N_J(a)=N_B(a)\cup\{z\}$. So $d_J(a)$ is odd if and only if $d_B(a)$ is even.
+\end{proof}
+
+\begin{proposition}\label{prop:cone-conn}
+$J$ is $3$-connected if and only if $B$ is $2$-connected.
+\leanst{Gallai.kConnected\_three\_fullCone\_iff}
+\end{proposition}
+
+\begin{proof}
+Suppose $B$ is $2$-connected and $X\subseteq V(J)$ has $|X|\le 2$. If $z\in X$, then
+$J-X=B-(X\setminus\{z\})$ is connected, since $|X\setminus\{z\}|\le1$. If $z\notin X$, then $z$
+survives and is adjacent to every other vertex of $J-X$, so $J-X$ is connected. Also
+$|V(J)|=n+1\ge4$. Conversely, suppose $J$ is $3$-connected and $X\subseteq W$ has $|X|\le1$. Then
+$J-(X\cup\{z\})=B-X$ is connected. Also $n=|V(J)|-1\ge3$.
+\end{proof}
+
+\begin{proposition}\label{prop:cone-mc}
+$J-z$ has a matching cut if and only if $B$ has one.
+\leanst{Gallai.hasMatchingCut\_delVert\_fullCone\_iff, Gallai.HasMatchingCut.of\_iso}
+\end{proposition}
+
+\begin{proof}
+$J-z=B$.
+\end{proof}
+
+\begin{proposition}\label{prop:cone-t1}
+For every $r\in W$, the conclusion of \textup{(T1)} at $(J,z,r)$ holds if and only if
+$\mathrm{RD}(B,r)$ holds. Consequently \textup{(T1)} holds at $(J,z)$ if and only if: when $n$ is
+even and $B$ is Eulerian, $\mathrm{RD}(B,r)$ holds for every $r\in W$.
+\leanst{Gallai.test1At\_fullCone\_iff, Gallai.test1\_fullCone\_iff}
+\end{proposition}
+
+\begin{proof}
+The conclusion of (T1) asks for a decomposition of $J-z=B$ into at most $(|V(J)|-1)/2=n/2$ paths
+with $b(r)\ge2$, which is $\mathrm{RD}(B,r)$. The neighbours of $z$ are the vertices of $W$, and the
+hypothesis of (T1) is described by Proposition~\ref{prop:cone-par}.
+\end{proof}
+
+No connectivity is used in Proposition~\ref{prop:cone-t1}.
+
+\begin{proposition}\label{prop:cone-vac}
+The other tests at a cone are vacuous: \textup{(T2)} at $z$ always holds; \textup{(T1)} at every
+$a\in W$ always holds; and \textup{(T2)} at every $a\in W$ holds when $n$ is even.
+\leanst{Gallai.test2\_fullCone\_apex, Gallai.test1\_fullCone\_some,
+Gallai.test2\_fullCone\_some\_of\_even, Gallai.not\_unique\_odd}
+\end{proposition}
+
+\begin{proof}
+No graph has exactly one odd vertex, by the handshake lemma. We show that the hypothesis of each test
+fails.
+\begin{itemize}[leftmargin=*]
+\item (T2) at $(z,a)$ needs $z$ and $a$ to be the only even vertices of $J$. By
+Proposition~\ref{prop:cone-par}, $a$ would then be the only odd vertex of $B$.
+\item (T1) at $a$ needs $a$ to be the only even vertex of $J$. Then $z$ is odd, so $n$ is odd and
+$|V(J)|$ is even, and $J$ would have the odd number $|V(J)|-1$ of odd vertices.
+\item (T2) at $(a,x)$ with $n$ even: $z$ is even and $z\ne a$, so $x=z$, and $a$ would be the only
+odd vertex of $B$.\qedhere
+\end{itemize}
+\end{proof}
+
+When $n$ is odd, (T2) at a vertex $a\in W$ is a genuine test. It concerns graphs $B$ with exactly two
+odd vertices, which are adjacent, and it is not of the form RE.
+
+\begin{proposition}[the leaf form]\label{prop:cone-leaf}
+Let $r\in W$ with $d_B(r)$ even and positive. Then $\mathrm{RD}(B,r)$ holds if and only if
+$p(B^r)\le n/2$.
+\leanst{Gallai.rootedDecomp\_iff\_addLeaf}
+\end{proposition}
+
+\begin{proof}
+If $D$ witnesses $\mathrm{RD}(B,r)$, then $b_D(r)\ge1$, so $p(B^r)\le\lambda_D(r)=|D|\le n/2$ by
+Lemma~\ref{lem:leaf}(b). Conversely, Lemma~\ref{lem:leaf}(c) gives a decomposition $D$ of $B$ with
+$\lambda_D(r)\le p(B^r)\le n/2$, and Lemma~\ref{lem:ends}(a) with $k=\fl{n/2}$ gives $\mathrm{RD}(B,r)$.
+\end{proof}
+
+\begin{theorem}[Theorem~\ref{thm:cones-intro}]\label{thm:cones}
+Let $B$ be a graph of order $n$ and $J=B+z$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $J$ is $3$-connected if and only if $B$ is $2$-connected, and $J-z$ has a matching cut if and
+only if $B$ has one.
+\item \textup{(T1)} holds at $(J,z)$ if and only if: when $n$ is even and $B$ is Eulerian,
+$\mathrm{RD}(B,r)$ holds for every $r\in W$. \textup{(T2)} holds at $(J,z)$.
+\item Assertion \textup{(iii)} of Theorem~\ref{thm:main} implies $\RE(B,r)$ for every $2$-connected
+Eulerian graph $B$ of even order without a matching cut and every $r\in V(B)$. Conversely, if $n$ is
+even, then \textup{(T1)} and \textup{(T2)} hold at every vertex of $B+z$ if and only if
+$\mathrm{RD}(B,r)$ holds for every $r$ whenever $B$ is Eulerian.
+\item Gallai's conjecture implies $\mathrm{RD}(B,r)$ for every connected Eulerian graph $B$ of even
+order and every vertex $r$ of positive degree.
+\end{enumerate}
+\leanst{Gallai.rootedDecomp\_of\_spineTestsNMC, Gallai.fullConeTests\_iff, Gallai.rootedDecomp\_of\_gallai}
+\end{theorem}
+
+\begin{proof}
+(a) is Propositions~\ref{prop:cone-conn} and~\ref{prop:cone-mc}, and (b) is
+Propositions~\ref{prop:cone-t1} and~\ref{prop:cone-vac}. (c) Let $B$ be $2$-connected and Eulerian
+of even order without a matching cut. By (a), $J$ is $3$-connected and $J-z$ has no matching cut, so
+(iii) gives (T1) at $(J,z)$, and (b) gives $\mathrm{RD}(B,r)$ for every $r$. For the converse
+statement, let $n$ be even. By Proposition~\ref{prop:cone-vac} the tests at the vertices of $W$
+hold, and so does (T2) at $z$; by (b), (T1) at $z$ is the stated condition. (d) Apply
+Lemma~\ref{lem:gallai-rooted}(a) with $H=B$; here $d_B(r)$ is even and positive.
+\end{proof}
+
+Theorem~\ref{thm:cones} locates RE inside the spine exactly. Among the instances of
+Theorem~\ref{thm:main}(iii) at the apex of a cone, the ones whose hypotheses can hold are precisely
+the statements $\RE(B,r)$ for $2$-connected Eulerian graphs $B$ of even order without a matching
+cut. At the other vertices of a cone over a graph of even order all tests are vacuous. Over a graph
+of odd order, (T2) at a non-apex vertex is a genuine test that is not of the form RE.
+Theorem~\ref{thm:main} and Theorem~\ref{thm:cones}(c),(d) give
+\[
+\text{Gallai}\iff\text{(iii)}\implies\RE\text{ on $2$-connected Eulerian graphs of even order
+with no matching cut,}
+\]
+while Gallai's conjecture also gives RE in full, and RE gives Gallai's bound $p(B)\le\pr(B)\le n/2$ for
+$2$-connected Eulerian graphs of even order.
+
+\begin{example}\label{ex:K26}
+Cycles of length at least $4$ have matching cuts: split the cycle into two paths. The complete
+bipartite graph $K_{2,6}$ is $2$-connected and Eulerian of order $8$, and it has no matching cut. Let
+$\{a,b\}$ be its side of size two, and let $(X,Y)$ be a partition of the vertex set into nonempty
+sets. If $a,b\in X$, then a vertex of $Y$ (which has degree $2$) has two neighbours in $X$. If
+$a\in X$ and $b\in Y$, then $a$ has six neighbours, and if at most one of them lies in $Y$, then at
+least five lie in $X$, where each is adjacent to $b\in Y$; so $b$ has at least five neighbours in
+$X$. In either case some vertex has two neighbours on the other side. So $\RE(K_{2,6},r)$ is one
+of the instances that the spine requires.
+\end{example}
+
+\section{Using the reduction}\label{sec:use}
+
+\subsection*{The smallest counterexample}
+The proof of Theorem~\ref{thm:converse} gives more than the equivalence: it shows what a smallest
+counterexample looks like, and which inductive hypotheses are available when one tries to prove a
+test.
+
+\begin{corollary}[shape of a smallest counterexample]\label{cor:mincex}
+Suppose Gallai's conjecture fails. Then there are a graph $B\in\cC$ of some order $n$ and a vertex
+$r$ such that $\RT(B,r)$ fails and $(\RT_{n-1})$ holds. For any such $B$ and $r$, put
+$S=\Ev(B)\cup\{r\}$ and $J=B+z(S)$. Then:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item the marked bound $(\MBU_{n-2})$ holds, so every connected graph whose $2$-connected blocks have
+order at most $|V(J)|-3$ satisfies Gallai's bound;
+\item $|S|$ is even and at least $4$, $J$ is $3$-connected, and $J-z=B$ has no matching cut;
+\item no separated component for any pair avoids $r$ and consists of odd vertices only;
+\item if $n$ is even, then $z$ is the only even vertex of $J$ and \textup{(T1)} fails at $(J,z)$
+with root $r$; if $n$ is odd, then $z$ and $r$ are the only even vertices of $J$ and \textup{(T2)}
+fails at $(J,z)$ with root $r$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+If $\RT(B,r)$ held for all $B\in\cC$ and all $r$, the second paragraph of the proof of
+Theorem~\ref{thm:converse} would give Gallai's conjecture. So some $B\in\cC$ fails; choose one of
+least order $n$, with a root $r$ at which it fails. Then $(\RT_{n-1})$ holds by minimality.
+
+Now let $B$ and $r$ be any such pair. (a) Theorem~\ref{thm:59} with $m=n-2$ gives $(\MBU_{n-2})$,
+and Lemma~\ref{lem:marked-basic}(a) with one mark gives Gallai's bound. (c) Otherwise
+Theorem~\ref{thm:sep}, which applies by (a), would give $\RT(B,r)$. (b) By Lemma~\ref{lem:fewEven},
+$|S|\ge3$. The second paragraph of the proof of Proposition~\ref{prop:rootedFromTests} uses only
+(c), $|S|\ge3$ and $B\in\cC$, and shows that $J$ is $3$-connected with $J-z=B$ free of matching cuts. $\RT(B,r)$
+fails, so one of (R1), (R2) fails. If (R1) fails, $n$ and $d_B(r)$ are even, and the third paragraph
+of that proof shows that $|S|$ is even, that $z$ is the only even vertex of $J$, and that the
+conclusion of (T1) at root $r$ is exactly (R1); so (T1) fails. If (R2) fails, $n$ and $d_B(r)$ are
+odd, and in the same way $|S|$ is even, $z,r$ are the only even vertices, and the conclusion of
+(T2) at $r$ is (R2). Since $|S|\ge3$ is even, $|S|\ge4$. This proves (b) and (d).
+\end{proof}
+
+So to prove Gallai's conjecture it suffices to prove (T1) and (T2) at the \emph{parity apexes}
+$J=B+z(S)$, $S=\Ev(B)\cup\{r\}$, of graphs $B\in\cC$ without an all-odd separated component avoiding
+$r$, and one may assume the marked bound for all graphs with smaller blocks. Corollary~\ref{cor:mincex}
+is not stated as a separate Lean declaration; its steps are those of \texttt{rootedAt\_of\_tests}
+and \texttt{gallai\_of\_spineTestsNMC}.
+
+\subsection*{Lov\'asz decompositions as a starting point}
+In (T1), $J$ has a single even vertex $z$, so Theorem~\ref{thm:lovasz-strong} decomposes $J$
+itself into $(|V(J)|-1)/2$ paths with one end at every odd vertex. The test asks for the same number
+of paths in $J-z$, with two ends at $r\in N(z)$. In (T2), deleting the edge $zr$ leaves a graph
+with no even vertex, which Theorem~\ref{thm:lovasz-strong} decomposes into $|V(J)|/2$ paths with one
+end at every vertex. This suggests a programme: delete a set of edges at $z$ (and possibly further
+edges among its neighbours), decompose the remainder with a Lov\'asz decomposition whose ends are
+constrained, and lift the result back to $J-z$ without increasing the number of paths. Fan's lemma
+(Lemma~\ref{lem:fan}) is the basic move for such lifts. The programme is carried out in companion
+papers, which we cite by title only and on which nothing here depends:
+\begin{itemize}
+\item \emph{Constrained Lov\'asz decompositions: separation, neighbour avoidance, leaf tails and
+prescribed ends}~\cite{P2}, on strengthenings of Theorem~\ref{thm:lovasz-strong} with constraints on
+the ends;
+\item \emph{Reversible lifts from constrained Lov\'asz decompositions to the spine tests}~\cite{P3},
+on reducing (T1) and (T2) to constrained Lov\'asz statements;
+\item \emph{Rooted Gallai for Eulerian graphs, and the two-end test at near-universal roots}~\cite{P4},
+on RE and on (T1) at roots of large degree.
+\end{itemize}
+
+\subsection*{The cone case}
+By Theorem~\ref{thm:cones}, any proof of (T1) must in particular prove RE for $2$-connected
+Eulerian graphs of even order without a matching cut, such as $K_{2,6}$. Conversely, by
+Theorem~\ref{thm:cones}(d), a single connected Eulerian graph $B$ of even order and a vertex $r$ of
+positive degree with $\pr(B)>|V(B)|/2$ would disprove Gallai's conjecture.
+
+\subsection*{Formal use}
+In the Lean library, a proof of the proposition \texttt{SpineTestsNMC} (a closed statement about all
+finite graphs in a universe) yields, through \texttt{gallai\_iff\_spineTests'}, a proof of
+\texttt{GallaiConjecture} in the same universe. Partial results can be stated against the predicates
+\texttt{Test1}, \texttt{Test2} and \texttt{Test1At} of Section~\ref{sec:lean}, and on cones against
+\texttt{RootedDecomp}.
+
+\section{The formalisation}\label{sec:lean}
+
+\subsection{What is checked}
+Every result of Sections~\ref{sec:prelim}--\ref{sec:cones} that is stated as a theorem,
+proposition, lemma or corollary is proved in the Lean~4 library \texttt{GallaiLean} of the project
+repository (directory \texttt{lean/}), on top of Mathlib, with four exceptions:
+\begin{itemize}
+\item Lemma~\ref{lem:gallai-rooted}(a) is formalised in general, as the combination of
+\texttt{rootedTest\_of\_gallai} and \texttt{rootedDecomp\_iff\_addLeaf}; part (b) only for $H=J-z$,
+inside \texttt{test2\_of\_gallai};
+\item Lemma~\ref{lem:lift-ee} is formalised with the ends preserved at the chosen root;
+\item Remark~\ref{rem:59conv} (Gallai implies the rooted tests) and Corollary~\ref{cor:mincex} are not
+formalised as separate statements;
+\item Example~\ref{ex:K26} is not formalised.
+\end{itemize}
+The toolchain is \texttt{leanprover/lean4:v4.36.0} with Mathlib at tag \texttt{v4.36.0} (commit
+\texttt{fc4f59e577feb1a4956671bc04ac18aaaf8cd842}, from \texttt{lean/lake-manifest.json}). The
+library contains no \texttt{sorry}. Lov\'asz's theorem is not an assumption: it is proved in
+\texttt{Lovasz.lean} as in Section~\ref{sec:lovasz}, from Fan's lemma, which is proved in
+\texttt{Fan.lean} and \texttt{FanMoves.lean}. Theorem~\ref{thm:main} is the conjunction
+{\footnotesize
+\begin{verbatim}
+theorem gallai_iff_spineTests' :
+    (GallaiConjecture.{u} ↔ SpineTests.{u}) ∧ (GallaiConjecture.{u} ↔ SpineTestsNMC.{u}) :=
+  gallai_iff_spineTests thm59
+\end{verbatim}
+}
+in \texttt{Separator.lean}, where \texttt{gallai\_iff\_spineTests} combines
+\texttt{spineTests\_of\_gallai} with \texttt{gallai\_of\_spineTestsNMC lovaszStatement h59
+separatorStatement}. Several cited declarations take Lov\'asz's theorem, Theorem~59 or
+Theorem~113 as explicit hypotheses (\texttt{LovaszStatement}, \texttt{Thm59Statement},
+\texttt{SeparatorStatement}): for example \texttt{separator\_theorem},
+\texttt{rootedAt\_of\_few\_even}, \texttt{rootedAt\_of\_tests} and
+\texttt{gallai\_of\_spineTestsNMC}. These hypotheses are discharged by \texttt{lovaszStatement},
+\texttt{thm59} and \texttt{separatorStatement}, as in the line above. The statement is
+universe-polymorphic: for every universe \texttt{u} it relates the conjecture for all finite vertex
+types in \texttt{Type u} to the tests for all finite vertex types in \texttt{Type u}.
+
+\subsection{The definitions}
+The definitions behind the statement are the following (\texttt{Basic.lean},
+\texttt{ThreeConnected.lean} and \texttt{EulerianCone.lean}; \texttt{V} is a type with
+\texttt{[Fintype V] [DecidableEq V]}). Declarations made inside a namespace are shown with their
+full names, and the comments are ours; otherwise the text is verbatim.
+{\footnotesize
+\begin{verbatim}
+structure GPath (G : SimpleGraph V) where          -- a path: a simple walk of length ≥ 1
+  src : V
+  tgt : V
+  walk : G.Walk src tgt
+  isPath : walk.IsPath
+  pos : 0 < walk.length
+def GPath.edges (P : GPath G) : List (Sym2 V) := P.walk.edges
+def GPath.endsAt [DecidableEq V] (P : GPath G) (v : V) : ℕ :=
+  (if P.src = v then 1 else 0) + (if P.tgt = v then 1 else 0)
+structure PathDecomp (G : SimpleGraph V) where     -- edge lists partition E(G)
+  paths : List (GPath G)
+  nodup_edges : (paths.flatMap GPath.edges).Nodup
+  covers : ∀ e, e ∈ G.edgeSet ↔ e ∈ paths.flatMap GPath.edges
+def PathDecomp.size (D : PathDecomp G) : ℕ := D.paths.length
+def PathDecomp.ends [DecidableEq V] (D : PathDecomp G) (v : V) : ℕ :=
+  (D.paths.map (fun P => P.endsAt v)).sum
+noncomputable def pathNumber (G : SimpleGraph V) : ℕ :=
+  sInf {k | ∃ D : PathDecomp G, D.size = k}
+def GallaiConjecture : Prop :=
+  ∀ (W : Type u) [Fintype W] (G : SimpleGraph W), G.Connected →
+    pathNumber G ≤ (Fintype.card W + 1) / 2
+
+def KConnected (k : ℕ) (G : SimpleGraph V) : Prop :=
+  k + 1 ≤ Fintype.card V ∧ ∀ X : Finset V, X.card < k → (G.induce ((X : Set V)ᶜ)).Connected
+abbrev delVert (J : SimpleGraph V) (z : V) : SimpleGraph {v | v ≠ z} := J.induce {v | v ≠ z}
+def HasMatchingCut (G : SimpleGraph V) : Prop :=
+  ∃ X : Set V, X.Nonempty ∧ Xᶜ.Nonempty ∧
+    ∀ a b c, G.Adj a b → G.Adj a c → (a ∈ X ↔ b ∉ X) → (a ∈ X ↔ c ∉ X) → b = c
+def Test1 (J : SimpleGraph V) [DecidableRel J.Adj] (z : V) : Prop :=
+  (∀ v, Even (J.degree v) ↔ v = z) → ∀ r (hr : J.Adj z r),
+    ∃ D : PathDecomp (delVert J z),
+      D.size ≤ (Fintype.card V - 1) / 2 ∧ 2 ≤ D.ends ⟨r, hr.ne'⟩
+def Test2 (J : SimpleGraph V) [DecidableRel J.Adj] (z : V) : Prop :=
+  ∀ r (hr : J.Adj z r), (∀ v, Even (J.degree v) ↔ v = z ∨ v = r) →
+    ∃ D : PathDecomp (delVert J z), D.size ≤ Fintype.card V / 2 ∧ 3 ≤ D.ends ⟨r, hr.ne'⟩
+def SpineTests : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (J : SimpleGraph V) [DecidableRel J.Adj] (z : V),
+    KConnected 3 J → Test1 J z ∧ Test2 J z
+def SpineTestsNMC : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (J : SimpleGraph V) [DecidableRel J.Adj] (z : V),
+    KConnected 3 J → ¬ HasMatchingCut (delVert J z) → Test1 J z ∧ Test2 J z
+
+def fullCone (B : SimpleGraph W) : SimpleGraph (Option W)   -- the cone B + z, apex `none`
+def RootedDecomp (B : SimpleGraph W) (r : W) : Prop :=
+  ∃ D : PathDecomp B, D.size ≤ Fintype.card W / 2 ∧ 2 ≤ D.ends r
+\end{verbatim}
+}
+These match Section~\ref{sec:intro} and Definition~\ref{def:tests} exactly. Natural-number division
+is the floor, so $(|V|+1)/2=\lceil|V|/2\rceil$; in \texttt{Test1} the order is odd and in
+\texttt{Test2} it is even, so the budgets $(n-1)/2$ and $n/2$ are exact. \texttt{D.ends v} counts
+path ends at $v$ with multiplicity, which is $b_D(v)$. In \texttt{HasMatchingCut} the last clause says
+that every vertex has at most one neighbour on the other side. \texttt{KConnected} is the
+definition of Section~\ref{sec:prelim}. In \texttt{fullCone B} (whose definition by its adjacency
+relation we do not reproduce) the apex \texttt{none} is adjacent to every \texttt{some a}, and
+\texttt{some a}, \texttt{some b} are adjacent if and only if $a,b$ are adjacent in $B$.
+\texttt{RootedDecomp B r} is $\mathrm{RD}(B,r)$. Theorem~\ref{thm:lovasz-strong} is stated for
+\texttt{evenSet G}, the set of vertices of positive even degree.
+
+\subsection{Building and checking}
+The artifact of this paper is the directory \texttt{papers/P1-spine/} of the project repository. From
+the root of the repository:
+{\footnotesize
+\begin{verbatim}
+export PATH=$HOME/.elan/bin:$PATH
+cd lean && lake exe cache get && cd ..   # download the Mathlib build cache
+scripts/check_papers.sh P1               # lake build, then P1.lean against axioms.expected
+papers/P1-spine/reproduce.sh             # the same, plus the name map and the PDF
+\end{verbatim}
+}
+The entry file \texttt{papers/P1-spine/lean/P1.lean} imports the modules the paper uses. It restates
+every headline result with its full statement (Theorem~\ref{thm:main}, both of its directions,
+Lemma~\ref{lem:fan}, Theorems~\ref{thm:lovasz-strong}, \ref{thm:lovasz}, \ref{thm:59}
+and~\ref{thm:sep}, Propositions~\ref{prop:cone-conn}--\ref{prop:cone-t1}, \ref{prop:cone-leaf}, the
+first item of Proposition~\ref{prop:cone-vac}, and Theorem~\ref{thm:cones}(c),(d)) and proves each
+by the library declaration. It checks that every other Lean name cited in the paper resolves, and it
+runs \texttt{\#print axioms} on each headline result. Its complete output, recorded in
+\texttt{axioms.expected} from a clean build on 28 November 2026, consists of sixteen lines of the form
+{\footnotesize
+\begin{verbatim}
+'P1.main_theorem' depends on axioms: [propext, Classical.choice, Quot.sound]
+\end{verbatim}
+}
+one for each restated result; for \texttt{P1.cone\_matchingCut\_iff} the list is \texttt{[propext,
+Quot.sound]}. These are the standard axioms of Lean's classical mathematics; no further axiom and no
+\texttt{sorryAx} occurs. A full build of the library takes about five minutes on four cores once the
+Mathlib cache is downloaded; checking \texttt{P1.lean} against a finished build takes a few seconds.
+
+\subsection{Correspondence}
+The table lists each result of the paper with the Lean declarations that prove it (all in namespace
+\texttt{Gallai}, files in \texttt{lean/GallaiLean/}). The script
+\texttt{papers/P1-spine/scripts/locate.sh} prints the current file and line of every declaration.
+
+{\small
+\begin{longtable}{@{}p{0.30\textwidth}p{0.45\textwidth}p{0.20\textwidth}@{}}
+\toprule
+Paper & Lean declaration & File\\
+\midrule
+\endhead
+Theorem~\ref{thm:main} & \texttt{gallai\_iff\_spineTests'}, \texttt{gallai\_iff\_spineTests} &
+Separator\\
+Section~\ref{sec:prelim} constructions & \texttt{addLeaf}, \texttt{apex}, \texttt{cone},
+\texttt{delVert}, \texttt{delVert\_degree} & Doubling, Realisable, Marked, ThreeConnected\\
+Lemma~\ref{lem:kconn} & \texttt{KConnected.le\_degree}, \texttt{KConnected.connected},
+\texttt{KConnected.delVert\_connected} & ThreeConnected\\
+Lemma~\ref{lem:parity} & \texttt{PathDecomp.ends\_mod\_two}, \texttt{PathDecomp.sum\_ends},
+\texttt{PathDecomp.ends\_le\_degree} & Parity, TwoEven\\
+Lemma~\ref{lem:split} & \texttt{PathDecomp.exists\_split},
+\texttt{PathDecomp.exists\_internal\_of\_ends\_lt}, \texttt{GPath.exists\_join} & Surgery,
+ThreeConnected, MarkedSurgery\\
+Lemma~\ref{lem:ends} & \texttt{exists\_two\_ends}, \texttt{exists\_three\_ends} & ThreeConnected\\
+Lemma~\ref{lem:leaf} & \texttt{leafCost}, \texttt{PathDecomp.trim\_ends}, \texttt{pathNumber\_addLeaf\_le},
+\texttt{exists\_leafCost\_le} & PrivateLeaf, ThreeConnected\\
+Definition~\ref{def:chain} & \texttt{FanPred}, \texttt{FanAvoid}, \texttt{FanChain} & Fan\\
+Lemma~\ref{lem:chain-exec} & \texttt{fan\_exec}, \texttt{PathDecomp.append\_move},
+\texttt{PathDecomp.reroute\_move}, \texttt{fanChain\_transport} & Fan, FanMoves\\
+Lemma~\ref{lem:chain-exists} & \texttt{fan\_exists\_chain} & Fan\\
+Lemma~\ref{lem:fan} & \texttt{fan\_single} & Fan\\
+Theorem~\ref{thm:lovasz-strong} & \texttt{lovasz\_ends} & Lovasz\\
+Theorem~\ref{thm:lovasz} & \texttt{lovaszStatement} & Lovasz\\
+Corollary~\ref{cor:lovasz} & \texttt{lovasz\_tight}, \texttt{lovasz\_on} & SmallBounds\\
+Definition~\ref{def:marked} & \texttt{MarkedPartition}, \texttt{markedNumber} & Marked\\
+Lemma~\ref{lem:marked-basic} & \texttt{pathNumber\_le\_markedNumber\_add},
+\texttt{markedNumber\_anti}, \texttt{markedNumber\_le\_insert},
+\texttt{markedNumber\_singleton\_add\_one}, \texttt{exists\_leafCost\_le\_markedNumber} &
+Marked, Thm59ClassC, SmallBounds\\
+Lemma~\ref{lem:cone} & \texttt{le\_outEnds}, \texttt{apex\_outEnds\_bound} & Marked,
+Thm59ClassC\\
+Lemma~\ref{lem:hall} & \texttt{markedNumber\_add\_card\_le} & Thm59Hall\\
+Definition~\ref{def:MB} & \texttt{MarkedTwoConnTestUpTo}, \texttt{ThreeEndsTestUpTo},
+\texttt{MarkedBoundUpTo}, \texttt{SmallBlocks} & MarkedBlocks, ThreeConnected\\
+Theorem~\ref{thm:transfer} & \texttt{mbOn\_of\_testsUpTo}, \texttt{markedBoundUpTo\_of\_tests} &
+MarkedBlocks, Thm59Transfer\\
+Lemma~\ref{lem:glue} & \texttt{glue0}, \texttt{glue1}, \texttt{glueJ}, \texttt{glueU},
+\texttt{glueEnd}, \texttt{glueSplit} & MarkedBlocks\\
+Lemma~\ref{lem:pendant-edge} & \texttt{PMP.exists\_trim}, \texttt{attach\_pendant} &
+MarkedSurgery, MarkedBlocks\\
+Steps 0--1 & \texttt{baseStep}, \texttt{twoConnStep} & MarkedBlocks\\
+Lemma~\ref{lem:cut} & \texttt{cutStep} & MarkedBlocks\\
+Lemma~\ref{lem:leafstep} & \texttt{leafStep} & MarkedBlocks\\
+Lemma~\ref{lem:doubleleaf} & \texttt{doubleLeafStep} & MarkedBlocks\\
+Lemma~\ref{lem:pendant} & \texttt{pendantStep} & MarkedBlocks\\
+Lemma~\ref{lem:residue} & \texttt{residue\_sep} & MarkedBlocks\\
+Lemma~\ref{lem:shores} & \texttt{exists\_connected\_matchingCut} & Thm59MatchingCut\\
+Lemma~\ref{lem:trimleaves} & \texttt{leafGraph}, \texttt{leafGraph\_trim} & Thm59Leaves\\
+Lemma~\ref{lem:lemma6} & \texttt{lemma6} & Thm59Lemma6\\
+Theorem~\ref{thm:mc} & \texttt{matchingCut\_markedBound} & Thm59MatchingCut\\
+Definition~\ref{def:rooted} & \texttt{RootedAt}, \texttt{RootedTestsUpTo} & ThreeConnected,
+Thm59ClassC\\
+Theorem~\ref{thm:59} & \texttt{thm59 : Thm59Statement} & Thm59, ThreeConnected\\
+Lemma~\ref{lem:coneC} & \texttt{apex\_inClassC} & Thm59ClassC\\
+Proposition~\ref{prop:classC} & \texttt{cone\_step}, \texttt{singleton\_step},
+\texttt{markedBound\_of\_classC}, \texttt{threeEnds\_of\_classC} & Thm59ClassC\\
+Definition~\ref{def:sepcomp} & \texttt{IsSepComponent} & ThreeConnected\\
+Theorem~\ref{thm:sep} & \texttt{separatorStatement}, \texttt{separator\_theorem},
+\texttt{SeparatorStatement} & Separator, ThreeConnected\\
+Section~\ref{sec:sep} setup & \texttt{sideA}, \texttt{sideE} & SeparatorSetup\\
+Lemma~\ref{lem:sides} & \texttt{sideE\_induce\_connected}, \texttt{sideE\_port\_pos},
+\texttt{sideA\_port\_pos}, \texttt{sideA\_parity}, \texttt{two\_le\_card\_of\_odd} &
+SeparatorSetup, SeparatorOdd\\
+Lemma~\ref{lem:small}(a)--(c) & \texttt{R2\_on}, \texttt{R3\_on}, \texttt{floor\_on} & SmallBounds\\
+Lemma~\ref{lem:root} & \texttt{rootedAt\_of\_lift} & SeparatorSetup\\
+Path surgery conventions & \texttt{TPath}, \texttt{exists\_decomp\_of\_edgesM} & PathSurgery\\
+Lemma~\ref{lem:surgery} & \texttt{exists\_subst\_list}, \texttt{exists\_cut\_edge},
+\texttt{exists\_graft}, \texttt{exists\_graft\_x} & PathSurgery, SeparatorEvenEven\\
+Proposition~\ref{prop:odd} & \texttt{rootedAt\_oddComp} & SeparatorOdd\\
+Proposition~\ref{prop:evenodd} & \texttt{rootedAt\_evenComp\_oddPorts} & SeparatorEvenOdd\\
+Lemma~\ref{lem:local} & \texttt{exists\_localX}, \texttt{exists\_localA'} & SeparatorEvenEven\\
+Lemma~\ref{lem:lift-ee} & \texttt{case1\_lift}, \texttt{case2\_lift} (the family $M$, ends at the root);
+assembly in \texttt{rootedAt\_evenComp\_evenPorts} & SeparatorEvenEven\\
+Proposition~\ref{prop:eveneven} & \texttt{rootedAt\_evenComp\_evenPorts} & SeparatorEvenEven\\
+Lemma~\ref{lem:bridge} & \texttt{dbl}, \texttt{two\_mul\_pathNumber\_addLeaf\_le},
+\texttt{rootedTest\_of\_gallai} & Doubling\\
+Lemma~\ref{lem:gallai-rooted}, Prop.~\ref{prop:forward} & \texttt{test1\_of\_gallai},
+\texttt{test2\_of\_gallai}, \texttt{spineTests\_of\_gallai} & ThreeConnected\\
+Lemma~\ref{lem:apex} & \texttt{apex\_kConnected\_three} & ThreeConnected\\
+Lemma~\ref{lem:fewEven} & \texttt{rootedAt\_of\_few\_even} & ThreeConnected\\
+Proposition~\ref{prop:rootedFromTests} & \texttt{rootedAt\_of\_tests},
+\texttt{exists\_sepComponent\_or}, \texttt{not\_hasMatchingCut\_delVert\_apex} & ThreeConnected\\
+Theorem~\ref{thm:converse} & \texttt{gallai\_of\_spineTestsNMC} & ThreeConnected\\
+Proposition~\ref{prop:cone-par} & \texttt{fullCone\_degree\_none}, \texttt{fullCone\_degree\_some},
+\texttt{fullCone\_onlyEven\_iff} & EulerianCone\\
+Proposition~\ref{prop:cone-conn} & \texttt{kConnected\_three\_fullCone\_iff} & EulerianCone\\
+Proposition~\ref{prop:cone-mc} & \texttt{hasMatchingCut\_delVert\_fullCone\_iff},
+\texttt{HasMatchingCut.of\_iso} & EulerianCone\\
+Proposition~\ref{prop:cone-t1} & \texttt{fullConeDelIso}, \texttt{PathDecomp.exists\_of\_iso},
+\texttt{test1At\_fullCone\_iff}, \texttt{test1\_fullCone\_iff} & EulerianCone\\
+Proposition~\ref{prop:cone-vac} & \texttt{test2\_fullCone\_apex}, \texttt{test1\_fullCone\_some},
+\texttt{test2\_fullCone\_some\_of\_even}, \texttt{not\_unique\_odd} & EulerianCone\\
+Proposition~\ref{prop:cone-leaf} & \texttt{rootedDecomp\_iff\_addLeaf} & EulerianCone\\
+Theorem~\ref{thm:cones} & \texttt{rootedDecomp\_of\_spineTestsNMC}, \texttt{fullConeTests\_iff},
+\texttt{rootedDecomp\_of\_gallai}, \texttt{gallai\_iff\_rootedTest} & EulerianCone, Doubling\\
+\bottomrule
+\end{longtable}
+}
+
+\subsection{How the formal proof is organised}
+The formal proof makes some representation choices that the paper does not spell out; none affects
+the mathematics.
+\begin{itemize}
+\item The block transfer (Theorem~\ref{thm:transfer}) runs inside one vertex type: an instance is a
+vertex set $U$ carrying all edges of a graph, and sub-instances are restrictions to subsets of $U$,
+which are exactly the induced subgraphs used above (\texttt{restrict}, \texttt{SmallerMB},
+\texttt{SmallOn}). Its notion of $2$-connectivity (\texttt{TwoConnOn}: at least three vertices,
+connected, no cut vertex) is converted to \texttt{KConnected 2} in \texttt{Thm59Transfer.lean}.
+\item Private leaves, cones and doubles are built on \texttt{Option V}, \texttt{V ⊕ V} or
+\texttt{Option (Bool × V)}, and decompositions are transported along injective vertex maps with their
+end counts (\texttt{PathDecomp.project\_full}, \texttt{PathDecomp.map\_injective\_ends},
+\texttt{PathDecomp.mapInj}).
+\item In the separator theorem all graphs live on the vertex type of $B$, and the exterior graph of
+the odd case reuses the vertex $c\in C$ as the leaf; paths are handled as paths of the complete graph
+on $V$ with edge multisets (\texttt{TPath}, \texttt{edgesM}, \texttt{endsL}); Section~\ref{sec:sep}
+adopts the same convention.
+\item In Fan's lemma, a decomposition of $K+tu$ is produced for every graph whose edge set is
+$E(K)\cup\{tu\}$, so that the graphs $K_1$ of the induction need not be built as named
+constructions.
+\end{itemize}
+
+\subsection*{Sources and acknowledgements}
+The mathematics of the spine (Sections~\ref{sec:prelim} and~\ref{sec:marked}--\ref{sec:thm114}) is
+that of the marked-reduction manuscript~\cite{MR}; the account here was assembled from that
+manuscript, from the project's audits of it (A1, A2, A8 and A14), from the Lean formalisation, and
+from the earlier write-up~\cite{SP} and its audit A15. Section~\ref{sec:lovasz} is based on the
+note~\cite{LF}, and Section~\ref{sec:cones} on Section~2 of~\cite{EC} and its audit A30. The
+observation that (T1) on cones is rooted Gallai for the base was first recorded in the project's
+synthesis notes. Fan's lemma and its role as an end-transfer move are due to Fan~\cite{Fan05}.
+
+This work was prepared with the assistance of AI tools. All results were machine-checked in Lean~4
+with Mathlib, as described in Section~\ref{sec:lean}; the author is responsible for the content.
+
+\begin{thebibliography}{99}
+\bibitem{BP19} M.~Bonamy and T.~J.~Perrett, Gallai's path decomposition conjecture for graphs of small
+maximum degree, Discrete Math.\ 342 (2019) 1293--1299.
+\bibitem{BSCL20} F.~Botler, M.~Sambinelli, R.~S.~Coelho and O.~Lee, Gallai's path decomposition
+conjecture for graphs with treewidth at most 3, J.\ Graph Theory 93 (2020) 328--349.
+\bibitem{BS21} F.~Botler and M.~Sambinelli, Towards Gallai's path decomposition conjecture, J.\ Graph
+Theory 97 (2021) 161--184.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, J.\ Combin.\ Theory Ser.~B 93
+(2005) 117--125.
+\bibitem{Hall35} P.~Hall, On representatives of subsets, J.\ London Math.\ Soc.\ 10 (1935) 26--30.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: Theory of Graphs (Proc.\ Colloq.\ Tihany,
+1966), Academic Press, New York, 1968, 231--236.
+\bibitem{Mathlib} The mathlib Community, The Lean mathematical library, in: Proc.\ 9th ACM SIGPLAN
+Int.\ Conf.\ on Certified Programs and Proofs (CPP 2020), 367--381.
+\bibitem{Lean4} L.~de Moura and S.~Ullrich, The Lean 4 theorem prover and programming language, in:
+Automated Deduction -- CADE 28, Lecture Notes in Comput.\ Sci.\ 12699, Springer, 2021, 625--635.
+\bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, J.\ Combin.\ Theory
+Ser.~B 66 (1996) 152--159.
+\bibitem{MR} [Author], Cut vertices and cycle intersections in Gallai's path decomposition problem,
+unrefereed manuscript, 24 November 2026; \texttt{gallai/01-original-manuscripts/marked-reduction.pdf}
+in the project repository. Theorems 1, 7, 59, 113 and 114, Lemma~6, \S1, \S2 and \S17.
+\bibitem{SP} [Author], The reduction spine for Gallai's path decomposition conjecture: two deletion
+tests on $3$-connected graphs, working note, November 2026; \texttt{manuscripts/spine} in the project
+repository. Superseded by the present paper.
+\bibitem{LF} [Author], Lov\'asz's path decomposition theorem from Fan's addible-edge lemma, working
+note, November 2026; \texttt{manuscripts/lovasz-fan} in the project repository. Superseded by
+Section~\ref{sec:lovasz}.
+\bibitem{EC} [Author], The two-end test on cones: rooted Gallai for Eulerian graphs, working note,
+November 2026; \texttt{manuscripts/eulerian-cone} in the project repository. Section~2 is superseded
+by Section~\ref{sec:cones}.
+\bibitem{P2} [Author], Constrained Lov\'asz decompositions: separation, neighbour avoidance, leaf
+tails and prescribed ends, in preparation (paper P2 of the project).
+\bibitem{P3} [Author], Reversible lifts from constrained Lov\'asz decompositions to the spine tests,
+in preparation (paper P3 of the project).
+\bibitem{P4} [Author], Rooted Gallai for Eulerian graphs, and the two-end test at near-universal
+roots, in preparation (paper P4 of the project).
+\end{thebibliography}
+
+\end{document}
