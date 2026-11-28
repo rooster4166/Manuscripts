@@ -145,6 +145,7 @@ EMM sufficiency work is **stopped**.
     - Paper: Lemma R (a pre-committed end path) and Prop 6.3 (Criterion R ⇒ L_N(2), via `steerK_good`).
     - **Criterion R holds at all 43,400 order-8 instances and 3,000 random order-10 instances; every certificate was executed and A40 re-verified them.**
     - Conjecture R ⇒ L_N(2). **L_N(2) itself is not proved.**
+  - **Finished** (891e758). Manuscript `manuscripts/ln` (8 pp.); audit A40 and its follow-up, no error. Residual: prove Conjecture R by choosing P so that a schedule provably exists. The case m ≥ 3 is untested.
 - **dense-root** (session_01FxXpVhCWRJY7ccwLFEHd8q, branch `claude/dense-root`): **finished** (bc24fad). Manuscript `manuscripts/dense-root` (10 pp.); audits A39, A39b and A39c, all findings applied.
   - Test1 at roots of degree n − 2. Proved in Lean:
     - Theorem A: B − r has ≤ 1 even vertex. This is re-tight Thm 3.1 without the Eulerian hypothesis.
