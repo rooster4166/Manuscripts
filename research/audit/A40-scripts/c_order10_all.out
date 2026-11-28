@@ -1,0 +1,6 @@
+{'lines': 3000, 'non-OK lines': 0, 'sampled': 3000, 'inst_ok': 3000, 'trsolve_SAT': 3000, 'cert_match': 3000, 'legal': 3000, 'executed': 3000}
+certificate shapes (route, tail, uses S, uses D): {('pre', 'newleaf', '', ''): 873, ('pre', 'newleaf', 'S', ''): 897, ('pre', 'newleaf', 'S', 'D'): 360, ('joint', '-', '', ''): 678, ('pre', 'leafvariant', '', ''): 84, ('pre', 'leafvariant', 'S', 'D'): 12, ('joint', '-', 'S', ''): 59, ('pre', 'leafvariant', 'S', ''): 8, ('pre', 'newleaf', '', 'D'): 28, ('pre', 'leafvariant', '', 'D'): 1}
+
+real	3m1.822s
+user	2m47.966s
+sys	0m8.227s

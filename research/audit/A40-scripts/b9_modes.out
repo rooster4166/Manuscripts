@@ -1,0 +1,9 @@
+n=9 full
+graphs 4991 instances 4937 results {('full', 'SAT'): 4913, ('full', 'UNSAT'): 24}
+24
+n=9 fullnoleaf
+graphs 4991 instances 4909 results {('fullnoleaf', 'SAT'): 4908, ('fullnoleaf', 'UNSAT'): 1}
+1
+n=9 mtl2
+graphs 4991 instances 121205 results {('same-leaf', 'SAT'): 44703, ('two-leaves', 'SAT'): 76502}
+0

@@ -1,0 +1,2 @@
+UNSAT H?`@Fbp A 4 1 A 4 2 A 4 3 A 5 0 A 5 2 A 5 3 A 6 0 A 6 1 A 6 3 fullnoleaf
+graphs 4991 instances 4909 results {('fullnoleaf', 'SAT'): 4908, ('fullnoleaf', 'UNSAT'): 1}

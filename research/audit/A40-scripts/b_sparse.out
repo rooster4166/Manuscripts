@@ -1,0 +1,12 @@
+n=3
+graphs 2 instances 1 results {('sparse', 'SAT'): 1}
+n=4
+graphs 4 instances 3 results {('sparse', 'SAT'): 3}
+n=5
+graphs 10 instances 10 results {('sparse', 'SAT'): 10}
+n=6
+graphs 20 instances 29 results {('sparse', 'SAT'): 29}
+n=7
+graphs 104 instances 252 results {('sparse', 'SAT'): 252}
+n=8
+graphs 232 instances 680 results {('sparse', 'SAT'): 680}

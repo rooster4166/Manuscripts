@@ -1,0 +1,10 @@
+n=4
+graphs 4 instances 2 results {('fullnoleaf', 'SAT'): 2}
+n=5
+graphs 10 instances 6 results {('fullnoleaf', 'SAT'): 6}
+n=6
+graphs 20 instances 14 results {('fullnoleaf', 'SAT'): 14}
+n=7
+graphs 104 instances 90 results {('fullnoleaf', 'SAT'): 90}
+n=8
+graphs 232 instances 211 results {('fullnoleaf', 'SAT'): 211}

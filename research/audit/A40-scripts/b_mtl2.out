@@ -1,0 +1,10 @@
+n=4
+graphs 4 instances 35 results {('same-leaf', 'SAT'): 6, ('two-leaves', 'SAT'): 29}
+n=5
+graphs 10 instances 142 results {('same-leaf', 'SAT'): 29, ('two-leaves', 'SAT'): 113}
+n=6
+graphs 20 instances 748 results {('same-leaf', 'SAT'): 144, ('two-leaves', 'SAT'): 604}
+n=7
+graphs 104 instances 3271 results {('same-leaf', 'SAT'): 752, ('two-leaves', 'SAT'): 2519}
+n=8
+graphs 232 instances 11494 results {('same-leaf', 'SAT'): 2712, ('two-leaves', 'SAT'): 8782}
