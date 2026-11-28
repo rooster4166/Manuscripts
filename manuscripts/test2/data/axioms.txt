@@ -1,0 +1,4 @@
+'Gallai.append_forest_ends' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.test2At_of_leafDecomp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.test2At_of_forestBase2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.test2_of_forestBases2' depends on axioms: [propext, Classical.choice, Quot.sound]
