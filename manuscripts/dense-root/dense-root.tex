@@ -41,9 +41,9 @@ repair the parity with one \emph{connector} path, used as a member of the family
 Proved and machine-checked in Lean: (i) the family lemma for an arbitrary $B$; (ii) a defect-two Hall
 reassembly; (iii) Theorem~A: if $B-r$ has at most one vertex of positive even degree (cones, and
 $d(z)=n-3$ with $s\notin N(z)$), then a degree condition of re-tight type gives (T1); it contains
-re-tight Theorem~3.1 and drops its Eulerian hypothesis; (iv) Theorem~B for connectors whose interior
-avoids $N(r)$: the case $d(z)=n-3$ with $s\in N(z)$, by one connector $q_1q_2$ or $q_1sq_2$. Proved on
-paper: Theorem~B for connectors $q_1yq_2$ with $y\in N(r)$. At order $9$, $d(z)=6$,
+re-tight Theorem~3.1 and drops its Eulerian hypothesis; (iv) Theorem~B: the case $d(z)=n-3$ with
+$s\in N(z)$, by one connector path of length at most two, kept as a member of the family rather than
+lifted. At order $9$, $d(z)=6$,
 Theorems~A and~B certify (T1) at $1{,}602$ of the $1{,}756$ roots of degree $n-2$ ($1{,}445$ of the
 $1{,}597$ unscheduled ones); the hypotheses of the collection's dense theorems (marked-reduction
 Thms.~74 and~166) add $56$. The method itself, with the best choices, succeeds at all $1{,}756$, and
@@ -103,7 +103,7 @@ Statement & Status & Where\\
 Family lemma for any $B$ (Lemma~\ref{lem:fam}) & proved, Lean & \S\ref{sec:fam}\\
 Hall reassembly with defect two (Theorem~\ref{thm:hall}) & proved, Lean & \S\ref{sec:fam}\\
 Theorem~A: $G$ has $\le1$ even vertex & proved, Lean & \S\ref{sec:A}\\
-Theorem~B: $d(z)=n-3$, $s\in Z$, one connector & proved; Lean for $\delta=0$ & \S\ref{sec:B}\\
+Theorem~B: $d(z)=n-3$, $s\in Z$, one connector & proved, Lean & \S\ref{sec:B}\\
 Coverage at order $9$ and in the residual families & computation & \S\ref{sec:comp}\\
 Collection's dense theorems: hypotheses and coverage & reading + computation & \S\ref{sec:mr}\\
 Frozen roots: a variant with one free path & computation & \S\ref{sec:frozen}\\
@@ -302,15 +302,16 @@ The connector condition holds automatically under $s\in Z$, $d(z)=n-3$: $q_1,q_2
 of $G$ in $N$ and the middle vertex is $s$ (even) or a vertex of $N\cap Z$ (odd, losing two edges).
 
 \begin{remark}[Lean]
-The case $\delta=0$ is formalised (\lean{DenseRootB.lean}): \lean{exists\_decomp\_of\_connector}
-assumes that the ends of $Q$ are neighbours of $r$ and its other vertices are not, that every
-neighbour of $r$ is odd in $G'$ (\lean{delList (starDel B r) Q.edges}), and the condition with
-$\lfloor\tilde h_t/2\rfloor$ and $[t\le\lambda]$ for any $\lambda\ge\sum_{v\in V(Q)}\lceil
-d_{G'}(v)/2\rceil$; \lean{test1At\_of\_connector} is the spine form. The proof goes through
-\lean{consPath} ($Q$ followed by a Lov\'asz decomposition of $G'$), \lean{connector\_core} (the
-counting, for any attachment plan in which every trivial member has a heavier designated partner off
-$Q$) and \lean{hallReassemble}. The case $\delta=1$, in which one trivial member is unpaired, is on
-paper only.
+Both cases are formalised (\lean{DenseRootB.lean}). \lean{exists\_decomp\_of\_connector}
+($\delta=0$) assumes that the ends of $Q$ are neighbours of $r$ and its other vertices are not;
+\lean{exists\_decomp\_of\_connector\_mid} ($\delta=1$) assumes that exactly one other vertex $y$ of
+$Q$ is a neighbour of $r$. Both assume that every neighbour of $r$ is odd in $G'$
+(\lean{delList (starDel B r) Q.edges}) and the condition with $[t\le\lambda]$ for any
+$\lambda\ge\sum_{v\in V(Q)}\lceil d_{G'}(v)/2\rceil$; neither needs the length of $Q$ to be at most
+two. \lean{test1At\_of\_connector} and \lean{test1At\_of\_connector\_mid} are the spine forms. The
+proofs go through \lean{consPath} ($Q$ followed by a Lov\'asz decomposition of $G'$),
+\lean{connector\_core} (the counting, for any attachment plan in which every trivial member but at
+most one has a heavier designated partner off $Q$) and \lean{hallReassemble}.
 \end{remark}
 
 \begin{remark}[why not lift the connector]
@@ -352,7 +353,7 @@ $1{,}597$ unscheduled roots of degree $7$ are those among them with triangle dat
 roots & $1{,}756$ & $494$ & $1{,}597$\\
 Test1 (exact, \texttt{ret.c}) & $1{,}756$ & $494$ & $1{,}597$\\
 Theorem~A & $459$ & $459$ & $404$\\
-Theorem~B, $\delta=0$ connectors (Lean) & $838$ & -- & \\
+Theorem~B, $\delta=0$ connectors only & $838$ & -- & \\
 Theorem~B, connectors of length $\le2$ & $1{,}143$ & -- & $1{,}041$\\
 Theorems A $\cup$ B & $1{,}602$ & & $1{,}445$\\
 hypotheses of MR Thm.~74 / Thm.~166 & $24$ / $111$ & & \\
@@ -470,7 +471,7 @@ fails; a better estimate of how many A-paths a connector meets is needed.
 \item \emph{The dense middle.} At $n=15,17$ the method is undecided. Exact witnesses have more members
 than a Lov\'asz family, as re-tight observed for $K_{2k}-M$. A detachment or exchange argument, not a
 Lov\'asz decomposition, is probably required.
-\item \emph{Lean.} Theorem~\ref{thm:B} with $\delta=1$, and the free-path variant.
+\item \emph{Lean.} The free-path variant of \S\ref{sec:frozen}.
 \end{enumerate}
 
 \section*{Files}
@@ -478,7 +479,9 @@ Lov\'asz decomposition, is probably required.
 \item Lean: \texttt{lean/GallaiLean/DenseRoot.lean}: \lean{famReassemble}, \lean{hall\_defect\_two},
 \lean{hallReassemble}, \lean{exists\_decomp\_of\_oneEven}, \lean{test1At\_of\_decomp},
 \lean{test1At\_of\_oneEven}; \texttt{lean/GallaiLean/DenseRootB.lean}: \lean{consPath},
-\lean{connector\_core}, \lean{exists\_decomp\_of\_connector}, \lean{test1At\_of\_connector}. No
+\lean{exists\_lovasz\_connector}, \lean{connector\_core}, \lean{exists\_decomp\_of\_connector},
+\lean{exists\_decomp\_of\_connector\_mid}, \lean{test1At\_of\_connector},
+\lean{test1At\_of\_connector\_mid}. No
 \texttt{sorry}; \texttt{\#print axioms} gives \texttt{propext}, \texttt{Classical.choice},
 \texttt{Quot.sound} for every one of them; the full library builds (\texttt{lake build}, $18{,}436$
 jobs).

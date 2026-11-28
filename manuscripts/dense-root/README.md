@@ -25,10 +25,20 @@ Work in progress. Lean: `lean/GallaiLean/DenseRoot.lean`.
     (`data/drmA9_m0.out`);
   - frozen roots (multi-token explore, least potential 5, degree < n − 2): the method extended
     by one free path succeeds at 112 / 113 (`data/frz9.out`).
-- Theorem B (one connector), coverage tables, MR comparison, manuscript: in progress.
+- **Theorem B** (`lean/GallaiLean/DenseRootB.lean`, no `sorry`, standard axioms): s ∈ N(z),
+  d(z) = n − 3, one connector path Q between the two vertices of V(B) ∖ N(z), kept as a member:
+  `exists_decomp_of_connector` (no other vertex of Q adjacent to r, δ = 0),
+  `exists_decomp_of_connector_mid` (one such vertex y, δ = 1), spine forms `test1At_of_connector`,
+  `test1At_of_connector_mid`; machinery `consPath`, `exists_lovasz_connector`, `connector_core`.
+- Coverage (order 9, `scripts/coverage.py`): Theorem A 459, Theorem B 1,143, A ∪ B 1,602 of 1,756;
+  with the hypotheses of MR Thms 74/166 1,658. On multi-token's 1,597 unscheduled roots: 1,445 and
+  1,501 (`scripts/cov1597.py`). Residual families: 0 (Theorems A, B need |V(B) ∖ N(z)| = 2).
+- Manuscript `dense-root.tex` (compile with pdflatex twice).
 
 ## Scripts
 - `scripts/drm.cpp`: the method checker (options in the header).
-- `scripts/thm_cov.py`: coverage of the degree conditions (Theorem A, Theorem B with connectors of
-  length ≤ 2) and of the hypotheses of MR Thms 47, 74, 166.
+- `scripts/thm_cov.py`: the degree conditions (Theorem A, Theorem B with connectors of length ≤ 2)
+  and the hypotheses of MR Thms 47, 74, 166; `scripts/coverage.py` (per data set, also MR 50),
+  `scripts/cov1597.py`, `scripts/crosscheck.py` (certified roots have every-D success),
+  `scripts/look.py` (the uncovered roots by kind).
 - `scripts/mkJ.py` (residual format B with N(z) = {0..5} → J), `scripts/mkB.py` (J → B for ret.c).
