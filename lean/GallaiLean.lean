@@ -83,3 +83,4 @@ import GallaiLean.ConjN
 import GallaiLean.ConjNFar
 import GallaiLean.NeighbourAvoid
 import GallaiLean.TRN
+import GallaiLean.TRNSteer

@@ -23,3 +23,15 @@ python3 randg.py 400 11 11 13 > /tmp/trn_r1113.g6
 CORE=1 ./classify 10 < $O/one_even_7.g6 > $D/classify7_core.txt
 # repairs restricted to tests whose child has a witness (order 7)
 ( WIT=1 ./rot 0 < $O/one_even_7.g6 | tail -1; WIT=1 ./halves < $O/one_even_7.g6 | tail -1; WIT=1 ./local 0 0 < $O/one_even_7.g6 | tail -1 ) > $D/repairs7_witness.txt
+# two-token steering (Section 6): coverage on N-instances, all-tight ones, the residual, the core
+g++ -O2 -I ../../l1-induction/scripts -o steer steer.cpp
+g++ -O2 -I ../../l1-induction/scripts -o steer2 steer2.cpp
+( for k in 5 7 9; do echo "order $k"
+    ./steer N 0 0 < $O/one_even_$k.g6 | tail -1                 # move (T): the y-token only (independent DFS)
+    ./steer2 N 2000000 1 0 < $O/one_even_$k.g6 | tail -1        # the same with steer2 (cross-check)
+    ./steer2 N 2000000 0 0 < $O/one_even_$k.g6 | tail -1        # two tokens
+    ./steer2 RESID 2000000 0 0 < $O/one_even_$k.g6 | tail -1
+    ./steer2 CORETESTS 2000000 0 0 < $O/one_even_$k.g6 | tail -1
+  done ) > $D/steer.txt
+# independent verification of the construction (every schedule at orders 5, 7)
+( for k in 5 7; do SCHED=1 ./steer2 N 2000000 0 0 < $O/one_even_$k.g6 | python3 steer_verify.py; done ) > $D/steer_verify57.txt
