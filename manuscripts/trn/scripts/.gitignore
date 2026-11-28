@@ -1,0 +1,19 @@
+# compiled tools (build.sh)
+chain
+chainlist
+classify
+core
+rules
+minchain
+trne
+trnbud
+show
+clean
+rot
+halves
+local
+localshow
+repair
+repair2
+feat
+__pycache__/
