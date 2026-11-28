@@ -86,3 +86,4 @@ import GallaiLean.TRN
 import GallaiLean.TRNSteer
 import GallaiLean.Test2Lift
 import GallaiLean.Test2Converse
+import GallaiLean.Test1AllOdd

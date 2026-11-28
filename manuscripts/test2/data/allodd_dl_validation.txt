@@ -1,0 +1,12 @@
+# Validation of allodd_dl.c (fixed families against tools/route_ext.c query A; adjacent pairs admitted
+# with -A so that failures occur).  allodd_xcheck.py compares the FAIL set with route_ext on every set.
+## order 6 (13 connected all-odd graphs)
+X2 queries 2340 route_ext failures 784 allodd_dl failures 784 mismatches 0
+X3 queries 1560 route_ext failures 675 allodd_dl failures 675 mismatches 0
+## order 8 (224 graphs), X2
+X2 queries 188160 route_ext failures 21425 allodd_dl failures 21425 mismatches 0   (run of 28 Nov, 22 min)
+## the final version (orientation search for free sets) against the previous one (direct OR-clause search),
+## order 8, -A: identical FAIL lists (md5 of sorted output) for X2, F2, XF; order 6: identical for all six families
+x X2: sets 188160, fail 21425, undecided 0
+2 F2: sets 47040, fail 747, undecided 0
+u XF: sets 188160, fail 12585, undecided 0

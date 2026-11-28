@@ -16,3 +16,8 @@
 'Gallai.forestBase2_matching_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.forestBase2_matching_of_test2' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.exists_isolated_of_delVert' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.twoEnds_of_oddBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.even_delVert_iff_adj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.test1At_of_oddBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.oddBase_of_matching' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.test1At_of_matchingOdd' depends on axioms: [propext, Classical.choice, Quot.sound]

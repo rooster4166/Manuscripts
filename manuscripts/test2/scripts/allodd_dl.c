@@ -105,6 +105,66 @@ static int target_violated(void) {
     return 0;
 }
 
+/* ---- phase 2 accelerators (targeted search only) ------------------------------------------
+   The literals of the target: lit_c[i], lit_x[i] for [c|x].  Once c is ended, the literal is
+   decided (satisfied iff x is not on Q(c)).  The remaining subproblem is then determined by
+   (R, ended, the decided literals' values), so failures are memoised under that key. */
+static int nlit, lit_c[6], lit_x[6], lit_cl[6];
+static void target_literals(void) {
+    nlit = 0;
+    for (int j = 0; j < target->k; j++)
+        for (int c = 0; c < n; c++) for (int x = 0; x < n; x++)
+            if (target->cl[j] & B(c, x)) { lit_c[nlit] = c; lit_x[nlit] = x; lit_cl[nlit] = j; nlit++; }
+}
+static int lit_status(void) {           /* bit i: literal i decided and satisfied */
+    int st = 0;
+    for (int i = 0; i < nlit; i++) if (endS[lit_c[i]] >= 0 && !(endS[lit_c[i]] >> lit_x[i] & 1)) st |= 1 << i;
+    return st;
+}
+/* vertices that the path starting at s must avoid: x for each literal [s|x] that is the last
+   undecided literal of a clause whose decided literals are all violated */
+static int forced_avoid(int s) {
+    if (!target) return 0;
+    int f = 0;
+    for (int i = 0; i < nlit; i++) {
+        if (lit_c[i] != s) continue;
+        int j = lit_cl[i], alive = 0;
+        for (int t = 0; t < nlit; t++) {
+            if (t == i || lit_cl[t] != j) continue;
+            int c = lit_c[t];
+            if (endS[c] < 0 || !(endS[c] >> lit_x[t] & 1)) { alive = 1; break; }
+        }
+        if (!alive) f |= 1 << lit_x[i];
+    }
+    return f;
+}
+#define HBITS 21
+#define HSIZE (1u << HBITS)
+typedef struct { uint64_t R; uint32_t k; uint32_t stamp; } hent;
+static hent *htab; static uint32_t hstamp = 1; static unsigned hcount;
+static inline unsigned hidx(uint64_t R, uint32_t k) {
+    uint64_t h = R * 0x9E3779B97F4A7C15ULL ^ ((uint64_t)k * 0xC2B2AE3D27D4EB4FULL);
+    return (unsigned)(h >> (64 - HBITS));
+}
+static int memo_has(uint64_t R, uint32_t k) {
+    for (unsigned i = hidx(R, k), t = 0; t < 64; t++, i = (i + 1) & (HSIZE - 1)) {
+        if (htab[i].stamp != hstamp) return 0;
+        if (htab[i].R == R && htab[i].k == k) return 1;
+    }
+    return 0;
+}
+static void memo_put(uint64_t R, uint32_t k) {
+    if (hcount > HSIZE / 2) return;
+    for (unsigned i = hidx(R, k), t = 0; t < 64; t++, i = (i + 1) & (HSIZE - 1))
+        if (htab[i].stamp != hstamp) { htab[i].R = R; htab[i].k = k; htab[i].stamp = hstamp; hcount++; return; }
+}
+static void memo_reset(void) {
+    if (!htab) htab = calloc(HSIZE, sizeof(hent));
+    hstamp++; hcount = 0;
+    if (hstamp == 0) { memset(htab, 0, HSIZE * sizeof(hent)); hstamp = 1; }
+}
+static int cur_avoid;                   /* forced-avoid mask of the path being grown */
+
 static void record(void) {
     u128 sat = 0;
     for (int i = 0; i < np; i++) {
@@ -116,23 +176,56 @@ static void record(void) {
         }
     }
     ndec++;
+    if (target) {
+        int ok = 1;
+        for (int j = 0; j < target->k; j++) if (!(target->cl[j] & sat)) { ok = 0; break; }
+        if (ok) target = NULL;
+    }
     for (int i = 0; i < nsets; ) {
         cset *s = &sets[i];
         int ok = 1;
         for (int j = 0; j < s->k; j++) if (!(s->cl[j] & sat)) { ok = 0; break; }
-        if (ok) { if (s == target) target = NULL; sets[i] = sets[--nsets]; }
+        if (ok) sets[i] = sets[--nsets];
         else i++;
     }
     if (!target && phase1cap && ndec >= phase1cap) stopflag = 1;
 }
 
+/* Necessary conditions for R to split into remaining_paths paths whose ends are exactly the
+   unended vertices, one end each: parities; and, per component C of R with q = |C - ended|/2
+   paths (a path lies in one component and visits a vertex at most once), q >= 1 if C has an
+   edge, d_R(v) <= 2q at an ended v, d_R(v) <= 2q - 1 at an unended v, e(C) <= q(|C| - 1).
+   An unended vertex of R-degree 0 is infeasible (it must end a path). */
 static int feasible(uint64_t R, int endedm, int remaining_paths) {
+    int deg[MAXN], nb[MAXN];
     for (int v = 0; v < n; v++) {
         int d = __builtin_popcountll(R & inc[v]);
+        deg[v] = d;
         if (endedm >> v & 1) { if (d & 1) return 0; }
         else { if (!(d & 1)) return 0; }
+        nb[v] = 0;
     }
     if (__builtin_popcountll(R) > remaining_paths * (n - 1)) return 0;
+    for (int e = 0; e < m; e++) if (R >> e & 1) { nb[eu[e]] |= 1 << ev[e]; nb[ev[e]] |= 1 << eu[e]; }
+    int seen = 0, totq = 0;
+    for (int v0 = 0; v0 < n; v0++) {
+        if ((seen >> v0 & 1) || deg[v0] == 0) continue;
+        int C = 1 << v0, fr = 1 << v0;
+        while (fr) { int v = __builtin_ctz(fr); fr &= fr - 1; int add = nb[v] & ~C; C |= add; fr |= add; }
+        seen |= C;
+        int un = __builtin_popcount(C & ~endedm), q = un / 2;
+        if (q < 1) return 0;
+        totq += q;
+        int ec = 0;
+        for (int cm = C; cm; cm &= cm - 1) {
+            int v = __builtin_ctz(cm);
+            ec += deg[v];
+            if (endedm >> v & 1) { if (deg[v] > 2 * q) return 0; }
+            else if (deg[v] > 2 * q - 1) return 0;
+        }
+        if (ec / 2 > q * (__builtin_popcount(C) - 1)) return 0;
+    }
+    if (totq != remaining_paths) return 0;
     return 1;
 }
 
@@ -145,6 +238,7 @@ static void extend(uint64_t R, int x, int cur, int vmask, uint64_t pm) {
     for (int i = 0; i < adeg[cur]; i++) {
         int y = adjv[cur][i], e = adje[cur][i];
         if (!(R >> e & 1) || (vmask >> y & 1)) continue;
+        if (cur_avoid >> y & 1) continue;
         uint64_t pm2 = pm | (1ULL << e);
         int vm2 = vmask | (1 << y);
         /* close the path at y if y is unended */
@@ -156,9 +250,9 @@ static void extend(uint64_t R, int x, int cur, int vmask, uint64_t pm) {
                 pathsu[np] = x; pathsv[np] = y; pathsS[np] = vm2; np++;
                 endS[x] = vm2; endS[y] = vm2;
                 if (!target_violated()) {
-                    int save = ended; ended = e2;
+                    int save = ended, sa = cur_avoid; ended = e2;
                     dfs(R2);
-                    ended = save;
+                    ended = save; cur_avoid = sa;
                 }
                 endS[x] = -1; endS[y] = -1;
                 np--;
@@ -175,18 +269,34 @@ static void dfs(uint64_t R) {
     if (budget && ++nodes > budget) { aborted = 1; return; }
     if (np == n / 2) { if (R == 0) record(); return; }
     int x = -1;
-    for (int v = 0; v < n; v++) if (!(ended >> v & 1)) { x = v; break; }
+    uint32_t key = 0;
+    if (target) {
+        /* every unended vertex ends exactly one remaining path, so any of them may start the
+           next path: prefer the end of an undecided literal */
+        for (int i = 0; i < nlit && x < 0; i++) if (!(ended >> lit_c[i] & 1)) x = lit_c[i];
+        key = (uint32_t)ended | ((uint32_t)lit_status() << 16);
+        if (memo_has(R, key)) return;
+    }
+    if (x < 0) for (int v = 0; v < n; v++) if (!(ended >> v & 1)) { x = v; break; }
     if (x < 0) return;
+    cur_avoid = forced_avoid(x);
+    struct { int ndec, nsets; } before = { ndec, nsets };
+    cset *tg = target;
     extend(R, x, x, 1 << x, 0);
+    /* memoise a failure of the target search (no decomposition recorded below this node) */
+    if (tg && target == tg && !aborted && ndec == before.ndec) memo_put(R, key);
+    (void)before.nsets;
 }
 
 int main(int argc, char **argv) {
     budget = 0;
     const char *fams = "23xyuv";
+    int allow_adj = 0;      /* -A (testing only): also use adjacent pairs, where failures occur */
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-b") && i + 1 < argc) budget = atoll(argv[++i]);
         else if (!strcmp(argv[i], "-f") && i + 1 < argc) fams = argv[++i];
         else if (!strcmp(argv[i], "-d") && i + 1 < argc) ndives = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "-A")) allow_adj = 1;
     }
     int use[6] = {0};
     const char *codes = "23xyuv";
@@ -207,8 +317,8 @@ int main(int argc, char **argv) {
         if (seen != (1 << n) - 1) continue;
         ngraphs++;
         /* non-adjacent unordered pairs */
-        int pa[80], pb[80], npair = 0;
-        for (int a = 0; a < n; a++) for (int b = a + 1; b < n; b++) if (!(A[a] >> b & 1)) { pa[npair] = a; pb[npair] = b; npair++; }
+        int pa[80], pb[80], npair = 0;   /* n <= 12: at most 66 pairs */
+        for (int a = 0; a < n; a++) for (int b = a + 1; b < n; b++) if (allow_adj || !(A[a] >> b & 1)) { pa[npair] = a; pb[npair] = b; npair++; }
         nsets = 0;
         u128 cl[3]; int vs[6];
         /* free clause of pair i, fixed clause of pair i in orientation o */
@@ -264,10 +374,35 @@ int main(int argc, char **argv) {
             static cset left[200000];
             while (nsets > 0) {
                 cset cur = sets[0];
-                target = &sets[0];
-                nodes = 0; aborted = 0; ended = 0; np = 0; stopflag = 0;
-                for (int v = 0; v < n; v++) endS[v] = -1;
-                dfs(R);
+                /* a set holds iff one of its fixed orientations (one literal per clause) holds:
+                   search the orientations one by one, each a conjunction of literals */
+                int lits[3][2], nl[3], norient = 1, found = 0, anyab = 0;
+                for (int j = 0; j < cur.k; j++) {
+                    nl[j] = 0;
+                    for (int c = 0; c < n; c++) for (int x = 0; x < n; x++)
+                        if (cur.cl[j] & B(c, x)) { lits[j][0 + nl[j]] = c * MAXN + x; nl[j]++; }
+                    norient *= nl[j];
+                }
+                static cset fixedt;
+                for (int o = 0; o < norient && !found; o++) {
+                    int oo = o;
+                    fixedt.k = cur.k; fixedt.fam = cur.fam;
+                    for (int j = 0; j < cur.k; j++) {
+                        int l = lits[j][oo % nl[j]]; oo /= nl[j];
+                        fixedt.cl[j] = B(l / MAXN, l % MAXN);
+                    }
+                    target = &fixedt;
+                    target_literals();
+                    memo_reset();
+                    cur_avoid = 0;
+                    nodes = 0; aborted = 0; ended = 0; np = 0; stopflag = 0;
+                    for (int v = 0; v < n; v++) endS[v] = -1;
+                    dfs(R);
+                    if (target == NULL) found = 1;
+                    if (aborted) anyab = 1;
+                }
+                aborted = found ? 0 : anyab;
+                target = found ? NULL : &sets[0];
                 if (target != NULL) {
                     /* not satisfied: exhaustive (fail) or budget (undecided) */
                     cur.v[5] = cur.v[5]; /* keep */

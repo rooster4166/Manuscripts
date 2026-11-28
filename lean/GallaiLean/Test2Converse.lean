@@ -4,7 +4,7 @@ import GallaiLean.CycleInsert
 /-!
 # The converse of the floor lift, matching case (session `claude/test2`)
 
-Manuscript: `manuscripts/test2/test2.tex`, Proposition 5.2 (the matching case).
+Manuscript: `manuscripts/test2/test2.tex`, `prop:floorconv` and `prop:conv` (the matching case).
 
 Let the even vertices of `B` be `w` and the vertices of disjoint pairs `L = [(t₁, s₁), …]`, edges of
 `B`. If `B` has a decomposition into at most `(|B| − 1)/2` paths in which every pair edge `tᵢsᵢ` is
@@ -468,7 +468,7 @@ theorem countP_comp_of_nodup (L : List (V × V)) (f : V × V → V) (hnd : (L.ma
   · exact List.count_eq_one_of_mem hnd hv
   · exact List.count_eq_zero_of_not_mem hv
 
-/-- **The converse of the floor lift, matching case** (manuscript Proposition 5.2). Let the even
+/-- **The converse of the floor lift, matching case** (manuscript `prop:floorconv`). Let the even
 vertices of `B` be `w` and the vertices of the disjoint pairs `L`, edges of `B`. If `B` has a
 decomposition into at most `(|B| − 1)/2` paths in which every pair edge `p.1 p.2` is the end edge,
 at `p.1`, of its path, then `B − L` has a Lovász decomposition in which, for every pair, the paths
@@ -626,7 +626,7 @@ theorem mem_pairEdge_swap {L : List (V × V)} {e : Sym2 V} :
   · rintro ⟨p, hp, rfl⟩; exact ⟨p, hp, Sym2.eq_swap⟩
   · rintro ⟨p, hp, rfl⟩; exact ⟨p, hp, Sym2.eq_swap⟩
 
-/-- **The converse of the forest lift, matching case** (manuscript Proposition 4.5(a)). Let `z, r`
+/-- **The converse of the forest lift, matching case** (manuscript `prop:conv`(a)). Let `z, r`
 be the only even vertices of `J`, adjacent, and let `L` be disjoint pairs `(t, s)` (parent `t`,
 child `s`) covering `N(z) = r :: T`, with `r` a parent, forming Test2 forest data. Let `D` decompose
 `J` minus all edges at `z` (that is, `J − z` with `z` isolated) into at most `|J|/2` paths with at
