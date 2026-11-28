@@ -1,0 +1,5 @@
+'Gallai.leaf_tails' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.lovasz_avoid_leafTails' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.KeepsTails.avoid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.PathDecomp.add_path2_supp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.keepsTails_of_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
