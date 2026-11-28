@@ -1,4 +1,4 @@
-import GallaiLean.MultiToken
+import GallaiLean.MultiTokenObstruct
 open Gallai
 #print axioms Gallai.fan_step_multi
 #print axioms Gallai.tailGood_move
@@ -11,3 +11,5 @@ open Gallai
 #print axioms Gallai.triTails_inv
 #print axioms Gallai.triangleBase_of_steerK
 #print axioms Gallai.test1At_of_steerK
+#print axioms Gallai.not_steerK
+#print axioms Gallai.not_steerK_triangle
