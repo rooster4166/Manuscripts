@@ -5,7 +5,8 @@ import GallaiLean.TRNSteer
 /-!
 # The forest lift to Test2 (session `claude/test2`)
 
-Manuscript: `manuscripts/test2/test2.tex`, §3 (the forest lift for the three-end test).
+Manuscript: `manuscripts/test2/test2.tex` (results cited by their LaTeX labels), §`sec:lift` (the forest
+lift for the three-end test), §`sec:floorlift` (the floor lift and DL), §`sec:range` (deletion degree four).
 
 Let `z, r` be the only even vertices of `J`, adjacent, with `d(r) ≥ 3`. Put `T = N(z) − r` (a list)
 and let `Φ` be a set of edges of `J − z` whose odd-degree vertices are exactly `N(z) = T ∪ {r}`,
@@ -31,7 +32,7 @@ gives one more.
   size `≤ |J|/2` and with at least two ends at `r`, gives `Test2At` (trim the leaf, or drop the
   path `zr` and split once).
 * `zDel2`, `forM2`, `leafT2`, `ForestData2`, `ForestBase2`.
-* **`test2At_of_forestBase2`** (manuscript Theorem 3.2), **`test2_of_forestBases2`**.
+* **`test2At_of_forestBase2`** (manuscript `thm:lift`), **`test2_of_forestBases2`**.
 -/
 
 open SimpleGraph
@@ -46,7 +47,7 @@ section appendForestEnds
 
 variable {U : Type*} [DecidableEq U]
 
-/-- **Appending a forest, with ends** (manuscript Lemma 3.1). As `append_forest`, and moreover every
+/-- **Appending a forest, with ends** (manuscript `lem:step`). As `append_forest`, and moreover every
 vertex `x` loses one end for each pair with child `x` and gains one for each pair with parent `x`. -/
 theorem append_forest_ends [Fintype U] {G : SimpleGraph U} :
     ∀ (L : List (U × U)) (K : SimpleGraph U),
@@ -234,7 +235,7 @@ variable {V : Type u} [Fintype V] [DecidableEq V]
 /-- The edges `zv` (`v ∈ T`) at `z`. -/
 def zDel2 (z : V) (T : List V) : List (Sym2 V) := T.map (fun v => s(z, v))
 
-/-- **The Test2 forest base graph** `M = J − zT − Φ` (manuscript Definition 3.1). -/
+/-- **The Test2 forest base graph** `M = J − zT − Φ` (manuscript `def:data`). -/
 abbrev forM2 (J : SimpleGraph V) (z : V) (T : List V) (L : List (V × V)) : SimpleGraph V :=
   delList J (zDel2 z T ++ L.map pairEdge)
 
@@ -481,7 +482,7 @@ theorem ForestData2.forM2_size (D₀ : PathDecomp (forM2 J z T L))
 
 end data
 
-/-- **The forest lift for Test2** (manuscript Theorem 3.2). If `z, r` are the only even vertices of
+/-- **The forest lift for Test2** (manuscript `thm:lift`). If `z, r` are the only even vertices of
 `J`, `d(r) ≥ 3`, and `(J, z, r)` has a Test2 forest base, then Test2 holds at `(z, r)`. -/
 theorem test2At_of_forestBase2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
     (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
@@ -539,7 +540,7 @@ def FloorBase (B : SimpleGraph W) [DecidableRel B.Adj] (w : W) (T : List W) : Pr
     (∀ p ∈ L, ∀ q ∈ L, p.1 ≠ q.1 → p.2 = q.2 → ∀ P ∈ D₀.paths,
       ¬ ((P.src = p.1 ∨ P.tgt = p.1) ∧ (P.src = q.1 ∨ P.tgt = q.1)))
 
-/-- **The floor lift** (manuscript Theorem 4.1). If the even vertices of `B` are exactly `w` and the
+/-- **The floor lift** (manuscript `thm:floor`). If the even vertices of `B` are exactly `w` and the
 vertices of `T`, a floor base gives a decomposition of `B` into at most `(|B| − 1)/2` paths. -/
 theorem floor_of_floorBase (B : SimpleGraph W) [DecidableRel B.Adj] {w : W} {T : List W}
     (hev : ∀ v, Even (B.degree v) ↔ v = w ∨ v ∈ T) (h : FloorBase B w T) :
@@ -669,7 +670,7 @@ theorem even_delVert_iff (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
           · exact hvr h))
       omega
 
-/-- **The floor lift for Test2** (manuscript Corollary 4.2). Let `z, r` be the only even vertices
+/-- **The floor lift for Test2** (manuscript `thm:floor`, last clause). Let `z, r` be the only even vertices
 of `J`, adjacent, `d(r) ≥ 3`, and let `w`, `T` list the even vertices of `J − z` (that is,
 `N(z) − r`). A floor base of `J − z` gives Test2 at `(z, r)`. -/
 theorem test2At_of_floorBase (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
@@ -733,7 +734,7 @@ theorem countP_pairEdge_of_nodup :
         simp [hp2, h1]
       · simp [h1, h2]
 
-/-- **The floor lift, matching case** (manuscript Theorem 4.1 with `Φ` a matching). If the even
+/-- **The floor lift, matching case** (manuscript `thm:floor` with `Φ` a matching). If the even
 vertices of `B` are `w` and the vertices of the disjoint pairs `L` (edges of `B`), a Lovász
 decomposition of `B − L` satisfying the disjunction of every pair gives a decomposition of `B` into
 at most `(|B| − 1)/2` paths. -/
@@ -802,7 +803,7 @@ section floorDL
 
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/-- **DL gives Test2** (manuscript Corollary 4.4). Let `z, r` be the only even vertices of `J`,
+/-- **DL gives Test2** (manuscript `cor:dl`). Let `z, r` be the only even vertices of `J`,
 adjacent, `d(r) ≥ 3`; let `w ∈ N(z) − r` and let `L` be disjoint pairs, edges of `J − z`, covering
 exactly `N(z) − {r, w}`. If no pair is a pair of universal twins of its component of
 `(J − z) − L`, then Conjecture DL gives Test2 at `(z, r)` (through the floor of `J − z`). -/
@@ -916,7 +917,7 @@ theorem delPairs_degree_mod {W : Type*} [Fintype W] [DecidableEq W] (B : SimpleG
       rw [Nat.not_even_iff] at ho
       omega
 
-/-- **One pair suffices at deletion degree four** (manuscript Proposition 5.3). Let `z, r` be the
+/-- **One pair suffices at deletion degree four** (manuscript `prop:pair`). Let `z, r` be the
 only even vertices of `J`, adjacent, `d(r) ≥ 3`, and let the even vertices of `J − z` be `w, a, b`
 with `ab` an edge. If some Lovász decomposition of `(J − z) − ab` has its path ending at `b` avoiding
 `a`, then Test2 holds at `(z, r)`. -/
@@ -983,7 +984,7 @@ theorem onePair_evenSet (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
     exact ⟨by omega, Nat.even_iff.mpr hev2⟩
 
 /-- **Deletion degree four by separation**: if moreover `a, b` have no common neighbour in
-`(J − z) − ab`, Test2 holds at `(z, r)` (manuscript Corollary 5.4(a)). -/
+`(J − z) − ab`, Test2 holds at `(z, r)` (manuscript `cor:pair`(a)). -/
 theorem test2At_of_pair_farApart (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
     (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
     {w a b : {v | v ≠ z}}
@@ -1003,7 +1004,7 @@ theorem test2At_of_pair_farApart (J : SimpleGraph V) [DecidableRel J.Adj] {z r :
     ⟨D, hD, fun P hP hend x hx => by rw [Finset.mem_singleton] at hx; subst hx; exact hav P hP hend⟩ hr
 
 /-- **Deletion degree four by two-token steering**: a two-token schedule for `((J − z) − ab, b, {a})`
-gives Test2 at `(z, r)` (manuscript Corollary 5.4(b); `avoid_of_steer2`). -/
+gives Test2 at `(z, r)` (manuscript `cor:pair`(b); `avoid_of_steer2`). -/
 theorem test2At_of_pair_steer2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
     (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr3 : 3 ≤ J.degree r)
     {w a b : {v | v ≠ z}}
