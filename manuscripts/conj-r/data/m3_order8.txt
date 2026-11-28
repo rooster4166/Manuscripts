@@ -10,3 +10,9 @@ the 84 J3 failures, paths of length <= 2: total 84 certified and executed 37 {'B
   the remaining 47, paths of length <= 7: total 47 certified and executed 47 {'B': 47}
 the 108 instances without a joint choice, length <= 7: total 108 certified and executed 108 {'B': 108}
 random sample of 1,500 of the 84,064 (seed 7), length <= 3: total 1500 certified and executed 1498 {'A': 1491, 'B': 7}; the 2 others with length <= 7: both certified (B)
+## Criterion R3 at ALL 84,064 instances (r3.py, three parallel runs, paths of length <= 3; the 51 left over rerun with length <= 7):
+total 28022 certified and executed 28022 {'A': 27863, 'B': 159}
+total 28021 certified and executed 28020 {'A': 27945, 'B': 75}
+total 28021 certified and executed 27971 {'A': 27957, 'B': 14}
+rerun of the 51: total 51 certified and executed 51 {'B': 51}
+total: 84,064 certified and executed: form A 83,765, form B 299; no EXECFAIL. Certificates: m3_R3_all_order8.txt.gz (one OK line per instance; the 51 reruns appear with their length <= 7 certificate).
