@@ -1,0 +1,9 @@
+ROOT MV~~Nv{f~|q|~\lj_ r=2 verdict=2
+ROOT OV~~N}}~nyqz|Ef[~RFzF r=4 verdict=2
+ROOT OF~~~U|^ay^v^hvayjnzw r=0 verdict=2
+ROOT OF~~~U|^ay^v^hvayjnzw r=1 verdict=2
+ROOT OF~~~U|^ay^v^hvayjnzw r=2 verdict=2
+ROOT M^~|x|vvhrnMnLy~_ r=0 verdict=2
+ROOT M^~|x|vvhrnMnLy~_ r=1 verdict=2
+ROOT M^~|x|vvhrnMnLy~_ r=5 verdict=2
+SUMMARY roots 8 scheduled 0 undecided 8 | data 99 with-schedule 0 | instances 396 scheduled 0 undecided 136 | nodes 2720000580
