@@ -65,7 +65,7 @@ No `sorry`. All 15 theorems use only the axioms `propext`, `Classical.choice`, `
   - Every schedule at orders 5 and 7 (843) was executed by an independent Python verifier (`steer_verify.py`). At order 9, a sample of 5,957 of the 238,265 schedules (every 40th) was executed, all verified (`data/steer_verify9_sample.txt`).
 - **TRN and TRN-E hold in every test run:**
   - all 490,923 order-9 TRN tests;
-  - 39,098 tests on 400 random graphs of orders 11 and 13. One test was budget-undecided and holds with no budget. 101 candidate tests were dropped because the child was budget-undecided: RANDOM101README;
+  - 39,098 tests on 400 random graphs of orders 11 and 13. One test was budget-undecided and holds with no budget. 101 candidate tests were dropped because the child was budget-undecided. With no budget (300 s per graph, `scripts/random_nobudget.sh`), 397 graphs finish: their 40 dropped candidates have a good child, and TRN-E holds in all 38,749 tests. The other 61 candidates, in 3 dense order-13 graphs, remain undecided;
   - all 365,665 and 466,120 tests of the order-11 `geng` slices 17/2000 and 517/2000.
 
   0 TRN violations in all of these.

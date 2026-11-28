@@ -687,7 +687,11 @@ order $11$, \texttt{geng} slice $517/2000$ & all in the slice & $466{,}120$ & $0
 \emph{The random run.} With the budget, one test was undecided for $\TRNE$ (\texttt{LUIiOg?gICW\^{}XK},
 $g=6$, $y=10$, $x=3$, $u=1$). Without a budget, $\TRNE$ holds there, and in all $96$ tests of that
 graph. A further $101$ candidate tests were dropped from the $39{,}098$ because the goodness of the
-child was undecided at the budget. RANDOM101
+child was undecided at the budget. We re-ran the $400$ graphs one by one with no budget and a limit
+of $300$\,s per graph (\texttt{scripts/random\_nobudget.sh},
+\texttt{data/random\_11\_13\_nobudget.txt}). $397$ graphs finished. Their $40$ dropped candidates
+all have a good child, and $\TRNE$ holds in all $38{,}749$ tests of these graphs. The other $61$
+candidates lie in three order-$13$ graphs that did not finish, and remain undecided.
 
 $\TRNE$ implies $\TRN$, and also the re-choice statement of~\cite{L1I}: some good $\cD'$ has a
 chain avoiding $y$. The computation is a two-path oracle query: in $K$, does some Lov\'asz
