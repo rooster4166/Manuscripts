@@ -858,3 +858,39 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 - **The all-odd bases themselves exist:** 54/54 roots by exact search.
 - **So the limitation is the steering method, not the target.** The dense part of the spine needs a non-inductive tool, such as an exchange argument or a dense-graph theorem.
 - **Executor bug found by multi-token:** the final Test1 boolean had not been asserted. It is fixed, and every schedule was re-verified.
+
+## 32. L_N is the engine of both spine tests (coordinator, 2026-11-28 06:55)
+
+**Conjecture L_N** (route-descent Conj `conj:LN`). Let F have all degrees odd, and let c_1a_1, …, c_ma_m be pairwise disjoint non-adjacent pairs. Then some Lovász decomposition of F has a_i ∉ V(Q(c_i)) for every i.
+
+**What it implies.**
+- With every orientation fixed, L_N implies all the free and mixed forms (test2's `conj:common`).
+- It therefore implies both all-odd matching bases: (T1) by `test1At_of_matchingOdd`, and (T2) by `test2At_of_forestBase2` in the matching case.
+- **So L_N ⇒ (T1) and (T2) at every root where J[N(z)] has a perfect matching.**
+- Route-descent Prop `prop:LN` adds that L_N ⇒ Gallai for graphs whose even subgraph has a perfect matching.
+- clt `lN_of_cltB`: CLT-B ⇒ L_N.
+
+**Evidence (test2, E34; exact tester validated against route_ext).** Every connected all-odd graph of order 10 (32,851 graphs) was checked, with every choice of 2 or 3 disjoint non-adjacent pairs:
+- **X2 (2 fixed): 20,569,948 sets. X3 (3 fixed): 102,784,552 sets.**
+- Free forms: F2 5.1M, F3 12.8M. Mixed forms: XF 20.6M, XF2 77.1M.
+- **0 failures and 0 undecided in 239,003,418 sets.** Orders 6 and 8 also give 0.
+
+**Proved.**
+- L_1, the case m = 1 (`lovasz_avoid_nonadj`). Proof: attach a leaf at c, then apply the separation theorem.
+- NA, the adjacent version, with its exact boundary.
+- The packed-set forms.
+
+**Why m ≥ 2 is hard** (route-descent Rem `rem:L1res`).
+- The leaf trick creates m even vertices.
+- The packed form of the trick fails at several leaves (the star K_{1,3} example).
+- k-token steering on all-odd instances is weak (multi-token: 25% on the all-odd lift instances).
+
+**No universal-twin exception is possible.** In an all-odd component every degree is odd, but a non-adjacent twin pair would have degree |C| − 2, which is even.
+
+**Status.** **L_N(2) is the single cleanest open statement on the main line.** A dedicated session (`ln`) is assigned to it.
+
+**Remaining routes to full Gallai if L_N holds.**
+- Roots without matching data: the forest and all-odd forest bases (n ≤ 9: everything except six instances of the fat theta K_{3,6} + edge).
+- Cones (RE).
+- (T2) at d ≥ 10.
+- The lifts are all in Lean. Data existence and the exceptional families need separate treatment.
