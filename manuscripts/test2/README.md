@@ -24,7 +24,7 @@ Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; au
 | `data/axioms.txt` | `#print axioms` for the Lean lift. |
 | `scripts/tb2_floor.py` | The floor lift (B − Φ with w the only even vertex), per instance or per matching data choice. |
 | `scripts/coverage.py`, `scripts/dz4_cover.py`, `scripts/lit_cover.py` | Reach of the proved tools: packed sets (separation / L1 / NA set forms), d(z) = 4 by separation or two-token schedules (port of trn steer2.cpp), Pyber/Fan floor conditions. |
-| `scripts/allodd_pairs.py`, `scripts/cones.py`, `scripts/gen_t2.py` | Conjecture 7.2 (all-odd, two constraints); cone instances; random order-12 generator. |
+| `scripts/allodd_pairs.py`, `scripts/cones.py`, `scripts/gen_t2.py` | Conjecture `conj:two` (all-odd, two constraints); cone instances; random order-12 generator. |
 | `data/forestbase2_order10*`, `data/floorbase_*`, `data/dz4_*`, `data/coverage_*`, `data/lit_cover_*` | Outputs of the above. |
 | `data/t2_order12_sample*` | 20,000 random order-12 graphs, 40,000 instances. |
 | Lean | `lean/GallaiLean/Test2Lift.lean`: lifts (`test2At_of_forestBase2`, `test2At_of_floorBase`, `floor_of_matchingBase`), `test2At_of_floor`, `test2At_of_disjL1`, d(z)=4 (`test2At_of_pair_farApart`, `test2At_of_pair_steer2`). `lean/GallaiLean/Test2Converse.lean`: converses, matching case (`matchingFloorBase_of_terminal`, `forestBase2_matching_of_terminal`). `lean/GallaiLean/Test1AllOdd.lean`: the all-odd lift for (T1) (`twoEnds_of_oddBase`, `test1At_of_oddBase`) and its matching case (`oddBase_of_matching`, `test1At_of_matchingOdd`). |

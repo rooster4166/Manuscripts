@@ -1,7 +1,8 @@
 /* allodd_dl.c -- exact test of disjunctive / fixed avoidance in graphs with no even vertex
    (test2 session).
 
-   For every connected graph G on stdin (graph6, n <= 12) whose degrees are all odd, a Lovasz
+   For every connected graph G on stdin (graph6, n <= 10: the literal masks [c|x] use bit
+   c * 12 + x of a 128-bit word and the edge masks are 64-bit) whose degrees are all odd, a Lovasz
    decomposition is a decomposition into n/2 paths with exactly one end at every vertex; Q(c) is
    the path ending at c.  For a non-adjacent ordered pair (c, x) write [c|x] for "x not in Q(c)".
    Constraint families (all vertices involved distinct, all pairs non-adjacent):
@@ -9,7 +10,7 @@
      F3  three free pairs                                                (all-odd DL(3))
      X2  two fixed        [a|b] and [c|d]
      X3  three fixed
-     XF  one fixed + one free     [c|x] and ([a|b] or [b|a])             (Conjecture 7.2)
+     XF  one fixed + one free     [c|x] and ([a|b] or [b|a])             (manuscript conj:two)
      XF2 one fixed + two free                                            (the d(z)=6 matching base)
    The program enumerates the Lovasz decompositions by depth-first search (lowest unended vertex
    is an end; branch over all paths from it to an unended vertex; prune by the parity of the
@@ -308,6 +309,7 @@ int main(int argc, char **argv) {
     while (fgets(line, sizeof line, stdin)) {
         line[strcspn(line, "\r\n")] = 0;
         if (!line[0] || !read_g6(line)) continue;
+        if (n > 10) { fprintf(stderr, "n > 10 not supported: %s\n", line); exit(1); }
         int odd = 1;
         for (int v = 0; v < n; v++) if (!(adeg[v] & 1)) odd = 0;
         if (!odd) continue;
@@ -371,7 +373,9 @@ int main(int argc, char **argv) {
             /* phase 2: one targeted search per remaining set */
             phase1cap = 0;
             int nleft = 0;
-            static cset left[200000];
+            static cset left[200000];   /* at most 200000 FAIL/UNDEC sets are printed and counted per
+                                           graph; this can only undercount failures, so "fail 0"
+                                           remains exact */
             while (nsets > 0) {
                 cset cur = sets[0];
                 /* a set holds iff one of its fixed orientations (one literal per clause) holds:

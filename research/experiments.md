@@ -1893,6 +1893,7 @@ This closes the validation GAP of A37.
 - Population: every 3-connected J with one even vertex, n = 5, 7, 9 (1 + 28 + 5,231 graphs; 25,340 instances).
 - Matching base at all 17,228 instances with matching data.
 - Spanning-tree join: r a root at 8,103; r a child (c(r) ≥ 2) at 3 (the cone over K_{2,6} at both hubs, and one relative).
+- Audit A37b (`research/audit/A37b-test2.md`): sound, no ERROR or GAP; reproduced the (T1) data, the slack witnesses and the set counts, and sampled the order-10 run.
 - No all-odd base at 6: J = K_{3,6} + h2h3, z = h1, r a leaf. A hand proof is in Example `ex:t1theta`.
 - Lean: `test1At_of_oddBase` (both rootings) and `test1At_of_matchingOdd`; standard axioms.
 
@@ -1902,7 +1903,7 @@ pruning and memoised failures; free sets are searched through their fixed orient
   0 failures, 0 undecided. By family:
   - X2 20,569,948; X3 102,784,552;
   - F2 5,142,487; F3 12,848,069;
-  - XF (Conjecture 7.2) 20,569,948; XF2 77,088,414.
+  - XF (Conjecture `conj:two`) 20,569,948; XF2 77,088,414.
 - Orders 6 and 8: 0 failures; the XF counts 428 and 43,400 reproduce `allodd_pairs.py`.
 - Validation with adjacent pairs admitted (`-A`, so that failures exist), against route_ext query A:
   - order 6: 784 + 675 failures, no mismatch;

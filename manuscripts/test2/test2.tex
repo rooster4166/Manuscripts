@@ -38,8 +38,9 @@ even vertex; $1$, $28$ and $5{,}231$ graphs, matching A8's counts; $4+126+25{,}2
 tested. Every one of the $17{,}228$ instances with matching data has a matching base. Of the
 other $8{,}112$, a spanning-tree join with $r$ a root works at $8{,}103$, and $r$ a child at three
 (the cone over $K_{2,6}$ at both hubs, and one relative). The remaining six are the instances of
-Example~\ref{ex:t1theta}, where no all-odd base exists. Every lift is verified; $r$ gets two ends
-in $24{,}782$ cases and four in $552$ (\texttt{data/tb1\_odd\_le9.txt})}
+Example~\ref{ex:t1theta}, where no all-odd base exists. Every lift is verified; in the bases found,
+$r$ gets two ends in $24{,}782$ cases and four in $552$ (another search finds other bases and other
+counts) (\texttt{data/tb1\_odd\_le9.txt})}
 \newcommand{\ALLODDTEN}{$239{,}003{,}418$ constraint sets in all: $20{,}569{,}948$ fixed pairs of
 pairs, $102{,}784{,}552$ fixed triples, $5{,}142{,}487$ and $12{,}848{,}069$ free ones,
 $20{,}569{,}948$ of the form of Conjecture~\ref{conj:two} and $77{,}088{,}414$ with one fixed and two
@@ -82,9 +83,10 @@ separation and two-token steering, both proved in Lean, settle $98.5\%$ of the s
 instances with data.
 
 The forest lift has an all-odd twin for (T1), also in Lean: delete $z$ and a forest $N(z)$-join, and
-the remaining graph has no even vertex. Through their matching bases, both spine tests at
-$d(z)=2m$ become one fixed avoidance plus $m-1$ disjunctions in a graph without even vertices. We
-state this common base as a conjecture (Conjecture~\ref{conj:common}). It has no universal-twin
+the remaining graph has no even vertex. At every root with matching data, both spine tests at
+$d(z)=2m$ follow, through their matching bases, from one fixed avoidance plus $m-1$ disjunctions in
+a graph without even vertices. We state this common base as a conjecture
+(Conjecture~\ref{conj:common}). It has no universal-twin
 exception, since such twins cannot occur in all-odd graphs.
 
 \emph{Computed.} The general forest base exists at all $717{,}942$ instances. At four of them,
@@ -122,7 +124,8 @@ instances of order at most $8$ and is unproved.
 at small deletion degree by the E-subgraph route. At $d(z)=4$ it follows from Botler--Sambinelli~\cite{BS}
 (audit A8, item~2). At $d(z)=6$ it is MR Theorem~123 (T(6)-ii), and at $d(z)=8$ it is MR Theorem~128
 (T(8)-ii). Audit A8 found both sound; Theorem~128 is conditional on Fan--Hou--Zhou~\cite{FHZ} for two
-seven-site shapes and on a star lemma of Chu--Fan--Zhou that A8 could not check. A8 also checked
+seven-site shapes and on a star lemma of Chu--Fan--Zhou (MR's reference~[8], Lemma~2.1) that A8
+could not check. A8 also checked
 the test exhaustively at $|J|\le10$, over all $2$-connected $B$ ($771{,}972$ instances at
 $|J|=10$), and at $17{,}521$ random instances of order $12$. We do not use these results. What is
 new here is uniform in $d(z)$: the two lifts and their converses
@@ -193,7 +196,7 @@ edge, and then deciding whether the rest splits into at most $k-2$ paths;
 (with a node budget).
 \end{itemize}
 The unrooted search, its lower bounds and its memo are copied verbatim from the rooted-path-number
-solver \texttt{re.c} of the eulerian-cone session, audited in A30. Validation:
+solver \texttt{re.c} of the eulerian-cone session~\cite{EC}, audited in A30. Validation:
 \begin{itemize}[leftmargin=*]
 \item every positive answer comes with a witness: a (T2) decomposition, and, with option
 \texttt{-s}, a decomposition of $B$ into at most $k$ paths for every slack answer.
@@ -345,7 +348,7 @@ iff (i) $p(v)\notin V(P(v))$ for all non-roots $v$ and (ii) $P(x)\ne P(y)$ for s
 Every vertex then loses one end if it is a non-root and gains one per child.
 \end{lemma}
 
-This is Lemma~4.1 of direct-test1 together with the end count; the Lean proof extends
+This is Lemma~4.1 of direct-test1~\cite{DT1} together with the end count; the Lean proof extends
 \texttt{append\_forest}.
 
 \begin{theorem}[the forest lift; Lean \texttt{test2At\_of\_forestBase2}, \texttt{test2\_of\_forestBases2}]\label{thm:lift}
@@ -496,7 +499,7 @@ at the root $w$ (or $0$ if $w\notin V(\Phi)$), sum to $n-2=2k$. Remove the edges
 \end{proof}
 
 \begin{corollary}[DL gives (T2); Lean \texttt{test2At\_of\_disjL1}]\label{cor:dl}
-Suppose Conjecture DL (direct-test1, Lean \texttt{DisjL1}) holds. If $w\in N(z)-r$ and $J[N(z)-\{r,w\}]$
+Suppose Conjecture DL (direct-test1~\cite{DT1}, Lean \texttt{DisjL1}) holds. If $w\in N(z)-r$ and $J[N(z)-\{r,w\}]$
 has a perfect matching $M_0$ by edges of $J$ none of whose pairs are universal twins of their
 component of $B-M_0$, then (T2) holds at $(J,z,r)$, and even $p(J-z)\le k$.
 \end{corollary}
@@ -533,7 +536,7 @@ $a\notin V(Q(b))$, and (ii) is empty.
 
 \begin{corollary}[Lean \texttt{test2At\_of\_pair\_farApart}, \texttt{test2At\_of\_pair\_steer2}]\label{cor:pair}
 In Proposition~\ref{prop:pair}, (T2) holds if (a) $a,b$ have no common neighbour in $G$ (separation), or
-(b) $(G,b,\{a\})$ admits a two-token schedule in the sense of the trn session (Lean \texttt{Steer2},
+(b) $(G,b,\{a\})$ admits a two-token schedule in the sense of the trn session~\cite{TRN} (Lean \texttt{Steer2},
 \texttt{avoid\_of\_steer2}).
 \end{corollary}
 
@@ -604,9 +607,11 @@ at $r$. A matching has no siblings, so (ii) is empty, and Theorem~\ref{thm:oddli
 
 The (T2) matching base \eqref{eq:match} has the same form. Its graph $M$ is $(J-z)-M_0$ with the
 pendant edge $zr$ added, again with no even vertex, and its conditions are the same: $r\notin
-V(Q(a_0))$ and one disjunction per other pair. So at $d(z)=2m$ both spine tests reduce, through
-their matching bases, to one fixed avoidance and $m-1$ disjunctions in a graph without even vertices
-(Conjecture~\ref{conj:common} below).
+V(Q(a_0))$ and one disjunction per other pair. So at every root with matching data and
+$d(z)=2m$, both spine tests follow from one fixed avoidance and $m-1$ disjunctions in a graph
+without even vertices (Conjecture~\ref{conj:common} below). These are sufficient conditions only,
+and roots without matching data are common: $8{,}112$ of the $25{,}340$ (T1) instances of order at
+most $9$ have none.
 
 \begin{example}[no all-odd base]\label{ex:t1theta}
 Let $J=K_{3,6}+h_2h_3$, with hubs $h_1,h_2,h_3$ and leaves $\ell_1,\dots,\ell_6$. Its only even
@@ -682,11 +687,16 @@ $b_i\notin V(Q(a_i))$.
 
 The fixed form implies the free form and every mixed form (some pairs fixed, the others free). The
 two matching bases at $d(z)=2m$ are the mixed form with one fixed pair and $m-1$ free ones;
-Conjecture~\ref{conj:two} is the mixed form with $j=2$. For $j=1$ both forms are $L_1$.
+Conjecture~\ref{conj:two} is the mixed form with $j=2$. For $j=1$ both forms are $L_1$. The graphs of
+the matching bases need not be connected (for the wheel $W_4$, $H$ is two disjoint edges). The
+conjecture applies to each component separately, since a Lov\'asz decomposition of a disconnected
+graph is one of each component, and a pair split between two components is satisfied
+automatically.
 
-\emph{No exception.} DL, for graphs with one even vertex, must exclude pairs of universal twins
-(Lean \texttt{UnivTwins}: $a,b$ non-adjacent, and every other vertex of their component adjacent to
-both), since such twins lie on every path (Lean \texttt{univTwins\_every\_path}). In an all-odd graph
+\emph{No exception.} DL, for graphs with one even vertex, must exclude pairs of universal twins:
+$a,b$ in one component, and every other vertex of that component adjacent to both (Lean
+\texttt{UnivTwins}; the pairs of \texttt{DisjL1} are non-adjacent by a separate hypothesis). Such
+twins lie on every path (Lean \texttt{univTwins\_every\_path}, for a connected graph). In an all-odd graph
 there are no such pairs: a component $C$ has even order, so a vertex adjacent to all of $C-\{a,b\}$
 has even degree $|C|-2$. So Conjecture~\ref{conj:common} needs no twin condition, unlike the floor
 base (Corollary~\ref{cor:dl}).
@@ -730,7 +740,7 @@ floor.
 \section{Cones}\label{sec:cones}
 
 Let $J=B+u$ be the cone over $B$, with $|B|=N$. Then $d_J(u)=N$ and $d_J(v)=d_B(v)+1$, and $J$ is
-$3$-connected iff $B$ is $2$-connected (eulerian-cone Prop.~2.2). For even $N$ the tests at
+$3$-connected iff $B$ is $2$-connected (eulerian-cone~\cite{EC}, Prop.~2.2). For even $N$ the tests at
 non-apex vertices are vacuous and the apex test is RE (eulerian-cone).
 
 \begin{proposition}[the live cone tests; paper]\label{prop:cone}
@@ -780,16 +790,16 @@ unrefereed); the literature ranges (from restated floor theorems); the cone char
 \item \emph{Computed.} (T2) exhaustively to order $10$, with (T2) and slack witnesses; the general
 forest base at every instance there;
 the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $10$;
-the (T1) all-odd base to order $9$; Conjecture~\ref{conj:common} with $j\le3$ at order $10$.
+the (T1) all-odd base to order $9$, except at the six instances of Example~\ref{ex:t1theta}, where
+none exists; Conjecture~\ref{conj:common} with $j\le3$ at order $10$.
 \item \emph{Open.}
 \begin{itemize}
 \item Conjecture~\ref{conj:base}, in particular for $J$ with no matching data.
 \item Conjecture~\ref{conj:common} (which contains Conjecture~\ref{conj:two}); it would give both
-spine tests at every root with matching data (applied to each component; a pair split between two
-components is satisfied automatically).
+spine tests at every root with matching data.
 \item The floor for $J-z$ outside odd semi-cliques, which is the Bonamy--Perrett question on this class.
 \item The forest cases of the converses in Lean; transferring the lifts to $k$-token schedules
-(the multi-token session's \texttt{steerK\_good} is stated for general tail systems).
+(the multi-token session's \texttt{steerK\_good}~\cite{MT} is stated for general tail systems).
 \end{itemize}
 \end{enumerate}
 
@@ -821,6 +831,10 @@ for graphs with treewidth at most 3, \emph{J.\ Graph Theory} 93 (2020) 328--349;
 3'', was read; its Theorem~4.1 is the maximum-degree-$4$ result).
 \bibitem{BP} M.~Bonamy and T.~Perrett, Gallai's path decomposition conjecture for graphs of small
 maximum degree, \emph{Discrete Math.} 342 (2019) 1293--1299.
+\bibitem{DT1} Gallai project, A direct lift to the two-end test through triangles at the even
+vertex, \texttt{manuscripts/direct-test1}; audited in A28.
+\bibitem{EC} Gallai project, The two-end test on cones: rooted Gallai for Eulerian graphs,
+\texttt{manuscripts/eulerian-cone}; audited in A30.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser. B}
 93 (2005) 117--125.
 \bibitem{FHZ} G.~Fan, J.~Hou, C.~Zhou, Gallai's conjecture on path decompositions, \emph{J.\ Oper.\
@@ -832,10 +846,14 @@ Res.\ Soc.\ China} 11 (2023) 439--449.
 \bibitem{MR} The marked-reduction manuscript, \emph{Cut vertices and cycle intersections in Gallai's
 path decomposition problem}, November 2026, \texttt{gallai/01-original-manuscripts/marked-reduction.pdf};
 audited in A8.
+\bibitem{MT} Gallai project, multi-token steering, \texttt{manuscripts/multi-token} and Lean
+\texttt{MultiToken.lean} (on the integration branch).
 \bibitem{OSB} The odd-semi-clique-boundary manuscript, \texttt{gallai/01-original-manuscripts/}
 \texttt{odd-semi-clique-boundary.pdf} (unrefereed); audited in A4.
 \bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, \emph{J. Combin. Theory
 Ser. B} 66 (1996) 152--159.
+\bibitem{TRN} Gallai project, The tight transfer TRN, \texttt{manuscripts/trn}; Lean
+\texttt{TRN.lean}, \texttt{TRNSteer.lean}.
 \bibitem{SPINE} Gallai project, The reduction spine for Gallai's path decomposition conjecture,
 \texttt{manuscripts/spine}.
 \end{thebibliography}
