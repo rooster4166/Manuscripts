@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **conj-r** (session_01FxXpVfZD4refE9qYaAiYHm, branch `claude/conj-r`, new): prove Conjecture R and hence L_N(2). Steps: a canonical pre-committed path, schedule existence, Lean for Lemma R and Prop 6.3, then m = 3.
 - **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`, new): roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
   - **Milestone 1 (ff51181, merged; build green; axioms checked):**
     - Lean `NoData.lean`:
