@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **multi-token** (session_01FxXpVe8F7KxYF5L5TwFwZ2, branch `claude/multi-token`, new): extend NA/trn steering to k pairs at once (one token per leaf-bearing vertex, plus one at w). The target is the triangle base at d(z) = 6, i.e. the dense T(6)-i residual. That is the real frontier, since DL(1) only reaches d(z) = 4, which is already known.
 - **na** (session_01FxXpVhLSRHGoH9FHpDU66p, branch `claude/na`): **NA PROVED** (ba80a1c, merged; build green; axioms checked by the coordinator).
   - **Lean** `neighbourAvoidOn` (NeighbourAvoid.lean). Corollaries:
     - `conjNDegTwoOn`: the degree-two case of N, unconditional;
