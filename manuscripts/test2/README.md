@@ -1,6 +1,6 @@
 # test2: the three-end test (T2) of the spine
 
-Session `claude/test2`. Work in progress; the manuscript `test2.tex` will be added here.
+Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; audit A37 in progress).
 
 ## Contents so far
 
@@ -16,7 +16,12 @@ Session `claude/test2`. Work in progress; the manuscript `test2.tex` will be add
 | `data/tight_le10.txt` | The 20 tight instances (p(J − z) = n/2) at order ≤ 10, with witnesses. |
 | `data/forestbase2_order8.txt`, `data/matchingbase2_order8.txt` | Base searches at order 8. |
 | `data/axioms.txt` | `#print axioms` for the Lean lift. |
-| Lean | `lean/GallaiLean/Test2Lift.lean`: `append_forest_ends`, `test2At_of_leafDecomp`, `test2At_of_forestBase2`, `test2_of_forestBases2`. |
+| `scripts/tb2_floor.py` | The floor lift (B − Φ with w the only even vertex), per instance or per matching data choice. |
+| `scripts/coverage.py`, `scripts/dz4_cover.py`, `scripts/lit_cover.py` | Reach of the proved tools: packed sets (separation / L1 / NA set forms), d(z) = 4 by separation or two-token schedules (port of trn steer2.cpp), Pyber/Fan floor conditions. |
+| `scripts/allodd_pairs.py`, `scripts/cones.py`, `scripts/gen_t2.py` | Conjecture 7.2 (all-odd, two constraints); cone instances; random order-12 generator. |
+| `data/forestbase2_order10*`, `data/floorbase_*`, `data/dz4_*`, `data/coverage_*`, `data/lit_cover_*` | Outputs of the above. |
+| `data/t2_order12_sample*` | 20,000 random order-12 graphs, 40,000 instances. |
+| Lean | `lean/GallaiLean/Test2Lift.lean`: lifts (`test2At_of_forestBase2`, `test2At_of_floorBase`, `floor_of_matchingBase`), `test2At_of_floor`, `test2At_of_disjL1`, d(z)=4 (`test2At_of_pair_farApart`, `test2At_of_pair_steer2`). `lean/GallaiLean/Test2Converse.lean`: converses, matching case (`matchingFloorBase_of_terminal`, `forestBase2_matching_of_terminal`). |
 
 ## Reproduce
 

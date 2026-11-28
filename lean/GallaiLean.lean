@@ -87,3 +87,4 @@ import GallaiLean.TRNSteer
 import GallaiLean.MultiToken
 import GallaiLean.Test2Lift
 import GallaiLean.MultiTokenObstruct
+import GallaiLean.Test2Converse

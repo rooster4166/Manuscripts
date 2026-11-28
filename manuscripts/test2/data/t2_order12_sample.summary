@@ -1,0 +1,8 @@
+graphs 5000 instances 10000 slack 9475 tight 525 fail 0 unk 0
+emax distribution (all / tight): 5:8/8 undecided 517
+graphs 5000 instances 10000 slack 9562 tight 438 fail 0 unk 0
+emax distribution (all / tight): 5:6/6 undecided 432
+graphs 5000 instances 10000 slack 9518 tight 482 fail 0 unk 0
+emax distribution (all / tight): 5:4/4 undecided 478
+graphs 5000 instances 10000 slack 9527 tight 473 fail 0 unk 0
+emax distribution (all / tight): 5:16/16 undecided 457
