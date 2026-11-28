@@ -29,7 +29,7 @@ def pms(vs, J):
     return out
 
 
-def replay(J, z, w, pairs, moves):
+def replay(J, z, w, pairs, moves, terminal=True):
     """pairs = [(y, x)]; leaf of pair i is ('L', i).  Checks Definition 2.2 literally."""
     K = {v: set(J[v]) for v in J}
 
@@ -69,7 +69,8 @@ def replay(J, z, w, pairs, moves):
             rm(p, a); rm(p, b); K[a].add(b); K[b].add(a)
     tok = {v for v in K if K[v] and len(K[v]) % 2 == 0}
     live = [i for i, (y, x) in enumerate(pairs) if ('L', i) in K[y]]
-    assert len(tok) <= 1 and len(live) <= 1, ('not terminal', tok, live)
+    if terminal:
+        assert len(tok) <= 1 and len(live) <= 1, ('not terminal', tok, live)
     return True
 
 
