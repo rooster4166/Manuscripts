@@ -128,7 +128,18 @@ EMM sufficiency work is **stopped**.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
 - **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`, new): roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
-- **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
+  - **Milestone 1 (ff51181, merged; build green; axioms checked):**
+    - Lean `NoData.lean`:
+      - **`test1_fatTheta`: (T1) on K_{3,t} + h2h3 for every even t, which closes the six all-odd exceptions and the whole family**;
+      - `test1At_of_twins` / `test2At_of_twins`: twin pairs in N(z) reduce to an instance of order |J| − 2.
+    - **Data, verified.** The 8,112 no-data (T1) roots at n ≤ 9 fall into tiers:
+      - 7,802 have a matching plus 2-paths and need no sibling condition;
+      - 166 need a linkage;
+      - 135 need a branching forest;
+      - 3 need r as a child;
+      - 6 are the fat thetas.
+    - (T2) at n ≤ 10: 194,425 of the 197,067 no-data roots are in tier 1.
+    - **Candidate conjecture: "cherry L_N"**, which is L_N plus 2-chains. This is what the tier-1 bases need.- **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
   - **Milestone (61abb4e; audit A40 applied, no error in any proof):**
     - Lean: `leaf_tails` (multi-tail leaf theorem with sparse heads) and `lovasz_avoid_leafTails` (L_N(m) when all tails but one are leaves).
     - Paper: Lemma R (a pre-committed end path) and Prop 6.3 (Criterion R ⇒ L_N(2), via `steerK_good`).
