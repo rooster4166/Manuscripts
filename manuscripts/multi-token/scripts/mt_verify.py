@@ -241,7 +241,7 @@ def check(ora, line):
     D0 = []
     for P in D:
         Q = [v for v in P if v < n]
-        assert len(Q) == len(P) or (len(Q) == len(P) - 1 and P[0] >= n or P[-1] >= n) or \
+        assert len(Q) == len(P) or (len(Q) == len(P) - 1 and (P[0] >= n or P[-1] >= n)) or \
             (len(Q) == len(P) - 2 and P[0] >= n and P[-1] >= n), 'a leaf inside a path'
         if len(Q) >= 2:
             D0.append(Q)

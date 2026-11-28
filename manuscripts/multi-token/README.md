@@ -29,8 +29,9 @@ at roots with fewer than k non-neighbours (Proposition 6.1, Lean), which occur i
 ### Proved on paper
 - Proposition 4.1 (the potential: a schedule needs 2k − 1 removals, each at a vertex of degree ≤ 2).
 - Theorem 4.2 (a certificate family: w suppressible or retiring through r; y₁ of degree 3 whose
-  token is removed at its third neighbour; drop of tail 1). It applies at 882 of the 10,118 roots
-  with data at order 9; all 882 certificates executed by `mt_verify.py`.
+  token is removed at its third neighbour; drop of tail 1). It gives a triangle base, and Test1 when
+  d_J(r) ≥ 3 (audit A36, M2: without it the root can be a leaf of J). It applies at 882 of the 10,118
+  roots with data at order 9 (computed by `pattern.py`); all 882 certificates executed by `mt_verify.py`.
 - Proposition 7.1 (the all-odd lift of synthesis §31, coordinator) and the instance of Proposition
   7.2 (in the all-odd lift no root with at most k − 2 non-neighbours has a schedule; the invariance
   is `not_steerK`).
@@ -42,18 +43,23 @@ at roots with fewer than k non-neighbours (Proposition 6.1, Lean), which occur i
 - Residual families (`gen_resid.py`; Table 3): 72 / 180 roots (|O| = 8) and 111 / 144 (|O| = 10), at
   node budget 2·10⁶ with the default move order, plus budget 2·10⁷ with seeds 7 and 11 for the roots
   left open (two more at |O| = 10). The milestone-1 counts 71 / 180 and 107 / 144 were at budget 2·10⁵.
-  Roots without a schedule: 69 + 6 (|O| = 8) and 14 + 16 (|O| = 10), by the search + by Prop 6.1. Every shape at |O| = 8 has roots where the
-  exhaustive search proves that no schedule exists, so no condition covering a whole shape exists for
-  this move set.
-- E28 hard graphs: 10 / 48 roots; the clt ∅ graph `M~~zRz{~m~~lX|j~_`: 0 / 6 (all proved none).
+  Roots without a schedule: 69 + 6 (|O| = 8) and 14 + 16 (|O| = 10), by the search + by Prop 6.1;
+  undecided 33 and 3. Every shape of both families has roots of degree n − 2, so by Prop 6.1 no
+  condition covering a whole shape exists for this move set (a theorem). At |O| = 8 every shape also
+  has roots of other degrees where the exhaustive search proves that no schedule exists.
+- E28 hard graphs (experiments log E28): 10 / 48 roots, 18 + 12 without a schedule, 8 undecided; the
+  clt ∅ graph `M~~zRz{~m~~lX|j~_`: 0 / 6 (all proved none).
 - All-odd lift (Section 7): 2,101 / 8,340 order-9 roots (25%; triangle base 74%), 0 / 36 at order 7,
-  resid |O| = 8 14 / 180 (budget 2·10⁶), |O| = 10 54 / 144 (2·10⁵), E28 0 / 48. All schedules executed.
+  resid |O| = 8 14 / 180, |O| = 10 59 / 144, E28 0 / 48 (node budget 2·10⁶). All schedules executed.
 - d(z) = 4, order 9: triangle base 11,347 / 11,389 roots, all-odd lift 6,456 / 7,572.
 - Conjecture MT (6.2; the multi-tail lemma with any number of live tails): 0 failures in all tests
-  (two tails on every connected base graph of order ≤ 9, 2,860,182 instances at order 9; three tails
-  at order ≤ 7). It would add only 91 roots at order 9.
+  (distinct stems and avoided vertices: two tails on every connected base graph of order ≤ 9,
+  2,860,182 instances at order 9; three tails at order ≤ 7, 92 + 1,026 unordered instances). Audit
+  A36 extended the test to shared stems and avoided vertices: 0 failures in 37,707 two-tail (n ≤ 8)
+  and 17,213 three-tail (n ≤ 7) instances. It would add only 91 roots at order 9.
 - Residual structure: 260 of the 2,589 unscheduled order-9 roots have no legal first move; in the
-  dense families almost every unscheduled root is *frozen* (no reachable state allows a token removal).
+  dense families 42 of the 53 search-proved unscheduled roots of degree < n − 2 are *frozen* (no
+  reachable state allows a removal).
 
 ## Files
 - `scripts/mtok.cpp`: the schedule search (env `SUPP=1` suppression, `AODD=1` the all-odd lift,
@@ -61,12 +67,17 @@ at roots with fewer than k non-neighbours (Proposition 6.1, Lean), which occur i
 - `scripts/mt_verify.py`: the independent executor (needs `route_ext` built from `tools/route_ext.c`
   and `direct-test1/scripts/tb.py`); `SCHED` lines (triangle base) and `SCHEDA` lines (all-odd lift).
   Note: before commit 28376e6 it did not assert the boolean returned by `tb.verify_test1` (path count
-  and two ends at r); all verifications were re-run after the fix and pass.
-- `scripts/pattern.py`: Theorem 4.2 from its hypotheses, writing certificates.
+  and two ends at r; audit A36, M4); all verifications were re-run after the fix and pass.
+- `scripts/reverify.sh`: reruns the executor on every committed schedule file (summary in
+  `data/runs/reverify_summary.txt`).
+- Tamper test: `research/audit/A36-scripts/tamper.py … tamper SEED` on `data/runs/J7_s1_sched.txt`,
+  seeds 1–3 (`data/runs/J7_tamper_seed*.txt`): of 390 corruptions, the 38 accepted are all valid
+  schedules and the 352 rejected all invalid.
+- `scripts/pattern.py`: Theorem 4.2 from its hypotheses (roots with d_J(r) ≥ 3), writing certificates.
 - `scripts/firstmove.py`, `scripts/explore.py`: legal first moves; exhaustive state exploration
   (least potential reached).
 - `scripts/mt_conj.py`: the test of Conjecture MT.
-- `scripts/filt.py`: inputs; `scripts/axioms_mt.lean`: the axiom check.
+- `scripts/filt.py`: inputs; `scripts/axioms_mt.lean`: the axiom check (22 theorems and lemmas).
 - `data/*.g6`: inputs (`J7_d6`, `J9_d6`, `resid_O8`, `resid_O10`, `e28_hard`, `clt_hard`).
 - `data/runs/`: outputs (`*_s1_b2e6.txt` residual runs; `J9_s1_all.txt.gz` all order-9 schedules;
   `*_none.txt` proved-unscheduled roots; `*_explore.txt` their least potential; `*_verify.txt`).
@@ -80,3 +91,12 @@ grep SCHED all9.txt | python3 mt_verify.py ./route_ext            # verified 764
 SUPP=1 ./mtok resid 2000000 0 0 1 < ../data/resid_O8.g6           # Table 3
 python3 pattern.py < ../data/J9_d6.g6 | python3 mt_verify.py ./route_ext   # Theorem 4.2
 ```
+
+## Audit
+A36 (`research/audit/A36-multi-token.md`, scripts in `research/audit/A36-scripts/`). The core is sound:
+the Lean development is faithful, and every computation reproduces with independent code (an exact
+search without hashing). It found two errors and two gaps, all fixed: M1 (Prop 6.1 settles roots
+called undecided), M2 (Theorem 4.2's Test1 clause needs d_J(r) ≥ 3), M3 (the paper proof of Prop 6.1
+split suppression on a static set; now on the current adjacency of p to r, as in Lean `obstr_supp`),
+and M4 (the executor's Test1 check). The NITs M5–M15 are addressed; the response is at the end of the
+audit report.

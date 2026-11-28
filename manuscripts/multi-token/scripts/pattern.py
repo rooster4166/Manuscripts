@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """pattern.py: the coverage theorem (manuscript Theorem 4.2), checked from its hypotheses.
 
-For every root r of every input J (z the only even vertex, d(z) = 6) and every data choice
+For every root r with d_J(r) >= 3 of every input J (z the only even vertex, d(z) = 6) and every data choice
 (w, {x1 y1, x2 y2}) with both labellings of the pairs and both orientations, test the hypotheses of
 Theorem 4.2 directly on J:
   (A) w can be removed:  (A1) d(w) = 3, N(w) - z = {p, q}, pq not an edge, {p, q} not a pair;
@@ -104,6 +104,8 @@ def main():
         z = ev[0]
         U = sorted(J[z])
         for r in U:
+            if J.degree(r) < 3:          # Test1 needs d_J(r) >= 3 (Corollary 3.2; audit A36, M2)
+                continue
             found = None
             anydata = False
             for w in U:

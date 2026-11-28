@@ -1,0 +1,8 @@
+tamper ('dropfirst', 'invalid', 'rejected') 30
+tamper ('dropidx', 'invalid', 'rejected') 21
+tamper ('droplast', 'invalid', 'rejected') 21
+tamper ('supp', 'invalid', 'rejected') 15
+tamper ('swap', 'invalid', 'rejected') 10
+tamper ('swap', 'valid', 'accepted') 9
+tamper ('target', 'invalid', 'rejected') 24
+tamper: corrupted 130

@@ -283,7 +283,6 @@ theorem not_mem_support_of_isolated (K : SimpleGraph U) [DecidableRel K.Adj] {c 
 /-! ### Invariants under the moves -/
 
 omit [DecidableEq U] in
-omit [DecidableEq U] in
 /-- A live tail stays live through a move. -/
 theorem live_move (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U × U × U)}
     (hinv : TailInv T K) {p u : U} (hp : p ∈ evenSet K) (hoff : OffTails T K u)
@@ -341,7 +340,6 @@ theorem tailInv_drop (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U × 
   rw [h]
   exact hx
 
-omit [DecidableEq U] in
 omit [DecidableEq U] in
 /-- A live tail stays live through a suppression. -/
 theorem live_supp (K : SimpleGraph U) [DecidableRel K.Adj] {T : Finset (U × U × U)}
@@ -751,7 +749,8 @@ theorem triTails_inv (hz : ∀ v, Even (J.degree v) ↔ v = z) (hD : TriangleDat
 data, `z` the only even vertex of `J`, and orient each pair of `L` as `(xᵢ, yᵢ)`. If the leaf graph
 `M⁺` has a `k`-token schedule from its even set, with the tails `(ℓᵢ, yᵢ, xᵢ)`, then some Lovász
 decomposition of `M` has, for every `i`, the path ending at `yᵢ` avoiding `xᵢ`; so `J` has a
-triangle base at `r`. -/
+triangle base at `r`. The statement exported is the last clause, `TriangleBase J z r`; the first is
+proved inside (the disjunct `Or.inl` for every pair). -/
 theorem triangleBase_of_steerK (hz : ∀ v, Even (J.degree v) ↔ v = z)
     (hD : TriangleData J z r w L)
     (hS : SteerK (triTails L) (triLeaf J z w L) (evenSet (triLeaf J z w L))) :

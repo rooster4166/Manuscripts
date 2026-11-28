@@ -32,36 +32,39 @@ The triangle base~\cite{DT} asks for a Lov\'asz decomposition of an auxiliary gr
 disjunctive end-path condition per pair of a matching; it implies Test1, one of the two tests to
 which Gallai's conjecture is reduced in Lean. The frontier is $d(z)=6$: two pairs, and in the
 dense T(6)-i residual no proof is known. Two-token steering~\cite{TRN} settles one pair by hanging a
-leaf and moving two tokens. We extend it to $k$ pairs at once. \emph{Status labels: everything in
-Sections~\ref{sec:sched}--\ref{sec:tb} and Proposition~\ref{prop:nminus2} is proved and formalised in Lean;
+leaf and moving two tokens. We extend it to $k$ pairs at once. \emph{Status labels: the definitions, lemmas and theorems of
+Sections~\ref{sec:sched}--\ref{sec:tb} and Proposition~\ref{prop:nminus2} are proved and formalised in Lean
+(Remark~\ref{rem:general} is not formalised, and Example~\ref{ex:short} is a computed example);
 Theorem~\ref{thm:cover}, Proposition~\ref{prop:potential}, Proposition~\ref{prop:aoddlift} and the instance in
-Proposition~\ref{prop:aoddobs} are proved on paper; Sections~\ref{sec:comp}--\ref{sec:resid} and the tables of
-Section~\ref{sec:aodd} are computations with stated scope.}
+Proposition~\ref{prop:aoddobs} are proved on paper; the counts of Sections~\ref{sec:cover}--\ref{sec:aodd}
+are computations with stated scope.}
 \begin{itemize}
 \item \emph{$k$-token schedules and the transfer theorem} (Lean). Hang a leaf $\ell_i$ at one vertex
 $y_i$ of every pair; the tokens are the even vertices of the current graph. A schedule uses three
-moves: a Fan step of a token onto an odd vertex outside $\{\ell_i,x_i\}$ that is adjacent to no other
-token; a \emph{drop} of a leaf whose stem has become odd; and the \emph{suppression} of a token of
+moves: a Fan step of a token onto an odd vertex outside $\{\ell_i,x_i\}$ for the live tails that,
+after the deletion of the edge, is adjacent to no other token; a \emph{drop} of a leaf whose stem has become odd; and the \emph{suppression} of a token of
 degree two. It ends with at most one token and one live tail, where the \emph{multi-tail leaf lemma}
 applies. A schedule gives a Lov\'asz decomposition of $M$ with $x_i\notin Q(y_i)$ for every $i$
 (Theorems~\ref{thm:transfer} and~\ref{thm:tb}), hence a triangle base and Test1
 (Corollary~\ref{cor:test1}).
-\item \emph{Coverage} (paper). An explicit certificate family (Theorem~\ref{thm:cover}) covers
-$882$ of the $10{,}118$ roots with data at order~$9$. No structural condition covering a whole
-dense residual shape exists for this move set: in our $|O|=8$ residual family every shape has roots
-at which the exhaustive search proves that no schedule exists.
+\item \emph{Coverage} (theorem on paper; the count is computed). An explicit certificate family
+(Theorem~\ref{thm:cover}) covers $882$ of the $10{,}118$ roots with data at order~$9$. No structural
+condition covering a whole dense residual shape exists for this move set: every shape of both residual
+families has roots of degree $n-2$, which have no schedule (Proposition~\ref{prop:nminus2}).
 \item \emph{Computation.} At order~$9$ ($d(z)=6$, all $1{,}819$ $3$-connected $J$) some data choice
 and orientation has a schedule at $7{,}529$ of the $10{,}118$ roots ($74\%$); all $76{,}474$
 schedules found were executed and checked by an independent program, including the lift to Test1. On
 the residual families of~\cite{T6}, at node budget $2\cdot10^6$ (and $2\cdot10^7$ for the roots left
 open), the proportion is $72$ of $180$ roots ($|O|=8$) and $111$ of $144$ ($|O|=10$, with a $C_4$
 subfamily at $|O|=8$); on the eight E28 hard graphs it is $10$ of $48$ roots.
-\item \emph{The residual} (paper and computation). A schedule needs $2k-1$ token removals, each at a
-vertex of degree at most two (Proposition~\ref{prop:potential}). If $r$ has fewer than $k$
+\item \emph{The residual} (paper and computation). A schedule needs $2k-1$ \emph{removals}
+(retirements, suppressions, and drops that isolate the stem), each at a vertex of degree at most two
+(Proposition~\ref{prop:potential}). If $r$ has fewer than $k$
 non-neighbours, at most $k-1$ removals are possible, so there is no schedule
 (Proposition~\ref{prop:nminus2}, Lean): at $d(z)=6$ this excludes every root of degree $n-2$, which is
-$1{,}597$ of the $2{,}589$ unscheduled roots at order~$9$, and roots of every residual shape. In the dense residual almost every other
-unscheduled root is \emph{frozen}: no reachable state allows a single removal.
+$1{,}597$ of the $2{,}589$ unscheduled roots at order~$9$, and roots of every residual shape. In the dense residual, $42$ of
+the $53$ other roots that the search proves unscheduled are \emph{frozen}: no reachable state allows a
+single removal.
 \item \emph{The all-odd lift} (Section~\ref{sec:aodd}). On the all-odd base of~\cite[\S31]{SYN}, where
 Test1 needs a Lov\'asz decomposition of an all-odd graph with one fixed and $k-1$ disjunctive
 conditions, steering does worse: $2{,}101$ of $8{,}340$ roots at order~$9$ ($25\%$). The obstruction
@@ -82,10 +85,10 @@ In $M$ the vertex $z$ is a leaf at $r$, $w$ is the only even vertex, and $a_i\no
 a_i\notin V(Q(b_i))\quad\text{or}\quad b_i\notin V(Q(a_i)),
 \end{equation}
 where $Q(v)$ is the path ending at $v$. A triangle base gives Test1 at $(J,z,r)$~\cite[Thm.~2.1]{DT}
-(Lean \texttt{test1At\_of\_triangleBase}). For $d(z)=4$ there is one pair and Test1 at $d(z)=4$ was
-already known; the frontier is $d(z)=6$, two pairs, in particular the dense T(6)-i residual, where
+(Lean \texttt{test1At\_of\_triangleBase}). For $d(z)=4$ there is one pair, and Test1 at $d(z)=4$ was
+already known (two-step descent and \texttt{emc\_four}~\cite[\S28]{SYN}); the frontier is $d(z)=6$, two pairs, in particular the dense T(6)-i residual, where
 $J[N(z)]=K_6-D$ with $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$~\cite{T6}. There the triangle base holds
-in all data~\cite[\S5]{DT}, without proof.
+in all data~\cite[\S6]{DT}, without proof.
 
 \subsection*{Steering} Neighbour avoidance~\cite{NA} turned ``$Q(y)$ avoids $x$'' into a property
 of vertex sets: hang a leaf $\ell$ at $y$; then the property is ``no path contains both $\ell$ and
@@ -279,8 +282,8 @@ $(J,z,r)$.\lean{test1At\_of\_steerK}
 
 \begin{example}\label{ex:short}
 $J=$ \texttt{HsaBEy\textasciitilde} (order $9$, $d(z)=6$), $z=7$, $r=3$, $w=1$, pairs oriented as
-$(y,x)=(4,0),(8,5)$. Here $N_J(w)=\{z,0,6\}$ with $0\not\sim6$, and $d_J(4)=3$. The schedule found
-by the search, with four moves after the suppression, is
+$(y,x)=(4,0),(8,5)$. Here $N_J(w)=\{z,0,6\}$ with $0\not\sim6$, and $d_J(4)=3$. The shortest schedule
+(iterative deepening, \texttt{MAXLEN=8}), with four moves after the suppression, is
 \[
 \mathrm S\,1{:}\,0\text{-}6,\quad 8\to3,\quad 3\to z,\quad 4\to8,\quad \mathrm D\,(\ell_1,4,0).
 \]
@@ -295,7 +298,7 @@ $(\ell_2,8,5)$ remain.
 \begin{proposition}[the potential]\label{prop:potential}
 Let $\Phi(K)=|\tau(K)|+\#\{\text{live tails}\}$. A token move that does not retire and a drop whose
 stem is not isolated leave $\Phi$ unchanged; a retirement, a suppression and a drop that isolates
-the stem lower it by one. In $M^+$, $\Phi=2k+1$, so a schedule contains at least $2k-1$ moves of the
+the stem lower it by one. In $M^+$, $\Phi=2k+1$ when $d_J(w)\ge3$, so a schedule contains at least $2k-1$ moves of the
 second kind, each at a vertex of degree at most $2$ (a vertex of degree $1$ entered by a token, a
 token of degree $2$, or a stem with only its leaf). If $\delta(J)\ge3$, the only vertex of degree $1$
 in $M$ outside the pairs is $z$, and a token can retire there only from $r$.
@@ -320,7 +323,8 @@ $v=r$ and (A1) holds, or (B2) $v\notin N[z]$, $d_J(v)=3$, and the two neighbours
 other than $y_1$ in the graph obtained after step~1 of the proof below (that is, after the
 suppression of (A1) if it is used) are non-adjacent there, with $\{s,t\}\ne\{x_2,y_2\}$.
 \end{enumerate}
-Then $(M^+,T)$ has a schedule; so $J$ has a triangle base at $r$, and Test1 holds at $(J,z,r)$.
+Then $(M^+,T)$ has a schedule; so $J$ has a triangle base at $r$, and if $d_J(r)\ge3$ (for example
+if $J$ is $3$-connected) Test1 holds at $(J,z,r)$.
 \end{theorem}
 
 \begin{proof}
@@ -341,14 +345,15 @@ y_1,y_2$) and $\{s,t\}$ not $\{x_2,y_2\}$, nor $\{x_1,y_1\}$ (as $y_1\not\sim v$
 $v$.
 \item Drop $(\ell_1,y_1,x_1)$: $y_1$ has only its leaf, so it is odd, and the drop isolates it.
 \end{enumerate}
-One token, $y_2$, and one live tail, $(\ell_2,y_2,x_2)$, remain. Apply Theorem~\ref{thm:tb} and
-Corollary~\ref{cor:test1} ($d_J(r)\ge3$ since $J$ is $3$-connected in our setting; in general
-Corollary~\ref{cor:test1} needs it).
+One token, $y_2$, and one live tail, $(\ell_2,y_2,x_2)$, remain. Apply Theorem~\ref{thm:tb}, and
+Corollary~\ref{cor:test1} when $d_J(r)\ge3$. The hypothesis is needed: under (A1) and (B2) the root
+may be a leaf of $J$, and then Test1 fails although the schedule exists (audit A36, M2:
+\texttt{Lsech?H?GA\_B?@}, $\kappa=1$, $r=1$ with $N(r)=\{z\}$).
 \end{proof}
 
 At order~$9$ the hypotheses hold, for some data choice, labelling and orientation, at $882$ of the
-$10{,}118$ roots with data ($6$ of $40$ at order~$7$); \texttt{pattern.py} checks them from $J$ and
-writes the certificate, and the independent executor of Section~\ref{sec:comp} verified all $882$.
+$10{,}118$ roots with data ($6$ of $40$ at order~$7$); \texttt{pattern.py} checks them from $J$ (at roots
+with $d_J(r)\ge3$) and writes the certificate, and the independent executor of Section~\ref{sec:comp} verified all $882$.
 The theorem is a sparse-graph statement: it needs vertices of degree three. In the dense residual
 $\delta(J-z)\ge6$ and no such certificate exists.
 
@@ -358,8 +363,9 @@ shape $D\in\{\emptyset,K_2,P_3,K_3,C_4\}$ has roots of degree $n-2$ ($15,10,5,9,
 \texttt{resid\_O8}; $1,4,4,3,2$, and $4$ for $C_4$ with $\mathrm{TW}=1$, in \texttt{resid\_O10}), and these
 have no schedule by Proposition~\ref{prop:nminus2} (Lean). In addition, at $|O|=8$ every shape has
 roots of other degrees at which the exhaustive search (no budget hit for any data choice or
-orientation) finds no schedule (Table~\ref{tab:resid}); these are computed, up to the correctness of
-the search, which memoises failed states by a $128$-bit hash of the current graph.
+orientation) finds no schedule (Table~\ref{tab:resid}). These are computed. Our search memoises failed
+states by a $128$-bit hash of the current graph; the exact search of audit A36, without hashing,
+confirms every such verdict.
 \end{remark}
 
 \section{Computation}\label{sec:comp}
@@ -381,10 +387,16 @@ step that it has a parity decomposition meeting every live $\{\ell_i,x_i\}$ at m
 leaves, checks the Lov\'asz decomposition of $M$ and $x_i\notin Q(y_i)$, and finally lifts it to a
 decomposition of $J-z$ with \texttt{tb.py}'s \texttt{lift} (direct-test1, Steps 1--2) and asserts
 with \texttt{verify\_test1} that it is an edge partition into at most $(|J|-1)/2$ paths with at least
-two ends at $r$.
-\item A tamper test: $130$ order-$7$ schedules, each corrupted once at random (last or first move
-removed, a target changed, two adjacent moves swapped). The executor rejected every corruption
-except $14$ swaps of two commuting moves, which are valid schedules.
+two ends at $r$. (Before commit \texttt{28376e6} the boolean returned by \texttt{verify\_test1}, which
+carries the last two conditions, was not asserted; audit A36, M4. Every verification was rerun after
+the fix and passes.)
+\item A tamper test (\texttt{research/audit/A36-scripts/tamper.py}, mode \texttt{tamper}, seeds
+$1,2,3$; output \texttt{data/runs/J7\_tamper\_seed*.txt}): each of the $130$ order-$7$ schedules is
+corrupted once at random per seed (first or last move removed, a target changed, two adjacent moves
+swapped, a wrong drop index, a move turned into a suppression), and the executor's verdict is compared
+with an independent replayer of Definition~\ref{def:sched}. Of the $390$ corruptions the executor
+accepted $38$, all of them valid schedules ($33$ swaps of commuting moves and $5$ valid suppressions),
+and rejected the $352$ others, all invalid.
 \item \texttt{pattern.py} (Theorem~\ref{thm:cover}), \texttt{firstmove.py} (legal first moves),
 \texttt{filt.py} (the order-$7$ and order-$9$ inputs from \texttt{stl/scripts/one\_even\_*.g6}).
 \end{itemize}
@@ -423,7 +435,7 @@ without drops (D), end at $\le1$ token and $\le1$ live tail & $0$\\
 \caption{Residual families of T(6)-i (\texttt{t6-dense/scripts/gen\_resid.py}: \texttt{resid\_O8}
 $=$ \texttt{gen\_resid.py 6 8 2 7 SHAPE}; \texttt{resid\_O10} $=$ \texttt{gen\_resid.py 4 10 2 11
 SHAPE} and \texttt{gen\_resid.py 4 8 1 77 C4}; our seeds, since those of the families
-of~\cite[\S5]{DT} are not recorded). Suppression on. Each search: node budget $2\cdot10^6$, the
+of~\cite[\S6.3]{DT} are not recorded). Suppression on. Each search: node budget $2\cdot10^6$, the
 default move order (\texttt{data/runs/*\_s1\_b2e6.txt}). The roots left undecided that are not of
 degree $n-2$ were run again at budget $2\cdot10^7$ with the move order shuffled by seeds $7$ and $11$
 (\texttt{*\_undec\_open\_seed*.txt}; for \texttt{resid\_O10} this scheduled two more, for E28 none;
@@ -450,7 +462,7 @@ family & $D$ & roots & scheduled & search & Prop.~6.1 & undecided\\
  & $C_4$ ($\mathrm{TW}=2$) & $24$ & $15$ & $7$ & $2$ & $0$\\
 \phantom{x}\quad and $|O|=8$, $|J|=15$ & $C_4$ ($\mathrm{TW}=1$) & $24$ & $13$ & $6$ & $2$ & $3$\\
 \midrule
-E28 hard graphs~\cite[E28]{T6} & all & $48$ & $10$ & $18$ & $12$ & $8$\\
+E28 hard graphs~\cite[E28]{EXP} & all & $48$ & $10$ & $18$ & $12$ & $8$\\
 clt graph \texttt{M\textasciitilde\textasciitilde zRz\{\textasciitilde m\textasciitilde\textasciitilde lX|j\textasciitilde\_} & $\emptyset$ & $6$ & $0$ & $6$ & $0$ & $0$\\
 \bottomrule
 \end{tabular}
@@ -462,8 +474,8 @@ clt graph \texttt{M\textasciitilde\textasciitilde zRz\{\textasciitilde m\textasc
 and~\ref{tab:resid}, are listed in \texttt{data/runs/*\_none.txt} (proved: every search finished
 without a schedule) and \texttt{data/runs/*\_undec.txt} (some search hit the budget).
 \begin{itemize}
-\item Order~$7$: $23$ of the $40$ roots. All of them lie in cones $J=K_1+B$ over Eulerian graphs $B$
-of order~$6$: all six roots of \texttt{Fr\textasciitilde vw} ($B=K_{2,2,2}$), of
+\item Order~$7$: $23$ of the $40$ roots. (At order $7$ with $d(z)=6$ every $J$ is a cone $K_1+B$
+over an Eulerian graph $B$ of order $6$.) They are all six roots of \texttt{Fr\textasciitilde vw} ($B=K_{2,2,2}$), of
 \texttt{Fqz\textasciicircum w} and of \texttt{Fut\textasciitilde w}, and the roots of degree
 $5=n-2$ of \texttt{FsQ\textasciitilde w} and \texttt{Fsz\textbackslash w}. These are the smallest
 unscheduled instances.
@@ -490,44 +502,56 @@ no schedule at a root of degree $|J|-2$.\lean{not\_steerK\_triangle, not\_steerK
 In Lean the hypothesis $\delta(J)\ge3$ is replaced by $d_J(w)\ge2$, which is all the proof uses.
 
 \begin{proof}
-Let $A$ be the set of non-neighbours of $r$ in $J-r$, $|A|=t<k$. In $M^+$ the vertex $r$ keeps all
-its edges of $J$, is odd, and is not a token. Its degree can change only by a token move into $r$
-(an \emph{entry}): a move out of $r$ needs a token at $r$, a drop is at a stem $y_i\ne r$, and a
-suppression keeps the degrees of $a,b$. So until the first entry every edge of $J$ at $r$ is present,
-and the vertices of $J$ other than $r$ that are not adjacent to $r$ lie in $A$ (a suppression may
-add edges at $r$, never delete them).
+Let $t<k$ be the number of non-neighbours of $r$ in $J-r$. For a graph $K$ on $V(M^+)$ let
+\[A(K)=\{v\in V(J)-r:\ d_K(v)>0,\ v\not\sim_K r\}\]
+(Lean \texttt{nonNbr}; the leaves $\ell_i$ are not in $V(J)$). Call a token move into $r$ an
+\emph{entry}, and call retirements, suppressions and drops that isolate the stem \emph{removals}.
 
-\emph{Before the first entry every removal uses up a vertex of $A$.} A retirement enters a vertex
-$u$ whose only edge goes to the moving token $p\ne r$; $u$ is not a leaf (leaves of live tails are
-in $X$, dead leaves are isolated) and not $z$ (whose only neighbour is $r$), so $u\not\sim r$, i.e.
-$u\in A$, and $u$ is isolated afterwards. A suppression of a token $p$ with $N(p)=\{a,b\}$: if $p\in
-A$, then $p$ is isolated afterwards; otherwise $p\sim r$, so $r\in\{a,b\}$, say $a=r$, and $b\not\sim
-r$, $b$ not a leaf, $b\ne z$, so $b\in A$, and afterwards $b\sim r$. A drop that isolates its stem
-$y_i$ needs $N(y_i)=\{\ell_i\}$, so $y_i\not\sim r$, $y_i\in A$, and $y_i$ is isolated afterwards. A
-used-up vertex is isolated or adjacent to $r$ from then on, so it is never used again. Hence if $R$
-removals happen before the first entry, $R\le t$ and at most $t-R$ vertices of $A$ are neither
-isolated nor adjacent to $r$.
+\emph{Before the first entry.} In $M^+$ the vertex $r$ has all its edges of $J$ (no deleted edge
+of $M$ is at $r$), so $|A(M^+)|\le t$; $r$ is odd and is not a token, a leaf or a stem, and $N(z)=\{r\}$.
+Until an entry the degree of $r$ does not change: a move out of $r$ would need a token at $r$, a drop
+is at a stem $y_i\ne r$, and a suppression keeps the degrees of $a,b$. So $r$ stays odd and is not a
+token, and the only edge at $r$ that can be deleted is $pr$ in a suppression of $p$ with
+$a=r$, after which $p$ is isolated. Also, an isolated vertex stays isolated (the only edge ever added,
+$ab$ in (S), joins two neighbours of $p$). Hence no move adds a vertex to $A(K)$, and $N(z)=\{r\}$
+throughout. We claim that every removal takes a vertex out of $A(K)$.
+\begin{itemize}
+\item A retirement $p\to u$: before it $N(u)=\{p\}$ with $p\ne r$, so $u\not\sim r$; $u$ is not a
+leaf (live leaves are in $X$, dead leaves are isolated) and $u\ne z$, so $u\in A(K)$; afterwards
+$u$ is isolated.
+\item A suppression of $p$ with $N(p)=\{a,b\}$; split on the \emph{current} adjacency of $p$ to $r$.
+If $p\not\sim r$, then $p\in A(K)$ ($p$ is a token, so $p\ne r,z$ and $p$ is not a leaf), and
+afterwards $p$ is isolated. If $p\sim r$, then $r\in\{a,b\}$, say $a=r$; then $b\not\sim r$ (as
+$a\not\sim b$), $b$ is not a leaf, $b\ne z$, so $b\in A(K)$, and afterwards $b\sim r$.
+\item A drop that isolates its stem $y_i$: then $N(y_i)=\{\ell_i\}$, so $y_i\in A(K)$, and
+afterwards $y_i$ is isolated.
+\end{itemize}
+So after $R$ removals, $|A(K)|\le t-R$. The number of tokens is at least $k+1-R$: it starts at $k+1$
+($w$ and the $y_i$; $d_M(w)=d_J(w)-1\ge2$), a non-retiring move keeps it, a drop does not lower it,
+and only retirements and suppressions lower it, by one each.
 
-\emph{There is no entry.} At an entry, the other tokens are not adjacent to $r$ after the move, have
-positive degree and are not leaves, so they lie among those $t-R$ vertices. The number of tokens is
-at least $k+1-R$: it starts at $k+1$ ($w$ and the $y_i$; $d_M(w)=d_J(w)-1\ge2$), a non-retiring move
-keeps it, a drop does not lower it, and only retirements and suppressions lower it, by one each. So
-an entry needs $k+1-R\le1+(t-R)$, i.e.\ $k\le t$, which is false.
+\emph{There is no entry.} At the first entry $p\to r$, every other token $q$ is not adjacent to $r$
+after the deletion of $pr$, hence not before, and $q\in A(K)$. So $k+1-R-1\le t-R$, i.e.\ $k\le t$,
+which is false.
 
-So the first-entry analysis applies to the whole schedule: there are at most $t<k\le 2k-1$ removals,
-while Proposition~\ref{prop:potential} requires $2k-1$. No schedule exists.
+So the whole schedule lies before the first entry and has at most $t<k\le2k-1$ removals, while
+Proposition~\ref{prop:potential} requires $2k-1$ ($\Phi(M^+)=2k+1$, as $d_J(w)\ge3$). No schedule
+exists. (Lean \texttt{not\_steerK} carries the inequalities $|A(K)|+2\le|\tau(K)|$ and
+$|A(K)|+3\le\Phi(K)$ through every move, with the same case split in \texttt{obstr\_supp}.)
 \end{proof}
 
-The data agree: at every proved-unscheduled root of degree $n-2$ the least potential reached is $5$
-or $4$, never less (\texttt{explore.py}, exhaustive over all reachable states of every data choice
-and orientation). For $d(z)\ge6$ such roots therefore need a different method; for $d(z)=8$ the
+The data agree: at every root of degree $n-2$ that the search proves unscheduled, the least
+potential reached is $5$ or $4$, never less (\texttt{explore.py}, exhaustive over all reachable states
+of every data choice and orientation; its state cap was hit at three roots of degree $n-2$ of
+\texttt{resid\_O8}, where the uncapped exploration of audit A36 gives the same values). For $d(z)\ge6$ such roots therefore need a different method; for $d(z)=8$ the
 proposition excludes roots with at most two non-neighbours.
 
-\subsection*{The rest: frozen and partial roots} At every proved-unscheduled root, \texttt{explore.py}
+\subsection*{The rest: frozen and partial roots} At every root that the search proves unscheduled
+(the roots settled only by Proposition~\ref{prop:nminus2} are not explored), \texttt{explore.py}
 explores all reachable states of every data choice and orientation and records the least potential
 $\Phi$ reached (Proposition~\ref{prop:potential}; $\Phi=5$ at the start, a schedule ends at
 $\Phi\le2$ with at most one token and one live tail). Call a root \emph{frozen} if $\Phi$ never drops,
-so that no token can ever be removed.
+so that no removal is ever possible.
 \begin{center}\small
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
@@ -544,8 +568,8 @@ clt graph & $6$ & $4$ & $2$ & $0$ & $0$ & $0$\\
 \end{center}
 (At order~$7$, $15$ of the $20$ roots of degree $n-2$ are frozen; at order~$9$, $376$ of $1{,}597$.)
 A least potential of $2$ without a schedule means two tokens and no live tail, or no token and two
-live tails; the second kind is what Conjecture~\ref{conj:mt} would settle. In the dense graphs almost
-every unscheduled root is frozen: of the $53$ proved-unscheduled roots of degree less than $n-2$ in
+live tails; the second kind is what Conjecture~\ref{conj:mt} would settle. In the dense graphs most
+unscheduled roots are frozen: of the $53$ search-proved unscheduled roots of degree less than $n-2$ in
 the residual families, the E28 graphs and the clt graph, $42$ are frozen. Of these $42$, $38$ have
 exactly three non-neighbours of $r$ and four have five, so Proposition~\ref{prop:nminus2} does not
 reach them. Like Proposition~6.10 of~\cite{TRN} for one pair, they show that a
@@ -561,9 +585,14 @@ number of live tails.
 $\MT$ holds in all our tests (\texttt{scripts/mt\_conj.py}; the oracle \texttt{route\_ext}, query
 \texttt{S}). An instance is a connected graph $G$ with leaves attached at distinct stems, and avoided
 vertices that are distinct, odd, outside the stems and non-adjacent to their own stem, such that the
-result has at most one even vertex. With two tails, every connected $G$ of order $n\le9$ ($1$, $29$,
-$113$, $6{,}502$, $18{,}858$ and $2{,}860{,}182$ instances for $n=4,\dots,9$); with three tails, every
-connected $G$ of order $n\le7$ ($552$ instances at $n=6$, $6{,}156$ at $n=7$). If $\MT$ is true, the
+result has at most one even vertex; so the test covers only distinct stems and distinct avoided
+vertices, while (TS) allows both to be shared. With two tails, every connected $G$ of order $n\le9$
+($1$, $29$, $113$, $6{,}502$, $18{,}858$ and $2{,}860{,}182$ unordered instances for $n=4,\dots,9$);
+with three tails, every connected $G$ of order $n\le7$ ($92$ unordered instances at $n=6$ and
+$1{,}026$ at $n=7$; \texttt{mt\_conj.py} counts ordered triples, $552$ and $6{,}156$). Audit A36 extended
+the test with its own solver to everything (TS) allows, shared stems and shared avoided vertices
+included: no failure among $37{,}707$ two-tail instances ($n\le8$) and $17{,}213$ three-tail
+instances ($n\le7$). If $\MT$ is true, the
 end of a schedule can be taken at $\le1$ token; at order~$9$ this adds $91$ roots
 (Table~\ref{tab:ablate}).
 
@@ -571,7 +600,9 @@ end of a schedule can be taken at $\le1$ token; at order~$9$ this adds $91$ root
 The leaf-tail lemma is $\MT$ for one tail. Run its induction with two live tails. With no even
 vertex, drop a tail and apply the leaf-tail lemma. If the even vertex $g$ has a neighbour outside
 $X$, take Lov\'asz's Case~I step there (Lemma~\ref{lem:fan} with one token). Otherwise every
-neighbour of $g$ lies in $X$; a stem is adjacent to its own leaf only, and $x_i\not\sim s_i$, so
+neighbour of $g$ lies in $X$. Assume distinct stems (if $s_1=s_2=g$ and $N(g)=\{c_1,c_2\}$, the
+component $c_1gc_2$ is one path, which avoids $x_1,x_2$, and the claim is immediate). A stem is
+adjacent to no leaf but its own, and $x_i\not\sim s_i$, so
 $N(g)=\{x_1,x_2\}$ or $N(g)=\{c_j,x_i\}$ with $g=s_j$, $i\ne j$. If $N(g)=\{x_1,x_2\}$ with $x_1\not\sim x_2$,
 suppress $g$ and drop. The two configurations left, $g$ on a triangle $gx_1x_2$ and a stem
 $s_j$ of degree two with neighbours $c_j,x_i$, are where we do not know how to proceed.
@@ -620,8 +651,9 @@ of degree $|J|-2$.\lean{not\_steerK (abstract form)}
 \end{proposition}
 
 \begin{proof}
-Apply the invariant of \texttt{not\_steerK}. Let $A$ be the set of non-neighbours of $r$ of positive
-degree that are not leaves, $\rho$ the number of live tails whose avoided vertex is $r$, and
+Apply the invariant of \texttt{not\_steerK}. Let $A=A(K)$ be the current set of non-neighbours of
+$r$ of positive degree that are not leaves (as in the proof of Proposition~\ref{prop:nminus2}), $\rho$
+the number of live tails whose avoided vertex is $r$, and
 $\Phi=\#\text{tokens}+\#\text{live tails}$; the claim is that
 \[|A|+2\le\#\text{tokens}+\rho\qquad\text{and}\qquad|A|+3\le\Phi\]
 are kept by every move and contradict the end ($\Phi\le2$). At the start $r$ is odd ($d_H(r)=d_J(r)-2$),
@@ -630,17 +662,17 @@ non-neighbours of $r$ in $J$ ($z$ is isolated, and nothing else at $r$ is delete
 there are $k$ tokens, $k$ live tails and $\rho=1$. So the inequalities read $t+3\le k+1$ and $t+4\le2k$,
 which hold for $t\le k-2$. Invariance: a token cannot enter $r$, since while $\rho>0$ the vertex $r$ is
 in $X$, and when $\rho=0$ every other token would be a non-neighbour of $r$, i.e.\ in $A$, against the
-first inequality. Every other move is as in the proof of Proposition~\ref{prop:nminus2}: a removal
-uses up a vertex of $A$ and lowers $\#\text{tokens}+\rho$ and $\Phi$ by at most one; the drop of the
+first inequality. Every other move is as in the proof of Proposition~\ref{prop:nminus2} (with the
+suppression case split on the current adjacency of $p$ to $r$): no move adds a vertex to $A$, a
+removal takes one out and lowers $\#\text{tokens}+\rho$ and $\Phi$ by at most one; the drop of the
 tail $(\ell_0,a_0,r)$ lowers $\rho$ by one but adds a token or uses up $a_0$. (Lean
 \texttt{not\_steerK} proves exactly this invariance, for any graph, tails and $r$.)
 \end{proof}
 
 \begin{table}[ht]
 \caption{Steering on the all-odd lift against the triangle base (roots with a schedule / roots with
-data). Orders $7$ and $9$: exact. Residual families, all-odd column: \texttt{resid\_O8} and E28 at node budget $2\cdot10^6$
-(\texttt{*\_aodd\_b2e6.txt}), \texttt{resid\_O10} at $2\cdot10^5$ (\texttt{*\_aodd\_b2e5.txt});
-triangle-base column as in Table~\ref{tab:resid}.}\label{tab:aodd}
+data). Orders $7$ and $9$: exact. Residual families, all-odd column: node budget $2\cdot10^6$, default move order
+(\texttt{*\_aodd\_b2e6.txt}); triangle-base column as in Table~\ref{tab:resid}.}\label{tab:aodd}
 \small
 \begin{tabular}{@{}lrr@{}}
 \toprule
@@ -652,7 +684,7 @@ $d(z)=6$, order $7$ & $17$ / $40$ & $0$ / $36$\\
 $d(z)=6$, order $9$ & $7{,}529$ / $10{,}118$ & $2{,}101$ / $8{,}340$\\
 \quad with the end of Conjecture~\ref{conj:mt} & $7{,}620$ & $2{,}725$\\
 \texttt{resid\_O8} & $72$ / $180$ & $14$ / $180$\\
-\texttt{resid\_O10} & $111$ / $144$ & $54$ / $144$\\
+\texttt{resid\_O10} & $111$ / $144$ & $59$ / $144$\\
 E28 hard graphs & $10$ / $48$ & $0$ / $48$\\
 \bottomrule
 \end{tabular}
@@ -666,17 +698,17 @@ all-odd base at every root tested~\cite[\S31]{SYN}, so the bases exist; steering
 them. The reason is the count: with one tail more and no $w$, one more removal is needed (four
 instead of three at $d(z)=6$), and the leaf $z$, the one retirement spot the triangle base always
 has, is gone. In the residual families the all-odd search proves that no schedule exists at $136$
-of the $180$ roots of \texttt{resid\_O8} and $28$ of the $48$ roots of the E28 graphs (all $36$ roots of
-the $C_4$ shape at $|O|=8$); every all-odd schedule found there was executed by
+of the $180$ roots of \texttt{resid\_O8} (all $36$ roots of its $C_4$ shape), $21$ of the $144$ of
+\texttt{resid\_O10}, and $28$ of the $48$ roots of the E28 graphs; every all-odd schedule found there was executed by
 \texttt{mt\_verify.py}. A coverage theorem in the all-odd setting is not in sight with this move
 set.
 
 \section{Formalisation}\label{sec:lean}
 
-\texttt{lean/GallaiLean/MultiToken.lean} and \texttt{MultiTokenObstruct.lean}, no \texttt{sorry};
-\texttt{lake build} is green ($18{,}428$ jobs), and \texttt{\#print axioms} gives only \texttt{propext},
-\texttt{Classical.choice}, \texttt{Quot.sound} for every theorem listed
-(\texttt{data/axioms.txt}).
+The files are \texttt{lean/GallaiLean/MultiToken.lean} and \texttt{MultiTokenObstruct.lean}, with no
+\texttt{sorry}. \texttt{lake build} is green ($18{,}428$ jobs), and \texttt{\#print axioms} gives only
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound} for every theorem and lemma in the table below
+($22$ in all; \texttt{scripts/axioms\_mt.lean}, output \texttt{data/axioms.txt}).
 
 \begin{center}\small
 \begin{tabular}{@{}ll@{}}
@@ -694,8 +726,8 @@ Lemma~\ref{lem:steps} & \texttt{tailGood\_move}, \texttt{tailGood\_drop}, \textt
 \texttt{splitOff\_supp}\\
 Lemma~\ref{lem:mtl} & \texttt{tailGood\_fin}\\
 Theorem~\ref{thm:transfer} & \texttt{steerK\_good}\\
-Theorem~\ref{thm:tb} & \texttt{triangleBase\_of\_steerK} (with \texttt{triTails\_sys},
-\texttt{triTails\_inv})\\
+Theorem~\ref{thm:tb} & \texttt{triangleBase\_of\_steerK} (the ``in particular''; with
+\texttt{triTails\_sys}, \texttt{triTails\_inv})\\
 Corollary~\ref{cor:test1} & \texttt{test1At\_of\_steerK}\\
 Proposition~\ref{prop:nminus2} & \texttt{not\_steerK\_triangle}; the invariant \texttt{ObstrInv},
 \texttt{not\_steerK}\\
@@ -711,8 +743,14 @@ with $\tau$ the even set of the graph, which is what \texttt{mtok.cpp} and
 other than $p$ after the deletion; (D) a live tail with odd stem; (S) degree two, non-adjacent
 neighbours, not the leaf of any tail (a dead leaf is isolated, so this is the C++ test on live
 leaves), and not the pair $x_is_i$ of a live tail; the end: $\le1$ even vertex and $\le1$ live
-tail. Theorem~\ref{thm:cover}, Proposition~\ref{prop:aoddlift} and the all-odd instance of
-Proposition~\ref{prop:aoddobs} are not formalised.
+tail. The Lean form of Theorem~\ref{thm:tb} exports its last clause, \texttt{TriangleBase J z r};
+the first clause ($x_i\notin V(Q(y_i))$ for every $i$) is proved inside the proof, as the disjunct
+\texttt{Or.inl} for every pair, but not stated. Audit A36 ran Example~\ref{ex:short} through the Lean
+pipeline to \texttt{Test1At} by \texttt{decide} (\texttt{research/audit/A36-scripts/ex33\_steerK.lean},
+which adds the \texttt{Decidable} instances needed for \texttt{OffTails}, \texttt{SuppOK},
+\texttt{OneLive} and nested graph operations). Theorem~\ref{thm:cover},
+Proposition~\ref{prop:aoddlift} and the all-odd instance of Proposition~\ref{prop:aoddobs} are not
+formalised.
 
 \section{What remains}\label{sec:open}
 
@@ -731,6 +769,8 @@ obstruction there, extending Proposition~\ref{prop:nminus2}, is open.
 \end{enumerate}
 
 \begin{thebibliography}{99}
+\bibitem{EXP} The experiments log, \texttt{research/experiments.md}, entry E28 (E): the eight hard
+graphs of the dense residual.
 \bibitem{DT} The direct lift to Test1 through triangles at $z$, \texttt{manuscripts/direct-test1}.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
 B} \textbf{93} (2005), 117--125.
@@ -738,7 +778,8 @@ B} \textbf{93} (2005), 117--125.
 Tihany, 1966), Academic Press, 1968, 231--236.
 \bibitem{NA} Neighbour avoidance, \texttt{manuscripts/na}.
 \bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
-\bibitem{SYN} The project synthesis, \texttt{research/synthesis.md}, \S31 (the all-odd lift, coordinator).
+\bibitem{SYN} The project synthesis, \texttt{research/synthesis.md}: \S28 (state of the programme), \S31
+(the all-odd lift, coordinator).
 \bibitem{T6} The dense T(6)-i residual, \texttt{manuscripts/t6-dense}.
 \bibitem{TRN} The tight transfer TRN, two-token steering, \texttt{manuscripts/trn}.
 \end{thebibliography}
