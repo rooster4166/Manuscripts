@@ -1,0 +1,5 @@
+'Gallai.conjAE_iff_conjEE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.avoidDecomp_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.terminal_of_conjAE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.avoidDecomp_of_atMostOneCommon' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.ln2_of_leaf_at_head_of_atMostOneCommon' depends on axioms: [propext, Classical.choice, Quot.sound]
