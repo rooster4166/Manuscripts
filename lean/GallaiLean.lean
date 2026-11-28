@@ -94,3 +94,4 @@ import GallaiLean.Test1AllOdd
 import GallaiLean.LeafTails
 import GallaiLean.NoData
 import GallaiLean.LemmaR
+import GallaiLean.JointR
