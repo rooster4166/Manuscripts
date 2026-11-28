@@ -129,6 +129,11 @@ EMM sufficiency work is **stopped**.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
 - **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`, new): roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
 - **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
+  - **Milestone (61abb4e; audit A40 applied, no error in any proof):**
+    - Lean: `leaf_tails` (multi-tail leaf theorem with sparse heads) and `lovasz_avoid_leafTails` (L_N(m) when all tails but one are leaves).
+    - Paper: Lemma R (a pre-committed end path) and Prop 6.3 (Criterion R ⇒ L_N(2), via `steerK_good`).
+    - **Criterion R holds at all 43,400 order-8 instances and 3,000 random order-10 instances; every certificate was executed and A40 re-verified them.**
+    - Conjecture R ⇒ L_N(2). **L_N(2) itself is not proved.**
 - **dense-root** (session_01FxXpVhCWRJY7ccwLFEHd8q, branch `claude/dense-root`): **finished** (bc24fad). Manuscript `manuscripts/dense-root` (10 pp.); audits A39, A39b and A39c, all findings applied.
   - Test1 at roots of degree n − 2. Proved in Lean:
     - Theorem A: B − r has ≤ 1 even vertex. This is re-tight Thm 3.1 without the Eulerian hypothesis.
