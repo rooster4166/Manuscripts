@@ -1,0 +1,9 @@
+# L_N(2) at order 8: 43,400 instances (connected all-odd graphs; unordered pairs of disjoint
+# ordered non-adjacent pairs (c1,a1),(c2,a2); gen_ln2.py).  Coverage by route:
+two-tail token schedule, one-tail fin (multi-token)        31532   (sched3.py / sched.py, fin_tails=1)
+two-tail token schedule, Theorem A fin (sparse live heads)  31532   (sched.py sparse)
+two-tail token schedule, MTL2 fin (conjectural)             32837   (sched.py mtl2)
+joint decomposition Q(c1)=Q(c2) avoiding a1,a2 (exact)      40538   (lnsolve J c1 c2 A c1 a1 A c1 a2)
+Lemma R(a): joint path P + free token schedule in F-E(P)    40532   (joint_sched.py)
+union of the two proved routes above                         42904   (residual 496, all but 5 in graphs with a leaf)
+# three pairs, order 8, 4000 random instances (sched3.py): one-tail fin 637, Theorem A fin 643

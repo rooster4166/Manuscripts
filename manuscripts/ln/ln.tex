@@ -1,0 +1,421 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\heads}{\operatorname{heads}}
+\emergencystretch=3em
+
+\title[Two pairs in Lov\'asz decompositions]{Two pairs in Lov\'asz decompositions:\\
+a multi-tail leaf theorem, pre-committed end paths,\\ and the state of $L_N(2)$}
+\author{Gallai project (cloud session \texttt{claude/ln})}
+\date{28 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $F$ be a graph in which every degree is odd. A \emph{Lov\'asz decomposition} of $F$ partitions
+$E(F)$ into paths so that every vertex is an end of exactly one path; $Q(v)$ is the path ending at
+$v$. Conjecture $L_N$ of route descent asks, for disjoint non-adjacent pairs $c_1a_1,\dots,c_ma_m$,
+for a Lov\'asz decomposition with $a_i\notin V(Q(c_i))$ for every $i$. For $m=1$ it is a theorem
+($L_1$). The case $m=2$ is the cleanest open statement on the main line of the project
+(synthesis~\S32). We do not prove $L_N(2)$. We prove the following, and locate what is left.
+\begin{itemize}
+\item \emph{Theorem A (multi-tail leaf theorem; Lean).} In a graph with at most one vertex of
+positive even degree, any family of \emph{leaf tails} $(c,A)$ (a leaf $c$, and vertices $A$ at
+distance $\ge3$ from $c$) can be kept simultaneously, provided no vertex has two neighbours among the
+avoided vertices. The leaves need not be sparse, several tails may share a stem, and the even
+vertex is unrestricted. This contains the leaf-tail lemma of~\cite{TRN}, the multi-token fin
+of~\cite{MT}, and the leaf case of sparse separation~\cite{MS}.
+\item \emph{Corollary B (Lean).} $L_N(m)$ holds when all tails but one are leaves at distance
+$\ge3$ from their heads and the heads are sparse.
+\item \emph{Lemma R (pre-committed end path).} If one end path can be fixed in advance, as a path
+$P$ from $c_i$ avoiding $a_i$, so that what is left of the problem has a single tail and a token
+schedule, then $L_N(2)$ holds. If $P$ ends at $c_j$ and avoids $a_j$, what is left is a
+two-even-vertex existence problem with no constraint at all.
+\item \emph{Computation.} Criterion~R holds at all $43{,}400$ instances of order $8$ and at a random
+sample of $3{,}000$ instances of order $10$. Every certificate was executed by an independent
+program, and the resulting decomposition was checked. By comparison, the two-tail token schedules
+of~\cite{MT} cover $72.7\%$ of the instances of order~$8$.
+\end{itemize}
+We explain why every Fan-type induction for $L_N(2)$ is a two-token problem, and why two tokens
+cannot be retired in dense graphs. A pre-committed end path removes a tail before any token moves;
+this is what the schedules lacked. The residual open statement is Conjecture~R: every $L_N(2)$
+instance satisfies Criterion~R.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+\begin{conjecture}[$L_N$, route descent~\cite{RD}]\label{conj:LN}
+Let $F$ have all degrees odd, and let $c_1a_1,\dots,c_ma_m$ be pairwise disjoint pairs of
+non-adjacent vertices. Then $F$ has a Lov\'asz decomposition with $a_i\notin V(Q(c_i))$ for every
+$i$.
+\end{conjecture}
+
+\emph{Why it matters} (synthesis \S\S31--32). $L_N$ implies Gallai's conjecture for every graph whose
+even vertices induce a subgraph with a perfect matching, with every orientation realisable~\cite{RD}.
+Through the all-odd matching lifts it gives both spine tests (T1) and (T2) at every root where
+$J[N(z)]$ has a perfect matching (\texttt{test1At\_of\_matchingOdd},
+\texttt{test2At\_of\_forestBase2}). CLT-B implies it~\cite{CLT}. It holds exhaustively at order
+$10$, for two and three fixed pairs (test2, E34).
+
+\emph{What was known.} $L_1$ is a theorem: hang a leaf $\ell$ at $c$, which makes $c$ the only even
+vertex, and separate $\ell$ from $a$ by the separation theorem~\cite{RD}. For $m\ge2$ the leaf trick
+makes $m$ even vertices. The two-token and $k$-token steering of~\cite{TRN,MT} moves these tokens by
+Fan steps until at most one is left, and it is weak on dense instances; an obstruction invariant
+explains why (\texttt{not\_steerK}).
+
+\subsection*{Results and status}
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{0.47\textwidth}p{0.25\textwidth}p{0.22\textwidth}@{}}
+\toprule
+statement & status & where\\
+\midrule
+Theorem A (multi-tail leaf theorem) & proved, Lean & \S\ref{sec:A}, \texttt{leaf\_tails}\\
+Corollary B (one general tail) & proved, Lean & \S\ref{sec:B}, \texttt{lovasz\_avoid\_leafTails}\\
+Lemma R (pre-committed end path) & proved on paper & \S\ref{sec:R}\\
+Criterion R at all order-$8$ instances & computed, every certificate executed & \S\ref{sec:comp}\\
+Criterion R at $3{,}000$ random order-$10$ instances & computed, executed & \S\ref{sec:comp}\\
+two leaf tails, $\le1$ even vertex, heads not sparse (MTL2) & conjecture; exhaustive $n\le9$ & \S\ref{sec:open}\\
+Conjecture R (every instance satisfies Criterion R) & open & \S\ref{sec:open}\\
+$L_N(2)$ & \textbf{open} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Preliminaries}\label{sec:prelim}
+
+All graphs are finite and simple. For a path decomposition $\cD$, $b_\cD(v)$ is the number of path
+ends at $v$. A \emph{parity decomposition} of $K$ has $b(v)=d_K(v)\bmod 2$ for every $v$. If $K$ has
+at most one vertex of positive even degree, a parity decomposition is a Lov\'asz decomposition, and
+one exists (Lov\'asz; Lean \texttt{lovasz\_ends}). An \emph{even vertex} has even positive degree; the
+even vertices of the current graph are called \emph{tokens}.
+
+\begin{lemma}[Fan's lemma with vertex sets~\cite{Fan05},{\cite[Lemma~2.2]{RD}}]\label{lem:fan}
+Let $\cD'$ be a path decomposition of $K'=K-tu$ with $b_{\cD'}(t)$ larger than the number of
+neighbours of $u$ in $K'$ with no end. Then $K$ has a path decomposition $\cD$ with
+$b_\cD=b_{\cD'}-\mathbf 1_t+\mathbf 1_u$, every path of which lies in $V(P)\cup\{u\}$ for some
+$P\in\cD'$.\lean{fan\_single\_supp}
+\end{lemma}
+
+A vertex $c$ and a set $A$ are \emph{far apart} if every $a\in A$ is at distance at least three from
+$c$: $a\ne c$, $a\not\sim c$, and $a$ and $c$ have no common neighbour.
+
+\begin{definition}[leaf tails]\label{def:tails}
+A \emph{leaf tail} of $K$ is a pair $(c,A)$ in which $c$ has degree one and $A$ is far apart from
+$c$. For a family $T$ of leaf tails, $\heads T=\bigcup_{(c,A)\in T}A$, and the \emph{tail leaves}
+are the vertices $c$. A decomposition \emph{keeps} $T$ if, for every $(c,A)\in T$, no path through
+$c$ meets $A$. Since $c$ is a leaf, the path through $c$ is the path ending at $c$. A set $X$ is
+\emph{sparse} in $K$ if no vertex of $K$ has two distinct neighbours in $X$.
+\lean{LeafTails, KeepsTails, SparseIn}
+\end{definition}
+
+Keeping a tail is a property of vertex sets. By Lemma~\ref{lem:fan}, it survives every Fan step
+whose target $u$ is neither a head nor a tail leaf: a path through $c$ after the step lies in an old
+path through $c$ plus $u$ (\texttt{keepsTails\_of\_cover}).
+
+\section{Theorem A: the multi-tail leaf theorem}\label{sec:A}
+
+\begin{theorem}[multi-tail leaf theorem]\label{thm:A}
+Let $K$ have at most one vertex of positive even degree, and let $T$ be a finite family of leaf
+tails of $K$ such that $\heads T$ is sparse in $K$. Then $K$ has a Lov\'asz decomposition that keeps
+$T$.\lean{leaf\_tails}
+\end{theorem}
+
+Nothing is assumed about the tail leaves. Several tails may share a stem, a stem may be adjacent to
+the heads of other tails, the even vertex may be a stem or a head, and a head may be the leaf of
+another tail. This is what separates Theorem~\ref{thm:A} from three known results.
+\begin{itemize}
+\item The leaf-tail lemma~\cite[Lemma~6.1]{TRN} (\texttt{avoid\_leafTail}) is the case of one tail
+with $|A|=1$ and $A$ odd.
+\item The multi-token fin~\cite[Lemma~2.6]{MT} (\texttt{tailGood\_fin}) allows at most one live tail.
+\item Sparse separation~\cite{MS} (\texttt{separation\_sparse}) needs the tail leaves and the heads
+\emph{together} to be sparse; this fails as soon as a stem is adjacent to another tail's head, or
+two tails share a stem.
+\end{itemize}
+
+\begin{proof}
+Induction on $\nu(K)=\sum_v d(v)+[K\text{ has no even vertex}]$ (\texttt{lt\_strong}). Write
+$X=\heads T$ and $L$ for the set of tail leaves. Every case below either returns a decomposition
+directly or calls the induction hypothesis on a graph $K'$ with $\nu(K')<\nu(K)$, at most one even
+vertex, a family $T'$ of leaf tails and $\heads T'\subseteq X$ sparse in $K'$. These conditions pass
+to subgraphs, and tails whose leaf becomes isolated are removed from $T'$ (their constraint is
+then checked by hand). We check only the new points.
+
+\emph{Case 1: an even vertex $z$ with a neighbour $u\notin X\cup L$} (\texttt{lt\_case\_target}).
+Let $K'=K-zu$. In $K'$ only $u$ can be even, $z$ has one end, and every neighbour of $u$ is odd, so
+Lemma~\ref{lem:fan} applies with $t=z$. Its target $u$ is neither a head nor a tail leaf, so the
+new decomposition keeps $T$.
+
+\emph{Case 2: an even vertex $z$ all of whose neighbours lie in $X\cup L$.} Tail leaves have degree
+one, and $z$ has at most one neighbour in $X$, by sparseness. As $d(z)\ge2$, one of the following
+holds (the derivation is in \texttt{lt\_strong}):
+\begin{itemize}
+\item $z$ has two neighbours $c,y$ of degree one; or
+\item $N(z)=\{c,y\}$ with $d(c)=1$ (so $d(z)=2$).
+\end{itemize}
+In both, delete $zc$ and $zy$ (\texttt{lt\_case\_path}). In $K'$ the vertex $c$ is isolated, $y$ is
+isolated or even, $z$ is isolated or even, and the alternatives make sure that only one of $y,z$ is
+even. Put back the path $c\,z\,y$ (\texttt{PathDecomp.add\_path2\_supp}); the end counts become
+those of $K$. The new path keeps every tail: its tail leaves are among $c,y$; for the tail at $c$,
+the vertex $z$ is a neighbour of $c$ and $y$ is at distance two, so neither is a head of that tail;
+the same holds for a tail at $y$. Every other path is a path of the child.
+
+\emph{Case 3: no even vertex, and a vertex $v$ of degree one} (\texttt{lt\_case\_leaf}). Delete the
+edge $vw$ and restore it as a one-edge path; it keeps every tail because a head of a tail at $v$ or
+at $w$ is not adjacent to it.
+
+\emph{Case 4: no even vertex, and a vertex $x\notin X$ of degree at least three}
+(\texttt{lt\_case\_big}). This is Lov\'asz's Case~II: pick $u\in N(x)$, move the edge $ux$ to a new
+leaf at $u$, which makes $x$ the only even vertex; the tails are carried to the new graph, and a tail
+leaf equal to $u$ stays a leaf. Delete the new leaf afterwards; then $u$ has $0$ or $2$ ends. Add $ux$
+as a path, which keeps the tails because $x$ is a neighbour of $u$, or use Lemma~\ref{lem:fan} with
+target $x$, which is neither a head nor a tail leaf.
+
+\emph{Case 5: otherwise} (\texttt{lt\_case\_empty}). There is no even vertex, no vertex of degree
+one, and every vertex outside $X$ has degree $0$. A vertex of $X$ of degree $\ge3$ would have two
+neighbours of positive degree, both in $X$, against sparseness. So there are no edges.
+\end{proof}
+
+\begin{remark}[sparseness is used once]\label{rem:sparse}
+Sparseness enters only in Case~2: it caps the number of neighbours of the even vertex in $X$ at one.
+Without it the residual is an even vertex $g$ whose neighbours are all heads, for example
+$N(g)=\{x_1,x_2\}$ with $x_i$ avoided by tail $i$. With $x_1\not\sim x_2$ one can suppress $g$; the
+configurations that resist are the triangle $g\,x_1\,x_2$ and the case where each $x_i$ is the stem
+of the other tail. Both reduce to a symmetric form of $L_1$ at distance two, which is open
+(route-descent Rem.~V.4). The statement without sparseness held in every test
+(Section~\ref{sec:comp}, Conjecture~\ref{conj:mtl}).
+\end{remark}
+
+\section{Corollary B}\label{sec:B}
+
+\begin{corollary}[one general tail]\label{cor:B}
+Let $F$ have no vertex of positive even degree, let $c$ be odd and $a\ne c$ with $a\not\sim c$, and
+let $T$ be a family of leaf tails of $F$ with leaves different from $c$. If $\{a\}\cup\heads T$ is
+sparse in $F$, then some Lov\'asz decomposition has $a\notin V(Q(c))$ and keeps $T$.
+\lean{lovasz\_avoid\_leafTails}
+\end{corollary}
+
+\begin{proof}
+Hang a leaf $\ell$ at $c$. In $F+c\ell$ the vertex $c$ is the only even vertex, $(\ell,\{a\})$ is a
+leaf tail, and the tails of $T$ stay leaf tails; the heads stay sparse because $\ell$ is adjacent
+only to $c$. Apply Theorem~\ref{thm:A} and delete $\ell$: the path through $\ell$ becomes $Q(c)$
+(the pendant-leaf lemma,~\cite[Lemma~2.3]{NA}).
+\end{proof}
+
+So $L_N(m)$ holds whenever all tails but one are leaves of $F$ at distance $\ge3$ from their heads,
+and the heads are sparse. With $T=\emptyset$ this is $L_1$.
+
+\section{Why two pairs are a two-token problem}\label{sec:two}
+
+Every Fan-type proof keeps at most one even vertex at a time: Fan's inequality fails at equality when
+the target is adjacent to a second token. In $L_N(2)$ there are two constraints, and both encodings
+make tokens.
+\begin{itemize}
+\item As a leaf tail, the constraint at $c$ needs a leaf at $c$, which makes $c$ a token.
+\item As a general tail $\mathrm{av}(c,a)$, it survives a Fan step only if the target avoids
+$N[c]$~\cite[Thm.~3.2]{CLT}.
+\end{itemize}
+Either way the moving token must avoid the neighbourhood of the other tail's vertex $c$, and it can
+retire only at a vertex all of whose edges it deletes. In a dense graph no such vertex is reachable;
+this is the obstruction of~\cite{MT} (\texttt{not\_steerK}). We checked the alternatives
+computationally (Section~\ref{sec:comp}).
+\begin{itemize}
+\item Token schedules with two tails reach at most one token at $72.7\%$ of the $43{,}400$
+instances of order $8$.
+\item Using Theorem~\ref{thm:A} as the final step instead of the one-tail fin does not change this
+number at $m=2$: every schedule that reaches one token with sparse heads can also drop a tail. At
+$m=3$ it adds $6$ of $4{,}000$ sampled instances. So Theorem~\ref{thm:A} is a structural result; as a
+fin for schedules it gains almost nothing.
+\item Using the unproved two-leaf-tail statement MTL2 (Conjecture~\ref{conj:mtl}) as the final step
+raises the coverage only to $75.7\%$.
+\end{itemize}
+The missing instances are not exotic. They include the star $K_{1,5}$ with two leaf tails at
+distance two, and most dense instances.
+
+\section{Pre-committed end paths}\label{sec:R}
+
+The idea is to fix one end path before any token moves. This removes one constraint outright, at the
+price of up to two extra tokens. Those tokens are free: no tail restricts their targets.
+
+\begin{lemma}[Lemma R]\label{lem:R}
+Let $(F;c_1,a_1;c_2,a_2)$ be an instance of $L_N(2)$, let $\{i,j\}=\{1,2\}$, and let $P$ be a path
+of $F$ with one end $c_i$, other end $p$, and $a_i\notin V(P)$. Put $K_0=F-E(P)$.
+\begin{enumerate}[label=(\alph*)]
+\item If $p=c_j$, $a_j\notin V(P)$, and $K_0$ has a parity decomposition, then $F$ has a Lov\'asz
+decomposition with $Q(c_1)=Q(c_2)=P$.
+\item If $p\ne c_j$, let $K=K_0+c_j\ell$ with a new leaf $\ell$. If $K$ has a parity decomposition in
+which no path contains both $\ell$ and $a_j$, then $F$ has a Lov\'asz decomposition with $Q(c_i)=P$
+and $a_j\notin V(Q(c_j))$. The same holds with $K=K_0$ and the leaf $c_j$ itself in place of $\ell$,
+when $c_j$ is a leaf of $K_0$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+In $K_0$ the ends $c_i,p$ of $P$ have lost one edge and the interior vertices of $P$ two. So $c_i,p$
+have even degree in $K_0$ and every other vertex has odd degree.
+
+(a) A parity decomposition $\cD_0$ of $K_0$ has no end at $c_i,c_j$ and one end at every other
+vertex. $\cD_0\cup\{P\}$ is a path decomposition of $F$ with one end at every vertex, and the path
+ending at $c_1$ and at $c_2$ is $P$, which avoids $a_1,a_2$.
+
+(b) The vertex $c_j$ is not an end of $P$, so it has odd degree in $K_0$ and even degree in $K$.
+Let $\cD_K$ be the given decomposition. The leaf $\ell$ is an end of its path $P_\ell$, and $c_j$
+has no end in $\cD_K$, so $P_\ell$ continues past $c_j$. Deleting $\ell$ gives a parity decomposition
+$\cD_0$ of $K_0$ in which the path ending at $c_j$ is $P_\ell-\ell$, which avoids $a_j$, and $c_i,p$
+have no end. Then $\cD_0\cup\{P\}$ is a Lov\'asz decomposition of $F$ with $Q(c_i)=P$, which avoids
+$a_i$, and with the same path ending at $c_j$, which avoids $a_j$. In the leaf variant no leaf is
+added and $P_{c_j}$ is the path ending at $c_j$.
+\end{proof}
+
+In (a) the remaining problem has no constraint at all: it asks that the graph $K_0$, which has
+exactly the two even vertices $c_1,c_2$ (fewer if one of them had degree one), meet the parity bound.
+This is the two-even-vertex problem of the project (connections \S\S O--P). Its Conjecture~31 says
+that a $2$-connected graph with two even vertices meets the parity bound unless an odd vertex is
+universal. So Conjecture~31 implies $L_N(2)$ for every instance in which $c_1,c_2$ are joined by a
+path $P$ avoiding $a_1,a_2$ with $F-E(P)$ $2$-connected and without a vertex of degree $n-1$.
+
+\begin{definition}[Criterion R]\label{def:R}
+An instance satisfies \emph{Criterion R} if for some $i$ and some $P$ as in Lemma~\ref{lem:R} the
+hypothesis of (a) or (b) is certified by a token schedule (moves M, D, S of~\cite[Def.~2.2]{MT})
+that ends with at most one token and at most one live tail. In (a) there is no tail, in (b) the
+single tail $(\ell,c_j,a_j)$.
+\end{definition}
+
+Under the invariant (TI) of~\cite{MT} the transfer theorem~\cite[Thm.~2.7]{MT} (\texttt{steerK\_good})
+turns such a schedule into the decomposition required by Lemma~\ref{lem:R}. Our certificates do not
+rely on this: each one is executed move by move, the bottom is solved exactly, and every level is
+re-checked (Section~\ref{sec:comp}). In (b) the graph $K$ may have three tokens ($c_i$, $p$ and
+$c_j$), but only one constraint.
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational; no proof above depends on it.} The scripts are in
+\texttt{manuscripts/ln/scripts}; the data in \texttt{manuscripts/ln/data}.
+
+\subsection*{Tools}
+\begin{itemize}
+\item \texttt{lnsolve.c}: exact depth-first search for parity decompositions with constraints
+(the path ending at $t$ avoids $a$; two vertices on no common path; two vertices joined by one path),
+with failure memoisation. Validated against the independent brute force of \texttt{lnlib.py}
+(exact cover by all simple paths) on random instances of order $\le8$ with $0$ mismatches, and every
+witness is re-checked (\texttt{validate.py}; \texttt{data/validation.txt}).
+\item \texttt{gen\_*.py}: instance generators over \texttt{nauty-geng}.
+\item \texttt{sched.py}, \texttt{sched3.py}: token schedules (two and three tails).
+\item \texttt{routeR.py}: Criterion R. For each instance it searches $i$ and $P$ (shortest first) and
+a schedule, then \emph{executes} the certificate independently of the search: it replays the moves,
+solves the bottom exactly with \texttt{lnsolve}, undoes the moves (Fan's forced chain for M, the path
+$c s$ for D, subdivision for S), checks at every level that the object is a parity decomposition
+keeping the live tail, deletes the leaf, adds $P$, and checks the final Lov\'asz decomposition of $F$
+with \texttt{lnlib.check\_witness}.
+\end{itemize}
+
+\subsection*{Results}
+Instances of $L_N(2)$: connected graphs with all degrees odd, and an unordered pair of disjoint
+ordered pairs $(c_1,a_1),(c_2,a_2)$ with $c_i\not\sim a_i$. Order $8$: $43{,}400$ instances
+(exhaustive). Order $10$: $3{,}000$ instances drawn uniformly over the $32{,}851$ connected all-odd
+graphs and then over the pairs (seed $11$).
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+route & order $8$ (of $43{,}400$) & status of the route\\
+\midrule
+two-tail token schedule, one-tail fin~\cite{MT} & $31{,}532$ ($72.7\%$) & proved~\cite{MT}\\
+two-tail token schedule, Theorem~A as fin & $31{,}532$ & proved\\
+two-tail token schedule, MTL2 as fin & $32{,}837$ ($75.7\%$) & conditional on Conj.~\ref{conj:mtl}\\
+joint decomposition $Q(c_1)=Q(c_2)$ avoiding $a_1,a_2$ (exact) & $40{,}538$ ($93.4\%$) & --\\
+Lemma R(a) with a free schedule & $40{,}532$ ($93.4\%$) & proved (Lemma~\ref{lem:R})\\
+schedules $\cup$ R(a) & $42{,}904$ ($98.9\%$) & proved\\
+\textbf{Criterion R} & $\mathbf{43{,}400}$ \textbf{(all)} & proved; executed\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At order $10$, Criterion R holds at all $3{,}000$ sampled instances; every certificate was executed
+and verified (\texttt{data/routeR\_order10\_sample.txt}). The breakdown into (a) and (b) and the
+length of $P$ are recorded per instance.
+
+\emph{The two-leaf-tail statement} (Conjecture~\ref{conj:mtl}) is exhaustive for $n\le9$: every
+connected graph with at most one even vertex, every pair of leaf tails $(c_i,w_i,x_i)$ with
+$x_i\notin\{c_i,w_i\}\cup N(w_i)$: $8$, $84$, $385$, $11{,}040$ instances at $n=6,\dots,9$ under the
+static conditions of~\cite{MT}, and $40$, $399$, $1{,}192$, $38{,}100$ without them; all
+satisfiable. With $x_i\sim w_i$ allowed it fails ($12$ instances at $n=7$, all with the stem even
+of degree two or a similar local defect), so the distance condition is needed when there is an
+even vertex. Leaf tails with sets of size $\le2$ or larger, sampled at $n\le9$, never failed
+either, as long as no tail avoids another tail's leaf.
+
+\section{What remains}\label{sec:open}
+
+\begin{conjecture}[MTL2]\label{conj:mtl}
+Theorem~\ref{thm:A} holds without the sparseness of the heads, for two tails with one head each.
+\end{conjecture}
+
+\begin{conjecture}[Conjecture R]\label{conj:R}
+Every instance of $L_N(2)$ satisfies Criterion R.
+\end{conjecture}
+
+By Lemma~\ref{lem:R}, Conjecture~\ref{conj:R} implies $L_N(2)$. It is a statement about token
+schedules with at most one constraint, which is the regime where steering is strong; the open part is
+to choose $P$ so that a schedule provably exists. Two partial observations point the way.
+\begin{itemize}
+\item If $c_i$ has degree one or three, the token at $c_i$ disappears or can be suppressed after
+$P$ is removed, so only $p$ and $c_j$ are tokens.
+\item In (a), $P$ can be chosen through every vertex of degree $n-1$, which removes the only known
+obstruction (O1) of the two-even problem.
+\end{itemize}
+For general $m$ the same idea pre-commits $m-1$ end paths; the tokens then multiply, and we have not
+tested it.
+
+\section{Formalisation}\label{sec:lean}
+
+The file is \texttt{lean/GallaiLean/LeafTails.lean}; it has no \texttt{sorry}. For
+\texttt{leaf\_tails} and \texttt{lovasz\_avoid\_leafTails}, \texttt{\#print axioms} gives only
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}
+(\texttt{data/axioms.txt}). The full library builds.
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}ll@{}}
+\toprule
+manuscript & Lean\\
+\midrule
+Definition~\ref{def:tails} & \texttt{LeafTails}, \texttt{heads}, \texttt{KeepsTails}, \texttt{SparseIn}\\
+transfer of kept tails & \texttt{keepsTails\_of\_cover}\\
+adding a path of length two & \texttt{GPath.ofAdj2}, \texttt{PathDecomp.add\_path2\_supp}\\
+Theorem~\ref{thm:A}, Cases 1--3 & \texttt{lt\_case\_target}, \texttt{lt\_case\_path}, \texttt{lt\_case\_leaf}\\
+Theorem~\ref{thm:A}, Cases 4--5 & \texttt{lt\_case\_big}, \texttt{lt\_case\_empty}\\
+Theorem~\ref{thm:A} & \texttt{lt\_strong}, \texttt{leaf\_tails}\\
+Corollary~\ref{cor:B} & \texttt{lovasz\_avoid\_leafTails}, \texttt{KeepsTails.avoid}\\
+\bottomrule
+\end{tabular}
+\end{center}
+Lemma~\ref{lem:R} is not formalised; its proof is two lines of end counting plus the pendant-leaf
+lemma, both in the library (\texttt{PathDecomp.add\_path}, \texttt{Retract.delete\_supp}).
+
+\begin{thebibliography}{9}
+\bibitem{CLT} Gallai project, \emph{Constrained Lov\'asz decompositions}, \texttt{manuscripts/clt}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser. B}
+93 (2005), 117--125.
+\bibitem{MS} Gallai project, \emph{Multi-pair separation}, \texttt{manuscripts/multi-sep}.
+\bibitem{MT} Gallai project, \emph{Multi-token steering}, \texttt{manuscripts/multi-token}.
+\bibitem{NA} Gallai project, \emph{Neighbour avoidance}, \texttt{manuscripts/na}.
+\bibitem{RD} Gallai project, \emph{Route descent}, \texttt{manuscripts/route-descent}.
+\bibitem{TRN} Gallai project, \emph{The tight transfer}, \texttt{manuscripts/trn}.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,18 @@
+# Two leaf tails, at most one even vertex (Conjecture MTL2), exhaustive over connected graphs (nauty-geng -c n)
+# instances: every pair of leaves c1, c2 (c2 not the stem of c1) and heads x_i not in {c_i, w_i} u N(w_i)
+# solver: lnsolve (S c_i x_i constraints); all instances SAT.
+# gen_mtl2.py  (static conditions (TS) of multi-token: x_j, c_j not in {c_i, w_i}; x_i odd)
+n=6  8 SAT 0 UNSAT
+n=7  84 SAT 0 UNSAT
+n=8  385 SAT 0 UNSAT
+n=9  11040 SAT 0 UNSAT
+# gen_mtl2b.py noTS evenx  (heads may be the stem of the other tail, or the even vertex)
+n=6  40 SAT 0 UNSAT
+n=7  399 SAT 0 UNSAT
+n=8  1192 SAT 0 UNSAT
+n=9  38100 SAT 0 UNSAT
+# gen_mtl2b.py adjok  (x_i adjacent to w_i allowed): fails
+n=7  666 SAT 12 UNSAT   (e.g. F?`cg S 4 6: leaf 4 at the even vertex 0 of degree 2 whose other neighbour is the head 6)
+n=8  2464 SAT 0 UNSAT   (even order: no even vertex)
+# commands
+# for n in 6 7 8 9; do nauty-geng -cq $n | python3 gen_mtl2.py | lnsolve | cut -d' ' -f1 | sort | uniq -c; done
