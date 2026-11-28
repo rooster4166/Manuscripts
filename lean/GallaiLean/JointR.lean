@@ -15,6 +15,11 @@ Three ways to get one, each giving `L_N(2)` with `Q(c₁) = Q(c₂) = P`:
 * **`joint_of_steer`**: a steering sequence (NA's `Steer`) from one end avoiding a set `X ⊇ N_{K₀}[h]`,
   where `h` is the other end: the token walks to retirement while the other token stays put
   (**`steerK_of_steer`**: such a sequence is a multi-token schedule).
+* **`joint_of_inv`**: the same from a subgraph as in NA's walking lemma (`steer_of_inv`).
+
+A leaf at the other head (manuscript Proposition 7.3): **`ConjAE`** (avoid the even vertex, the case
+`A = {g}` of `L₁*`) and **`ln2_of_leaf_at_head`**: if `cᵢ` is a leaf at `aⱼ`, AE for `F − cᵢaⱼ` gives
+`L_N(2)` with `Q(cᵢ) = cᵢaⱼ` (Lemma R with a path ending at `aⱼ`).
 -/
 
 open SimpleGraph
@@ -264,5 +269,77 @@ theorem joint_of_inv (G : SimpleGraph V) [DecidableRel G.Adj] (hodd : ∀ v, G.d
     (steer_of_inv A _ (delEdgeList G P.edges) S g rfl hSK hSX hAK hoddA hg hgpos)
 
 end joint
+
+/-! ### A leaf at the other head: reduction to AE -/
+
+/-- **Conjecture AE** (avoid the even vertex; the case `A = {g}` of `L₁*`). If `g` is the only vertex
+of positive even degree, `c` is odd and `c ≁ g`, then some Lovász decomposition has `g ∉ Q(c)`. -/
+def ConjAE : Prop :=
+  ∀ (V : Type u) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
+    (evenSet G).card ≤ 1 → ∀ c g : V, g ∈ evenSet G → G.degree c % 2 = 1 → ¬ G.Adj c g →
+      AvoidDecomp G c {g}
+
+section leafHead
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **A leaf at the other head** (manuscript Proposition 7.3). If `cᵢ` is a leaf whose only neighbour
+is `aⱼ`, then AE for `F − cᵢaⱼ` (whose only possible even vertex is `aⱼ`) gives `L_N(2)`, with
+`Q(cᵢ) = cᵢaⱼ`. -/
+theorem ln2_of_leaf_at_head (hAE : ConjAE.{u}) (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hodd : ∀ v, G.degree v % 2 = 1) {ci ai cj aj : V} (hcij : ci ≠ cj) (haici : ai ≠ ci)
+    (haiaj : ai ≠ aj) (hajcj : aj ≠ cj) (hadj : ¬ G.Adj cj aj) (hca : G.Adj ci aj)
+    (hleaf : G.degree ci = 1) :
+    ∃ D : PathDecomp G, (∀ v, D.ends v = G.degree v % 2) ∧
+      (∀ Q ∈ D.paths, (Q.src = ci ∨ Q.tgt = ci) → ai ∉ Q.walk.support) ∧
+      (∀ Q ∈ D.paths, (Q.src = cj ∨ Q.tgt = cj) → aj ∉ Q.walk.support) := by
+  classical
+  set P : GPath G := GPath.ofAdj hca with hP
+  have hPs : P.src = ci := rfl
+  have hPt : P.tgt = aj := rfl
+  have hPsupp : P.walk.support = [ci, aj] := rfl
+  have hai : ai ∉ P.walk.support := by rw [hPsupp]; simp [haici, haiaj]
+  have hne : ci ≠ aj := hca.ne
+  -- even vertices of `K₀ = G − ciaj` lie in `{ci, aj}`, and `ci` is isolated
+  have hci0 : (delEdgeList G P.edges).degree ci = 0 := by
+    have h1 := delEdgeList_degree_le G P.edges ci
+    have h2 := delEdgeList_degree_mod G P ci
+    have h3 : P.endsAt ci = 1 := by simp [GPath.endsAt, hPs, hPt, Ne.symm hne]
+    rw [h3] at h2
+    have := hodd ci
+    omega
+  have hevsub : ∀ v ∈ evenSet (delEdgeList G P.edges), v = aj := by
+    intro v hv
+    rcases evenSet_delEdgeList_sub G hodd P v hv with h | h
+    · rw [hPs] at h; subst h
+      rw [mem_evenSet_iff, hci0] at hv; omega
+    · rw [h, hPt]
+  have hcard : (evenSet (delEdgeList G P.edges)).card ≤ 1 :=
+    Finset.card_le_one.mpr fun a ha b hb => by rw [hevsub a ha, hevsub b hb]
+  have hcjodd : (delEdgeList G P.edges).degree cj % 2 = 1 := by
+    rw [delEdgeList_degree_mod]
+    have : P.endsAt cj = 0 := by simp [GPath.endsAt, hPs, hPt, hcij, hajcj]
+    rw [this, add_zero, hodd]
+  have hnadj : ¬ (delEdgeList G P.edges).Adj cj aj := fun h => hadj h.1
+  -- a Lovász decomposition of `K₀` whose path ending at `cⱼ` avoids `aⱼ`
+  have hD : AvoidDecomp (delEdgeList G P.edges) cj {aj} := by
+    by_cases hajev : aj ∈ evenSet (delEdgeList G P.edges)
+    · exact hAE V (delEdgeList G P.edges) hcard cj aj hajev hcjodd hnadj
+    · -- `aⱼ` is isolated in `K₀`: no path meets it
+      obtain ⟨D₀, hD₀⟩ := lovasz_ends (delEdgeList G P.edges) hcard
+      refine ⟨D₀, hD₀, fun Q _ _ a ha haQ => ?_⟩
+      rw [Finset.mem_singleton] at ha; subst ha
+      have hpos := Q.degree_pos_of_mem haQ
+      have h2 := delEdgeList_degree_mod G P a
+      have h3 : P.endsAt a = 1 := by simp [GPath.endsAt, hPs, hPt, hne]
+      rw [h3] at h2
+      have := hodd a
+      exact hajev (mem_evenSet_iff.mpr ⟨hpos, by omega⟩)
+  obtain ⟨D₀, hD₀, hav⟩ := hD
+  exact lemmaR G (fun v _ => hodd v) P hPs hai hcij D₀ (fun v => by rw [hD₀ v]; omega)
+    (fun h => absurd (hPt.symm.trans h) hajcj)
+    (fun _ Q hQ hQc => hav Q hQ hQc aj (Finset.mem_singleton_self _))
+
+end leafHead
 
 end Gallai

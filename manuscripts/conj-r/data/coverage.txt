@@ -1,0 +1,37 @@
+# Coverage of the proved sufficient conditions for L_N(2) (cov2.py, MAXP = 3000 joint paths per instance, shortest first; none capped):
+#  B  Corollary B of ln (Lean lovasz_avoid_leafTails); C1 joint + leaf (joint_of_leaf); C2 joint + suppression (joint_of_supp);
+#  C3 joint + Lemma S (joint_of_steer; tested by the T-join criterion, which agrees with the exact trail search, see tjoin_vs_trail.txt);
+#  G  cut-vertex gluing, Theorem G (cases G1-G3; paper proof). Counts are per condition; 'union' = instances covered by at least one.
+## order 6 (exhaustive, 428 instances)
+B 48
+C1 204
+C2 154
+C3 16
+G 20
+capped_resid 0
+inst 428
+joint 374
+sep 54
+union 396
+## order 8 (exhaustive, 43,400 instances)
+B 2858
+C1 12176
+C2 18394
+C3 9453
+G 798
+capped_resid 0
+inst 43400
+joint 40538
+sep 2862
+union 41047
+## order 10 (the 3,000-instance sample of ln, seed 11)
+B 56
+C1 365
+C2 1059
+C3 1487
+G 11
+capped_resid 0
+inst 3000
+joint 2932
+sep 68
+union 2926

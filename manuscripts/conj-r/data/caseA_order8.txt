@@ -1,0 +1,26 @@
+# Case (a) (joint P) at order 8: exact vs schedule by canonical rules (an7.py)
+exact_all_long 39452
+exact_all_short 36460
+exact_any 40538
+exact_some_long 39966
+exact_some_short 37544
+inst 40538
+n 252266
+nexact 231882
+nsched 230241
+sched_any 40532
+sched_some_long 39960
+sched_some_short 37107
+exact but no case-(a) schedule: ['G?Bvvg 5 4 7 6', 'G?Bvvg 5 6 7 4', 'G?`vfc 6 4 7 5', 'G?`vfc 6 5 7 4', 'G?o~fc 6 4 7 5', 'G?o~fc 6 5 7 4']
+
+# Case (a): every joint P of every joined order-8 instance (o = 0 records of pall), K0 = F - E(P) classified (an8.py).
+# O1 = some odd vertex of K0 has degree n_active - 1; 2conn = K0 2-connected on its non-isolated vertices; NOT = K0 has no parity decomposition (lnsolve)
+NOT O1 2conn both-ends-active 10595
+NOT O1 not2conn both-ends-active 5233
+NOT not2conn both-ends-active 4556
+tight 2conn an-end-isolated 4934
+tight 2conn both-ends-active 72975
+tight O1 2conn an-end-isolated 266
+tight O1 not2conn an-end-isolated 932
+tight not2conn an-end-isolated 24570
+tight not2conn both-ends-active 128205

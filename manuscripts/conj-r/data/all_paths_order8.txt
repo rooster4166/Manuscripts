@@ -1,0 +1,22 @@
+# Every pre-committed P at order 8 (pall.py -int: all paths from c_i avoiding a_i, both orientations), exact Lemma R hypothesis by lnsolve
+Counter({'inst': 43400, 'any': 43400, 'any_nz': 43400})
+min working length [(1, 40964), (2, 2132), (3, 258), (4, 38), (5, 8)]
+len,kind (1, 'a') [41964, 36756] 0.876
+len,kind (1, 'b') [173656, 124481] 0.717
+len,kind (1, 'z') [41964, 36692] 0.874
+len,kind (2, 'a') [90300, 77864] 0.862
+len,kind (2, 'b') [447592, 327496] 0.732
+len,kind (2, 'z') [90300, 77456] 0.858
+len,kind (3, 'a') [141052, 128614] 0.912
+len,kind (3, 'b') [833680, 647996] 0.777
+len,kind (3, 'z') [185928, 167664] 0.902
+len,kind (4, 'a') [149804, 140026] 0.935
+len,kind (4, 'b') [1160356, 946391] 0.816
+len,kind (4, 'z') [288396, 263561] 0.914
+len,kind (5, 'a') [81412, 80504] 0.989
+len,kind (5, 'b') [1064052, 938875] 0.882
+len,kind (5, 'z') [305696, 287949] 0.942
+len,kind (6, 'b') [472444, 460690] 0.975
+len,kind (6, 'z') [163732, 159568] 0.975
+Counter({'some_longest_work': 43223, 'has_a': 40538, 'some_a_work': 40538, 'all_longest_a_work': 39452, 'all_shortest_a_work': 36460, 'all_longest_work': 35545, 'interior_needed': 0})
+mean frac working 0.8850598360912312 min 0.3333333333333333

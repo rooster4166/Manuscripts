@@ -1,0 +1,8 @@
+# Conjecture J, exhaustive (jall.py; graphs from gen.c: connected graphs with all degrees odd; 13, 224, 32,851 graphs at orders 6, 8, 10).
+# Instance = unordered pair of disjoint ordered pairs (c1,a1),(c2,a2), c_i not adjacent to a_i.
+# Joined instances (c1, c2 in one component of F - {a1,a2}): query 'J c1 c2 A c1 a1 A c2 a2' to lnsolve3 (budget 2e6 nodes, rerun 2e8); every SAT witness re-checked by wcheck.c.
+order 6: DONE graphs 13  J-queries 374  SAT(checked) 374 + 0  non-SAT 0  separated 54
+order 8: DONE graphs 224  J-queries 40538  SAT(checked) 40538 + 0  non-SAT 0  separated 2862
+order 10: DONE graphs 32851  J-queries 20151960  SAT(checked) 20151960 + 0  non-SAT 0  separated 417988
+# order 10 total 20,151,960 + 417,988 = 20,569,948 instances (= the X2 count of test2 E34).
+# J10.nonsat and J10.fail are empty (0 lines).

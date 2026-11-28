@@ -1,0 +1,8 @@
+# Validation of lnsolve3 against lnsolve (manuscripts/ln/scripts/lnsolve.c, itself validated by ln against a brute force).
+## val3b.py seed 1: 4,000 random queries on the connected all-odd graphs of orders 6 and 8 (constraint types J+A+A, J, A+A, A+S)
+queries 4000 agree 4000 disagree 0 undecided 0 witnesses checked 2799
+## the 148 J3 queries of the 84 m = 3 J3 failures (data/m3_order8.txt): lnsolve also answers UNSAT for all 148
+## gen.c: graphs on n vertices up to isomorphism, n = 1..9: n=1: 1 n=2: 2 n=3: 4 n=4: 11 n=5: 34 n=6: 156 n=7: 1044 n=8: 12346 n=9: 274668 (OEIS A000088: 1 2 4 11 34 156 1044 12346 274668)
+## gen.c: connected all-odd graphs: order 6: 13, order 8: 224, order 10: 32851 (synthesis section 32 and ln: 32,851 at order 10)
+## wcheck.c tamper test: 200 lnsolve3 witnesses of order-10 J queries, each corrupted once (a path dropped, the vertices of a path shuffled, or the J pair changed):
+##   accepted 12 (all valid: the shuffle reversed a path of 2 or 3 vertices), rejected 188

@@ -1,0 +1,12 @@
+# m = 3 at order 8 (m3.py): every connected all-odd graph of order 8 (224), every unordered triple of disjoint ordered non-adjacent pairs.
+# LN3: Q(c_t) avoids a_t, t = 1,2,3 (exact). J3: for some two pairs i, j with c_i, c_j joined in F - {a_i, a_j}: c_i, c_j the ends of one path avoiding a_i, a_j, and Q(c_k) avoiding a_k (exact).
+witnesses checked 314461, unsat 2937, undecided 0, failures 0
+{'inst': 84064, 'LN3_SAT': 84064, 'has_joint_choice': 83956, 'J3': 83872}
+# the 84 instances with a joint choice but no J3 decomposition: m3_J3fail8.txt; their 148 J3 queries are UNSAT also for the original lnsolve (no budget limit hit):
+    148 UNSAT
+# 108 instances have no joint choice at all (m3_nojoint8.txt).
+## Criterion R3 (r3.py): pre-commit a joint path (A) or two end paths (B), one tail for the remaining pair, multi-token schedule; every certificate executed
+the 84 J3 failures, paths of length <= 2: total 84 certified and executed 37 {'B': 37}
+  the remaining 47, paths of length <= 7: total 47 certified and executed 47 {'B': 47}
+the 108 instances without a joint choice, length <= 7: total 108 certified and executed 108 {'B': 108}
+random sample of 1,500 of the 84,064 (seed 7), length <= 3: total 1500 certified and executed 1498 {'A': 1491, 'B': 7}; the 2 others with length <= 7: both certified (B)

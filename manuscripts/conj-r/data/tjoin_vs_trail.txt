@@ -1,0 +1,4 @@
+# Lemma S: the T-join criterion (tjoin.py, tjoin_ok) against the exact search for a static steering trail (cov.py, static_steer),
+# on every joint path P with both ends active in K0 = F - E(P), for 6,000 random order-8 instances (seed 5), both choices of the moving token.
+# key (trail search, T-join criterion): count
+(trail search, T-join criterion): {(False, False): 28451, (True, True): 34079}
