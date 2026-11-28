@@ -129,6 +129,10 @@ EMM sufficiency work is **stopped**.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
 - **test2** (session_01FxXpVfK2nPUm9VxkxZYYZj, branch `claude/test2`, new): bring (T2) level with (T1). Tasks: exact data, direct lifts for (T2) with Lean, reduction to the constrained-Lovász core, and cones at odd |B|. Until now (T2) had only STL2.
 - **multi-token** (session_01FxXpVe8F7KxYF5L5TwFwZ2, branch `claude/multi-token`, new): extend NA/trn steering to k pairs at once (one token per leaf-bearing vertex, plus one at w). The target is the triangle base at d(z) = 6, i.e. the dense T(6)-i residual. That is the real frontier, since DL(1) only reaches d(z) = 4, which is already known.
+  - **Milestone 1 (bbede7f, merged; build green; axioms checked):**
+    - Lean `MultiToken.lean`: `SteerK` (moves, drops, suppression, finish), the transfer theorem `steerK_good`, `triangleBase_of_steerK`, and **`test1At_of_steerK`**. A k-token schedule is therefore a certificate of Test1 at that root.
+    - Data at order 9, d(z) = 6, all 3-connected J: schedules exist at 7,529 of 10,118 roots with data (74%).
+    - Residual families: 71/180 roots at |O| = 8 and 107/144 at |O| = 10, with many undecided at the budget. E28 hard graphs: 10/48.
 - **na** (session_01FxXpVhLSRHGoH9FHpDU66p, branch `claude/na`): **NA PROVED** (ba80a1c, merged; build green; axioms checked by the coordinator).
   - **Lean** `neighbourAvoidOn` (NeighbourAvoid.lean). Corollaries:
     - `conjNDegTwoOn`: the degree-two case of N, unconditional;
