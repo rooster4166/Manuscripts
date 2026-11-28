@@ -25,6 +25,7 @@ typedef unsigned long long u64;
 typedef unsigned int u32;
 
 // ------------------------------------------------------------------ solver
+static bool getenv_prune = getenv("A41_PRUNE") != nullptr;   // optional extra (sound) pruning
 struct Solver {
   int n, m;
   int eu[64], ev[64];
@@ -50,6 +51,7 @@ struct Solver {
       }
       seen |= c;
       if (!(c & need & ~ended)) return false;
+      if (getenv_prune) { int t = __builtin_popcount(c & need & ~ended); if (t & 1) return false; }
     }
     return true;
   }
@@ -79,8 +81,13 @@ struct Solver {
     u32 todo = need & ~ended;
     if (!todo) return rem == 0;
     int best = -1, bd = 1 << 20;
-    for (int v = 0; v < n; v++) if (todo >> v & 1) {
+    int P = __builtin_popcount(todo) / 2;
+    for (int v = 0; v < n; v++) {
       int d = __builtin_popcountll(rem & inc[v]);
+      int nd = todo >> v & 1;
+      // sound: each remaining path uses <= 2 edges at v, and the one ending at v uses 1
+      if (getenv_prune && d > 2 * P - nd) return false;
+      if (!nd) continue;
       if (d == 0) return false;
       if (d < bd) { bd = d; best = v; }
     }
@@ -179,6 +186,7 @@ static int Z, R; static u32 T, VB;
 // base graph H = (J - z) - Phi; constraints: avoid[v] = {p(v)}, siblings share a parent.
 static Solver S;
 static bool base_ok(const int *par) {
+  if (getenv("A41_COUNTONLY")) return true;   // population counts only (no solving)
   S.init(N);
   for (int u = 0; u < N; u++) for (int v = u + 1; v < N; v++) {
     if (u == Z || v == Z || !(A[u] >> v & 1)) continue;
@@ -370,6 +378,10 @@ int main(int argc, char **argv) {
         return 1;
       };
       auto runset = [&](vector<const Unit*> us) {
+        if (getenv("A41_SKIP_H1")) {   // sets in which some star/claw violates (H1) fail by Lemma 5.5: count, do not search
+          bool viol = false; for (auto *u : us) if (h1(*u) == 0) viol = true;
+          if (viol) { famstat["skipped_H1_violated"]++; famstat["sets"]++; return; }
+        }
         S.init(N);
         for (int u = 0; u < N; u++) for (int v = u + 1; v < N; v++) if (A[u] >> v & 1) S.add(u, v);
         for (auto *u : us) { for (auto &p : u->av) S.avoid[p.first] |= 1u << p.second; for (auto &p : u->sb) { S.sib[p.first] |= 1u << p.second; S.sib[p.second] |= 1u << p.first; } }
@@ -417,7 +429,8 @@ int main(int argc, char **argv) {
     vector<pair<int,int>> E; vector<u64> forests; bool fdone = false;
     vector<vector<vector<int>>> L1, L2;
     linkages(T, 0, 2, L1);
-    linkages(T, 0, 0, L2);
+    bool l2done = false;
+    if (mode == "univ" && !hasdata) { linkages(T, 0, 0, L2); l2done = true; }
     for (u32 rl = T; rl; rl &= rl - 1) {
       R = __builtin_ctz(rl); roots++;
       if (hasdata) continue;
@@ -443,9 +456,11 @@ int main(int argc, char **argv) {
       }
       int level = 0, exc = -1; int claw = -1;
       for (auto &L : L1) { vector<array<int,16>> rs; linkage_rootings(L, rs); for (auto &p : rs) if (base_ok(p.data())) { level = 1; exc = 0; break; } if (level) break; }
+      if (!level && !l2done) { linkages(T, 0, 0, L2); l2done = true; }
       if (!level) for (auto &L : L2) { vector<array<int,16>> rs; linkage_rootings(L, rs); for (auto &p : rs) if (base_ok(p.data())) { level = 2; exc = 0; break; } if (level) break; }
-      int nlink = L2.size();
+      int nlink = l2done ? (int)L2.size() : -1;   // -1: not enumerated (a tier-1 base was found)
       long long n3 = 0, n4 = 0, ok3 = 0;
+      if (!level && getenv("A41_MAXTIER") && atoi(getenv("A41_MAXTIER")) == 2) level = 3;   // report "tier >= 3" without searching forests
       if (!level) {
         if (!fdone) { forests = forestTJoins(E); fdone = true; }
         for (int lv = 3; lv <= 4 && !level; lv++) {
