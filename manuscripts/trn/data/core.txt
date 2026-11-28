@@ -1,12 +1,12 @@
 order 5
-TRN tests y!~g=4 y~g=10; core y!~g=0 y~g=10; excluded: not all-tight 2, no child witness 2, distance>=3 0, d(g)=2 independent 0
+TRN tests y!~g=4 y~g=10; core y!~g=0 y~g=10; excluded: not all-tight 2, no child witness 2, distance>=3 0, d(g)=2 independent 0, (C0) no N-witness 0
 core y!~g by d(g):
 core y~g by d(g): 2:4 4:6
 order 7
-TRN tests y!~g=787 y~g=1060; core y!~g=114 y~g=380; excluded: not all-tight 1097, no child witness 125, distance>=3 56, d(g)=2 independent 75
+TRN tests y!~g=787 y~g=1060; core y!~g=114 y~g=366; excluded: not all-tight 1097, no child witness 125, distance>=3 56, d(g)=2 independent 75, (C0) no N-witness 14
 core y!~g by d(g): 2:71 4:43
-core y~g by d(g): 2:88 4:208 6:84
+core y~g by d(g): 2:74 4:208 6:84
 order 9
-TRN tests y!~g=236891 y~g=254032; core y!~g=36728 y~g=55162; excluded: not all-tight 370094, no child witness 12150, distance>=3 6345, d(g)=2 independent 10444
+TRN tests y!~g=236891 y~g=254032; core y!~g=36728 y~g=53328; excluded: not all-tight 370094, no child witness 12150, distance>=3 6345, d(g)=2 independent 10444, (C0) no N-witness 1834
 core y!~g by d(g): 2:10893 4:23266 6:2569
-core y~g by d(g): 2:7276 4:32842 6:13646 8:1398
+core y~g by d(g): 2:6312 4:31972 6:13646 8:1398

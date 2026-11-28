@@ -63,7 +63,8 @@ int main(int argc, char** argv) {
             bool tight = true; for (int v = 0; v < n; v++) if (G.has(g, v) && v != x && v != y && !G.has(y, v)) tight = false;
             bool cn = (G.adj[x] & G.adj[y]) != 0;
             bool ind = G.deg(g) == 2 && !tri2;
-            if (!tight || !wit || !cn || ind) continue;
+            bool nw = (G.adj[y] & ~G.adj[x] & ~(1u << g)) != 0;   // (C0)
+            if (!tight || !wit || !cn || ind || !nw) continue;
           }
           std::vector<Decomp> bad;
           long long nD = enumerate(H, y, 1u << x, maxD ? maxD + 1 : 0, [&](const Decomp& D) {

@@ -24,11 +24,11 @@ moved onto a vertex that the deletions leave isolated, the graph has at most one
   `x ≁ w`. In the induction no tight target ever occurs. The vertex `w` may be the even vertex.
 * `fan_step_two` (Lemma 6.2): Lovász's Case I step when the graph has two even vertices `z, o`
   and the target `u` is not adjacent to `o` after the deletion.
-* `Steer2`, `steer2_meetsOnce` (Lemma 6.3): a two-token schedule carries "every path meets `X` at
+* `Steer2` (Definition 6.3), `steer2_meetsOnce` (Lemma 6.4): a two-token schedule carries "every path meets `X` at
   most once" up from a graph with at most one even vertex.
-* `avoid_of_steer2` (Theorem 6.4): a schedule from `(g, y)` in `apex G {y}` avoiding `{ℓ, x}`
+* `avoid_of_steer2` (Theorem 6.5): a schedule from `(g, y)` in `apex G {y}` avoiding `{ℓ, x}`
   gives `AvoidDecomp G y {x}`. No hypothesis on `G − gu` is used.
-* `TightTransferNCore2`, `conjN_of_core2` (Theorem 6.5): Conjecture N follows from TRN restricted to
+* `TightTransferNCore2` (Definition 6.8), `conjN_of_core2` (Theorem 6.9): Conjecture N follows from TRN restricted to
   core instances that admit **no** two-token schedule.
 -/
 
@@ -215,7 +215,7 @@ theorem fan_step_two (G : SimpleGraph W) [DecidableRel G.Adj] {X : Finset W} {z 
       simp only [hvu, hvz, ite_false, add_zero] at h
       rw [h]
 
-/-- `Steer2 X K a b`: a schedule for two tokens at `a` and `b`. A token moves from `p` along an
+/-- `Steer2 X K a b` (manuscript Definition 6.3): a schedule for two tokens at `a` and `b`. A token moves from `p` along an
 edge `pu` to `u ∉ X`, where `u` is not the other token and, once `pu` is deleted, `u` is not
 adjacent to the other token. The schedule ends when a token reaches a vertex that the deletions
 leave isolated. `swap` lets either token move. -/
@@ -238,7 +238,7 @@ theorem card_evenSet_le_one_of_not_mem {K : SimpleGraph W} [DecidableRel K.Adj] 
   · exact absurd (h ▸ hv) ha
   · exact h
 
-/-- **The two-token schedule gives a decomposition** (manuscript Lemma 6.3). Let `P` be a property of
+/-- **The two-token schedule gives a decomposition** (manuscript Lemma 6.4). Let `P` be a property of
 graphs kept by deleting edges with both ends outside `X`, and suppose every graph with `P` and at
 most one vertex of positive even degree has a decomposition with `ends = deg mod 2` meeting `X`
 at most once per path. If `a ≠ b` lie outside `X`, the even vertices of `K` lie in `{a, b}`, `K`
@@ -320,7 +320,7 @@ variable {V : Type u} [Fintype V] [DecidableEq V]
 /-- The avoided set of the leaf graph: the leaf `none` and `x`. -/
 abbrev leafX (x : V) : Finset (Option V) := insert none {some x}
 
-/-- **Two-token steering** (manuscript Theorem 6.4). Let `g` be the only even vertex of `G`, and
+/-- **Two-token steering** (manuscript Theorem 6.5). Let `g` be the only even vertex of `G`, and
 let `x, y` be odd and non-adjacent. If the leaf graph `apex G {y}` admits a two-token schedule from
 `(g, y)` avoiding `{ℓ, x}`, then some Lovász decomposition of `G` has the path ending at `y`
 avoiding `x`. Nothing is assumed about `G − gu`. -/
@@ -423,12 +423,13 @@ theorem avoid_of_steer2 (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet
     have := hm P hP none hnoneX (some x) hxX hnP haP
     cases this
 
-/-- **The core of TRN without a two-token schedule** (manuscript Definition 6.5):
+/-- **The core of TRN without a two-token schedule** (manuscript Definition 6.8):
 `TightTransferNCore` restricted to the instances whose leaf graph admits no two-token schedule. -/
 def TightTransferNCore2 (V : Type u) [Fintype V] [DecidableEq V] : Prop :=
   ∀ (G : SimpleGraph V) [DecidableRel G.Adj], (evenSet G).card ≤ 1 → ∀ g ∈ evenSet G,
     ∀ x y u : V, G.degree x % 2 = 1 → G.degree y % 2 = 1 → x ≠ y → ¬ G.Adj x y →
     G.Adj g u → G.Adj y u → u ≠ x →
+    (∃ w, G.Adj y w ∧ w ∉ evenSet G ∧ ¬ G.Adj x w) →
     ConjNBelow V (∑ w, G.degree w) →
     (∀ v, G.Adj g v → v ≠ x → v ≠ y → G.Adj y v) →
     (∃ w, G.Adj y w ∧ w ≠ u ∧ ¬ G.Adj x w) →
@@ -439,17 +440,17 @@ def TightTransferNCore2 (V : Type u) [Fintype V] [DecidableEq V] : Prop :=
 
 /-- The core of TRN implies its restriction to instances without a schedule. -/
 theorem tightTransferNCore2_of (hT : TightTransferNCore V) : TightTransferNCore2 V :=
-  fun G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux hb ht hw hc hi _ hchild =>
-    hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux hb ht hw hc hi hchild
+  fun G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux h0 hb ht hw hc hi _ hchild =>
+    hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux h0 hb ht hw hc hi hchild
 
 /-- Two-token steering settles every core instance that has a schedule. -/
 theorem tightTransferNCore_of_core2 (hT : TightTransferNCore2 V) : TightTransferNCore V := by
-  intro G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux hb ht hw hc hi hchild
+  intro G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux h0 hb ht hw hc hi hchild
   by_cases hS : Steer2 (leafX x) (apex G {y}) (some g) (some y)
   · exact avoid_of_steer2 G hev hg hx hy hxy hnxy hS
-  · exact hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux hb ht hw hc hi hS hchild
+  · exact hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux h0 hb ht hw hc hi hS hchild
 
-/-- **Conjecture N from the unscheduled core** (manuscript Theorem 6.6). TRN restricted to core
+/-- **Conjecture N from the unscheduled core** (manuscript Theorem 6.9). TRN restricted to core
 instances that admit no two-token schedule implies Conjecture N. (The degree-two case is NA, now a
 theorem: `conjNDegTwoOn`.) -/
 theorem conjN_of_core2 (hT : TightTransferNCore2 V) : ConjNOn V :=

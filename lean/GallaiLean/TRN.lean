@@ -5,30 +5,33 @@ import GallaiLean.ConjN
 
 Manuscript `manuscripts/trn`.
 
-**TRN** (`TightTransferNOn`, conj-n Conjecture 4.5). Let `g` be the only even vertex of `G`, let
+**TRN** (`TightTransferNOn`, conj-n Conjecture 4.1). Let `g` be the only even vertex of `G`, let
 `x, y` be odd and non-adjacent, and let `u ∈ N(g) ∩ N(y)` with `u ≠ x`. If `(G − gu, y, {x})` is
 good, then `(G, y, {x})` is good.
 
 Everything below is proved in full.
 
-* `avoid_of_separating_child` (manuscript Lemma 3.3): if some Lovász decomposition of `G − gu`
+* `avoid_of_separating_child` (manuscript Lemma 4.1): if some Lovász decomposition of `G − gu`
   has no path through both `x` and `y`, then `(G, y, {x})` is good. Fan's lemma with vertex sets,
   with the target `u ∉ {x, y}`.
 * Two cases in which `(G, y, {x})` is good outright, with no hypothesis on `G − gu`:
   * `avoid_of_farApart`: `x` and `y` are at distance at least three (separation);
   * `avoid_of_degTwo_indep`: `d(g) = 2` and the two neighbours of `g` are non-adjacent and are not
     `{x, y}` (split `g` off, then `L₁`).
-* `TightTransferNCore` (manuscript Definition 5.1), the restriction of TRN to the instances that
-  the induction for Conjecture N actually reaches. The extra hypotheses are:
+* `TightTransferNCore` (manuscript Definition 5.1), the restriction of TRN to instances with every
+  property that holds where the induction for Conjecture N applies TRN. The extra hypotheses are:
+  * `(G, y, {x})` is itself an instance of N: `y` has a neighbour that is not even and not
+    adjacent to `x`;
   * Conjecture N holds for every graph on `V` of smaller degree sum;
   * every neighbour of `g` other than `x, y` is adjacent to `y` (all-tight);
-  * the child keeps a witness `w ∈ N(y) ∖ N(x)`, `w ≠ u`;
+  * the child keeps a witness `w ∈ N(y) ∖ N(x)`, `w ≠ u` (`w = g` is allowed);
   * `x` and `y` have a common neighbour;
   * `N(g)` is not an independent pair.
 * `conjN_of_core` (manuscript Theorem 5.2): `TightTransferNCore` and the degree-two case imply
   Conjecture N; with `conjNDegTwo_of_neighbourAvoid`, `conjN_of_core_neighbourAvoid`. Since
   `TightTransferNOn` implies `TightTransferNCore` (`tightTransferNCore_of`), this strengthens
-  `conjN_of_tight_degTwo`.
+  `conjN_of_tight_degTwo`. NA is proved (`neighbourAvoidOn`, `conjNDegTwoOn`), so the core alone
+  implies N; `TRNSteer.lean` reduces it further, to the core instances with no two-token schedule.
 -/
 
 open SimpleGraph
@@ -41,7 +44,7 @@ section trn
 
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/-- **Separation survives Lovász's Case I step** (manuscript Lemma 3.3). Let `g` be the even
+/-- **Separation survives Lovász's Case I step** (manuscript Lemma 4.1). Let `g` be the even
 vertex and `u ∈ N(g)` with `u ∉ {x, y}`. If `G − gu` has a Lovász decomposition in which no path
 contains both `y` and `x`, then `G` has a Lovász decomposition whose path ending at `y` avoids
 `x`. Every path of Fan's decomposition lies in an old path together with `u`. -/
@@ -170,9 +173,11 @@ def ConjNBelow (V : Type u) [Fintype V] [DecidableEq V] (n : ℕ) : Prop :=
     ∀ x y : V, G.degree x % 2 = 1 → G.degree y % 2 = 1 → x ≠ y → ¬ G.Adj x y →
     (∃ w, G.Adj y w ∧ w ∉ evenSet G ∧ ¬ G.Adj x w) → AvoidDecomp G y {x}
 
-/-- **The core of TRN** (manuscript Definition 5.1): TRN restricted to the instances that the
-induction for Conjecture N reaches, with Conjecture N available on smaller graphs. The extra
+/-- **The core of TRN** (manuscript Definition 5.1): TRN restricted to instances with every property
+that holds where the induction for Conjecture N applies TRN, with Conjecture N available on smaller
+graphs. The extra
 hypotheses, in order:
+* (C0) `(G, y, {x})` is an instance of N: some neighbour of `y` is not even and not adjacent to `x`;
 * N holds below the degree sum of `G`;
 * all-tight: every neighbour of `g` other than `x, y` is adjacent to `y`;
 * the child keeps a witness: some `w ∈ N(y)`, `w ≠ u`, is not adjacent to `x`;
@@ -182,6 +187,7 @@ def TightTransferNCore (V : Type u) [Fintype V] [DecidableEq V] : Prop :=
   ∀ (G : SimpleGraph V) [DecidableRel G.Adj], (evenSet G).card ≤ 1 → ∀ g ∈ evenSet G,
     ∀ x y u : V, G.degree x % 2 = 1 → G.degree y % 2 = 1 → x ≠ y → ¬ G.Adj x y →
     G.Adj g u → G.Adj y u → u ≠ x →
+    (∃ w, G.Adj y w ∧ w ∉ evenSet G ∧ ¬ G.Adj x w) →
     ConjNBelow V (∑ w, G.degree w) →
     (∀ v, G.Adj g v → v ≠ x → v ≠ y → G.Adj y v) →
     (∃ w, G.Adj y w ∧ w ≠ u ∧ ¬ G.Adj x w) →
@@ -191,7 +197,7 @@ def TightTransferNCore (V : Type u) [Fintype V] [DecidableEq V] : Prop :=
 
 /-- TRN implies its core. -/
 theorem tightTransferNCore_of (hT : TightTransferNOn V) : TightTransferNCore V :=
-  fun G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux _ _ _ _ _ hchild =>
+  fun G _ hev g hg x y u hx hy hxy hnxy hgu hyu hux _ _ _ _ _ _ hchild =>
     hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux hchild
 
 /-- **The core of TRN suffices for Conjecture N** (manuscript Theorem 5.2). The induction of
@@ -271,7 +277,7 @@ theorem conjN_of_core (hT : TightTransferNCore V) (hR : ConjNDegTwoOn V) : ConjN
       · rcases hu with hua | hub
         · exact hux (hua.trans hxa.symm)
         · exact huy (hub.trans hyb.symm)
-    exact hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux (by rw [hn]; exact hbelow) h1 ⟨w, hyw, hwu, hxw⟩
+    exact hT G hev g hg x y u hx hy hxy hnxy hgu hyu hux ⟨w0, hyw0, hw0e, hxw0⟩ (by rw [hn]; exact hbelow) h1 ⟨w, hyw, hwu, hxw⟩
       hcn hind (child u hgu hux huy w hyw hwu hxw)
   simp only [not_exists, not_and, not_not] at h2
   -- (3) every target outside `{x, y}` is the witness `w0`

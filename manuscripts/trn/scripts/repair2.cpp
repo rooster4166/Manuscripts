@@ -1,6 +1,6 @@
-// repair.cpp: for each TRN instance and each good D' whose plain Fan image is bad, find the good D''
-// whose chain avoids y and whose transition system differs from D' at the fewest vertices.  Report
-// the distribution of that distance and the roles of the changed vertices.
+// repair2.cpp: as repair.cpp (for each bad D', the nearest good D'' whose chain avoids y, by the
+// number of vertices whose transitions differ), and in addition the distribution of the role-sets
+// (y, u, g, e, chain vertex, x, neighbour of y, other) of the changed vertices over all nearest D''.
 #include "dec.h"
 #include <map>
 using namespace dec;

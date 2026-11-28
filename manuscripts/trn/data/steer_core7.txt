@@ -1,0 +1,257 @@
+CORE Fs`E? g=6 y=0 x=5 sched=1 m=7 1:0-2
+CORE Fs`E? g=6 y=1 x=2 sched=1 m=7 1:1-5
+CORE Fs`E? g=6 y=1 x=3 sched=1 m=7 1:1-5
+CORE Fs`E? g=6 y=1 x=4 sched=1 m=7 1:1-5
+CORE Fs`F? g=2 y=0 x=5 sched=1 m=8 1:0-1 0:2-0 0:0-3
+CORE Fs`F? g=2 y=1 x=3 sched=1 m=8 1:1-5
+CORE Fs`F? g=2 y=1 x=4 sched=1 m=8 1:1-5
+CORE Fs`F? g=2 y=6 x=3 sched=1 m=8 1:6-1 0:2-6 1:1-5
+CORE Fs`F? g=2 y=6 x=4 sched=1 m=8 1:6-1 0:2-6 1:1-5
+CORE Fs`F? g=2 y=6 x=5 sched=0 m=8
+CORE Fs`EG g=5 y=1 x=2 sched=1 m=8 1:1-0 0:5-1 1:0-3
+CORE Fs`EG g=5 y=1 x=3 sched=1 m=8 1:1-0 0:5-1 1:0-2
+CORE Fs`EG g=5 y=1 x=4 sched=1 m=8 1:1-0 0:5-1 1:0-2
+CORE Fs`EG g=5 y=6 x=2 sched=1 m=8 1:6-0 0:5-6 1:0-3
+CORE Fs`EG g=5 y=6 x=3 sched=1 m=8 1:6-0 0:5-6 1:0-2
+CORE Fs`EG g=5 y=6 x=4 sched=1 m=8 1:6-0 0:5-6 1:0-2
+CORE Fs`fG g=6 y=0 x=5 sched=1 m=10 1:0-3
+CORE Fs`fg g=3 y=0 x=5 sched=1 m=11 1:0-1 0:3-0 0:0-4
+CORE Fs`fg g=3 y=1 x=4 sched=0 m=11
+CORE Fs`fg g=3 y=2 x=4 sched=0 m=11
+CORE Fs`fg g=3 y=6 x=4 sched=1 m=11 1:6-1 1:1-5 0:3-0 0:0-1
+CORE Fs`v_ g=6 y=0 x=5 sched=1 m=11 1:0-4
+CORE Fs`vo g=4 y=0 x=5 sched=0 m=12
+CORE Fs`vo g=4 y=6 x=5 sched=0 m=12
+CORE Fs`vg g=5 y=6 x=4 sched=0 m=12
+CORE Fsbvg g=0 y=5 x=4 sched=0 m=13
+CORE Fsbvg g=0 y=6 x=4 sched=0 m=13
+CORE FsOf? g=0 y=6 x=3 sched=0 m=8
+CORE FsObO g=4 y=0 x=6 sched=1 m=8 1:0-2 0:4-1 0:1-0 0:0-3
+CORE FsObO g=4 y=1 x=3 sched=1 m=8 1:1-0 0:4-1 0:1-6 0:6-4
+CORE FsObO g=4 y=2 x=1 sched=1 m=8 1:2-0 0:4-6 0:6-2 0:2-5
+CORE FsObO g=4 y=6 x=5 sched=1 m=8 1:6-2 0:4-1 0:1-6 0:6-4
+CORE FsOIO g=6 y=0 x=4 sched=1 m=7 1:0-2
+CORE FsOIO g=6 y=1 x=2 sched=1 m=7 1:1-0 0:6-1 0:1-4 0:4-5
+CORE FsOIO g=6 y=1 x=3 sched=1 m=7 1:1-0 0:6-1 0:1-4 0:4-5
+CORE FsOIO g=6 y=1 x=5 sched=1 m=7 1:1-0 0:6-1 0:1-4 0:4-6
+CORE FsOIO g=6 y=4 x=0 sched=1 m=7 1:4-5
+CORE FsOIW g=5 y=1 x=2 sched=1 m=8 1:1-0 0:5-4 0:4-1 0:1-6 0:6-4
+CORE FsOIW g=5 y=1 x=3 sched=1 m=8 1:1-0 0:5-4 0:4-1 0:1-6 0:6-4
+CORE FsOIW g=5 y=4 x=0 sched=0 m=8
+CORE FsOIW g=5 y=6 x=0 sched=0 m=8
+CORE FsREG g=1 y=0 x=4 sched=1 m=9 1:0-2
+CORE FsREG g=1 y=5 x=4 sched=0 m=9
+CORE FsREG g=1 y=6 x=4 sched=0 m=9
+CORE FsRDG g=2 y=0 x=4 sched=1 m=9 1:0-1 0:2-0 0:0-3
+CORE FsRDG g=2 y=1 x=6 sched=1 m=9 1:1-4
+CORE FsRDG g=2 y=5 x=3 sched=1 m=9 1:5-1 0:2-6 0:6-5 1:1-4
+CORE FsRDG g=2 y=5 x=4 sched=0 m=9
+CORE FsRDG g=2 y=6 x=3 sched=1 m=9 1:6-5 0:2-6 1:5-1 1:1-4
+CORE FsQfG g=6 y=0 x=4 sched=1 m=10 1:0-3
+CORE FsQfG g=6 y=2 x=1 sched=0 m=10
+CORE FsQfG g=6 y=5 x=1 sched=0 m=10
+CORE FsQfg g=3 y=0 x=4 sched=0 m=11
+CORE FsQfg g=3 y=1 x=2 sched=1 m=11 1:1-4
+CORE FsQfg g=3 y=1 x=5 sched=1 m=11 1:1-4
+CORE FsQfg g=3 y=2 x=1 sched=0 m=11
+CORE FsQfg g=3 y=5 x=1 sched=0 m=11
+CORE FsQfg g=3 y=6 x=4 sched=0 m=11
+CORE FsQfW g=4 y=1 x=3 sched=0 m=11
+CORE FsQfW g=4 y=2 x=1 sched=1 m=11 1:2-0 1:0-3
+CORE FsQfW g=4 y=5 x=1 sched=1 m=11 1:5-0 1:0-3
+CORE FsQfW g=4 y=6 x=3 sched=1 m=11 1:6-0 1:0-2 0:4-1 0:1-0 1:2-6 1:6-1
+CORE FsPIW g=1 y=4 x=0 sched=0 m=9
+CORE FsPIW g=1 y=5 x=0 sched=0 m=9
+CORE FsPIW g=1 y=6 x=0 sched=0 m=9
+CORE FsOrg g=6 y=0 x=5 sched=0 m=10
+CORE FsOrg g=6 y=5 x=1 sched=0 m=10
+CORE FsOvg g=0 y=5 x=1 sched=0 m=11
+CORE FsOvg g=0 y=6 x=4 sched=1 m=11 1:6-5 0:0-1 1:5-2 1:2-0 1:0-3 1:3-5
+CORE FsOrw g=4 y=1 x=5 sched=1 m=11 1:1-0 0:4-1 0:1-6 0:6-4
+CORE FsOrw g=4 y=2 x=1 sched=1 m=11 1:2-0 0:4-6 0:6-5 0:5-2 1:0-3 1:3-5
+CORE FsOrw g=4 y=3 x=1 sched=1 m=11 1:3-0 0:4-6 0:6-5 0:5-3 1:0-2 1:2-5
+CORE FsOrw g=4 y=5 x=1 sched=1 m=11 1:5-2 1:2-0 0:4-6 0:6-2
+CORE FsOrw g=4 y=6 x=0 sched=1 m=11 1:6-2 0:4-1 0:1-6 0:6-4
+CORE FsOjW g=6 y=4 x=2 sched=0 m=10
+CORE FsOjW g=6 y=5 x=1 sched=0 m=10
+CORE FsOnW g=0 y=6 x=3 sched=1 m=11 1:6-4 0:0-2 0:2-6 0:6-0 1:4-5 0:0-1 0:1-4
+CORE FsRf? g=1 y=0 x=4 sched=1 m=10 1:0-2 0:1-0 0:0-3
+CORE FsRd_ g=3 y=0 x=4 sched=1 m=10 1:0-1 0:3-0 0:0-2 0:2-6 0:6-3
+CORE FsRd_ g=3 y=1 x=6 sched=1 m=10 1:1-4
+CORE FsRd_ g=3 y=2 x=1 sched=0 m=10
+CORE FsRd_ g=3 y=5 x=6 sched=1 m=10 1:5-1 1:1-4
+CORE FsRd_ g=3 y=6 x=1 sched=0 m=10
+CORE FsRLO g=2 y=0 x=4 sched=1 m=10 1:0-1 0:2-0 0:0-3
+CORE FsRLO g=2 y=1 x=6 sched=1 m=10 1:1-4 0:2-0 0:0-3
+CORE FsRLO g=2 y=5 x=6 sched=1 m=10 1:5-1 1:1-4 0:2-0 0:0-1
+CORE FsRLO g=2 y=6 x=3 sched=1 m=10 1:6-4 0:2-0 0:0-6 0:6-2
+CORE FsQvo g=4 y=1 x=5 sched=0 m=12
+CORE FsQvo g=4 y=2 x=1 sched=1 m=12 1:2-0 1:0-3 1:3-5 0:4-6 0:6-3
+CORE FsQvo g=4 y=3 x=1 sched=1 m=12 1:3-0 1:0-2 1:2-5 0:4-6 0:6-2
+CORE FsQvo g=4 y=6 x=5 sched=1 m=12 1:6-0 1:0-2 0:4-1 0:1-0 1:2-6 1:6-1
+CORE FsQvg g=5 y=0 x=4 sched=0 m=12
+CORE FsQvg g=5 y=6 x=4 sched=0 m=12
+CORE FsQnO g=6 y=0 x=4 sched=1 m=11 1:0-3
+CORE FsQnO g=6 y=1 x=2 sched=0 m=11
+CORE FsQnO g=6 y=5 x=1 sched=0 m=11
+CORE FsQno g=3 y=0 x=4 sched=1 m=12 1:0-1 0:3-0 0:0-2 0:2-5 1:1-6 1:6-2
+CORE FsQno g=3 y=1 x=2 sched=1 m=12 1:1-4 0:3-0 0:0-1 1:4-5 0:1-6 0:6-3
+CORE FsQno g=3 y=1 x=5 sched=0 m=12
+CORE FsQno g=3 y=2 x=1 sched=1 m=12 1:2-5 0:3-6 0:6-2 1:5-4 0:2-0 0:0-3
+CORE FsQno g=3 y=2 x=4 sched=0 m=12
+CORE FsQno g=3 y=6 x=5 sched=1 m=12 1:6-1 0:3-6 0:6-2 1:1-4 0:2-0 0:0-1
+CORE FsQnW g=5 y=0 x=4 sched=1 m=12 1:0-1 0:5-0 0:0-3
+CORE FsQnW g=5 y=1 x=2 sched=0 m=12
+CORE FsQnW g=5 y=2 x=4 sched=0 m=12
+CORE FsQnW g=5 y=6 x=3 sched=1 m=12 1:6-1 0:5-2 1:1-4 0:2-0 0:0-1
+CORE FsOzo g=6 y=0 x=4 sched=0 m=11
+CORE FsOzo g=6 y=5 x=1 sched=0 m=11
+CORE FsO~o g=0 y=6 x=5 sched=1 m=12 1:6-4 0:0-2 0:2-6 0:6-0 0:0-3 1:4-1 1:1-0
+CORE FsRvg g=1 y=0 x=4 sched=0 m=13
+CORE FsRvg g=1 y=5 x=4 sched=0 m=13
+CORE FsRvg g=1 y=6 x=4 sched=0 m=13
+CORE FsRnW g=1 y=0 x=4 sched=1 m=13 1:0-2 0:1-0 0:0-3
+CORE FsRnW g=1 y=2 x=4 sched=0 m=13
+CORE FsRnW g=1 y=5 x=3 sched=0 m=13
+CORE FsRnW g=1 y=6 x=3 sched=0 m=13
+CORE FsRlw g=3 y=0 x=4 sched=1 m=13 1:0-1 0:3-0 0:0-2 0:2-6 0:6-3
+CORE FsRlw g=3 y=2 x=1 sched=0 m=13
+CORE FsRlw g=3 y=2 x=4 sched=0 m=13
+CORE FsRlw g=3 y=6 x=1 sched=1 m=13 1:6-2 0:3-6 0:6-4 1:2-0 1:0-3
+CORE FsQ~o g=5 y=0 x=4 sched=1 m=13 1:0-1 0:5-0 0:0-2 0:2-5 1:1-6 1:6-2
+CORE FsQ~w g=6 y=0 x=4 sched=0 m=14
+CORE FsQ~w g=6 y=5 x=1 sched=0 m=14
+CORE FsPzw g=1 y=2 x=4 sched=0 m=13
+CORE FsPzw g=1 y=3 x=4 sched=0 m=13
+CORE FsPzw g=1 y=4 x=0 sched=0 m=13
+CORE FsPzw g=1 y=5 x=0 sched=0 m=13
+CORE FsPzw g=1 y=6 x=0 sched=0 m=13
+CORE FsR~o g=1 y=0 x=4 sched=0 m=14
+CORE FsR~o g=1 y=2 x=4 sched=0 m=14
+CORE FsR~o g=1 y=3 x=4 sched=0 m=14
+CORE FsqfW g=0 y=6 x=3 sched=0 m=12
+CORE Fsovw g=6 y=0 x=5 sched=0 m=13
+CORE FsqrO g=3 y=0 x=6 sched=1 m=11 1:0-1 0:3-0 0:0-2 0:2-5 0:5-3
+CORE FsqrO g=3 y=1 x=5 sched=1 m=11 1:1-4 1:4-6 0:3-0 0:0-4
+CORE FsqrO g=3 y=2 x=1 sched=1 m=11 1:2-6 0:3-0 0:0-2 0:2-5 0:5-3
+CORE FsqrO g=3 y=2 x=4 sched=1 m=11 1:2-6 0:3-0 0:0-2 0:2-5 0:5-3
+CORE FsqrO g=3 y=4 x=5 sched=1 m=11 1:4-1 1:1-6 0:3-0 0:0-1
+CORE FsqrO g=3 y=5 x=1 sched=1 m=11 1:5-2 0:3-5 1:2-6 0:5-0 0:0-2
+CORE FsqrO g=3 y=5 x=4 sched=1 m=11 1:5-2 0:3-5 1:2-6 0:5-0 0:0-2
+CORE FsqrO g=3 y=5 x=6 sched=0 m=11
+CORE FsrgG g=2 y=0 x=6 sched=1 m=10 1:0-1 0:2-0 0:0-3
+CORE FsrgG g=2 y=1 x=3 sched=0 m=10
+CORE FsrgG g=2 y=1 x=6 sched=0 m=10
+CORE FsrgG g=2 y=4 x=3 sched=0 m=10
+CORE FsrgG g=2 y=4 x=6 sched=0 m=10
+CORE FsrgG g=2 y=5 x=3 sched=1 m=10 1:5-1 0:2-5 0:5-6
+CORE FsWN? g=0 y=6 x=3 sched=0 m=9
+CORE FsXTw g=0 y=4 x=3 sched=0 m=12
+CORE FsXTw g=0 y=5 x=2 sched=0 m=12
+CORE FsXTw g=0 y=6 x=1 sched=1 m=12 1:6-4 0:0-3 0:3-5 0:5-6 0:6-3
+CORE FsZPo g=0 y=5 x=2 sched=0 m=11
+CORE FsZTo g=6 y=0 x=4 sched=1 m=12 1:0-1 0:6-0 0:0-2 1:1-5 1:5-0 1:0-3 1:3-5
+CORE FsZTo g=6 y=2 x=3 sched=0 m=12
+CORE FsZVo g=1 y=0 x=4 sched=1 m=13 1:0-2 0:1-0 0:0-3 0:3-5 1:2-6 1:6-3
+CORE FsZVo g=1 y=2 x=5 sched=0 m=13
+CORE FsZVo g=1 y=3 x=4 sched=0 m=13
+CORE FsZVo g=1 y=6 x=5 sched=1 m=13 1:6-2 0:1-6 0:6-3 1:2-4 0:3-0 0:0-2
+CORE FsZTw g=5 y=0 x=4 sched=1 m=13 1:0-2 0:5-0 0:0-1 1:2-6 1:6-3 1:3-0 0:1-5 0:5-3
+CORE FsZTw g=5 y=3 x=1 sched=0 m=13
+CORE FsZTw g=5 y=6 x=1 sched=1 m=13 1:6-2 0:5-3 0:3-6 0:6-5 1:2-4 0:5-0 0:0-2
+CORE FsZuw g=1 y=0 x=4 sched=0 m=14
+CORE FsZuw g=1 y=3 x=4 sched=0 m=14
+CORE FsZuw g=1 y=5 x=4 sched=0 m=14
+CORE FsZuw g=1 y=6 x=2 sched=1 m=14 1:6-3 0:1-4 1:3-0 1:0-1 1:1-5 1:5-3
+CORE FsZ\w g=4 y=5 x=2 sched=1 m=14 1:5-0 1:0-3 0:4-1 0:1-0 1:3-5 1:5-1
+CORE FsZ\w g=4 y=6 x=1 sched=1 m=14 1:6-0 1:0-3 0:4-2 0:2-0 1:3-6 1:6-2
+CORE FswNO g=6 y=0 x=5 sched=1 m=11 1:0-3
+CORE FswNO g=6 y=4 x=3 sched=1 m=11 1:4-5
+CORE FswNo g=3 y=0 x=5 sched=0 m=12
+CORE FswNo g=3 y=1 x=5 sched=0 m=12
+CORE FswNo g=3 y=2 x=5 sched=0 m=12
+CORE FswNo g=3 y=6 x=5 sched=0 m=12
+CORE Fsz\w g=0 y=4 x=3 sched=0 m=15
+CORE Fsz\w g=0 y=5 x=2 sched=0 m=15
+CORE Fsz\w g=0 y=6 x=1 sched=0 m=15
+CORE FszZw g=1 y=4 x=3 sched=0 m=15
+CORE FszZw g=1 y=5 x=2 sched=0 m=15
+CORE FqGV_ g=6 y=0 x=3 sched=0 m=9
+CORE FqGV_ g=6 y=1 x=2 sched=0 m=9
+CORE FqJ@W g=4 y=0 x=6 sched=1 m=9 1:0-1 0:4-2 0:2-0 1:1-3
+CORE FqJ@W g=4 y=2 x=1 sched=1 m=9 1:2-0 0:4-2 0:2-6 0:6-4
+CORE FqJ@W g=4 y=5 x=2 sched=1 m=9 1:5-0 0:4-6 1:0-1 1:1-3
+CORE FqJ@W g=4 y=6 x=1 sched=1 m=9 1:6-5 0:4-2 0:2-6 0:6-4
+CORE FqHTg g=6 y=1 x=2 sched=0 m=10
+CORE FqHVg g=1 y=3 x=0 sched=0 m=11
+CORE FqHVg g=1 y=5 x=0 sched=0 m=11
+CORE FqHVg g=1 y=6 x=4 sched=1 m=11 1:6-2 0:1-3 0:3-5 0:5-1 0:1-6 0:6-3
+CORE FqJPo g=4 y=0 x=6 sched=1 m=10 1:0-1 0:4-2 1:1-3 1:3-5 1:5-1
+CORE FqJPo g=4 y=2 x=1 sched=1 m=10 1:2-0 0:4-2 0:2-6 0:6-4
+CORE FqJPo g=4 y=2 x=3 sched=1 m=10 1:2-0 0:4-2 0:2-6 0:6-4
+CORE FqJPo g=4 y=2 x=5 sched=1 m=10 1:2-0 0:4-2 0:2-6 0:6-4
+CORE FqJPo g=4 y=3 x=2 sched=1 m=10 1:3-1 0:4-6 1:1-0 1:0-5 1:5-1
+CORE FqJPo g=4 y=6 x=0 sched=1 m=10 1:6-3 0:4-2 0:2-6 0:6-4
+CORE FqJPo g=4 y=6 x=1 sched=1 m=10 1:6-3 0:4-2 0:2-6 0:6-4
+CORE FqJPo g=4 y=6 x=5 sched=1 m=10 1:6-3 0:4-2 0:2-6 0:6-4
+CORE FqqdG g=4 y=0 x=3 sched=1 m=10 1:0-2 0:4-0 0:0-1 0:1-4
+CORE FqqdG g=4 y=1 x=2 sched=1 m=10 1:1-3
+CORE FqqdG g=4 y=1 x=5 sched=1 m=10 1:1-3
+CORE FqqdG g=4 y=1 x=6 sched=1 m=10 1:1-3
+CORE FqqdG g=4 y=2 x=1 sched=0 m=10
+CORE FqqdG g=4 y=5 x=1 sched=0 m=10
+CORE FqqdG g=4 y=6 x=1 sched=0 m=10
+CORE FqqfW g=1 y=0 x=3 sched=0 m=12
+CORE FqqfW g=1 y=4 x=3 sched=0 m=12
+CORE FqqfW g=1 y=6 x=3 sched=0 m=12
+CORE Fqrvg g=4 y=0 x=3 sched=1 m=14 1:0-2 0:4-0 0:0-1 0:1-4
+CORE Fqrvg g=4 y=1 x=2 sched=1 m=14 1:1-3 0:4-0 0:0-1 0:1-4
+CORE FqrnW g=4 y=0 x=3 sched=0 m=14
+CORE FqrnW g=4 y=1 x=2 sched=1 m=14 1:1-3
+CORE FqrnW g=4 y=5 x=3 sched=0 m=14
+CORE FqrnW g=4 y=6 x=3 sched=0 m=14
+CORE FqhTw g=0 y=2 x=1 sched=0 m=12
+CORE FqhTw g=0 y=4 x=1 sched=0 m=12
+CORE FqhTw g=0 y=6 x=1 sched=1 m=12 1:6-3 0:0-2 0:2-4 0:4-0 0:0-6 0:6-2
+CORE FqjTO g=3 y=1 x=2 sched=1 m=11 1:1-0 0:3-1 1:0-4 0:1-5 0:5-3
+CORE FqjTO g=3 y=1 x=4 sched=1 m=11 1:1-0 0:3-1 1:0-2 0:1-5 0:5-3
+CORE FqjTO g=3 y=1 x=6 sched=1 m=11 1:1-0 0:3-1 1:0-2 0:1-5 0:5-3
+CORE FqjTO g=3 y=5 x=2 sched=1 m=11 1:5-0 0:3-5 1:0-4 0:5-1 0:1-3
+CORE FqjTO g=3 y=5 x=4 sched=1 m=11 1:5-0 0:3-5 1:0-2 0:5-1 0:1-3
+CORE FqjTO g=3 y=5 x=6 sched=1 m=11 1:5-0 0:3-5 1:0-2 0:5-1 0:1-3
+CORE FqjVo g=1 y=0 x=3 sched=1 m=13 1:0-2 0:1-0 0:0-5 1:2-4 1:4-0 1:0-6 1:6-2
+CORE FqjVo g=1 y=6 x=5 sched=1 m=13 1:6-2 0:1-3 1:2-0 1:0-4 1:4-2
+CORE Fqjuw g=1 y=0 x=3 sched=1 m=14 1:0-2 0:1-0 0:0-6 0:6-1 1:2-4 0:1-5 0:5-2
+CORE Fqjuw g=1 y=5 x=4 sched=1 m=14 1:5-2 0:1-3 0:3-5 0:5-1 0:1-6 0:6-3
+CORE Fqjuw g=1 y=6 x=2 sched=1 m=14 1:6-4 0:1-3 0:3-5 0:5-1 0:1-6 0:6-3
+CORE Fqzvg g=2 y=0 x=3 sched=0 m=15
+CORE Fqzvg g=2 y=5 x=4 sched=0 m=15
+CORE Fqzvg g=2 y=6 x=4 sched=0 m=15
+CORE FqznW g=2 y=0 x=3 sched=0 m=15
+CORE FqznW g=2 y=4 x=3 sched=0 m=15
+CORE FqznW g=2 y=5 x=3 sched=0 m=15
+CORE FqznW g=2 y=6 x=3 sched=0 m=15
+CORE Fqzmw g=3 y=1 x=2 sched=0 m=15
+CORE Fqzmw g=3 y=6 x=2 sched=0 m=15
+CORE Fqz^w g=6 y=0 x=3 sched=0 m=16
+CORE Fqz^w g=6 y=1 x=2 sched=0 m=16
+CORE Fqz^w g=6 y=4 x=3 sched=0 m=16
+CORE Fqz^w g=6 y=5 x=2 sched=0 m=16
+CORE Fqy|w g=2 y=0 x=3 sched=0 m=15
+CORE Fqy|w g=2 y=4 x=3 sched=0 m=15
+CORE Fqy|w g=2 y=5 x=1 sched=0 m=15
+CORE Fqy|w g=2 y=6 x=1 sched=0 m=15
+CORE Fqz~o g=2 y=0 x=3 sched=0 m=16
+CORE Fqz~o g=2 y=4 x=3 sched=0 m=16
+CORE Fuv]w g=0 y=1 x=2 sched=0 m=16
+CORE Fuv]w g=0 y=3 x=2 sched=0 m=16
+CORE Fuv]w g=0 y=4 x=2 sched=0 m=16
+CORE Fuv]w g=0 y=5 x=2 sched=0 m=16
+CORE Fuv]w g=0 y=6 x=2 sched=0 m=16
+CORE Fut~o g=5 y=1 x=2 sched=0 m=16
+CORE Fut~o g=5 y=3 x=2 sched=0 m=16
+CORE Fut~o g=5 y=4 x=2 sched=0 m=16
+CORE Fut~w g=6 y=1 x=2 sched=0 m=17
+CORE Fut~w g=6 y=3 x=2 sched=0 m=17
+CORE Fut~w g=6 y=4 x=2 sched=0 m=17
+mode CORETESTS onlyY=0: instances 480, schedule 177, undecided 0; all-tight 480, of which schedule 177

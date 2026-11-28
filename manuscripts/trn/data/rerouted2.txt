@@ -1,0 +1,4 @@
+order 5
+good D' 26, with a path re-routed at both ends 0
+order 7
+good D' 152264, with a path re-routed at both ends 11522
