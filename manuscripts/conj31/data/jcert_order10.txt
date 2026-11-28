@@ -1,0 +1,13 @@
+# Conjecture J via joint paths with a certified remainder, order 10 (scripts/jcert.c option bc).
+# Graphs: the 32,851 connected all-odd graphs of order 10 (nauty-geng -cq 10, filtered), split in 4 shards.
+all-odd graphs 8213 instances 6750952 joined 6475436 certified: Lovasz 1716925 Conj31 1726032 BC 3032479 uncertified 0; certified-but-not-tight 0
+all-odd graphs 8213 instances 5332572 joined 5241714 certified: Lovasz 534299 Conj31 3236811 BC 1470604 uncertified 0; certified-but-not-tight 0
+all-odd graphs 8213 instances 4669984 joined 4632515 certified: Lovasz 178964 Conj31 3911354 BC 542197 uncertified 0; certified-but-not-tight 0
+all-odd graphs 8212 instances 3816440 joined 3802295 certified: Lovasz 70315 Conj31 3515494 BC 216486 uncertified 0; certified-but-not-tight 0
+# totals: instances 20,569,948; joined 20,151,960; certified (L) 2,500,503, (C) Conjecture 31 12,389,691, (B) BC 5,261,766;
+# uncertified 0; certified-but-not-tight 0 (every certified remainder solved exactly).
+# independent check of the 20,151,960 joint decompositions (scripts/jwcheck.py):
+checked 6475436 joint decompositions: all valid
+checked 5241714 joint decompositions: all valid
+checked 4632515 joint decompositions: all valid
+checked 3802295 joint decompositions: all valid

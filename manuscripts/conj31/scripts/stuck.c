@@ -1,13 +1,13 @@
 /* stuck.c -- which PC instances admit none of the proved reduction moves?
  *
- *   stuck MAXZ < 2conn.g6      (MAXZ = 2: exactly two zeros; 1: one zero)
+ *   stuck MAXZ [down] < 2conn.g6      (MAXZ = 2: exactly two zeros; 1: one zero; 0: none)
  *
  * Instance: 2-connected B, zero set Z (positive even degree), profile b with
  * b = 0 on Z, 1 <= b(x) <= d(x), b(x) == d(x) mod 2 off Z, and (DB).
  * Moves (each reduces to a smaller instance of the same kind; see the manuscript):
  *   CYC  B is a cycle (base case).
  *   EAR  a removable thread (interior vertices of degree 2, B - interior 2-connected)
- *        with a vertex of b = 2 in its interior.
+ *        with r >= 1 interior vertices of b = 2, and not (r = 1 and both ends in Z).
  *   SUP  a thread whose interior lies in Z, with non-adjacent ends (suppress it).
  *   TR   a removable edge xy (B - xy 2-connected), the end moving to y:
  *        b(y) >= 1, b(x) <= d(x) - 2, |Z0| <= 2 where Z0 = (Z - x) + (y if b(y) = 1),
@@ -17,12 +17,15 @@
  *   TRI  a zero u of degree 2 with N(u) = {x,y}, xy an edge, B - u 2-connected, the end
  *        moving to y: x, y not in Z, b(x) <= d(x) - 2, and (y not adjacent to the other
  *        zero, or b(x) >= 2).  (B - u with b + 1_x - 1_y; subdivide xy; Fan at y.)
- *   SPL  a vertex x with b(x) = d(x) and B - x 2-connected: delete x; each neighbour y
+ *   SPL  a vertex x with b(x) = d(x), at most one zero in N(x), B - x 2-connected: delete x; each neighbour y
  *        gets b(y)+1 (b(y) <= d(y)-2) or b(y)-1 (b(y) = d(y)); zeros of B - x: Z - N(x)
  *        plus new zeros; require |Z'| <= 2 and (DB) for the new profile.
  *   TW2  twin zeros u,v, uv not an edge, N(u) = N(v) = {x,y}, x not adjacent to y:
  *        B - u - v + xy with b - 1_x - 1_y (xy subdivided by u, plus the path x v y);
  *        require B - u - v + xy 2-connected, |Z'| <= 2, (DB).
+ *   DOWN a vertex x with b(x) - 2 >= 1 such that b - 2*1_x still satisfies (DB): a realisation
+ *        of the smaller profile gives one of b by splitting a path through x at x.
+ *        (Only with option "down"; the measure is then (|E|, sum b).)
  * Prints the stuck instances and a summary (with TWIN marking stuck instances whose
  * zeros are twins: N(u) - v = N(v) - u).
  */
@@ -96,14 +99,25 @@ static void threads(void) {
 
 static int nZ(void) { int c = 0; for (int i = 0; i < n; i++) c += isz[i]; return c; }
 
+static int usedown;
 static int check(void) {
   int S = 0;
   for (int i = 0; i < n; i++) S += b[i];
   if (iscycle) { cnt[0]++; return 1; }
+  if (usedown)
+    for (int x = 0; x < n; x++) {
+      if (isz[x] || b[x] < 3) continue;
+      int ok = 1;
+      for (int w = 0; w < n && ok; w++) if (w != x && S - 2 - deg[w] - b[w] < 0) ok = 0;
+      if (ok) { cnt[8]++; return 1; }
+    }
   for (int t = 0; t < nth; t++) {
     int L = thlen[t];
     if (L > 2 && threm[t]) {
-      for (int i = 1; i < L - 1; i++) if (!isz[thv[t][i]]) { cnt[1]++; return 1; }
+      int r = 0;
+      for (int i = 1; i < L - 1; i++) if (!isz[thv[t][i]]) r++;
+      /* r = 1 with both ends zeros: the two end segments would close a cycle (excluded) */
+      if (r >= 2 || (r == 1 && !(isz[thv[t][0]] && isz[thv[t][L - 1]]))) { cnt[1]++; return 1; }
     }
     if (L > 2) {
       int allz = 1;
@@ -151,6 +165,8 @@ static int check(void) {
   /* SPL */
   for (int x = 0; x < n; x++) {
     if (isz[x] || b[x] != deg[x]) continue;
+    { int zn = 0; for (int i = 0; i < n; i++) if (isz[i] && (adj[x] >> i & 1)) zn++;
+      if (zn >= 2) continue; }   /* Hall: at most one neighbour with a single path end */
     uint32_t verts = ((1u << n) - 1) & ~(1u << x);
     uint32_t a2[PS_MAXN]; memcpy(a2, adj, sizeof a2);
     for (int i = 0; i < n; i++) a2[i] &= ~(1u << x);
@@ -226,6 +242,7 @@ static void rec(int x) {
 
 int main(int argc, char **argv) {
   int maxz = argc > 1 ? atoi(argv[1]) : 2;
+  usedown = argc > 2 && !strcmp(argv[2], "down");
   char line[512];
   while (fgets(line, sizeof line, stdin)) {
     line[strcspn(line, "\r\n")] = 0;
@@ -247,7 +264,7 @@ int main(int argc, char **argv) {
       for (int i = 0; i < ne; i++) { memset(isz, 0, sizeof isz); isz[ev[i]] = 1; rec(0); }
     } else { memset(isz, 0, sizeof isz); rec(0); }
   }
-  printf("instances %ld stuck %ld  [CYC %ld EAR %ld SUP %ld TR %ld NEW %ld TRI %ld SPL %ld TW2 %ld]\n", ninst, nstuck,
-         cnt[0], cnt[1], cnt[2], cnt[3], cnt[4], cnt[5], cnt[6], cnt[7]);
+  printf("instances %ld stuck %ld  [CYC %ld EAR %ld SUP %ld TR %ld NEW %ld TRI %ld SPL %ld TW2 %ld DOWN %ld]\n", ninst, nstuck,
+         cnt[0], cnt[1], cnt[2], cnt[3], cnt[4], cnt[5], cnt[6], cnt[7], cnt[8]);
   return 0;
 }
