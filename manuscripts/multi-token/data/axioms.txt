@@ -9,3 +9,5 @@
 'Gallai.triTails_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.triangleBase_of_steerK' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.test1At_of_steerK' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.not_steerK' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.not_steerK_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
