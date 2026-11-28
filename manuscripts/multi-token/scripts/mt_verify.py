@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """mt_verify.py: independent executor for k-token schedules (session claude/multi-token).
 
-Reads SCHED lines of mtok.cpp:
+Reads SCHED lines of mtok.cpp (and SCHEDA lines, AODD=1: the all-odd lift of synthesis 31, where the
+pairs are a perfect matching of J[N(z)], the first one (a0, r), M is H = J - z - Phi, and the lift
+appends x_i at the end y_i of Q(y_i)):
     SCHED g6 resid z r w y1,x1 y2,x2 ... | moves
 (resid = 1: g6 is B = J - z with N(z) = {0..5}, z gets index |B|).  Moves: Mp-u (a token moves),
 Di (tail i is dropped), Sp:a-b (the token p of degree 2 is suppressed).  For each line it executes
@@ -110,6 +112,7 @@ def oracle_bottom(ora, A, live_pairs):
 def check(ora, line):
     head, mvs = line.rsplit(' |', 1)
     p = head.split()
+    aodd = p[0] == 'SCHEDA'
     g6, resid, z, r, w = p[1], int(p[2]), int(p[3]), int(p[4]), int(p[5])
     pairs = [tuple(map(int, s.split(','))) for s in p[6:]]          # (y_i, x_i)
     n, A = g6_adj(g6)
@@ -124,24 +127,35 @@ def check(ora, line):
     J.add_edges_from((a, b) for a in range(n) for b in A[a] if a < b)
     assert [v for v in range(n) if len(A[v]) % 2 == 0] == [z], 'z is not the only even vertex'
     Nz = set(A[z])
-    assert r in Nz and w in Nz and r != w
     pv = [v for pr in pairs for v in pr]
-    assert len(set(pv)) == len(pv) and set(pv) == Nz - {r, w}, 'not a perfect matching of N(z)-{r,w}'
+    if aodd:
+        # all-odd lift: the pairs form a perfect matching of J[N(z)], the first one is (a0, r)
+        assert pairs[0][1] == r and len(set(pv)) == len(pv) and set(pv) == Nz, 'not a perfect matching of N(z)'
+    else:
+        assert r in Nz and w in Nz and r != w
+        assert len(set(pv)) == len(pv) and set(pv) == Nz - {r, w}, 'not a perfect matching of N(z)-{r,w}'
     for y, x in pairs:
         assert x in A[y], 'pair is not an edge of J'
     k = len(pairs)
-    # M and M+
+    # M and M+ (all-odd: M is H = J - z - Phi, with z isolated)
     M = [set(s) for s in A]
 
     def rm(G, a, b):
         assert b in G[a]
         G[a].discard(b)
         G[b].discard(a)
-    rm(M, z, w)
-    for y, x in pairs:
-        rm(M, z, y)
-        rm(M, z, x)
-        rm(M, y, x)
+    if aodd:
+        for u in sorted(Nz):
+            rm(M, z, u)
+        for y, x in pairs:
+            rm(M, y, x)
+        assert all(len(M[v]) % 2 == 1 for v in range(n) if M[v]), 'H is not all-odd'
+    else:
+        rm(M, z, w)
+        for y, x in pairs:
+            rm(M, z, y)
+            rm(M, z, x)
+            rm(M, y, x)
     K = [set(s) for s in M] + [set() for _ in range(k)]
     leaf = [n + i for i in range(k)]
     for i, (y, x) in enumerate(pairs):
@@ -235,11 +249,25 @@ def check(ora, line):
     for y, x in pairs:
         Q = [P for P in D0 if P[0] == y or P[-1] == y]
         assert len(Q) == 1 and x not in Q[0], ('Q(y) meets x', y, x)
+    if aodd:
+        # the all-odd lift (synthesis 31): append x_i at the end y_i of Q(y_i); then r has >= 2 ends
+        paths = [list(P) for P in D0]
+        for (y, x) in pairs:
+            idx = [j for j, P in enumerate(paths) if P[0] == y or P[-1] == y]
+            assert len(idx) == 1, 'y is not the end of exactly one path'
+            P = paths[idx[0]]
+            assert x not in P
+            if P[0] == y:
+                P.insert(0, x)
+            else:
+                P.append(x)
+        assert verify_test1(J, z, r, paths), "the lift is not a Test1 decomposition"
+        return len(mvs.split())
     # Test1 by the direct lift; tb.lift appends a_i b_i where Q(b_i) avoids a_i
     tbpairs = [(x, y) for (y, x) in pairs]
     paths = lift(J, z, r, tbpairs, D0)
     assert paths is not None, 'lift failed'
-    verify_test1(J, z, r, paths)
+    assert verify_test1(J, z, r, paths), "the lift is not a Test1 decomposition"
     return len(mvs.split())
 
 
@@ -247,7 +275,7 @@ def main():
     ora = sys.argv[1]
     cnt = tot = 0
     for line in sys.stdin:
-        if line.startswith('SCHED'):
+        if line.startswith('SCHED'):   # SCHED (triangle base) or SCHEDA (all-odd lift)
             tot += check(ora, line.strip())
             cnt += 1
             if cnt % 500 == 0:
