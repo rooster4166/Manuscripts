@@ -1,0 +1,11 @@
+# Conjecture 31 (two-even tightness), exhaustive over 2-connected graphs of order 10
+# generator: nauty-geng -Cq 10 i/4 (i=0..3); solver: scripts/psolve.h via scripts/t31.c (mode c31)
+# O1 graphs (an odd vertex of degree n-1) are skipped: proved non-tight (degree_le_of_tight).
+# Every tight answer carries a witness; all 799,993 witnesses re-checked by scripts/wcheck31.py (independent decoder):
+checked 799993 witnesses: all valid
+# per shard: graphs, two-even, O1, solved, tight, non-tight (2-connected, non-O1), undecided
+graphs 2397411 two-even 199172 O1 9434 solved 189738 tight 189738 nontight: O1 0 2conn-nonO1 0 cut-nonO1 0 undecided 0 maxnodes 5507392
+graphs 2216372 two-even 195681 O1 9444 solved 186237 tight 186237 nontight: O1 0 2conn-nonO1 0 cut-nonO1 0 undecided 0 maxnodes 5125013
+graphs 2525186 two-even 219810 O1 10275 solved 209535 tight 209535 nontight: O1 0 2conn-nonO1 0 cut-nonO1 0 undecided 0 maxnodes 11195368
+graphs 2604573 two-even 224489 O1 10006 solved 214483 tight 214483 nontight: O1 0 2conn-nonO1 0 cut-nonO1 0 undecided 0 maxnodes 7791418
+# totals: 2-connected graphs 9,743,542; two-even 839,152; O1 39,159; solved 799,993; tight 799,993; non-tight 0; undecided 0

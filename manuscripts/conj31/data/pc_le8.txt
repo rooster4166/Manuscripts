@@ -1,0 +1,11 @@
+# Profile form PC: 2-connected G, exactly two zeros u,v (positive even degree), b(x) == d(x) mod 2, 1 <= b(x) <= d(x) elsewhere.
+# Claim tested: b realisable  <=>  (DB) d(x)+b(x) <= sum b for all x.  scripts/pc_test.c, mode 2 (all pairs u,v, all profiles).
+n=4 (3 2-connected graphs): profiles 10 with-DB 7 realisable 7 DB-but-not-realisable 0 undecided 0
+n=5 (10 2-connected graphs): profiles 199 with-DB 187 realisable 187 DB-but-not-realisable 0 undecided 0
+n=6 (56 2-connected graphs): profiles 2854 with-DB 2808 realisable 2808 DB-but-not-realisable 0 undecided 0
+n=7 (468 2-connected graphs): profiles 110865 with-DB 110691 realisable 110691 DB-but-not-realisable 0 undecided 0
+n=8 (7123 2-connected graphs, 3 shards):
+profiles 2262360 with-DB 2261965 realisable 2261965 DB-but-not-realisable 0 undecided 0
+profiles 3123534 with-DB 3123031 realisable 3123031 DB-but-not-realisable 0 undecided 0
+profiles 1351288 with-DB 1350832 realisable 1350832 DB-but-not-realisable 0 undecided 0
+# total n=8: profiles 6,737,182; with DB 6,735,828; all realisable; 0 failures
