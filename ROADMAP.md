@@ -139,7 +139,8 @@ EMM sufficiency work is **stopped**.
       - (T2) holds at all 717,942 instances with n ≤ 10;
       - all 20 tight instances are cones over odd semi-cliques;
       - a general forest base exists at every instance;
-      - d(z) = 4 by proved tools: 98.5% of an order-10 sample.
+      - d(z) = 4 by proved tools: 478 of 554 at order 8 (86%, `dz4_order8.txt`). The order-10 sample figure of 98.5% has no committed data file yet, so it is not cited until it is committed (overview flag, 2026-11-28).
+      - (T2) at d(z) = 6 and 8 is already closed in the collection: MR Thms 123 and 128, audit A8; Thm 128 is conditional on FHZ/CFZ. So (T2)'s own frontier lies beyond d = 8.
 - **multi-token** (session_01FxXpVe8F7KxYF5L5TwFwZ2, branch `claude/multi-token`, new): extend NA/trn steering to k pairs at once (one token per leaf-bearing vertex, plus one at w). The target is the triangle base at d(z) = 6, i.e. the dense T(6)-i residual. That is the real frontier, since DL(1) only reaches d(z) = 4, which is already known.
   - **Milestone 1 (bbede7f, merged; build green; axioms checked):**
     - Lean `MultiToken.lean`: `SteerK` (moves, drops, suppression, finish), the transfer theorem `steerK_good`, `triangleBase_of_steerK`, and **`test1At_of_steerK`**. A k-token schedule is therefore a certificate of Test1 at that root.
@@ -161,7 +162,7 @@ EMM sufficiency work is **stopped**.
     - Manuscript `manuscripts/na`; audit A33: all proofs SOUND.
     - Lean also proves the exact boundary, `avoid_iff_reach`, and the set form with its boundary, `avoid_packed_of_reach` / `avoid_packed_iff_reach`.
     - Open: the R2 strengthening, and the even-vertex version (two even vertices after the leaf), which is where N differs from NA.
-- **trn** (session_01FxXpVf3UQSh4TMBMYT3AEH, branch `claude/trn`, new): prove TRN, tight transfer for A = {x}, in both cases y ≁ g and y ~ g. **TRN is now the only missing piece: TRN ⇒ Conjecture N (Lean) ⇒ DL(1)** (Prop 9.2, paper). I sent the NA technique to the session.
+- **trn** (session_01FxXpVf3UQSh4TMBMYT3AEH, branch `claude/trn`, new): prove TRN, tight transfer for A = {x}, in both cases y ≁ g and y ~ g. **TRN ⇒ Conjecture N (Lean).** N reduces DL(1) to near twins (dl-one Prop 9.2, paper); near twins are open, so TRN alone does not give DL(1) (corrected 2026-11-28). I sent the NA technique to the session.
   - **Milestone 2 (e3d9aef, merged; build green; axioms checked):**
     - `TightTransferNCore`, the core restriction, and `conjN_of_core` (TRN.lean).
     - Two-token steering (TRNSteer.lean):

@@ -796,8 +796,8 @@ In the middle, a trivial end of degree n − 4 is compatible with exactly one Lo
 
 **Consequences (Lean).**
 - `conjN_of_tightTransferN`: TRN ⇒ Conjecture N.
-- With dl-one Prop 9.2 (paper), TRN ⇒ DL(1).
-- The open core for the triangle-base and DL route has shrunk to **TRN**, the tight transfer for one forbidden vertex, together with the multi-pair step DL(k).
+- dl-one Prop 9.2 (paper) shows only that N reduces DL(1) to near twins, the pairs with N(a) − g = N(b) − g. Near twins remain open, so TRN does NOT yet give DL(1). *(Corrected 2026-11-28 after an overview-session flag.)*
+- For DL(1), the open core is now **TRN together with near twins**. Beyond that, the multi-pair step DL(k) is open.
 
 ## 31. The all-odd lift: Test1 and Test2 meet in graphs with no even vertex (coordinator, 2026-11-28 04:10)
 
@@ -829,7 +829,10 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 
 **So both spine tests reduce, by Φ-lifts, to one problem: all-odd DL(k).** Let H be all-odd and let (a_i, b_i) be disjoint non-adjacent pairs, some with a fixed orientation. Find one Lovász decomposition that satisfies all the conditions.
 - **Why this setting is easier.** There is no even vertex, so the tight-Fan obstruction of the one-even setting (DL, N, TRN) is absent.
-- **Known exceptions.** In K_{2k} minus a perfect matching, every Lovász decomposition consists of Hamiltonian paths, and the pairs fail. Universal-twin-type exceptions may also occur.
+- **Exceptions.**
+  - *Correction (2026-11-28):* the earlier sentence about K_{2k} minus a perfect matching was wrong, because that graph is (2k − 2)-regular and so not all-odd.
+  - Universal twins, the DL exception (direct-test1 Prop 7.5, Lean `univTwins_every_path`), **cannot occur in an all-odd graph**. A component of an all-odd graph has even order, so a non-adjacent pair with N(a) = N(b) = V(C) − {a, b} would have even degree |C| − 2.
+  - So the all-odd form may have no structural exceptions. This is to be tested (test2).
 - **Tools.**
   - NA together with its set form (`avoid_packed_iff_reach`);
   - the separation theorems (packed sets);
