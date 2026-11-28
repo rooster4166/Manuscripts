@@ -62,7 +62,7 @@ No `sorry`. All 15 theorems use only the axioms `propext`, `Classical.choice`, `
   | instances of N with a schedule | 3 / 12 | 840 / 1,161 | 238,265 / 263,264 |
 
   - Among the unscheduled core triples, 4,048 of the 8,777 at order 9 have no legal first move.
-  - Every schedule at orders 5 and 7 (843) was executed by an independent Python verifier (`steer_verify.py`). At order 9 a sample was executed: VERIFY9README.
+  - Every schedule at orders 5 and 7 (843) was executed by an independent Python verifier (`steer_verify.py`). At order 9, a sample of 5,957 of the 238,265 schedules (every 40th) was executed, all verified (`data/steer_verify9_sample.txt`).
 - **TRN and TRN-E hold in every test run:**
   - all 490,923 order-9 TRN tests;
   - 39,098 tests on 400 random graphs of orders 11 and 13. One test was budget-undecided and holds with no budget. 101 candidate tests were dropped because the child was budget-undecided: RANDOM101README;

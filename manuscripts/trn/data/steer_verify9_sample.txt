@@ -1,0 +1,2 @@
+order 9: every 40th SCHED line of 'SCHED=1 ./steer2 N 2000000 0 0 < one_even_9.g6' (5957 of 238265 schedules)
+verified 5957 schedules
