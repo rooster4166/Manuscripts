@@ -926,4 +926,80 @@ theorem forestBase2_matching_of_terminal (J : SimpleGraph V) [DecidableRel J.Adj
 
 end rootedConverse
 
+section transport
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **From `J − z` to `J` with `z` isolated.** A decomposition of `delVert J z` gives one of `J`
+minus all edges at `z`, with the same size, the same ends (and none at `z`), and the same
+supports. -/
+theorem exists_isolated_of_delVert (J : SimpleGraph V) [DecidableRel J.Adj] {z : V} {U : List V}
+    (hU : ∀ v, J.Adj z v ↔ v ∈ U) (D : PathDecomp (delVert J z)) :
+    ∃ D' : PathDecomp (delList J (zDel2 z U)), D'.size = D.size ∧
+      (∀ v : {v | v ≠ z}, D'.ends v = D.ends v) ∧
+      (∀ P ∈ D.paths, ∃ P' ∈ D'.paths, P'.walk.support = P.walk.support.map Subtype.val) := by
+  have hmemz : ∀ {x y : V}, s(x, y) ∈ zDel2 z U → x = z ∨ y = z := by
+    intro x y h
+    rw [zDel2, List.mem_map] at h
+    obtain ⟨u, -, hu⟩ := h
+    rcases Sym2.eq_iff.1 hu with ⟨h1, -⟩ | ⟨h1, -⟩
+    · exact Or.inl h1.symm
+    · exact Or.inr h1.symm
+  have hE : ∀ e ∈ (delVert J z).edgeSet, e.map Subtype.val ∈ (delList J (zDel2 z U)).edgeSet := by
+    intro e he
+    induction e using Sym2.inductionOn with
+    | hf a b =>
+    rw [Sym2.map_mk, delList_edgeSet]
+    refine ⟨he, fun h => ?_⟩
+    rcases hmemz h with h | h
+    · exact a.2 h
+    · exact b.2 h
+  have hcov : ∀ e' ∈ (delList J (zDel2 z U)).edgeSet,
+      ∃ e ∈ (delVert J z).edgeSet, e.map Subtype.val = e' := by
+    intro e' he'
+    induction e' using Sym2.inductionOn with
+    | hf x y =>
+    rw [delList_edgeSet] at he'
+    obtain ⟨hxy, hn⟩ := he'
+    have hx : x ≠ z := by
+      rintro rfl
+      exact hn (List.mem_map.mpr ⟨y, (hU y).1 hxy, rfl⟩)
+    have hy : y ≠ z := by
+      rintro rfl
+      exact hn (List.mem_map.mpr ⟨x, (hU x).1 hxy.symm, Sym2.eq_swap⟩)
+    exact ⟨s(⟨x, hx⟩, ⟨y, hy⟩), hxy, rfl⟩
+  refine ⟨D.mapInj Subtype.val Subtype.val_injective hE hcov,
+    PathDecomp.mapInj_size _ _ _ _ _, fun v => PathDecomp.mapInj_ends _ _ _ _ _ v,
+    fun P hP => ⟨P.mapInj Subtype.val Subtype.val_injective hE, List.mem_map_of_mem hP, ?_⟩⟩
+  simp [GPath.mapInj]
+
+/-- **The converse of the forest lift, matching case, for the test itself.** As
+`forestBase2_matching_of_terminal`, with `D` a decomposition of `J − z` (the conclusion of Test2):
+every pair edge `tᵢsᵢ` is the end edge, at `tᵢ`, of its path. -/
+theorem forestBase2_matching_of_test2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hzr : ∀ v, Even (J.degree v) ↔ v = z ∨ v = r) (hr : J.Adj z r) {T : List V}
+    {L : List (V × V)} (hF : ForestData2 J z r T (L.map Prod.swap)) (hnd : (pairVerts L).Nodup)
+    (hcover : ∀ v, v ∈ pairVerts L ↔ v = r ∨ v ∈ T) (hrpar : r ∈ L.map Prod.fst)
+    (D : PathDecomp (delVert J z)) (hsize : D.size ≤ Fintype.card V / 2)
+    (hr3 : 3 ≤ D.ends ⟨r, hr.ne'⟩)
+    (hterm : ∀ p ∈ L, ∃ P ∈ D.paths, (∃ l, P.walk.support.map Subtype.val = p.1 :: p.2 :: l) ∨
+      (∃ l, P.walk.support.map Subtype.val = l ++ [p.2, p.1])) :
+    ForestBase2 J z r := by
+  have hU : ∀ v, J.Adj z v ↔ v ∈ r :: T := fun v => (hF.nbr v).trans (by simp)
+  obtain ⟨D', hD's, hD'e, hD'supp⟩ := exists_isolated_of_delVert J hU D
+  have hr3' : 3 ≤ D'.ends r := by
+    have h := hD'e ⟨r, hr.ne'⟩
+    simp only at h
+    rw [h]; exact hr3
+  have hterm' : ∀ p ∈ L, TermAt D' p.1 p.2 := by
+    intro p hp
+    obtain ⟨P, hP, hform⟩ := hterm p hp
+    obtain ⟨P', hP', hsupp⟩ := hD'supp P hP
+    exact ⟨P', hP', by rw [hsupp]; exact hform⟩
+  obtain ⟨D₀, h1, h2, h3⟩ := forestBase2_matching_of_terminal J hzr hF hnd hcover hrpar D'
+    (by rw [hD's]; exact hsize) hr3' hterm'
+  exact ⟨T, L.map Prod.swap, hF, D₀, h1, h2, h3⟩
+
+end transport
+
 end Gallai

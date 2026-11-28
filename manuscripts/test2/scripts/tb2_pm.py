@@ -16,12 +16,12 @@ from collections import Counter
 
 import networkx as nx
 
-from tb2 import base_graph, check_base, lift, parse_paths, perfect_matchings, query_line, \
-    rootings, run_oracle, verify_test2
+from tb2 import Oracle, base_graph, check_base, lift, parse_paths, perfect_matchings, \
+    query_line, rootings, verify_test2
 
 
 def main():
-    oracle = sys.argv[1]
+    oracle = Oracle(sys.argv[1])
     stats = Counter()
     for line in sys.stdin:
         if not line.strip():
@@ -40,14 +40,10 @@ def main():
         stats["with matching data"] += 1
         inst_ok = False
         for pm in pms:
-            lines, meta = [], []
             M = base_graph(J, z, r, pm)
-            for par, order in rootings(pm, r, 10 ** 6):
-                lines.append(query_line(M, n, par, 0, 7))
-                meta.append((par, order))
-            out = run_oracle(oracle, lines)
             ok = False
-            for o, (par, order) in zip(out, meta):
+            for par, order in rootings(pm, r, 10 ** 6):
+                o = oracle.query(query_line(M, n, par, 0, 7))
                 assert o[0] in "01", o
                 if o.startswith("1"):
                     D0 = parse_paths(o)

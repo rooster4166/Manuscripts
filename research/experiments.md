@@ -1837,3 +1837,45 @@ Manuscript `manuscripts/re-tight`, Lean `lean/GallaiLean/RETight.lean`, scripts 
   - the general checker finds families with 8–12 pieces (> k − 1 = 7) for 22/30 graphs. Two 3·10⁹-node runs (u = 4, 6) stayed undecided.
 
 **Conclusion.** The method is a sparse method; Theorem 3.1 proves it in a degree range. Its known failures sit in near-complete graphs (MR Cor 168 territory). Unproved: ¬(∗∗) with u < k − 1 (includes u = 1 near-regular graphs, where the method works at once); the method itself struggles only in the dense part with 3 ≤ u ≤ k − 2. Audit A31: proofs correct, Lean faithful, numbers reproduce; fixes applied.
+
+## E33. The three-end test (T2): exact data, the two lifts, and their bases (cloud session `claude/test2`)
+
+Manuscript `manuscripts/test2`; scripts in `manuscripts/test2/scripts`, data in `manuscripts/test2/data`.
+Lean `Test2Lift.lean`, `Test2Converse.lean`. (If E33 is already taken, renumber.)
+
+**(T2) itself** (`t2.c`, search core from eulerian-cone `re.c`; witnesses checked by `verify_t2.py`; `bf_t2.py` brute force agrees at order 6).
+
+| n | 3-connected J (two even vertices z ~ r) | instances | (T2) holds | tight (p(J − z) = n/2) |
+|---|---|---|---|---|
+| 6 | 5 | 10 | 10 | 2 |
+| 8 | 474 | 948 | 948 | 5 |
+| 10 | 358,492 | 716,984 | 716,984 | 13 |
+| 12 (random sample, `gen_t2.py`) | 20,000 draws | 40,000 | 40,000 | 1,918 |
+
+- **Tight ⟺ J − z is an odd semi-clique.** This holds at every n ≤ 10 instance and at every instance of the order-12 sample.
+- Ends at r in tight instances: exactly d_H(r) + 2 where decided. This is the elementary half of OSB Thm 4.
+- 2-connected J with δ ≥ 3, n ≤ 8: (T2) holds at all 1,084 instances. With a cut vertex: 3 failures at n = 8.
+
+**Rooted forest base** (`tb2.py`; route_ext query C; every lift executed and verified).
+- n ≤ 10: a base exists at all 717,942 instances. Counts by type: matching 520,182 + 693 (n ≤ 8); spanning-tree T-join 196,798 + 265; r a child with two children: 4.
+- The 4 are J = K_{3,7} + hub edge and `I??CFx~~w`, both orientations. For the first, a hand proof shows no base with r a root exists.
+- n = 8, κ = 2: 126/126.
+- Every perfect matching of J[N(z)] gives a base: n = 8, 1,512/1,512; first 2,000 of the n = 10 sample, 4,003/4,003.
+
+**Floor base** (`tb2_floor.py`).
+- n = 8: absent exactly at the 5 semi-cliques.
+- Per data choice at n = 8: 2,280 twin-free choices all have a base, and all 153 failing choices contain a universal-twin pair (DL's prediction).
+- Absent at the fat theta, although the floor holds there.
+- n = 10 sample of 20,000: present at all (18,062 matching, 1,938 tree).
+
+**Reach of proved tools.**
+- Packed sets (`coverage.py`): 37/685 instances with matching data at n = 8; 0/14,434 on the n = 10 sample.
+- d(z) = 4, floor lift with one DL(1) pair (`dz4_cover.py`, port of trn `steer2.cpp`, positives cross-checked with route_ext):
+  - n = 8: 478/554 (separation 88, schedules 390);
+  - n = 10 sample: 7,358/7,467;
+  - n = 10, all 41,599 instances where N(z) − r is a triangle: schedules settle 40,454 and 1,145 are open.
+- Fan/Pyber floor condition on J[N(z) − r] (`lit_cover.py`, n = 10 exhaustive): 265,632/307,231 (d = 4), 127,504/346,599 (d = 6), 3,767/63,154 (d = 8).
+
+**All-odd, two constraints** (`allodd_pairs.py`): Q(c) ∌ x plus one disjunctive pair, in connected all-odd graphs. 0 failures at order 6 (13 graphs, 428 choices) and order 8 (224 graphs, 43,400 choices).
+
+**Cones** (`cones.py`): 6 / 204 / 35,952 cone instances at n = 6 / 8 / 10, all hold; all 20 tight instances are cones.
