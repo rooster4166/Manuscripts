@@ -145,7 +145,14 @@ EMM sufficiency work is **stopped**.
   - **Milestone 1 (bbede7f, merged; build green; axioms checked):**
     - Lean `MultiToken.lean`: `SteerK` (moves, drops, suppression, finish), the transfer theorem `steerK_good`, `triangleBase_of_steerK`, and **`test1At_of_steerK`**. A k-token schedule is therefore a certificate of Test1 at that root.
     - Data at order 9, d(z) = 6, all 3-connected J: schedules exist at 7,529 of 10,118 roots with data (74%).
-    - Residual families: 72/180 roots at |O| = 8 and 109/144 at |O| = 10, at budget 2·10⁶ (committed `data/runs/resid_O8_s1_b2e6.txt` and `resid_O10_s1_b2e6.txt`). An earlier, smaller-budget run gave 71/107. E28 hard graphs: 10/48.
+  - **Finished** (025666e; audit A36 applied: 2 errors and 2 gaps fixed, core sound). Manuscript `manuscripts/multi-token` (12 pp.).
+    - **The triangle base at d(z) = 6 is NOT proved.**
+    - Proved in Lean: the transfer theorem `steerK_good`, and the obstruction `not_steerK_triangle` (no schedule at roots with fewer than k non-neighbours, which covers every shape of the residual families).
+    - The certificate family Thm 4.2 covers 882 roots at order 9.
+    - Final residual: resid_O8 72/180, resid_O10 111/144, E28 10/48.
+    - The all-odd lift does worse: 25% at order 9.
+    - Open: a new token-removing move, or an end lemma with two even vertices; conjecture MT.
+    - Residual families (milestone figures): 72/180 roots at |O| = 8 and 109/144 at |O| = 10, at budget 2·10⁶ (committed `data/runs/resid_O8_s1_b2e6.txt` and `resid_O10_s1_b2e6.txt`). An earlier, smaller-budget run gave 71/107. E28 hard graphs: 10/48.
 - **na** (session_01FxXpVhLSRHGoH9FHpDU66p, branch `claude/na`): **NA PROVED** (ba80a1c, merged; build green; axioms checked by the coordinator).
   - **Lean** `neighbourAvoidOn` (NeighbourAvoid.lean). Corollaries:
     - `conjNDegTwoOn`: the degree-two case of N, unconditional;
