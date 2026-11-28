@@ -840,3 +840,15 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 - Matching data needs a perfect matching of J[N(z)]. The forest version needs a forest T-join of B with T = N(z) and r a root.
 - The forest version fails on the cone over K_{2,6}: siblings meet at a star centre. That case is covered by the literature (planar).
 - The converse (base ⇔ (T1) with Φ terminal at the parents) should hold by end-counting, as in direct-test1 Prop 4.3. Not yet checked.
+
+**§31 addendum (multi-token, 28376e6).**
+- **Steering on the all-odd lift is WEAKER than on the triangle base.**
+  - At order 9 with d(z) = 6, schedules exist at 2,101 of 8,340 roots (25%), against 74% for the triangle base.
+  - In the residual families it reaches 10/180 and 54/144.
+- **The degree-(n − 2) obstruction survives, by a different mechanism.**
+  - Here r is the vertex avoided by tail 0. Dropping that tail costs a token or a non-neighbour of r.
+  - Paper: if r has at most k − 2 non-neighbours, there is no schedule.
+  - Lean: the invariant of `not_steerK` (MultiTokenObstruct.lean) is generalised to cover this setting.
+- **The all-odd bases themselves exist:** 54/54 roots by exact search.
+- **So the limitation is the steering method, not the target.** The dense part of the spine needs a non-inductive tool, such as an exchange argument or a dense-graph theorem.
+- **Executor bug found by multi-token:** the final Test1 boolean had not been asserted. It is fixed, and every schedule was re-verified.
