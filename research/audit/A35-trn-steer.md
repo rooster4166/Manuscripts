@@ -7,6 +7,10 @@ written), **ERROR** (false as stated), **NIT** (wording, citation, bookkeeping).
 `VERIFY9` and `RANDOM101` are pending by design and are not findings (what they should contain is
 at the end).
 
+During the audit the author committed 62c80cc and 88f25c0, which fill the two placeholders (and
+a9ba40f, an interim snapshot of this report). I did not audit those commits. The end of this report
+compares the filled-in numbers with mine.
+
 | file | md5 |
 |---|---|
 | `manuscripts/trn/trn.tex` (969 lines) | `51147b944cf58dab84e3b188aa884136` |
@@ -247,12 +251,23 @@ the number actually run.
 - For comparison, my `exec_sched.py`:
   - replayed all 238,265 order-9 schedules against Definition 6.3 (5.7 s);
   - executed the same 5,957 (every 40th), with all checks passing (92 s);
-  - executed every 4th, EXEC4.
+  - executed every 4th, 59,567 schedules (about a quarter of all of them), with all checks passing
+    (20 min).
 
 **RANDOM101.** It should say how many of the 101 dropped candidates were decided, and how.
 - A34 decided 43 of them: 32 with the A34 counter and 11 with `orc` at budget 2·10⁸. All had a good
   child and satisfied TRN_E.
 - The other 58 lie in three dense order-13 graphs.
+
+**As filled in by 62c80cc and 88f25c0 (not audited, consistency only).**
+- VERIFY9 now reads "5,957 of the 238,265 (every 40th) … all verified". This is the same sample my
+  `exec_sched.py` executed independently.
+- RANDOM101 now reads: 397 graphs finish, their 40 dropped candidates have a good child, TRN_E holds
+  in all 38,749 tests, and 61 candidates in three order-13 graphs remain undecided.
+  - This is consistent with A34, which left 101 − 43 = 58 undecided in three dense order-13 graphs.
+  - If those are the same three graphs, then 3 of the 61 were already decided by A34 with `orc` at
+    budget 2·10⁸ (good child, TRN_E). The text could then cite A34 and say 58. I did not check
+    which graphs they are.
 
 ## Reproduced (commands)
 

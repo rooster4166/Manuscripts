@@ -53,10 +53,10 @@ $\mathrm{dist}(x,y)=2$, and $N(g)$ is not an independent pair (Theorem~\ref{thm:
 $9$, $90{,}056$ of the $490{,}923$ tests are core tests.
 \item \emph{Two-token steering} (formalised). Hang a leaf $\ell$ at $y$ and put a token on each of
 the two even vertices $g$ and $y$ of the leaf graph. Suppose the tokens can be moved along edges,
-never onto $x$ or $\ell$ and never onto a neighbour of the other token, until one of them reaches a
-vertex with no edge left. Then $G$ has a Lov\'asz decomposition whose path ending at $y$ avoids $x$,
-with no hypothesis on $G-gu$ (Theorem~\ref{thm:steer}). The step of $\TRN$ is exactly the forbidden
-move. So Conjecture~N follows from $\TRN$ restricted to core instances with no such schedule
+never onto $x$, $\ell$ or the other token and never onto a neighbour of the other token, until one of
+them reaches a vertex with no edge left. Then $G$ has a Lov\'asz decomposition whose path ending at $y$ avoids $x$,
+with no hypothesis on $G-gu$ (Theorem~\ref{thm:steer}). The step of $\TRN$ is one of the forbidden
+moves. So Conjecture~N follows from $\TRN$ restricted to core instances with no such schedule
 (Theorem~\ref{thm:core2}). At order $9$ schedules exist for $64{,}291$ of the $90{,}056$ core tests,
 and for $238{,}265$ of the $263{,}264$ instances of N.
 \item \emph{A trivial-chain strengthening} (computed). In every test we ran, some good
@@ -357,8 +357,10 @@ set.
 The \emph{core of $\TRN$} is $\TRN$ for core instances.\lean{TightTransferNCore}
 \end{definition}
 
-Conditions (C0) and (C3) differ exactly when $y\sim g$, $g\not\sim x$ and $N(y)\setminus\{g\}
-\subseteq N(x)$: then the only child witness is $g$, and $(G,y,x)$ is not an instance of N.
+Condition (C3) holds and (C0) fails exactly when $y\sim g$, $g\not\sim x$ and
+$N(y)\setminus\{g\}\subseteq N(x)$: then the only child witness is $g$, and $(G,y,x)$ is not an
+instance of N. (The converse failure, (C0) without (C3), also occurs: \texttt{DsO} with $g=1$,
+$y=2$, $x=4$, $u=0$.)
 
 \begin{theorem}\label{thm:core}
 The core of $\TRN$ and the degree-two case $N(g)=\{x,y\}$ of~N imply Conjecture~N. Hence the core
@@ -414,8 +416,8 @@ of~\cite[\S6]{CN}. All $1{,}834$ tests excluded only by (C0) have $y\sim g$.
 
 \section{Two-token steering}\label{sec:steer}
 
-This section proves the conclusion of $\TRN$ outright, with no hypothesis on $G-gu$, for most core
-instances. The idea is the one~\cite{NA} uses for $\NA$. Hang a leaf $\ell$ at $y$ and run Lov\'asz's
+This section proves the conclusion of $\TRN$ outright, with no hypothesis on $G-gu$, for many core
+instances ($71\%$ of the core tests at order $9$). The idea is the one~\cite{NA} uses for $\NA$. Hang a leaf $\ell$ at $y$ and run Lov\'asz's
 induction in the leaf graph, with the targets chosen in advance. The condition ``no path contains
 both $\ell$ and $x$'' concerns vertex sets only, since $\ell$ lies on one path, so Fan's lemma
 carries it back through every step whose target is not $\ell$ or $x$. In $\NA$ there is no even
@@ -448,8 +450,9 @@ a leaf at $w$, $x$ is odd and not adjacent to $w$, and only $u$ can be even. By 
 $(H-gu,c,\{x\})$ is good. Apply Fan's step from $g$ to $u$ to a good decomposition, as in
 Section~\ref{sec:prelim}. The vertex $c$ is not a chain vertex, since $c\ne g$ and $c\notin N(u)$.
 By Lemma~\ref{lem:chain}(ii),(iii), $c$'s end stays on its path, which is at most re-routed or
-extended by $u\ne x$. So the new path ending at $c$ avoids $x$. (This is the free-target transfer
-of~\cite[Prop.~7.1]{DL}; Lean \texttt{avoid\_free\_target}.)
+extended by $u\ne x$. So the new path ending at $c$ avoids $x$. (This is step (2) of the proof
+of~\cite[Theorem~4.6]{CN}, where $u$ may be adjacent to $x$; Lean \texttt{avoid\_free\_target}.
+Compare~\cite[Prop.~7.1]{DL}, which assumes $u$ adjacent to neither vertex.)
 \item \emph{Otherwise} $N(g)\subseteq\{x,c,w\}$. If $g=w$, then $x\notin N(g)$, as $x\not\sim w$, so
 $N(g)\subseteq\{c\}$ and $d(g)\le1$, which is impossible. So $g\ne w$, $c\notin N(g)$ and
 $N(g)\subseteq\{x,w\}$. Since $d(g)$ is even and positive, $N(g)=\{x,w\}$ with $x\not\sim w$. Then
@@ -482,7 +485,7 @@ $u\notin X$. So $\cD$ meets $X$ at most once.\qedhere
 \end{itemize}
 \end{proof}
 
-If $u\sim o$ in $H-uz$, then $Z(u)\ni o$ and Fan's inequality can become the equality $1=1$ of
+If $u\sim o$ in $H-uz$ and $o$ is even, then $Z(u)\ni o$ and Fan's inequality can become the equality $1=1$ of
 $\TRN$. That is the one step the lemma excludes.
 
 \begin{definition}[two-token schedule]\label{def:sched}
@@ -571,8 +574,8 @@ that way (Proposition~\ref{prop:first}).
 
 With no even vertex, as in $\NA$, $G^+$ has the single even vertex $y$, and a schedule of the
 $y$-token alone is a steering sequence of~\cite[Def.~3.1]{NA}. Here the second token is $g$. If only
-the $y$-token moves, the schedule is a trail $y=y_0,y_1,\dots,y_k$ of distinct edges with every
-$y_i$ ($i\ge1$) outside $N[g]\cup\{x\}$, ending at a vertex left isolated. We call this
+the $y$-token moves, the schedule is a trail $y=y_0,y_1,\dots,y_k$ of distinct edges of $G$ (so $\ell$ is never
+entered) with every $y_i$ ($i\ge1$) outside $N[g]\cup\{x\}$, ending at a vertex left isolated. We call this
 \emph{move~(T)}.
 \end{remark}
 
@@ -630,8 +633,10 @@ Some observations on Table~\ref{tab:steer}:
 outright, and $71.4\%$ of the core tests.
 \item The fraction grows with the order: $20\%$, $37\%$ and $71\%$ of the core tests at orders $5$,
 $7$, $9$.
-\item In every schedule found, the first move is by the $y$-token, as
-Proposition~\ref{prop:first} requires.
+\item In every schedule found for an all-tight instance, the first move is by the $y$-token, as
+Proposition~\ref{prop:first} requires ($41{,}447$ schedules at order $9$). For instances of N in
+general this fails: at order $7$, $592$ of the $840$ schedules found begin with a move of the
+$g$-token (\texttt{data/steer\_firstmove.txt}).
 \item Of the unscheduled core triples, $3$ of $5$, $63$ of $133$ and $4{,}048$ of $8{,}777$ (orders
 $5$, $7$, $9$) have $N(y)\subseteq N[g]$, so they have no legal first move.
 \end{itemize}
@@ -896,7 +901,8 @@ Theorem~\ref{thm:core2} & \texttt{conjN\_of\_core2}, \texttt{tightTransferNCore\
 \begin{itemize}
 \item \emph{Library results used:} \texttt{fan\_single\_supp}, \texttt{separation},
 \texttt{lovasz\_avoid\_nonadj}, \texttt{splitOff\_facts}, \texttt{avoid\_of\_splitOff},
-\texttt{avoid\_free\_target}, \texttt{meetsOnce\_of\_cover}, \texttt{apex\_degree\_some},
+\texttt{avoid\_free\_target}, \texttt{meetsOnce\_of\_cover}, \texttt{avoid\_of\_apexSep},
+\texttt{apex\_degree\_some}, \texttt{apex\_degree\_none},
 \texttt{conjNDegTwoOn} (NA, from~\cite{NA}), and the helpers of \texttt{ConjN.lean}.
 \item \emph{Statement of Theorem~\ref{thm:core2}:} \texttt{conjN\_of\_core2 (hT :
 TightTransferNCore2 V) : ConjNOn V}. Here \texttt{TightTransferNCore2} is $\TRN$ with the hypotheses
@@ -913,8 +919,9 @@ These are statements about the forced chain itself, which the library handles on
 \section{What remains}\label{sec:open}
 \begin{enumerate}
 \item \emph{The unscheduled core of $\TRN$} (Definition~\ref{def:core2}). By
-Theorem~\ref{thm:core2} it is all of Conjecture~N. With (C1), a proof may use Conjecture~N on smaller
-graphs. About half of its instances have no legal first move (Proposition~\ref{prop:first}).
+Theorem~\ref{thm:core2} it is all that remains of Conjecture~N. With (C1), a proof may use
+Conjecture~N on smaller graphs. Of its triples, $63$ of $133$ at order $7$ and $4{,}048$ of $8{,}777$
+at order $9$ have no legal first move (Proposition~\ref{prop:first}; computed).
 \item \emph{Tight moves.} A schedule may not move a token onto a neighbour of the other token. A
 rule that allows some such moves, for example when the tight Fan step of~\cite{TF} succeeds for the
 decomposition at hand, would enlarge Table~\ref{tab:steer}. The intermediate graphs have two even
