@@ -1,0 +1,2 @@
+N=12 seed=12 graphs=1000 pairs=56970 na=52525 weak=55307 ok=55307 sets=15192 sets_ok=15192
+N=14 seed=14 graphs=1000 pairs=78408 na=74738 weak=77133 ok=77133 sets=19805 sets_ok=19805
