@@ -1,0 +1,2 @@
+order 5: 14 instances, identical (nD, nAvoid, nGood) for every instance
+order 7: 1847 instances, identical (nD, nAvoid, nGood) for every instance

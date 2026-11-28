@@ -1,0 +1,6 @@
+order 5
+SUMMARY tests y!~g=4 y~g=10; TRN-E holds y!~g=4 y~g=10; undecided=0; among TRN-E failures: rechoice 0/0 image 0/0 capped=0
+order 7
+SUMMARY tests y!~g=787 y~g=1060; TRN-E holds y!~g=787 y~g=1060; undecided=0; among TRN-E failures: rechoice 0/0 image 0/0 capped=0
+order 9
+SUMMARY tests y!~g=236891 y~g=254032; TRN-E holds y!~g=236891 y~g=254032; undecided=0; among TRN-E failures: rechoice 0/0 image 0/0 capped=0

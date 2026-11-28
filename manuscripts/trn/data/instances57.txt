@@ -1,0 +1,40 @@
+order 5
+y!~g: inst=4  A(chain avoids y)=4  B(only image good)=0  C(no good image)=0  allD'good=4  D'=6 avoid=6 good=6
+y~g: inst=10  A(chain avoids y)=10  B(only image good)=0  C(no good image)=0  allD'good=6  D'=20 avoid=16 good=16
+y!~g min chain len: 1:4
+y~g min chain len: 1:10
+y!~g hitting chain len:
+y~g hitting chain len: 2:4
+instances y!~g=4 y~g=10
+min|Q'y|                   failAV 0/4  failGD 0/4
+max|Q'y|                   failAV 0/2  failGD 0/2
+yu-first,then min|Q'y|     failAV 0/2  failGD 0/2
+min chain len              failAV 0/0  failGD 0/0
+max chain len              failAV 0/4  failGD 0/4
+min|P0|                    failAV 0/0  failGD 0/0
+max|P0|                    failAV 0/4  failGD 0/4
+Q'y ends at g first        failAV 0/2  failGD 0/2
+min |Q'y cap N(u)|         failAV 0/4  failGD 0/4
+max |Q'y cap N(u)|         failAV 0/4  failGD 0/4
+min #paths thru u          failAV 0/4  failGD 0/4
+max |P_yu|                 failAV 0/4  failGD 0/4
+order 7
+y!~g: inst=787  A(chain avoids y)=787  B(only image good)=0  C(no good image)=0  allD'good=314  D'=41406 avoid=33230 good=34261
+y~g: inst=1060  A(chain avoids y)=1060  B(only image good)=0  C(no good image)=0  allD'good=166  D'=110858 avoid=79480 good=86526
+y!~g min chain len: 1:787
+y~g min chain len: 1:1060
+y!~g hitting chain len: 2:3256 3:2875 4:1500 5:545
+y~g hitting chain len: 2:13733 3:10597 4:4730 5:2318
+instances y!~g=787 y~g=1060
+min|Q'y|                   failAV 490/815  failGD 446/736
+max|Q'y|                   failAV 236/555  failGD 218/508
+yu-first,then min|Q'y|     failAV 61/72  failGD 61/72
+min chain len              failAV 0/0  failGD 0/0
+max chain len              failAV 520/1016  failGD 435/807
+min|P0|                    failAV 0/2  failGD 0/2
+max|P0|                    failAV 469/956  failGD 427/814
+Q'y ends at g first        failAV 252/354  failGD 240/326
+min |Q'y cap N(u)|         failAV 517/949  failGD 472/821
+max |Q'y cap N(u)|         failAV 478/966  failGD 423/830
+min #paths thru u          failAV 520/1016  failGD 473/894
+max |P_yu|                 failAV 442/706  failGD 423/699

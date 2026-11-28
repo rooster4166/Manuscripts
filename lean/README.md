@@ -1,5 +1,13 @@
 # GallaiLean
 
+## The tight transfer TRN: the core that Conjecture N needs (cloud session, branch `claude/trn`)
+
+Manuscript `manuscripts/trn`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds (18,420 jobs).
+
+| File | Content |
+|---|---|
+| `TRN.lean` | **`avoid_of_separating_child`** (manuscript Lemma 4.1): if `G − gu` (`g` the even vertex, `u ∉ {x, y}`) has a Lovász decomposition in which no path contains both `y` and `x`, then `AvoidDecomp G y {x}` (Fan's lemma with vertex sets, `fan_single_supp`). Outright cases of the conclusion of TRN, with no hypothesis on `G − gu`: **`avoid_of_farApart`** (`x, y` at distance `≥ 3`, by `separation`) and **`avoid_of_degTwo_indep`** (`N(g) = {a, b}`, `a ≁ b`, `{x, y} ≠ {a, b}`; split off and `L₁`). `ConjNBelow V n` (Conjecture N below degree sum `n`) and **`TightTransferNCore`** (manuscript Definition 5.1: TRN with N available on smaller graphs, all-tight, the child keeping a witness, `x, y` with a common neighbour, `N(g)` not an independent pair). **`conjN_of_core`** (manuscript Theorem 5.2): the core of TRN and the degree-two case imply N; **`conjN_of_core_neighbourAvoid`** (with NA); **`tightTransferNCore_of`** (TRN ⇒ core), so this strengthens `conjN_of_tight_degTwo`. |
+
 ## Conjecture N: reduction to the tight transfer and neighbour avoidance (cloud session, branch `claude/conj-n`)
 
 Manuscript `manuscripts/conj-n`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`. The full library builds.

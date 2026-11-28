@@ -1,0 +1,2 @@
+SUMMARY TRN tests=466120 viol=0 undecided=0 (child undecided 0); TRN-E holds 466120, undecided 0
+done

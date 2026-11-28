@@ -1,0 +1,3 @@
+bad D'=24942  rotation at y gives: valid good D''=5109  chain-avoiding=4393 (via P_y 4237)  good image=4393 (via P_y 4237)
+bad D'=24942: x on e-half 4821, x on partner half 20121 (fixed by re-pairing at u: 342)
+bad D'=24942, locally re-decomposable (chain paths + Q'(y) + gu): 24152
