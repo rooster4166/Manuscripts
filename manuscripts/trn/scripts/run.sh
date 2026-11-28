@@ -41,5 +41,10 @@ CORE=1 ./classify 10 < $O/one_even_7.g6 > $D/classify7_core.txt
 # core triples with and without a schedule; Proposition 6.10 (first move by the y-token)
 ( for k in 5 7 9; do echo "order $k"; SHOWCORE=1 ./steer2 CORETESTS 2000000 0 0 < $O/one_even_$k.g6 | python3 steer_stats.py; done ) > $D/steer_core_stats.txt
 SHOWCORE=1 ./steer2 CORETESTS 2000000 0 0 < $O/one_even_7.g6 | grep CORE > $D/steer_core7.txt
+# which token moves first (Section 6, after Table 2)
+( for k in 7 9; do echo "order $k: schedules of instances of N by the token of the first move (0 = g-token, 1 = y-token)"
+    SCHED=1 ./steer2 N 2000000 0 0 < $O/one_even_$k.g6 | grep SCHED | awk '{print substr($6,1,1)}' | sort | uniq -c
+    echo "order $k: the same for all-tight instances"
+    SCHED=1 ./steer2 TIGHT 2000000 0 0 < $O/one_even_$k.g6 | grep SCHED | awk '{print substr($6,1,1)}' | sort | uniq -c; done ) > $D/steer_firstmove.txt
 # (slow, about an hour) every 40th order-9 schedule, executed independently:
 # SCHED=1 ./steer2 N 2000000 0 0 < $O/one_even_9.g6 | grep SCHED | awk 'NR%40==1' | python3 steer_verify.py > $D/steer_verify9_sample.txt

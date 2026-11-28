@@ -1,0 +1,10 @@
+order 7: schedules of instances of N by the token of the first move (0 = g-token, 1 = y-token)
+    592 0
+    248 1
+order 7: the same for all-tight instances
+    216 1
+order 9: schedules of instances of N by the token of the first move (0 = g-token, 1 = y-token)
+ 194175 0
+  44090 1
+order 9: the same for all-tight instances
+  41447 1
