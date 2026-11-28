@@ -1,5 +1,11 @@
 scripts/nd
 scripts/ndq
 scripts/fl
+scripts/fl_dbg
+scripts/fl_prof
+scripts/gmon.out
 scripts/oddfilter
 scripts/__pycache__/
+*.aux
+*.log
+*.out

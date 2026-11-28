@@ -1,0 +1,3 @@
+SUMMARY mode=T1 graphs=3406487 instances=18382426 nodata=5341334 level1=5280706 level2=57436 level3=3146 level4=14 level5=32
+SUMMARY mode=T1 graphs=2972247 instances=16032968 nodata=4254158 level1=4204380 level2=40584 level3=9168 level4=17 level5=9
+SUMMARY mode=T1 graphs=2360180 instances=12657004 nodata=3229498 level1=3192834 level2=26554 level3=10107 level4=3 level5=0

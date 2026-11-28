@@ -1,0 +1,545 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\emergencystretch=3em
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\let\oldunderscore\_
+\renewcommand{\_}{\oldunderscore\allowbreak}
+\newcommand{\lean}[1]{\textup{(Lean: {\small\texttt{#1}})}}
+\newcommand{\ind}[1]{[\,#1\,]}
+
+\input{data/cells.tex}
+
+\title[Roots without matching data]{Roots without matching data in the spine tests:\\
+twin pairs, root moves, and a cherry form of $L_N$}
+\author{Gallai project}
+\date{28 November 2026 (working draft, session \texttt{claude/nodata})}
+
+\begin{document}
+
+\begin{abstract}
+By the all-odd lifts of the three-end note~\cite{T2}, the two spine tests (T1) and (T2) hold at
+every root whose deletion vertex $z$ has a perfect matching in $J[N(z)]$ (\emph{matching data}),
+provided the multi-pair avoidance conjecture $L_N$ holds. This note is about the roots without
+matching data. At these roots the lift needs a forest $T$-join of $J-z$ with $T=N(z)$, and two
+kinds of condition: $p(v)\notin V(Q(v))$ for each child $v$, and siblings on distinct paths.
+
+\emph{Proved, in Lean.} (a) \emph{Twin insertion:} two vertices of degree two with the same two
+neighbours cost exactly one path. This gives twin reductions for (T1) and (T2), and (T1) on the
+whole fat-theta family $K_{3,t}+h_2h_3$ for every even $t$; at $t=6$ that family is where the
+all-odd lift has no base. (b) \emph{Root moves:} the one-edge steps of the marked-reduction
+manuscript's Theorem~145, proved here independently from Fan's single-edge lemma. Each step turns
+(T1) at one root into (T1) at another root of a graph with one edge fewer, and it can change
+$N(z)$. (c) A precise form of the needed constraint statement, the \emph{cherry} conjecture CL
+(below), and the implication CL $\Rightarrow$ (T1) at every root with cherry data.
+
+\emph{Computed} (validated exact solver, every base lifted and checked independently): every
+no-data root of every (T1) instance of order at most $11$ and every (T2) instance of order at most
+$10$ is classified. At order $\le 9$, root moves reach matching data at \RMNINEREACH{} of the
+\NDNINE{} no-data roots, so there $L_N$ alone gives (T1). A base with no sibling condition exists at
+\NONSIBNINE{} of them. Every instance with no base, or whose base needs $r$ to be a child, has a
+twin pair in $N(z)$; these are $9$ at order $\le9$ and $75$ at order $11$, and all of them are
+certified by the twin reduction. At order $11$, cherry bases (defined below) exist at
+\TIERONEELEVENPCT{} of the \NDELEVEN{} no-data roots.
+
+\emph{Conjectured.} \textbf{CL (cherry $L_N$)}: in a graph with no even vertex, any disjoint
+family of pairs $c\leftarrow a$ ($a\notin Q(c)$) and \emph{2-chains} $a\leftarrow x\leftarrow b$
+($a\notin Q(x)$ and $x\notin Q(b)$) on non-edges is satisfied by one Lov\'asz decomposition. CL
+contains $L_N$, and it is exactly what the forest lift needs when $\Phi$ is a matching plus
+2-paths. It has no counterexample on the families tested to order $10$. Its natural extensions
+fail on small graphs: 3-chains (order $6$), set avoidance along a route, and stars or claws
+(K$_{1,3}$ rooted at a leaf) without a Hall condition. We found no reduction of CL to $L_N$.
+\end{abstract}
+
+\maketitle
+
+\section{Setting}\label{sec:setting}
+
+Graphs are finite and simple. A \emph{decomposition} of a graph is a partition of its edges into
+paths. $b_D(v)$ is the number of path ends of $D$ at $v$; it has the parity of $d(v)$
+\lean{ends\_mod\_two}. A \emph{Lov\'asz decomposition} of a graph with no vertex of even degree has
+exactly one end at every vertex; it exists by Lov\'asz~\cite{L68}, and $Q(v)$ denotes the path
+ending at $v$.
+
+\begin{definition}[the spine tests; Lean \texttt{Test1At}, \texttt{Test2At}]
+(T1) at $(J,z,r)$: $z$ is the only even vertex of $J$, $r\in N(z)$, and $B=J-z$ has a decomposition
+into at most $(|J|-1)/2$ paths with at least two ends at $r$. (T2) at $(J,z,r)$: $z,r$ are the only
+even vertices of $J$, $zr\in E(J)$, and $B=J-z$ has a decomposition into at most $|J|/2$ paths with
+at least three ends at $r$.
+\end{definition}
+
+Gallai's conjecture is equivalent to (T1)$\wedge$(T2) on $3$-connected $J$
+\cite{SPINE} (Lean \texttt{gallai\_iff\_spineTests'}). Write $T=N(z)$. In (T1) the even vertices of
+$B$ are exactly $T$; in (T2) they are $T-r$.
+
+\emph{The all-odd lift} \cite[Theorem~7.1]{T2} \lean{test1At\_of\_oddBase}. Let $\Phi$ be a forest
+$T$-join of $B$ (a forest whose odd vertices are exactly $T$), rooted so that $r$ is a root or a
+child with at least two children. Write $p(v)$ for the parent and $c(v)$ for the number of
+children. Then $H=B-E(\Phi)$ has no even vertex. If a Lov\'asz decomposition of $H$ satisfies
+\begin{enumerate}[label=(\roman*)]
+\item $p(v)\notin V(Q(v))$ for every non-root $v$, and
+\item $Q(x)\neq Q(y)$ for distinct siblings $x,y$,
+\end{enumerate}
+then appending every edge $p(v)v$ at the end $v$ of its path, parents first, gives (T1) at $r$. Such
+$(\Phi,\text{rooting},D)$ is an \emph{all-odd base}. For (T2) the same statement holds with $H$
+replaced by $M=H+zr$ \cite[Theorem~4.5]{T2} \lean{test2At\_of\_forestBase2}.
+
+\emph{Matching data} at $(J,z)$ is a perfect matching of $J[T]$. With $\Phi$ a matching, (ii) is
+void, and (i) asks for disjoint non-adjacent pairs; so the base follows from
+
+\begin{conjecture}[$L_N$; route-descent \texttt{conj:LN}]
+Let $F$ have no vertex of even degree and let $c_1a_1,\dots,c_ma_m$ be pairwise disjoint pairs with
+$c_ia_i\notin E(F)$. Then some Lov\'asz decomposition of $F$ has $a_i\notin V(Q(c_i))$ for all $i$.
+\end{conjecture}
+
+So $L_N$ gives (T1) and (T2) at every root with matching data (synthesis \S32). Matching data depend
+only on $(J,z)$, not on $r$. They are often absent: $8{,}112$ of the $25{,}340$ (T1) roots of
+order at most $9$ have none \cite{T2}. This note is about those roots.
+
+\subsection*{Summary, by status}
+\begin{center}
+\begin{tabular}{p{0.55\textwidth}p{0.38\textwidth}}
+\toprule
+Statement & Status\\
+\midrule
+Twin insertion (Lemma~\ref{lem:twin}) & proved; Lean \texttt{PathDecomp.twin\_insert}\\
+Twin reductions for (T1), (T2) (Theorem~\ref{thm:twinred}) & proved; Lean
+\texttt{test1At\_of\_twins}, \texttt{test2At\_of\_twins}\\
+(T1) on $K_{3,t}+h_2h_3$, every even $t\ge2$ (Theorem~\ref{thm:fat}) & proved; Lean
+\texttt{test1\_fatTheta}\\
+Root moves M1, M2 (Theorem~\ref{thm:moves}) & proved; Lean \texttt{test1At\_of\_move1},
+\texttt{\_move2}, and their \texttt{'} forms\\
+CL $\Rightarrow$ (T1) at roots with cherry data (Proposition~\ref{prop:CLT1}) & proved; Lean
+\texttt{test1At\_of\_cherryLN}\\
+CL $\Rightarrow$ (T2) at roots with cherry data (Proposition~\ref{prop:CLT1}) & proved on paper
+(Lean has the lift, not the full parity of $M$)\\
+Star Hall condition is necessary (Lemma~\ref{lem:hall}) & proved\\
+Classification of no-data roots, (T1) $n\le 11$, (T2) $n\le 10$ (\S\ref{sec:data}) & computed,
+exhaustive; every base verified\\
+Root moves reach matching data at \RMNINEREACH{}/\NDNINE{} roots, $n\le9$ (\S\ref{sec:moves}) &
+computed (moves proved)\\
+Conjecture~\ref{conj:CL} (CL) & conjectured; tested (\S\ref{sec:evidence})\\
+3-chains, routes, stars and claws without (H1) & counterexamples (\S\ref{sec:limits})\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The roots without matching data}\label{sec:data}
+
+\subsection{Method}
+The program \texttt{scripts/nd.c} reads graph6 and keeps the $3$-connected $J$ with minimum degree
+at least $3$ and exactly one even vertex (mode \texttt{-t1}) or exactly two adjacent even vertices
+(mode \texttt{-t2}, both orientations). At order $11$ it reads all $2$-connected $B$ of order $10$
+and forms $J=B+z$, with $z$ joined to the even vertices of $B$; this is a bijection of isomorphism
+classes, since $z$ is the unique even vertex of $J$. For each root without matching data it
+records the Gallai--Edmonds decomposition $(D,A,C)$ of $J[T]$, the twin pairs of $T$ (two vertices
+of $J$-degree $3$ with equal neighbourhoods), and the first \emph{tier} at which an all-odd base
+exists:
+\begin{enumerate}[label=\arabic*.]
+\item \emph{cherry data}: $\Phi$ is a linear forest whose components have at most two edges, rooted
+at an end, with $r$ a root. The components are $T$-edges $ab$ and \emph{cherries} $a\,x\,b$ with
+$a,b\in T$, $x\notin T$; there are no siblings, so (ii) is void;
+\item $\Phi$ is a \emph{linkage}: vertex-disjoint $T$-paths with interiors outside $T$, rooted at
+ends;
+\item any forest $T$-join, $r$ a root (searched by increasing sibling excess
+$\sum_v\max(0,c(v)-1)$);
+\item any forest $T$-join, $r$ a child with $c(r)\ge2$;
+\item none.
+\end{enumerate}
+Tiers 1 and 2 enumerate every linkage and every end-rooting; tiers 3 and 4 enumerate every forest
+$T$-join of $B$ and every rooting. Bases are decided by the exact solver \texttt{scripts/ndsolve.h}
+(depth-first search over the paths from the unended vertex of least degree; parity, degree and
+component pruning; failures memoised under the remaining edges and the ended set). The constraint
+encoding is that of \texttt{tools/route\_ext.c} query~C, masks $\{v,p(v)\}$. Checks:
+\begin{itemize}[leftmargin=*]
+\item \emph{solver}: all $36{,}947$ queries issued at order $\le9$ agree with \texttt{route\_ext}
+($28{,}879$ infeasible, $8{,}068$ feasible), and so do $3{,}000$ random forest queries of order
+$\le8$ (\texttt{scripts/gen\_cq.py});
+\item \emph{bases}: \texttt{scripts/verify\_nd.py} rebuilds every reported base with networkx,
+checks (i), (ii), the tier, the Lov\'asz property and the data fields, executes the lift and
+verifies (T1) or (T2) (for (T2): deletion of $z$ as in \cite[Theorem~4.5]{T2});
+\item \emph{negative tier claims}: \texttt{scripts/xcheck\_tiers.py} re-enumerates all linkages with
+networkx and decides each end-rooting with \texttt{route\_ext}; this confirms that no tier-1 base
+exists where the level is $\ge2$, and no linkage base where it is $\ge3$.
+\end{itemize}
+
+\subsection{Results}
+\begin{center}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+& graphs & roots & no data & tier 1 & tier 2 & tier 3 & tier 4 & none\\
+\midrule
+(T1) $n\le 9$ & $5{,}260$ & $25{,}340$ & $8{,}112$ & $7{,}802$ & $166$ & $135$ & $3$ & $6$\\
+(T1) $n=11$ & $8{,}738{,}914$ & $47{,}072{,}398$ & $12{,}824{,}990$ & $12{,}677{,}920$ & $124{,}574$
+& $22{,}421$ & $34$ & $41$\\
+(T2) $n\le 10$ & $358{,}971$ & $717{,}942$ & $197{,}067$ & $194{,}425$ & $2{,}024$ & $614$ & $4$ &
+$0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+At $n\le 9$ the counts of graphs, roots and no-data roots agree with \cite{T2}: $1+28+5{,}231$
+graphs, $4+126+25{,}210$ roots. The tier-1 share is $96.2\%$ at $n\le9$, $98.85\%$ at $n=11$ and
+$98.7\%$ for (T2). The sibling excess of the bases found at tier 3 is $1$ at $128$ of the $135$
+roots ($n\le9$), at $21{,}937$ of the $22{,}421$ ($n=11$) and at $586$ of the $614$ ((T2)). At tier
+$3$ every forest $T$-join has a vertex of degree at least $3$, since a forest of maximum degree $2$
+is a linkage. A vertex of $\Phi$-degree $3$ has odd degree, so it lies in $T$. Every excess-1 base
+found at $n\le9$ is a \emph{claw}: such a vertex, a child with two children. Verification:
+\VERIFYSTATUS.
+
+\emph{Why the data are missing.} By Tutte's theorem $J[T]$ has a set $S$ with more than $|S|$ odd
+components in $J[T]-S$. Its deficiency $|T|-2\nu(J[T])$ is $2$ at $7{,}694$, $4$ at $412$ and $6$
+at $6$ of the $8{,}112$ roots ($n\le9$). The six with deficiency $6$ are the fat thetas, where $T$
+is independent. At order $11$ the deficiencies $2,4,6,8$ occur at $12{,}381{,}258$, $441{,}436$,
+$2{,}288$ and $8$ roots.
+
+\begin{observation}[computed]\label{obs:structure}
+\begin{enumerate}[label=(\alph*)]
+\item At order $\le9$, every root at which $B$ has a linkage of $T$ has a linkage base. At every
+root of tier $1$ or $2$, the first rooted linkage tried by the independent enumeration of
+\texttt{xcheck\_tiers.py} is already a base. At tiers $\ge3$ there is no linkage at all. So the
+obstacle there is structural (no perfect packing of disjoint $T$-paths), not a failing
+constraint.
+\item \emph{Universality} at order $\le9$, over every structure: tier-1 structures have no failure
+($0$ of $179{,}152$). Linkages with a path of length $3$ or $4$ fail $88$ times out of $351{,}032$,
+all in six graphs with $d(z)=4$. Forests with siblings fail at $32{,}706$ of $88{,}148$ structures.
+\item Every root of tier $4$ or $5$ at order $\le 11$ has a twin pair in $T$ ($9$ roots at
+$n\le9$, $75$ at $n=11$). At order $\le9$ every root of tier $3$ has one too. At order $11$,
+$906$ twin-free roots need siblings; $500$ of them are cones ($d(z)=n-1$).
+\item At $d(z)=4$ no sibling is ever needed (order $\le 11$).
+\end{enumerate}
+\end{observation}
+
+\section{Twin pairs}\label{sec:twins}
+
+\begin{lemma}[twin insertion; Lean \texttt{PathDecomp.twin\_insert}]\label{lem:twin}
+Let $D'$ be a decomposition of a graph $K$, let $a\neq b$ with $a$ incident to an edge of $K$, and
+let $x\neq y$ be vertices outside $\{a,b\}$ with no edge in $K$. Let $G=K+\{ax,xb,ay,yb\}$. Then $G$
+has a decomposition $D$ with $|D|=|D'|+1$, $b_D(x)=b_{D'}(x)+2$, and $b_D(v)=b_{D'}(v)$ for
+$v\ne x$.
+\end{lemma}
+
+\begin{proof}
+This is the cycle insertion of \cite[Lemma~5.2]{EC} applied to the $4$-cycle $a\,y\,b\,x\,a$:
+$c=x$, the path $R=a\,y\,b\,x$, the closing edge $xa$, and $b$ the one vertex of $R$ other than $a$
+that may have $K$-edges. In detail: if some path $P$ of $D'$ ends at $a$, replace it by $P\,x$
+(extended at $a$) and add $x\,b\,y\,a$. Otherwise $a$ is an interior vertex of some path $Q$ (it
+has an edge). Split $Q$ at $a$ into $X$ ending at $a$ and $Y$ starting at $a$, with $b\notin X-a$
+(reverse $Q$ if needed). Replace $Q$ by $X\,y\,b\,x$ and $x\,a\,Y$. Since $x,y$ are new, every new
+walk is a path. The ends of the replaced path are kept, and $x$ gains two.
+\end{proof}
+
+The same insertion settles twins in the induction for rooted Gallai on Eulerian graphs
+\cite[Proposition~5.5]{EC}. What is new here is its use in the spine tests themselves, including the
+case where the root is one of the twins, and its formalisation.
+
+\begin{theorem}[twin reductions; Lean \texttt{test1At\_of\_twins}, \texttt{test2At\_of\_twins}]
+\label{thm:twinred}
+Let $x,y\in N_J(z)$ be distinct with $N_J(x)=N_J(y)=\{z,a,b\}$, and suppose $a$ has a neighbour
+outside $\{z,x,y\}$. Let $B^-$ be $J-z$ with the four edges at $x,y$ removed.
+\begin{enumerate}[label=(\alph*)]
+\item If $B^-$ has a decomposition into at most $(|J|-1)/2-1$ paths with at least two ends at $r$,
+or with no condition at $r$ when $r\in\{x,y\}$, then Test1 holds at $(J,z,r)$.
+\item If $B^-$ has a decomposition into at most $|J|/2-1$ paths with at least three ends at $r$,
+then Test2 holds at $(J,z,r)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:twin} with $K=B^-$ and $G=J-z$ adds one path and changes ends only at the chosen
+twin. If $r=y$, exchange the roles of $x$ and $y$, so that $r$ receives the two new ends.
+\end{proof}
+
+So a twin pair reduces (T1) to a rooted statement on the graph $B-x-y$ of order $|J|-3$. If $r$ is
+one of the twins, the condition is $p(B-x-y)\le(|B|-2)/2$, which is Gallai's bound for $B-x-y$ when
+it is connected. If $r$ is not a twin, the condition is the (T1)-type rooted floor for $B-x-y$.
+Gallai's bound for a smaller graph does not give this, because it is one path weaker for
+$B-x-y$ plus a leaf. The spine induction \lean{gallai\_of\_spineTestsNMC} proves \texttt{RootedAt}
+for the class $\mathcal C$ of $2$-connected graphs without a matching cut, by strong induction on the
+order. In it, the condition is the induction hypothesis \texttt{RootedAt}$(B-x-y,r)$ whenever
+$B-x-y\in\mathcal C$. So, in that case, twin pairs could be removed from the tests (not formalised).
+When $B-x-y\notin\mathcal C$ the reduction is not closed here.
+
+\begin{theorem}[the fat theta; Lean \texttt{test1\_fatTheta}]\label{thm:fat}
+Let $J=K_{3,t}+h_2h_3$ with hubs $h_1,h_2,h_3$ and leaf set $L$, $|L|=t$ even, $t\ge2$. Then for
+every $r\in N(h_1)=L$, $J-h_1$ has a decomposition into $(|J|-1)/2=t/2+1$ paths with two ends at
+$r$. In particular Test1 holds at $h_1$, which for $t\ge4$ is the unique even vertex of the
+$3$-connected graph $J$.
+\end{theorem}
+
+\begin{proof}
+$J-h_1$ is the theta graph $\Theta_L$: the edge $h_2h_3$ and the paths $h_2\ell h_3$, $\ell\in L$.
+First, $\Theta_L$ has a decomposition into $|L|/2+1$ paths \lean{theta\_decomp}. For $L=\emptyset$
+it is the edge $h_2h_3$. Otherwise remove two leaves $x,y$ and insert them back by
+Lemma~\ref{lem:twin}; $h_2$ has the edge $h_2h_3$. Now let $r\in L$, choose $y\in L-r$,
+decompose $\Theta_{L-\{r,y\}}$ into $|L|/2$ paths, and insert the twins $r,y$ with $r$ taking the two
+new ends \lean{theta\_rooted}.
+\end{proof}
+
+At $t=6$, \cite[Example~7.3]{T2} shows that no all-odd base exists at any leaf root. Explicitly,
+for $t=2s\ge4$ and leaves $r,\ell_1,\dots,\ell_{2s-1}$, the paths
+$r h_2\ell_1h_3\ell_2$, $rh_3\ell_3h_2\ell_2$, $h_2h_3$, and
+$e_ih_2m_ih_3e_{i+1}$ ($i$ modulo $q=s-2$, on the remaining leaves $e_1,m_1,\dots,e_q,m_q$) form a
+(T1) decomposition when $q\ne1$. For $q=1$ use $e_1h_2m_1h_3$ and $e_1h_3h_2$ instead of the last
+two kinds.
+
+\emph{Data.} \texttt{scripts/twin\_cert.py} certifies every root of tier $4$ or $5$ of order
+$\le11$ ($84$ roots). It finds a twin pair, finds and lifts an all-odd base of $J-x-y$, inserts the
+twins back as in the proof of Lemma~\ref{lem:twin}, and verifies the resulting (T1) decomposition
+of $J-z$.
+
+\section{Root moves}\label{sec:moves}
+
+\begin{lemma}[Fan's single-edge lemma {\cite{Fan05}}; Lean \texttt{fan\_single}]\label{lem:fan}
+Let $uv\in E(G)$ and let $D'$ decompose $G-uv$. If fewer than $b_{D'}(v)$ neighbours of $u$ in
+$G-uv$ have no end in $D'$, then $G$ has a decomposition $D$ with $|D|=|D'|$,
+$b_D(u)=b_{D'}(u)+1$, $b_D(v)=b_{D'}(v)-1$, and the same ends elsewhere.
+\end{lemma}
+
+\begin{theorem}[root moves; Lean \texttt{test1At\_of\_move1}, \texttt{test1At\_of\_move2} and the
+primed forms]\label{thm:moves}
+Let $z$ be the only even vertex of $J$, $T=N(z)$, and $r\in T$.
+\begin{enumerate}[label=(M\arabic*)]
+\item If $r$ has at most one neighbour in $T$, and $w\notin T\cup\{z\}$ is a neighbour of $r$, put
+$J'=J-rw-zr+zw$. Then (T1) at $(J',z,w)$ implies (T1) at $(J,z,r)$.
+\item If the neighbours of $r$ in $T$ are exactly $u\ne v$, put $J'=J-ru-zr-zu$. Then (T1) at
+$(J',z,v)$ implies (T1) at $(J,z,r)$.
+\end{enumerate}
+In both cases $z$ is the only even vertex of $J'$, and $J'-z=(J-z)-rw$, resp.\ $(J-z)-ru$. The
+neighbourhood of $z$ becomes $T-r+w$, resp.\ $T-\{r,u\}$.
+\end{theorem}
+
+\begin{proof}
+Parities: in (M1), $r$ loses two edges and $w$ trades $rw$ for $zw$. In (M2), $r$, $u$ and $z$
+each lose two. Let $D'$ be the (T1) decomposition at the new root.
+
+(M1) In $G=J-z$, apply Lemma~\ref{lem:fan} to $u=r$, $v=w$. A vertex with no end has even degree in
+$G-rw$. The even neighbours of $r$ in $G-rw$ are its $T$-neighbours, so there is at most one, and
+$b_{D'}(w)\ge2$. So $rw$ is restored with the same number of paths. $r$ has odd degree in $G-rw$,
+so $b_{D'}(r)\ge1$ and $b_D(r)\ge2$.
+
+(M2) Apply Lemma~\ref{lem:fan} to $u=r$, $v=u$. In $G-ru$ the only even neighbour of $r$ is $v$,
+which has $b_{D'}(v)\ge2$, so no neighbour of $r$ lacks an end. $u$ is odd in $G-ru$, so
+$b_{D'}(u)\ge1$. Again $b_D(r)=b_{D'}(r)+1\ge2$.
+\end{proof}
+
+These are the one-edge steps in the proof of \cite[Theorem~145]{MR}. That theorem is unrefereed. We
+use only the two steps, proved above and in Lean, not its minimal-counterexample argument. A move
+leaves the vertex set and the path budget unchanged, and does not need $3$-connectivity. Neither does
+the matching lift \lean{test1At\_of\_matchingOdd}. Hence:
+
+\begin{corollary}\label{cor:moves}
+If a sequence of moves leads from $(J,z,r)$ to a state $(J^*,z,r^*)$ where $J^*[N_{J^*}(z)]$ has a
+perfect matching, then $L_N$ implies (T1) at $(J,z,r)$.
+\end{corollary}
+
+\emph{Data} (\texttt{scripts/rootmove2.py}: breadth-first closure of both moves, depth $\le6$). At
+order $\le9$, \RMNINEREACH{} of the \NDNINE{} no-data roots reach matching data. One move M1
+suffices at $3{,}467$; most of the others use M2 first, which drops $r$ and $u$ from $N(z)$. By
+tier: $6{,}367$ of $7{,}802$ (tier~1), $141$ of $166$ (tier~2), $24$ of $135$ (tier~3), none of the
+$9$ at tiers $4$--$5$. At order $11$ the closure was run on the $22{,}496$ roots of tier $\ge3$:
+\RMELEVEN.
+
+\emph{Coverage at order $\le9$.} Of the $8{,}112$ no-data roots, $6{,}532$ are settled by $L_N$
+through root moves. Of the other $1{,}580$, $642$ have a twin pair (Theorem~\ref{thm:twinred}),
+$928$ are twin-free with cherry data (Conjecture~\ref{conj:CL}), and $10$ are twin-free and need a
+linkage with a path of length at least $3$; bases exist there.
+
+\section{Forest forms of \texorpdfstring{$L_N$}{L\_N}}\label{sec:forest}
+
+Fix a graph $F$ with no even vertex. A \emph{constraint forest} is a rooted forest $\Phi$ on
+$V(F)$ whose edges are non-edges of $F$. A Lov\'asz decomposition \emph{satisfies} $\Phi$ if (i) and
+(ii) hold. The components that occur in the bases of \S\ref{sec:data} are:
+\begin{center}
+\begin{tabular}{p{0.11\textwidth}p{0.36\textwidth}p{0.42\textwidth}}
+\toprule
+unit & rooted shape & conditions\\
+\midrule
+pair & $c\leftarrow a$ & $a\notin Q(c)$\\
+2-chain & $a\leftarrow x\leftarrow b$ (path rooted at an end) & $a\notin Q(x)$, $x\notin Q(b)$\\
+3-chain & $a\leftarrow x\leftarrow y\leftarrow b$ & $a\notin Q(x)$, $x\notin Q(y)$, $y\notin Q(b)$\\
+star & $u\leftarrow\{x,y\}$ (cherry rooted at its middle) & $u\notin Q(x)\cup Q(y)$,
+$Q(x)\ne Q(y)$\\
+claw & $a\leftarrow v\leftarrow\{b,c\}$ ($K_{1,3}$ rooted at a leaf) & $a\notin Q(v)$, $v\notin
+Q(b)\cup Q(c)$, $Q(b)\ne Q(c)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+A cherry $a\,x\,b$ ($a,b\in T$, $x\notin T$) can also be appended as one route at $a$. That needs
+$x,b\notin Q(a)$, the \emph{route} condition of \texttt{route\_ext} query~C.
+
+\begin{conjecture}[CL, cherry $L_N$; Lean \texttt{CherryLN}]\label{conj:CL}
+Let $F$ have no vertex of even degree. Every constraint forest on $F$ whose components are pairs and
+2-chains is satisfied by some Lov\'asz decomposition of $F$.
+\end{conjecture}
+
+With only pairs this is $L_N$. In list form (Lean \texttt{CherryList}): (child, parent) pairs on
+non-edges with distinct children, distinct parents (no siblings) and no chain of three pairs.
+
+\begin{proposition}[Lean \texttt{test1At\_of\_cherryLN} for (T1)]\label{prop:CLT1}
+CL implies (T1), and (T2), at every root with cherry data.
+\end{proposition}
+
+\begin{proof}
+For (T1), $H=B-E(\Phi)$ has no even vertex, and the forest edges are non-edges of $H$. A cherry
+$a\,x\,b$ rooted at $a$ is a 2-chain, and a $T$-edge is a pair. So CL gives a Lov\'asz decomposition
+satisfying (i); (ii) is void, and the all-odd lift applies. For (T2) the base graph is $M=H+zr$,
+which has no even vertex \cite[Lemma~4.2]{T2}; the forest avoids $z$, and
+\cite[Theorem~4.5]{T2} applies. In Lean only the (T1) case is formalised. The (T2) lift is in Lean,
+but the parity of $M$ is proved there only at $r$ and the children.
+\end{proof}
+
+\subsection{Evidence}\label{sec:evidence}
+\texttt{scripts/fl.c} takes every connected graph with no even vertex ($2$, $13$, $224$ and
+$32{,}851$ graphs of orders $4,6,8,10$), and every choice of the units of a family on non-edges with
+distinct vertices. Random Lov\'asz decompositions strike the satisfied sets. Every set left is
+decided exactly: twelve randomly relabelled budgeted solves first (a success is a certificate),
+then an exhaustive search by \texttt{ndsolve.h}.
+\begin{center}
+\begin{tabular}{p{0.27\textwidth}rp{0.2\textwidth}p{0.26\textwidth}}
+\toprule
+family & sets, $n\le 8$ & failures, $n\le8$ & order $10$\\
+\midrule
+one 2-chain & $18{,}190$ & $0$ & $5{,}937{,}582$ sets, $0$ failures\\
+2-chain + pair & $174{,}320$ & $0$ & \FLKPTEN\\
+two 2-chains & $130{,}560$ & $0$ & \FLKKTEN\\
+2-chain + two pairs & $250{,}720$ & $0$ & not run\\
+one 3-chain & $45{,}268$ & $0$ & \FLCTEN\\
+3-chain + pair & $260{,}176$ & $18$ (order $6$), $4$ (order $8$) & --\\
+route (set avoidance) & $18{,}190$ & $558$, all with $cb\in E$ & --\\
+stars: one; + pair; + 2-chain; two & & only where (H1) fails & \FLSTEN\\
+claw; claw + pair & & only where (H1) fails & --\\
+claw + 2-chain & $129{,}804$ ($n=8$) & $199$; $9$ with (H1) & --\\
+\bottomrule
+\end{tabular}
+\end{center}
+On the real instances: at order $\le 9$ every one of the $179{,}152$ tier-1 structures (every
+cherry forest, every rooting, at every no-data root) is satisfied
+(Observation~\ref{obs:structure}(b)).
+
+\subsection{Limits}\label{sec:limits}
+
+\begin{example}[a 3-chain fails]\label{ex:net}
+Let $F$ be the net: the triangle $0\,4\,5$ with pendant edges $03$, $14$, $25$. Take the 3-chain
+$0\leftarrow1\leftarrow5\leftarrow3$ and the pair $2\leftarrow4$, all on non-edges. No Lov\'asz
+decomposition satisfies them: exhaustively by \texttt{ndsolve.h} and by \texttt{route\_ext}. So
+CL cannot allow chains of length $3$. The same phenomenon appears on real instances
+(Observation~\ref{obs:structure}(b): $88$ failing linkages).
+\end{example}
+
+\begin{example}[routes]
+The route condition $x,b\notin Q(c)$ fails already on the double star $K_2$ with two leaves at each
+end, when $c$ is a leaf at $b$: $Q(c)$ starts with $cb$. All $558$ route failures at order $\le8$
+have $cb\in E(F)$. So the forest form (2-chains) is the right one, and routes would need an
+extra hypothesis.
+\end{example}
+
+\begin{lemma}[the star Hall condition]\label{lem:hall}
+Let $u$ have children $X$ ($|X|\ge2$) in a constraint forest satisfied by $D$. Then
+\[
+\textup{(H1)}\qquad |X\cap C|\ \le\ \tfrac12\bigl(|C|-e_F(u,C)\bigr)\quad\text{for every
+component $C$ of $F-u$.}
+\]
+\end{lemma}
+
+\begin{proof}
+Each vertex of $C$ is an end of exactly one path. A path through $u$ that uses an edge $uc$ with
+$c\in C$ continues inside $C$ and ends there, since it cannot return to $u$. So $e_F(u,C)$ of the
+$|C|$ ends in $C$ lie on paths through $u$. The rest are on paths inside $C$, and there are
+$(|C|-e_F(u,C))/2$ of those. The paths $Q(x)$, $x\in X\cap C$, avoid $u$, so they lie inside $C$.
+By (ii) they are distinct, and each has exactly one end in $X$.
+\end{proof}
+
+For $K_{1,3}$ with centre $w$ and leaves $x,y,u$, the star $u\leftarrow\{x,y\}$ violates (H1). This is
+the mechanism of the fat theta: sibling leaves pendant at a hub. At order $\le8$ a star alone, a
+star with a pair or a 2-chain, two stars, a claw, and a claw with a pair fail only where some vertex
+with two children violates (H1). By the lemma they do fail there. At real instances, (H1) explains
+$786$ of the $804$ failing structures with one vertex of two children ($n\le9$). The other $18$
+come from a claw interacting with 2-chains. The smallest abstract example is:
+
+\begin{example}[a claw fails with (H1)]
+$F$ on $\{0,\dots,7\}$ with edges $05,06,07,15,26,37,47,57,67$ (degrees $3,1,1,1,1,3,3,5$), the claw
+$5\leftarrow6\leftarrow\{3,4\}$ and the 2-chain $7\leftarrow1\leftarrow2$. (H1) holds at $6$, and
+there is no satisfying Lov\'asz decomposition (both solvers).
+\end{example}
+
+So a sibling version of CL needs more than (H1) as soon as claws occur, and claws are exactly what
+the tier-3 roots need (\S\ref{sec:data}). For stars, the data support the version ``pairs,
+2-chains and stars, every star satisfying (H1)''. At order $\le8$ it has no failure; at order $10$:
+\FLSTARTEN. Stars, however, are only an alternative rooting of a linkage component, so they never
+help at tier $3$.
+
+\subsection{Relation to \texorpdfstring{$L_N$}{L\_N}}
+CL contains $L_N$, and a 2-chain is two overlapping pairs $(x,a),(b,x)$. We did not find a
+reduction of CL to $L_N$. The natural gadgets change parity. Hanging a leaf at $x$ makes $x$ the
+only even vertex, and the condition $x\notin Q(b)$ becomes avoidance of the even vertex. Merging,
+splitting or subdividing at $x$ creates even vertices too. The route form, which has a single
+avoided set per path, is false (above). If $a$, $x$ and $b$ are pairwise at distance at least $3$,
+one 2-chain follows from the packed-set separation \lean{avoid\_packed\_of\_reach}. The
+single-2-chain case of CL in general, and therefore CL$(1)$, is open; it is a case of the
+overlapping-pair version of $L_N(2)$ studied in session \texttt{ln}.
+
+\section{What remains}\label{sec:remains}
+
+At order $\le9$ every no-data (T1) root is covered by one of the following: $L_N$ through root
+moves ($6{,}532$); CL directly ($928$); a twin reduction to a rooted statement on a graph of order
+$|J|-3$ ($642$); or a computed linkage base, which needs chains of length $\ge3$ ($10$). At order $11$ the open structural cases are the $906$ twin-free roots
+that need siblings. $500$ of them are cones, which are rooted Gallai for Eulerian graphs
+\cite{EC}.
+
+The precise open statements are:
+\begin{enumerate}[label=(\arabic*)]
+\item CL (Conjecture~\ref{conj:CL}); already its one-unit case is open.
+\item The rooted floor for $B-x-y$ in the twin reduction, outside the class $\mathcal C$ of the
+spine induction.
+\item A sibling version of CL for claws. (H1) is necessary there but not sufficient.
+This is needed only at twin-free roots with no linkage: none at order $\le9$, and $906$ at order
+$11$.
+\end{enumerate}
+
+\section{Reproduction}
+\begin{verbatim}
+gcc -O2 -march=native -o nd scripts/nd.c
+(nauty-geng -q -C -d3 7; nauty-geng -q -C -d3 9) | ./nd -t1 > nd_t1_le9.txt
+nauty-geng -q -C 10 | ./nd -t1 -b > nd_t1_11.txt   # order 11, via B = J - z
+for n in 6 8 10; do nauty-geng -q -C -d3 $n; done | ./nd -t2 > nd_t2.txt
+python3 scripts/verify_nd.py < nd_t1_le9.txt
+python3 scripts/xcheck_tiers.py ROUTE_EXT < nd_t1_le9.txt
+python3 scripts/rootmove2.py 6 -p < nd_t1_le9.txt
+python3 scripts/twin_cert.py ./nd < tier45_lines.txt
+nauty-geng -q -c 10 | ./oddfilter | ./fl -f kp     # abstract families
+./nd -t1 -U < graphs                               # universality
+\end{verbatim}
+
+\begin{thebibliography}{99}
+\bibitem{EC} Gallai project, The two-end test on cones: rooted Gallai for Eulerian graphs,
+\texttt{manuscripts/eulerian-cone}; audited in A30.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser. B}
+93 (2005) 117--125.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq., Tihany,
+1966), Academic Press, 1968, 231--236.
+\bibitem{MR} The marked-reduction manuscript, \emph{Cut vertices and cycle intersections in Gallai's
+path decomposition problem}, November 2026, \texttt{gallai/01-original-manuscripts/marked-reduction.pdf}
+(unrefereed); audited in A8.
+\bibitem{SPINE} Gallai project, The reduction spine for Gallai's path decomposition conjecture,
+\texttt{manuscripts/spine}.
+\bibitem{T2} Gallai project, The three-end test of the spine: exact data, two direct lifts, and the
+floor, \texttt{manuscripts/test2}; audited in A37, A37b.
+\end{thebibliography}
+
+\end{document}

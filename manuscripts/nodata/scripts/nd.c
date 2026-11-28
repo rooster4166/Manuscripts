@@ -28,6 +28,7 @@
    -D file cap every: write every `every`-th solver query (at most cap) to file in route_ext query-C
    format, and our answers to file.ans (for cross-checks).
    -b: (T1) only; the input graphs are B = J - z, and J = B + z (z joined to the even vertices).
+   -x: do not require 3-connectivity or minimum degree 3 (the lifts do not use them).
    usage: nd -t1|-t2 [-a] [-b] [-L k] [-D file cap every] < graph6 */
 #include <stdio.h>
 #include "ndsolve.h"
@@ -325,7 +326,7 @@ static int fe_rec(int e, int *uf, u32 parity) {
 
 /* -b: the input graph is B; J = B + z with z joined to the even vertices of B ((T1) instances
    correspond one-to-one to such B, up to isomorphism, since z is the unique even vertex of J) */
-static int cone_input;
+static int cone_input, nofilter;
 static void make_cone(void) {
   int z = N;
   adj[z] = 0;
@@ -351,6 +352,7 @@ int main(int argc, char **argv) {
     else if (!strcmp(argv[i], "-a")) all = 1;
     else if (!strcmp(argv[i], "-b")) cone_input = 1;
     else if (!strcmp(argv[i], "-U")) univ = 1;
+    else if (!strcmp(argv[i], "-x")) nofilter = 1;   /* keep instances that are not 3-connected or have delta < 3 */
     else if (!strcmp(argv[i], "-UU")) univ = 2;     /* also print the successes of tiers 3-4 */
     else if (!strcmp(argv[i], "-L") && i + 1 < argc) maxtier = atoi(argv[++i]);
     else if (!strcmp(argv[i], "-D") && i + 3 < argc) {      /* -D file cap every: dump queries */
@@ -369,7 +371,7 @@ int main(int argc, char **argv) {
       if (d < mind) mind = d;
       if (!(d & 1)) ev |= 1u << v;
     }
-    if (mind < 3) continue;
+    if (mind < 3 && !nofilter) continue;
     int pairs[2][2], np = 0;
     if (MODE == 1) {
       if (__builtin_popcount(ev) != 1) continue;
@@ -380,7 +382,7 @@ int main(int argc, char **argv) {
       if (!(adj[a] >> b & 1)) continue;
       pairs[0][0] = a; pairs[0][1] = b; pairs[1][0] = b; pairs[1][1] = a; np = 2;
     }
-    if (!three_connected()) continue;
+    if (!nofilter && !three_connected()) continue;
     ngraphs++;
     for (int pi = 0; pi < np; pi++) {
       Z = pairs[pi][0];
