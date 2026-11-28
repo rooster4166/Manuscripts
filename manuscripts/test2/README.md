@@ -15,6 +15,11 @@ Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; au
 | `data/t2_order10_fields.txt.gz` | Every instance at order 10 (fields only; rerun `t2 -E -B 20000000` for witnesses). |
 | `data/tight_le10.txt` | The 20 tight instances (p(J − z) = n/2) at order ≤ 10, with witnesses. |
 | `data/forestbase2_order8.txt`, `data/matchingbase2_order8.txt` | Base searches at order 8. |
+| `scripts/tb1_odd.py` | The all-odd base for (T1) (the twin of the (T2) forest lift): route_ext query C, tiers M (matchings), S (spanning-tree joins, r a root), C (r a child); every lift verified as a (T1) decomposition. |
+| `scripts/allodd_dl.c` | Exact test of Conjecture `conj:common` (all-odd DL, fixed and free, j = 2, 3, and the mixed forms) with parity/degree/component pruning and memoised failures; `-A` (testing only) admits adjacent pairs, where failures occur. |
+| `scripts/allodd_route.py` | The same families decided with route_ext query A (slow on dense graphs; kept as an independent driver). |
+| `data/tb1_odd_le9.txt`, `data/allodd_dl_order10.txt` | Outputs of the two above (orders 5, 7, 9; order 10). |
+| `data/allodd_dl_validation.txt` | Cross-checks of `allodd_dl.c` against route_ext (orders 6 and 8, adjacent pairs admitted). |
 | `data/t2_slack_witnesses.txt` | Slack-witness check at n ≤ 10 (`t2 -s` into `verify_t2.py --require-slack`). |
 | `data/axioms.txt` | `#print axioms` for the Lean lift. |
 | `scripts/tb2_floor.py` | The floor lift (B − Φ with w the only even vertex), per instance or per matching data choice. |
@@ -22,7 +27,7 @@ Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; au
 | `scripts/allodd_pairs.py`, `scripts/cones.py`, `scripts/gen_t2.py` | Conjecture 7.2 (all-odd, two constraints); cone instances; random order-12 generator. |
 | `data/forestbase2_order10*`, `data/floorbase_*`, `data/dz4_*`, `data/coverage_*`, `data/lit_cover_*` | Outputs of the above. |
 | `data/t2_order12_sample*` | 20,000 random order-12 graphs, 40,000 instances. |
-| Lean | `lean/GallaiLean/Test2Lift.lean`: lifts (`test2At_of_forestBase2`, `test2At_of_floorBase`, `floor_of_matchingBase`), `test2At_of_floor`, `test2At_of_disjL1`, d(z)=4 (`test2At_of_pair_farApart`, `test2At_of_pair_steer2`). `lean/GallaiLean/Test2Converse.lean`: converses, matching case (`matchingFloorBase_of_terminal`, `forestBase2_matching_of_terminal`). |
+| Lean | `lean/GallaiLean/Test2Lift.lean`: lifts (`test2At_of_forestBase2`, `test2At_of_floorBase`, `floor_of_matchingBase`), `test2At_of_floor`, `test2At_of_disjL1`, d(z)=4 (`test2At_of_pair_farApart`, `test2At_of_pair_steer2`). `lean/GallaiLean/Test2Converse.lean`: converses, matching case (`matchingFloorBase_of_terminal`, `forestBase2_matching_of_terminal`). `lean/GallaiLean/Test1AllOdd.lean`: the all-odd lift for (T1) (`twoEnds_of_oddBase`, `test1At_of_oddBase`) and its matching case (`oddBase_of_matching`, `test1At_of_matchingOdd`). |
 
 ## Reproduce
 

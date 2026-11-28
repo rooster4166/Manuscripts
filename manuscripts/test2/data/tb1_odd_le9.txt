@@ -1,0 +1,12 @@
+## order 5
+SUMMARY {'graphs': 1, 'instances': 4, 'with matching data': 4, 'base M': 4, 'ends at r = 2': 4}
+## order 7
+SUMMARY {'graphs': 28, 'instances': 126, 'base S': 38, 'ends at r = 2': 126, 'with matching data': 88, 'base M': 88}
+## order 9
+NOBASE H??F~z} 7 0
+NOBASE H??F~z} 7 1
+NOBASE H??F~z} 7 2
+NOBASE H??F~z} 7 3
+NOBASE H??F~z} 7 4
+NOBASE H??F~z} 7 5
+SUMMARY {'graphs': 5231, 'instances': 25210, 'no base found': 6, 'base S': 8065, 'ends at r = 2': 24652, 'base C': 3, 'with matching data': 17136, 'base M': 17136, 'ends at r = 4': 552}
