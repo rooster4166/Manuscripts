@@ -11,12 +11,12 @@ vertex `v`. Tightness of a graph with two even vertices is realisability of the 
 (`tight_iff_realisesProfile`).
 
 * `degree_add_le_sum_of_realises` (**degree bound (DB)**, necessary): `d(x) + b(x) ≤ ∑ b`.
-* `universal_of_not_degreeBound` (manuscript Lemma 2.3): if `b ≡ d (mod 2)`, `b ≥ 1` off a set `Z`
+* `universal_of_not_degreeBound` (manuscript lemma "where (DB) fails"): if `b ≡ d (mod 2)`, `b ≥ 1` off a set `Z`
   with `|Z| ≤ 2`, and (DB) fails at `x`, then `|Z| = 2`, `Z ⊆ N(x)` and `x` is adjacent to every
   other vertex. (With `|Z| ≤ 1`, (DB) always holds.)
 * `ProfileConj` (Conjecture PC, as a proposition) and `Conj31On` (Conjecture 31);
   **`conj31_of_profileConj`**: PC implies Conjecture 31.
-* Reduction moves of PC (manuscript Section 4), profile form:
+* Reduction moves of PC (manuscript section "Reduction moves"), profile form:
   `realisesProfile_transfer` (**TR**, Fan's lemma), `realisesProfile_newPath` (**NEW**),
   `realisesProfile_suppress` (**SUP**, subdividing back), `realisesProfile_tri` (**TRI**: delete
   `xy`, suppress the degree-two vertex `u` with `N(u) = {x, y}`, Fan's lemma at `y`).
@@ -71,7 +71,8 @@ theorem sum_profile_mod_two {b : V → ℕ} (hpar : ∀ v, b v % 2 = G.degree v 
     sum_degrees_eq_twice_card_edges]
   omega
 
-/-- **Where (DB) can fail** (manuscript Lemma 2.3). Let `b ≡ d (mod 2)` with `b ≥ 1` outside a
+/-- **Where (DB) can fail** (manuscript lemma "where (DB) fails", forward direction without the clause
+`b = 1` on the remaining vertices). Let `b ≡ d (mod 2)` with `b ≥ 1` outside a
 set `Z` of at most two vertices. If `∑ b < d(x) + b(x)`, then `|Z| = 2`, both vertices of `Z` are
 neighbours of `x`, and `x` is adjacent to every other vertex. The slack `∑_{y ≠ x} b(y) − d(x)` is
 even and at least `−|N(x) ∩ Z|`. -/

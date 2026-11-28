@@ -1,0 +1,5 @@
+## sample: nauty-geng -Cq 10 r/1000 for r = 17, 777 (4,491 2-connected graphs of order 10); (DB) pre-check on; node limit 2e7 per attempt with restarts from every start vertex (undecided would be reported; there are none)
+graphs 4491 two-even 563 tight 488 nottight 75 | O1 75 (O1 tight 0) | 2-conn 563 2-conn-nottight 75 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 0
+node limit 20000000: undecided solves 0 (counted as not tight above)
+BC: tight&BC 488 tight&notBC 0 nottight&BC 0 nottight&notBC 75
+witnesses rebuilt and checked 488, bad 0

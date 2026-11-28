@@ -1,0 +1,27 @@
+## n=4 Z=2 (nauty-geng -Cq 4), every profile solved (no DB pre-check)
+Z=2 graphs 3 profiles 10 with-DB 7 realisable 7 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 7, bad 0
+## n=4 Z=1 (nauty-geng -Cq 4), every profile solved (no DB pre-check)
+Z=1 graphs 3 profiles 12 with-DB 12 realisable 12 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 12, bad 0
+## n=4 Z=0 (nauty-geng -Cq 4), every profile solved (no DB pre-check)
+Z=0 graphs 3 profiles 21 with-DB 21 realisable 21 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 21, bad 0
+## n=5 Z=2 (nauty-geng -Cq 5), every profile solved (no DB pre-check)
+Z=2 graphs 10 profiles 199 with-DB 187 realisable 187 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 187, bad 0
+## n=5 Z=1 (nauty-geng -Cq 5), every profile solved (no DB pre-check)
+Z=1 graphs 10 profiles 257 with-DB 257 realisable 257 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 257, bad 0
+## n=5 Z=0 (nauty-geng -Cq 5), every profile solved (no DB pre-check)
+Z=0 graphs 10 profiles 149 with-DB 149 realisable 149 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 149, bad 0
+## n=6 Z=2 (nauty-geng -Cq 6), every profile solved (no DB pre-check)
+Z=2 graphs 56 profiles 2854 with-DB 2808 realisable 2808 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 2808, bad 0
+## n=6 Z=1 (nauty-geng -Cq 6), every profile solved (no DB pre-check)
+Z=1 graphs 56 profiles 3960 with-DB 3960 realisable 3960 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 3960, bad 0
+## n=6 Z=0 (nauty-geng -Cq 6), every profile solved (no DB pre-check)
+Z=0 graphs 56 profiles 3643 with-DB 3643 realisable 3643 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 3643, bad 0

@@ -1,0 +1,80 @@
+## n=5 
+STUCK_TWIN DF{ b=2,2,2,0,0 minimal
+STUCK_TWIN DV{ b=1,2,1,0,0 minimal
+STUCK_TWIN DV{ b=1,2,3,0,0
+STUCK_TWIN DV{ b=3,2,1,0,0
+zeros 2 down False: instances 187 irreducible 4 twin 4 minimal-profile 2  moves {'SUP': 8, 'EAR': 48, 'CYC': 10, 'TR': 80, 'NEW': 37}
+## n=5 down
+STUCK_TWIN DF{ b=2,2,2,0,0 minimal
+STUCK_TWIN DV{ b=1,2,1,0,0 minimal
+zeros 2 down True: instances 187 irreducible 2 twin 2 minimal-profile 2  moves {'SUP': 2, 'DOWN': 136, 'EAR': 15, 'CYC': 10, 'TR': 22}
+## n=6 
+STUCK_TWIN E?~o b=2,2,2,2,0,0 minimal
+STUCK_TWIN EC~o b=1,2,2,1,0,0 minimal
+STUCK_TWIN EC~o b=1,2,2,3,0,0
+STUCK_TWIN EC~o b=3,2,2,1,0,0
+STUCK EEhw b=2,0,0,1,1,4
+STUCK_TWIN EFzo b=1,1,1,0,1,0 minimal
+STUCK_TWIN EFzo b=1,1,3,0,1,0
+STUCK_TWIN EFzo b=1,3,1,0,1,0
+STUCK_TWIN EFzo b=1,3,3,0,1,0
+STUCK_TWIN EFzo b=3,1,1,0,1,0
+STUCK_TWIN EFzo b=3,1,3,0,1,0
+STUCK_TWIN EFzo b=3,3,1,0,1,0
+STUCK_TWIN EFzo b=3,3,3,0,1,0
+STUCK_TWIN EFzW b=1,1,2,0,0,2 minimal
+STUCK_TWIN EFzW b=1,1,2,0,0,4
+STUCK_TWIN EFzw b=1,1,3,0,0,1
+STUCK_TWIN EFzw b=1,3,1,0,0,1
+STUCK_TWIN EFzw b=1,3,3,0,0,1
+STUCK_TWIN EFzw b=3,1,1,0,0,1
+STUCK_TWIN EFzw b=3,1,3,0,0,1
+STUCK_TWIN EFzw b=3,3,1,0,0,1
+STUCK_TWIN EFzw b=3,3,3,0,0,1
+STUCK_TWIN EQ~o b=1,1,1,1,0,0 minimal
+STUCK_TWIN EQ~o b=1,1,1,3,0,0
+STUCK_TWIN EQ~o b=1,1,3,1,0,0
+STUCK_TWIN EQ~o b=1,1,3,3,0,0
+STUCK_TWIN EQ~o b=1,3,1,1,0,0
+STUCK_TWIN EQ~o b=1,3,3,1,0,0
+STUCK_TWIN EQ~o b=3,1,1,1,0,0
+STUCK_TWIN EQ~o b=3,1,1,3,0,0
+STUCK_TWIN EQ~o b=3,3,1,1,0,0
+STUCK_TWIN E]zw b=2,2,0,1,0,1 minimal
+STUCK_TWIN E]zw b=2,4,0,1,0,1
+STUCK_TWIN E]zw b=4,2,0,1,0,1
+STUCK_TWIN E]zw b=4,4,0,1,0,1
+STUCK_TWIN E]~w b=0,0,2,2,1,1 minimal
+STUCK_TWIN E]~w b=0,0,2,4,1,1
+STUCK_TWIN E]~w b=0,0,4,2,1,1
+STUCK_TWIN E]~w b=0,0,4,4,1,1
+STUCK_TWIN E]~w b=2,2,0,0,1,1 minimal
+STUCK_TWIN E]~w b=2,4,0,0,1,1
+STUCK_TWIN E]~w b=4,2,0,0,1,1
+STUCK_TWIN E]~w b=4,4,0,0,1,1
+zeros 2 down False: instances 2808 irreducible 43 twin 42 minimal-profile 8  moves {'SUP': 384, 'EAR': 883, 'NEW': 265, 'TR': 1216, 'CYC': 15, 'TRI': 2}
+## n=6 down
+STUCK_TWIN E?~o b=2,2,2,2,0,0 minimal
+STUCK_TWIN EC~o b=1,2,2,1,0,0 minimal
+STUCK_TWIN EFzo b=1,1,1,0,1,0 minimal
+STUCK_TWIN EFzW b=1,1,2,0,0,2 minimal
+STUCK_TWIN EFzw b=1,1,3,0,0,1
+STUCK_TWIN EFzw b=1,3,1,0,0,1
+STUCK_TWIN EFzw b=3,1,1,0,0,1
+STUCK_TWIN EQ~o b=1,1,1,1,0,0 minimal
+STUCK_TWIN E]zw b=2,2,0,1,0,1 minimal
+STUCK_TWIN E]~w b=0,0,2,2,1,1 minimal
+STUCK_TWIN E]~w b=2,2,0,0,1,1 minimal
+zeros 2 down True: instances 2808 irreducible 11 twin 11 minimal-profile 8  moves {'SUP': 33, 'DOWN': 2521, 'EAR': 142, 'TR': 84, 'CYC': 15, 'TRI': 2}
+## n=4 z=0
+zeros 0 down False: instances 21 irreducible 0 twin 0 minimal-profile 0  moves {'CYC': 1, 'EAR': 4, 'TR': 12, 'NEW': 4}
+## n=4 z=1
+zeros 1 down False: instances 12 irreducible 0 twin 0 minimal-profile 0  moves {'CYC': 4, 'EAR': 8}
+## n=5 z=0
+zeros 0 down False: instances 149 irreducible 0 twin 0 minimal-profile 0  moves {'EAR': 52, 'CYC': 1, 'TR': 72, 'NEW': 24}
+## n=5 z=1
+zeros 1 down False: instances 257 irreducible 0 twin 0 minimal-profile 0  moves {'SUP': 20, 'EAR': 72, 'CYC': 5, 'TR': 132, 'NEW': 28}
+## n=6 z=0
+zeros 0 down False: instances 3643 irreducible 0 twin 0 minimal-profile 0  moves {'EAR': 829, 'CYC': 1, 'TR': 2256, 'NEW': 557}
+## n=6 z=1
+zeros 1 down False: instances 3960 irreducible 0 twin 0 minimal-profile 0  moves {'SUP': 236, 'EAR': 1370, 'CYC': 6, 'TR': 2035, 'NEW': 313}

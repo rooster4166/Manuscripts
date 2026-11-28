@@ -1,0 +1,8 @@
+## sample: nauty-geng -Cq 10 5/2000 (2-connected, order 10), (DB) pre-check on
+graphs 223 two-even 4 tight 4 nottight 0 | O1 0 (O1 tight 0) | 2-conn 4 2-conn-nottight 0 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 0
+BC: tight&BC 4 tight&notBC 0 nottight&BC 0 nottight&notBC 0
+witnesses rebuilt and checked 4, bad 0
+
+real	0m0.006s
+user	0m0.005s
+sys	0m0.000s

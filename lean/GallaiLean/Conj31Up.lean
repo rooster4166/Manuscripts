@@ -4,7 +4,7 @@ import GallaiLean.CycleInsert
 /-!
 # Upward closure of realisable profiles, and PC with at most one zero
 
-Manuscript `manuscripts/conj31`, Lemma 2.4 and Theorem 2.5.
+Manuscript `manuscripts/conj31`: the lemma "upward closure" and the theorem "PC with at most one zero".
 
 * `PathDecomp.exists_interior`: a vertex with fewer ends than edges is an interior vertex of some
   path of the decomposition.
@@ -85,7 +85,7 @@ theorem PathDecomp.split_at_interior {G : SimpleGraph V} [DecidableRel G.Adj] (D
   rw [e1, e2, e0] at h1
   split_ifs at h1 ⊢ <;> omega
 
-/-- **Upward closure** (manuscript Lemma 2.4). -/
+/-- **Upward closure** (manuscript lemma "upward closure"). -/
 theorem realisesProfile_up {G : SimpleGraph V} [DecidableRel G.Adj] {b : V → ℕ}
     (h : RealisesProfile G b) {x : V} (hx : b x < G.degree x) :
     RealisesProfile G (fun w => b w + if x = w then 2 else 0) := by
@@ -137,7 +137,7 @@ theorem realisesProfile_of_le {G : SimpleGraph V} [DecidableRel G.Adj] {b : V �
       · rw [if_neg hxv, add_zero]
         exact hpar v
 
-/-- **PC with no zero** (manuscript Theorem 2.5, zero-free case). Any graph without isolated
+/-- **PC with no zero** (manuscript theorem "PC with at most one zero", zero-free case). Any graph without isolated
 vertices; no connectivity is needed. -/
 theorem realisesProfile_of_no_zero {G : SimpleGraph V} [DecidableRel G.Adj]
     (hG : ∀ v, 0 < G.degree v) {b : V → ℕ} (hpar : ∀ v, b v % 2 = G.degree v % 2)
@@ -164,7 +164,7 @@ theorem realisesProfile_of_no_zero {G : SimpleGraph V} [DecidableRel G.Adj]
     · have := Nat.even_iff.mp (Nat.not_odd_iff_even.mp h1)
       omega
 
-/-- **PC with one zero** (manuscript Theorem 2.5; here at even order, as in
+/-- **PC with one zero** (manuscript theorem "PC with at most one zero"; here at even order, as in
 `realisable_evenSet_erase'`). Any graph without isolated vertices. -/
 theorem realisesProfile_of_one_zero {G : SimpleGraph V} [DecidableRel G.Adj]
     (hG : ∀ v, 0 < G.degree v) (hn : Even (Fintype.card V)) {z : V} (hz : z ∈ evenSet G)

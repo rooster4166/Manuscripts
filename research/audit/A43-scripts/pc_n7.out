@@ -1,0 +1,9 @@
+## n=7 Z=2 (nauty-geng -Cq 7), (DB)-failing profiles not solved (Lemma 2.2)
+Z=2 graphs 468 profiles 110865 with-DB 110691 realisable 110691 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 110691, bad 0
+## n=7 Z=1 (nauty-geng -Cq 7), (DB)-failing profiles not solved (Lemma 2.2)
+Z=1 graphs 468 profiles 145714 with-DB 145714 realisable 145714 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 145714, bad 0
+## n=7 Z=0 (nauty-geng -Cq 7), (DB)-failing profiles not solved (Lemma 2.2)
+Z=0 graphs 468 profiles 89224 with-DB 89224 realisable 89224 DB-not-realisable 0 realisable-not-DB 0 DBfail-characterisation-mismatches 0
+witnesses rebuilt and checked 89224, bad 0

@@ -9,3 +9,8 @@ profiles 2262360 with-DB 2261965 realisable 2261965 DB-but-not-realisable 0 unde
 profiles 3123534 with-DB 3123031 realisable 3123031 DB-but-not-realisable 0 undecided 0
 profiles 1351288 with-DB 1350832 realisable 1350832 DB-but-not-realisable 0 undecided 0
 # total n=8: profiles 6,737,182; with DB 6,735,828; all realisable; 0 failures
+# independent witness check (scripts/wcheck31.py --profile) of every realisation:
+n=4..7 (two zeros): checked 113693 witnesses: all valid
+n=8 shard: checked 2261965 witnesses: all valid
+n=8 shard: checked 3123031 witnesses: all valid
+n=8 shard: checked 1350832 witnesses: all valid

@@ -1,0 +1,49 @@
+'Gallai.tight_iff_realisesProfile' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.degree_add_le_sum_of_realises' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.sum_profile_mod_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.universal_of_not_degreeBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_transfer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_newPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_suppress' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_tri' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.degree_of_adj_all' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.conj31_of_profileConj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.PathDecomp.exists_interior' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.PathDecomp.split_at_interior' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_up' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_of_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_of_no_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.realisesProfile_of_one_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+def Gallai.ProfileConj.{u} : (V : Type u) → [Fintype V] → [DecidableEq V] → Prop :=
+fun V [Fintype V] [DecidableEq V] =>
+  ∀ (G : SimpleGraph V) [inst_2 : DecidableRel G.Adj],
+    Gallai.TwoConnected G →
+      ∀ (Z : Finset V) (b : V → ℕ),
+        Z.card ≤ 2 →
+          (∀ z ∈ Z, b z = 0) →
+            (∀ v ∉ Z, 1 ≤ b v) →
+              (∀ (v : V), b v ≤ G.degree v) →
+                (∀ (v : V), b v % 2 = G.degree v % 2) →
+                  (∀ (x : V), G.degree x + b x ≤ ∑ v, b v) → Gallai.RealisesProfile G b
+def Gallai.Conj31On.{u} : (V : Type u) → [Fintype V] → [DecidableEq V] → Prop :=
+fun V [Fintype V] [DecidableEq V] =>
+  ∀ (H : SimpleGraph V) [inst_2 : DecidableRel H.Adj],
+    Gallai.TwoConnected H →
+      ∀ (u v : V),
+        u ≠ v →
+          Gallai.evenSet H = {u, v} →
+            (∀ (w : V), 0 < H.degree w) →
+              (∀ (w : V), Odd (H.degree w) → H.degree w + 1 < Fintype.card V) → Gallai.Tight H
+--- lake env lean GallaiLean/Conj31.lean: errors
+0
+--- lake env lean GallaiLean/Conj31Up.lean: errors
+0
+--- grep sorry/admit/axiom/native_decide
+GallaiLean/Conj31.lean:0
+GallaiLean/Conj31Up.lean:0
+--- lake build
+
+real	0m7.767s
+user	0m9.326s
+sys	0m2.602s
+Build completed successfully (18450 jobs).

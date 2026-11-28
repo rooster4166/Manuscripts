@@ -1,5 +1,5 @@
 # PC with at most one zero: every profile b (b == d mod 2, 1 <= b <= d off the zero) on a 2-connected graph, n <= 8.
-# (DB) holds automatically (parity slack argument, Lemma 2.3); the test is realisability.  scripts/pc_test.c modes 0, 1.
+# (DB) holds automatically (parity slack argument, lemma "where (DB) fails"); the test is realisability.  scripts/pc_test.c modes 0, 1.
 Z=0 n=4 profiles 21 with-DB 21 realisable 21 DB-but-not-realisable 0 undecided 0
 Z=0 n=5 profiles 149 with-DB 149 realisable 149 DB-but-not-realisable 0 undecided 0
 Z=0 n=6 profiles 3643 with-DB 3643 realisable 3643 DB-but-not-realisable 0 undecided 0
