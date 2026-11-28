@@ -1,0 +1,9 @@
+z = 7 d(z) = 6 N(z) = [0, 2, 3, 4, 5, 6] k = 4 edges of B: 13 kappa(J) = 3
+decompositions of J - z into <= k paths: 7080
+forest N(z)-joins: 56
+root 0 d(r) = 7 | base with r a root: False | with r a child: True | (T1): True
+root 2 d(r) = 3 | base with r a root: True | with r a child: False | (T1): True
+root 3 d(r) = 3 | base with r a root: True | with r a child: False | (T1): True
+root 4 d(r) = 3 | base with r a root: True | with r a child: False | (T1): True
+root 5 d(r) = 3 | base with r a root: True | with r a child: False | (T1): True
+root 6 d(r) = 3 | base with r a root: True | with r a child: False | (T1): True
