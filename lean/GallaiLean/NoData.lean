@@ -1,5 +1,6 @@
 import GallaiLean.Test1AllOdd
 import GallaiLean.ConstrainedLovasz
+import GallaiLean.NeighbourAvoid
 
 /-!
 # Roots without matching data: twin pairs and the fat theta (session `claude/nodata`)
@@ -924,5 +925,51 @@ theorem test1At_of_LN_matching (hLN : LN.{u}) (J : SimpleGraph V) [DecidableRel 
     exact Or.inr (hi p (List.mem_cons_of_mem _ hp))
 
 end LNmatching
+
+section farChain
+
+variable {W : Type u} [Fintype W] [DecidableEq W]
+
+/-- **One 2-chain far apart** (a proved case of CL): in a graph with no vertex of positive even
+degree, let `a ← x ← b` be a 2-chain with `a, x` at distance at least three and `b` adjacent to
+neither `a` nor `x`, `b` of odd degree. Then some Lovász decomposition has `a ∉ Q(x)` and
+`x ∉ Q(b)`. (The packed-set form of `L₁`, `avoid_packed_of_reach`, with `Y = {a, x}` and the
+path ending at `b`.) -/
+theorem forestLN_far_chain (G : SimpleGraph W) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
+    {a x b : W} (hax : a ≠ x) (hab : b ≠ a) (hxb : b ≠ x) (hY : Packed G {a, x})
+    (hba : ¬ G.Adj b a) (hbx : ¬ G.Adj b x) (hb : G.degree b % 2 = 1) :
+    ForestLN G [(x, a), (b, x)] := by
+  classical
+  have hbY : b ∉ ({a, x} : Finset W) := by simp [hab, hxb]
+  have hpos : 0 < G.degree b := by omega
+  obtain ⟨D, hD, hmeet, hQb⟩ := avoid_packed_of_reach G hev hY hb hbY (Walk.nil : G.Walk b b)
+    (by simpa using hbY) (fun z hz hzY => by
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hzY
+      rcases hzY with rfl | rfl
+      · exact hba hz
+      · exact hbx hz) hpos
+  refine ⟨D, hD, ?_, ?_⟩
+  · intro p hp P hP hend
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+    rcases hp with rfl | rfl
+    · -- `P` ends at `x`, so it contains `x`; meeting `{a, x}` once, it misses `a`
+      intro haP
+      simp only at hend haP
+      have hxP : x ∈ P.walk.support := by
+        rcases hend with h | h
+        · rw [← h]; exact P.walk.start_mem_support
+        · rw [← h]; exact P.walk.end_mem_support
+      exact hax (hmeet P hP a (by simp) x (by simp) haP hxP)
+    · simp only at hend ⊢
+      exact hQb P hP hend x (by simp)
+  · intro p hp q hq hne hpar
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp hq
+    rcases hp with rfl | rfl <;> rcases hq with rfl | rfl
+    · exact absurd rfl hne
+    · exact absurd hpar hax
+    · exact absurd hpar (Ne.symm hax)
+    · exact absurd rfl hne
+
+end farChain
 
 end Gallai

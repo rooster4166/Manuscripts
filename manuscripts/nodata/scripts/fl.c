@@ -134,6 +134,15 @@ static void read_solution(void) {
 /* a random Lovasz decomposition: a randomised dive; if it fails, an exact solve of a randomly
    relabelled copy with a node budget */
 static int random_decomp(void) {
+  /* first an exact solve of a randomly relabelled copy with a node budget (strong pruning makes
+     this fast on dense graphs); then randomised dives as a fallback */
+  for (int tries = 0; tries < 4; tries++) {
+    load_relabelled();
+    sbudget = 20000;
+    int ok = srun();
+    sbudget = 0;
+    if (ok) { read_solution(); return 1; }
+  }
   for (int tries = 0; tries < 20; tries++) {
     dnodes = 0; dcap = 20000; dnp = 0;
     u64 full = m == 64 ? ~0ULL : ((1ULL << m) - 1);
@@ -145,13 +154,6 @@ static int random_decomp(void) {
       }
       return 1;
     }
-  }
-  for (int tries = 0; tries < 5; tries++) {
-    load_relabelled();
-    sbudget = 50000;
-    int ok = srun();
-    sbudget = 0;
-    if (ok) { read_solution(); return 1; }
   }
   return 0;
 }

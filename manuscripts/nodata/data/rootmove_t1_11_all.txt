@@ -1,0 +1,11 @@
+tier 1 twins 0: reached 9485233, not 2466905
+tier 1 twins 1: reached 425628, not 300154
+tier 2 twins 0: reached 92283, not 14115
+tier 2 twins 1: reached 10551, not 7625
+tier 3 twins 0: reached 141, not 765
+tier 3 twins 1: reached 2927, not 18588
+tier 4 twins 0: reached 0, not 0
+tier 4 twins 1: reached 0, not 34
+tier 5 twins 0: reached 0, not 0
+tier 5 twins 1: reached 0, not 41
+TOTAL 12824990 reached 10016763

@@ -39,7 +39,7 @@ static int clen;
 #define cpath (wpath[wn])
 
 /* memo of failures */
-#define MBITS 20
+#define MBITS 22
 #define MSIZE (1u << MBITS)
 typedef struct { u64 rem; u32 ended; u32 stamp; } ment;
 static ment *mtab; static u32 mstamp = 1; static u32 mcount;
@@ -113,7 +113,9 @@ static int ssolve(u64 rem, u32 ended) {
     if (d > 2 * P - nd) return 0;          /* each remaining path meets v at most once */
     if (nd) {
       if (d == 0) return 0;
-      if (d < bd) { bd = d; best = v; }
+      /* fail-first: constrained vertices (crv beyond v itself) first, then least degree */
+      int key = d + ((crv[v] != (1u << v)) ? 0 : 64);
+      if (key < bd) { bd = key; best = v; }
     }
   }
   /* components: an even number q2 >= 2 of unended vertices; with q = q2/2 paths, every degree is
