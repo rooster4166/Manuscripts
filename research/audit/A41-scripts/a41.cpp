@@ -434,7 +434,10 @@ int main(int argc, char **argv) {
         if (!fdone) { forests = forestTJoins(E); fdone = true; }
         for (u64 F : forests) for (int lv = 3; lv <= 4; lv++) {
           vector<array<int,16>> rs; forest_rootings(F, E, lv, rs);
-          for (auto &p : rs) { if (lv == 3 && excess(p) == 0) continue; ug[lv]++; if (!base_ok(p.data())) uf[lv]++; }
+          for (auto &p : rs) { if (lv == 3 && excess(p) == 0) continue; ug[lv]++;
+            bool okb = base_ok(p.data());
+            if (!okb) uf[lv]++;
+            if (lv == 3) { printf("U3 %s %s %d %d exc %d par", okb ? "SUCC" : "FAIL", g6s.c_str(), Z, R, excess(p)); for (int v = 0; v < N; v++) printf(" %d", p[v]); printf("\n"); } }
         }
         continue;
       }
