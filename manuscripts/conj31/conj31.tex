@@ -51,8 +51,9 @@ cut vertices. Under PC this gives an explicit sufficient criterion for tightness
 It agrees with exact tightness on all $1{,}114{,}873$ connected two-even graphs of order $10$ (and on all of
 order $\le 8$). The obstructions (O1), (O2), (O3) and the cut-vertex class of~\cite{EP} are all failures of BC.
 \item \emph{Conjecture J} (computed). Conjecture~31 alone cannot give J: at order $8$ only $26{,}611$ of the
-$40{,}538$ joined instances have a joint path with a $2$-connected remainder (or a leaf end). With BC
-every joined instance of orders $6$, $8$ and $10$ has a joint path $P$ whose remainder satisfies BC.
+$40{,}538$ joined instances have a joint path with a $2$-connected remainder (or a leaf end). Every
+joined instance of orders $6$, $8$ and $10$ ($20{,}151{,}960$ at order $10$) has a joint path $P$ with a leaf
+end or a remainder satisfying BC, and every such remainder is tight.
 So PC together with this path-choice statement (Conjecture~P) implies Conjecture~J.
 \end{itemize}
 \end{abstract}
@@ -452,6 +453,12 @@ condition and $B-x$ is not $2$-connected; DOWN removes them. All irreducible ins
 since PC holds up to order $8$. The last column counts irreducible instances whose profile is $m_Z$; the
 others lie on the (DB) boundary of Proposition~\ref{prop:min}(ii) or have $b$ above $m_Z$ only where
 lowering breaks (DB) elsewhere.
+
+At order $8$ the $273$ irreducible instances with profile $m_Z$ split as follows. $262$ have twin zeros:
+$|N(u)\setminus\{v\}|=2,4,6$ with $u\not\sim v$ ($5$, $87$, $52$ instances) and $3,5$ with $u\sim v$ ($50$, $68$).
+By the number of even vertices of $B$, these $262$ are $69$ two-even graphs, i.e.\ irreducible instances of
+Conjecture~\ref{conj:31} itself, and $181$, $11$ and $1$ graphs with $4$, $6$ and $8$ even vertices. The
+other $11$ have $u\sim v$ with $|N(u)\setminus\{v\}|\in\{1,3\}$ and are not twins (\texttt{scripts/classify\_irred.py}, \texttt{data/irreducible\_classes.txt}).
 
 \emph{Why twins resist.} Fan's lemma moves an end out of a zero $u$ along $uw$ only if $w$ has no other
 end-free neighbour. With twin zeros every neighbour of $u$ sees $v$. For the parity profile no vertex has

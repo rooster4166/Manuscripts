@@ -1,0 +1,19 @@
+(5, 'twin', 'u~v', 3, 'minimal') 2
+(6, 'twin', 'u!~v', 4, 'minimal') 6
+(6, 'twin', 'u!~v', 4, 'non-minimal') 3
+(6, 'twin', 'u~v', 3, 'minimal') 2
+(7, 'twin', 'u!~v', 4, 'minimal') 10
+(7, 'twin', 'u~v', 3, 'minimal') 11
+(7, 'twin', 'u~v', 5, 'minimal') 13
+(8, 'non-twin', 'u~v', 1, 'minimal') 9
+(8, 'non-twin', 'u~v', 3, 'minimal') 2
+(8, 'twin', 'u!~v', 2, 'minimal') 5
+(8, 'twin', 'u!~v', 4, 'minimal') 87
+(8, 'twin', 'u!~v', 4, 'non-minimal') 28
+(8, 'twin', 'u!~v', 6, 'minimal') 52
+(8, 'twin', 'u!~v', 6, 'non-minimal') 27
+(8, 'twin', 'u~v', 3, 'minimal') 50
+(8, 'twin', 'u~v', 3, 'non-minimal') 14
+(8, 'twin', 'u~v', 5, 'minimal') 68
+(8, 'twin', 'u~v', 5, 'non-minimal') 24
+twin minimal, by (order, number of even vertices): {(5, 3): 1, (5, 5): 1, (6, 2): 2, (6, 4): 5, (6, 6): 1, (7, 3): 25, (7, 5): 8, (7, 7): 1, (8, 2): 69, (8, 4): 181, (8, 6): 11, (8, 8): 1}
