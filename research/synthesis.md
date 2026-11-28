@@ -854,7 +854,7 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 - **The degree-(n − 2) obstruction survives, by a different mechanism.**
   - Here r is the vertex avoided by tail 0. Dropping that tail costs a token or a non-neighbour of r.
   - Paper: if r has at most k − 2 non-neighbours, there is no schedule.
-  - Lean: the invariant of `not_steerK` (MultiTokenObstruct.lean) is generalised to cover this setting.
+  - Lean: the abstract invariant `not_steerK` (MultiTokenObstruct.lean) counts tails that avoid r. Applying it to the all-odd lift is done **on paper only**, because the all-odd lift itself is not in Lean (corrected after the overview's A38 flag).
 - **The all-odd bases themselves exist:** 54/54 roots by exact search.
 - **So the limitation is the steering method, not the target.** The dense part of the spine needs a non-inductive tool, such as an exchange argument or a dense-graph theorem.
 - **Executor bug found by multi-token:** the final Test1 boolean had not been asserted. It is fixed, and every schedule was re-verified.

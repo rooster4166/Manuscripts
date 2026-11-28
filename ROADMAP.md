@@ -137,7 +137,7 @@ EMM sufficiency work is **stopped**.
     - the method (Lovász of (B − r) − Φ with one short connector path) succeeds at all 1,756;
     - Theorem A plus Theorem B (paper; Lean next) cover 1,570, and 1,626 with MR hypotheses;
     - the frozen roots: 112/113 with one extra path.
-  - **Residual families (dense middle):** the method is undecided at the current budget.- **overview** (session_01FxXpVgvTGyPd879SBKokNR, branch `claude/overview`, new): consolidated programme paper `manuscripts/overview`. It covers the spine, the reversible lifts, cones, the constrained-Lovász layer and the dense frontier, plus a table of theorems with their Lean names and audits. An audit follows.
+  - **Residual families (dense middle):** the method is undecided at the current budget.- **overview** (session_01FxXpVgvTGyPd879SBKokNR, branch `claude/overview`): **finished** (7d83008). `manuscripts/overview` (20 pp.); audit A38 applied (2 errors, 5 overclaims and 1 gap, all fixed; no error in the new mathematics). New results: the converse of the all-odd (T1) lift, and the all-odd lift with r a child, which covers the K_{2,6} cone. Original brief: consolidated programme paper `manuscripts/overview`. It covers the spine, the reversible lifts, cones, the constrained-Lovász layer and the dense frontier, plus a table of theorems with their Lean names and audits. An audit follows.
 - **test2** (session_01FxXpVfK2nPUm9VxkxZYYZj, branch `claude/test2`, new): bring (T2) level with (T1). Tasks: exact data, direct lifts for (T2) with Lean, reduction to the constrained-Lovász core, and cones at odd |B|. Until now (T2) had only STL2.
   - **Milestones 1 and 2 (e3a150a, 185bd46; merged; build green; axioms checked):**
     - **Lean (Test2Lift.lean):**
