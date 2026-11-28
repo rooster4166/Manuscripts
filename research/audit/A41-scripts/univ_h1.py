@@ -42,7 +42,15 @@ def comps(vs, adj):
     return out
 
 
+# optional: a41 'tiers' output, to split the counts by the tier of the root
+tier = {}
+if len(sys.argv) > 1:
+    for l in open(sys.argv[1]):
+        f = l.split()
+        if f and f[0] == "T1":
+            tier[(f[1], int(f[2]), int(f[3]))] = int(f[9])
 st = Counter()
+st_t = Counter()
 odd18 = []
 for line in sys.stdin:
     f = line.split()
@@ -71,6 +79,8 @@ for line in sys.stdin:
             if 2 * k > len(C) - e:
                 bad = True
     st[(exc, tag, "H1 violated" if bad else "H1 ok")] += 1
+    if tier:
+        st_t[("root tier>=3" if tier[(g, z, r)] >= 3 else "root tier<=2", exc, tag, "H1 violated" if bad else "H1 ok")] += 1
     if tag == "FAIL" and not bad and exc == 1:
         # shape of the forest: components of Phi with their sizes; is there a claw (non-root with 2 children)?
         F = [set() for _ in range(n)]
@@ -86,6 +96,8 @@ for line in sys.stdin:
         odd18.append((g, z, r, tuple(sorted(shapes))))
 for k, v in sorted(st.items()):
     print(v, k)
+for k, v in sorted(st_t.items()):
+    print("BY ROOT TIER", v, k)
 print("excess-1 failures with (H1) holding:", len(odd18))
 print("their forest shapes:", Counter(s for *_, s in odd18))
 for x in odd18:

@@ -386,7 +386,9 @@ int main(int argc, char **argv) {
           nexact++;
           if (exact(&A[i], &Bu[j], 0)) strike_current(); else {
             nfail++;
-            int h = (A[i].type == 'S' || A[i].type == 'L') ? h1_ok(&A[i]) : -1;
+            /* (H1) over every unit with two children: 1 = all satisfy it, 0 = some violates it */
+            int sib1 = (A[i].type == 'S' || A[i].type == 'L'), sib2 = (Bu[j].type == 'S' || Bu[j].type == 'L');
+            int h = (sib1 || sib2) ? ((!sib1 || h1_ok(&A[i])) && (!sib2 || h1_ok(&Bu[j]))) : -1;
             if (h == 1) nfail_h1++; else if (h == 0) nfail_noh1++;
             printf("FAIL %s", g6); print_unit(&A[i]); print_unit(&Bu[j]);
             if (h >= 0) printf(" H1=%d", h);
@@ -411,7 +413,8 @@ int main(int argc, char **argv) {
     }
   }
   fprintf(stderr, "SUMMARY family=%s graphs=%lld sets=%lld exact=%lld failures=%lld", fam, ngraphs, nsets, nexact, nfail);
-  if (T1 == 'S' || T1 == 'L') fprintf(stderr, " (H1 holds at %lld of them, fails at %lld)", nfail_h1, nfail_noh1);
+  if (T1 == 'S' || T1 == 'L' || T2 == 'S' || T2 == 'L')
+    fprintf(stderr, " (H1 holds at every vertex with two children in %lld of them; fails somewhere in %lld)", nfail_h1, nfail_noh1);
   if (skipH1) fprintf(stderr, " unstruck sets violating (H1), not searched (they fail by the Hall lemma): %lld", nskipH1);
   fprintf(stderr, "\n");
   return 0;

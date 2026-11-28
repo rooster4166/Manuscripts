@@ -1,0 +1,7 @@
+# ndsolve.h (current: fail-first, 2^22 memo) vs tools/route_ext.c query C
+# (a) every solver query issued by nd -t1 on (T1) orders 7 and 9 (nd -D): ours / route_ext
+   1270 0	0
+   8106 1	1
+# (b) 3000 random forest queries, orders 4,6,8 (gen_cq.py 3000 5 4,6,8): ours / route_ext
+    459 0	0
+   2541 1	1

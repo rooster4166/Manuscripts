@@ -7,7 +7,10 @@
      M2: rho has exactly two neighbours u, v in T: J' = J - rho u - z rho - z u, root v;
    for a state (other than the start) in which J'[N(z)] has a perfect matching.
    Same semantics as rootmove2.py (cross-checked on n <= 9).  Prints a summary: counts by
-   (tier, twins, reached).
+   (tier, twins, reached), and the number of roots whose search hit the queue cap (QCAP states;
+   such a root could only be under-reported as not reached).  States are deduplicated by a 64-bit
+   hash, which likewise can only lose states.  Audit A41 re-ran the closure with an exact visited
+   set and no cap and got identical totals at orders 9 and 11.
    usage: rm < ND lines */
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +59,7 @@ static void add(u32 *a, int x, int y) { a[x] |= 1u << y; a[y] |= 1u << x; }
 int main(void) {
   static char line[4096];
   long long cnt[8][2][2]; memset(cnt, 0, sizeof cnt);
+  long long overflow = 0;   /* roots whose search hit the queue cap (could only lose "reached") */
   while (fgets(line, sizeof line, stdin)) {
     if (strncmp(line, "ND ", 3)) continue;
     char g6[256]; int z, r, f[16];
@@ -100,6 +104,7 @@ int main(void) {
         }
       }
     }
+    if (qt >= QCAP) overflow++;
     cnt[level][twins][found]++;
   }
   long long tot = 0, reach = 0;
@@ -107,6 +112,6 @@ int main(void) {
     printf("tier %d twins %d: reached %lld, not %lld\n", l, t, cnt[l][t][1], cnt[l][t][0]);
     tot += cnt[l][t][0] + cnt[l][t][1]; reach += cnt[l][t][1];
   }
-  printf("TOTAL %lld reached %lld\n", tot, reach);
+  printf("TOTAL %lld reached %lld queue_overflows %lld\n", tot, reach, overflow);
   return 0;
 }
