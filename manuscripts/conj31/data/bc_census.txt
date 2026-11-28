@@ -1,0 +1,13 @@
+# Block criterion BC (scripts/blockcrit.h) against exact tightness (scripts/psolve.h), every connected graph
+# with exactly two vertices of positive even degree; driver scripts/bc_census.c; generator nauty-geng -cq n [i/4].
+n=4: two-even 3: tight&BC 1 tight&notBC 0 nottight&BC 0 nottight&notBC 2
+n=6: two-even 47: tight&BC 30 tight&notBC 0 nottight&BC 0 nottight&notBC 17
+n=8: two-even 2668: tight&BC 2296 tight&notBC 0 nottight&BC 0 nottight&notBC 372
+n=10 (4 shards):
+two-even 270335: tight&BC 259913 tight&notBC 0 nottight&BC 0 nottight&notBC 10422
+two-even 264091: tight&BC 253504 tight&notBC 0 nottight&BC 0 nottight&notBC 10587
+two-even 289897: tight&BC 278414 tight&notBC 0 nottight&BC 0 nottight&notBC 11483
+two-even 290550: tight&BC 279684 tight&notBC 0 nottight&BC 0 nottight&notBC 10866
+# n=10 totals: 1,114,873 two-even graphs; tight&BC 1,071,515; not tight&not BC 43,358; disagreements 0
+# Scope: 'tight' answers at n=10 here are solver answers (witnesses re-checked for the 2-connected ones in conj31_order10.txt);
+# 'not tight' answers are exhaustive searches, cross-validated at n<=8 against the CP-SAT census of endpoint-structure Sec. 5.
