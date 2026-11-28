@@ -1,5 +1,13 @@
 # GallaiLean
 
+## Conjecture 31: profile form (cloud session, branch `claude/conj31`)
+
+Manuscript `manuscripts/conj31`. One file, no `sorry`. Every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound` (`manuscripts/conj31/data/axioms.txt`). The full library builds (18,448 jobs). Conjecture 31 and PC are **not** proved.
+
+| File | Content |
+|---|---|
+| `Conj31.lean` | **Profiles and the degree bound.** `RealisesProfile G b` (some decomposition has exactly `b v` ends at every `v`). `tight_iff_realisesProfile`. **`degree_add_le_sum_of_realises`**: (DB) `d(x) + b(x) ≤ ∑ b` is necessary. `sum_profile_mod_two`. **`universal_of_not_degreeBound`** (manuscript Lemma 2.3): with `b ≡ d (mod 2)` and `b ≥ 1` off a set `Z`, `\|Z\| ≤ 2`, (DB) fails at `x` only if `\|Z\| = 2`, `Z ⊆ N(x)` and `x` is adjacent to every other vertex. **Reduction moves, realisation step:** **`realisesProfile_transfer`** (TR, Fan's lemma), **`realisesProfile_newPath`** (NEW), **`realisesProfile_suppress`** (SUP, via `splitOff_supp`), **`realisesProfile_tri`** (TRI: delete `xy`, suppress `u` with `N(u) = {x, y}`, Fan at `y`). **Conjectures as propositions:** `ProfileConj V` (Conjecture PC) and `Conj31On V` (Conjecture 31), both using the project's `TwoConnected`. **`conj31_of_profileConj`**: PC ⇒ Conjecture 31. Helper `degree_of_adj_all`. |
+
 ## Multi-token steering (cloud session, branch `claude/multi-token`)
 
 Manuscript `manuscripts/multi-token`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound` (`manuscripts/multi-token/data/axioms.txt`). The full library builds (18,428 jobs).
