@@ -13,7 +13,9 @@ It is the case `Y = {x}`, walk `y w`, of the set form **`avoid_packed_of_reach`*
 `y ∉ Y` is odd, and a vertex `w` of positive degree with no neighbour in `Y` is joined to `y` by a walk
 avoiding `Y`, then some Lovász decomposition has every path meeting `Y` at most once and the path
 ending at `y` disjoint from `Y`. This extends `L₁` (`lovasz_avoid_set`), which needs `y ∉ N(Y)`.
-`avoid_of_reach` is the single-vertex form (the manuscript shows it is sharp).
+`avoid_of_reach` is the single-vertex form, and it is sharp: **`avoid_iff_reach`** — `Q(y)` can avoid
+`x` iff the component of `y` in `G − x` is not contained in `N(x)`; the converse direction is
+`mem_pathEndingAt_of_component_sub` (a count of ends in the component against edges from `x`).
 
 Consequences: `conjNDegTwoOn` (the degree-two case of Conjecture N, unconditionally),
 `conjN_of_tightTransferN` (TRN ⇒ N), `conjN_of_TR` (TR ∧ `TightTransferAdj` ⇒ N).
@@ -888,6 +890,245 @@ theorem neighbourAvoidOn : NeighbourAvoidOn V := by
   exact neighbourAvoid G hev hy hxy hyw hwx hxw
 
 end setForm
+
+/-! ### The boundary is exact -/
+
+section boundary
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+omit [Fintype V] [DecidableEq V] in
+/-- Strict comparison of list sums. -/
+theorem list_sum_lt_sum {α : Type*} (f g : α → ℕ) :
+    ∀ (L : List α), (∀ a ∈ L, f a ≤ g a) → (∃ a ∈ L, f a < g a) →
+      (L.map f).sum < (L.map g).sum := by
+  intro L
+  induction L with
+  | nil => intro _ h; simp at h
+  | cons a L ih =>
+    intro hle hlt
+    simp only [List.map_cons, List.sum_cons]
+    have ha := hle a (List.mem_cons_self ..)
+    have hrest : ∀ b ∈ L, f b ≤ g b := fun b hb => hle b (List.mem_cons_of_mem _ hb)
+    have hsum : (L.map f).sum ≤ (L.map g).sum := by
+      clear ih hlt hle ha
+      induction L with
+      | nil => simp
+      | cons b L ih' =>
+        simp only [List.map_cons, List.sum_cons]
+        have := hrest b (List.mem_cons_self ..)
+        have := ih' (fun c hc => hrest c (List.mem_cons_of_mem _ hc))
+        omega
+    obtain ⟨b, hb, hfb⟩ := hlt
+    rcases List.mem_cons.mp hb with rfl | hb
+    · omega
+    · have := ih hrest ⟨b, hb, hfb⟩
+      omega
+
+omit [Fintype V] [DecidableEq V] in
+/-- Exchanging a list sum and a finset sum. -/
+theorem list_sum_finset_sum {α β : Type*} (C : Finset β) (f : α → β → ℕ) :
+    ∀ L : List α, (L.map (fun a => ∑ b ∈ C, f a b)).sum = ∑ b ∈ C, (L.map (fun a => f a b)).sum := by
+  intro L
+  induction L with
+  | nil => simp
+  | cons a L ih =>
+    simp only [List.map_cons, List.sum_cons, ih, Finset.sum_add_distrib]
+
+/-- **The boundary (manuscript Theorem 1.4).** Let `G` have no vertex of positive even degree, let
+`x ≠ y`, and suppose every vertex joined to `y` by a walk avoiding `x` is adjacent to `x` (the
+component of `y` in `G − x` lies in `N(x)`). Then in every Lovász decomposition the path ending at `y`
+contains `x`.
+
+Proof: count, over the paths, the ends in that component `C` and the edges from `x` to `C`. Both
+totals are `|C|`. A path through `x` has as many of each (its two halves leave `x` and stay in `C`
+until they end), a path avoiding `x` has no such edge, and `Q(y)` would have ends but no such edge. -/
+theorem mem_pathEndingAt_of_component_sub (G : SimpleGraph V) [DecidableRel G.Adj]
+    (hev : (evenSet G).card = 0) {x y : V} (hxy : x ≠ y)
+    (hC : ∀ v (p : G.Walk y v), x ∉ p.support → G.Adj v x)
+    (D : PathDecomp G) (hD : ∀ v, D.ends v = G.degree v % 2) :
+    ∀ P ∈ D.paths, (P.src = y ∨ P.tgt = y) → x ∈ P.walk.support := by
+  classical
+  have hnoev : ∀ v, v ∉ evenSet G := fun v hv => by
+    rw [Finset.card_eq_zero] at hev; rw [hev] at hv; simp at hv
+  have hpar : ∀ v, 0 < G.degree v → G.degree v % 2 = 1 := fun v hv => by
+    have := hnoev v; rw [mem_evenSet_iff] at this; omega
+  -- the component and the edges from `x` into it
+  set C : Finset V := Finset.univ.filter (fun v => ∃ p : G.Walk y v, x ∉ p.support) with hCdef
+  have hmemC : ∀ v, v ∈ C ↔ ∃ p : G.Walk y v, x ∉ p.support := by
+    intro v; simp [hCdef]
+  have hxC : x ∉ C := by
+    rw [hmemC]; rintro ⟨p, hp⟩; exact hp p.end_mem_support
+  have hyC : y ∈ C := (hmemC y).mpr ⟨Walk.nil, by simpa using hxy⟩
+  have hCadj : ∀ v ∈ C, G.Adj v x := fun v hv => by
+    obtain ⟨p, hp⟩ := (hmemC v).mp hv; exact hC v p hp
+  -- walks avoiding `x` stay in or out of `C`
+  have hstay : ∀ {a b : V} (q : G.Walk a b), x ∉ q.support → (a ∈ C ↔ b ∈ C) := by
+    intro a b q hq
+    constructor
+    · intro ha
+      obtain ⟨p, hp⟩ := (hmemC a).mp ha
+      refine (hmemC b).mpr ⟨p.append q, fun h => ?_⟩
+      rcases (Walk.mem_support_append_iff p q).mp h with h | h
+      · exact hp h
+      · exact hq h
+    · intro hb
+      obtain ⟨p, hp⟩ := (hmemC b).mp hb
+      refine (hmemC a).mpr ⟨p.append q.reverse, fun h => ?_⟩
+      rcases (Walk.mem_support_append_iff p q.reverse).mp h with h | h
+      · exact hp h
+      · rw [Walk.support_reverse, List.mem_reverse] at h; exact hq h
+  set EX : Finset (Sym2 V) := C.image (fun v => s(x, v)) with hEX
+  have hmemEX : ∀ v, s(x, v) ∈ EX ↔ v ∈ C := by
+    intro v
+    rw [hEX, Finset.mem_image]
+    constructor
+    · rintro ⟨u, hu, he⟩
+      rw [Sym2.congr_right.mp he] at hu
+      exact hu
+    · intro hv; exact ⟨v, hv, rfl⟩
+  have hEXx : ∀ e ∈ EX, x ∈ e := by
+    intro e he
+    obtain ⟨v, -, rfl⟩ := Finset.mem_image.mp he
+    exact Sym2.mem_mk_left _ _
+  -- edges of `x`-free walks are not in `EX`
+  have hfree : ∀ {a b : V} (q : G.Walk a b), x ∉ q.support →
+      q.edges.countP (fun e => decide (e ∈ EX)) = 0 := by
+    intro a b q hq
+    rw [List.countP_eq_zero]
+    intro e he hdec
+    have hxe := hEXx e (of_decide_eq_true hdec)
+    induction e using Sym2.inductionOn with
+    | hf p r =>
+      rcases Sym2.mem_iff.mp hxe with rfl | rfl
+      · exact hq (Walk.fst_mem_support_of_mem_edges _ he)
+      · exact hq (Walk.snd_mem_support_of_mem_edges _ he)
+  -- a walk leaving `x` once: one edge of `EX` exactly when it ends in `C`
+  have hfromx : ∀ {b : V} (r : G.Walk x b), x ∉ r.support.tail →
+      r.edges.countP (fun e => decide (e ∈ EX)) = if b ∈ C then 1 else 0 := by
+    intro b r hr
+    cases r with
+    | nil => simp [hxC]
+    | @cons _ v _ h r' =>
+      rw [Walk.support_cons, List.tail_cons] at hr
+      rw [Walk.edges_cons, List.countP_cons, hfree r' hr, zero_add]
+      have := hstay r' hr
+      by_cases hv : v ∈ C
+      · simp [(hmemEX v).mpr hv, this.mp hv]
+      · have hb : b ∉ C := fun hb => hv (this.mpr hb)
+        simp [hb, (hmemEX v).not.mpr hv]
+  -- per path: edges of `EX` at most ends in `C`
+  let e : GPath G → ℕ := fun P => P.edges.countP (fun e => decide (e ∈ EX))
+  let n : GPath G → ℕ := fun P => ∑ v ∈ C, P.endsAt v
+  have hn : ∀ P : GPath G, n P = (if P.src ∈ C then 1 else 0) + (if P.tgt ∈ C then 1 else 0) := by
+    intro P
+    simp only [n, GPath.endsAt, Finset.sum_add_distrib]
+    congr 1 <;> simp [Finset.sum_ite_eq]
+  have hle : ∀ P : GPath G, e P ≤ n P := by
+    intro P
+    rw [hn]
+    by_cases hxP : x ∈ P.walk.support
+    · have hsplit := P.walk.take_spec hxP
+      have hpath := P.isPath
+      have hta : (P.walk.takeUntil x hxP).IsPath := hpath.takeUntil hxP
+      have hdr : (P.walk.dropUntil x hxP).IsPath := hpath.dropUntil hxP
+      have hE : e P = (P.walk.takeUntil x hxP).reverse.edges.countP (fun e => decide (e ∈ EX)) +
+          (P.walk.dropUntil x hxP).edges.countP (fun e => decide (e ∈ EX)) := by
+        simp only [e, GPath.edges]
+        conv_lhs => rw [← hsplit]
+        rw [Walk.edges_append, List.countP_append, Walk.edges_reverse, List.countP_reverse]
+      have h1 : x ∉ (P.walk.takeUntil x hxP).reverse.support.tail := by
+        have hnd := hta.reverse.support_nodup
+        rw [← Walk.cons_tail_support] at hnd
+        exact (List.nodup_cons.mp hnd).1
+      have h2 : x ∉ (P.walk.dropUntil x hxP).support.tail := by
+        have hnd := hdr.support_nodup
+        rw [← Walk.cons_tail_support] at hnd
+        exact (List.nodup_cons.mp hnd).1
+      rw [hE, hfromx _ h1, hfromx _ h2]
+    · simp only [e, GPath.edges, hfree P.walk hxP]
+      omega
+  -- the sums
+  have hsum_e : (D.paths.map e).sum = C.card := by
+    have hcount : (D.paths.map e).sum =
+        (D.paths.flatMap GPath.edges).countP (fun e => decide (e ∈ EX)) := by
+      simp only [e]
+      clear hle
+      induction D.paths with
+      | nil => simp
+      | cons P L ih => simp [List.flatMap_cons, List.countP_append, ih]
+    rw [hcount, List.countP_eq_length_filter]
+    have hnd : ((D.paths.flatMap GPath.edges).filter (fun e => decide (e ∈ EX))).Nodup :=
+      D.nodup_edges.filter _
+    rw [← List.toFinset_card_of_nodup hnd]
+    have : ((D.paths.flatMap GPath.edges).filter (fun e => decide (e ∈ EX))).toFinset = EX := by
+      ext f
+      simp only [List.mem_toFinset, List.mem_filter, decide_eq_true_eq]
+      constructor
+      · exact fun h => h.2
+      · intro hf
+        refine ⟨(D.covers f).mp ?_, hf⟩
+        obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hf
+        exact (hCadj v hv).symm
+    rw [this, hEX, Finset.card_image_of_injective _ (fun a b h => Sym2.congr_right.mp h)]
+  have hsum_n : (D.paths.map n).sum = C.card := by
+    simp only [n]
+    rw [list_sum_finset_sum C (fun P v => P.endsAt v) D.paths]
+    rw [Finset.card_eq_sum_ones]
+    apply Finset.sum_congr rfl
+    intro v hv
+    have := hD v
+    unfold PathDecomp.ends at this
+    rw [this]
+    exact hpar v ((G.degree_pos_iff_exists_adj v).mpr ⟨x, hCadj v hv⟩)
+  intro P hP hend
+  by_contra hxP
+  have hlt : e P < n P := by
+    rw [hn]
+    simp only [e, GPath.edges, hfree P.walk hxP]
+    have hsC : P.src ∈ C ↔ P.tgt ∈ C := hstay P.walk hxP
+    rcases hend with h | h
+    · rw [h] at hsC ⊢; simp [hyC]
+    · rw [h] at hsC ⊢; simp [hyC]
+  have := list_sum_lt_sum e n D.paths (fun P _ => hle P) ⟨P, hP, hlt⟩
+  omega
+
+/-- **The exact boundary, both directions.** In a graph with no vertex of positive even degree, for
+distinct `x, y` with `y` odd: `Q(y)` can avoid `x` if and only if some vertex of positive degree joined
+to `y` by a walk avoiding `x` is not adjacent to `x`. -/
+theorem avoid_iff_reach (G : SimpleGraph V) [DecidableRel G.Adj] (hev : (evenSet G).card = 0)
+    {x y : V} (hxy : x ≠ y) (hy : G.degree y % 2 = 1) :
+    AvoidDecomp G y {x} ↔
+      ∃ (w : V) (p : G.Walk y w), x ∉ p.support ∧ ¬ G.Adj w x ∧ 0 < G.degree w := by
+  constructor
+  · intro ⟨D, hD, hav⟩
+    by_contra hno
+    have hC : ∀ v (p : G.Walk y v), x ∉ p.support → G.Adj v x := by
+      intro v p hp
+      by_contra hvx
+      have hpos : 0 < G.degree v := by
+        by_cases hvy : v = y
+        · subst hvy; omega
+        · obtain ⟨u, h, -, -⟩ := Walk.exists_eq_cons_of_ne hvy p.reverse
+          exact (G.degree_pos_iff_exists_adj v).mpr ⟨u, h⟩
+      exact hno ⟨v, p, hp, hvx, hpos⟩
+    obtain ⟨P, hP, hend⟩ : ∃ P ∈ D.paths, P.src = y ∨ P.tgt = y := by
+      have h1 : D.ends y = 1 := by rw [hD y, hy]
+      unfold PathDecomp.ends at h1
+      by_contra hno'
+      push Not at hno'
+      have : (D.paths.map (fun P => P.endsAt y)).sum = 0 := by
+        apply List.sum_eq_zero
+        intro k hk
+        obtain ⟨P, hP, rfl⟩ := List.mem_map.mp hk
+        simp [GPath.endsAt, hno' P hP]
+      omega
+    exact hav P hP hend x (Finset.mem_singleton_self x)
+      (mem_pathEndingAt_of_component_sub G hev hxy hC D hD P hP hend)
+  · rintro ⟨w, p, hp, hw, hwpos⟩
+    exact avoid_of_reach G hev hy hxy p hp hw hwpos
+
+end boundary
 
 /-! ### Consequences for Conjecture N -/
 
