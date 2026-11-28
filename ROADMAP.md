@@ -141,6 +141,15 @@ EMM sufficiency work is **stopped**.
   - **Data:** all 1.3M order-10 instances constructed and verified.
   - Manuscript and audit pending.
 - **trn** (session_01FxXpVf3UQSh4TMBMYT3AEH, branch `claude/trn`, new): prove TRN, tight transfer for A = {x}, in both cases y ≁ g and y ~ g. **TRN is now the only missing piece: TRN ⇒ Conjecture N (Lean) ⇒ DL(1)** (Prop 9.2, paper). I sent the NA technique to the session.
+  - **Milestone 2 (e3d9aef, merged; build green; axioms checked):**
+    - `TightTransferNCore`, the core restriction, and `conjN_of_core` (TRN.lean).
+    - Two-token steering (TRNSteer.lean):
+      - `avoid_leafTail`, the leaf-tail lemma;
+      - `fan_step_two`, the Fan step with two even vertices;
+      - `avoid_of_steer2`: a schedule gives AvoidDecomp;
+      - **`conjN_of_core2`: Conjecture N ⇐ TRN restricted to core instances that have no schedule.**
+    - Data at order 9: 72% of core TRN tests are scheduled, so 25,928 remain. 90% of N-instances are scheduled.
+    - The smallest unscheduled instance is again the degree-2 triangle shape (Dqw).
 - **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
   - **Milestone 1 (82a43a7, merged; build green; axioms checked).** Lean `conjN_of_TR_neighbourAvoid`: **Conjecture N ⇐ TR (l1-induction Conj 4.1) + TR for tails adjacent to g + NA**.
   - NA is neighbour avoidance in all-odd graphs: if x ~ y and y has a neighbour w ≠ x with w ≁ x, then Q(y) can avoid x.
