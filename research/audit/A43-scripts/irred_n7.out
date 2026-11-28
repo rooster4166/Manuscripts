@@ -1,0 +1,4 @@
+## n=7 
+zeros 2 down False: instances 110691 irreducible 220 twin 217 minimal-profile 34  moves {'SUP': 12062, 'EAR': 25722, 'NEW': 11464, 'TR': 61196, 'CYC': 21, 'TRI': 6}
+## n=7 down
+zeros 2 down True: instances 110691 irreducible 34 twin 34 minimal-profile 34  moves {'SUP': 346, 'DOWN': 107531, 'EAR': 1572, 'TR': 1182, 'CYC': 21, 'TRI': 5}

@@ -1,0 +1,20 @@
+## n=4 (nauty-geng -cq 4), pure exhaustive search, no (DB) pre-check
+graphs 6 two-even 3 tight 1 nottight 2 | O1 2 (O1 tight 0) | 2-conn 1 2-conn-nottight 1 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 0
+BC: tight&BC 1 tight&notBC 0 nottight&BC 0 nottight&notBC 2
+witnesses rebuilt and checked 1, bad 0
+## n=5 (nauty-geng -cq 5), pure exhaustive search, no (DB) pre-check
+graphs 21 two-even 0 tight 0 nottight 0 | O1 0 (O1 tight 0) | 2-conn 0 2-conn-nottight 0 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 0
+BC: tight&BC 0 tight&notBC 0 nottight&BC 0 nottight&notBC 0
+witnesses rebuilt and checked 0, bad 0
+## n=6 (nauty-geng -cq 6), pure exhaustive search, no (DB) pre-check
+graphs 112 two-even 47 tight 30 nottight 17 | O1 16 (O1 tight 0) | 2-conn 20 2-conn-nottight 10 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 1
+BC: tight&BC 30 tight&notBC 0 nottight&BC 0 nottight&notBC 17
+witnesses rebuilt and checked 30, bad 0
+## n=7 (nauty-geng -cq 7), pure exhaustive search, no (DB) pre-check
+graphs 853 two-even 0 tight 0 nottight 0 | O1 0 (O1 tight 0) | 2-conn 0 2-conn-nottight 0 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 0
+BC: tight&BC 0 tight&notBC 0 nottight&BC 0 nottight&notBC 0
+witnesses rebuilt and checked 0, bad 0
+## n=8 (nauty-geng -cq 8), pure exhaustive search, no (DB) pre-check
+graphs 11117 two-even 2668 tight 2296 nottight 372 | O1 344 (O1 tight 0) | 2-conn 1466 2-conn-nottight 274 2-conn-nottight-nonO1 0 | cut-nonO1-nottight 28
+BC: tight&BC 2296 tight&notBC 0 nottight&BC 0 nottight&notBC 372
+witnesses rebuilt and checked 2296, bad 0

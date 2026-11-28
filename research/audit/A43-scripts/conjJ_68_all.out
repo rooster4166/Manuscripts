@@ -1,0 +1,17 @@
+## orders 6 and 8, every joint path with (L) or BC remainder solved exactly (option all)
+all-odd graphs 13 instances 428 joined 374
+(L)or(C) 298  (B)only 76  none 0   [some (L) path 204; (C) but no (L) 94]
+DFS-first (L)/(C) split: (L) 204 (C) 94
+instances with some joint path whose K0 is (L) or 2-connected (universal vertex allowed): 298
+instances with some joint path whose K0 satisfies BC (incl. (L) paths): 374
+best certified K0 solved exactly: tight 374 not tight 0; joint paths examined 640
+all (L)/BC joint paths solved exactly: 562, not tight 0
+witnesses rebuilt and checked 936, bad 0
+all-odd graphs 224 instances 43400 joined 40538
+(L)or(C) 26611  (B)only 13927  none 0   [some (L) path 12176; (C) but no (L) 14435]
+DFS-first (L)/(C) split: (L) 12176 (C) 14435
+instances with some joint path whose K0 is (L) or 2-connected (universal vertex allowed): 26611
+instances with some joint path whose K0 satisfies BC (incl. (L) paths): 40538
+best certified K0 solved exactly: tight 40538 not tight 0; joint paths examined 252266
+all (L)/BC joint paths solved exactly: 231882, not tight 0
+witnesses rebuilt and checked 272420, bad 0

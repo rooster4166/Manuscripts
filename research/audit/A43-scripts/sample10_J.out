@@ -1,0 +1,12 @@
+## sample: nauty-geng -cq 10 3/200 (27,232 connected graphs, 151 all-odd), mode j fast db
+all-odd graphs 151 instances 112064 joined 106985
+(L)or(C) 58959  (B)only 48026  none 0   [some (L) path 33094; (C) but no (L) 25865]
+DFS-first (L)/(C) split: (L) 33094 (C) 25865
+instances with some joint path whose K0 is (L) or 2-connected (universal vertex allowed): 33094
+instances with some joint path whose K0 satisfies BC (incl. (L) paths): 106985
+best certified K0 solved exactly: tight 106985 not tight 0; joint paths examined 1091251
+witnesses rebuilt and checked 106985, bad 0
+
+real	2m56.516s
+user	2m54.975s
+sys	0m0.019s
