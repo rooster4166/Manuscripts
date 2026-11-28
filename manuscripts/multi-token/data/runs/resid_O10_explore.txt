@@ -1,0 +1,14 @@
+ROOT OV~z~X}uz{uk^inTyvdng r=4 states=183 min_phi=5
+ROOT OQ~~|PZ}Q}~w|kjJToywz r=5 states=308 min_phi=5
+ROOT OQ~~oEn?wBji~V?~~j~iv r=0 states=29030 min_phi=3
+ROOT OQ~~oEn?wBji~V?~~j~iv r=1 states=14262 min_phi=4
+ROOT OQ~~oEn?wBji~V?~~j~iv r=2 states=29030 min_phi=3
+ROOT OQ~~oEn?wBji~V?~~j~iv r=3 states=14262 min_phi=4
+ROOT OQ~~oEn?wBji~V?~~j~iv r=4 states=4020 min_phi=5
+ROOT OQ~~oEn?wBji~V?~~j~iv r=5 states=4020 min_phi=5
+ROOT MQ~xWDzvx^nm~zu}? r=4 states=20858 min_phi=5
+ROOT MQ~xWDzvx^nm~zu}? r=5 states=2570 min_phi=5
+ROOT MQ~y~x]|\NJx{|~|? r=4 states=348 min_phi=5
+ROOT MQ~}~im]}i~~\~VN_ r=2 states=310 min_phi=4
+ROOT MQ~}~im]}i~~\~VN_ r=4 states=540 min_phi=5
+ROOT MQ~}~im]}i~~\~VN_ r=5 states=9642 min_phi=5

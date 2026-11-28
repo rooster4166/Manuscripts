@@ -1,0 +1,7 @@
+ROOT M~~zRz{~m~~lX|j~_ r=0 verdict=0
+ROOT M~~zRz{~m~~lX|j~_ r=1 verdict=0
+ROOT M~~zRz{~m~~lX|j~_ r=2 verdict=0
+ROOT M~~zRz{~m~~lX|j~_ r=3 verdict=0
+ROOT M~~zRz{~m~~lX|j~_ r=4 verdict=0
+ROOT M~~zRz{~m~~lX|j~_ r=5 verdict=0
+SUMMARY roots 6 scheduled 0 undecided 0 | data 90 with-schedule 0 | instances 360 scheduled 0 undecided 0 | nodes 13692

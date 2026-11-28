@@ -5,7 +5,7 @@
 // gets a leaf l_i, x_i is the other.  M+ = J - zw - {z a_i, z b_i, a_i b_i} + {y_i l_i}.
 // Tokens are the even vertices of the current graph K (initially w and the y_i).
 // A tail i is live while the leaf edge y_i l_i is present; X(K) = {l_i, x_i : i live}.
-// Moves (manuscript Definition 3.1; Lean `SteerK`):
+// Moves (manuscript Definition 2.2; Lean `SteerK`):
 //   (M) a token p moves along an edge pu to u, where u is odd, u not in X(K), and in K - pu the
 //       vertex u is adjacent to no token other than p.  (If u is left isolated the token retires.)
 //   (D) drop a live tail i whose y_i is odd: delete the leaf edge y_i l_i.
@@ -14,11 +14,13 @@
 // TERM=2: as TERM=0, or at most one token and the live sets {l_i, x_i} form a sparse family
 //         (every vertex has at most one neighbour in X(K)): separation_sparse.
 // NODROP=1 disables (D).
+// env SEED=s: shuffle the move order (ties within a priority class) with seed s.
+// env MAXLEN=L: iterative deepening, shortest schedules of at most L moves (others reported as none).
 // env SUPP=1 enables (S): a token p of degree 2 whose neighbours a, b are non-adjacent is suppressed
 //   (K - pa - pb + ab; p is not y_i of a live tail, and ab is not x_i y_i).
 //
 // usage: mtok MODE BUDGET [TERM] [NODROP] [PRINT]
-//   MODE g6: graph6 of J per line;  resid: graph6 of B = J - z with N(z) = {0..5} (gen_resid.py)
+//   MODE g6: graph6 of J per line (optionally followed by a comma-separated list of roots);  resid: graph6 of B = J - z with N(z) = {0..5} (gen_resid.py)
 //   output per root: ROOT g6 r verdict (1 schedule found for some data/orientation, 0 none, 2 undecided)
 //   with PRINT=1 also SCHED lines (one schedule per root) for mt_verify.py;
 //   PRINT=2: SCHED lines for every data choice / orientation that has one.
@@ -29,8 +31,10 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
 #include <array>
 #include <algorithm>
+#include <random>
 typedef uint64_t u64;
 static const int MAXV = 64;
 static int N, K;                  // vertices of M+ (0..n-1 from J, n..n+k-1 leaves), tails
@@ -39,6 +43,9 @@ static u64 adj[MAXV];
 static long long nodes, budget; static int TERM, NODROP, SUPP;
 struct H2 { size_t operator()(const std::array<u64,2>& a) const { return a[0] ^ (a[1] * 0x9E3779B97F4A7C15ULL); } };
 static std::unordered_set<std::array<u64,2>, H2> failset;
+static std::unordered_map<std::array<u64,2>, int, H2> faildepth;   // iterative deepening: failed with this many moves left
+static int DEPTH = -1, MAXLEN = 0;
+static unsigned SEED = 0; static std::mt19937 rng;                                              // -1: plain DFS
 struct Mv { int kind, p, u; };   // kind 0 = move p->u, 1 = drop tail p
 static std::vector<Mv> mv, best;
 
@@ -67,7 +74,9 @@ static bool search() {
   if (terminal(ev, X)) { best = mv; return true; }
   if (budget && ++nodes > budget) return false;
   std::array<u64,2> k = key();
-  if (failset.count(k)) return false;
+  int left = DEPTH >= 0 ? DEPTH - (int)mv.size() : 0;
+  if (DEPTH >= 0) { if (left <= 0) return false; auto it = faildepth.find(k); if (it != faildepth.end() && it->second >= left) return false; }
+  else if (failset.count(k)) return false;
   // candidate moves, retirements first
   struct C { int kind, p, u, pri; };
   std::vector<C> cs;
@@ -98,6 +107,7 @@ static bool search() {
     int pri = (deg(Ty[i]) == 1) ? 1 : 3;          // a drop that creates no token first
     cs.push_back({1, i, -1, pri});
   }
+  if (SEED) std::shuffle(cs.begin(), cs.end(), rng);
   std::stable_sort(cs.begin(), cs.end(), [](const C& a, const C& b) { return a.pri < b.pri; });
   for (auto& c : cs) {
     if (c.kind == 2) {
@@ -121,7 +131,7 @@ static bool search() {
     if (res) return true;
     if (budget && nodes > budget) return false;
   }
-  failset.insert(k);
+  if (DEPTH >= 0) { auto& f = faildepth[k]; if (f < left) f = left; } else failset.insert(k);
   return false;
 }
 
@@ -155,6 +165,8 @@ int main(int argc, char** argv) {
   NODROP = argc > 4 ? atoi(argv[4]) : 0;
   int PRINT = argc > 5 ? atoi(argv[5]) : 0;
   SUPP = getenv("SUPP") ? atoi(getenv("SUPP")) : 0;
+  MAXLEN = getenv("MAXLEN") ? atoi(getenv("MAXLEN")) : 0;
+  SEED = getenv("SEED") ? atoi(getenv("SEED")) : 0; rng.seed(SEED);
   char line[4096];
   long long roots = 0, rootsok = 0, rootsund = 0, datas = 0, datasok = 0, inst = 0, instok = 0, instund = 0;
   long long totnodes = 0;
@@ -162,6 +174,8 @@ int main(int argc, char** argv) {
     line[strcspn(line, "\r\n")] = 0; if (!line[0]) continue;
     char* tok = strtok(line, " \t"); if (!tok) continue;
     std::string g6 = tok;
+    char* rl = strtok(NULL, " \t");          // optional: a comma-separated list of roots to test
+    std::vector<int> rlist; if (rl) { char* q = strtok(rl, ","); while (q) { rlist.push_back(atoi(q)); q = strtok(NULL, ","); } }
     int n; u64 J[MAXV];
     if (!parse_g6(g6.c_str(), n, J)) continue;
     int z = -1;
@@ -177,6 +191,7 @@ int main(int argc, char** argv) {
     std::vector<int> U; for (int v = 0; v < n; v++) if (J[z] >> v & 1) U.push_back(v);
     for (int r : U) {
       if (__builtin_popcountll(J[r]) < 3) continue;
+      if (!rlist.empty() && std::find(rlist.begin(), rlist.end(), r) == rlist.end()) continue;
       int rv = 0; bool anydata = false, anyund = false;
       for (int w : U) { if (w == r) continue;
         std::vector<int> rest; for (int u : U) if (u != r && u != w) rest.push_back(u);
@@ -195,8 +210,13 @@ int main(int argc, char** argv) {
             for (int i = 0; i < k; i++) { int a = pm[i].first, b = pm[i].second; del(z, a); del(z, b); del(a, b);
               Ty[i] = (o >> i & 1) ? a : b; Tx[i] = (o >> i & 1) ? b : a; Tl[i] = n + i;
               adj[Ty[i]] |= 1ULL << Tl[i]; adj[Tl[i]] |= 1ULL << Ty[i]; }
-            failset.clear(); nodes = 0; mv.clear(); best.clear();
-            bool res = search();
+            failset.clear(); faildepth.clear(); nodes = 0; mv.clear(); best.clear();
+            bool res;
+            if (MAXLEN > 0) {
+              res = false;
+              for (DEPTH = 0; DEPTH <= MAXLEN && !res; DEPTH++) { faildepth.clear(); res = search(); if (budget && nodes > budget) break; }
+              DEPTH = -1;
+            } else res = search();
             totnodes += nodes;
             int verdict = res ? 1 : ((budget && nodes > budget) ? 2 : 0);
             inst++; if (verdict == 1) instok++; if (verdict == 2) { instund++; anyund = true; }
