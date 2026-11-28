@@ -841,7 +841,10 @@ The vertex r keeps its own end and gains one end for each child. So r has ≥ 2 
 
 **Caveats.**
 - Matching data needs a perfect matching of J[N(z)]. The forest version needs a forest T-join of B with T = N(z) and r a root.
-- The forest version fails on the cone over K_{2,6}: siblings meet at a star centre. That case is covered by the literature (planar).
+- The forest version with r a ROOT fails on the cone over K_{2,6} (siblings meet at a star centre; overview checked all 32 T-joins and 128 rootings).
+  - **Update (overview, f0b8752; coordinator re-checked the witness by hand):** the lift also works when r is a CHILD of Φ with c(r) ≥ 2 children, and then b(r) = c(r). This is the (T1) analogue of test2's `ForestData2.r_child`.
+  - At the hub of the cone over K_{2,6}: Φ = stars 0–{2,3,4} and 1–{5,6,7} rooted at 2 and 5; D = {506, 07, 213, 14}; the lift is {5061, 2071, 2130, 5140}.
+  - **So at order 9 every root of every 3-connected J with one even vertex has a triangle, forest or all-odd base.**
 - The converse (base ⇔ (T1) with Φ terminal at the parents) should hold by end-counting, as in direct-test1 Prop 4.3. Not yet checked.
 
 **§31 addendum (multi-token, 28376e6).**
