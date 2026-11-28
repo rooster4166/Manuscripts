@@ -568,21 +568,22 @@ needs no leaf.
 
 \begin{theorem}[the all-odd lift for (T1); Lean \texttt{twoEnds\_of\_oddBase}, \texttt{test1At\_of\_oddBase}]\label{thm:oddlift}
 Let $z$ be the only even vertex of $J$, let $r\in N(z)$, and let $\Phi$ be a forest $N(z)$-join of
-$B=J-z$, rooted with $r$ a root. Then $H=B-E(\Phi)$ has no even vertex. If some Lov\'asz
-decomposition of $H$ satisfies (i) and (ii) of Theorem~\ref{thm:lift}, then $B$ has a decomposition
-into $(n-1)/2$ paths with $1+d_\Phi(r)\ge2$ ends at $r$. So (T1) holds at $(J,z,r)$.
+$B=J-z$, rooted with $r$ a root or with $c(r)\ge2$. Then $H=B-E(\Phi)$ has no even vertex. If some
+Lov\'asz decomposition of $H$ satisfies (i) and (ii) of Theorem~\ref{thm:lift}, then $B$ has a
+decomposition into $(n-1)/2$ paths with $1-\ind{r\text{ is a child}}+c(r)\ge2$ ends at $r$. So (T1)
+holds at $(J,z,r)$.
 \end{theorem}
 
 \begin{proof}
 A vertex of $N(z)$ is even in $B$ and loses an odd number $d_\Phi(v)$ of edges. Every other vertex
 is odd in $B$ and loses an even number. So every vertex of $H$ is odd, and a Lov\'asz decomposition
 $D_0$ of $H$ has one end at each vertex and $(n-1)/2$ paths. Lemma~\ref{lem:step} appends $\Phi$
-without changing the number of paths. The root $r$ loses no end and gains $c(r)=d_\Phi(r)$, which is
-odd, hence at least one.
+without changing the number of paths. If $r$ is a root, it loses no end and gains
+$c(r)=d_\Phi(r)$, which is odd, hence at least one. If $r$ is a child, it loses one end and gains
+$c(r)\ge2$.
 \end{proof}
 
-(As in Definition~\ref{def:data}, $r$ may also be a child with $c(r)\ge2$; only the rooted case is
-formalised.) The triangle lift of direct-test1 keeps an edge $zw$ and leaves one even vertex $w$.
+The triangle lift of direct-test1 keeps an edge $zw$ and leaves one even vertex $w$.
 This lift deletes all of $z$ and leaves none.
 
 \begin{corollary}[the matching case; Lean \texttt{oddBase\_of\_matching}, \texttt{test1At\_of\_matchingOdd}]\label{cor:oddmatch}

@@ -5,13 +5,12 @@ most (n - 1)/2 paths with at least two ends at r.  With T = N(z) (the even verti
 included) and a forest T-join Phi of J - z rooted with r a root, H = (J - z) - Phi has no even
 vertex.  The all-odd base asks for a Lovasz decomposition of H with (i) the path ending at each
 child v avoids p(v), (ii) siblings end distinct paths (Lean `twoEnds_of_oddBase`,
-`test1At_of_oddBase`; matching case `test1At_of_matchingOdd`).  Searched exactly with
+`test1At_of_oddBase`, both rootings; matching case `test1At_of_matchingOdd`).  Searched exactly with
 tools/route_ext.c query C (masks {v, p(v)} at the children), in tiers:
   M : Phi a perfect matching of J[N(z)] (r a root of its pair, all orientations of the others);
   S : Phi the T-join inside a spanning tree of J - z (BFS trees from every vertex, then random
       trees), r a root;
-  C : as S, with r a child having at least two children (then r ends c(r) >= 2 paths; this case
-      is proved on paper, not in Lean).
+  C : as S, with r a child having at least two children (then r ends c(r) >= 2 paths).
 Every base found is checked, the forest is appended, and the result is verified as a (T1)
 decomposition (path partition of J - z, <= (n-1)/2 paths, >= 2 ends at r).
 Input: graph6 lines; keeps the 3-connected J with exactly one even vertex.

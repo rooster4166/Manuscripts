@@ -7,14 +7,16 @@ Manuscript: `manuscripts/test2/test2.tex`, §`sec:allodd` (`thm:oddlift`, `cor:o
 
 Let `z` be the only even vertex of `J` and `r ∈ N(z)`. In `B = J − z` the even vertices are exactly
 `T = N(z)`, `r` included. Let `Φ` be a forest `T`-join of `B` (a list `L` of (child, parent) pairs
-in parent-first order), rooted so that **`r` is never a child**. Then `H = B − Φ` has **no** even
+in parent-first order), rooted so that **`r` is a root, or a child with at least two children**.
+Then `H = B − Φ` has **no** even
 vertex, so a Lovász decomposition of `H` has one end at every vertex and exactly `|B|/2` paths. If it
 satisfies
 * (i) the path ending at each child `v` avoids `p(v)`, and
 * (ii) no path has two siblings as its two ends,
-the forest can be appended (`append_forest_ends`), and `r` then ends `1 + c(r) ≥ 2` paths, since its
-`Φ`-degree `c(r)` is odd. That is Test1 at `(z, r)`, with no leaf and no trimming
-(**`test1At_of_oddBase`**).
+the forest can be appended (`append_forest_ends`), and `r` then ends `1 − [r is a child] + c(r) ≥ 2`
+paths: a root has odd `Φ`-degree `c(r) ≥ 1`, and a child has `c(r) ≥ 2`. That is Test1 at `(z, r)`,
+with no leaf and no trimming (**`test1At_of_oddBase`**). The child case covers the cone over
+`K_{2,6}` at both hubs.
 
 The base graph is the same all-odd graph `B − Φ` as for the Test2 forest lift (there `z` hangs as an
 extra leaf at `r`), with the odd set `T = N(z)` in both cases. So both spine tests reduce to the
@@ -44,11 +46,11 @@ variable {W : Type*} [Fintype W] [DecidableEq W]
 
 /-- **All-odd forest data** on a graph `B` whose even vertices are the list `T`: a forest `Φ` of
 `B` whose odd-degree vertices are exactly `T`, given by (child, parent) pairs in parent-first
-order, with `r ∈ T` never a child. -/
+order, with `r ∈ T` a root or a child with at least two children. -/
 structure OddData (B : SimpleGraph W) (r : W) (T : List W) (L : List (W × W)) : Prop where
   edge : ∀ p ∈ L, B.Adj p.1 p.2
   r_mem : r ∈ T
-  child_ne_r : ∀ p ∈ L, p.1 ≠ r
+  r_child : (∃ p ∈ L, p.1 = r) → 2 ≤ L.countP (fun p => decide (p.2 = r))
   children : (L.map Prod.fst).Nodup
   edges : (L.map pairEdge).Nodup
   parent_first : L.Pairwise (fun p q => p.2 ≠ q.1)
@@ -63,7 +65,7 @@ def OddBase (B : SimpleGraph W) [DecidableRel B.Adj] (r : W) (T : List W) : Prop
       ¬ ((P.src = p.1 ∨ P.tgt = p.1) ∧ (P.src = q.1 ∨ P.tgt = q.1)))
 
 /-- **The all-odd lift** (manuscript `thm:oddlift`). If the even vertices of `B` are exactly the
-vertices of `T`, an all-odd base rooted at `r` gives a decomposition of `B` into at most `|B|/2`
+vertices of `T`, an all-odd base (with `r` a root, or a child with at least two children) gives a decomposition of `B` into at most `|B|/2`
 paths with at least two ends at `r`. -/
 theorem twoEnds_of_oddBase (B : SimpleGraph W) [DecidableRel B.Adj] {r : W} {T : List W}
     (hev : ∀ v, Even (B.degree v) ↔ v ∈ T) (h : OddBase B r T) :
@@ -114,22 +116,34 @@ theorem twoEnds_of_oddBase (B : SimpleGraph W) [DecidableRel B.Adj] {r : W} {T :
       refine h1.trans (le_of_eq ?_)
       simp
     omega
-  · -- `r` is never a child, and it has at least one child (its `Φ`-degree is odd)
-    have h0 : L.countP (fun p => decide (p.1 = r)) = 0 :=
-      List.countP_eq_zero.mpr (fun p hp => by simpa using hF.child_ne_r p hp)
-    have hc : 1 ≤ L.countP (fun p => decide (p.2 = r)) := by
-      have ht := hF.tjoin r
-      simp only [hF.r_mem, ite_true] at ht
-      have hpos : 0 < (L.map pairEdge).countP (fun e => decide (r ∈ e)) := by omega
-      obtain ⟨e, he, hre⟩ := List.countP_pos_iff.mp hpos
-      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
-      have hr : r ∈ s(p.1, p.2) := by simpa [pairEdge] using hre
-      rcases Sym2.mem_iff.mp hr with h | h
-      · exact absurd h.symm (hF.child_ne_r p hp)
-      · exact List.countP_pos_iff.mpr ⟨p, hp, by simp [h]⟩
-    have := hDe r
-    rw [h0, hone r] at this
-    omega
+  · have := hDe r
+    rw [hone r] at this
+    by_cases hch : ∃ p ∈ L, p.1 = r
+    · -- `r` is a child (at most once, children are distinct) with at least two children
+      have h2 := hF.r_child hch
+      have h1 : L.countP (fun p => decide (p.1 = r)) ≤ 1 := by
+        have h := List.nodup_iff_count_le_one.mp hF.children r
+        rw [List.count, List.countP_map] at h
+        refine le_trans (le_of_eq ?_) h
+        apply List.countP_congr
+        intro p _
+        simp
+      omega
+    · -- `r` is a root, and it has at least one child (its `Φ`-degree is odd)
+      have hnc : ∀ p ∈ L, p.1 ≠ r := fun p hp h => hch ⟨p, hp, h⟩
+      have h0 : L.countP (fun p => decide (p.1 = r)) = 0 :=
+        List.countP_eq_zero.mpr (fun p hp => by simpa using hnc p hp)
+      have hc : 1 ≤ L.countP (fun p => decide (p.2 = r)) := by
+        have ht := hF.tjoin r
+        simp only [hF.r_mem, ite_true] at ht
+        have hpos : 0 < (L.map pairEdge).countP (fun e => decide (r ∈ e)) := by omega
+        obtain ⟨e, he, hre⟩ := List.countP_pos_iff.mp hpos
+        obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+        have hr : r ∈ s(p.1, p.2) := by simpa [pairEdge] using hre
+        rcases Sym2.mem_iff.mp hr with h | h
+        · exact absurd h.symm (hnc p hp)
+        · exact List.countP_pos_iff.mpr ⟨p, hp, by simp [h]⟩
+      omega
 
 end allOdd
 
@@ -281,12 +295,13 @@ theorem oddBase_of_matching (B : SimpleGraph W) [DecidableRel B.Adj] {a₀ r : W
         · rw [h]; exact hedge p (List.mem_cons_of_mem _ hp)
         · rw [h]; exact (hedge p (List.mem_cons_of_mem _ hp)).symm
     · rw [pairVerts_cons]; simp
-    · intro q hq
+    · -- `r` is never a child here
+      rintro ⟨q, hq, hqr⟩
+      exfalso
       have hq' : q ∈ (a₀, r) :: orientPairs D₀ L := hq
       rcases List.mem_cons.mp hq' with rfl | hq
-      · exact ha0r
-      · intro h
-        exact hrL (h ▸ hmemL q hq)
+      · exact ha0r hqr
+      · exact hrL (hqr ▸ hmemL q hq)
     · exact nodup_map_pairEdge L' hnd'
     · refine List.Pairwise.imp_of_mem (R := fun _ _ => True)
         (@fun p q hp hq _ h => hpf p hp ?_) (List.pairwise_of_forall (fun _ _ => trivial))
