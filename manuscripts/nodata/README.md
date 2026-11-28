@@ -62,6 +62,10 @@ Session `claude/nodata`. Manuscript: `nodata.tex` / `nodata.pdf` (working draft)
   `fl.c` feasible. It is exact either way. Re-running `nd -t1` on n ≤ 9 with the new header gives
   identical levels and excesses (md5 of the level columns agrees). The order-10 `fl` runs use the
   new header; the order ≤ 8 `fl` runs agree with it up to the number of exact searches.
+* The first `fl.c` reported (H1) for the first unit of a family only. That mattered only for two
+  stars (`ss`), where the old file said (H1) holds at 3,386 of the 3,930 failures; over both
+  centres it fails somewhere in all 3,930. `fl_le8.txt.gz` was regenerated with the current code:
+  the sets and the failing sets are identical, only the (H1) annotation changed.
 
 ## Reproduce
 
