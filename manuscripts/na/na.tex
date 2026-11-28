@@ -40,12 +40,12 @@ it DL(1) up to near twins.
 
 We prove NA, and the following stronger and sharp statements.
 \begin{itemize}
-\item \emph{Set form.} Let $Y$ be a set of vertices at pairwise distance at least three, let $y\notin Y$,
-and suppose the component of $y$ in $G-Y$ is not contained in $N(Y)$. Then some Lov\'asz decomposition
-has every path meeting $Y$ at most once and $Q(y)\cap Y=\emptyset$. This extends $L_1$, which needs
-$y\notin N(Y)$.
-\item \emph{Exact boundary.} For distinct $x,y$, the path $Q(y)$ can avoid $x$ \emph{if and only if}
-the component of $y$ in $G-x$ contains a vertex not adjacent to $x$.
+\item \emph{Set form.} Let $Y$ be a set of vertices at pairwise distance at least three, and let
+$y\notin Y$ be odd. Some Lov\'asz decomposition has every path meeting $Y$ at most once and
+$Q(y)\cap Y=\emptyset$ \emph{if and only if} the component of $y$ in $G-Y$ is not contained in $N(Y)$.
+This extends $L_1$, which needs $y\notin N(Y)$.
+\item \emph{Exact boundary.} For distinct $x,y$ with $y$ odd, the path $Q(y)$ can avoid $x$ \emph{if
+and only if} the component of $y$ in $G-x$ contains a vertex not adjacent to $x$.
 \end{itemize}
 
 The proof has three steps.
@@ -93,9 +93,12 @@ of~\cite{DL}. By~\cite[Proposition~9.2]{DL}, N reduces DL(1) to near twins, and 
 two-end test (T1) at every root whose data have $M$ connected.
 \item NA is the adjacent-pair analogue of $L_1$ (\texttt{lovasz\_avoid\_nonadj}): $L_1$ is the case
 $x\not\sim y$, where no witness is needed.
-\item NA is stronger than Lemma~NP of~\cite{DL}, which gives only $Q(x)\ne Q(y)$.
+\item On instances with a witness, the conclusion of NA implies that of Lemma~NP of~\cite{DL},
+$Q(x)\ne Q(y)$. As statements the two are incomparable. NP assumes only $d(x)\ge3$, and in $K_4$ it holds
+while $x\in V(Q(y))$ for every decomposition (Theorem~\ref{thm:C}).
 \item It was the residual of the move calculus of~\cite{CN}. In its closure computation, $22$ of the
-$215$ NA instances of order~$6$ and $2{,}451$ of the $9{,}558$ of order~$8$ have no move into the class.
+$129$ NA instances of order~$6$ and $2{,}451$ of the $4{,}970$ of order~$8$ have no move into the class
+N$_1\cup$NA. The figures $215$ and $9{,}558$ in its table are the sizes of that whole class.
 The smallest is the wheel with five spokes and $y$ the hub.
 \end{itemize}
 
@@ -151,11 +154,18 @@ NA and~\cite[Lemma~4.4]{CN} give (1). NA and~\cite[Theorem~4.6, Corollary~4.7]{C
 \subsection*{Status}
 \begin{itemize}
 \item \emph{Proved and formalised} (Lean~4 with Mathlib, no \texttt{sorry}; the only axioms are
-\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}): every numbered result except
-the examples and remarks. That covers Theorems~\ref{thm:A} and~\ref{thm:C},
-Corollaries~\ref{cor:na}--\ref{cor:N}, and every lemma of
-Sections~\ref{sec:steer}--\ref{sec:parity}.
-\item \emph{Proved on paper only}: the remarks of Section~\ref{sec:cons}, and Example~\ref{ex:wheel}.
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}):
+  \begin{itemize}
+  \item Theorems~\ref{thm:A}, \ref{thm:C} and~\ref{thm:Cset};
+  \item Corollaries~\ref{cor:na}--\ref{cor:N};
+  \item Lemma~\ref{lem:leaf}, and every lemma of Sections~\ref{sec:steer}--\ref{sec:parity}.
+  \end{itemize}
+  Two lemmas are formalised in the form the proof uses, which is weaker than their statements here.
+  For Lemma~\ref{lem:fan}, \texttt{fan\_single\_supp} gives that every new path lies in an old path
+  plus $u$, not the bijection. For Lemma~\ref{lem:sub}, \texttt{exists\_inv\_subgraph} does not
+  record that $t\in C$ is odd in $H$.
+\item \emph{Proved on paper only}: Example~\ref{ex:wheel}, Remarks~\ref{rem:eff} and~\ref{rem:L1},
+and the remarks of Section~\ref{sec:cons}.
 \item \emph{Computed}: Section~\ref{sec:comp}. No proof depends on it.
 \end{itemize}
 
@@ -417,7 +427,7 @@ Its path $Q(y)=P_\ell-\ell$ avoids $Y$, because $P_\ell$ contains $\ell\in X$. E
 $\cD_K$, so it meets $Y$ at most once.\qed
 \end{enumerate}
 
-\begin{remark}[effectiveness]
+\begin{remark}[effectiveness]\label{rem:eff}
 Every step is constructive: Lemma~\ref{lem:sub} uses breadth-first search, Lemma~\ref{lem:walk}
 reads off the sequence, the separation theorem behind Theorem~\ref{thm:L1} is Lov\'asz's induction
 with Fan steps, and each Fan step is a chain of re-routings. The script \texttt{nalib.py}
@@ -430,13 +440,14 @@ Let $G=W_5$ (\texttt{EUZw}), with hub $y$, rim $1\,2\,3\,4\,5$, and $x=1$.
 \item In $H=G-1$, the odd vertices are $3$ and $4$, the rim vertices not adjacent to $1$. The vertex
 $y$ has degree four.
 \item One steering sequence is $y,2,3,4,y,3$. The final graph $K_5$ has the edges $y\ell$, $y1$,
-$y5$, $12$, $15$, $45$, and all its degrees are odd.
+$y5$, $12$, $15$, $45$, and no even vertex: $3$ is isolated and every other degree is odd.
 \item \emph{Every steering sequence returns to $y$.} Say it ends at $3$, so it uses all three edges
 $3y$, $32$, $34$. The vertex $2$ has degree two in $H$, with neighbours $y$ and $3$, and the sequence
 neither starts nor ends at $2$. So the sequence uses $y2$ as well. It thus uses two edges at its
 start $y$, and so passes through $y$ again. The case of $4$ follows by the reflection fixing $1$.
 \end{itemize}
-So the target $y=N(\ell)$, which move~(b) of~\cite{CN,L1I} forbids, cannot be avoided here.
+So the target $y$, with $N(\ell)=\{y\}$, cannot be avoided here, and move~(b) of~\cite{CN,L1I}
+forbids it.
 \end{example}
 
 \section{The boundary: proof of Theorem~\ref{thm:C}}\label{sec:boundary}
@@ -471,16 +482,37 @@ Hence $e(P)\le n(P)$ for every $P$.
 \emph{Conclusion.} If $Q(y)$ avoided $x$, it would be a path inside $C$: both of its ends lie in $C$, so
 $n(Q(y))=2>0=e(Q(y))$. Summing, $\sum_P e(P)<\sum_P n(P)$, which contradicts the two counts.\qed
 
-\begin{remark}[blocks]
-Equivalently, the edges of $\cD$ with an end in $C$ and the other in $C\cup\{x\}$ form blocks, one per
-path. Each block with both ends in $C$ passes through $x$. In Lean the argument is
-\texttt{mem\_pathEndingAt\_of\_component\_sub}, and Corollary~\ref{cor:iff} is \texttt{avoid\_iff\_reach}.
-\end{remark}
+In Lean this argument is \texttt{mem\_pathEndingAt\_of\_component\_sub}, and
+Corollary~\ref{cor:iff} is \texttt{avoid\_iff\_reach}.
 
-\begin{remark}
+\begin{theorem}[the set form is sharp]\label{thm:Cset}
+Let $G$ have no even vertex, let $Y$ be packed, and let $y\notin Y$ be odd. Suppose every vertex of the
+component $C$ of $y$ in $G-Y$ has a neighbour in $Y$. Then every Lov\'asz decomposition that meets $Y$ at
+most once has $Q(y)\cap Y\ne\emptyset$. With Theorem~\ref{thm:A}: such a decomposition with $Q(y)\cap
+Y=\emptyset$ exists if and only if $C\not\subseteq N(Y)$.
+\lean{meets\_of\_component\_sub, avoid\_packed\_iff\_reach}
+\end{theorem}
+
+\begin{proof}
+Count as before. Let $n(P)$ be the number of ends of $P$ in $C$, and let $e(P)$ be the number of edges of
+$P$ between $Y$ and $C$. Since $Y$ is packed, each vertex of $C$ has exactly one neighbour in $Y$. So
+$\sum_P e(P)=|C|=\sum_P n(P)$.
+
+Now take a path $P$ through a vertex $a\in Y$. Since the decomposition meets $Y$ at most once, $a$ is
+the only vertex of $P$ in $Y$. Split $P$
+at $a$. Each half leaves $a$ and then avoids $Y$, so it contains at most one edge between $Y$ and $C$:
+its first edge, which is such an edge exactly when the half ends in $C$. Hence $e(P)=n(P)$. A path
+avoiding $Y$ has $e(P)=0$. A path $Q(y)$ avoiding $Y$ would have $n=2$ and $e=0$, which contradicts the
+count as before.
+\end{proof}
+
+Without the condition ``meets $Y$ at most once'', a path could pass from one vertex of $Y$ through $C$
+to another. Then the halves need not end in $C$, and the count does not apply.
+
+\begin{remark}\label{rem:L1}
 For $x\not\sim y$ the hypothesis of Corollary~\ref{cor:iff} holds trivially, with the vertex $y$. So
-Corollary~\ref{cor:iff} recovers $L_1$, and Theorem~\ref{thm:C} says what fails at a neighbour: $K_{2m}$
-and the wheel with $x$ as its hub are examples. An NA witness $w$ is a vertex of the required kind at
+Corollary~\ref{cor:iff} recovers $L_1$, and Theorem~\ref{thm:C} says what fails at a neighbour. Two
+examples are $K_{2m}$, and a wheel with an odd number of spokes and $x$ as its hub. An NA witness $w$ is a vertex of the required kind at
 distance one from $y$. Instances satisfying the weak hypothesis but having no witness exist from order
 $6$ on ($14$ at order $6$; Section~\ref{sec:comp}).
 \end{remark}
@@ -488,30 +520,38 @@ $6$ on ($14$ at order $6$; Section~\ref{sec:comp}).
 \section{Consequences and remarks}\label{sec:cons}
 
 \begin{itemize}
-\item \emph{Conjecture N.} By Corollary~\ref{cor:N}, the open part of~N is the tight transfer $\TRN$
-of~\cite{CN}. The obstruction~(2) of~\cite[\S6]{CN}, ``NA'', is removed. Obstructions~(1) (the
+\item \emph{Conjecture N.} By Corollary~\ref{cor:N}, N reduces to the tight transfer $\TRN$
+of~\cite{CN}. $\TRN$ is stronger than N. Given NA, N is equivalent to the restriction of $\TRN$ that
+the proof of~\cite[Thm.~4.6]{CN} uses, in which the child has a witness. The obstruction~(2) of~\cite[\S6]{CN}, ``NA'', is removed. Obstructions~(1) (the
 all-tight configurations) and~(3) (the triangle at an even vertex of degree two) remain, and both
 concern $\TRN$. Through~\cite[Prop.~9.2]{DL}, DL(1) now follows from $\TRN$ outside near twins.
 \item \emph{Lemma~NP and the degree-two theorem of~\cite{DL}.}
   \begin{itemize}
-  \item Corollary~\ref{cor:na} gives $Q(y)\not\ni x$ whenever $y$ has a neighbour not adjacent to $x$.
-  This is stronger than $Q(x)\ne Q(y)$.
-  \item The theorem \texttt{avoid\_deg\_two} of~\cite{DL} ($N(g)=\{a,b\}$, $N(a)\cap N(b)=\{g\}$,
-  $d(a)\ge3$) follows from the degree-two case: every neighbour $w\ne g$ of $a$ is a witness.
+  \item Corollary~\ref{cor:na} gives $Q(y)\not\ni x$ whenever $y$ has a neighbour $w\ne x$ not
+  adjacent to $x$. That is stronger than $Q(x)\ne Q(y)$, but needs the witness.
+  \item The theorem \texttt{avoid\_deg\_two} of~\cite{DL} ($N(g)=\{a,b\}$, $ab\notin E$,
+  $N(a)\cap N(b)=\{g\}$, $d(a)\ge3$) follows from the degree-two case: every neighbour $w\ne g$ of $a$ is a witness.
   \end{itemize}
 \item \emph{The reformulations R1 and R2} proposed for this work were checked:
   \begin{itemize}
   \item \emph{R1.} Separating $x$ and $y$ in $G-xy-yw+xw$ suffices for NA. This is correct, and the
   common neighbours of $x,y$ are the same in both graphs. The proof above does not use R1.
-  \item \emph{R2.} The graph is $G-xy+yt$, with $Q(t)$ passing through $y$ and both $Q(t),Q(y)$
-  avoiding $x$. Replacing $t$ by $x$ shows that R2 is equivalent to a stronger statement: some
-  Lov\'asz decomposition of $G$ has $Q(y)\not\ni x$ \emph{and} $xy$ as the terminal edge of $Q(x)$.
-  For the converse, rename the end $x$ of $Q(x)$ to $t$. The stronger statement held in all NA
-  instances of orders $4$ and $6$, by brute force. It is not proved.
+  \item \emph{R2.} Let $t$ be a new vertex and $G''=G-xy+yt$, so $t$ is a leaf at $y$ and $x$ is the
+  only possible even vertex. R2 asks for a Lov\'asz decomposition of $G''$ in which $Q(t)$ passes
+  through $y$ and both $Q(t)$ and $Q(y)$ avoid $x$. Replacing $t$ by $x$ shows that R2 is equivalent
+  to a stronger statement: some Lov\'asz decomposition of $G$ has $Q(y)\not\ni x$ \emph{and} $xy$ as
+  the terminal edge of $Q(x)$. For the converse, rename the end $x$ of $Q(x)$ to $t$.
+    \begin{itemize}
+    \item The stronger statement held in all $3$, $129$ and $4{,}970$ NA instances of orders $4$, $6$
+    and $8$. Orders $4$ and $6$ were checked by brute force (\texttt{r2check.py}), order $8$ by the
+    exact solver (\texttt{r2exact.py}).
+    \item It is not proved.
+    \end{itemize}
   \end{itemize}
 \item \emph{Leaf tails in the move calculus.} If the tail $c$ is a leaf, the move~(b)
 of~\cite[Thm.~3.1]{L1I} remains valid for every target $u\in N(g)\setminus(A\cup\{c\})$, including
-$u\in N(c)$. The proof of Lemma~\ref{lem:step} applies verbatim with $X=A\cup\{c\}$. Adding this and the
+$u\in N(c)$. The leaf lies on exactly one path, namely $Q_c$. In the Fan step of Lemma~\ref{lem:step}
+that path keeps its vertex set or gains $u\notin A$, so $Q_c$ still avoids $A$. Adding this and the
 pendant-leaf move to the calculus would certify every instance of NA through a steering sequence,
 although such a sequence may be long.
 \end{itemize}
@@ -543,7 +583,8 @@ construction. It checks that the output partitions $E(G)$ into paths, that every
 $d(v)\bmod2$ ends, that $Q(y)\cap Y=\emptyset$, and that every path meets $Y$ at most once.
 \item \emph{The exact solver} (\texttt{exact.py}) chooses $Q(y)$ and decides the rest by a memoised
 search over paths. It agrees with a brute-force enumeration of all transition systems
-(\texttt{brute\_all}) on all $18$ ordered pairs $x\sim y$ of order $4$ and $198$ of order~$6$.
+(\texttt{brute\_all}) on all $18$ ordered pairs $x\sim y$ of order $4$, and on $198$ of the $228$
+of order~$6$. The other $30$, in $K_6$, exceed the brute force's cap.
 \end{itemize}
 
 \subsection*{Results}
@@ -556,8 +597,8 @@ order $4$ & construction, exact, brute force & $18$ & $3$ & $3$ & all built; goo
 order $6$ & construction, exact, brute force & $228$ & $129$ & $143$ & all built; good $\Leftrightarrow$ weak\\
 order $8$ & construction; exact on the non-weak pairs & \textsc{n8pairs} & $4{,}970$ & \textsc{n8weak} & \textsc{n8result}\\
 order $10$ & construction & $1{,}484{,}200$ & $1{,}305{,}621$ & $1{,}448{,}874$ & all built and verified\\
-order $12$, slices & construction, set form & \textsc{n12pairs} & \textsc{n12na} & \textsc{n12weak} & \textsc{n12result}\\
-random, orders $12$--$20$ & construction, set form & \textsc{rndpairs} & & \textsc{rndweak} & \textsc{rndresult}\\
+order $12$, slices $17$, $517$ of $20{,}000$ & construction, set form & $697{,}272$ & $648{,}469$ & $690{,}657$ & all built and verified\\
+random, orders $12,14,16,20$ & construction, set form & $402{,}664$ & $389{,}542$ & $398{,}380$ & all built and verified\\
 \bottomrule
 \end{tabular}}
 \end{center}
@@ -567,8 +608,16 @@ random, orders $12$--$20$ & construction, set form & \textsc{rndpairs} & & \text
 were built and verified.
 \item ``Good $\Leftrightarrow$ weak'' is the exact solver's confirmation of Corollary~\ref{cor:iff}: the
 non-weak pairs ($15$ at order $4$, $85$ at order $6$) are all bad.
-\item The set form was tested for packed $Y\ni x$ with $|Y|\le3$: $16$ instances at order $6$, and
-the counts in \texttt{data/}.
+\item The set form was tested for packed $Y\ni x$ satisfying its hypothesis, all built and verified:
+  \begin{itemize}
+  \item $|Y|\le3$: $16$ instances at order $6$ and $1{,}309$ at order $8$ (\texttt{data/n8.txt}), and
+  $180{,}889$ on the two order-$12$ slices (\texttt{data/n12\_slice*.txt});
+  \item one random maximal packed $Y$ per pair: $94{,}807$ instances in the random runs
+  (\texttt{data/random.txt}).
+  \end{itemize}
+\item The random graphs are $G(N,p)$ with $p$ uniform in $[0.15,0.7]$, made all-odd by toggling the
+edges of a random pairing of the even vertices. They may be disconnected. There are $1{,}000$ graphs
+for each $N$.
 \end{itemize}
 
 \section{Formalisation}\label{sec:lean}
@@ -594,6 +643,7 @@ Corollary~\ref{cor:na} & \texttt{avoid\_of\_reach}, \texttt{neighbourAvoid}, \te
 Corollary~\ref{cor:N} & \texttt{conjNDegTwoOn}, \texttt{conjN\_of\_tightTransferN}, \texttt{conjN\_of\_TR}\\
 Theorem~\ref{thm:C} & \texttt{mem\_pathEndingAt\_of\_component\_sub} (with \texttt{list\_sum\_lt\_sum})\\
 Corollary~\ref{cor:iff} & \texttt{avoid\_iff\_reach}\\
+Theorem~\ref{thm:Cset} & \texttt{meets\_of\_component\_sub}, \texttt{avoid\_packed\_iff\_reach}\\
 \bottomrule
 \end{tabular}}
 \end{center}
@@ -608,9 +658,9 @@ $w$ of positive degree and no neighbour in $Y$.
 
 \section{What remains}\label{sec:open}
 \begin{enumerate}
-\item $\TRN$: with NA proved, it is the whole of Conjecture~N (Corollary~\ref{cor:N}).
+\item $\TRN$: with NA proved, Conjecture~N reduces to it (Corollary~\ref{cor:N}).
 \item The R2 strengthening: $Q(y)\not\ni x$ together with $xy$ terminal in $Q(x)$. It held at orders
-$4$ and $6$.
+$4$, $6$ and $8$.
 \item Graphs with an even vertex. The leaf trick then produces two even vertices, and the steered chain
 breaks: its intermediate graphs would have two even vertices. This is where N differs from NA.
 \item Whether the set form extends to the sparse sets of~\cite{MS} (every vertex with at most one

@@ -1,0 +1,22 @@
+# Outputs of the audit runs (A-na), 2026-11-28
+## run_na.py (manuscript), orders 4, 6
+graphs=6 allodd=2 pairs=18 na=3 weak=3 weak_not_na=0 neither=15 construct_ok=3 exact_good=3 exact_bad=15 mismatch=0 brute_checked=18 set_instances=0 set_ok=0 trail_bf=3
+graphs=112 allodd=13 pairs=228 na=129 weak=143 weak_not_na=14 neither=85 construct_ok=143 exact_good=143 exact_bad=85 mismatch=0 brute_checked=198 set_instances=16 set_ok=16 trail_bf=143
+## audit_run.py --sets --lds, orders 4, 6
+graphs=2 pairs=18 na=3 weak=3 good=3 iff_fail=0 exact_disagree=0 built=6 verify_fail=0 fan_steps=6 fan_bad=0 l1_bad=0 steer_bad=0 target_y=0 seq_with_y_target=0 lds_checked=81 identity_fail=0 sets=0 sets_iff_fail=0 sets_built=0 sets_verify_fail=0
+graphs=13 pairs=228 na=129 weak=143 good=143 iff_fail=0 exact_disagree=0 built=286 verify_fail=0 fan_steps=1235 fan_bad=0 l1_bad=0 steer_bad=0 target_y=47 seq_with_y_target=47 lds_checked=39265 identity_fail=0 sets=35 sets_iff_fail=0 sets_built=16 sets_verify_fail=0
+## audit_run.py --every 40, order 8 (5 graphs, with both exact solvers)
+graphs=5 pairs=140 na=108 weak=124 good=124 iff_fail=0 exact_disagree=0 built=248 verify_fail=0 fan_steps=2270 fan_bad=0 l1_bad=0 steer_bad=0 target_y=124 seq_with_y_target=113 lds_checked=0 identity_fail=0 sets=0 sets_iff_fail=0 sets_built=0 sets_verify_fail=0
+## audit_run.py --noexact, order 8 (all 224 graphs)
+graphs=224 pairs=6562 na=4970 weak=5779 good=0 iff_fail=0 exact_disagree=0 built=11558 verify_fail=0 fan_steps=98659 fan_bad=0 l1_bad=0 steer_bad=0 target_y=5358 seq_with_y_target=4870 lds_checked=0 identity_fail=0 sets=0 sets_iff_fail=0 sets_built=0 sets_verify_fail=0
+## nonweak8.py (stopped by a 1700 s timeout after 200 of 224 graphs): 578 non-weak pairs, all bad
+## mutate.py, order 6
+mutants=858 agree=858 disagree=0 mine_rejects=715 theirs_rejects=715 bad_lds=49444 bad_lds_rejected=49444
+## wheel.py: 24 steering sequences, ends {3,4}, all return to y; K_5 vertex 3 has degree 0
+## r2_indep.py: order 4: 3/3; order 6: 129/129
+## random_audit.py
+N=8 seed=1 graphs=300 pairs=4642 weak=2069 built=4138 fail=0 sets=1947 sets_weak=1699 sets_fail=0 iff_checked=4642 iff_fail=0 set_iff_checked=1947 set_iff_fail=0
+N=10 seed=2 graphs=15 pairs=398 weak=251 built=502 fail=0 sets=235 sets_weak=227 sets_fail=0 iff_checked=398 iff_fail=0 set_iff_checked=235 set_iff_fail=0
+N=16 seed=3 graphs=100 pairs=6764 weak=5982 built=11964 fail=0 sets=5916 sets_weak=5775 sets_fail=0 iff_checked=0 iff_fail=0 set_iff_checked=0 set_iff_fail=0
+N=24 seed=4 graphs=20 pairs=3476 weak=3361 built=6722 fail=0 sets=3281 sets_weak=3267 sets_fail=0 iff_checked=0 iff_fail=0 set_iff_checked=0 set_iff_fail=0
+## Lean: lake build GallaiLean.NeighbourAvoid OK (18385 jobs); lake build OK (18420 jobs); Axioms.lean: all 17 theorems [propext, Classical.choice, Quot.sound]

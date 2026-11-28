@@ -11,6 +11,7 @@ For every graph with all degrees odd, every ordered pair (y, x) with x ~ y:
     the weak hypothesis holds; --exact-neither: the same, only for the pairs outside the weak
     hypothesis (the others are certified by the construction);
   * --brute: also cross-check avoid_exact against brute-force enumeration (small graphs only);
+  * --progress: print the running counts after every graph;
   * --sets: also run the packed-set form for every packed Y with y adjacent to one vertex of Y
     (|Y| <= 3) satisfying the weak hypothesis.
 """
@@ -41,6 +42,7 @@ for line in sys.stdin:
             brute = exact.brute_all(G)
         except RuntimeError:
             brute = None
+            print("brute force cap exceeded, skipped:", line, flush=True)
     for y in G:
         for x in sorted(G[y]):
             stats["pairs"] += 1
@@ -66,7 +68,7 @@ for line in sys.stdin:
                 stats["construct_ok"] += 1
                 if "--trailbf" in args:
                     C = {v: set(H[v]) for v in comp}
-                    assert exact_trail(C, y) if False else nalib.trail_exists_bruteforce(C, y)
+                    assert nalib.trail_exists_bruteforce(C, y)
                     stats["trail_bf"] += 1
             if "--exact" in args or ("--exact-neither" in args and not weak):
                 Q = exact.avoid_exact(G, y, {x})
@@ -102,5 +104,8 @@ for line in sys.stdin:
                             print("SET FAIL", line, y, Y, msg, flush=True)
                             sys.exit(1)
                         stats["set_ok"] += 1
+
+    if "--progress" in args:
+        print("graph", stats["allodd"], line, " ".join("%s=%d" % kv for kv in stats.items()), flush=True)
 
 print(" ".join("%s=%d" % kv for kv in stats.items()), flush=True)

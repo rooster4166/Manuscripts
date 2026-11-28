@@ -9,7 +9,8 @@ What was audited (md5 unchanged from start to end of the audit):
 | `manuscripts/na/na.tex` (631 lines) | `44d0f4c1…6e6f6` |
 | `lean/GallaiLean/NeighbourAvoid.lean` (1386 lines) | `35ae7761…fb5e5` |
 | `manuscripts/na/scripts/nalib.py` | `64a293e9…2e68860` |
-| `exact.py`, `run_na.py`, `random_na.py`, `r2check.py`, `r2exact.py` | see `A-na-scripts/` log |
+| `exact.py` / `run_na.py` / `random_na.py` | `d11a9008…` / `1af20fe6…` / `bd300232…` |
+| `r2check.py` / `r2exact.py` | `877dd908…` / `3605284f…` |
 
 Numbering is that of the compiled draft: Conjecture 1.1 (NA), Theorem 1.2 (set form, `thm:A`),
 Corollary 1.3 (NA), Theorem 1.4 (boundary, `thm:C`), Corollaries 1.5–1.6; Lemma 2.1 (Fan),
@@ -19,8 +20,8 @@ computations; §9 Lean; §10 open problems.
 
 Audit scripts are in `research/audit/A-na-scripts/` (see the end of this file). I did not edit
 the manuscript, the Lean file or the scripts, and I did not commit. Note: a concurrent session
-committed some of my scratch scripts (`f5a9fa4`, `2e91d75`) while the audit was running; I did not
-make those commits.
+committed my in-progress scripts in its checkpoints (`2e91d75`, `f5a9fa4`, `261a2eb`, `56b264f`,
+`8c636d5`) while the audit was running; I did not make those commits.
 
 ## Verdict in one paragraph
 
@@ -31,7 +32,7 @@ allowed. The counting proof of Theorem 1.4 is correct. The Lean file builds with
 the axioms are only `propext`, `Classical.choice` and `Quot.sound`. The headline Lean statements
 say what the manuscript says, with harmless redundancies. My own exact solver and verifier, which
 use none of the manuscript's code, reproduce every number for orders 4 and 6. They also confirm the
-iff of Corollary 1.5 and of the set form on all of order 6 (K6 included), on half of order 8, and
+iff of Corollary 1.5 and of the set form on all of order 6 (K6 included), on 578 of the 783 bad pairs of order 8, and
 on random disconnected graphs.
 
 The errors are in the surrounding text and the computational section:
@@ -56,7 +57,7 @@ None of them touches a proof.
 | 8 | Theorem 1.2 (set form) | SOUND | §5 proof checked step by step. Lean `avoid_packed_of_reach`. |
 | 9 | Corollary 1.3 | SOUND | Y = {x}. The witness lies in the component. |
 | 10 | Theorem 1.4 (boundary) | SOUND | The count is correct. The per-path identity holds on 39,265 decompositions. |
-| 11 | Corollary 1.5 | SOUND | Verified on all 228 pairs of order 6 and on sampled order 8 and random graphs. |
+| 11 | Corollary 1.5 | SOUND | Verified by my solver on all 228 pairs of order 6, on 578 of the 783 non-weak pairs of order 8, and on 5,040 random pairs of orders 8 and 10. |
 | 12 | Corollary 1.6 (1)–(3) | SOUND | Lean compositions with `ConjN.lean`, checked. |
 | 13 | §1 "Status" | GAP (minor) | Overstates what is formalised. Lemma 2.1's bijection and Lemma 4.3's "t ∈ C odd" are not in the Lean statements. Remarks 5.1, 6.1 and 6.2 are also paper-only. |
 | 14 | §1 "The idea"; "three features" | SOUND | conj-n also has the trivial move (i) in no-even-vertex graphs, but it is vacuous for NA. |
@@ -64,7 +65,7 @@ None of them touches a proof.
 | 16 | Theorem 2.2 (L1 set form) | SOUND | Hypotheses match RD Thm 6.3. |
 | 17 | Lemma 2.3 (pendant leaf) | SOUND | |
 | 18 | Definition 3.1 and its `Steer` equivalence | SOUND | |
-| 19 | Lemma 3.2 (one Fan step) | SOUND | Z(u) = ∅ and b(z) = 1. Confirmed at 3,505 logged back-steps. |
+| 19 | Lemma 3.2 (one Fan step) | SOUND | Z(u) = ∅ and b(z) = 1. Confirmed at 99,894 logged back-steps (orders 6 and 8). |
 | 20 | Lemma 3.3 (steered chain) (1)–(3) | SOUND | Parities checked by hand and by machine. |
 | 21 | Lemma 4.1 (walking along S) | SOUND | (S1)–(S4) inheritance checked case by case. The induction is well founded. |
 | 22 | Lemma 4.2 (toggling) | SOUND | |
@@ -72,9 +73,9 @@ None of them touches a proof.
 | 24 | §5 opening (L1 case; x unique) | SOUND | |
 | 25 | §5 (a)–(c) | SOUND | Degree formulas correct. Every odd vertex of H is free. |
 | 26 | §5 (d) (S1)–(S4) | SOUND | |
-| 27 | §5 (e) L1 at the bottom | SOUND | Hypotheses hold. Machine-checked at every bottom. |
+| 27 | §5 (e) L1 at the bottom | SOUND | Hypotheses hold. Machine-checked at every bottom (orders 6 and 8). |
 | 28 | §5 (f)–(g) | SOUND | |
-| 29 | Target y allowed | SOUND | Lemma 3.2 needs only u ∉ X, and y ∉ X. Target y occurs in 47 of 286 sequences at order 6 and 113 of 248 in the order-8 sample; all verified. |
+| 29 | Target y allowed | SOUND | Lemma 3.2 needs only u ∉ X, and y ∉ X. Target y occurs in 47 of 286 sequences at order 6 and 4,870 of 11,558 at order 8; all verified. |
 | 30 | Remark 5.1 | SOUND | |
 | 31 | Example 5.2 (wheel) | SOUND, one **ERROR** (wording) | "All its degrees are odd" is false: vertex 3 is isolated in K5. "y = N(ℓ)" should read N(ℓ) = {y}. The other claims were machine-checked (24 steering sequences, all return to y). |
 | 32 | §6 proof of Theorem 1.4 | SOUND | |
@@ -91,9 +92,9 @@ None of them touches a proof.
 | 43 | §8 Tools: verifier independent and sound | SOUND | It shares only trivial helpers. It agrees with my verifier on 858 mutants and rejects all 49,444 decompositions in which x ∈ Q(y). |
 | 44 | §8 Tools: exact vs brute force "18 … and 198 of order 6" | GAP (minor) | Brute force skips K6 (the cap): 198 of 228. My solver covers all 228. |
 | 45 | §8 results table, rows for orders 4 and 6 | SOUND | Reproduced exactly. |
-| 46 | §8 results table, rows for order 8, order 12 and random | **ERROR** | Unfilled placeholders (`\textsc{n8pairs}`, …). Data files are empty or still being written. |
+| 46 | §8 results table, rows for order 8, order 12 and random | **ERROR** | Unfilled placeholders (`\textsc{n8pairs}`, …). The order-12 and random data have since finished; the order-8 run is still going. |
 | 47 | §8 results table, order-10 row | SOUND | The rerun (both routines) finished: 1,484,200 / 1,305,621 / 1,448,874, all built. |
-| 48 | §8 bullets (NA counts agree with CN; good ⇔ weak; set form 16) | SOUND | "and the counts in data/" points to files that do not exist yet. |
+| 48 | §8 bullets (NA counts agree with CN; good ⇔ weak; set form 16) | SOUND | "and the counts in data/" names no file. The counts are now in the order-12 slice files and `random.txt`. |
 | 49 | §9 Lean claims (no sorry, axioms, 18,420 jobs) | SOUND | Re-run here. |
 | 50 | §9 mapping table | GAP (minor) | See items 13 and 15. New Lean theorems (`meets_of_component_sub`, `avoid_packed_iff_reach`) are not mentioned. |
 | 51 | §10 (1) "TRN … is the whole of Conjecture N" | UNCLEAR | Same as item 35. |
@@ -127,7 +128,7 @@ I re-derived every step. The points the commissioning brief asked about:
 
 2. **Fan's hypothesis b(t) > |Z(u)| at every step.** This holds in the stronger form b(t) = 1 and
    |Z(u)| = 0. I instrumented `nalib.fan` during the back-steps only, not inside the separation
-   theorem's own Case I/II calls. Over 1,235 back-steps at order 6 and 2,270 in a sample of order 8,
+   theorem's own Case I/II calls. Over 1,235 back-steps at order 6 and 98,659 at order 8 (all 224 graphs, both routines),
    every step had b(t) = 1 and Z(u) = ∅ (`audit_run.py`, fields `fan_steps`, `fan_bad`).
 
 3. **L1 at the bottom of the chain.**
@@ -145,7 +146,7 @@ I re-derived every step. The points the commissioning brief asked about:
    side remark the paper could add: ℓ can never be a chain vertex x_{i+1}. That would need ℓ to
    precede u = y on a path read from an end other than ℓ, but ℓ is an end.
    - At order 6 the target y occurs in 47 of the 286 constructed sequences.
-   - In the order-8 sample it occurs in 113 of 248.
+   - At order 8 it occurs in 4,870 of 11,558.
    - All of them verified.
 
 5. **Section 5, steps (a)–(g).**
@@ -258,7 +259,8 @@ cross-check for K6's 30 pairs. The text "198 of order 6" is accurate. "All 18 �
 | order 4 | 18 | 3 | 3 | 3 | 0 | 0 | 6/6 | – |
 | order 6 (all, K6 included) | 228 | 129 | 143 | 143 | 0 | 0 | 286/286 | 0 / 16 / 0 (35 packed sets, 19 non-weak all bad) |
 | order 8, every 40th graph | 140 | 108 | 124 | 124 | 0 | 0 | 248/248 | – |
-| order 8, every 2nd graph | (filled in below) | | | | | | | |
+| order 8, all 224 graphs, constructions only (`--noexact`) | 6,562 | 4,970 | 5,779 | – | – | – | 11,558/11,558 | – |
+| order 8, non-weak pairs, my solver only (`nonweak8.py`, stopped by a 1,700 s limit after 200 of 224 graphs) | 578 of 783 | | | 0 good | 0 | – | – | – |
 
 On every construction I also checked the steering sequence against Definition 3.1 and Lemma
 3.3(1) with my own code (`steer_bad=0`). Order-8 classification counts, for the table
@@ -270,7 +272,9 @@ which exercises the "odd vertices outside C" part of A):
 | N | graphs | weak pairs | constructions verified | iff checked / fails | random packed Y: checked iff / fails; built / verify fails |
 |---|---|---|---|---|---|
 | 8 | 300 | 2,069 | 4,138 / 4,138 | 4,642 / 0 | 1,947 / 0; 1,699 / 0 |
-| (others filled in below) | | | | | |
+| 10 | 15 | 251 | 502 / 502 | 398 / 0 | 235 / 0; 227 / 0 |
+| 16 | 100 | 5,982 | 11,964 / 11,964 | – | –; 5,775 / 0 |
+| 24 | 20 | 3,361 | 6,722 / 6,722 | – | –; 3,267 / 0 |
 
 **Verifier soundness (mutation test, `mutate.py`).**
 - For every weak pair at order 6 the constructed output was corrupted 858 ways: a path dropped, an
@@ -284,15 +288,23 @@ which exercises the "odd vertices outside C" part of A):
 **The data behind the table.**
 - Order 10. The row's numbers first came from commit `ba80a1c`, whose `na_construct` used only the
   T-join/Euler-trail routine. The paper's routine (Lemmas 4.1/4.3) and "both routines on every
-  instance" were added afterwards. The rerun with both routines has now finished
+  instance" were added afterwards. The rerun with both routines (started 23:58 with the current
+  `nalib.py`/`run_na.py`) has now finished
   (`data/n10_0.txt`, `data/n10_1.txt`: construct_ok = weak = 730,674 + 718,200), and the row is
   supported.
 - Order 8, order-12 slices and random. Still placeholders: `\textsc{n8pairs}`, `n8weak`, `n8result`,
   `n12pairs`, `n12na`, `n12weak`, `n12result`, `rndpairs`, `rndweak`, `rndresult`. The random
   row also has an empty NA cell.
-- At audit time `data/n8.txt`, `data/r2_n8.txt` and `data/n12_slice17of20000.txt` were empty.
-  `data/random.txt` had N = 12, 14, 16, all built.
-- "The counts in `data/`" for the set form refers to files that do not exist yet.
+- At the end of the audit these runs had finished:
+  - `data/random.txt`: N = 12, 14, 16, 20, every weak pair and set built and verified;
+  - both order-12 slices: construct_ok = weak, set_ok = set_instances;
+  - `data/r2_n8.txt`: R2 holds in 4,970/4,970.
+
+  `data/n8.txt` (construction plus exact on the non-weak pairs) was still empty and running. The
+  numbers now exist for every placeholder except the order-8 result. The text still has to be
+  written: R2 at order 8 is not mentioned in §7 or §10, which say "orders 4 and 6".
+- "The counts in `data/`" for the set form: these now exist (`set_instances` in the order-12 slice
+  files, `sets` in `random.txt`), but the text should name the files and give the numbers.
 
 **Code-level remarks (none affects a result).**
 - `nalib.separation` documents "X packed" but never asserts it. The final verifier would catch any
@@ -385,8 +397,14 @@ X.
 1. **§8 table.** Replace the placeholders (`\textsc{n8pairs}`, `n8weak`, `n8result`,
    `n12pairs`, `n12na`, `n12weak`, `n12result`, `rndpairs`, `rndweak`, `rndresult`). Fill the
    empty NA cell of the random row, or drop those rows until the runs finish. Make "the counts in
-   `data/`" point to files that exist.
+   `data/`" name the files.
    - For order 8 the classification is 6,562 pairs, 4,970 NA and 5,779 weak (783 non-weak).
+   - The order-12 slices and random rows can be filled from `data/` now: slices 17 and 517 have
+     217,750 + 479,522 pairs, 199,689 + 448,780 NA and 215,324 + 475,333 weak, all built, with
+     57,463 + 123,426 set instances, all built. Random N = 12–20 has 402,664 pairs, 389,542 NA and
+     398,380 weak, all built.
+   - If R2 at order 8 (`data/r2_n8.txt`, 4,970/4,970) is to be used, update §7 and §10, which still
+     say "orders 4 and 6".
 2. **§1, "Why it matters", fourth bullet.** "22 of the 215 NA instances of order 6 and 2,451 of
    the 9,558 of order 8" should be "22 of the 129 … and 2,451 of the 4,970". 215 and 9,558 are the
    sizes of N1 ∪ NA in conj-n's closure run (`tables.txt`: base = 86 and 4,588).
@@ -423,7 +441,7 @@ X.
   "target y is allowed" point concrete for readers used to move (b).
 - State the set-form boundary (`meets_of_component_sub`, `avoid_packed_iff_reach`: Theorem 1.2 is
   sharp among decompositions meeting Y at most once). It is already in Lean, and my solver confirms
-  it on all 35 packed sets at order 6 and 1,947 random instances.
+  it on all 35 packed sets at order 6 and 2,182 random instances of orders 8 and 10.
 - Scripts:
   - Assert packedness in `nalib.separation`.
   - Delete the stale "trail lemma of the manuscript" references, or add a proof of the descent in
@@ -446,15 +464,20 @@ X.
 | `r2_indep.py` | independent check of the R2 data |
 | `random_audit.py` | random disconnected graphs with isolated vertices and random packed sets; iff checks at small N |
 | `Axioms.lean` | `#print axioms` and `#check` of the headline theorems |
+| `nonweak8.py` | my solver on the non-weak pairs of order 8 (Theorem 1.4 says all are bad) |
+| `logs/results.txt`, `logs/nonweak8_partial.txt` | raw outputs of every run quoted here |
 
 Commands used:
 ```
 cd research/audit/A-na-scripts
 nauty-geng -cq 6 | python3 -B audit_run.py --sets --lds
-nauty-geng -cq 8 | python3 -B audit_run.py --every 2
+nauty-geng -cq 8 | python3 -B audit_run.py --every 40      # both exact solvers
+nauty-geng -cq 8 | python3 -B audit_run.py --noexact       # all constructions
+nauty-geng -cq 8 | timeout 1700 python3 -B nonweak8.py
 nauty-geng -cq 6 | python3 -B mutate.py
 python3 -B wheel.py
 for n in 4 6; do nauty-geng -cq $n | python3 -B r2_indep.py; done
-python3 -B random_audit.py 8 300 1 --exact; python3 -B random_audit.py 16 100 3
+python3 -B random_audit.py 8 300 1 --exact; python3 -B random_audit.py 10 15 2 --exact
+python3 -B random_audit.py 16 100 3; python3 -B random_audit.py 24 20 4
 source ~/.elan/env && cd lean && lake env lean ../research/audit/A-na-scripts/Axioms.lean
 ```
