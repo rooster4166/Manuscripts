@@ -153,6 +153,12 @@ EMM sufficiency work is **stopped**.
       - **`conjN_of_core2`: Conjecture N ⇐ TRN restricted to core instances that have no schedule.**
     - Data at order 9: 72% of core TRN tests are scheduled, so 25,928 remain. 90% of N-instances are scheduled.
     - The smallest unscheduled instance is again the degree-2 triangle shape (Dqw).
+  - **Finished** (949fa02). Manuscript `manuscripts/trn` (14 pp.); audits A34 and A35 applied, with Section 6 and TRNSteer SOUND.
+    - **TRN is not proved.**
+    - **Residual:** TRN on the unscheduled core, 8,777 triples at order 9.
+    - Prop 6.10: if N(y) ⊆ N[g], no schedule exists.
+    - TRN-E ⇒ EE.
+    - Data: 0 violations at orders 5, 7, 9 and on the order-11 slices.
 - **conj-n** (session_01FxXpVhHHRFGeA38FqyJCC8, branch `claude/conj-n`): prove Conjecture N by counterexample-guided synthesis of an avoidance class closed under the proved moves.
   - **Milestone 1 (82a43a7, merged; build green; axioms checked).** Lean `conjN_of_TR_neighbourAvoid`: **Conjecture N ⇐ TR (l1-induction Conj 4.1) + TR for tails adjacent to g + NA**.
   - NA is neighbour avoidance in all-odd graphs: if x ~ y and y has a neighbour w ≠ x with w ≁ x, then Q(y) can avoid x.
