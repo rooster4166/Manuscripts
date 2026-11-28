@@ -5,9 +5,11 @@ usage: nauty-geng -c N | python3 run_na.py [--exact] [--brute] [--sets]
 For every graph with all degrees odd, every ordered pair (y, x) with x ~ y:
   * classify: NA hypothesis (witness w in N(y) - N[x]); weak hypothesis (the component of y in
     G - x contains a vertex not adjacent to x); neither;
-  * if the weak hypothesis holds: run na_construct and verify the output independently;
+  * if the weak hypothesis holds: run na_construct with both steering methods (the farthest-vertex
+    toggling of Lemmas 4.1/4.3, and the T-join/Euler trail) and verify each output independently;
   * --exact: decide the instance exactly (exact.avoid_exact), and check that it is good exactly when
-    the weak hypothesis holds;
+    the weak hypothesis holds; --exact-neither: the same, only for the pairs outside the weak
+    hypothesis (the others are certified by the construction);
   * --brute: also cross-check avoid_exact against brute-force enumeration (small graphs only);
   * --sets: also run the packed-set form for every packed Y with y adjacent to one vertex of Y
     (|Y| <= 3) satisfying the weak hypothesis.
@@ -55,17 +57,18 @@ for line in sys.stdin:
                 stats["neither"] += 1
             if weak:
                 stats["weak"] += 1
-                D, W = nalib.na_construct(G, y, {x})
-                ok, msg = nalib.check_na_output(G, D, y, {x})
-                if not ok:
-                    print("CONSTRUCT FAIL", line, y, x, msg, flush=True)
-                    sys.exit(1)
+                for method in ("paper", "tjoin"):
+                    D, W = nalib.na_construct(G, y, {x}, method)
+                    ok, msg = nalib.check_na_output(G, D, y, {x})
+                    if not ok:
+                        print("CONSTRUCT FAIL", method, line, y, x, msg, flush=True)
+                        sys.exit(1)
                 stats["construct_ok"] += 1
                 if "--trailbf" in args:
                     C = {v: set(H[v]) for v in comp}
                     assert exact_trail(C, y) if False else nalib.trail_exists_bruteforce(C, y)
                     stats["trail_bf"] += 1
-            if "--exact" in args:
+            if "--exact" in args or ("--exact-neither" in args and not weak):
                 Q = exact.avoid_exact(G, y, {x})
                 good = Q is not None
                 stats["exact_good" if good else "exact_bad"] += 1
