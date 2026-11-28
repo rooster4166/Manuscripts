@@ -13,6 +13,7 @@ Session `claude/nodata`. Manuscript: `nodata.tex` / `nodata.pdf` (working draft)
 | `test1_fatTheta` | Test1 on `K_{3,t} + h₂h₃` at `h₁`, every even `t ≥ 2`. |
 | `test1At_of_twins`, `test2At_of_twins` | twin reductions for any `J`. |
 | `ForestLN`, `CherryList`, `CherryLN`, `test1At_of_cherryLN` | the cherry conjecture CL and CL ⇒ Test1 at roots with cherry data. |
+| `lN_of_cherryLN`, `test1At_of_LN_matching` | CL ⇒ `LN` (ConstrainedLovasz.lean); `LN` ⇒ Test1 at every root with matching data. |
 | `fan_root_move`, `test1At_of_move1`, `test1At_of_move2`, `test1At_of_move1'`, `test1At_of_move2'`, `delVert_eq_delList` | the root moves M1, M2 (MR Thm 145's one-edge steps), from `fan_single`. |
 
 ## Scripts

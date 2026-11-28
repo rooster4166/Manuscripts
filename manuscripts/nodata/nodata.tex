@@ -108,7 +108,9 @@ Let $F$ have no vertex of even degree and let $c_1a_1,\dots,c_ma_m$ be pairwise 
 $c_ia_i\notin E(F)$. Then some Lov\'asz decomposition of $F$ has $a_i\notin V(Q(c_i))$ for all $i$.
 \end{conjecture}
 
-So $L_N$ gives (T1) and (T2) at every root with matching data (synthesis \S32). Matching data depend
+So $L_N$ gives (T1) and (T2) at every root with matching data (synthesis \S32). For (T1)
+this is now a single Lean theorem, \texttt{test1At\_of\_LN\_matching}, from the statement
+\texttt{LN} of \texttt{ConstrainedLovasz.lean}. Matching data depend
 only on $(J,z)$, not on $r$. They are often absent: $8{,}112$ of the $25{,}340$ (T1) roots of
 order at most $9$ have none \cite{T2}. This note is about those roots.
 
@@ -127,6 +129,8 @@ Root moves M1, M2 (Theorem~\ref{thm:moves}) & proved; Lean \texttt{test1At\_of\_
 \texttt{\_move2}, and their \texttt{'} forms\\
 CL $\Rightarrow$ (T1) at roots with cherry data (Proposition~\ref{prop:CLT1}) & proved; Lean
 \texttt{test1At\_of\_cherryLN}\\
+CL $\Rightarrow$ $L_N$; $L_N$ $\Rightarrow$ (T1) at roots with matching data & proved; Lean
+\texttt{lN\_of\_cherryLN}, \texttt{test1At\_of\_LN\_matching}\\
 CL $\Rightarrow$ (T2) at roots with cherry data (Proposition~\ref{prop:CLT1}) & proved on paper
 (Lean has the lift, not the full parity of $M$)\\
 Star Hall condition is necessary (Lemma~\ref{lem:hall}) & proved\\
@@ -348,6 +352,11 @@ If a sequence of moves leads from $(J,z,r)$ to a state $(J^*,z,r^*)$ where $J^*[
 perfect matching, then $L_N$ implies (T1) at $(J,z,r)$.
 \end{corollary}
 
+In Lean the final step is \texttt{test1At\_of\_LN\_matching} and each move is
+\texttt{test1At\_of\_move1'} or \texttt{test1At\_of\_move2'}. The parity of each moved graph (the
+first sentence of the proof above) is checked on paper; it is needed to apply the next move and the
+matching lift.
+
 \emph{Data} (\texttt{scripts/rootmove2.py}: breadth-first closure of both moves, depth $\le6$). At
 order $\le9$, \RMNINEREACH{} of the \NDNINE{} no-data roots reach matching data. One move M1
 suffices at $3{,}467$; most of the others use M2 first, which drops $r$ and $u$ from $N(z)$. By
@@ -388,8 +397,10 @@ Let $F$ have no vertex of even degree. Every constraint forest on $F$ whose comp
 2-chains is satisfied by some Lov\'asz decomposition of $F$.
 \end{conjecture}
 
-With only pairs this is $L_N$. In list form (Lean \texttt{CherryList}): (child, parent) pairs on
-non-edges with distinct children, distinct parents (no siblings) and no chain of three pairs.
+With only pairs this is $L_N$ (Lean \texttt{lN\_of\_cherryLN}). In list form (Lean
+\texttt{CherryList}): (child, parent) pairs on non-edges with distinct children, distinct parents
+(no siblings) and no chain of three pairs. Following the Lean statement \texttt{LN}, the Lean
+\texttt{CherryLN} allows isolated vertices; only vertices of positive even degree are excluded.
 
 \begin{proposition}[Lean \texttt{test1At\_of\_cherryLN} for (T1)]\label{prop:CLT1}
 CL implies (T1), and (T2), at every root with cherry data.
