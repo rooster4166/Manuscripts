@@ -61,6 +61,11 @@ def thmB2(B, r, s, k, Z):
     for y in G:
         if y in (q1, q2): continue
         if B.has_edge(q1, y) and B.has_edge(y, q2): opts.append(([q1, y, q2], 0 if y == s else 1))
+    # length 3 through s and one neighbour y of r (delta = 1): q1 y s q2 and q1 s y q2
+    for y in G:
+        if y in (q1, q2, s): continue
+        if B.has_edge(q1, y) and B.has_edge(y, s) and B.has_edge(s, q2): opts.append(([q1, y, s, q2], 1))
+        if B.has_edge(q1, s) and B.has_edge(s, y) and B.has_edge(y, q2): opts.append(([q1, s, y, q2], 1))
     for Q, extra in opts:
         Gp = G.copy(); Gp.remove_edges_from(zip(Q, Q[1:]))
         ell = lambda v: (Gp.degree(v) + (Gp.degree(v) % 2)) // 2

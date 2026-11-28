@@ -3,17 +3,24 @@ import GallaiLean.DenseRoot
 /-!
 # Theorem B: one connector (session `claude/dense-root`)
 
-Manuscript: `manuscripts/dense-root`, Theorem 4.1 with `δ = 0`.
+Manuscript: `manuscripts/dense-root`, Theorem 4.1, both cases `δ = 0, 1`.
 
-Let `d(r) = 2k − 2` and let `Q` be a path of `G = B − r` whose ends `q₁, q₂` are neighbours of `r`
-and whose other vertices are not, such that every neighbour of `r` has odd degree in
-`G' = G − E(Q)`. Take a Lovász decomposition of `G'`, keep `Q` as one member attached at one of its
-ends, and match by Hall (`hallReassemble`).
+Let `d(r) = 2k − 2` and let `Q` be a path of `G = B − r` whose ends `q₁, q₂` are neighbours of `r`,
+with at most one other vertex `y` adjacent to `r` (`δ = 1` if `y` exists), such that every neighbour
+of `r` has odd degree in `G' = G − E(Q)`. (The remaining interior vertices are then the
+non-neighbour `s` of `r`, so `Q` has length at most `2 + δ`.) Take a Lovász decomposition of `G'`,
+keep `Q` as one member attached at one of its ends, and match by Hall (`hallReassemble`).
 
 * `GPath.liftLe`, `consPath`: `Q` together with a decomposition of `G − E(Q)` is a decomposition of
   `G`.
-* `connector_core`: the Hall counting, for any attachment plan of the required shape.
-* **`exists_decomp_of_connector`** (Theorem B, `δ = 0`), **`test1At_of_connector`**.
+* `exists_lovasz_connector`: a decomposition of `G'` into `k − 1` paths whose ends are exactly the
+  neighbours of `r`.
+* `connector_core`: the Hall counting, for any attachment plan of the required shape (one far end
+  may be left unpaired).
+* **`exists_decomp_of_connector`** (Theorem B, `δ = 0`), **`exists_decomp_of_connector_mid`**
+  (Theorem B, `δ = 1`); spine forms **`test1At_of_connector`**, **`test1At_of_connector_mid`**.
+
+The conclusions are existential; the proofs start from an arbitrary Lovász decomposition of `G'`.
 -/
 
 open SimpleGraph Finset
@@ -131,8 +138,10 @@ theorem delList_degree_of_notMem (K : SimpleGraph W) [DecidableRel K.Adj] (P : G
 
 /-- **The counting of Theorem B.** `D` is a Lovász decomposition of `G − E(Q)` whose ends are the
 neighbours of `r`; every path `j` is attached at `att j` and has far end `lo j`; `Q` is attached at
-`q_Q = lo iQ`; the other vertices of `Q` that are neighbours of `r` are attachments; `π j` is a
-designated partner of the far end `lo j` (`j ≠ iQ`), injective, heavier, and off `Q`. -/
+`q_Q = lo iQ`; the other vertices of `Q` that are neighbours of `r` are attachments. Every far end
+`lo j` with `j ≠ iQ`, except at most one (`jU = some j`, left unpaired; it adds `[jU.isSome]` inside
+both floors of the condition), has a designated partner `π j`: the attachment of some path,
+injective, heavier, and off `Q`. (The hypothesis `hjU` is not used by the proof.) -/
 theorem connector_core (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ} (hk : 2 ≤ k) {r : W}
     (hr : B.degree r + 2 = 2 * k) (Q : GPath (starDel B r))
     (D : PathDecomp (delList (starDel B r) Q.edges))
@@ -832,7 +841,9 @@ theorem exists_decomp_of_connector (B : SimpleGraph W) [DecidableRel B.Adj] {k :
 
 /-- **Theorem B (`δ = 1`).** As `exists_decomp_of_connector`, but `Q` has one vertex `y` other than
 its ends that is a neighbour of `r`; one far end is then unpaired, and the condition reads
-`⌊(h̃_t + 1)/2⌋ + [t ≤ λ] + t ≤ k + 1` or `⌊(h̃_{t+1} + 1)/2⌋ + [t ≤ λ] + 2t ≤ k + 1`. -/
+`⌊(h̃_t + 1)/2⌋ + [t ≤ λ] + t ≤ k + 1` or `⌊(h̃_{t+1} + 1)/2⌋ + [t ≤ λ] + 2t ≤ k + 1`.
+`Q` may have length 3 (`q₁ y s q₂`, `q₁ s y q₂`). The hypothesis `hy` (kept to match the manuscript)
+is not used by the proof. -/
 theorem exists_decomp_of_connector_mid (B : SimpleGraph W) [DecidableRel B.Adj] {k : ℕ}
     (hk : 2 ≤ k) (hW : Fintype.card W = 2 * k) (r : W) (hr : B.degree r + 2 = 2 * k)
     (Q : GPath (starDel B r)) (hq1 : B.Adj r Q.src) (hq2 : B.Adj r Q.tgt) (y : W)
