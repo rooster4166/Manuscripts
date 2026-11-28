@@ -287,7 +287,7 @@ static int forest_rootings(u64 phim) {
         for (int v = 0; v < N; v++) printf(" %d", par[v]);
         printf("\n");
       }
-    } else if ((fe_excess < 0 || exc == fe_excess) && base_ok(phim)) { found_excess = exc; return 1; }
+    } else if (!univ && (fe_excess < 0 || exc == fe_excess) && base_ok(phim)) { found_excess = exc; return 1; }
     int i = 0;
     while (i < nc) { if (++idx[i] < nmem[i]) break; idx[i] = 0; i++; }
     if (i == nc) break;

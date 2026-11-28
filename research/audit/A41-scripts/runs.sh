@@ -33,3 +33,20 @@ for f in k r c l lp lk kp kk kpp cp ss; do $S/a41 fam $f < $S/c468.g6 > $S/fam_$
 for f in s sp sk; do A41_SKIP_H1=1 $S/a41 fam $f < $S/c468.g6 > $S/famH_$f.txt 2> $S/famH_$f.err; done
 # order 10: the number of one-2-chain sets
 nauty-geng -q -c 10 | $S/a41odd > $S/odd10.g6    # 32,851 graphs
+# --- added later in the audit ---
+# universality with the (sound) extra pruning, and the exact populations without solving
+A41_PRUNE=1 $S/a41 univ < $S/gle9.g6 > $S/univP_le9.txt 2> $S/univP_le9.err
+A41_COUNTONLY=1 $S/a41 univ < $S/gle9.g6 > /dev/null
+python3 -I $A/univ_h1.py $S/mine_le9.txt < $S/univP_le9.txt
+# the truncation of nd.c -U at tier 3: run the authors' nd.c (compiled in the scratch dir) and compare
+gcc -O2 -o $S/nd_auth manuscripts/nodata/scripts/nd.c
+$S/nd_auth -t1 -UU < $S/gle9.g6 2>&1 >/dev/null | tail -2          # tier3 32706/88148
+$S/nd_auth -t1 -UU < $S/gle9.g6 2>/dev/null | awk '$5=="tier" && $6=="3"' | awk '{tag=($1=="UFAIL")?"FAIL":"SUCC"; printf "U3 %s %s %s %s", tag, $2, $3, $4; for(i=7;i<=NF;i++) printf " %s", $i; printf "\n"}' > $S/nduu3.txt
+python3 -I $A/univ_h1.py $S/mine_le9.txt < $S/nduu3.txt               # reproduces star_hall_t1_le9.txt
+# the star + 2-chain + pair failures with (H1) holding, by brute force; and the explicit example
+grep -E '^U3 FAIL (H\?bc~f\{|H\?qu\\v\{) ' $S/univP_le9.txt > $S/scp_in.txt
+python3 -I $A/star_chain_pair.py $S/scp_in.txt
+python3 -I $A/star_chain_pair_example.py
+# order-11 sample comparison; order-10 set counts
+python3 -I $A/cmp_sample11.py $S/sample11_tiers.txt manuscripts/nodata/data/nd_t1_11_ge2.txt.gz
+python3 -I $A/count10.py < $S/odd10.g6

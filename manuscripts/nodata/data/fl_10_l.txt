@@ -1,0 +1,1 @@
+SUMMARY family=l graphs=32851 sets=10583100 exact=137845 failures=0 (H1 holds at 0 of them, fails at 0) unstruck sets violating (H1), not searched (they fail by the Hall lemma): 716
