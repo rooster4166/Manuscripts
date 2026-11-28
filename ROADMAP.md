@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **overview** (session_01FxXpVgvTGyPd879SBKokNR, branch `claude/overview`, new): consolidated programme paper `manuscripts/overview`. It covers the spine, the reversible lifts, cones, the constrained-Lovász layer and the dense frontier, plus a table of theorems with their Lean names and audits. An audit follows.
 - **test2** (session_01FxXpVfK2nPUm9VxkxZYYZj, branch `claude/test2`, new): bring (T2) level with (T1). Tasks: exact data, direct lifts for (T2) with Lean, reduction to the constrained-Lovász core, and cones at odd |B|. Until now (T2) had only STL2.
   - **Milestones 1 and 2 (e3a150a, 185bd46; merged; build green; axioms checked):**
     - **Lean (Test2Lift.lean):**
