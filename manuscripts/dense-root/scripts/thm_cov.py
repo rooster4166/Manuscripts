@@ -50,7 +50,8 @@ for fn in sys.argv[1:]:
             C[(fn.split('/')[-1], 'sinZ' if s in Z else 'snotZ', 'A=' + str(a), 'B=' + str(b))] += 1
 for key, v in sorted(C.items()): print(key, v)
 
-# ---- extended: Theorem B with Q = q1 y q2 (y in N, forced: +1), and MR theorems' hypotheses ----
+# ---- extended: Theorem B with all admissible connectors (q1q2, q1sq2, q1yq2, q1ysq2, q1syq2;
+#      y in N gives delta = 1), and MR theorems' hypotheses ----
 def thmB2(B, r, s, k, Z):
     G = B.copy(); G.remove_node(r)
     T = [v for v in B if v not in Z]

@@ -249,7 +249,8 @@ When $s\in Z$ and $d(z)=n-3$, $T=\{q_1,q_2\}\subseteq N$ and the even vertices o
 (Lemma~\ref{lem:basic}). Deleting the edges of a path $Q$ of $G$ from $q_1$ to $q_2$ makes every vertex
 of $N$ odd; we keep $Q$ as one member of the family (the \emph{connector}), not as edges to be lifted.
 This avoids the forest-lift conditions (direct-test1 Lemma~4.1), which are of DL type and open in this
-generality.
+generality. We call a connector \emph{admissible} if at most one of its vertices other than $q_1,q_2$
+lies in $N$, as Theorem~\ref{thm:B} requires.
 
 \begin{theorem}[B]\label{thm:B}
 Let $B$ have order $2k\ge4$ and $d_B(r)=2k-2$, and let $Q$ be a path of $G$ with ends $q_1,q_2\in N$
@@ -325,10 +326,11 @@ exactly one other vertex $y$ of $Q$ is a neighbour of $r$. Both assume that ever
 odd in $G'$ (\lean{delList (starDel B r) Q.edges}) and the condition with $[t\le\lambda]$ for any
 $\lambda\ge\sum_{v\in V(Q)}\lceil d_{G'}(v)/2\rceil$. The length bound $2+\delta$ is not a hypothesis;
 it follows from the others. The Lean conclusions are existential (a decomposition into $k$ paths with
-exactly two ends at $r$); that every Lov\'asz decomposition of $G'$ gives one is visible in the proof,
-which takes an arbitrary one from \lean{exists\_lovasz\_connector}. Audit A39b instantiates
+exactly two ends at $r$); that every Lov\'asz decomposition of $G'$ gives one is visible in the proofs,
+which start from an arbitrary one (from \lean{lovasz\_ends}; for $\delta=1$ via
+\lean{exists\_lovasz\_connector}). Audit A39b instantiates
 \lean{test1At\_of\_connector\_mid} at the $28$ order-$9$ roots that need a connector of length $3$
-(\texttt{research/audit/A39b-scripts/len3\_instances.lean}; every side condition by \texttt{decide}). \lean{test1At\_of\_connector} and \lean{test1At\_of\_connector\_mid} are the spine forms. The
+(\texttt{research/audit/A39b-scripts/len3\_instances.lean}; side conditions closed by \texttt{decide}, after \texttt{omega}). \lean{test1At\_of\_connector} and \lean{test1At\_of\_connector\_mid} are the spine forms. The
 proofs go through \lean{consPath} ($Q$ followed by a Lov\'asz decomposition of $G'$),
 \lean{connector\_core} (the counting, for any attachment plan in which every trivial member but at
 most one has a heavier designated partner off $Q$) and \lean{hallReassemble}.
@@ -363,9 +365,11 @@ and~\ref{thm:B} and the hypotheses of the collection's theorems (\S\ref{sec:mr})
 budgets of the shipped files.
 \end{itemize}
 Audit~A39 ran Theorems~A and~B literally at every order-$9$ instance (every Lov\'asz decomposition, every
-tie-break of the attachment rules, every set $S$) and on random graphs with $k=5,6,7$, with no violation
-of any step of the proofs, and checked every witness from scratch
-(\texttt{research/audit/A39-scripts}).
+tie-break of the attachment rules, every set $S$; connectors of length $\le2$) and on random graphs with
+$k=5,6,7$, with no violation of any step of the proofs, and checked every witness from scratch
+(\texttt{research/audit/A39-scripts}). Audit~A39c repeated the run with the length-$3$ connectors
+($1{,}706$ connectors, $348{,}710$ Lov\'asz decompositions at order $9$, and random graphs with
+$k=5,6,7$; no violation; \texttt{research/audit/A39c-scripts}).
 
 \subsection*{Order $9$, $d(z)=6$} The $1{,}819$ $3$-connected graphs of multi-token
 (\texttt{multi-token/data/J9\_d6.g6}) have $1{,}756$ roots of degree $n-2=7$. Multi-token's
@@ -374,16 +378,16 @@ a vertex $w\in N(z)-r$ and a matching of $N(z)-\{r,w\}$ in $J$). At this order (
 already claimed by MR Prop.~139 (\S\ref{sec:mr}); the table measures how far Theorems~A and~B, which
 hold for every $n$, reach.
 
-\begin{table}[h]\small
-\begin{tabular}{@{}lrrr@{}}
+\begin{table}[h]\footnotesize
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.56\textwidth}rrr@{}}
 \toprule
- & all degree-$7$ roots & of which $s\notin Z$ & multi-token's unscheduled\\
+ & all & $s\notin Z$ & unsched.\\
 \midrule
 roots & $1{,}756$ & $494$ & $1{,}597$\\
 Test1 (exact, \texttt{ret.c}) & $1{,}756$ & $494$ & $1{,}597$\\
 Theorem~A & $459$ & $459$ & $404$\\
 Theorem~B, $\delta=0$ connectors only & $838$ & -- & n.c.\\
-Theorem~B, all connectors & $1{,}171$ & -- & $1{,}068$\\
+Theorem~B, all admissible connectors (lengths $1$--$3$) & $1{,}171$ & -- & $1{,}068$\\
 Theorems A $\cup$ B & $1{,}630$ & $459$ & $1{,}472$\\
 hypotheses of MR Thm.~74 / Thm.~166 (any of 47/50/74/166) & $24$ / $111$ ($123$) & n.c. & ($119$)\\
 A $\cup$ B $\cup$ MR Thms.~47/50/74/166 & $1{,}686$ & n.c. & $1{,}528$\\
@@ -392,7 +396,8 @@ method, best choices (\texttt{drm -G}) & $1{,}756$ & $494$ & n.c.\\
 method, every Lov\'asz decomposition, $\Phi$ separate (\texttt{drm -A -m 0}) & $1{,}742$ & $481$ & n.c.\\
 \bottomrule
 \end{tabular}
-\caption{Roots of degree $n-2$ at order $9$, $d(z)=6$. Six roots (two near-complete graphs with seven
+\caption{Roots of degree $n-2$ at order $9$, $d(z)=6$: all $1{,}756$, those with $s\notin Z$, and
+multi-token's $1{,}597$ unscheduled ones. Six roots (two near-complete graphs with seven
 vertices of degree $7$) need $g\notin\{\text{even vertices of }G\}$; without \texttt{-G} the method
 succeeds at $1{,}750$ (\texttt{data/drm9.out}; with \texttt{-G}: \texttt{data/drm9G.out}). n.c.: not
 computed.}\label{tab:o9}
@@ -400,8 +405,8 @@ computed.}\label{tab:o9}
 
 The $126$ roots outside Theorems~A and~B are of two kinds (\texttt{look.py}).
 \begin{itemize}[leftmargin=*]
-\item $24$ roots with $s\in Z$ and no connector: $q_1,q_2$ are at distance at least $3$ in $G$ ($21$ at
-distance $3$, three at distance $4$), and $G$ has no path $q_1ysq_2$ or $q_1syq_2$ with $y\in N$. They
+\item $24$ roots with $s\in Z$ and no admissible connector: $q_1,q_2$ are at distance at least $3$ in $G$ ($21$ at
+distance $3$, three at distance $4$), and $G$ has no path $q_1ysq_2$ or $q_1syq_2$ with $y\in N$ (every $q_1$--$q_2$ path has at least two interior vertices in $N$). They
 are sparse: in $23$ of them at most two of the six neighbours of $r$ in $B$ have degree $7$. The method succeeds at all of them.
 \item $102$ roots where a connector or Theorem~A applies but the degree condition fails. All are
 dense: at least four of the six neighbours of $r$ in $B$ have degree $7$ in $J$ ($36$, $17+29$ and
@@ -525,7 +530,7 @@ connector, and the C-members are no longer pairwise compatible; audit A39 gives 
 or allowing one incompatible pair when $u=1$). In the residual families, moreover, every $\lambda_j$
 exceeds $t$, so the condition fails anyway; a better estimate of how many A-paths a connector meets is
 needed.
-\item \emph{No connector.} At $24$ order-$9$ roots there is no connector (\S\ref{sec:comp}). MR
+\item \emph{No admissible connector.} At $24$ order-$9$ roots there is none (\S\ref{sec:comp}). MR
 Prop.~139 handles its root-degree-$6$ analogue by adding the absent edge $q_1q_2$ as a virtual edge and
 cutting its carrier; whether this works with the degree condition at general $n$ is open.
 \item \emph{The dense middle.} At $n=15,17$ the method is undecided. Exact witnesses have more members
@@ -550,7 +555,8 @@ jobs).
 \item Audit: \texttt{research/audit/A39-dense-root.md} (adversarial referee; it audited commit d443852:
 the paper, \texttt{DenseRoot.lean}, scripts and data) and
 \texttt{research/audit/A39b-dense-root-lean.md} (\texttt{DenseRootB.lean}). All findings of A39, and A39b F1--F4, are
-applied in this version (A39b F5, F6 are hygiene notes on the Lean).
+applied in this version (A39b F5, F6 are hygiene notes on the Lean), and
+\texttt{research/audit/A39c-dense-root-fixup.md} (this revision; its findings are applied).
 \end{itemize}
 
 \begin{thebibliography}{9}

@@ -1,7 +1,8 @@
 """coverage.py: per data set, the roots of degree n-2 covered by
   A   = Theorem A (B - r has <= 1 even vertex; condition (**_eps)),
   B0  = Theorem B with a connector of length <= 2 whose interior is s (delta = 0),
-  B1  = Theorem B with connectors of length <= 2 (interior s or a neighbour of r, delta <= 1),
+  B1  = Theorem B with all admissible connectors (lengths 1-3: interior s and at most one neighbour
+        y of r, delta <= 1),
   MR  = hypotheses of marked-reduction Thm 47 (>= k-1 universal vertices of B), Thm 74
         (complement of B of max degree <= 2) and Thm 166 (k vertices of degree >= 2k-2 in B containing
         r, with u universal ones and the end budget sum b_y = u feasible), Thm 50 (k - c universal,
