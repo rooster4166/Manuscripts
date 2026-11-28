@@ -51,8 +51,9 @@ $N(z)$. (c) A precise form of the needed constraint statement, the \emph{cherry}
 
 \emph{Computed} (validated exact solver, every base lifted and checked independently): every
 no-data root of every (T1) instance of order at most $11$ and every (T2) instance of order at most
-$10$ is classified. At order $\le 9$, root moves reach matching data at \RMNINEREACH{} of the
-\NDNINE{} no-data roots, so there $L_N$ alone gives (T1). A base with no sibling condition exists at
+$10$ is classified. Root moves reach matching data at \RMNINEREACH{} of the \NDNINE{} no-data
+roots of order $\le9$, and at $78.1\%$ of those of order $11$; there $L_N$ alone gives (T1). At
+order $\le9$, a base with no sibling condition exists at
 \NONSIBNINE{} of them. Every instance with no base, or whose base needs $r$ to be a child, has a
 twin pair in $N(z)$; these are $9$ at order $\le9$ and $75$ at order $11$, and all of them are
 certified by the twin reduction. At order $11$, cherry bases (defined below) exist at
@@ -131,6 +132,7 @@ CL $\Rightarrow$ (T1) at roots with cherry data (Proposition~\ref{prop:CLT1}) & 
 \texttt{test1At\_of\_cherryLN}\\
 CL $\Rightarrow$ $L_N$; $L_N$ $\Rightarrow$ (T1) at roots with matching data & proved; Lean
 \texttt{lN\_of\_cherryLN}, \texttt{test1At\_of\_LN\_matching}\\
+One 2-chain far apart (a case of CL) & proved; Lean \texttt{forestLN\_far\_chain}\\
 CL $\Rightarrow$ (T2) at roots with cherry data (Proposition~\ref{prop:CLT1}) & proved on paper
 (Lean has the lift, not the full parity of $M$)\\
 Star Hall condition is necessary (Lemma~\ref{lem:hall}) & proved\\
@@ -361,13 +363,17 @@ matching lift.
 order $\le9$, \RMNINEREACH{} of the \NDNINE{} no-data roots reach matching data. One move M1
 suffices at $3{,}467$; most of the others use M2 first, which drops $r$ and $u$ from $N(z)$. By
 tier: $6{,}367$ of $7{,}802$ (tier~1), $141$ of $166$ (tier~2), $24$ of $135$ (tier~3), none of the
-$9$ at tiers $4$--$5$. At order $11$ the closure was run on the $22{,}496$ roots of tier $\ge3$:
-\RMELEVEN.
+$9$ at tiers $4$--$5$. At order $11$ (\texttt{scripts/rm.c}, a C port that agrees with \texttt{rootmove2.py} on every
+root of order $\le9$) the moves reach matching data at $10{,}016{,}763$ of the $12{,}824{,}990$
+no-data roots ($78.1\%$). This includes $3{,}068$ of the $22{,}421$ roots of tier $3$ ($141$ of the
+$906$ twin-free ones) and none of the $75$ at tiers $4$--$5$.
 
-\emph{Coverage at order $\le9$.} Of the $8{,}112$ no-data roots, $6{,}532$ are settled by $L_N$
+\emph{Coverage.} At order $\le9$, $6{,}532$ of the $8{,}112$ no-data roots are covered by $L_N$
 through root moves. Of the other $1{,}580$, $642$ have a twin pair (Theorem~\ref{thm:twinred}),
 $928$ are twin-free with cherry data (Conjecture~\ref{conj:CL}), and $10$ are twin-free and need a
-linkage with a path of length at least $3$; bases exist there.
+linkage with a path of length at least $3$; bases exist there. At order $11$ the same split of the
+$12{,}824{,}990$ roots is: $10{,}016{,}763$; $326{,}442$; $2{,}466{,}905$; $14{,}115$; and $765$
+twin-free roots that need siblings.
 
 \section{Forest forms of \texorpdfstring{$L_N$}{L\_N}}\label{sec:forest}
 
@@ -420,7 +426,10 @@ but the parity of $M$ is proved there only at $r$ and the children.
 $32{,}851$ graphs of orders $4,6,8,10$), and every choice of the units of a family on non-edges with
 distinct vertices. Random Lov\'asz decompositions strike the satisfied sets. Every set left is
 decided exactly: twelve randomly relabelled budgeted solves first (a success is a certificate),
-then an exhaustive search by \texttt{ndsolve.h}.
+then an exhaustive search by \texttt{ndsolve.h}. \texttt{scripts/xcheck\_fl.py} re-enumerates four
+families at order $6$ with networkx and decides every set with \texttt{route\_ext}. It agrees exactly
+with \texttt{fl.c}: 2-chain + pair $776/0$, 3-chain + pair $256/18$, star $153/45$, claw $216/0$
+(sets/failures).
 \begin{center}
 \begin{tabular}{p{0.27\textwidth}rp{0.2\textwidth}p{0.26\textwidth}}
 \toprule
@@ -500,9 +509,11 @@ CL contains $L_N$, and a 2-chain is two overlapping pairs $(x,a),(b,x)$. We did 
 reduction of CL to $L_N$. The natural gadgets change parity. Hanging a leaf at $x$ makes $x$ the
 only even vertex, and the condition $x\notin Q(b)$ becomes avoidance of the even vertex. Merging,
 splitting or subdividing at $x$ creates even vertices too. The route form, which has a single
-avoided set per path, is false (above). If $a$, $x$ and $b$ are pairwise at distance at least $3$,
-one 2-chain follows from the packed-set separation \lean{avoid\_packed\_of\_reach}. The
-single-2-chain case of CL in general, and therefore CL$(1)$, is open; it is a case of the
+avoided set per path, is false (above). One case is proved. If $a$ and $x$ are at distance at least $3$ and $b$ is adjacent to neither,
+the single 2-chain $a\leftarrow x\leftarrow b$ is satisfiable \lean{forestLN\_far\_chain}. Apply the
+packed-set form of $L_1$ \lean{avoid\_packed\_of\_reach} to $Y=\{a,x\}$ and the path ending at
+$b$. Every path then meets $Y$ at most once, so $a\notin Q(x)$, and $Q(b)$ misses $Y$. The
+single-2-chain case of CL in general, and so CL with one unit, is open. It is a case of the
 overlapping-pair version of $L_N(2)$ studied in session \texttt{ln}.
 
 \section{What remains}\label{sec:remains}
@@ -510,14 +521,16 @@ overlapping-pair version of $L_N(2)$ studied in session \texttt{ln}.
 At order $\le9$ every no-data (T1) root is covered by one of the following: $L_N$ through root
 moves ($6{,}532$); CL directly ($928$); a twin reduction to a rooted statement on a graph of order
 $|J|-3$ ($642$); or a computed linkage base, which needs chains of length $\ge3$ ($10$). At order $11$ the open structural cases are the $906$ twin-free roots
-that need siblings. $500$ of them are cones, which are rooted Gallai for Eulerian graphs
-\cite{EC}.
+that need siblings; root moves cover $141$ of them. $500$ of the $906$ are cones, which are rooted
+Gallai for Eulerian graphs \cite{EC}.
 
 The precise open statements are:
 \begin{enumerate}[label=(\arabic*)]
 \item CL (Conjecture~\ref{conj:CL}); already its one-unit case is open.
 \item The rooted floor for $B-x-y$ in the twin reduction, outside the class $\mathcal C$ of the
 spine induction.
+\item Root moves for (T2), where three ends are needed at $r$; the moves above are proved for (T1)
+only.
 \item A sibling version of CL for claws. (H1) is necessary there but not sufficient.
 This is needed only at twin-free roots with no linkage: none at order $\le9$, and $906$ at order
 $11$.

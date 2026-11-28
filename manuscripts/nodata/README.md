@@ -52,6 +52,11 @@ Session `claude/nodata`. Manuscript: `nodata.tex` / `nodata.pdf` (working draft)
   code. The two input modes (direct J, and B = J − z) now agree exactly.
 * `ndsolve.h` first lacked the degree bound `d_R(v) ≤ 2P − need(v)` and the per-component edge
   bound, which made some searches explode. Adding them changed running times, not answers.
+* Later, after the `nd.c` data runs, `ndsolve.h` was given a fail-first branching order
+  (constrained vertices first) and a larger failure memo (2^22). That made the order-10 runs of
+  `fl.c` feasible. It is exact either way. Re-running `nd -t1` on n ≤ 9 with the new header gives
+  identical levels and excesses (md5 of the level columns agrees). The order-10 `fl` runs use the
+  new header; the order ≤ 8 `fl` runs agree with it up to the number of exact searches.
 
 ## Reproduce
 
