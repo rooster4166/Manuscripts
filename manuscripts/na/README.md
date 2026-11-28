@@ -27,7 +27,7 @@ Manuscript: `na.tex`. Compile with `pdflatex` twice. Lean: `lean/GallaiLean/Neig
 - **Checked against the R1 and R2 reformulations:**
   - R1 is a correct sufficient condition. The proof does not use it.
   - R2 is equivalent to a stronger statement: Q(y) ∌ x and xy terminal in Q(x). It held in all NA instances of orders 4, 6 (brute force, `r2check.py`) and 8 (4,970/4,970, exact, `r2exact.py`). It is not proved.
-- **Audit:** `research/audit/A-na.md` (fresh referee). It graded every proof SOUND. The errors it found were in the surrounding text and the unfilled §8 table; they are fixed.
+- **Audit:** `research/audit/A33-na.md` (fresh referee). It graded every proof SOUND. The errors it found were in the surrounding text and the unfilled §8 table; they are fixed.
 
 ## Computation (`scripts/`, outputs in `data/`)
 | file | content |

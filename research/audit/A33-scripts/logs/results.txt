@@ -1,4 +1,4 @@
-# Outputs of the audit runs (A-na), 2026-11-28
+# Outputs of the audit runs (A33), 2026-11-28
 ## run_na.py (manuscript), orders 4, 6
 graphs=6 allodd=2 pairs=18 na=3 weak=3 weak_not_na=0 neither=15 construct_ok=3 exact_good=3 exact_bad=15 mismatch=0 brute_checked=18 set_instances=0 set_ok=0 trail_bf=3
 graphs=112 allodd=13 pairs=228 na=129 weak=143 weak_not_na=14 neither=85 construct_ok=143 exact_good=143 exact_bad=85 mismatch=0 brute_checked=198 set_instances=16 set_ok=16 trail_bf=143

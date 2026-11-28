@@ -1,4 +1,4 @@
-# Audit A-na: "Neighbour avoidance in Lovász decompositions" (`manuscripts/na`)
+# Audit A33: "Neighbour avoidance in Lovász decompositions" (`manuscripts/na`)
 
 Referee: adversarial audit, branch `claude/na`.
 
@@ -18,7 +18,7 @@ Theorem 2.2 (L1), Lemma 2.3 (leaf); Definition 3.1, Lemmas 3.2–3.3; Lemmas 4.1
 steps (a)–(g), Remark 5.1, Example 5.2; §6 boundary proof, Remarks 6.1–6.2; §7 remarks; §8
 computations; §9 Lean; §10 open problems.
 
-Audit scripts are in `research/audit/A-na-scripts/` (see the end of this file). I did not edit
+Audit scripts are in `research/audit/A33-scripts/` (see the end of this file). I did not edit
 the manuscript, the Lean file or the scripts, and I did not commit. Note: a concurrent session
 committed my in-progress scripts in its checkpoints (`2e91d75`, `f5a9fa4`, `261a2eb`, `56b264f`,
 `8c636d5`) while the audit was running; I did not make those commits.
@@ -329,7 +329,7 @@ which exercises the "odd vertices outside C" part of A):
 succeeds with 18,420 jobs, as §9 says. The file produces no warnings.
 `grep sorry|admit|axiom|native_decide|implemented_by` finds nothing in the file.
 
-**Axioms.** `#print axioms` (scratch file `A-na-scripts/Axioms.lean`) gives
+**Axioms.** `#print axioms` (scratch file `A33-scripts/Axioms.lean`) gives
 `[propext, Classical.choice, Quot.sound]` for 17 theorems:
 - `neighbourAvoidOn`, `neighbourAvoid`, `avoid_packed_of_reach`, `avoid_of_reach`, `avoid_iff_reach`;
 - `mem_pathEndingAt_of_component_sub`, `meets_of_component_sub`, `avoid_packed_iff_reach`;
@@ -452,7 +452,7 @@ X.
     silently.
 - conj-n still lists NA as open (Conj. 4.2, §8 item 2). A cross-reference there would help.
 
-## Audit scripts (`research/audit/A-na-scripts/`)
+## Audit scripts (`research/audit/A33-scripts/`)
 
 | file | purpose |
 |---|---|
@@ -469,7 +469,7 @@ X.
 
 Commands used:
 ```
-cd research/audit/A-na-scripts
+cd research/audit/A33-scripts
 nauty-geng -cq 6 | python3 -B audit_run.py --sets --lds
 nauty-geng -cq 8 | python3 -B audit_run.py --every 40      # both exact solvers
 nauty-geng -cq 8 | python3 -B audit_run.py --noexact       # all constructions
@@ -479,5 +479,5 @@ python3 -B wheel.py
 for n in 4 6; do nauty-geng -cq $n | python3 -B r2_indep.py; done
 python3 -B random_audit.py 8 300 1 --exact; python3 -B random_audit.py 10 15 2 --exact
 python3 -B random_audit.py 16 100 3; python3 -B random_audit.py 24 20 4
-source ~/.elan/env && cd lean && lake env lean ../research/audit/A-na-scripts/Axioms.lean
+source ~/.elan/env && cd lean && lake env lean ../research/audit/A33-scripts/Axioms.lean
 ```

@@ -47,3 +47,5 @@ graph 46 GErvf{ graphs=2281 allodd=46 pairs=1234 na=966 weak=1084 weak_not_na=11
 graph 47 GEr^ek graphs=2316 allodd=47 pairs=1268 na=996 weak=1117 weak_not_na=121 neither=151 construct_ok=1117 exact_good=0 exact_bad=151 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 48 GEr]v{ graphs=2327 allodd=48 pairs=1306 na=1027 weak=1148 weak_not_na=121 neither=158 construct_ok=1148 exact_good=0 exact_bad=158 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 49 GEr^uw graphs=2329 allodd=49 pairs=1342 na=1060 weak=1183 weak_not_na=123 neither=159 construct_ok=1183 exact_good=0 exact_bad=159 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+graph 50 GEr~~{ graphs=2340 allodd=50 pairs=1386 na=1083 weak=1206 weak_not_na=123 neither=180 construct_ok=1206 exact_good=0 exact_bad=180 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+graph 51 GFzfvo graphs=2380 allodd=51 pairs=1424 na=1121 weak=1244 weak_not_na=123 neither=180 construct_ok=1244 exact_good=0 exact_bad=180 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
