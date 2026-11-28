@@ -1,4 +1,5 @@
 import GallaiLean.Test1AllOdd
+import GallaiLean.ConstrainedLovasz
 
 /-!
 # Roots without matching data: twin pairs and the fat theta (session `claude/nodata`)
@@ -591,12 +592,12 @@ structure CherryList (H : SimpleGraph W) (L : List (W × W)) : Prop where
 
 end cherry
 
-/-- **Conjecture CL (cherry `L_N`)** (manuscript `conj:CL`): in a graph with no vertex of even
-degree, every system of cherry constraints is satisfied by some Lovász decomposition. With only
-single pairs this is `L_N`. -/
+/-- **Conjecture CL (cherry `L_N`)** (manuscript `conj:CL`): in a graph with no vertex of positive
+even degree (the convention of `LN`), every system of cherry constraints is satisfied by some
+Lovász decomposition. With only single pairs this is `LN` (`lN_of_cherryLN`). -/
 def CherryLN : Prop :=
   ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) [DecidableRel H.Adj]
-    (L : List (W × W)), (∀ v, H.degree v % 2 = 1) → CherryList H L → ForestLN H L
+    (L : List (W × W)), (evenSet H).card = 0 → CherryList H L → ForestLN H L
 
 section cherryT1
 
@@ -639,7 +640,14 @@ theorem test1At_of_cherryLN (hC : CherryLN.{u}) (J : SimpleGraph V) [DecidableRe
       nonadj := fun p hp h => h.2 (List.mem_map_of_mem hp)
       irrefl := fun p hp => (hF.edge p hp).ne
       depth := hdepth }
-  obtain ⟨D₀, hD₀, hi, hii⟩ := hC _ (delList B (L.map pairEdge)) L hodd hCL
+  have hev0 : (evenSet (delList B (L.map pairEdge))).card = 0 := by
+    rw [Finset.card_eq_zero, Finset.eq_empty_iff_forall_notMem]
+    intro v hv
+    simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and] at hv
+    have := hodd v
+    rw [Nat.even_iff] at hv
+    omega
+  obtain ⟨D₀, hD₀, hi, hii⟩ := hC _ (delList B (L.map pairEdge)) L hev0 hCL
   exact test1At_of_oddBase J hz hrz hT ⟨L, hF, D₀, hD₀, hi, hii⟩
 
 end cherryT1
@@ -839,5 +847,82 @@ theorem test1At_of_move2' (J J' : SimpleGraph V) [DecidableRel J.Adj] [Decidable
   exact ⟨D', hs, hv⟩
 
 end rootmoveJ
+
+/-! ### `L_N` and CL -/
+
+/-- **CL contains `L_N`**: a list of disjoint non-adjacent pairs is a list of cherry constraints
+(no parent is a child, so there are no chains and no siblings). -/
+theorem lN_of_cherryLN (h : CherryLN.{u}) : LN.{u} := by
+  intro V _ _ G _ hev L hnd hL
+  have hdis := List.nodup_append.mp hnd
+  have hCL : CherryList G L :=
+    { children := hdis.1
+      parents := hdis.2.1
+      nonadj := fun p hp => (hL p hp).2
+      irrefl := fun p hp h => hdis.2.2 p.1 (List.mem_map_of_mem hp) p.2
+        (List.mem_map_of_mem hp) h
+      depth := fun p hp q hq hpq _ _ => absurd hpq
+        (hdis.2.2 q.1 (List.mem_map_of_mem hq) p.2 (List.mem_map_of_mem hp) |>.symm |> fun h' => h') }
+  obtain ⟨D, hD, hi, -⟩ := h V G L hev hCL
+  exact ⟨D, hD, hi⟩
+
+section LNmatching
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **`L_N` gives Test1 at every root with matching data** (synthesis §32): a perfect matching
+`(a₀, r) :: L` of `J[N(z)]` by edges of `J`, with the pairs oriented as listed. -/
+theorem test1At_of_LN_matching (hLN : LN.{u}) (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) {a₀ : {v | v ≠ z}}
+    {L : List ({v | v ≠ z} × {v | v ≠ z})}
+    (hnd : (pairVerts ((a₀, ⟨r, hrz⟩) :: L)).Nodup)
+    (hcover : ∀ v : {v | v ≠ z}, J.Adj z v ↔ v ∈ pairVerts ((a₀, ⟨r, hrz⟩) :: L))
+    (hedge : ∀ p ∈ (a₀, ⟨r, hrz⟩) :: L, (delVert J z).Adj p.1 p.2) : Test1At J z r := by
+  classical
+  set M := (a₀, (⟨r, hrz⟩ : {v | v ≠ z})) :: L with hM
+  set B := delVert J z with hB
+  have hev : ∀ v, Even (B.degree v) ↔ v ∈ pairVerts M := fun v =>
+    (even_delVert_iff_adj J hz v).trans (hcover v)
+  have hndE : (M.map pairEdge).Nodup := nodup_map_pairEdge M hnd
+  have hin : ∀ e ∈ M.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hedge p hp
+  have hdeg := delList_degree_count B (M.map pairEdge) hndE hin
+  have hcnt := countP_pairEdge_of_nodup M hnd
+  have hodd : ∀ v, (delList B (M.map pairEdge)).degree v % 2 = 1 := by
+    intro v
+    have h1 := hdeg v
+    have h2 := hcnt v
+    by_cases hv : v ∈ pairVerts M
+    · have he : Even (B.degree v) := (hev v).2 hv
+      rw [Nat.even_iff] at he
+      simp only [hv, ite_true] at h2
+      omega
+    · have ho : ¬ Even (B.degree v) := fun he => hv ((hev v).1 he)
+      rw [Nat.not_even_iff] at ho
+      simp only [hv, ite_false] at h2
+      omega
+  have hev0 : (evenSet (delList B (M.map pairEdge))).card = 0 := by
+    rw [Finset.card_eq_zero, Finset.eq_empty_iff_forall_notMem]
+    intro v hv
+    simp only [evenSet, Finset.mem_filter, Finset.mem_univ, true_and] at hv
+    have := hodd v
+    rw [Nat.even_iff] at hv
+    omega
+  obtain ⟨hfst, hsnd, hsf, -, -⟩ := pairVerts_facts M hnd
+  have hnd2 : (M.map Prod.fst ++ M.map Prod.snd).Nodup := by
+    rw [List.nodup_append]
+    refine ⟨hfst, hsnd, fun a ha b hb hab => ?_⟩
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hb
+    exact hsf p hp (hab ▸ ha)
+  obtain ⟨D₀, hD₀, hi⟩ := hLN _ (delList B (M.map pairEdge)) hev0 M hnd2
+    (fun p hp => ⟨hodd p.1, fun h => h.2 (List.mem_map_of_mem hp)⟩)
+  refine test1At_of_matchingOdd J hz hrz hnd hcover hedge D₀ hD₀ ?_ ?_
+  · exact hi _ List.mem_cons_self
+  · intro p hp
+    exact Or.inr (hi p (List.mem_cons_of_mem _ hp))
+
+end LNmatching
 
 end Gallai
