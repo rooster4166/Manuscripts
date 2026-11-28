@@ -127,6 +127,7 @@ EMM sufficiency work is **stopped**.
   - **Data:** exhaustive through order 11 (269M pairs). Failures are exactly the universal twins.
   - **Certificates from proved moves:** cover every non-twin pair to order 9.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
+- **ln** (session_01FxXpVhkBfyjFcEQxKnqzkE, branch `claude/ln`, new): prove **L_N**, starting with two pairs. This is fixed-orientation multi-pair avoidance in all-odd graphs, and it is the engine of both spine tests (synthesis §32). It held exhaustively at order 10: 123M fixed sets, 0 failures.
 - **dense-root** (session_01FxXpVhCWRJY7ccwLFEHd8q, branch `claude/dense-root`, new): Test1 at roots of degree n − 2, which steering provably cannot reach (`not_steerK_triangle`). Approach: re-tight's Lovász + matching with T-join parity repair, plus an exact coverage check of MR's dense theorems.
   - **Milestone 1 (6243d77, merged; build green; axioms checked).** Lean `DenseRoot.lean`:
     - `famReassemble`, a family lemma that works for any B;
