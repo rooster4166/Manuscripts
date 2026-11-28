@@ -129,6 +129,11 @@ EMM sufficiency work is **stopped**.
   - **Reduction:** DL(1) ⇐ Conjecture N + Prop 9.2. Conjecture N is the fixed orientation where y has a neighbour w ≠ g, w ∉ N(x); 0 failures in 264K cases.
 - **conj-r** (session_01FxXpVfZD4refE9qYaAiYHm, branch `claude/conj-r`, new): prove Conjecture R and hence L_N(2). Steps: a canonical pre-committed path, schedule existence, Lean for Lemma R and Prop 6.3, then m = 3.
   - **Lean (1e58948, merged; build green; axioms checked by the coordinator):** `LemmaR.lean` has `lemmaR`, `lemmaR_leaf`, `CriterionR` and `ln2_of_criterionR`. **`ln2_of_conjR : ConjR → LN2`**: L_N(2) now reduces in Lean to Conjecture R. LN2 is stated faithfully: all-odd G, four distinct vertices, both pairs non-adjacent.
+  - **Lean `JointR.lean`:** proved cases of the joint form (leaf, suppression, steering, invariant, cardinality). Also `ConjAE` and `ln2_of_leaf_at_head`.
+  - **Conjecture J** (joint path): if c1 and c2 are joined in F − {a1, a2}, some Lovász decomposition has c1 and c2 as the two ends of one path avoiding a1 and a2. **Exhaustive at orders 6, 8 and 10: all 20,151,960 joined order-10 instances, every witness checked.**
+  - **Separated case at order 10** (417,988 instances): classified. Proved categories cover most of it; the other 31,897 instances are all certified by Criterion R and executed.
+  - **Conjecture AE** (Q(c) avoids the even vertex g, c ≁ g): exhaustive to n ≤ 9.
+  - m = 3: Criterion R3 certified every instance tested at order 8.
 - **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`, new): roots without matching data (8,112 of 25,340 (T1) instances at n ≤ 9). Covers forest L_N with sibling conditions, the fat-theta family K_{3,t} + edge, and reductions to the matching case.
   - **Milestone 1 (ff51181, merged; build green; axioms checked):**
     - Lean `NoData.lean`:
