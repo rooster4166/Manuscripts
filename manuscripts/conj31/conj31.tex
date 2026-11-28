@@ -39,10 +39,13 @@ ends at every vertex, with at most two vertices of positive even degree getting 
 $2$-connected graph, $b$ is realisable exactly when the degree bound $d(x)+b(x)\le\sum b$ holds.
 We prove that the bound fails only when some vertex is adjacent to all others and $b=1$ at every
 remaining non-zero vertex. So PC is Conjecture~31 with arbitrary end counts, and it implies Conjecture~31 (Lean).
+Realisable profiles are closed under adding two ends at a vertex that a path passes through. Hence
+PC with at most one zero is a theorem for every graph (from Lov\'asz), and PC reduces to the minimal
+profiles, that is, to the second descent step $\mathrm{Ev}\setminus\{u,v\}$ of~\cite{EP} for every pair.
 \item \emph{Reduction} (proved). Eight moves reduce PC to smaller instances: a cycle base, ears, suppression,
-Fan transfer, a one-edge path, a triangle move, splitting, and a twin pair on a $2$-cut. Four of them
-are in Lean. A minimal counterexample to PC admits none of them. Up to order~$7$ there are $267$ such
-irreducible instances, and all but $4$ have \emph{twin} zeros ($N(u)-v=N(v)-u$).
+Fan transfer, a one-edge path, a triangle move, splitting, and a twin pair on a $2$-cut, plus lowering a
+profile. Four of them are in Lean. A minimal counterexample to PC admits none of them. Up to order~$8$
+there are $413$ such irreducible instances, and all but $11$ have \emph{twin} zeros ($N(u)-v=N(v)-u$).
 \item \emph{The block criterion BC} (gluing proved, criterion computed). Realisability glues exactly across
 cut vertices. Under PC this gives an explicit sufficient criterion for tightness of any two-even graph.
 It agrees with exact tightness on all $1{,}114{,}873$ connected two-even graphs of order $10$ (and on all of
@@ -103,12 +106,15 @@ statement & status & where\\
 Conjecture~31 & open; exhaustive $n\le10$ & Sec.~\ref{sec:data}\\
 (DB) necessary & proved, Lean & Lemma~\ref{lem:DB}\\
 (DB) fails only at a universal vertex & proved; Lean (this direction) & Lemma~\ref{lem:DBfail}\\
+upward closure (split a path) & proved (paper) & Lemma~\ref{lem:up}\\
+PC with $\le1$ zero, every graph & proved (paper; Lov\'asz in Lean) & Thm.~\ref{thm:PC1}\\
+PC $\Leftrightarrow$ minimal profiles and the (O1) boundary & proved (paper) & Prop.~\ref{prop:min}\\
 Conjecture PC & open; exhaustive $n\le 8$ & Conj.~\ref{conj:PC}\\
 PC $\Rightarrow$ Conjecture~31 & proved, Lean & Prop.~\ref{prop:PC31}\\
 moves TR, NEW, SUP, TRI (realisation step) & proved, Lean & Sec.~\ref{sec:moves}\\
 moves CYC, EAR, SPL, TW2; all output conditions & proved (paper) & Sec.~\ref{sec:moves}\\
 minimal counterexample to PC is irreducible & proved (paper) & Thm.~\ref{thm:irred}\\
-irreducible instances, $n\le7$ & computed & Sec.~\ref{sec:core}\\
+irreducible instances, $n\le8$ & computed & Sec.~\ref{sec:core}\\
 gluing at cut vertices & proved (paper) & Thm.~\ref{thm:glue}\\
 PC $\Rightarrow$ (BC $\Rightarrow$ realisable) & proved (paper) & Cor.~\ref{cor:BC}\\
 BC $\Leftrightarrow$ tight, connected two-even graphs & computed, $n\le 10$ & Sec.~\ref{sec:BC}\\
@@ -165,6 +171,61 @@ same computation.
 
 Lean proves the forward direction, which is all that Proposition~\ref{prop:PC31} needs.
 
+\begin{lemma}[upward closure]\label{lem:up}
+If $b$ is realisable and $b(x)\le d(x)-2$, then $b+2\cdot 1_x$ is realisable. Moreover (DB) is preserved by
+$b\mapsto b+2\cdot1_x$.
+\end{lemma}
+\begin{proof}
+Since $b(x)<d(x)$, some path $AxB$ of the decomposition has $x$ as an interior vertex. Replace it by the
+two paths $Ax$ and $xB$. For (DB): at $x$ both sides of $d(x)+b(x)\le\sum b$ grow by $2$; at every other
+vertex only the right side grows.
+\end{proof}
+
+For a set $Z$ of even-degree vertices let $m_Z$ be the \emph{minimal profile}: $m_Z=1$ at odd vertices,
+$m_Z=2$ at even vertices outside $Z$, and $m_Z=0$ on $Z$ (and at isolated vertices). Every profile with
+zero set $Z$ and $b\equiv d$ satisfies $b\ge m_Z$, and $b-m_Z$ is even. By the leaf dictionary of~\cite[\S2]{EP}, $m_Z$ is realisable iff $\mathrm{Ev}\setminus Z$ is a realisable set in the sense
+of~\cite{EP}.
+
+\begin{theorem}[PC with at most one zero]\label{thm:PC1}
+Let $G$ be any graph and $b\equiv d\pmod 2$ with $b\le d$, $b\ge1$ at every vertex of positive degree
+except at most one. Then $b$ is realisable.
+\end{theorem}
+\begin{proof}
+Let $Z$ be the set of zeros, $|Z|\le1$. The graph $G$ with a pendant vertex attached at every vertex of
+$\mathrm{Ev}\setminus Z$ has at most one even vertex. By Lov\'asz's theorem in the form \texttt{lovasz\_ends}
+it has a decomposition with one end at every odd vertex and none at the even one. By the leaf dictionary
+($\mathrm{Ev}\setminus\{u\}$ and $\mathrm{Ev}$ are realisable at every order;~\cite[\S5, Remark ``at every order'']{EP}), $m_Z$ is
+realisable. Now raise $m_Z$ to $b$ two ends at a time with Lemma~\ref{lem:up}; each step applies because
+the current value at $x$ is below $b(x)\le d(x)$.
+\end{proof}
+
+Lemma~\ref{lem:DBfail} agrees: with $\le1$ zero, (DB) always holds. With two zeros the same argument gives
+the reduction to minimal profiles.
+
+\begin{proposition}[reduction to minimal profiles]\label{prop:min}
+Let $B$ be $2$-connected and $Z=\{u,v\}$ two even vertices.
+\begin{enumerate}[label=(\roman*)]
+\item If $m_Z$ satisfies (DB), then every profile with zero set $Z$ satisfies (DB), and all of them are
+realisable as soon as $m_Z$ is. That is, as soon as $\mathrm{Ev}\setminus\{u,v\}$ is realisable.
+\item $m_Z$ fails (DB) iff some $x$ is adjacent to all other vertices and every vertex outside
+$\{u,v,x\}$ is odd.
+\end{enumerate}
+So PC holds iff (a) $\mathrm{Ev}\setminus\{u,v\}$ is realisable for every $2$-connected $B$ and every pair
+$u,v$ not as in (ii), and (b) in the configuration (ii), every profile satisfying (DB) is realisable.
+\end{proposition}
+\begin{proof}
+(i) is Lemma~\ref{lem:up} applied repeatedly, since (DB) and realisability are both upward closed.
+(ii) is Lemma~\ref{lem:DBfail} for $b=m_Z$: the vertices other than $x$ with $m_Z=1$ are exactly the odd
+ones.
+\end{proof}
+
+Part (a) is the second descent step of~\cite{EP} for \emph{every} pair. There it is proved whenever some
+third even vertex $w$ has $uw\in E$, $vw\notin E$ (\cite[\S5, Second descent step]{EP}; Lean
+\texttt{realisable\_evenSet\_erase\_pair} at even order). So (a) can fail only at E-twins, i.e.\ $u,v$ with the same
+neighbours among the other even vertices (\cite[\S5]{EP}; Lean \texttt{etwin\_of\_not\_realisable} at even order). For a graph with exactly
+two even vertices nothing is known, and (a) is Conjecture~\ref{conj:31}. In (b), if $x$ is odd the graph is
+an (O1) graph and $b>m_Z$ somewhere; if $x$ is even, $B$ has the three even vertices $u,v,x$.
+
 \section{Conjecture PC}\label{sec:PC}
 
 \begin{conjecture}[PC]\label{conj:PC}
@@ -198,8 +259,9 @@ $\le1$ & $4,\dots,8$ & $14{,}297{,}554$ & all\\
 \bottomrule
 \end{tabular}
 \end{center}
-With $\le1$ zero every profile satisfies (DB), as Lemma~\ref{lem:DBfail} says. Every realisation was checked
-by \texttt{wcheck31.py}, which shares no code with the solver.
+With $\le1$ zero every profile satisfies (DB), as Lemma~\ref{lem:DBfail} says, and every profile is
+realisable, as Theorem~\ref{thm:PC1} says. That row is a check of the solver and the theorem. Every
+realisation was checked by \texttt{wcheck31.py}, which shares no code with the solver.
 
 \section{Conjecture 31 at order 10, and the solver}\label{sec:data}
 
@@ -338,17 +400,23 @@ $B''=B-u-v+xy$ and $b''=b-1_x-1_y$. If $B''$ is $2$-connected, $|Z(b'')|\le2$ an
 realisation of $(B'',b'')$ gives one of $(B,b)$: subdivide $xy$ by $u$ and add the path $xvy$.
 \end{lemma}
 
+\begin{lemma}[DOWN]\label{lem:down}
+If $b(x)\ge3$ and $b-2\cdot1_x$ satisfies (DB), then a realisation of $(B,b-2\cdot1_x)$ gives one of
+$(B,b)$ (Lemma~\ref{lem:up}).
+\end{lemma}
+
 \begin{definition}
-A PC instance with (DB) is \emph{irreducible} if none of Lemmas~\ref{lem:cyc}--\ref{lem:tw2} applies.
+A PC instance with (DB) is \emph{irreducible} if none of Lemmas~\ref{lem:cyc}--\ref{lem:down} applies.
 \end{definition}
 
 \begin{theorem}\label{thm:irred}
-If PC fails, then it fails at an irreducible instance. More precisely, a counterexample with the fewest
-edges is irreducible.
+If PC fails, then it fails at an irreducible instance. More precisely, a counterexample minimising
+$|E(B)|+\sum b$ is irreducible.
 \end{theorem}
 \begin{proof}
-Each move outputs a PC instance with (DB) and fewer edges, which is realisable by minimality, and then
-returns a realisation of the input.
+Each move outputs a PC instance with (DB) and smaller $|E|+\sum b$: every move except DOWN deletes edges
+and does not raise $\sum b$, and DOWN lowers $\sum b$. That instance is realisable by minimality, and the
+move returns a realisation of the input.
 \end{proof}
 
 The output instances can have new zeros and ends $\ge2$ even when the input is a parity profile. This is
@@ -358,23 +426,30 @@ TRI and TR from a zero.
 \section{Irreducible instances: the twin core}\label{sec:core}
 
 \texttt{scripts/stuck.c} lists the irreducible instances (two zeros, all $2$-connected graphs, all
-profiles with (DB); \texttt{data/irreducible\_le7.txt}):
+profiles with (DB); \texttt{data/irreducible.txt}). The columns ``without DOWN'' omit
+Lemma~\ref{lem:down}.
 \begin{center}\footnotesize
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-order & instances & irreducible & twin zeros & other\\
+ & & \multicolumn{2}{c}{without DOWN} & \multicolumn{3}{c}{all moves}\\
+order & instances & irreducible & twin & irreducible & twin & minimal profile\\
 \midrule
-$5$ & $187$ & $4$ & $4$ & $0$\\
-$6$ & $2{,}808$ & $43$ & $42$ & $1$\\
-$7$ & $110{,}691$ & $220$ & $217$ & $3$\\
+$5$ & $187$ & $4$ & $4$ & $2$ & $2$ & $2$\\
+$6$ & $2{,}808$ & $43$ & $42$ & $11$ & $11$ & $8$\\
+$7$ & $110{,}691$ & $220$ & $217$ & $34$ & $34$ & $34$\\
+$8$ & $6{,}735{,}828$ & $3{,}375$ & $3{,}347$ & $366$ & $355$ & $273$\\
 \bottomrule
 \end{tabular}
 \end{center}
-With $\le1$ zero there is no irreducible instance up to order $7$. \emph{Twin zeros} means
-$N(u)\setminus\{v\}=N(v)\setminus\{u\}$. The four other instances (\texttt{EEhw}, \texttt{FCpdg},
-\texttt{FCpfg}, \texttt{FCZ\textbackslash w}) have both zeros of degree $2$ on triangles at a vertex $x$
-with $b(x)=d(x)$ adjacent to both zeros, where SPL is blocked by Hall's condition and $B-x$ is not
-$2$-connected. All irreducible instances are realisable, since PC holds up to order $8$.
+With $\le1$ zero there is no irreducible instance up to order $8$, even without DOWN (as it must be by
+Theorem~\ref{thm:PC1}, although the moves themselves do not prove it). \emph{Twin zeros} means
+$N(u)\setminus\{v\}=N(v)\setminus\{u\}$. The non-twin irreducible instances without DOWN at orders $6$, $7$
+(\texttt{EEhw}, \texttt{FCpdg}, \texttt{FCpfg}, \texttt{FCZ\textbackslash w}) have both zeros of degree $2$
+on triangles at a vertex $x$ with $b(x)=d(x)$ adjacent to both zeros. There SPL is blocked by Hall's
+condition and $B-x$ is not $2$-connected; DOWN removes them. All irreducible instances are realisable,
+since PC holds up to order $8$. The last column counts irreducible instances whose profile is $m_Z$; the
+others lie on the (DB) boundary of Proposition~\ref{prop:min}(ii) or have $b$ above $m_Z$ only where
+lowering breaks (DB) elsewhere.
 
 \emph{Why twins resist.} Fan's lemma moves an end out of a zero $u$ along $uw$ only if $w$ has no other
 end-free neighbour. With twin zeros every neighbour of $u$ sees $v$. For the parity profile no vertex has
