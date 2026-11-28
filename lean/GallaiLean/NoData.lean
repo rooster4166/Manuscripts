@@ -563,4 +563,281 @@ theorem test2At_of_twins (J : SimpleGraph V) [DecidableRel J.Adj] {z r x y a b :
 
 end reductionsJ
 
+/-! ### The cherry form of `L_N` and Test1 at roots with cherry data -/
+
+section cherry
+
+variable {W : Type u} [Fintype W] [DecidableEq W]
+
+/-- **A forest base in an arbitrary graph**: a Lovász decomposition of `H` in which, for every
+(child, parent) pair `p` of `L`, (i) the path ending at the child avoids the parent, and
+(ii) no path has two siblings as its ends. -/
+def ForestLN (H : SimpleGraph W) [DecidableRel H.Adj] (L : List (W × W)) : Prop :=
+  ∃ D₀ : PathDecomp H, (∀ v, D₀.ends v = H.degree v % 2) ∧
+    (∀ p ∈ L, ∀ P ∈ D₀.paths, (P.src = p.1 ∨ P.tgt = p.1) → p.2 ∉ P.walk.support) ∧
+    (∀ p ∈ L, ∀ q ∈ L, p.1 ≠ q.1 → p.2 = q.2 → ∀ P ∈ D₀.paths,
+      ¬ ((P.src = p.1 ∨ P.tgt = p.1) ∧ (P.src = q.1 ∨ P.tgt = q.1)))
+
+/-- **Cherry constraints**: (child, parent) pairs on non-edges of `H` forming a rooted linear
+forest whose components have at most two edges and are rooted at an end: children distinct,
+parents distinct (no siblings), no chain of three pairs. The components are single pairs
+`c ← a` (`a ∉ Q(c)`) and 2-chains `a ← x ← b` (`a ∉ Q(x)`, `x ∉ Q(b)`). -/
+structure CherryList (H : SimpleGraph W) (L : List (W × W)) : Prop where
+  children : (L.map Prod.fst).Nodup
+  parents : (L.map Prod.snd).Nodup
+  nonadj : ∀ p ∈ L, ¬ H.Adj p.1 p.2
+  irrefl : ∀ p ∈ L, p.1 ≠ p.2
+  depth : ∀ p ∈ L, ∀ q ∈ L, p.2 = q.1 → ∀ s ∈ L, q.2 ≠ s.1
+
+end cherry
+
+/-- **Conjecture CL (cherry `L_N`)** (manuscript `conj:CL`): in a graph with no vertex of even
+degree, every system of cherry constraints is satisfied by some Lovász decomposition. With only
+single pairs this is `L_N`. -/
+def CherryLN : Prop :=
+  ∀ (W : Type u) [Fintype W] [DecidableEq W] (H : SimpleGraph W) [DecidableRel H.Adj]
+    (L : List (W × W)), (∀ v, H.degree v % 2 = 1) → CherryList H L → ForestLN H L
+
+section cherryT1
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **Conjecture CL gives Test1 at every root with cherry data**: all-odd forest data
+(`OddData`) whose forest is a linear forest of components with at most two edges, rooted at
+ends (`r` is then a root). -/
+theorem test1At_of_cherryLN (hC : CherryLN.{u}) (J : SimpleGraph V) [DecidableRel J.Adj] {z r : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) {T : List {v | v ≠ z}}
+    (hT : ∀ v : {v | v ≠ z}, J.Adj z v ↔ v ∈ T) {L : List ({v | v ≠ z} × {v | v ≠ z})}
+    (hF : OddData (delVert J z) ⟨r, hrz⟩ T L) (hpar : (L.map Prod.snd).Nodup)
+    (hdepth : ∀ p ∈ L, ∀ q ∈ L, p.2 = q.1 → ∀ s ∈ L, q.2 ≠ s.1) : Test1At J z r := by
+  classical
+  set B := delVert J z with hB
+  have hev : ∀ v, Even (B.degree v) ↔ v ∈ T := fun v =>
+    (even_delVert_iff_adj J hz v).trans (hT v)
+  have hnd : (L.map pairEdge).Nodup := hF.edges
+  have hin : ∀ e ∈ L.map pairEdge, e ∈ B.edgeSet := by
+    intro e he
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp he
+    exact hF.edge p hp
+  have hdeg := delList_degree_count B (L.map pairEdge) hnd hin
+  have hodd : ∀ v, (delList B (L.map pairEdge)).degree v % 2 = 1 := by
+    intro v
+    have h1 := hdeg v
+    have ht := hF.tjoin v
+    by_cases hTv : v ∈ T
+    · have he : Even (B.degree v) := (hev v).2 hTv
+      rw [Nat.even_iff] at he
+      simp only [hTv, ite_true] at ht
+      omega
+    · have ho : ¬ Even (B.degree v) := fun he => hTv ((hev v).1 he)
+      rw [Nat.not_even_iff] at ho
+      simp only [hTv, ite_false] at ht
+      omega
+  have hCL : CherryList (delList B (L.map pairEdge)) L :=
+    { children := hF.children
+      parents := hpar
+      nonadj := fun p hp h => h.2 (List.mem_map_of_mem hp)
+      irrefl := fun p hp => (hF.edge p hp).ne
+      depth := hdepth }
+  obtain ⟨D₀, hD₀, hi, hii⟩ := hC _ (delList B (L.map pairEdge)) L hodd hCL
+  exact test1At_of_oddBase J hz hrz hT ⟨L, hF, D₀, hD₀, hi, hii⟩
+
+end cherryT1
+
+/-! ### Root moves (MR Thm 145's one-edge steps) -/
+
+section rootmove
+
+variable {W : Type u} [Fintype W] [DecidableEq W]
+
+/-- **The Fan step of a root move.** Let `uv` be an edge of `G` with `u` of even degree, and let
+`u` have at most one neighbour `t ≠ v` of even degree. A decomposition of `G − uv` with at least
+two ends at `v` gives one of `G` with the same number of paths and at least two ends at `u`
+(Fan's single-edge lemma, `fan_single`: only even vertices can have no end). -/
+theorem fan_root_move {G : SimpleGraph W} [DecidableRel G.Adj] {u v : W} (huv : G.Adj u v)
+    (D' : PathDecomp (delList G [s(u, v)])) (hv : 2 ≤ D'.ends v) (hu : Even (G.degree u))
+    (hnb : ∀ t₁ t₂, G.Adj u t₁ → t₁ ≠ v → Even (G.degree t₁) →
+      G.Adj u t₂ → t₂ ≠ v → Even (G.degree t₂) → t₁ = t₂) :
+    ∃ D : PathDecomp G, D.size = D'.size ∧ 2 ≤ D.ends u := by
+  classical
+  have hnd : [s(u, v)].Nodup := List.nodup_singleton _
+  have hin : ∀ e ∈ [s(u, v)], e ∈ G.edgeSet := by
+    intro e he; rw [List.mem_singleton] at he; subst he; exact huv
+  have hdeg := delList_degree_count G [s(u, v)] hnd hin
+  have hdeg' : ∀ t, t ≠ u → t ≠ v → (delList G [s(u, v)]).degree t = G.degree t := by
+    intro t htu htv
+    have := hdeg t
+    simp only [List.countP_singleton, Sym2.mem_iff, htu, htv, or_self, decide_false,
+      Bool.false_eq_true, ite_false, add_zero] at this
+    exact this
+  have hdegu : (delList G [s(u, v)]).degree u + 1 = G.degree u := by
+    have := hdeg u
+    simpa using this
+  have hzero : (Finset.univ.filter (fun w => (delList G [s(u, v)]).Adj u w ∧ D'.ends w = 0)).card < D'.ends v := by
+    have hle : (Finset.univ.filter (fun w => (delList G [s(u, v)]).Adj u w ∧ D'.ends w = 0)).card ≤ 1 := by
+      rw [Finset.card_le_one]
+      intro a ha b hb
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+      have key : ∀ t, (delList G [s(u, v)]).Adj u t → D'.ends t = 0 → G.Adj u t ∧ t ≠ v ∧ Even (G.degree t) := by
+        intro t hadj hends
+        have htv : t ≠ v := by
+          rintro rfl
+          exact hadj.2 (List.mem_singleton.mpr rfl)
+        have htu : t ≠ u := (hadj.1.ne).symm
+        refine ⟨hadj.1, htv, ?_⟩
+        have hm := PathDecomp.ends_mod_two D' t
+        rw [hends, hdeg' t htu htv] at hm
+        exact Nat.even_iff.mpr hm.symm
+      obtain ⟨a1, a2, a3⟩ := key a ha.1 ha.2
+      obtain ⟨b1, b2, b3⟩ := key b hb.1 hb.2
+      exact hnb a b a1 a2 a3 b1 b2 b3
+    omega
+  have hG' : ∀ e, e ∈ (delList G [s(u, v)]).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(u, v) := by
+    intro e
+    rw [delList_edgeSet, List.mem_singleton]
+  obtain ⟨D, hD, hDu, -, -⟩ := fan_single huv hG' D' hzero
+  refine ⟨D, hD, ?_⟩
+  have hm := PathDecomp.ends_mod_two D' u
+  have hodd : (delList G [s(u, v)]).degree u % 2 = 1 := by
+    rw [Nat.even_iff] at hu; omega
+  omega
+
+end rootmove
+
+section rootmoveJ
+
+variable {V : Type u} [Fintype V] [DecidableEq V]
+
+/-- **Root move M1** (MR Thm 145, the one-edge step). Let `z` be the only even vertex of `J`,
+`r ∈ N(z)` with at most one neighbour in `N(z)`, and `w ∉ N(z)` a neighbour of `r`. If
+`(J − z) − rw` has a decomposition into at most `(|J| − 1)/2` paths with two ends at `w`, then
+Test1 holds at `(J, z, r)`. (That hypothesis is Test1 at `(J − rw − zr + zw, z, w)`, whose
+deletion graph is `(J − z) − rw`; normally `w ∉ N(z)`, but this is not needed.) -/
+theorem test1At_of_move1 (J : SimpleGraph V) [DecidableRel J.Adj] {z r w : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) (hwz : w ≠ z) (hrw : J.Adj r w)
+    (hone : ∀ t₁ t₂, t₁ ≠ z → t₂ ≠ z → J.Adj r t₁ → J.Adj z t₁ → J.Adj r t₂ → J.Adj z t₂ →
+      t₁ = t₂)
+    (h' : ∃ D' : PathDecomp (delList (delVert J z) [s((⟨r, hrz⟩ : {v | v ≠ z}), ⟨w, hwz⟩)]),
+      D'.size ≤ (Fintype.card V - 1) / 2 ∧ 2 ≤ D'.ends ⟨w, hwz⟩) : Test1At J z r := by
+  intro hr
+  obtain ⟨D', hs, hw⟩ := h'
+  have hev := even_delVert_iff_adj J hz
+  obtain ⟨D, hD, hDr⟩ := fan_root_move (G := delVert J z) (u := ⟨r, hrz⟩) (v := ⟨w, hwz⟩)
+    hrw D' hw ((hev _).2 hr) (by
+      intro t₁ t₂ h1 _ e1 h2 _ e2
+      exact Subtype.ext (hone t₁.1 t₂.1 t₁.2 t₂.2 h1 ((hev _).1 e1) h2 ((hev _).1 e2)))
+  exact ⟨D, by rw [hD]; exact hs, hDr⟩
+
+/-- **Root move M2** (MR Thm 145, "a second even neighbour"). Let `z` be the only even vertex of
+`J` and let `r ∈ N(z)` have exactly the two neighbours `u ≠ v` in `N(z)`. If `(J − z) − ru` has a
+decomposition into at most `(|J| − 1)/2` paths with two ends at `v`, then Test1 holds at
+`(J, z, r)`. (That hypothesis is Test1 at `(J − ru − zr − zu, z, v)`, whose deletion graph is
+`(J − z) − ru`.) -/
+theorem test1At_of_move2 (J : SimpleGraph V) [DecidableRel J.Adj] {z r u v : V}
+    (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) (huz : u ≠ z) (hvz : v ≠ z)
+    (hru : J.Adj r u) (hzu : J.Adj z u)
+    (htwo : ∀ t, t ≠ z → J.Adj r t → J.Adj z t → t = u ∨ t = v)
+    (h' : ∃ D' : PathDecomp (delList (delVert J z) [s((⟨r, hrz⟩ : {v | v ≠ z}), ⟨u, huz⟩)]),
+      D'.size ≤ (Fintype.card V - 1) / 2 ∧ 2 ≤ D'.ends ⟨v, hvz⟩) : Test1At J z r := by
+  classical
+  intro hr
+  have hev := even_delVert_iff_adj J hz
+  set G := delVert J z
+  set r' : {v | v ≠ z} := ⟨r, hrz⟩
+  set u' : {v | v ≠ z} := ⟨u, huz⟩
+  set v' : {v | v ≠ z} := ⟨v, hvz⟩
+  obtain ⟨D', hs, hv⟩ := h'
+  have hru' : G.Adj r' u' := hru
+  have hnd : [s(r', u')].Nodup := List.nodup_singleton _
+  have hin : ∀ e ∈ [s(r', u')], e ∈ G.edgeSet := by
+    intro e he; rw [List.mem_singleton] at he; subst he; exact hru'
+  have hdeg := delList_degree_count G [s(r', u')] hnd hin
+  have hdeg' : ∀ t, t ≠ r' → t ≠ u' → (delList G [s(r', u')]).degree t = G.degree t := by
+    intro t htr htu
+    have := hdeg t
+    simp only [List.countP_singleton, Sym2.mem_iff, htr, htu, or_self, decide_false,
+      Bool.false_eq_true, ite_false, add_zero] at this
+    exact this
+  have hzero : (Finset.univ.filter (fun w => (delList G [s(r', u')]).Adj r' w ∧ D'.ends w = 0)).card < D'.ends u' := by
+    have h0 : (Finset.univ.filter (fun w => (delList G [s(r', u')]).Adj r' w ∧ D'.ends w = 0)) = ∅ := by
+      rw [Finset.filter_eq_empty_iff]
+      rintro t - ⟨hadj, hends⟩
+      have htu : t ≠ u' := by
+        rintro rfl; exact hadj.2 (List.mem_singleton.mpr rfl)
+      have htr : t ≠ r' := (hadj.1.ne).symm
+      have hm := PathDecomp.ends_mod_two D' t
+      rw [hends, hdeg' t htr htu] at hm
+      have hzt : J.Adj z t.1 := (hev t).1 (Nat.even_iff.mpr hm.symm)
+      rcases htwo t.1 t.2 hadj.1 hzt with h | h
+      · exact htu (Subtype.ext h)
+      · have htv : t = v' := Subtype.ext h
+        rw [htv] at hends; omega
+    rw [h0, Finset.card_empty]
+    have hm := PathDecomp.ends_mod_two D' u'
+    have hdu : (delList G [s(r', u')]).degree u' + 1 = G.degree u' := by
+      have := hdeg u'; simpa using this
+    have heu : Even (G.degree u') := (hev u').2 hzu
+    rw [Nat.even_iff] at heu
+    omega
+  have hG' : ∀ e, e ∈ (delList G [s(r', u')]).edgeSet ↔ e ∈ G.edgeSet ∧ e ≠ s(r', u') := by
+    intro e
+    rw [delList_edgeSet, List.mem_singleton]
+  obtain ⟨D, hD, hDr, -, -⟩ := fan_single hru' hG' D' hzero
+  refine ⟨D, by rw [hD]; exact hs, ?_⟩
+  have hm := PathDecomp.ends_mod_two D' r'
+  have hdr : (delList G [s(r', u')]).degree r' + 1 = G.degree r' := by
+    have := hdeg r'; simpa using this
+  have her : Even (G.degree r') := (hev r').2 hr
+  rw [Nat.even_iff] at her
+  show 2 ≤ D.ends r'
+  omega
+
+omit [Fintype V] [DecidableEq V] in
+/-- The deletion graph of a graph that agrees with `J` off `z` except for one edge `ab`. -/
+theorem delVert_eq_delList (J J' : SimpleGraph V) {z a b : V} (haz : a ≠ z) (hbz : b ≠ z)
+    (hJ' : ∀ x y, x ≠ z → y ≠ z → (J'.Adj x y ↔ J.Adj x y ∧ s(x, y) ≠ s(a, b))) :
+    delVert J' z = delList (delVert J z) [s((⟨a, haz⟩ : {v | v ≠ z}), ⟨b, hbz⟩)] := by
+  ext x y
+  simp only [delVert, SimpleGraph.induce_adj, delList_adj, List.mem_singleton]
+  rw [hJ' x.1 y.1 x.2 y.2]
+  refine and_congr_right fun _ => not_congr ?_
+  simp only [Sym2.eq_iff, Subtype.ext_iff]
+
+/-- **Root move M1, in terms of the moved instance**: Test1 at `(J', z, w)`, where `J'` agrees
+with `J` off `z` except that `rw` is missing (for instance `J' = J − rw − zr + zw`), gives Test1
+at `(J, z, r)` when `r` has at most one neighbour in `N(z)`. -/
+theorem test1At_of_move1' (J J' : SimpleGraph V) [DecidableRel J.Adj] [DecidableRel J'.Adj]
+    {z r w : V} (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) (hwz : w ≠ z)
+    (hrw : J.Adj r w)
+    (hone : ∀ t₁ t₂, t₁ ≠ z → t₂ ≠ z → J.Adj r t₁ → J.Adj z t₁ → J.Adj r t₂ → J.Adj z t₂ →
+      t₁ = t₂)
+    (hJ' : ∀ x y, x ≠ z → y ≠ z → (J'.Adj x y ↔ J.Adj x y ∧ s(x, y) ≠ s(r, w)))
+    (hzw' : J'.Adj z w) (h' : Test1At J' z w) : Test1At J z r := by
+  refine test1At_of_move1 J hz hrz hwz hrw hone ?_
+  obtain ⟨D', hs, hw⟩ := h' hzw'
+  have he := delVert_eq_delList J J' hrz hwz hJ'
+  revert D'
+  rw [he]
+  intro D' hs hw
+  exact ⟨D', hs, hw⟩
+
+/-- **Root move M2, in terms of the moved instance**: Test1 at `(J', z, v)`, where `J'` agrees
+with `J` off `z` except that `ru` is missing (for instance `J' = J − ru − zr − zu`), gives Test1
+at `(J, z, r)` when the neighbours of `r` in `N(z)` are exactly `u` and `v`. -/
+theorem test1At_of_move2' (J J' : SimpleGraph V) [DecidableRel J.Adj] [DecidableRel J'.Adj]
+    {z r u v : V} (hz : ∀ v, Even (J.degree v) ↔ v = z) (hrz : r ≠ z) (huz : u ≠ z)
+    (hvz : v ≠ z) (hru : J.Adj r u) (hzu : J.Adj z u)
+    (htwo : ∀ t, t ≠ z → J.Adj r t → J.Adj z t → t = u ∨ t = v)
+    (hJ' : ∀ x y, x ≠ z → y ≠ z → (J'.Adj x y ↔ J.Adj x y ∧ s(x, y) ≠ s(r, u)))
+    (hzv' : J'.Adj z v) (h' : Test1At J' z v) : Test1At J z r := by
+  refine test1At_of_move2 J hz hrz huz hvz hru hzu htwo ?_
+  obtain ⟨D', hs, hv⟩ := h' hzv'
+  have he := delVert_eq_delList J J' hrz huz hJ'
+  revert D'
+  rw [he]
+  intro D' hs hv
+  exact ⟨D', hs, hv⟩
+
+end rootmoveJ
+
 end Gallai
