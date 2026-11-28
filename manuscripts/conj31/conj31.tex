@@ -1,0 +1,510 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\Od}{\mathrm{Od}}
+\emergencystretch=3em
+
+\title[Conjecture 31]{Two even vertices: the profile form of Conjecture 31,\\
+the block criterion, and joint paths for Conjecture J}
+\author{Gallai project (cloud session \texttt{claude/conj31})}
+\date{28 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+A graph with exactly two even vertices is \emph{tight} if it decomposes into $|\Od|/2$ paths.
+Conjecture~31 of the two-even problem~\cite{EP} says that a $2$-connected such graph is tight unless an
+odd vertex is adjacent to all others. We do not prove it. We prove and compute the following.
+\begin{itemize}
+\item \emph{Order $10$} (computed). Conjecture~31 holds for all $799{,}993$ two-even $2$-connected graphs of
+order $10$ without a universal odd vertex. Every decomposition was checked by an independent program.
+\item \emph{The profile form PC} (conjectured; exhaustive for $n\le 8$). Prescribe the number $b(x)$ of path
+ends at every vertex, with at most two vertices of positive even degree getting $b=0$. In a
+$2$-connected graph, $b$ is realisable exactly when the degree bound $d(x)+b(x)\le\sum b$ holds.
+We prove that the bound fails only when some vertex is adjacent to all others and $b=1$ at every
+remaining non-zero vertex. So PC is Conjecture~31 with arbitrary end counts, and it implies Conjecture~31 (Lean).
+\item \emph{Reduction} (proved). Eight moves reduce PC to smaller instances: a cycle base, ears, suppression,
+Fan transfer, a one-edge path, a triangle move, splitting, and a twin pair on a $2$-cut. Four of them
+are in Lean. A minimal counterexample to PC admits none of them. Up to order~$7$ there are $267$ such
+irreducible instances, and all but $4$ have \emph{twin} zeros ($N(u)-v=N(v)-u$).
+\item \emph{The block criterion BC} (gluing proved, criterion computed). Realisability glues exactly across
+cut vertices. Under PC this gives an explicit sufficient criterion for tightness of any two-even graph.
+It agrees with exact tightness on all $1{,}114{,}873$ connected two-even graphs of order $10$ (and on all of
+order $\le 8$). The obstructions (O1), (O2), (O3) and the cut-vertex class of~\cite{EP} are all failures of BC.
+\item \emph{Conjecture J} (computed). Conjecture~31 alone cannot give J: at order $8$ only $26{,}611$ of the
+$40{,}538$ joined instances have a joint path with a $2$-connected remainder (or a leaf end). With BC
+every joined instance of orders $6$, $8$ and $10$ has a joint path $P$ whose remainder satisfies BC.
+So PC together with this path-choice statement (Conjecture~P) implies Conjecture~J.
+\end{itemize}
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A \emph{path decomposition} of $G$ partitions $E(G)$ into paths;
+$b_\mathcal D(x)$ is the number of path ends at $x$. For a graph $H$ with exactly two even vertices
+(vertices of positive even degree) $u,v$, the number of paths is at least $|\Od(H)|/2$, and $H$ is
+\emph{tight} if equality is possible, i.e.\ some decomposition has one end at every odd vertex and none
+at $u,v$. The question arises as the second step of faithful descent~\cite[\S5]{EP}, and in the joint form
+of $L_N(2)$~\cite{CR}: if $P$ is a $c_1$--$c_2$ path in an all-odd graph $F$, then $F-E(P)$ has the two
+even vertices $c_1,c_2$, and $Q(c_1)=Q(c_2)=P$ in a Lov\'asz decomposition of $F$ exactly when $F-E(P)$ is
+tight (Conjecture~J of~\cite{CR}).
+
+\begin{conjecture}[Conjecture 31 of~\cite{EP}]\label{conj:31}
+A $2$-connected graph with exactly two even vertices is tight unless some odd vertex is adjacent to all
+other vertices.
+\end{conjecture}
+
+With a universal odd vertex $H$ is never tight (obstruction (O1), Lean \texttt{degree\_le\_of\_tight}).
+The census of~\cite{EP} at order $\le 8$ also contains non-$2$-connected obstructions (O2), (O3) and a
+cut-vertex class. Conjecture~\ref{conj:31} had been checked exhaustively up to order $8$, and on $85$ random
+graphs of orders $10$ and $12$.
+
+\subsection*{What we do}
+\begin{enumerate}
+\item We check Conjecture~\ref{conj:31} exhaustively at order $10$ (Section~\ref{sec:data}).
+\item We replace the parity profile by an arbitrary end profile and state Conjecture~PC
+(Section~\ref{sec:PC}). It is the natural induction hypothesis: edge deletions and
+Fan transfers create vertices with two or more ends. Its only obstruction is the degree bound, and we
+prove that the bound fails only at a universal vertex (Lemma~\ref{lem:DBfail}).
+\item We prove eight reduction moves (Section~\ref{sec:moves}). A minimal counterexample to PC is
+irreducible. We compute the irreducible instances and find that almost all have twin zeros; the twin
+case is the core (Section~\ref{sec:core}).
+\item We prove that realisability glues exactly at cut vertices (Theorem~\ref{thm:glue}). Under PC this
+gives the block criterion BC, which matches tightness for every connected two-even graph of order
+$\le 10$ (Section~\ref{sec:BC}).
+\item We test the route from Conjecture~31 to Conjecture~J (Section~\ref{sec:J}). Conjecture~31 alone is
+not enough. BC is enough on every joined instance up to order $10$.
+\end{enumerate}
+Conjecture AE (task 3 of the assignment) was not attempted.
+
+\subsection*{Status of the results}
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{0.5\textwidth}p{0.2\textwidth}p{0.24\textwidth}@{}}
+\toprule
+statement & status & where\\
+\midrule
+Conjecture~31 & open; exhaustive $n\le10$ & Sec.~\ref{sec:data}\\
+(DB) necessary & proved, Lean & Lemma~\ref{lem:DB}\\
+(DB) fails only at a universal vertex & proved; Lean (this direction) & Lemma~\ref{lem:DBfail}\\
+Conjecture PC & open; exhaustive $n\le 8$ & Conj.~\ref{conj:PC}\\
+PC $\Rightarrow$ Conjecture~31 & proved, Lean & Prop.~\ref{prop:PC31}\\
+moves TR, NEW, SUP, TRI (realisation step) & proved, Lean & Sec.~\ref{sec:moves}\\
+moves CYC, EAR, SPL, TW2; all output conditions & proved (paper) & Sec.~\ref{sec:moves}\\
+minimal counterexample to PC is irreducible & proved (paper) & Thm.~\ref{thm:irred}\\
+irreducible instances, $n\le7$ & computed & Sec.~\ref{sec:core}\\
+gluing at cut vertices & proved (paper) & Thm.~\ref{thm:glue}\\
+PC $\Rightarrow$ (BC $\Rightarrow$ realisable) & proved (paper) & Cor.~\ref{cor:BC}\\
+BC $\Leftrightarrow$ tight, connected two-even graphs & computed, $n\le 10$ & Sec.~\ref{sec:BC}\\
+Conjecture P (a joint path with BC remainder) & open; exhaustive orders $6,8,10$ & Sec.~\ref{sec:J}\\
+PC $\wedge$ P $\Rightarrow$ Conjecture J & proved (paper) & Prop.~\ref{prop:J}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Profiles and the degree bound}\label{sec:profiles}
+
+\begin{definition}
+An \emph{end profile} of a graph $G$ is a function $b:V(G)\to\mathbb N$. It is \emph{realisable} if some path
+decomposition $\mathcal D$ has $b_\mathcal D=b$.\lean{RealisesProfile}
+\end{definition}
+
+A realisable profile has $b(x)\equiv d(x)\pmod 2$ and $b(x)\le d(x)$ for every $x$, and $\sum b=2|\mathcal D|$.
+A graph with exactly two even vertices is tight iff its parity profile $d\bmod 2$ is realisable
+(\texttt{tight\_iff\_realisesProfile}).
+
+\begin{lemma}[degree bound (DB)]\label{lem:DB}
+If $b$ is realisable, then $d(x)+b(x)\le\sum_y b(y)$ for every vertex $x$.\lean{degree\_add\_le\_sum\_of\_realises}
+\end{lemma}
+\begin{proof}
+A path has at most two edges at $x$, and one fewer for each of its ends at $x$; so
+$d(x)+b(x)\le 2|\mathcal D|=\sum b$.
+\end{proof}
+
+For a profile with $b\equiv d\pmod 2$ put $\mathrm{sl}(x)=\sum_{y\ne x}b(y)-d(x)$. Then (DB) at $x$ is
+$\mathrm{sl}(x)\ge0$. Since $\sum b\equiv\sum d\equiv 0$ and $b(x)\equiv d(x)$, \emph{the slack $\mathrm{sl}(x)$ is
+always even}. Write
+\begin{equation}\label{eq:slack}
+\mathrm{sl}(x)=\sum_{y\in N(x)}\bigl(b(y)-1\bigr)+\sum_{y\notin N[x]}b(y).
+\end{equation}
+
+\begin{definition}
+A \emph{zero} of $b$ is a vertex of positive degree with $b=0$; $Z(b)$ is the set of zeros. A \emph{PC
+instance} is a pair $(B,b)$ with $B$ $2$-connected, $|Z(b)|\le2$, every zero of positive even degree,
+and $b(x)\equiv d(x)$, $1\le b(x)\le d(x)$ at every other vertex.
+\end{definition}
+
+\begin{lemma}[where (DB) fails]\label{lem:DBfail}
+Let $b\equiv d\pmod 2$ with $b\ge1$ outside a set $Z$ of at most two vertices. Then (DB) fails at $x$ if and
+only if $|Z|=2$, $x$ is adjacent to every other vertex, and $b(y)=1$ for every $y\notin Z\cup\{x\}$. In
+particular (DB) holds whenever $|Z|\le1$.\lean{universal\_of\_not\_degreeBound}
+\end{lemma}
+\begin{proof}
+In~\eqref{eq:slack} the neighbours in $Z$ contribute $-1$ each and every other term is $\ge0$, so
+$\mathrm{sl}(x)\ge-|N(x)\cap Z|\ge-2$. As $\mathrm{sl}(x)$ is even, $\mathrm{sl}(x)<0$ forces $\mathrm{sl}(x)=-2$:
+both vertices of $Z$ are neighbours of $x$, every other neighbour has $b=1$, and every non-neighbour
+$y\ne x$ has $b(y)=0$, i.e.\ lies in $Z\subseteq N(x)$; so there is no non-neighbour. The converse is the
+same computation.
+\end{proof}
+
+Lean proves the forward direction, which is all that Proposition~\ref{prop:PC31} needs.
+
+\section{Conjecture PC}\label{sec:PC}
+
+\begin{conjecture}[PC]\label{conj:PC}
+Every PC instance satisfying (DB) is realisable. Equivalently (Lemma~\ref{lem:DBfail}): a PC instance
+$(B,b)$ is realisable unless it has two zeros and a vertex $x$ adjacent to all other vertices with $b=1$
+on $V(B)\setminus(Z(b)\cup\{x\})$.
+\end{conjecture}
+
+For $|Z|\le1$ and the parity profile, PC is Lov\'asz's theorem (with at most one even vertex). For $|Z|=2$
+and the parity profile it is Conjecture~\ref{conj:31}.
+
+\begin{proposition}\label{prop:PC31}
+PC implies Conjecture~\ref{conj:31}.\lean{conj31\_of\_profileConj}
+\end{proposition}
+\begin{proof}
+Let $H$ be as in Conjecture~\ref{conj:31} with even vertices $u,v$; take $b=d\bmod2$ and $Z=\{u,v\}$. If (DB)
+failed at $x$, then $x$ would be adjacent to all other vertices by Lemma~\ref{lem:DBfail}. The order $n$ is
+even, since $n-2=|\Od(H)|$. So $d(x)=n-1$ is odd, and $x$ is a universal odd vertex.
+\end{proof}
+
+\emph{Evidence} (\texttt{data/pc\_le8.txt}, \texttt{data/pc\_le1zero.txt}). Over all $2$-connected graphs of
+order $\le8$ (geng), every pair of even-degree vertices as $Z$, and every profile:
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+zeros & order & profiles with (DB) & realisable\\
+\midrule
+$2$ & $4,\dots,7$ & $7+187+2{,}808+110{,}691$ & all\\
+$2$ & $8$ & $6{,}735{,}828$ & all\\
+$\le1$ & $4,\dots,8$ & $14{,}297{,}554$ & all\\
+\bottomrule
+\end{tabular}
+\end{center}
+With $\le1$ zero every profile satisfies (DB), as Lemma~\ref{lem:DBfail} says. Every realisation was checked
+by \texttt{wcheck31.py}, which shares no code with the solver.
+
+\section{Conjecture 31 at order 10, and the solver}\label{sec:data}
+
+\texttt{scripts/psolve.h} decides realisability of a profile exactly. It builds the path ending at a vertex
+with remaining ends (fewest remaining edges first), over all such paths. Its pruning is (DB) per component
+of the remaining graph, a parity check, and memoised failed states, and each of these is sound. Run on all
+connected graphs of order $\le8$ it reproduces the census of~\cite[\S5]{EP}, which was obtained with an
+independent CP-SAT solver: $2/3$, $17/47$ and $372/2668$ non-tight at orders $4,6,8$
+(\texttt{data/census\_le8.txt}).
+
+\begin{proposition}[computed]\label{prop:order10}
+Among the $9{,}743{,}542$ $2$-connected graphs of order $10$, $839{,}152$ have exactly two even vertices;
+$39{,}159$ of these have a universal odd vertex, and the other $799{,}993$ are all tight.
+\end{proposition}
+
+All $799{,}993$ decompositions were re-checked by \texttt{wcheck31.py} (\texttt{data/conj31\_order10.txt}).
+
+\section{Reduction moves}\label{sec:moves}
+
+Throughout, $(B,b)$ is a PC instance with (DB), $Z=Z(b)$, and $B$ is not a cycle unless stated. A
+\emph{thread} is a path $x_0x_1\cdots x_m$ ($m\ge1$) whose interior vertices have degree $2$ in $B$ and
+whose ends have degree $\ge3$. It is \emph{removable} if $B$ minus its interior (minus the edge, if $m=1$)
+is $2$-connected. Every $2$-connected graph that is not a cycle has a removable thread: it is the last ear
+of an ear decomposition. Interior vertices of a thread have degree $2$, so $b\in\{0,2\}$ there. Each move
+below outputs a PC instance $(B',b')$ with fewer edges and (DB), and turns a realisation of $(B',b')$
+into one of $(B,b)$.
+
+\begin{lemma}[CYC]\label{lem:cyc}
+If $B$ is a cycle, $(B,b)$ is realisable.
+\end{lemma}
+\begin{proof}
+All degrees are $2$, so $b=2$ off $Z$. If at least two vertices are non-zero, the arcs between consecutive
+non-zero vertices are paths and realise $b$. If only one vertex $x$ is non-zero, (DB) fails at $x$
+($4>2$).
+\end{proof}
+
+\begin{lemma}[EAR]\label{lem:ear}
+Let $x_0\cdots x_m$ be a removable thread with $r\ge1$ interior vertices of $b=2$, and not ($r=1$ and
+$x_0,x_m\in Z$). Let $B'=B-\{x_1,\dots,x_{m-1}\}$ and $b'=b$ except
+$b'(x_i)=b(x_i)+1$ if $b(x_i)\le d(x_i)-2$ and $b'(x_i)=b(x_i)-1$ if $b(x_i)=d(x_i)$ ($i\in\{0,m\}$). Then
+$(B',b')$ is a PC instance with (DB), and a realisation of it gives one of $(B,b)$.
+\end{lemma}
+\begin{proof}
+\emph{Realisation.} The non-zero interior vertices cut the thread into $r+1$ segments; the $r-1$ inner
+ones become paths. The first segment $S_0$ (from $x_0$) becomes a path when $b'(x_0)=b(x_0)-1$. When
+$b'(x_0)=b(x_0)+1$ it is appended to a path of $\mathcal D'$ ending at $x_0$; its other vertices are not in $B'$,
+so the result is a path. The last segment is treated in the same way. If $r\ge2$ the two appended segments
+are disjoint. If $r=1$ they share their inner end, so they must be appended to different paths. This is
+possible unless $b'(x_0)=b'(x_m)=1$, i.e.\ unless $x_0,x_m\in Z$, which is excluded. The ends add up to $b$.
+
+\emph{Conditions.} $B'$ is $2$-connected by removability. A new zero would need $b'(x_0)=0$, i.e.\
+$b(x_0)=d(x_0)=1$, but $d(x_0)\ge3$. So $Z(b')=Z\setminus\{x_1,\dots,x_{m-1}\}$. Also $b'\le d'$, and the
+parities match.
+
+\emph{(DB).} Write $\delta_i=b'(x_i)-b(x_i)\in\{\pm1\}$, so $\sum b'=\sum b-2r+\delta_0+\delta_m$, and
+slacks are taken in $B$. Since $d'(w)+b'(w)=d(w)+b(w)$ for $w\ne x_0,x_m$, and
+$d'(x_i)+b'(x_i)=d(x_i)+b(x_i)-1+\delta_i$, (DB) for $(B',b')$ reads
+\[
+\mathrm{sl}(w)\ge 2r-\delta_0-\delta_m\quad(w\ne x_0,x_m),\qquad
+\mathrm{sl}(x_0)\ge 2r-1-\delta_m,\qquad \mathrm{sl}(x_m)\ge 2r-1-\delta_0 .
+\]
+Lower bounds from~\eqref{eq:slack}: the $r$ interior vertices with $b=2$ are non-neighbours of every
+$w\ne x_0,x_m$ and contribute $2$ each. Of them only $x_1$ is a neighbour of $x_0$ (contributing $1$),
+and only $x_{m-1}$ is a neighbour of $x_m$. Zeros contribute at least $-1$ each, at most two of them. If
+$\delta_0=-1$, then $b(x_0)=d(x_0)\ge3$, and $x_0$ contributes at least $2$ to the slack of every other
+vertex ($b-1\ge2$ as a neighbour, $b\ge3$ otherwise); likewise for $x_m$. Hence, with
+$e_i=[\delta_i=-1]$,
+\[
+\mathrm{sl}(w)\ge 2r-2+2e_0+2e_m,\qquad \mathrm{sl}(x_0)\ge 2r-3+2e_m,\qquad
+\mathrm{sl}(x_m)\ge 2r-3+2e_0,
+\]
+where for $x_0$ the bound uses $x_1$ (if $x_1\in Z$ it is counted among the zeros and the bound
+improves by one). Slacks are even, so $\mathrm{sl}(x_0)\ge 2r-2+2e_m$. Each requirement now holds:
+$2r-\delta_0-\delta_m=2r-2+2e_0+2e_m$ and $2r-1-\delta_m=2r-2+2e_m$.
+\end{proof}
+
+\begin{lemma}[SUP]\label{lem:sup}
+Let $x_0z_1x_m$ or $x_0z_1z_2x_m$ be a thread with interior in $Z$ and $x_0\not\sim x_m$. Replace it by
+the edge $x_0x_m$, keeping $b$. The result is a PC instance with (DB) (degrees and $\sum b$ unchanged), and
+subdividing the edge $x_0x_m$ in its path realises $(B,b)$.\lean{realisesProfile\_suppress}
+\end{lemma}
+
+The Lean statement is the one-vertex case, by \texttt{splitOff\_supp}; the two-vertex case is two
+applications.
+
+\begin{lemma}[TR, Fan transfer]\label{lem:tr}
+Let $xy$ be a removable edge with $b(y)\ge1$ and $b(x)\le d(x)-2$. Put $b'=b+1_x-1_y$ on $B-xy$ and
+$Z'=(Z\setminus\{x\})\cup\{y: b(y)=1\}$. If $|Z'|\le2$ and $|N_{B-xy}(y)\cap Z'|\le b(x)$, then $(B-xy,b')$
+is a PC instance with (DB), and a realisation of it gives one of $(B,b)$.\lean{realisesProfile\_transfer}
+\end{lemma}
+\begin{proof}
+Fan's lemma~\cite[Lemma 3.4]{Fan} (\texttt{fan\_single}) adds $xy$ and moves one end from $x$ to $y$, provided
+fewer than $b'(x)=b(x)+1$ neighbours of $y$ in $B-xy$ have no end; these are the vertices of $Z'$ adjacent
+to $y$. (DB) is preserved: $\sum b'=\sum b$, and $d+b$ drops by $2$ at $y$ and is unchanged elsewhere.
+\end{proof}
+
+With $x\in Z$ (so $b(x)=0$) the condition reads $y\not\sim v$, where $v$ is the other zero. This is the
+transfer of~\cite[\S5]{EP} (\texttt{tight\_of\_transfer}).
+
+\begin{lemma}[NEW]\label{lem:new}
+Let $xy$ be a removable edge with $b(x),b(y)\ge1$, $|Z\cup\{x:b(x)=1\}\cup\{y:b(y)=1\}|\le2$, and
+$\mathrm{sl}(w)\ge2$ for all $w\ne x,y$. Then $(B-xy,b-1_x-1_y)$ is a PC instance with (DB), and adding $xy$
+as a path realises $(B,b)$.\lean{realisesProfile\_newPath}
+\end{lemma}
+
+\begin{lemma}[TRI]\label{lem:tri}
+Let $u\in Z$ have $N(u)=\{x,y\}$ with $xy\in E$, $x,y\notin Z$, and $B-u$ $2$-connected. Let
+$b(x)\le d(x)-2$, and suppose $y$ is not adjacent to the other zero or $b(x)\ge2$. Then
+$(B-u,\,b+1_x-1_y)$ is a PC instance with (DB), and a realisation of it gives one of
+$(B,b)$.\lean{realisesProfile\_tri}
+\end{lemma}
+\begin{proof}
+In $B-xy$ the vertex $u$ has non-adjacent neighbours, and suppressing it gives $B-u$ (which contains
+$xy$). Subdividing (Lemma~\ref{lem:sup}) turns a realisation $b_1=b+1_x-1_y$ of $B-u$ into one of $B-xy$
+with $b_1(u)=0$. Fan's lemma at $y$ needs fewer than $b_1(x)=b(x)+1$ neighbours of $y$ in $B-xy$ without
+ends. These are $u$ and possibly the other zero, and they number at most $b(x)$ by hypothesis. The zeros of
+$b_1$ on $B-u$ are the other zero and possibly $y$. (DB) holds: $\sum b_1=\sum b$; at $x$, $d$ drops by $1$
+and $b$ rises by $1$; at $y$ both drop by $1$.
+\end{proof}
+
+\begin{lemma}[SPL]\label{lem:spl}
+Let $x\notin Z$ with $b(x)=d(x)$, $|N(x)\cap Z|\le1$ and $B-x$ $2$-connected. For $y\in N(x)$ put
+$b'(y)=b(y)+1$ if $b(y)\le d(y)-2$ and $b'(y)=b(y)-1$ otherwise; $b'=b$ elsewhere. If $|Z(b')|\le2$ and
+(DB) holds for $(B-x,b')$, then a realisation of $(B-x,b')$ gives one of $(B,b)$.
+\end{lemma}
+\begin{proof}
+Every edge $xy$ ends a path at $x$. If $b'(y)=b(y)-1$, it is a path by itself. Otherwise it is appended to
+a path of $\mathcal D'$ ending at $y$. Different appended edges need different paths, since each contains $x$. A
+path has two ends, and every $y$ concerned has $b'(y)\ge2$, except at most one zero with $b'=1$. So Hall's
+condition holds: a set $S$ of such $y$ meets at least $\lceil(2|S|-1)/2\rceil=|S|$ paths.
+\end{proof}
+
+\begin{lemma}[TW2]\label{lem:tw2}
+Let the zeros $u,v$ be non-adjacent with $N(u)=N(v)=\{x,y\}$ and $x\not\sim y$. Put
+$B''=B-u-v+xy$ and $b''=b-1_x-1_y$. If $B''$ is $2$-connected, $|Z(b'')|\le2$ and (DB) holds, then a
+realisation of $(B'',b'')$ gives one of $(B,b)$: subdivide $xy$ by $u$ and add the path $xvy$.
+\end{lemma}
+
+\begin{definition}
+A PC instance with (DB) is \emph{irreducible} if none of Lemmas~\ref{lem:cyc}--\ref{lem:tw2} applies.
+\end{definition}
+
+\begin{theorem}\label{thm:irred}
+If PC fails, then it fails at an irreducible instance. More precisely, a counterexample with the fewest
+edges is irreducible.
+\end{theorem}
+\begin{proof}
+Each move outputs a PC instance with (DB) and fewer edges, which is realisable by minimality, and then
+returns a realisation of the input.
+\end{proof}
+
+The output instances can have new zeros and ends $\ge2$ even when the input is a parity profile. This is
+why the induction lives on profiles: for Conjecture~\ref{conj:31} itself the only moves available are SUP,
+TRI and TR from a zero.
+
+\section{Irreducible instances: the twin core}\label{sec:core}
+
+\texttt{scripts/stuck.c} lists the irreducible instances (two zeros, all $2$-connected graphs, all
+profiles with (DB); \texttt{data/irreducible\_le7.txt}):
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+order & instances & irreducible & twin zeros & other\\
+\midrule
+$5$ & $187$ & $4$ & $4$ & $0$\\
+$6$ & $2{,}808$ & $43$ & $42$ & $1$\\
+$7$ & $110{,}691$ & $220$ & $217$ & $3$\\
+\bottomrule
+\end{tabular}
+\end{center}
+With $\le1$ zero there is no irreducible instance up to order $7$. \emph{Twin zeros} means
+$N(u)\setminus\{v\}=N(v)\setminus\{u\}$. The four other instances (\texttt{EEhw}, \texttt{FCpdg},
+\texttt{FCpfg}, \texttt{FCZ\textbackslash w}) have both zeros of degree $2$ on triangles at a vertex $x$
+with $b(x)=d(x)$ adjacent to both zeros, where SPL is blocked by Hall's condition and $B-x$ is not
+$2$-connected. All irreducible instances are realisable, since PC holds up to order $8$.
+
+\emph{Why twins resist.} Fan's lemma moves an end out of a zero $u$ along $uw$ only if $w$ has no other
+end-free neighbour. With twin zeros every neighbour of $u$ sees $v$. For the parity profile no vertex has
+$b\ge2$, so no move between non-zero vertices exists either. In $B-u-v$ every vertex keeps its degree
+parity, so a decomposition $\mathcal D'$ of $B-u-v$ exists by Lov\'asz or PC with no zeros. Inserting the passes
+through $u$ and $v$ without new paths needs a pairing $\sigma$ of $N$ alternating between $u$ and $v$ such
+that the path of $\mathcal D'$ ending at $x$ avoids $\sigma(x)$, consistently at both ends of each path. That is a
+multi-pair avoidance statement of the $L_N$ type~\cite{CR}. TW2 settles $|N|=2$ with $x\not\sim y$ by
+replacing the twin pair by the edge $xy$. We have no argument for $|N|\ge3$.
+
+\section{Gluing and the block criterion}\label{sec:BC}
+
+\begin{theorem}[gluing]\label{thm:glue}
+Let $G$ be a graph and $t$ an end profile with $t\equiv d\pmod 2$. Then $t$ is realisable if and only if
+there are realisable profiles $b_B$ of the blocks $B$ of $G$ with $b_B(x)=t(x)$ at every vertex that is not
+a cut vertex, and, at every cut vertex $c$, with $M_c=\sum_{B\ni c}b_B(c)$,
+\[
+M_c\ge t(c)\qquad\text{and}\qquad 2\max_{B\ni c}b_B(c)\le M_c+t(c).
+\]
+\end{theorem}
+\begin{proof}
+\emph{Restriction.} A path of $G$ that leaves a block through a cut vertex $c$ cannot return to it without
+passing through $c$ again. So it meets every block in at most one subpath, and $\mathcal D$ restricts to
+decompositions of the blocks. At a cut vertex $c$, each of the $g_c$ paths that pass through $c$ between
+two blocks contributes an end to each, so $M_c=t(c)+2g_c$. The ends of a single block at $c$ are
+$g$-ends or ends of $\mathcal D$, so $b_B(c)\le g_c+t(c)$, and summing gives $2b_B(c)\le M_c+t(c)$.
+
+\emph{Gluing.} At each cut vertex, keep $t(c)$ ends and pair the other $M_c-t(c)$ ends between different
+blocks. This is possible iff the largest block keeps at most half of them after we choose the kept ends
+from the largest blocks, i.e.\ iff $2\max b_B(c)\le M_c+t(c)$. A paired chain of pieces follows a
+non-backtracking walk in the block-cut tree. Two blocks share at most one vertex, so the chain is a path
+and never closes up.
+\end{proof}
+
+\begin{definition}[BC]\label{def:BC}
+$(G,t)$ satisfies the \emph{block criterion} if block profiles as in Theorem~\ref{thm:glue} exist such that
+every single-edge block has profile $(1,1)$, and every $2$-connected block has at most two zeros and
+satisfies (DB). By Lemma~\ref{lem:DBfail} the last condition says: no $2$-connected block with two zeros has
+a vertex adjacent to the whole block whose other non-zero vertices all have $b_B=1$.
+\end{definition}
+
+\begin{corollary}\label{cor:BC}
+If PC holds, then BC implies that $t$ is realisable. Conversely, realisability implies BC without the
+bound on zeros (Lemma~\ref{lem:DB} on every block).
+\end{corollary}
+
+The obstructions of~\cite[\S5]{EP} are BC failures. (O1) is a single block with a universal odd vertex.
+(O2) is a triangle block $\{u,v,x\}$ in which $x$ is universal and there is no other non-zero vertex.
+(O3) is a $K_4-e$ block at a cut vertex $x$, universal in the block, whose only other non-zero vertex $y$
+has $b=1$. In each case (DB) fails in the block whatever value the cut vertex takes.
+
+\begin{proposition}[computed; \texttt{data/bc\_census.txt}]\label{prop:BCcensus}
+For every connected graph of order $n\le10$ with exactly two even vertices, BC holds iff the graph is
+tight. At $n=10$ there are $1{,}114{,}873$ such graphs, $1{,}071{,}515$ tight and $43{,}358$ not; at $n=8$,
+$2{,}296$ and $372$; at $n=6$, $30$ and $17$.
+\end{proposition}
+
+Here tightness is decided by \texttt{psolve.h}. For the $2$-connected graphs of order $10$ the tight answers
+carry checked witnesses (Proposition~\ref{prop:order10}). For the others the answers are exhaustive
+searches, cross-validated at $n\le8$ against the census of~\cite{EP}.
+
+\section{Joint paths: from Conjecture 31 to Conjecture J}\label{sec:J}
+
+Let $(F;c_1,a_1;c_2,a_2)$ be a joined instance~\cite{CR}: $F$ all odd and connected, $c_i\not\sim a_i$, and
+$c_1,c_2$ in one component of $F-\{a_1,a_2\}$. For a $c_1$--$c_2$ path $P$ of $F-\{a_1,a_2\}$ let
+$K_0=F-E(P)$. Conjecture J holds at the instance iff some such $P$ has $K_0$ tight~\cite[\S5]{CR}.
+
+\begin{proposition}\label{prop:J}
+If PC holds, then Conjecture J holds at every joined instance with a joint path $P$ such that
+\textup{(L)} $c_1$ or $c_2$ is isolated in $K_0$, or \textup{(B)} $K_0$ satisfies BC. Case \textup{(C)},
+where $K_0$ minus isolated vertices is $2$-connected with no universal odd vertex, is the special case of
+\textup{(B)} that needs only Conjecture~\ref{conj:31}.
+\end{proposition}
+\begin{proof}
+In (L), $K_0$ has at most one even vertex and is tight by Lov\'asz's theorem. In (B), $K_0$ is tight by
+Corollary~\ref{cor:BC}.
+\end{proof}
+
+\begin{conjecture}[P, path choice]\label{conj:P}
+Every joined instance has a joint path $P$ with \textup{(L)} or \textup{(B)}.
+\end{conjecture}
+
+So PC and Conjecture~P together imply Conjecture~J. The data (\texttt{scripts/jcert.c},
+\texttt{data/jcert\_*.txt}): for each joined instance, search the joint paths for (L) or (C) first and then
+for (B).
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+order & joined & (L) & (C) & (B) only & none\\
+\midrule
+$6$ & $374$ & $204$ & $94$ & $76$ & $0$\\
+$8$ & $40{,}538$ & $12{,}176$ & $14{,}435$ & $13{,}927$ & $0$\\
+$10$ & $20{,}151{,}960$ & $2{,}500{,}503$ & $12{,}389{,}691$ & $5{,}261{,}766$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Conjecture~\ref{conj:31} alone (with (L)) therefore covers only $26{,}611$ of the $40{,}538$ joined instances of
+order $8$, and $14{,}890{,}194$ of the $20{,}151{,}960$ of order $10$. At the others no joint path has a leaf end
+or a $2$-connected remainder without a universal odd vertex. For every certified $P$ the remainder was also solved
+exactly and found tight; $P$ together with the decomposition of $K_0$ is a joint decomposition of $F$, and
+all of these were re-checked by \texttt{jwcheck.py}.
+
+\emph{Towards Conjecture P.} By Lemma~\ref{lem:DBfail}, a block of $K_0$ can fail (DB) only if it contains
+both $c_1,c_2$ as zeros and a vertex adjacent to the whole block. By Lemma~\ref{lem:DB} applied to $K_0$
+(when $c_1,c_2$ keep positive degree), every vertex of degree $n-1$ in $F$ lies on $P$~\cite[\S5]{CR}; it is
+not $c_1$, $c_2$, $a_1$ or $a_2$, since $c_i\not\sim a_i$. Cut vertices of $K_0$
+other than $c_1,c_2$ can always take non-zero block values satisfying the gluing condition (values $1$ or
+$2$ by parity). So BC fails only through a block containing $c_1,c_2$ and a vertex dominating it. A proof
+of Conjecture~P would choose $P$ through the dominating vertices of the blocks it creates. We have not
+found such an argument.
+
+\section{Computations}\label{sec:comp}
+
+All programs are in \texttt{scripts/}; graphs come from \texttt{nauty-geng} ($-c$ connected, $-C$
+$2$-connected).
+\begin{itemize}
+\item \texttt{psolve.h}: exact profile solver; \texttt{t31.c}: Conjecture 31 and the census;
+\texttt{pc\_test.c}: PC; \texttt{stuck.c}: irreducible instances; \texttt{blockcrit.h},
+\texttt{bc\_census.c}: BC; \texttt{jcert.c}: joint paths.
+\item \texttt{wcheck31.py}, \texttt{jwcheck.py}: independent witness checkers with their own graph6 decoder.
+\item Validation: the census of~\cite{EP} at orders $4$--$8$ is reproduced exactly. Every positive answer
+reported here has a checked witness, except the tight answers for non-$2$-connected graphs in
+Proposition~\ref{prop:BCcensus}. The negative answers are exhaustive.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{EP} Gallai project, \emph{Endpoint structure} (the two-even problem, Section 5),
+\texttt{manuscripts/endpoint-structure}.
+\bibitem{CR} Gallai project, \emph{Conjecture R} (joint paths, Conjecture J), \texttt{manuscripts/conj-r}.
+\bibitem{Fan} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser. B} 93
+(2005), 117--125.
+\end{thebibliography}
+\end{document}
