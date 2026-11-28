@@ -1,5 +1,5 @@
 """look.py: the order-9 roots of degree n-2 outside Theorems A and B, by kind
-(noQ: s in N(z) and no connector of length <= 2; cond: the degree condition fails) and by the number
+(noQ: s in N(z) and no admissible connector, lengths 1-3; cond: the degree condition fails) and by the number
 of neighbours of r in B of degree 7 in J.  Run from scripts/."""
 import networkx as nx
 from collections import Counter
