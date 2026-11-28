@@ -595,7 +595,7 @@ range & test & pairs $x\sim y$ & NA & weak hyp. & result\\
 \midrule
 order $4$ & construction, exact, brute force & $18$ & $3$ & $3$ & all built; good $\Leftrightarrow$ weak\\
 order $6$ & construction, exact, brute force & $228$ & $129$ & $143$ & all built; good $\Leftrightarrow$ weak\\
-order $8$ & construction; exact on the non-weak pairs & \textsc{n8pairs} & $4{,}970$ & \textsc{n8weak} & \textsc{n8result}\\
+order $8$ & construction; exact on the non-weak pairs & $6{,}562$ & $4{,}970$ & $5{,}779$ & all built; $664$ of $783$ non-weak decided, all bad\\
 order $10$ & construction & $1{,}484{,}200$ & $1{,}305{,}621$ & $1{,}448{,}874$ & all built and verified\\
 order $12$, slices $17$, $517$ of $20{,}000$ & construction, set form & $697{,}272$ & $648{,}469$ & $690{,}657$ & all built and verified\\
 random, orders $12,14,16,20$ & construction, set form & $402{,}664$ & $389{,}542$ & $398{,}380$ & all built and verified\\
@@ -607,7 +607,11 @@ random, orders $12,14,16,20$ & construction, set form & $402{,}664$ & $389{,}542
 \item ``Weak hyp.'' counts the pairs satisfying the hypothesis of Corollary~\ref{cor:na}. All of them
 were built and verified.
 \item ``Good $\Leftrightarrow$ weak'' is the exact solver's confirmation of Corollary~\ref{cor:iff}: the
-non-weak pairs ($15$ at order $4$, $85$ at order $6$) are all bad.
+non-weak pairs ($15$ at order $4$, $85$ at order $6$) are all bad. At order $8$ the exact solver,
+written in Python, was run with a time limit of $45$ minutes on each third of the graphs
+(\texttt{data/n8\_exact\_neither\_*.txt}). It decided $664$ of the $783$ non-weak pairs, all bad; the
+other $119$ lie in the densest graphs. Theorem~\ref{thm:C} proves all of them bad. The audit's
+independent solver decided $578$ of them, also all bad (\texttt{research/audit/A33-na.md}).
 \item The set form was tested for packed $Y\ni x$ satisfying its hypothesis, all built and verified:
   \begin{itemize}
   \item $|Y|\le3$: $16$ instances at order $6$ and $1{,}309$ at order $8$ (\texttt{data/n8.txt}), and

@@ -64,3 +64,4 @@ graph 63 GUZvf{ graphs=2748 allodd=63 pairs=1870 na=1425 weak=1632 weak_not_na=2
 graph 64 GUZuuk graphs=2753 allodd=64 pairs=1906 na=1459 weak=1668 weak_not_na=209 neither=238 construct_ok=1668 exact_good=0 exact_bad=238 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 65 GUZvvg graphs=2759 allodd=65 pairs=1944 na=1494 weak=1706 weak_not_na=212 neither=238 construct_ok=1706 exact_good=0 exact_bad=238 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
 graph 66 GUZ~~{ graphs=2779 allodd=66 pairs=1990 na=1519 weak=1731 weak_not_na=212 neither=259 construct_ok=1731 exact_good=0 exact_bad=259 mismatch=0 brute_checked=0 set_instances=0 set_ok=0 trail_bf=0
+exit=124
