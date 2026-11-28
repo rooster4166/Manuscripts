@@ -14,6 +14,8 @@
 // TERM=2: as TERM=0, or at most one token and the live sets {l_i, x_i} form a sparse family
 //         (every vertex has at most one neighbour in X(K)): separation_sparse.
 // NODROP=1 disables (D).
+// env AODD=1: the all-odd lift of synthesis 31 (H = J - z - Phi, Phi a perfect matching of J[N(z)];
+//   tails (l0, a0, r) with a0 the partner of r, and the other pairs oriented); prints SCHEDA lines.
 // env SEED=s: shuffle the move order (ties within a priority class) with seed s.
 // env MAXLEN=L: iterative deepening, shortest schedules of at most L moves (others reported as none).
 // env SUPP=1 enables (S): a token p of degree 2 whose neighbours a, b are non-adjacent is suppressed
@@ -40,7 +42,7 @@ static const int MAXV = 64;
 static int N, K;                  // vertices of M+ (0..n-1 from J, n..n+k-1 leaves), tails
 static int Ty[8], Tx[8], Tl[8];   // tails: y_i, x_i, l_i
 static u64 adj[MAXV];
-static long long nodes, budget; static int TERM, NODROP, SUPP;
+static long long nodes, budget; static int TERM, NODROP, SUPP, AODD;
 struct H2 { size_t operator()(const std::array<u64,2>& a) const { return a[0] ^ (a[1] * 0x9E3779B97F4A7C15ULL); } };
 static std::unordered_set<std::array<u64,2>, H2> failset;
 static std::unordered_map<std::array<u64,2>, int, H2> faildepth;   // iterative deepening: failed with this many moves left
@@ -165,6 +167,7 @@ int main(int argc, char** argv) {
   NODROP = argc > 4 ? atoi(argv[4]) : 0;
   int PRINT = argc > 5 ? atoi(argv[5]) : 0;
   SUPP = getenv("SUPP") ? atoi(getenv("SUPP")) : 0;
+  AODD = getenv("AODD") ? atoi(getenv("AODD")) : 0;
   MAXLEN = getenv("MAXLEN") ? atoi(getenv("MAXLEN")) : 0;
   SEED = getenv("SEED") ? atoi(getenv("SEED")) : 0; rng.seed(SEED);
   char line[4096];
@@ -193,6 +196,46 @@ int main(int argc, char** argv) {
       if (__builtin_popcountll(J[r]) < 3) continue;
       if (!rlist.empty() && std::find(rlist.begin(), rlist.end(), r) == rlist.end()) continue;
       int rv = 0; bool anydata = false, anyund = false;
+      if (AODD) {
+        // all-odd lift (synthesis 31): Phi a perfect matching of J[N(z)]; H = J - z - Phi is all-odd;
+        // tail (l0, a0, r) with a0 the partner of r (fixed), and the other pairs oriented freely
+        std::vector<std::vector<std::pair<int,int>>> pms; std::vector<std::pair<int,int>> cur;
+        matchings(U, J, cur, pms);
+        for (auto& pm0 : pms) {
+          anydata = true; datas++; int dok = 0;
+          std::vector<std::pair<int,int>> pm; int a0 = -1;
+          for (auto& e : pm0) { if (e.first == r) a0 = e.second; else if (e.second == r) a0 = e.first; else pm.push_back(e); }
+          int k = (int)pm.size() + 1;
+          for (int o = 0; o < (1 << (k - 1)); o++) {
+            if (dok && PRINT < 2 && !getenv("ALLO")) break;
+            N = n + k; K = k;
+            for (int v = 0; v < N; v++) adj[v] = v < n ? J[v] : 0;
+            auto del = [&](int a, int b) { adj[a] &= ~(1ULL << b); adj[b] &= ~(1ULL << a); };
+            for (int u : U) del(z, u);
+            del(r, a0);
+            Ty[0] = a0; Tx[0] = r; Tl[0] = n;
+            for (int i = 1; i < k; i++) { int a = pm[i-1].first, b = pm[i-1].second; del(a, b);
+              Ty[i] = (o >> (i-1) & 1) ? a : b; Tx[i] = (o >> (i-1) & 1) ? b : a; Tl[i] = n + i; }
+            for (int i = 0; i < k; i++) { adj[Ty[i]] |= 1ULL << Tl[i]; adj[Tl[i]] |= 1ULL << Ty[i]; }
+            failset.clear(); faildepth.clear(); nodes = 0; mv.clear(); best.clear();
+            bool res = search();
+            int verdict = res ? 1 : ((budget && nodes > budget) ? 2 : 0);
+            inst++; if (verdict == 1) instok++; if (verdict == 2) { instund++; anyund = true; }
+            if (verdict == 1) {
+              if (!dok) datasok++;
+              dok = 1;
+              if (PRINT == 2 || (PRINT == 1 && rv != 1)) {
+                printf("SCHEDA %s %d %d %d -1", g6.c_str(), (int)strcmp(mode, "resid") == 0, z, r);
+                for (int i = 0; i < k; i++) printf(" %d,%d", Ty[i], Tx[i]);
+                printf(" |");
+                for (auto& m : best) { if (m.kind == 0) printf(" M%d-%d", m.p, m.u); else if (m.kind == 1) printf(" D%d", m.p); else printf(" S%d:%d-%d", m.p, m.u / 64, m.u % 64); }
+                printf("\n");
+              }
+              rv = 1;
+            }
+          }
+        }
+      } else {
       for (int w : U) { if (w == r) continue;
         std::vector<int> rest; for (int u : U) if (u != r && u != w) rest.push_back(u);
         std::vector<std::vector<std::pair<int,int>>> pms; std::vector<std::pair<int,int>> cur;
@@ -234,6 +277,7 @@ int main(int argc, char** argv) {
             }
           }
         }
+      }
       }
       if (!anydata) continue;
       roots++; if (rv == 1) rootsok++; else if (anyund) rootsund++;

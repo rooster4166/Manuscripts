@@ -3,20 +3,26 @@ import GallaiLean.MultiToken
 /-!
 # An obstruction to multi-token schedules (session `claude/multi-token`)
 
-Manuscript `manuscripts/multi-token`, Proposition 6.1.
+Manuscript `manuscripts/multi-token`, Propositions 6.1 and 7.2.
 
-Fix a vertex `r` that is odd, and is neither a leaf nor a stem of a tail. Let `A(K)` be the set of
-vertices `v ≠ r` of positive degree, not adjacent to `r` and not a leaf of a tail (`nonNbr`), and
-`Φ(K)` the number of tokens plus the number of live tails. If
-`|A| + 2 ≤ #tokens` and `|A| + 3 ≤ Φ`, then there is no schedule (`not_steerK`):
-* no token can enter `r`, since all other tokens would lie in `A`;
+Fix a vertex `r` that is odd, and is neither a leaf nor a stem of a tail (it may be the avoided
+vertex of tails). Let `A(K)` be the set of vertices `v ≠ r` of positive degree, not adjacent to `r`
+and not a leaf of a tail (`nonNbr`), `Φ(K)` the number of tokens plus the number of live tails, and
+`ρ(K)` the number of live tails whose avoided vertex is `r` (`rLive`). If
+`|A| + 2 ≤ #tokens + ρ` and `|A| + 3 ≤ Φ`, then there is no schedule (`not_steerK`):
+* no token can enter `r`: while `ρ > 0`, `r` lies in `X`; when `ρ = 0`, all other tokens would lie
+  in `A`;
 * every other move keeps both inequalities: a retirement, a suppression or a drop that isolates its
-  stem lowers the left side by at least one and the right side by one, any other move does not
-  raise the left side or lower the right side;
+  stem lowers `|A|` by at least one, and lowers `#tokens + ρ` and `Φ` by at most one; any other move
+  does not raise `|A|` and does not lower the right sides;
 * at the end `Φ ≤ 2`.
 
-In the triangle base at a root `r` with `t` non-neighbours in `J − r`, the start has `k + 1` tokens,
-`k` live tails and `|A| = t`, so `t < k` excludes every schedule.
+* `not_steerK_triangle` (Proposition 6.1): in the triangle base at a root `r` with `t` non-neighbours
+  in `J − r`, the start has `k + 1` tokens, `k` live tails, `ρ = 0` and `|A| = t`, so `t < k`
+  excludes every schedule.
+* In the all-odd lift (manuscript §7, synthesis §31) the start has `k` tokens, `k` live tails, `ρ = 1`
+  (the tail `(ℓ₀, a₀, r)`) and `|A| = t + 1` (`a₀` is no longer adjacent to `r`), so `t ≤ k − 2`
+  excludes every schedule; that instance is applied on paper only.
 -/
 
 open SimpleGraph
@@ -41,6 +47,13 @@ open Classical in
 noncomputable def liveSet (T : Finset (U × U × U)) (K : SimpleGraph U) : Finset (U × U × U) :=
   T.filter (fun t => K.Adj t.1 t.2.1)
 
+open Classical in
+/-- The live tails whose avoided vertex is `r` (while one is live, `r` is in `X` and cannot be
+entered). -/
+noncomputable def rLive (T : Finset (U × U × U)) (K : SimpleGraph U) (r : U) :
+    Finset (U × U × U) :=
+  (liveSet T K).filter (fun t => t.2.2 = r)
+
 theorem mem_nonNbr {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel K.Adj] {r v : U} :
     v ∈ nonNbr T K r ↔ v ≠ r ∧ ¬ K.Adj r v ∧ 0 < K.degree v ∧ ∀ t ∈ T, v ≠ t.1 := by
   classical
@@ -55,6 +68,19 @@ theorem mem_liveSet {T : Finset (U × U × U)} {K : SimpleGraph U} {t : U × U �
   unfold liveSet
   rw [Finset.mem_filter]
 
+omit [Fintype U] in
+theorem mem_rLive {T : Finset (U × U × U)} {K : SimpleGraph U} {r : U} {t : U × U × U} :
+    t ∈ rLive T K r ↔ t ∈ liveSet T K ∧ t.2.2 = r := by
+  classical
+  unfold rLive
+  rw [Finset.mem_filter]
+
+omit [Fintype U] in
+theorem rLive_congr {T : Finset (U × U × U)} {K K' : SimpleGraph U} {r : U}
+    (h : liveSet T K' = liveSet T K) : rLive T K' r = rLive T K r := by
+  ext t
+  rw [mem_rLive, mem_rLive, h]
+
 /-- The invariant of the obstruction. -/
 structure ObstrInv (T : Finset (U × U × U)) (K : SimpleGraph U) [DecidableRel K.Adj] (r : U)
     (τ : Finset U) : Prop where
@@ -62,7 +88,7 @@ structure ObstrInv (T : Finset (U × U × U)) (K : SimpleGraph U) [DecidableRel 
   inv : TailInv T K
   leaf : ∀ t ∈ T, ∀ v, K.Adj t.1 v → v = t.2.1
   rodd : K.degree r % 2 = 1
-  tok : (nonNbr T K r).card + 2 ≤ τ.card
+  tok : (nonNbr T K r).card + 2 ≤ τ.card + (rLive T K r).card
   pot : (nonNbr T K r).card + 3 ≤ τ.card + (liveSet T K).card
 
 omit [DecidableEq U] in
@@ -152,8 +178,15 @@ theorem card_tau_drop {τ τ' : Finset U} {K' : SimpleGraph U} {s : U} (hs : s �
 
 /-- No token can enter `r`. -/
 theorem obstr_no_entry {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel K.Adj] {r : U}
-    {τ : Finset U} (hI : ObstrInv T K r τ) {p : U} (hp : p ∈ τ)
+    {τ : Finset U} (hI : ObstrInv T K r τ) {p : U} (hp : p ∈ τ) (hoff : OffTails T K r)
     (hno : ∀ v ∈ τ, v ≠ p → ¬ (delEdge K r p).Adj r v) : False := by
+  -- while a tail avoiding `r` is live, `r` is in `X`
+  have hr0 : (rLive T K r).card = 0 := by
+    rw [Finset.card_eq_zero, Finset.eq_empty_iff_forall_notMem]
+    intro t ht
+    obtain ⟨htl, htr⟩ := mem_rLive.mp ht
+    obtain ⟨htT, hl⟩ := mem_liveSet.mp htl
+    exact (hoff t htT hl).2 htr.symm
   have hsub : τ.erase p ⊆ nonNbr T K r := by
     intro v hv
     obtain ⟨hvp, hvτ⟩ := Finset.mem_erase.mp hv
@@ -222,13 +255,15 @@ theorem obstr_move {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel 
       exact ⟨ht, h.1⟩
     · rintro ⟨ht, h⟩
       exact ⟨ht, live_move K hI.inv hpE hoff ht h⟩
+  have hrl := rLive_congr (r := r) hlive
   obtain ⟨hcA, hcB⟩ := card_tau_move hp hu hτ'
   have htok := hI.tok
   have hpot := hI.pot
   by_cases hq : ∃ q, (delEdge K u p).Adj u q
   · have hc := hcA hq
     have hle := Finset.card_le_card hsub
-    exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by omega, by rw [hlive]; omega⟩
+    exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by rw [hrl]; omega,
+      by rw [hlive]; omega⟩
   · have hc := hcB hq
     -- `u` retires: it lay in the non-neighbour set and has left it
     have huA : u ∈ nonNbr T K r := by
@@ -247,7 +282,8 @@ theorem obstr_move {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel 
     have hle := Finset.card_le_card hsub'
     rw [Finset.card_erase_of_mem huA] at hle
     have hApos : 0 < (nonNbr T K r).card := Finset.card_pos.mpr ⟨u, huA⟩
-    exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by omega, by rw [hlive]; omega⟩
+    exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by rw [hrl]; omega,
+      by rw [hlive]; omega⟩
 
 /-- A drop keeps the invariant. -/
 theorem obstr_drop {T : Finset (U × U × U)} (hT : TailSys T) {K : SimpleGraph U}
@@ -298,6 +334,17 @@ theorem obstr_drop {T : Finset (U × U × U)} (hT : TailSys T) {K : SimpleGraph 
     rw [hlive, Finset.card_erase_of_mem htl]
     have : 0 < (liveSet T K).card := Finset.card_pos.mpr ⟨t, htl⟩
     omega
+  have hrl : (rLive T K r).card ≤ (rLive T (delEdge K t.1 t.2.1) r).card + 1 := by
+    have hsub : rLive T K r ⊆ insert t (rLive T (delEdge K t.1 t.2.1) r) := by
+      intro t' ht'
+      obtain ⟨htl', htr⟩ := mem_rLive.mp ht'
+      rw [Finset.mem_insert]
+      by_cases htt : t' = t
+      · exact Or.inl htt
+      · refine Or.inr (mem_rLive.mpr ⟨?_, htr⟩)
+        rw [hlive]
+        exact Finset.mem_erase.mpr ⟨htt, htl'⟩
+    exact (Finset.card_le_card hsub).trans (Finset.card_insert_le _ _)
   obtain ⟨hcA, hcB⟩ := card_tau_drop hw hτ'
   have htok := hI.tok
   have hpot := hI.pot
@@ -418,6 +465,7 @@ theorem obstr_supp {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel 
       rw [mem_nonNbr]
       exact ⟨hpr, fun h => hra ((hNg r).mp h.symm), (mem_evenSet_iff.mp hpE).1,
         fun t ht h => leaf_not_even hI.leaf ht (h ▸ hpE)⟩
+  have hrl := rLive_congr (r := r) hlive
   have hle := Finset.card_le_card (hsub c hcA hcgone)
   rw [Finset.card_erase_of_mem hcA] at hle
   have hApos : 0 < (nonNbr T K r).card := Finset.card_pos.mpr ⟨c, hcA⟩
@@ -425,10 +473,11 @@ theorem obstr_supp {T : Finset (U × U × U)} {K : SimpleGraph U} [DecidableRel 
   have hτpos : 0 < τ.card := Finset.card_pos.mpr ⟨p, hp⟩
   have htok := hI.tok
   have hpot := hI.pot
-  exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by omega, by rw [hlive]; omega⟩
+  exact ⟨hE', hinv', hleaf', by rw [hr']; exact hI.rodd, by rw [hrl]; omega,
+    by rw [hlive]; omega⟩
 
-/-- **The obstruction** (manuscript Proposition 6.1, abstract form). If the invariant holds, there
-is no schedule. -/
+/-- **The obstruction** (manuscript Propositions 6.1 and 7.2, abstract form). If the invariant
+holds, there is no schedule. -/
 theorem not_steerK {T : Finset (U × U × U)} (hT : TailSys T) {r : U}
     (hrT : ∀ t ∈ T, r ≠ t.1 ∧ r ≠ t.2.1) :
     ∀ {K : SimpleGraph U} {τ : Finset U}, SteerK T K τ → ∀ [DecidableRel K.Adj],
@@ -448,7 +497,7 @@ theorem not_steerK {T : Finset (U × U × U)} (hT : TailSys T) {r : U}
     intro _ hI
     by_cases hur : u = r
     · subst hur
-      exact obstr_no_entry hI hp hno
+      exact obstr_no_entry hI hp hoff hno
     · exact ih (obstr_move hI hp hpu hu hoff hur hτ')
   | @drop K τ τ' t ht hl hw hτ' _ ih =>
     intro _ hI
