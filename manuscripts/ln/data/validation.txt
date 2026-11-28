@@ -1,3 +1,4 @@
 {'SAT': 880, 'UNSAT': 620, 'mismatch': 0, 'badwit': 0}
 # validate.py lnsolve 7 1500 1 (seed 1): random instances of order <= 7, brute force cross-check
-# joint constraint J p q validated separately: 600 random instances of order 6 and 8 against lnlib.brute, 0 mismatches, 0 bad witnesses
+{'SAT': 538, 'UNSAT': 62, 'mismatch': 0, 'badwit': 0}
+# validate_join.py lnsolve 600 3 (seed 3): joined-ends constraint J c1 c2 (plus 0-2 constraints A c1 a), random all-odd graphs of order 6 and 8, brute force cross-check

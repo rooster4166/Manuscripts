@@ -1,0 +1,15 @@
+UNDEC G^n~~s A 2 3 J 2 6 UNDEC UNSAT
+{'SAT': 279, 'UNSAT': 520, 'mismatch': 0, 'badwit_ln': 0, 'badwit_tr': 0, 'undec': 1}
+instances with each constraint type / by order: {'A': 414, 'J': 240, 'R': 143, 'S': 321, 'n=3': 127, 'n=4': 88, 'n=5': 126, 'n=6': 84, 'n=7': 155, 'n=8': 220}
+UNDEC H~^ny?A J 3 6 A 3 6 UNDEC UNSAT
+{'SAT': 177, 'UNSAT': 222, 'mismatch': 0, 'badwit_ln': 0, 'badwit_tr': 0, 'undec': 1}
+instances with each constraint type / by order: {'A': 174, 'J': 117, 'R': 74, 'S': 156, 'n=3': 80, 'n=4': 43, 'n=5': 82, 'n=6': 43, 'n=7': 88, 'n=8': 5, 'n=9': 59}
+UNDEC Gf~~~{ UNDEC UNSAT
+UNDEC HN||{{C A 8 1 J 7 3 A 2 4 UNDEC UNSAT
+UNDEC H^~N}y? A 5 4 UNDEC UNSAT
+UNDEC H~^|nx? UNDEC UNSAT
+UNDEC HnPl~|? R 8 1 J 8 2 A 7 4 UNDEC UNSAT
+UNDEC H}Zu~{A UNDEC UNSAT
+UNDEC HZz~~T? UNDEC UNSAT
+{'SAT': 238, 'UNSAT': 355, 'mismatch': 0, 'badwit_ln': 0, 'badwit_tr': 0, 'undec': 7}
+instances with each constraint type / by order: {'A': 324, 'J': 200, 'R': 110, 'S': 233, 'n=3': 82, 'n=4': 75, 'n=5': 99, 'n=6': 60, 'n=7': 108, 'n=8': 40, 'n=9': 136}

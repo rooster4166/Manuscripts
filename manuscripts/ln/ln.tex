@@ -41,20 +41,24 @@ positive even degree, any family of \emph{leaf tails} $(c,A)$ (a leaf $c$, and v
 distance $\ge3$ from $c$) can be kept simultaneously, provided no vertex has two neighbours among the
 avoided vertices. The leaves need not be sparse, several tails may share a stem, and the even
 vertex is unrestricted. This contains the leaf-tail lemma of~\cite{TRN}, the multi-token fin
-of~\cite{MT}, and the leaf case of sparse separation~\cite{MS}.
+of~\cite{MT}, and the case of sparse separation~\cite{MS} in which every separated pair is a leaf
+and a vertex at distance $\ge3$ from it.
 \item \emph{Corollary B (Lean).} $L_N(m)$ holds when all tails but one are leaves at distance
 $\ge3$ from their heads and the heads are sparse.
-\item \emph{Lemma R (pre-committed end path).} If one end path can be fixed in advance, as a path
-$P$ from $c_i$ avoiding $a_i$, so that what is left of the problem has a single tail and a token
-schedule, then $L_N(2)$ holds. If $P$ ends at $c_j$ and avoids $a_j$, what is left is a
-two-even-vertex existence problem with no constraint at all.
+\item \emph{Lemma R (pre-committed end path).} Fix one end path in advance, a path $P$ from $c_i$
+avoiding $a_i$. If $P$ ends at $c_j$ and avoids $a_j$, any parity decomposition of $F-E(P)$ finishes
+the instance; this is a two-even-vertex existence problem with no constraint at all. Otherwise a
+parity decomposition of $F-E(P)$ with a leaf hung at $c_j$ that keeps a single leaf tail finishes it.
+\emph{Criterion R} asks for such a $P$ together with a token schedule of~\cite{MT} for what is
+left; by the transfer theorem of~\cite{MT} it implies $L_N(2)$ for that instance.
 \item \emph{Computation.} Criterion~R holds at all $43{,}400$ instances of order $8$ and at a random
 sample of $3{,}000$ instances of order $10$. Every certificate was executed move by move, from an
 exact solution of the bottom graph, and the resulting decomposition was checked. By comparison, the two-tail token schedules
 of~\cite{MT} cover $72.7\%$ of the instances of order~$8$.
 \end{itemize}
-We explain why every Fan-type induction for $L_N(2)$ is a two-token problem, and why two tokens
-cannot be retired in dense graphs. A pre-committed end path removes a tail before any token moves;
+We explain, informally, why the natural Fan-type inductions for $L_N(2)$ carry two tokens and two
+constraints, and why they stall on dense graphs (the obstruction of~\cite{MT} is a theorem for
+specific invariants only). A pre-committed end path removes a constraint before any token moves;
 this is what the schedules lacked. The residual open statement is Conjecture~R: every $L_N(2)$
 instance satisfies Criterion~R.
 \end{abstract}
@@ -83,13 +87,14 @@ explains why (\texttt{not\_steerK}).
 
 \subsection*{Results and status}
 \begin{center}\footnotesize
-\begin{tabular}{@{}p{0.47\textwidth}p{0.25\textwidth}p{0.22\textwidth}@{}}
+\begin{tabular}{@{}p{0.43\textwidth}p{0.24\textwidth}p{0.27\textwidth}@{}}
 \toprule
 statement & status & where\\
 \midrule
 Theorem A (multi-tail leaf theorem) & proved, Lean & \S\ref{sec:A}, \texttt{leaf\_tails}\\
 Corollary B (one general tail) & proved, Lean & \S\ref{sec:B}, \texttt{lovasz\_avoid\_leafTails}\\
 Lemma R (pre-committed end path) & proved on paper & \S\ref{sec:R}\\
+Criterion R implies $L_N(2)$ for the instance & proved on paper (via \cite[Thm.~2.7]{MT}) & \S\ref{sec:R}, Prop.~\ref{prop:R}\\
 Criterion R at all order-$8$ instances & computed, every certificate executed & \S\ref{sec:comp}\\
 Criterion R at $3{,}000$ random order-$10$ instances & computed, executed & \S\ref{sec:comp}\\
 two leaf tails, $\le1$ even vertex, heads not sparse (MTL2) & conjecture; exhaustive $n\le9$ & \S\ref{sec:open}\\
@@ -145,9 +150,10 @@ another tail. This is what separates Theorem~\ref{thm:A} from three known result
 \item The leaf-tail lemma~\cite[Lemma~6.1]{TRN} (\texttt{avoid\_leafTail}) is the case of one tail
 with $|A|=1$ and $A$ odd.
 \item The multi-token fin~\cite[Lemma~2.6]{MT} (\texttt{tailGood\_fin}) allows at most one live tail.
-\item Sparse separation~\cite{MS} (\texttt{separation\_sparse}) needs the tail leaves and the heads
-\emph{together} to be sparse; this fails as soon as a stem is adjacent to another tail's head, or
-two tails share a stem.
+\item Sparse separation~\cite{MS} (\texttt{separation\_sparse}), for pairs $\{c,a\}$ with $c$ a
+leaf, needs the tail leaves and the heads \emph{together} to be sparse; this fails as soon as a stem
+is adjacent to another tail's head, or two tails share a stem. (For larger separated sets sparse
+separation says more: it also separates the heads from each other.)
 \end{itemize}
 
 \begin{proof}
@@ -184,23 +190,26 @@ at $w$ is not adjacent to it.
 \emph{Case 4: no even vertex, and a vertex $x\notin X$ of degree at least three}
 (\texttt{lt\_case\_big}). This is Lov\'asz's Case~II: pick $u\in N(x)$, move the edge $ux$ to a new
 leaf at $u$, which makes $x$ the only even vertex; the tails are carried to the new graph, and a tail
-leaf equal to $u$ stays a leaf. Delete the new leaf afterwards; then $u$ has $0$ or $2$ ends. Add $ux$
-as a path, which keeps the tails because $x$ is a neighbour of $u$, or use Lemma~\ref{lem:fan} with
-target $x$, which is neither a head nor a tail leaf.
+leaf equal to $u$ stays a leaf. Delete the new leaf afterwards; then $u$ has $0$ or $2$ ends. With
+$0$ ends, add $ux$ as a path, which keeps the tails because $x$ is a neighbour of $u$. With $2$ ends,
+use Lemma~\ref{lem:fan} with $t=u$ and target $x$: every neighbour $w\ne u$ of $x$ is odd and has an
+end, so the count is $0<2=b(u)$; and $x$ is neither a head nor a tail leaf.
 
-\emph{Case 5: otherwise} (\texttt{lt\_case\_empty}). There is no even vertex, no vertex of degree
-one, and every vertex outside $X$ has degree $0$. A vertex of $X$ of degree $\ge3$ would have two
-neighbours of positive degree, both in $X$, against sparseness. So there are no edges.
+\emph{Case 5: otherwise} (\texttt{lt\_case\_empty}). There is no even vertex and no vertex of degree
+one. Every tail leaf has degree one, so $T=\emptyset$ and $X=\emptyset$; as Case~4 does not apply,
+every vertex has degree $0$. So there are no edges. (The Lean proof argues with sparseness instead.)
 \end{proof}
 
 \begin{remark}[sparseness is used once]\label{rem:sparse}
-Sparseness enters only in Case~2: it caps the number of neighbours of the even vertex in $X$ at one.
-Without it the residual is an even vertex $g$ whose neighbours are all heads, for example
+Sparseness is needed only in Case~2: it caps the number of neighbours of the even vertex in $X$ at
+one. Without it the residual is an even vertex $g$ whose neighbours are all heads, except possibly
+one tail leaf; for example
 $N(g)=\{x_1,x_2\}$ with $x_i$ avoided by tail $i$. With $x_1\not\sim x_2$ one can suppress $g$; the
 configurations that resist are the triangle $g\,x_1\,x_2$ and the case where each $x_i$ is the stem
 of the other tail. Both reduce to a symmetric form of $L_1$ at distance two, which is open
-(the remark on the limits of the leaf trick in~\cite{RD}). The statement without sparseness held in every test
-(Section~\ref{sec:comp}, Conjecture~\ref{conj:mtl}).
+(the remark on the limits of the leaf trick in~\cite{RD}). Without sparseness Theorem~\ref{thm:A}
+is false in general: Section~\ref{sec:comp} gives counterexamples of orders $7$ and $9$ with one even
+vertex. For two tails with one head each no counterexample is known (Conjecture~\ref{conj:mtl}).
 \end{remark}
 
 \section{Corollary B}\label{sec:B}
@@ -224,24 +233,28 @@ and the heads are sparse. With $T=\emptyset$ this is $L_1$.
 
 \section{Why two pairs are a two-token problem}\label{sec:two}
 
-Every Fan-type proof keeps at most one even vertex at a time: Fan's inequality fails at equality when
-the target is adjacent to a second token. In $L_N(2)$ there are two constraints, and both encodings
-make tokens.
+This section is an informal explanation; its only theorems are those cited. A Fan step from a token
+$t$ with one end needs the target to have no neighbour without an end (Lemma~\ref{lem:fan}), so it
+fails as soon as the target is adjacent to a second token. The schedules of~\cite{MT} carry several
+tokens under exactly this restriction. In $L_N(2)$ there are two constraints, and both standard
+encodings make tokens or restrict targets.
 \begin{itemize}
 \item As a leaf tail, the constraint at $c$ needs a leaf at $c$, which makes $c$ a token.
-\item As a general tail $\mathrm{av}(c,a)$, it survives a Fan step only if the target avoids
-$N[c]$ (``Fan transfers carry systems'' in~\cite{CLT}).
+\item As a general tail $\mathrm{av}(c,a)$, it is preserved by a Fan step whose target avoids
+$N[c]$ (``Fan transfers carry systems'' in~\cite{CLT}; a sufficient condition).
 \end{itemize}
-Either way the moving token must avoid the neighbourhood of the other tail's vertex $c$, and it can
-retire only at a vertex all of whose edges it deletes. In a dense graph no such vertex is reachable;
-this is the obstruction of~\cite{MT} (\texttt{not\_steerK}). We checked the alternatives
+In the schedules we consider, the moving token must therefore avoid the other tokens and the
+neighbourhood of the other constraint, and it retires only at a vertex all of whose edges it
+deletes. In dense graphs few such moves exist, and for specific invariants~\cite{MT} proves that no
+schedule exists (\texttt{not\_steerK}, \texttt{not\_steerK\_triangle}). We checked the alternatives
 computationally (Section~\ref{sec:comp}).
 \begin{itemize}
 \item Token schedules with two tails reach at most one token at $72.7\%$ of the $43{,}400$
 instances of order $8$.
 \item Using Theorem~\ref{thm:A} as the final step instead of the one-tail fin does not change this
-number at $m=2$: every schedule that reaches one token with sparse heads can also drop a tail. At
-$m=3$ it adds $6$ of $4{,}000$ sampled instances. So Theorem~\ref{thm:A} is a structural result; as a
+number at order $8$, $m=2$: wherever a schedule reaches one token with sparse heads, some schedule
+also drops a tail (both counts are $31{,}532$; \texttt{data/coverage\_order8.txt}). At $m=3$ it adds
+$6$ of $4{,}000$ sampled instances. So Theorem~\ref{thm:A} is a structural result; as a
 fin for schedules it gains almost nothing.
 \item Using the unproved two-leaf-tail statement MTL2 (Conjecture~\ref{conj:mtl}) as the final step
 raises the coverage only to $75.7\%$.
@@ -252,7 +265,8 @@ distance two, and most dense instances.
 \section{Pre-committed end paths}\label{sec:R}
 
 The idea is to fix one end path before any token moves. This removes one constraint outright, at the
-price of up to two extra tokens. Those tokens are free: no tail restricts their targets.
+price of up to two extra tokens. In case (a) below no tail restricts their targets; in case (b)
+only a single leaf tail does.
 
 \begin{lemma}[Lemma R]\label{lem:R}
 Let $(F;c_1,a_1;c_2,a_2)$ be an instance of $L_N(2)$, let $\{i,j\}=\{1,2\}$, and let $P$ be a path
@@ -291,31 +305,57 @@ that a $2$-connected graph with two even vertices meets the parity bound unless 
 universal. So Conjecture~31 implies $L_N(2)$ for every instance in which $c_1,c_2$ are joined by a
 path $P$ avoiding $a_1,a_2$ with $F-E(P)$ $2$-connected and without a vertex of degree $n-1$.
 
+A \emph{schedule} below is a schedule in the sense of~\cite[Def.~2.2]{MT}: a sequence of moves M
+(token move), D (drop) and S (suppression) after which at most one token and at most one live tail
+are left.
+
 \begin{definition}[Criterion R]\label{def:R}
-An instance satisfies \emph{Criterion R} if for some $i$ and some $P$ as in Lemma~\ref{lem:R} the
-hypothesis of (a) or (b) is certified by a token schedule (moves M, D, S of~\cite[Def.~2.2]{MT})
-that ends with at most one token and at most one live tail. In (a) there is no tail, in (b) the
-single tail $(\ell,c_j,a_j)$.
+An instance satisfies \emph{Criterion R} if for some $i$ and some $P$ as in Lemma~\ref{lem:R} one of
+the following holds.
+\begin{enumerate}[label=(\alph*)]
+\item $p=c_j$, $a_j\notin V(P)$, and $(K_0,\emptyset)$ has a schedule.
+\item $p\notin\{c_j,a_j\}$, and $(K,\{\tau\})$ has a schedule, where either $K=K_0+c_j\ell$ and
+$\tau=(\ell,c_j,a_j)$, or $c_j$ is a leaf of $K_0$ with stem $w$, $a_j\notin\{w\}\cup N_{K_0}(w)$,
+$K=K_0$ and $\tau=(c_j,w,a_j)$.
+\end{enumerate}
 \end{definition}
 
-Under the invariant (TI) of~\cite{MT} the transfer theorem~\cite[Thm.~2.7]{MT} (\texttt{steerK\_good})
-turns such a schedule into the decomposition required by Lemma~\ref{lem:R}. Our certificates do not
-rely on this: each one is executed move by move, the bottom is solved exactly, and every level is
-re-checked (Section~\ref{sec:comp}). In (b) the graph $K$ may have three tokens ($c_i$, $p$ and
-$c_j$), but only one constraint.
+\begin{proposition}\label{prop:R}
+An instance that satisfies Criterion R satisfies $L_N(2)$.
+\end{proposition}
+
+\begin{proof}
+In (a) there is no tail, and the transfer theorem~\cite[Thm.~2.7]{MT} (\texttt{steerK\_good}) gives
+a parity decomposition of $K_0$; Lemma~\ref{lem:R}(a) finishes. In (b), (TS) of~\cite{MT} holds
+because $a_j\notin\{\ell,c_j\}$ (respectively $a_j\notin\{c_j,w\}$). (TI) holds in $K$: the leaf has
+a single neighbour, $a_j\not\sim c_j$ (respectively $a_j\not\sim w$), and $a_j$ is odd in $K$. For
+the last point, $a_j\ne c_i$ because the pairs are disjoint, and $a_j\ne p$; so $a_j$ is either off
+$P$ or an interior vertex of $P$, which loses two edges. The transfer theorem gives a parity
+decomposition of $K$ in which no path contains both the leaf of $\tau$ and $a_j$. This is the
+hypothesis of Lemma~\ref{lem:R}(b), which finishes.
+\end{proof}
+
+The condition $p\ne a_j$ is needed. If $p=a_j$, then $a_j$ is a token, (TI) fails, and a schedule
+can suppress $a_j$ and put it on the leaf path. Allowing $P$ to end at $a_j$, the independent
+mutation test of audit~A40 found $317$ failing executions among $2{,}808$ schedules on random
+instances of order $8$; this is also the bug described in Section~\ref{sec:comp}. Our certificates
+do not rely on Proposition~\ref{prop:R}: each one is executed move by move, the bottom is solved
+exactly, and every level is re-checked (Section~\ref{sec:comp}). In (b) the graph $K$ may have three
+tokens ($c_i$, $p$ and $c_j$), but only one constraint.
 
 \section{Computations}\label{sec:comp}
 
-\emph{This section is computational; no proof above depends on it.} The scripts are in
-\texttt{manuscripts/ln/scripts}; the data in \texttt{manuscripts/ln/data}.
+\emph{This section is computational; no proof above depends on it.} The scripts and the data are in
+the directories \texttt{scripts} and \texttt{data} of \texttt{manuscripts/ln}.
 
 \subsection*{Tools}
 \begin{itemize}
 \item \texttt{lnsolve.c}: exact depth-first search for parity decompositions with constraints
 (the path ending at $t$ avoids $a$; two vertices on no common path; two vertices joined by one path),
 with failure memoisation. Validated against the independent brute force of \texttt{lnlib.py}
-(exact cover by all simple paths) on random instances of order $\le8$ with $0$ mismatches, and every
-witness is re-checked (\texttt{validate.py}; \texttt{data/validation.txt}).
+(exact cover by all simple paths) on random instances of order $\le7$, and with the joined-ends
+constraint of orders $6$ and $8$, with $0$ mismatches; every witness is re-checked
+(\texttt{validate.py}, \texttt{validate\_join.py}; \texttt{data/validation.txt}).
 \item \texttt{gen\_*.py}: instance generators over \texttt{nauty-geng}.
 \item \texttt{sched.py}, \texttt{sched3.py}: token schedules (two and three tails).
 \item \texttt{routeR.py}: Criterion R. For each instance it searches $i$ and $P$ (shortest first) and
@@ -330,7 +370,7 @@ with \texttt{lnlib.check\_witness}.
 Instances of $L_N(2)$: connected graphs with all degrees odd, and an unordered pair of disjoint
 ordered pairs $(c_1,a_1),(c_2,a_2)$ with $c_i\not\sim a_i$. Order $8$: $43{,}400$ instances
 (exhaustive). Order $10$: $3{,}000$ instances drawn uniformly over the $32{,}851$ connected all-odd
-graphs and then over the pairs (seed $11$).
+graphs and then over the pairs (\texttt{sample10.py}, seed $11$).
 
 \begin{center}\footnotesize
 \begin{tabular}{@{}lrr@{}}
@@ -343,7 +383,7 @@ two-tail token schedule, MTL2 as fin & $32{,}837$ ($75.7\%$) & conditional on Co
 joint decomposition $Q(c_1)=Q(c_2)$ avoiding $a_1,a_2$ (exact) & $40{,}538$ ($93.4\%$) & --\\
 Lemma R(a) with a free schedule & $40{,}532$ ($93.4\%$) & proved (Lemma~\ref{lem:R})\\
 schedules $\cup$ R(a) & $42{,}904$ ($98.9\%$) & proved\\
-\textbf{Criterion R} & $\mathbf{43{,}400}$ \textbf{(all)} & proved; executed\\
+\textbf{Criterion R} & $\mathbf{43{,}400}$ \textbf{(all)} & proved (Prop.~\ref{prop:R}); executed\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -367,22 +407,39 @@ of the $43{,}400$ instances of order $8$ (\texttt{r1count.py}); longer paths are
 
 \emph{A bug found by the executor.} A first version of the search (\texttt{precommit.py}) let $P$ end
 at $a_j$. Then $a_j$ is a token, and a suppression of that token can put $a_j$ on the leaf path. The
-executor rejected $287$ of its order-$8$ certificates. The search now forbids $P$ to end at $a_j$ and
-never suppresses a head, as in the invariant (TI) of~\cite{MT}; all numbers above are from the
-corrected search, and every certificate was executed.
+executor rejected $287$ of its order-$8$ certificates. The search now forbids $P$ to end at $a_j$
+(Definition~\ref{def:R}(b)) and never suppresses a head, as in the invariant (TI) of~\cite{MT}; all
+numbers above are from the corrected search, and every certificate was executed. Audit~A40
+re-checked every certificate at both orders against Definition~\ref{def:R}, including (TI) after
+every move, and re-executed each one with its own code.
 
 \emph{Solver validation.} \texttt{lnsolve} agreed with the brute force on $1{,}500$ random instances of
-order $\le7$ ($880$ satisfiable, $620$ not), and on $600$ instances with the joined-ends constraint;
-every witness was re-checked (\texttt{data/validation.txt}).
+order $\le7$ ($880$ satisfiable, $620$ not), and on $600$ instances of orders $6$ and $8$ with the
+joined-ends constraint ($538$ satisfiable, $62$ not); every witness was re-checked
+(\texttt{data/validation.txt}). Audit~A40 cross-checked it against an independent solver on $1{,}800$
+further instances, with $0$ disagreements.
 
 \emph{The two-leaf-tail statement} (Conjecture~\ref{conj:mtl}) is exhaustive for $n\le9$: every
 connected graph with at most one even vertex, every pair of leaf tails $(c_i,w_i,x_i)$ with
 $x_i\notin\{c_i,w_i\}\cup N(w_i)$: $8$, $84$, $385$, $11{,}040$ instances at $n=6,\dots,9$ under the
-static conditions of~\cite{MT}, and $40$, $399$, $1{,}192$, $38{,}100$ without them; all
-satisfiable. With $x_i\sim w_i$ allowed it fails ($12$ instances at $n=7$, all with the stem even
+static conditions of~\cite{MT}, and $40$, $483$, $1{,}192$, $38{,}100$ without them (heads may then
+be the leaf or the stem of the other tail, or the even vertex); all satisfiable. With $x_i\sim w_i$ allowed it fails ($12$ instances at $n=7$, all with the stem even
 of degree two or a similar local defect), so the distance condition is needed when there is an
-even vertex. Leaf tails with sets of size $\le2$ or larger, sampled at $n\le9$, never failed
-either, as long as no tail avoids another tail's leaf.
+even vertex.
+
+\emph{Without sparseness, larger head sets fail} (found by audit~A40 in an exhaustive search over
+$n\le9$, and confirmed with \texttt{lnsolve}). Two examples, each with one even vertex:
+\begin{itemize}
+\item $n=7$, edges $03,05,06,14,15,16,26,35$ (the even vertex is $3$), tails $(2,\{5\})$ and
+$(4,\{0,2\})$. Here one tail avoids the other tail's leaf.
+\item $n=9$, leaves $4,5,6$ at stems $0,1,2$; each of $0,1,2,3$ is joined to both $7$ and $8$, and
+$78$ is an edge (the even vertex is $3$); tails $(4,\{1,2,3\})$, $(5,\{0,2,3\})$, $(6,\{0,1,3\})$. Here
+no tail avoids another tail's leaf.
+\end{itemize}
+An earlier draft reported, from a sample, that such families never failed as long as no tail
+avoids another tail's leaf; the second example refutes this. Conjecture MTL2 (two tails, one head
+each) survives the same exhaustive search: $15{,}690$ instances at $n\le8$ and $121{,}205$ at $n=9$,
+over all graphs including disconnected ones.
 
 \section{What remains}\label{sec:open}
 
@@ -394,12 +451,13 @@ Theorem~\ref{thm:A} holds without the sparseness of the heads, for two tails wit
 Every instance of $L_N(2)$ satisfies Criterion R.
 \end{conjecture}
 
-By Lemma~\ref{lem:R}, Conjecture~\ref{conj:R} implies $L_N(2)$. It is a statement about token
+By Proposition~\ref{prop:R}, Conjecture~\ref{conj:R} implies $L_N(2)$. It is a statement about token
 schedules with at most one constraint, which is the regime where steering is strong; the open part is
 to choose $P$ so that a schedule provably exists. Two partial observations point the way.
 \begin{itemize}
-\item If $c_i$ has degree one or three, the token at $c_i$ disappears or can be suppressed after
-$P$ is removed, so only $p$ and $c_j$ are tokens.
+\item If $c_i$ has degree one, the token at $c_i$ disappears when $P$ is removed. If $c_i$ has
+degree three and its two remaining neighbours are non-adjacent and meet the side conditions of
+move S, it can be suppressed (not in a triangle). Then only $p$ and $c_j$ are tokens.
 \item In (a), $P$ can be chosen through every vertex of degree $n-1$, which removes the only known
 obstruction (O1) of the two-even problem.
 \end{itemize}
@@ -408,10 +466,10 @@ tested it.
 
 \section{Formalisation}\label{sec:lean}
 
-The file is \texttt{lean/GallaiLean/LeafTails.lean}; it has no \texttt{sorry}. For
-\texttt{leaf\_tails} and \texttt{lovasz\_avoid\_leafTails}, \texttt{\#print axioms} gives only
-\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}
-(\texttt{data/axioms.txt}). The full library builds.
+The file is \texttt{lean/GallaiLean/LeafTails.lean}; it has no \texttt{sorry}, and the full library
+builds. For the headline theorems \texttt{leaf\_tails} and \texttt{lovasz\_avoid\_leafTails},
+\texttt{\#print axioms} gives only \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound} (\texttt{data/axioms.txt}; checked again by audit~A40).
 
 \begin{center}\footnotesize
 \begin{tabular}{@{}ll@{}}

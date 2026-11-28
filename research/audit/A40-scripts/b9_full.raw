@@ -1,0 +1,25 @@
+UNSAT H??CFB[ A 2 3 A 2 4 A 2 5 A 2 6 A 2 8 A 3 2 A 3 6 A 3 7 A 4 2 A 4 6 A 4 7 A 5 2 A 5 6 A 5 7 A 6 1 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H??ED?R A 1 2 A 1 3 A 1 4 A 1 5 A 1 7 A 2 1 A 2 3 A 2 4 A 2 5 A 2 6 A 3 0 A 3 1 A 3 2 A 3 4 A 3 5 full
+UNSAT H??ED?^ A 1 2 A 1 3 A 1 4 A 1 5 A 1 7 A 2 1 A 2 3 A 2 4 A 2 5 A 2 6 A 3 0 A 3 1 A 3 2 A 4 0 A 4 1 A 4 2 A 5 0 A 5 1 A 5 2 full
+UNSAT H?AAFBW A 2 3 A 2 4 A 2 5 A 2 6 A 2 8 A 3 2 A 3 5 A 3 6 A 3 7 A 4 2 A 4 5 A 4 6 A 4 7 A 5 1 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H?AAFB[ A 2 3 A 2 4 A 2 5 A 2 6 A 2 8 A 3 2 A 3 6 A 3 7 A 4 2 A 4 6 A 4 7 A 6 0 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H?AAEJ_ A 2 3 A 2 4 A 2 5 A 2 6 A 2 7 A 6 0 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H?AAEJw A 2 5 A 2 6 A 2 7 A 3 5 A 3 6 A 3 7 A 4 5 A 4 6 A 4 7 A 6 0 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H?AAFjk A 3 4 A 3 6 A 3 8 A 4 3 A 4 6 A 4 7 A 6 0 A 6 2 A 6 3 A 6 4 A 6 5 full
+UNSAT H?AEF@Y A 2 3 A 2 4 A 2 5 A 2 6 A 2 8 A 3 0 A 3 2 A 3 5 A 3 7 A 4 0 A 4 2 A 4 5 A 4 7 A 5 1 A 5 2 A 5 3 A 5 4 A 5 8 full
+UNSAT H?ABA_J A 0 1 A 0 2 A 0 3 A 0 4 A 0 6 A 0 7 A 0 8 A 2 0 A 2 3 A 2 4 A 2 5 A 2 7 A 3 0 A 3 2 A 3 4 A 3 5 A 3 6 A 4 0 A 4 1 A 4 2 A 4 3 A 4 5 A 5 1 A 5 2 A 5 3 A 5 4 A 5 6 A 5 7 A 5 8 full
+UNSAT H?ABEaI A 2 0 A 2 3 A 2 4 A 2 5 A 2 7 A 3 2 A 3 4 A 3 5 A 3 6 A 3 8 A 4 1 A 4 2 A 4 3 A 4 5 A 4 7 A 5 1 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?ABEbI A 2 0 A 2 3 A 2 4 A 2 5 A 2 7 A 3 2 A 3 4 A 3 5 A 3 6 A 3 8 A 4 2 A 4 3 A 4 5 A 4 7 A 5 1 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?ABFfi A 3 4 A 3 5 A 3 8 A 4 3 A 4 5 A 4 7 A 5 1 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?`@FBo A 3 4 A 3 5 A 3 6 A 3 7 A 4 1 A 4 2 A 4 3 A 4 5 A 4 6 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 full
+UNSAT H?`@FBp A 3 4 A 3 5 A 3 6 A 4 1 A 4 2 A 4 3 A 4 5 A 4 6 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 full
+UNSAT H?`@Eb_ A 3 2 A 3 4 A 3 5 A 3 6 A 3 8 A 4 1 A 4 2 A 4 3 A 4 5 A 4 6 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 A 6 7 full
+UNSAT H?`@ERO A 2 0 A 2 1 A 2 3 A 2 4 A 2 5 A 2 7 A 2 8 A 3 2 A 3 4 A 3 5 A 3 6 A 3 7 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 A 6 7 A 6 8 full
+UNSAT H?`@Fbp A 4 1 A 4 2 A 4 3 A 4 5 A 4 6 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 full
+UNSAT H?`@FRw A 3 5 A 3 6 A 3 7 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 A 6 0 A 6 1 A 6 3 A 6 4 A 6 5 full
+UNSAT H?`DB`a A 3 0 A 3 4 A 3 5 A 3 6 A 3 8 A 4 1 A 4 2 A 4 3 A 4 5 A 4 7 A 4 8 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?`DEPQ A 2 1 A 2 3 A 2 4 A 2 5 A 2 7 A 3 0 A 3 2 A 3 4 A 3 5 A 3 7 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?`DEPY A 2 1 A 2 3 A 2 4 A 2 5 A 2 7 A 3 0 A 3 2 A 3 5 A 3 7 A 5 0 A 5 2 A 5 3 A 5 4 A 5 6 full
+UNSAT H?`DEhV A 2 1 A 2 3 A 2 4 A 2 5 A 2 7 A 4 1 A 4 2 A 4 3 A 4 5 A 4 8 full
+UNSAT H?b@dcv A 1 2 A 1 3 A 1 4 A 1 6 A 1 7 A 4 1 A 4 2 A 4 3 A 4 6 A 4 8 full
+graphs 4991 instances 4937 results {('full', 'SAT'): 4913, ('full', 'UNSAT'): 24}

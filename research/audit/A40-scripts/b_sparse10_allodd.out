@@ -1,0 +1,5 @@
+graphs 10060 instances 41026 results {('sparse', 'SAT'): 41026}
+
+real	0m25.273s
+user	0m24.857s
+sys	0m0.355s
