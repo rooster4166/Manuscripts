@@ -119,7 +119,7 @@ Statement & Status\\
 semi-clique (\S\ref{sec:data}) & computed, exhaustive, witnesses verified\\
 Forest lift (Theorem~\ref{thm:lift}) & proved; Lean \texttt{test2At\_of\_forestBase2}\\
 Its converse (Proposition~\ref{prop:conv}) & proved; Lean for matchings
-(\texttt{forestBase2\_matching\_of\_terminal})\\
+(\texttt{forestBase2\_matching\_of\_test2})\\
 Floor $\Rightarrow$ (T2); floor lift (Theorem~\ref{thm:floor}) & proved; Lean
 \texttt{test2At\_of\_floor}, \texttt{floor\_of\_floorBase}\\
 Floor-lift converse (Proposition~\ref{prop:floorconv}) & proved; Lean for matchings
@@ -322,7 +322,7 @@ on $M=J-\{za_0,ra_0\}-\bigcup_i\{za_i,zb_i,a_ib_i\}$, which has no even vertex. 
 \texttt{lovasz\_avoid\_nonadj}: in a graph without even vertices, $Q(c)$ can avoid any non-neighbour
 of $c$). The content is their compatibility.
 
-\begin{proposition}[the converse; Lean for matchings: \texttt{forestBase2\_matching\_of\_terminal}]\label{prop:conv}
+\begin{proposition}[the converse; Lean for matchings: \texttt{forestBase2\_matching\_of\_test2}]\label{prop:conv}
 Fix forest data $(\Phi,\text{rooting})$ with either (a) $r$ a root and $d_\Phi(r)=1$, or (b) $r$ a child
 with $c(r)\ge2$. Then $M$ has a Lov\'asz decomposition with (i) and (ii) if and only if $B$ has a
 decomposition into at most $n/2$ paths, with at least three ends at $r$, in which every edge $p(v)v$
@@ -405,7 +405,8 @@ $10$ & $716{,}984$ & $520{,}182$ & $196{,}798$ & $4$ & $0$\\
 \end{tabular}
 \end{center}
 The tiers are tried in this order. At order $8$ every one of the $1{,}512$ perfect matchings of the
-graphs $J[N(z)]$ gives a matching base. On the $126$ instances of order $8$ with $\delta\ge3$ that are
+graphs $J[N(z)]$ gives a matching base, and so do all $4{,}003$ perfect matchings at the first $2{,}000$
+instances of the order-$10$ sample (\texttt{scripts/tb2\_pm.py}). On the $126$ instances of order $8$ with $\delta\ge3$ that are
 $2$- but not $3$-connected, the forest base exists at every instance.
 
 \section{The floor lift, and DL}\label{sec:floorlift}
@@ -574,10 +575,10 @@ instances at $n=6,8,10$. All hold, and all $20$ tight instances of \S\ref{sec:da
 \item \emph{Proved, Lean.} Two lifts (Theorems~\ref{thm:lift}, \ref{thm:floor}); floor $\Rightarrow$
 (T2); DL $\Rightarrow$ (T2) at roots with data; $d(z)=4$ from one avoidance, separation, or a two-token
 schedule. All with standard axioms (\texttt{data/axioms.txt}).
-\item \emph{Proved, Lean, matching case.} Both converses (\texttt{matchingFloorBase\_of\_terminal},
-\texttt{forestBase2\_matching\_of\_terminal}). The rooted one is stated for $J$ with all edges at $z$
-deleted, i.e.\ $J-z$ with $z$ kept as an isolated vertex; the transport from the subtype graph
-\texttt{delVert J z} is the routine \texttt{mapInj} along the inclusion and is not formalised.
+\item \emph{Proved, Lean, matching case.} Both converses: \texttt{matchingFloorBase\_of\_terminal}, and
+\texttt{forestBase2\_matching\_of\_test2}, which takes a (T2) decomposition of \texttt{delVert J z} with a
+terminal matching and returns \texttt{ForestBase2 J z r}. The core is \texttt{PathDecomp.drop\_terminal},
+which removes a terminal edge and keeps every other path.
 \item \emph{Proved, paper.} The forest cases of both converses; odd semi-cliques (from OSB Thm~4,
 unrefereed); the literature ranges (from restated floor theorems); the cone characterisation.
 \item \emph{Computed.} (T2) exhaustively to order $10$; the general forest base at every instance there;

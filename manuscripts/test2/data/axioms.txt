@@ -14,3 +14,5 @@
 'Gallai.drop_pairs' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.matchingFloorBase_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Gallai.forestBase2_matching_of_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.forestBase2_matching_of_test2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Gallai.exists_isolated_of_delVert' depends on axioms: [propext, Classical.choice, Quot.sound]
