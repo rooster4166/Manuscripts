@@ -20,11 +20,11 @@ Builds on `manuscripts/endpoint-structure` §5 (the two-even problem, Conjecture
 
 **On paper:**
 - PC with ≤ 1 zero at every order.
-- PC reduces to minimal profiles, i.e. to "Ev∖{u,v} realisable for every pair" plus the (O1) boundary.
-- The moves CYC, EAR, SPL, TW2, DOWN, and the output conditions of all moves.
+- PC reduces to minimal profiles, i.e. to "Ev∖{u,v} realisable" for every pair off the (DB) boundary, plus that boundary configuration.
+- The moves CYC, EAR, SPL, TW2 (a case of SUP), DOWN, and the output conditions of all moves.
 - A minimal counterexample to PC is irreducible.
 - Gluing at cut vertices is exact, so PC ⇒ (BC ⇒ realisable).
-- PC + Conjecture P ⇒ Conjecture J.
+- PC + Conjecture P ⇒ Conjecture J (any all-odd F; the data cover connected F).
 
 ## Computed
 
@@ -38,9 +38,23 @@ or `scripts/jwcheck.py`, which share no code with the solvers. The exceptions ar
 | PC, two zeros | n ≤ 8: 6,849,521 (DB) profiles, all realisable | `data/pc_le8.txt` |
 | PC, ≤ 1 zero (check of a theorem) | n ≤ 8: 14,297,554 profiles | `data/pc_le1zero.txt` |
 | BC ⟺ tight for every connected two-even graph | n ≤ 10. At n = 10: 1,114,873 graphs, 0 disagreements | `data/bc_census.txt` |
-| Conjecture J: a joint path with an (L), (C) or (B) remainder | Every joined instance at orders 6, 8, 10 (374; 40,538; 20,151,960). All certified remainders exactly tight; 20.2M joint decompositions checked | `data/jcert_le8.txt`, `data/jcert_order10.txt` |
+| Conjecture J: a joint path with an (L), (C) or (B) remainder | Every joined instance at orders 6, 8, 10 (374; 40,538; 20,151,960). For the path found at each instance, the remainder was solved exactly and is tight; 20.2M joint decompositions checked | `data/jcert_le8.txt`, `data/jcert_order10.txt` |
 | Conjecture 31 alone (C) plus (L) | Covers only 26,611 of the 40,538 joined instances at order 8 and 14,890,194 of the 20,151,960 at order 10 | as above |
 | Irreducible instances | Two zeros, n ≤ 8: 366 with all moves, 355 of them with twin zeros. None with ≤ 1 zero | `data/irreducible.txt` |
+
+## Audit A43
+
+`research/audit/A43-conj31.md` (scripts in `research/audit/A43-scripts/`) found:
+- No ERROR, and every proof and every re-derived number (independent solver, n ≤ 8) correct; Lean PASS.
+- One OVERCLAIM, now fixed: the abstract said PC reduces to minimal profiles "for every pair". It reduces to them off the (DB) boundary, plus the boundary configuration.
+- 17 MINOR points, all applied. Among them:
+  - EP citations corrected to §6 (Conjecture 31 is EP's Conjecture 48);
+  - the "iff" of the DB lemma needs `b = 0` on `Z`;
+  - BC stated explicitly;
+  - TW2 noted as a case of SUP;
+  - J for any `F`;
+  - witness-check provenance recorded;
+  - result names instead of numbers in the Lean docstrings.
 
 ## Open
 
@@ -58,6 +72,7 @@ or `scripts/jwcheck.py`, which share no code with the solvers. The exceptions ar
 | `scripts/stuck.c` | Irreducible PC instances under the moves (option `down` adds DOWN). |
 | `scripts/blockcrit.h`, `scripts/bc_census.c` | Block criterion BC; BC vs exact tightness. |
 | `scripts/jcert.c` | Conjecture J: joint paths with an (L), (C) or (B) remainder, exact check of the remainder, witnesses. |
+| `scripts/classify_irred.py` | Classify irreducible instances (twin status, adjacency of the zeros, minimality); output `data/irreducible_classes.txt`. |
 | `scripts/wcheck31.py`, `scripts/jwcheck.py` | Independent witness checkers, with their own graph6 decoder. |
 | `data/*.txt` | Outputs as listed above; `data/axioms.txt` (`#print axioms`), `data/build.txt`. |
 

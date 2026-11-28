@@ -1,5 +1,5 @@
 # Census of connected graphs with exactly two even vertices, orders 4-8 (nauty-geng -cq n), solver t31 census
-# reproduces endpoint-structure Section 5: n=4: 3 graphs, 2 not tight (O1); n=6: 47, 17 (16 O1 + 1); n=8: 2668, 372 (344 O1 + 28)
+# reproduces endpoint-structure Section 6.8: n=4: 3 graphs, 2 not tight (O1); n=6: 47, 17 (16 O1 + 1); n=8: 2668, 372 (344 O1 + 28)
 n=4: graphs 6 two-even 3 O1 2 solved 3 tight 1 nontight: O1 2 2conn-nonO1 0 cut-nonO1 0 undecided 0 maxnodes 4
 n=6: graphs 112 two-even 47 O1 16 solved 47 tight 30 nontight: O1 16 2conn-nonO1 0 cut-nonO1 1 undecided 0 maxnodes 18
 n=8: graphs 11117 two-even 2668 O1 344 solved 2668 tight 2296 nontight: O1 344 2conn-nonO1 0 cut-nonO1 28 undecided 0 maxnodes 2062
@@ -33,3 +33,4 @@ NONTIGHT cut GCQr\k
 NONTIGHT cut GCXe`W
 NONTIGHT cut GCXj[{
 NONTIGHT cut GCdbFK
+# witness check of every tight answer at n = 4, 6, 8 (scripts/wcheck31.py): checked 2327 witnesses: all valid

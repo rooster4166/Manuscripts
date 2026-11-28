@@ -1,5 +1,5 @@
 # Irreducible PC instances (no proved move applies): scripts/stuck.c, all 2-connected graphs (nauty-geng -Cq n).
-# Moves CYC EAR SUP TR NEW TRI SPL TW2 (manuscript Section 5), and with option 'down' also DOWN (Lemma 2.4).
+# Moves CYC EAR SUP TR NEW TRI SPL TW2 (manuscript section "Reduction moves"), and with option 'down' also DOWN (lemma DOWN).
 # STUCK_TWIN: the zeros are twins (N(u)-v = N(v)-u).
 ## two zeros, without DOWN
 n=5: instances 187 stuck 4  [CYC 10 EAR 48 SUP 8 TR 80 NEW 37 TRI 0 SPL 0 TW2 0]  twin 4 non-twin 0
