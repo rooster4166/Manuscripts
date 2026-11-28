@@ -35,12 +35,14 @@ EVERY = int(args[args.index("--every") + 1]) if "--every" in args else 1
 # ------------------------------------------------------------------ instrumentation of Fan
 fan_log = []
 _orig_fan = nalib.fan
+phase = ["fwd"]  # "fwd" until L1 at the bottom has returned; then "back" (the Fan back-steps)
 
 
 def fan_logged(K, D, t, u):
-    b = nalib.ends_count(D)
-    Z = [w for w in K.get(u, ()) if b.get(w, 0) == 0]
-    fan_log.append((b.get(t, 0), len(Z)))
+    if phase[0] == "back":
+        b = nalib.ends_count(D)
+        Z = [w for w in K.get(u, ()) if b.get(w, 0) == 0]
+        fan_log.append((b.get(t, 0), len(Z)))
     return _orig_fan(K, D, t, u)
 
 
@@ -53,8 +55,12 @@ _orig_l1 = nalib.l1
 
 def l1_logged(F, c, Y):
     l1_log.append((indep.packed(F, Y), c not in Y and not (F[c] & set(Y)),
-                   all(len(F[v]) % 2 == 1 or len(F[v]) == 0 for v in F), len(F[c]) % 2 == 1))
-    return _orig_l1(F, c, Y)
+                   all(len(F[v]) % 2 == 1 or len(F[v]) == 0 for v in F), len(F[c]) % 2 == 1,
+                   len(F[c]) == 1))
+    phase[0] = "inside"
+    r = _orig_l1(F, c, Y)
+    phase[0] = "back"
+    return r
 
 
 nalib.l1 = l1_logged
@@ -143,6 +149,7 @@ for line in sys.stdin:
                 for method in ("paper", "tjoin"):
                     fan_log.clear()
                     l1_log.clear()
+                    phase[0] = "fwd"
                     D, W = nalib.na_construct(G, y, {x}, method)
                     S["built"] += 1
                     ok, msg = indep.verify(G, D, y, {x})
