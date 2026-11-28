@@ -1,0 +1,15 @@
+# pdflatex x3 on git show 61abb4e:manuscripts/ln/ln.tex
+run 1:
+  Underfull \hbox (badness 10000) in paragraph at lines 95--96
+  LaTeX Warning: There were undefined references.
+  LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+  Package rerunfilecheck Warning: File `ln.out' has changed.
+  Output written on ln.pdf (8 pages, 435010 bytes).
+  undefined citations: 31
+run 2:
+  LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+  Output written on ln.pdf (8 pages, 437497 bytes).
+  undefined citations: 0
+run 3:
+  Output written on ln.pdf (8 pages, 437497 bytes).
+  undefined citations: 0

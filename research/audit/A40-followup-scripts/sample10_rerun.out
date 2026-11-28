@@ -1,0 +1,4 @@
+# nauty-geng -cq 10 | ./allodd_filter | wc -l
+32851
+# python3 sample10.py allodd10.g6 | cmp - data/order10_sample_instances.txt
+identical (md5 2d3639a1ac11)

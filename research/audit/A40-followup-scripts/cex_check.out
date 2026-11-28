@@ -1,0 +1,29 @@
+== order 7 (ln.tex l. 433) n=7 m=8 g6=FCRV?
+  degrees [3, 3, 1, 2, 1, 3, 3] even vertices [3] claimed 3 OK
+  tail (2,[5]): leaf deg 1: True, far apart: True
+  tail (4,[0, 2]): leaf deg 1: True, far apart: True
+  heads [0, 2, 5] sparse: False (vertices with >= 2 head neighbours: [3, 6])
+  some tail avoids another tail's leaf: True
+  connected: True
+  parity decompositions: 24; keeping all tails: 0 -> UNSAT
+    drop head 5 from tail 2: SAT
+    drop head 0 from tail 4: SAT
+    drop head 2 from tail 4: SAT
+== order 9 (ln.tex ll. 435-437) n=9 m=12 g6=H?`@Fbp
+  degrees [3, 3, 3, 2, 1, 1, 1, 5, 5] even vertices [3] claimed 3 OK
+  tail (4,[1, 2, 3]): leaf deg 1: True, far apart: True
+  tail (5,[0, 2, 3]): leaf deg 1: True, far apart: True
+  tail (6,[0, 1, 3]): leaf deg 1: True, far apart: True
+  heads [0, 1, 2, 3] sparse: False (vertices with >= 2 head neighbours: [7, 8])
+  some tail avoids another tail's leaf: False
+  connected: True
+  parity decompositions: 984; keeping all tails: 0 -> UNSAT
+    drop head 1 from tail 4: SAT
+    drop head 2 from tail 4: SAT
+    drop head 3 from tail 4: SAT
+    drop head 0 from tail 5: SAT
+    drop head 2 from tail 5: SAT
+    drop head 3 from tail 5: SAT
+    drop head 0 from tail 6: SAT
+    drop head 1 from tail 6: SAT
+    drop head 3 from tail 6: SAT

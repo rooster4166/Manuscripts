@@ -1,0 +1,12 @@
+# python3 validate.py lnsolve 7 1500 1
+{'SAT': 880, 'UNSAT': 620, 'mismatch': 0, 'badwit': 0}
+
+real	2m53.963s
+user	2m53.433s
+sys	0m0.060s
+# python3 validate_join.py lnsolve 600 3
+{'SAT': 538, 'UNSAT': 62, 'mismatch': 0, 'badwit': 0}
+
+real	0m10.185s
+user	0m10.140s
+sys	0m0.016s
