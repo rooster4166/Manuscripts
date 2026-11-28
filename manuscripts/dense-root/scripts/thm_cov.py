@@ -70,7 +70,7 @@ def thmB2(B, r, s, k, Z):
         ok = True
         for t in range(3, k):
             q = 1 if lam >= t else 0
-            if not (h(t) // 2 + extra + q + t <= k + 1 or h(t + 1) // 2 + extra + q + 2 * t <= k + 1): ok = False
+            if not ((h(t) + extra) // 2 + q + t <= k + 1 or (h(t + 1) + extra) // 2 + q + 2 * t <= k + 1): ok = False
         if ok: return True
     return False if opts else 'noQ'
 def mr47(B, k):   # >= k-1 universal vertices of B
