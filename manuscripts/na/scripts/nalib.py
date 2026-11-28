@@ -390,8 +390,96 @@ def trail_exists_bruteforce(C, y):
     return rec(copy_graph(C), y, True)
 
 
+
+# ---------------------------------------------------------------- Lemmas 4.1 and 4.3 as written
+def bfs_dist(H, s):
+    dist = {s: 0}
+    prev = {s: None}
+    dq = deque([s])
+    while dq:
+        a = dq.popleft()
+        for c in sorted(H[a], key=repr):
+            if c not in dist:
+                dist[c] = dist[a] + 1
+                prev[c] = a
+                dq.append(c)
+    return dist, prev
+
+
+def invariant_subgraph(H, s):
+    """Lemma 4.3: H graph (dict), d_H(s) even, the component of s has an odd vertex.
+    Returns (t, S): t a farthest odd vertex of the component, S = H with shortest paths from s to
+    the other odd vertices of the component toggled."""
+    assert deg(H, s) % 2 == 0
+    dist, prev = bfs_dist(H, s)
+    O = [v for v in dist if deg(H, v) % 2 == 1]
+    assert O and len(O) % 2 == 0
+    t = max(O, key=lambda v: (dist[v], repr(v)))
+    S = copy_graph(H)
+    for o in O:
+        if o == t:
+            continue
+        P = [o]
+        while prev[P[-1]] is not None:
+            P.append(prev[P[-1]])
+        P = P[::-1]
+        assert P[0] == s and P[-1] == o and t not in P, "shortest path meets t"
+        for a, b in zip(P, P[1:]):
+            if b in S[a]:
+                del_edge(S, a, b)
+            else:
+                assert b in H[a]
+                add_edge(S, a, b)
+    # checks of the lemma's conclusion
+    for v in H:
+        if v == t or v not in dist:
+            assert S[v] == H[v]
+    oddS = set(v for v in S if deg(S, v) % 2 == 1)
+    expect = {s, t} | set(v for v in H if v not in dist and deg(H, v) % 2 == 1)
+    assert oddS == expect, (oddS, expect)
+    return t, S, dist
+
+
+def walk_along(K, X, S, A, c):
+    """Lemma 4.1: returns a steering sequence [c, ...] from c avoiding X, by walking along S."""
+    K = copy_graph(K)
+    S = copy_graph(S)
+    seq = [c]
+    while True:
+        # invariant checks (S1)-(S4)
+        for v in A:
+            assert all(z in S[v] for z in K[v])
+        for v in S:
+            if v != c and deg(S, v) % 2 == 1:
+                assert v in A
+        assert c in A or deg(S, c) % 2 == 1
+        assert deg(S, c) >= 1
+        u = min(S[c], key=repr)
+        assert u not in X
+        del_edge(S, c, u)
+        del_edge(K, c, u)
+        seq.append(u)
+        if u in A and deg(S, u) == 0:
+            assert deg(K, u) == 0
+            return seq
+        c = u
+
+
+def steering_sequence(G, y, Y, l):
+    """The steering sequence of the proof of Theorem A, for K = G + y l and X = Y + {l}."""
+    K = copy_graph(G)
+    add_edge(K, y, l)
+    X = set(Y) | {l}
+    H = {v: set(z for z in K[v] if z not in X) if v not in X else set() for v in K}
+    t, S, dist = invariant_subgraph(H, y)
+    A = set([t]) | set(v for v in H if v not in dist and deg(H, v) % 2 == 1)
+    for v in A:  # A consists of free vertices
+        assert v not in X and not (K[v] & X)
+    return walk_along(K, X, S, A, y)
+
+
 # ---------------------------------------------------------------- main construction
-def na_construct(G, y, Y):
+def na_construct(G, y, Y, method="paper"):
     """G: all degrees odd or zero; Y packed; y not in Y, d(y) >= 1; the component of y in G - Y
     contains a vertex outside N(Y). Returns a Lovasz decomposition of G in which every path meets
     Y at most once and the path ending at y avoids Y. Also returns the trail used (or None)."""
@@ -412,11 +500,15 @@ def na_construct(G, y, Y):
     comp = next(c for c in components(H) if y in c)
     C = {v: set(H[v]) for v in comp}
     assert any(v not in NY for v in comp), "witness hypothesis fails"
-    W = exhausting_trail(C, y)
+    if method == "paper":
+        W = steering_sequence(G, y, Y, l)
+    else:
+        W = exhausting_trail(C, y)
     t = W[-1]
     assert t not in NY and t != y
     # forward: K_0 = K, K_{i+1} = K_i - g_i g_{i+1}
     Ks = [copy_graph(K)]
+    assert len(set(path_edges(W))) == len(W) - 1, "steering sequence repeats an edge"
     for i in range(len(W) - 1):
         Ki = Ks[-1]
         ev = even_vertices(Ki)

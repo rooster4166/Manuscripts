@@ -1,0 +1,631 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\newcommand{\NA}{\mathrm{NA}}
+\newcommand{\TRN}{\mathrm{TRN}}
+\emergencystretch=3em
+
+\title[Neighbour avoidance]{Neighbour avoidance in Lov\'asz decompositions:\\
+a proof by a steered Case~I chain, the set form,\\ and the exact boundary}
+\author{Gallai project (cloud session \texttt{claude/na})}
+\date{27 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Let $G$ be a graph in which every vertex has odd degree, or degree zero. A \emph{Lov\'asz
+decomposition} of $G$ partitions $E(G)$ into paths so that every vertex of odd degree is an end of
+exactly one of them; $Q(v)$ denotes the path ending at $v$. Let $x\sim y$, and suppose that $y$ has
+a neighbour $w\ne x$ with $w\not\sim x$. Conjecture NA of~\cite{CN} asks for a Lov\'asz decomposition
+with $x\notin V(Q(y))$. With the tight transfer TRN, it implies Conjecture~N, and through
+it DL(1) up to near twins.
+
+We prove NA, and the following stronger and sharp statements.
+\begin{itemize}
+\item \emph{Set form.} Let $Y$ be a set of vertices at pairwise distance at least three, let $y\notin Y$,
+and suppose the component of $y$ in $G-Y$ is not contained in $N(Y)$. Then some Lov\'asz decomposition
+has every path meeting $Y$ at most once and $Q(y)\cap Y=\emptyset$. This extends $L_1$, which needs
+$y\notin N(Y)$.
+\item \emph{Exact boundary.} For distinct $x,y$, the path $Q(y)$ can avoid $x$ \emph{if and only if}
+the component of $y$ in $G-x$ contains a vertex not adjacent to $x$.
+\end{itemize}
+
+The proof has three steps.
+\begin{enumerate}
+\item Hang a leaf $\ell$ at $y$, which makes $y$ the only even vertex.
+\item Run Lov\'asz's Case~I from $y$, always with a target outside $\{\ell\}\cup Y$. Fan's lemma with
+vertex sets carries the condition ``no path meets $\{\ell\}\cup Y$ twice'' back up the chain. The
+target may be $y$ itself, because $\ell$ is a leaf.
+\item Steer the chain, by a parity argument on $G-Y$, until the even vertex disappears. There $L_1$
+applies.
+\end{enumerate}
+
+Consequences, all proved:
+\begin{itemize}
+\item the degree-two case of Conjecture~N holds;
+\item Conjecture~N follows from TRN alone;
+\item it also follows from TR together with its counterpart for tails adjacent to the even vertex.
+\end{itemize}
+Everything above, including the boundary, is formalised in Lean~4 with Mathlib. The proofs use no
+computation. An
+implementation of the proof, checked by an independent verifier, builds a good decomposition for all
+$1{,}305{,}621$ instances of NA of order $10$.
+\end{abstract}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+All graphs are finite and simple. A vertex is \emph{even} if its degree is positive and even, and
+\emph{odd} if its degree is odd. A \emph{Lov\'asz decomposition} of a graph with at most one even vertex
+is a partition of its edges into paths in which every vertex $v$ is an end of exactly $d(v)\bmod2$
+paths~\cite{L68}. For an odd vertex $v$, $Q(v)$ is the path ending at $v$. A set $Y$ of vertices is
+\emph{packed} if its vertices are pairwise at distance at least three. A decomposition \emph{meets $Y$
+at most once} if every path contains at most one vertex of $Y$.
+
+\begin{conjecture}[NA; {\cite[Conjecture~4.2]{CN}}]\label{conj:na}
+Let $G$ have no even vertex, let $x\sim y$, and let $y$ have a neighbour $w\ne x$ with $w\notin
+N(x)$. Then some Lov\'asz decomposition of $G$ has $x\notin V(Q(y))$.
+\lean{NeighbourAvoidOn}
+\end{conjecture}
+
+\subsection*{Why it matters}
+\begin{itemize}
+\item By~\cite[Theorem~4.6]{CN}, the tight transfer TRN and NA together imply Conjecture~N
+of~\cite{DL}. By~\cite[Proposition~9.2]{DL}, N reduces DL(1) to near twins, and DL$(k)$ gives the
+two-end test (T1) at every root whose data have $M$ connected.
+\item NA is the adjacent-pair analogue of $L_1$ (\texttt{lovasz\_avoid\_nonadj}): $L_1$ is the case
+$x\not\sim y$, where no witness is needed.
+\item NA is stronger than Lemma~NP of~\cite{DL}, which gives only $Q(x)\ne Q(y)$.
+\item It was the residual of the move calculus of~\cite{CN}. In its closure computation, $22$ of the
+$215$ NA instances of order~$6$ and $2{,}451$ of the $9{,}558$ of order~$8$ have no move into the class.
+The smallest is the wheel with five spokes and $y$ the hub.
+\end{itemize}
+
+\subsection*{Results}
+\begin{theorem}[set form]\label{thm:A}
+Let $G$ have no even vertex, let $Y$ be packed, and let $y\notin Y$ be odd. Suppose that the component
+of $y$ in $G-Y$ contains a vertex outside $N(Y)$. Then $G$ has a Lov\'asz decomposition that meets $Y$
+at most once and in which $Q(y)\cap Y=\emptyset$.
+\lean{avoid\_packed\_of\_reach}
+\end{theorem}
+
+If $y\notin N(Y)$, the hypothesis holds with the vertex $y$ itself, and the theorem is $L_1$ in set
+form~\cite[Theorem~6.3]{RD}. The new case is $y\in N(Y)$. Since $Y$ is packed, $y$ then has exactly
+one neighbour $x\in Y$.
+
+\begin{corollary}[NA]\label{cor:na}
+Conjecture~\ref{conj:na} holds. More generally, if $G$ has no even vertex, $x\ne y$ and $y$ is odd,
+and if the component of $y$ in $G-x$ contains a vertex not adjacent to $x$, then some Lov\'asz
+decomposition has $x\notin V(Q(y))$.
+\lean{neighbourAvoid, neighbourAvoidOn, avoid\_of\_reach}
+\end{corollary}
+
+\begin{proof}
+Take $Y=\{x\}$ in Theorem~\ref{thm:A}. For NA, the witness $w$ lies in the component of $y$ in
+$G-x$, and $w\notin N(x)$.
+\end{proof}
+
+\begin{theorem}[the boundary is exact]\label{thm:C}
+Let $G$ have no even vertex, let $x\ne y$ with $y$ odd, and suppose every vertex of the component of $y$
+in $G-x$ is adjacent to $x$. Then $x\in V(Q(y))$ for every Lov\'asz decomposition of $G$.
+\lean{mem\_pathEndingAt\_of\_component\_sub}
+\end{theorem}
+
+\begin{corollary}\label{cor:iff}
+Let $G$ have no even vertex and let $x\ne y$ with $y$ odd. Some Lov\'asz decomposition has $x\notin
+V(Q(y))$ if and only if the component of $y$ in $G-x$ contains a vertex not adjacent to $x$.
+\lean{avoid\_iff\_reach}
+\end{corollary}
+
+\begin{corollary}[consequences for Conjecture N]\label{cor:N}
+\begin{enumerate}
+\item The degree-two case of Conjecture~N ($N(g)=\{x,y\}$) holds. \lean{conjNDegTwoOn}
+\item $\TRN$ implies Conjecture~N. \lean{conjN\_of\_tightTransferN}
+\item TR~\cite[Conjecture~4.1]{L1I}, together with its counterpart \texttt{TightTransferAdj} for tails
+adjacent to the even vertex, implies Conjecture~N. \lean{conjN\_of\_TR}
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+NA and~\cite[Lemma~4.4]{CN} give (1). NA and~\cite[Theorem~4.6, Corollary~4.7]{CN} give (2) and (3).
+\end{proof}
+
+\subsection*{Status}
+\begin{itemize}
+\item \emph{Proved and formalised} (Lean~4 with Mathlib, no \texttt{sorry}; the only axioms are
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}): every numbered result except
+the examples and remarks. That covers Theorems~\ref{thm:A} and~\ref{thm:C},
+Corollaries~\ref{cor:na}--\ref{cor:N}, and every lemma of
+Sections~\ref{sec:steer}--\ref{sec:parity}.
+\item \emph{Proved on paper only}: the remarks of Section~\ref{sec:cons}, and Example~\ref{ex:wheel}.
+\item \emph{Computed}: Section~\ref{sec:comp}. No proof depends on it.
+\end{itemize}
+
+\subsection*{The idea, and why the move calculus missed it}
+The proof of $L_1$ in~\cite{RD} hangs a leaf $\ell$ at $y$ and separates $\ell$ from $x$ with the
+separation theorem. That needs distance three, and here $\ell$ and $x$ have the common neighbour $y$.
+We keep the leaf and drop the separation theorem. The condition ``no path contains both $\ell$ and $x$''
+is a condition on vertex sets, because the leaf $\ell$ lies on exactly one path. Fan's lemma changes
+vertex sets only by adding the target, so every Case~I step with a target other than $\ell$ and $x$
+carries the condition back. That includes the target $y$, the neighbour of the tail $\ell$. What is
+left is to choose the targets with foresight, so that the even vertex vanishes rather than returning
+to $y$ with no edges left. This is a parity problem on $G-x$.
+
+Three features of the proof lie outside the calculus of~\cite{CN,L1I}:
+\begin{itemize}
+\item Its moves for NA are the leaf graph~(d), the split~(g) and leaf paths. The pendant leaf at the
+tail is not one of them.
+\item Its move~(b) forbids targets in $N[c]$.
+\item Its certificates are local. The steering here is global: the whole chain is chosen in advance.
+\end{itemize}
+The wheel shows that the second restriction alone already blocks the method
+(Example~\ref{ex:wheel}).
+
+\section{Preliminaries}\label{sec:prelim}
+
+For a path decomposition $\cD$, $b_\cD(v)$ is the number of paths of $\cD$ with an end at $v$, and
+$Z_\cD(u)=\{w\in N(u):b_\cD(w)=0\}$.
+
+\begin{lemma}[Fan's lemma with vertex sets {\cite{Fan05}, \cite[Lemma~2.2]{RD}}]\label{lem:fan}
+Let $\cD$ be a path decomposition of $K$, and let $t\ne u$ be non-adjacent with
+$b_\cD(t)>|Z_\cD(u)|$. Then $K+tu$ has a path decomposition $\cD^+$ with
+$b_{\cD^+}=b_\cD-\mathbf 1_t+\mathbf 1_u$ and a bijection $\varphi:\cD\to\cD^+$ with
+$V(\varphi(P))=V(P)$ for every $P$ except one, $P^*$, for which $V(\varphi(P^*))=V(P^*)\cup\{u\}$.
+\lean{fan\_single\_supp}
+\end{lemma}
+
+\begin{theorem}[$L_1$, set form {\cite[Theorem~6.3]{RD}}]\label{thm:L1}
+Let $F$ have no even vertex, let $c$ be odd, and let $Y$ be packed with $Y\cap N[c]=\emptyset$. Then $F$
+has a Lov\'asz decomposition that meets $Y$ at most once and in which $Q(c)\cap Y=\emptyset$.
+\lean{lovasz\_avoid\_set}
+\end{theorem}
+
+\begin{lemma}[the pendant leaf]\label{lem:leaf}
+Let $y$ be an odd vertex of $G$, and let $K=G+y\ell$ with $\ell$ a new vertex. Suppose $\cD_K$ is a path
+decomposition of $K$ with $b(\ell)=1$, $b(y)=0$ and $b(v)=d_G(v)\bmod2$ for every other $v$. Let $P_\ell$
+be the path through $\ell$. Then replacing $P_\ell$ by $P_\ell-\ell$ gives a Lov\'asz decomposition of
+$G$ with $Q(y)=P_\ell-\ell$ and with all other paths unchanged.
+\lean{apexSep\_meetsOnce, avoid\_of\_apexSep}
+\end{lemma}
+
+\begin{proof}
+The leaf $\ell$ is an end of $P_\ell$. Since $y$ has no end, $P_\ell$ continues beyond $y$, so $P_\ell-\ell$
+is a path with an end at $y$. Then $y$ gains one end and nothing else changes.
+\end{proof}
+
+\section{The steered Case~I chain}\label{sec:steer}
+
+Let $K$ be a graph and $X\subseteq V(K)$.
+
+\begin{definition}\label{def:steer}
+A \emph{steering sequence} from $g$ avoiding $X$ is a sequence $g=g_0,g_1,\dots,g_k$ with $k\ge1$ such
+that:
+\begin{itemize}
+\item the edges $e_i=g_{i-1}g_i$ ($1\le i\le k$) are distinct edges of $K$;
+\item $g_i\notin X$ for $1\le i\le k$;
+\item $g_k$ is isolated in $K-\{e_1,\dots,e_k\}$.
+\end{itemize}
+Equivalently (\texttt{Steer}): either $g\sim u\notin X$ and $g$ is the only neighbour of $u$, or $g\sim
+u\notin X$ and $K-gu$ has a steering sequence from $u$ avoiding $X$.
+\lean{Steer}
+\end{definition}
+
+\begin{lemma}[one Fan step]\label{lem:step}
+Let $z$ be the only even vertex of $K$, let $u\in N(z)\setminus X$, and suppose $K-uz$ has a Lov\'asz
+decomposition that meets $X$ at most once. Then so has $K$.
+\lean{fan\_step\_meetsOnce}
+\end{lemma}
+
+\begin{proof}
+\begin{itemize}
+\item \emph{Degrees in $K'=K-uz$.} The vertex $z$ is odd, of degree $d(z)-1\ge1$. The vertex $u$ was odd
+in $K$, since $z$ is the only even vertex and $u\ne z$ has positive degree; so $u$ is even or isolated
+in $K'$. All other degrees are unchanged. So $u$ is the only possible even vertex of $K'$.
+\item \emph{Fan's hypothesis.} Let $\cD'$ be the given decomposition. Then $b_{\cD'}(z)=1$. Every
+neighbour of $u$ in $K'$ is odd and has one end, so $Z_{\cD'}(u)=\emptyset$.
+\item \emph{The step.} Lemma~\ref{lem:fan} with $t=z$ gives a decomposition $\cD$ of $K$ with $b_\cD=
+b_{\cD'}-\mathbf 1_z+\mathbf 1_u$. This is $0$ at the even vertex $z$, $1$ at $u$, which is odd in
+$K$ and had no end, and $d_K\bmod2$ elsewhere. So $\cD$ is a Lov\'asz decomposition.
+\item \emph{The invariant.} Only one path changes its vertex set, and it gains $u\notin X$. So $\cD$
+meets $X$ at most once.\qedhere
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[the steered chain]\label{lem:chain}
+Let $g\notin X$ be the only even vertex of $K$, and let $g_0,\dots,g_k$ be a steering sequence from $g$
+avoiding $X$. Let $K_i=K-\{e_1,\dots,e_i\}$.
+\begin{enumerate}
+\item For $i<k$ the vertex $g_i$ is the only even vertex of $K_i$, and $K_k$ has no even vertex.
+\item No edge at a vertex of $X$ is deleted.
+\item If $K_k$ has a Lov\'asz decomposition that meets $X$ at most once, then so has $K$.
+\end{enumerate}
+\lean{steer\_meetsOnce}
+\end{lemma}
+
+\begin{proof}
+\begin{enumerate}
+\item Induction on $i$; the case $i=0$ is the hypothesis. In $K_{i+1}=K_i-g_ig_{i+1}$:
+  \begin{itemize}
+  \item $g_i$ becomes odd, of positive degree;
+  \item $g_{i+1}$ was odd, since it differs from $g_i$ and is adjacent to it, and it becomes even or
+  isolated;
+  \item all other degrees are unchanged.
+  \end{itemize}
+  If $i+1<k$, then $g_{i+1}$ still has the edge $e_{i+2}$, so it is the only even vertex of $K_{i+1}$.
+  If $i+1=k$, then $g_k$ is isolated, so $K_k$ has no even vertex.
+\item Both ends of $e_i$ lie outside $X$: $g_0=g\notin X$ and $g_i\notin X$ for $i\ge1$.
+\item Apply Lemma~\ref{lem:step} to $K_i$ with $z=g_i$ and $u=g_{i+1}\notin X$, for $i=k-1,\dots,0$.
+\qedhere
+\end{enumerate}
+\end{proof}
+
+\section{Steering sequences from parity}\label{sec:parity}
+
+In this section $H=K-X$ is the graph on $V(K)$ whose edges are the edges of $K$ with no end in $X$. A
+vertex $v$ is \emph{free} if $v\notin X$ and $N_K(v)\cap X=\emptyset$. At a free vertex, every edge of
+$K$ is an edge of $H$.
+
+\begin{lemma}[walking along a subgraph]\label{lem:walk}
+Let $A$ be a set of free vertices, let $c$ be a vertex, and let $S\subseteq H$ be a subgraph such that:
+\begin{enumerate}[label=(S\arabic*)]
+\item $S$ contains every edge of $K$ at every vertex of $A$;
+\item every vertex $v\ne c$ of odd degree in $S$ lies in $A$;
+\item $c\in A$, or $d_S(c)$ is odd;
+\item $d_S(c)\ge1$.
+\end{enumerate}
+Then $K$ has a steering sequence from $c$ avoiding $X$.
+\lean{steer\_of\_inv}
+\end{lemma}
+
+\begin{proof}
+Induction on $|E(S)|$. By (S4) there is an edge $cu$ of $S$, and $u\notin X$ because $S\subseteq H$. Let
+$S'=S-cu$ and $K'=K-cu$.
+
+\emph{Case 1: $u\in A$ and $d_{S'}(u)=0$.} By (S1), every edge of $K$ at $u$ lies in $S$, and $cu$ is
+the only edge of $S$ at $u$. So $c$ is the only neighbour of $u$ in $K$, and $c,u$ is a steering
+sequence.
+
+\emph{Case 2: otherwise.} We check (S1)--(S4) for $K'$, $S'\subseteq K'-X$ and the vertex $u$.
+\begin{itemize}
+\item[(S1)] An edge of $K'$ at $v\in A$ is an edge of $K$ other than $cu$, so it lies in $S'$.
+\item[(S2)] Let $v\ne u$ have odd degree in $S'$. If $v=c$, then $d_S(c)=d_{S'}(c)+1$ is even, so $c\in
+A$ by (S3). If $v\ne c$, then $d_S(v)=d_{S'}(v)$ is odd, so $v\in A$ by (S2).
+\item[(S3)] If $u\notin A$, then $d_S(u)$ is even by (S2), since $u\ne c$. So $d_{S'}(u)$ is odd.
+\item[(S4)] If $u\in A$, then $d_{S'}(u)\ne0$, since Case~1 does not hold. If $u\notin A$, then
+$d_{S'}(u)$ is odd.
+\end{itemize}
+The set $A$ consists of free vertices of $K'$, since $K'\subseteq K$. By induction, $K'$ has a steering
+sequence $u,\dots$ avoiding $X$, and $c,u,\dots$ is one for $K$.
+\end{proof}
+
+\begin{lemma}[toggling a walk]\label{lem:toggle}
+Let $J\subseteq H$, and let $W$ be a walk in $H$ from $a$ to $b$. Then there is $J'\subseteq H$ such that:
+\begin{itemize}
+\item $d_{J'}(v)\equiv d_J(v)+[v=a]+[v=b]\pmod2$ for every $v$;
+\item at every vertex off $W$, $J'$ has the same edges as $J$.
+\end{itemize}
+\lean{exists\_toggle\_walk}
+\end{lemma}
+
+\begin{proof}
+Induction on the length of $W$. A walk of length zero has $a=b$; take $J'=J$. If $W=a\,c\,W_1$, take
+$J_1$ for $W_1$ (from $c$ to $b$). Then toggle the edge $ac$: delete it from $J_1$ if present, and add
+it otherwise. It is an edge of $H$, so the result still lies in $H$. Toggling flips the parity at $a$
+and at $c$, and $[v=c]+[v=c]$ is even. A vertex off $W$ is neither $a$ nor $c$ and is off $W_1$.
+\end{proof}
+
+\begin{lemma}[the subgraph]\label{lem:sub}
+Let $s$ have even degree in $H$, and let the component $C$ of $s$ in $H$ contain a vertex of odd degree.
+Then there are a vertex $t\in C$ of odd degree in $H$ and a subgraph $S\subseteq H$ such that:
+\begin{itemize}
+\item at $t$, and at every vertex outside $C$, $S$ has the same edges as $H$;
+\item the vertices of odd degree in $S$ are exactly $s$, $t$, and the vertices of odd degree in $H$
+outside $C$.
+\end{itemize}
+\lean{exists\_inv\_subgraph}
+\end{lemma}
+
+\begin{proof}
+Let $O$ be the set of vertices of $C$ of odd degree in $H$.
+\begin{itemize}
+\item $|O|$ is even (the handshake lemma in $C$; \texttt{even\_card\_odd\_reachable}) and non-empty.
+Also $s\notin O$.
+\item Choose $t\in O$ with $\mathrm{dist}_H(s,t)$ largest.
+\item For $o\in O\setminus\{t\}$, a shortest walk $W_o$ from $s$ to $o$ avoids $t$. Otherwise it passes
+through $t$, and then $\mathrm{dist}(s,o)\ge\mathrm{dist}(s,t)+1$, since $t\ne o$. This contradicts
+the choice of $t$.
+\item Starting from $J=H$, toggle every $W_o$ with $o\in O\setminus\{t\}$ by Lemma~\ref{lem:toggle}.
+This gives $S\subseteq H$ with
+\[
+d_S(v)\equiv d_H(v)+(|O|-1)[v=s]+[v\in O\setminus\{t\}]\pmod 2.
+\]
+\item The walks lie in $C$ and avoid $t$. So $S$ has the same edges as $H$ at $t$ and outside $C$.
+\end{itemize}
+Now $|O|-1$ is odd, and $s\notin O$. Reading off the parities:
+\begin{itemize}
+\item $s$ is odd in $S$;
+\item a vertex of $O\setminus\{t\}$ is even in $S$;
+\item $t$ is odd in $S$;
+\item every other vertex of $C$ is even in $H$, hence in $S$;
+\item vertices outside $C$ keep their degree.\qedhere
+\end{itemize}
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:A}}\label{sec:proof}
+
+If $y\notin N(Y)$, Theorem~\ref{thm:L1} with $c=y$ applies. So let $y\in N(Y)$, and let $x$ be the
+neighbour of $y$ in $Y$. It is unique, because two vertices of $Y$ with the common neighbour $y$ would be
+at distance two.
+
+\emph{The leaf graph.} Let $K=G+y\ell$, $X=Y\cup\{\ell\}$ and $H=K-X$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{$y$ is the only even vertex of $K$.} Its degree is $d_G(y)+1\ge2$, the leaf $\ell$ is
+odd, and all other degrees are those of $G$.
+\item \emph{Degrees in $H$.} The vertices of $X$ are isolated in $H$. For $v\notin X$,
+$d_H(v)=d_K(v)-|N_K(v)\cap X|$, and $|N_K(v)\cap X|=[v=y]+|N_G(v)\cap Y|$, with $|N_G(v)\cap Y|\le1$
+since $Y$ is packed. So:
+  \begin{itemize}
+  \item $d_H(y)=d_G(y)-1$ is even;
+  \item for $v\notin X\cup\{y\}$ with $d_G(v)>0$, $d_H(v)$ is odd if and only if $v\notin N(Y)$.
+  \end{itemize}
+  In particular, \emph{every vertex of odd degree in $H$ is free}: it lies outside $X$, has no neighbour
+  in $Y$, and is not $y$, so it is not adjacent to $\ell$.
+\item \emph{The component.} The component $C$ of $y$ in $H$ is the component of $y$ in $G-Y$. By
+hypothesis it contains a vertex $w\notin N(Y)$. Then $w\ne y$, so $w$ has a neighbour in $C$; thus
+$d_G(w)\ge1$, and $d_H(w)$ is odd.
+\item \emph{The subgraph.} Apply Lemma~\ref{lem:sub} with $s=y$, giving $t$ and $S$. Let $A$ consist of
+$t$ and the vertices of odd degree in $H$ outside $C$. These are free by (b).
+  \begin{itemize}
+  \item (S1): $S$ has the same edges as $H$ at the vertices of $A$, and at a free vertex every edge of
+  $K$ is an edge of $H$.
+  \item (S2): the odd vertices of $S$ other than $y$ form $A$.
+  \item (S3) and (S4): $d_S(y)$ is odd.
+  \end{itemize}
+  Lemma~\ref{lem:walk} gives a steering sequence from $y$ avoiding $X$.
+\item \emph{The bottom of the chain.} Let $K_k$ be as in Lemma~\ref{lem:chain}.
+  \begin{itemize}
+  \item $K_k$ has no even vertex.
+  \item No edge at $X$ was deleted, so $\ell$ is still a leaf at $y$.
+  \item $Y$ is packed in $K$ (the new vertex $\ell$ is adjacent only to $y\notin Y$), hence in the
+  subgraph $K_k$.
+  \item $Y\cap N_{K_k}[\ell]=Y\cap\{\ell,y\}=\emptyset$.
+  \end{itemize}
+  Theorem~\ref{thm:L1} with $c=\ell$ gives a Lov\'asz decomposition of $K_k$ that meets $Y$ at most once
+  and whose path through $\ell$ avoids $Y$. So it meets $X$ at most once.
+\item \emph{Up the chain.} By Lemma~\ref{lem:chain}, $K$ has a Lov\'asz decomposition $\cD_K$ that
+meets $X$ at most once.
+\item \emph{Delete the leaf.} By Lemma~\ref{lem:leaf}, $\cD_K$ gives a Lov\'asz decomposition of $G$.
+Its path $Q(y)=P_\ell-\ell$ avoids $Y$, because $P_\ell$ contains $\ell\in X$. Every other path is a path of
+$\cD_K$, so it meets $Y$ at most once.\qed
+\end{enumerate}
+
+\begin{remark}[effectiveness]
+Every step is constructive: Lemma~\ref{lem:sub} uses breadth-first search, Lemma~\ref{lem:walk}
+reads off the sequence, the separation theorem behind Theorem~\ref{thm:L1} is Lov\'asz's induction
+with Fan steps, and each Fan step is a chain of re-routings. The script \texttt{nalib.py}
+(Section~\ref{sec:comp}) is this algorithm.
+\end{remark}
+
+\begin{example}[the wheel]\label{ex:wheel}
+Let $G=W_5$ (\texttt{EUZw}), with hub $y$, rim $1\,2\,3\,4\,5$, and $x=1$.
+\begin{itemize}
+\item In $H=G-1$, the odd vertices are $3$ and $4$, the rim vertices not adjacent to $1$. The vertex
+$y$ has degree four.
+\item One steering sequence is $y,2,3,4,y,3$. The final graph $K_5$ has the edges $y\ell$, $y1$,
+$y5$, $12$, $15$, $45$, and all its degrees are odd.
+\item \emph{Every steering sequence returns to $y$.} Say it ends at $3$, so it uses all three edges
+$3y$, $32$, $34$. The vertex $2$ has degree two in $H$, with neighbours $y$ and $3$, and the sequence
+neither starts nor ends at $2$. So the sequence uses $y2$ as well. It thus uses two edges at its
+start $y$, and so passes through $y$ again. The case of $4$ follows by the reflection fixing $1$.
+\end{itemize}
+So the target $y=N(\ell)$, which move~(b) of~\cite{CN,L1I} forbids, cannot be avoided here.
+\end{example}
+
+\section{The boundary: proof of Theorem~\ref{thm:C}}\label{sec:boundary}
+
+Let $C$ be the component of $y$ in $G-x$, and suppose $C\subseteq N(x)$. Every vertex of $C$ is
+adjacent to $x$, so it has odd degree, and in a Lov\'asz decomposition $\cD$ it is an end of exactly one
+path. Note that $x\notin C$, and that a walk avoiding $x$ which starts in $C$ stays in $C$.
+
+\emph{Two counts per path.} For a path $P\in\cD$ let
+\begin{itemize}
+\item $n(P)$ be the number of ends of $P$ in $C$;
+\item $e(P)$ be the number of edges of $P$ joining $x$ to $C$.
+\end{itemize}
+Summing over $\cD$ gives
+\[
+\sum_P n(P)=|C|=\sum_P e(P).
+\]
+The first equality holds because every vertex of $C$ has exactly one end. The second holds because the
+$|C|$ edges from $x$ to $C$ lie on one path each.
+
+\emph{Per path.}
+\begin{itemize}
+\item \emph{If $x\notin V(P)$,} then $e(P)=0\le n(P)$.
+\item \emph{If $x\in V(P)$,} split $P$ at $x$ into $P_1$ and $P_2$, read from $x$ to the two ends $a$
+and $b$ of $P$. If $P_1$ has an edge, its first edge is $xv$ for some $v$, and the rest of $P_1$ avoids
+$x$. So $P_1$ contains exactly one edge at $x$. That edge joins $x$ to $C$ if and only if $v\in C$,
+which holds if and only if $a\in C$. If $P_1$ is trivial, then $a=x\notin C$. In both cases
+$e(P_1)=[a\in C]$, and likewise $e(P_2)=[b\in C]$. So $e(P)=n(P)$.
+\end{itemize}
+Hence $e(P)\le n(P)$ for every $P$.
+
+\emph{Conclusion.} If $Q(y)$ avoided $x$, it would be a path inside $C$: both of its ends lie in $C$, so
+$n(Q(y))=2>0=e(Q(y))$. Summing, $\sum_P e(P)<\sum_P n(P)$, which contradicts the two counts.\qed
+
+\begin{remark}[blocks]
+Equivalently, the edges of $\cD$ with an end in $C$ and the other in $C\cup\{x\}$ form blocks, one per
+path. Each block with both ends in $C$ passes through $x$. In Lean the argument is
+\texttt{mem\_pathEndingAt\_of\_component\_sub}, and Corollary~\ref{cor:iff} is \texttt{avoid\_iff\_reach}.
+\end{remark}
+
+\begin{remark}
+For $x\not\sim y$ the hypothesis of Corollary~\ref{cor:iff} holds trivially, with the vertex $y$. So
+Corollary~\ref{cor:iff} recovers $L_1$, and Theorem~\ref{thm:C} says what fails at a neighbour: $K_{2m}$
+and the wheel with $x$ as its hub are examples. An NA witness $w$ is a vertex of the required kind at
+distance one from $y$. Instances satisfying the weak hypothesis but having no witness exist from order
+$6$ on ($14$ at order $6$; Section~\ref{sec:comp}).
+\end{remark}
+
+\section{Consequences and remarks}\label{sec:cons}
+
+\begin{itemize}
+\item \emph{Conjecture N.} By Corollary~\ref{cor:N}, the open part of~N is the tight transfer $\TRN$
+of~\cite{CN}. The obstruction~(2) of~\cite[\S6]{CN}, ``NA'', is removed. Obstructions~(1) (the
+all-tight configurations) and~(3) (the triangle at an even vertex of degree two) remain, and both
+concern $\TRN$. Through~\cite[Prop.~9.2]{DL}, DL(1) now follows from $\TRN$ outside near twins.
+\item \emph{Lemma~NP and the degree-two theorem of~\cite{DL}.}
+  \begin{itemize}
+  \item Corollary~\ref{cor:na} gives $Q(y)\not\ni x$ whenever $y$ has a neighbour not adjacent to $x$.
+  This is stronger than $Q(x)\ne Q(y)$.
+  \item The theorem \texttt{avoid\_deg\_two} of~\cite{DL} ($N(g)=\{a,b\}$, $N(a)\cap N(b)=\{g\}$,
+  $d(a)\ge3$) follows from the degree-two case: every neighbour $w\ne g$ of $a$ is a witness.
+  \end{itemize}
+\item \emph{The reformulations R1 and R2} proposed for this work were checked:
+  \begin{itemize}
+  \item \emph{R1.} Separating $x$ and $y$ in $G-xy-yw+xw$ suffices for NA. This is correct, and the
+  common neighbours of $x,y$ are the same in both graphs. The proof above does not use R1.
+  \item \emph{R2.} The graph is $G-xy+yt$, with $Q(t)$ passing through $y$ and both $Q(t),Q(y)$
+  avoiding $x$. Replacing $t$ by $x$ shows that R2 is equivalent to a stronger statement: some
+  Lov\'asz decomposition of $G$ has $Q(y)\not\ni x$ \emph{and} $xy$ as the terminal edge of $Q(x)$.
+  For the converse, rename the end $x$ of $Q(x)$ to $t$. The stronger statement held in all NA
+  instances of orders $4$ and $6$, by brute force. It is not proved.
+  \end{itemize}
+\item \emph{Leaf tails in the move calculus.} If the tail $c$ is a leaf, the move~(b)
+of~\cite[Thm.~3.1]{L1I} remains valid for every target $u\in N(g)\setminus(A\cup\{c\})$, including
+$u\in N(c)$. The proof of Lemma~\ref{lem:step} applies verbatim with $X=A\cup\{c\}$. Adding this and the
+pendant-leaf move to the calculus would certify every instance of NA through a steering sequence,
+although such a sequence may be long.
+\end{itemize}
+
+\section{Computations}\label{sec:comp}
+
+\emph{This section is computational; no proof above depends on it.} The scripts are in
+\texttt{manuscripts/na/scripts}, the outputs in \texttt{manuscripts/na/data}, and the README there
+gives the commands. Graphs come from \texttt{nauty-geng -c}, filtered to all degrees odd.
+
+\subsection*{Tools}
+\begin{itemize}
+\item \emph{The construction} (\texttt{nalib.py}) implements the proofs step by step:
+  \begin{itemize}
+  \item Fan's lemma (general chain search);
+  \item the separation theorem (Cases I--IV of~\cite{RD});
+  \item $L_1$;
+  \item Lemmas~\ref{lem:walk} and~\ref{lem:sub} as written: a farthest odd vertex, toggled
+  breadth-first shortest paths, and the walk along $S$, with (S1)--(S4) asserted at every step;
+  \item the forward chain, with the even vertex checked at every step;
+  \item the Fan back-steps.
+  \end{itemize}
+  Assertions check every hypothesis on the way. A second, independent steering routine builds the
+  sequence as the reverse of an Euler trail: it chooses a good odd vertex by descent through bad
+  components, takes a $T$-join from paths, and runs Hierholzer's algorithm. Both routines run on
+  every instance, and both outputs are verified.
+\item \emph{The verifier} (\texttt{check\_lovasz}, \texttt{check\_na\_output}) is independent of the
+construction. It checks that the output partitions $E(G)$ into paths, that every vertex has
+$d(v)\bmod2$ ends, that $Q(y)\cap Y=\emptyset$, and that every path meets $Y$ at most once.
+\item \emph{The exact solver} (\texttt{exact.py}) chooses $Q(y)$ and decides the rest by a memoised
+search over paths. It agrees with a brute-force enumeration of all transition systems
+(\texttt{brute\_all}) on all $18$ ordered pairs $x\sim y$ of order $4$ and $198$ of order~$6$.
+\end{itemize}
+
+\subsection*{Results}
+\begin{center}\small
+\resizebox{\textwidth}{!}{\begin{tabular}{llrrrl}
+\toprule
+range & test & pairs $x\sim y$ & NA & weak hyp. & result\\
+\midrule
+order $4$ & construction, exact, brute force & $18$ & $3$ & $3$ & all built; good $\Leftrightarrow$ weak\\
+order $6$ & construction, exact, brute force & $228$ & $129$ & $143$ & all built; good $\Leftrightarrow$ weak\\
+order $8$ & construction; exact on the non-weak pairs & \textsc{n8pairs} & $4{,}970$ & \textsc{n8weak} & \textsc{n8result}\\
+order $10$ & construction & $1{,}484{,}200$ & $1{,}305{,}621$ & $1{,}448{,}874$ & all built and verified\\
+order $12$, slices & construction, set form & \textsc{n12pairs} & \textsc{n12na} & \textsc{n12weak} & \textsc{n12result}\\
+random, orders $12$--$20$ & construction, set form & \textsc{rndpairs} & & \textsc{rndweak} & \textsc{rndresult}\\
+\bottomrule
+\end{tabular}}
+\end{center}
+\begin{itemize}
+\item The NA counts $3$, $129$, $4{,}970$, $1{,}305{,}621$ agree with~\cite[\S5]{CN}.
+\item ``Weak hyp.'' counts the pairs satisfying the hypothesis of Corollary~\ref{cor:na}. All of them
+were built and verified.
+\item ``Good $\Leftrightarrow$ weak'' is the exact solver's confirmation of Corollary~\ref{cor:iff}: the
+non-weak pairs ($15$ at order $4$, $85$ at order $6$) are all bad.
+\item The set form was tested for packed $Y\ni x$ with $|Y|\le3$: $16$ instances at order $6$, and
+the counts in \texttt{data/}.
+\end{itemize}
+
+\section{Formalisation}\label{sec:lean}
+
+\texttt{lean/GallaiLean/NeighbourAvoid.lean} (Lean~4, Mathlib) has no \texttt{sorry}. Every theorem
+below depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the full
+library builds ($18{,}420$ jobs).
+\begin{center}\small
+\resizebox{\textwidth}{!}{\begin{tabular}{ll}
+\toprule
+statement & Lean\\
+\midrule
+Definition~\ref{def:steer} & \texttt{Steer} (inductive), \texttt{Steer.exists\_adj}\\
+Lemma~\ref{lem:step} & \texttt{fan\_step\_meetsOnce} (from \texttt{fan\_single\_supp})\\
+Lemma~\ref{lem:chain} & \texttt{steer\_meetsOnce} (for any property of graphs kept by deleting edges off $X$)\\
+Lemma~\ref{lem:walk} & \texttt{steer\_of\_inv}\\
+Lemma~\ref{lem:toggle} & \texttt{exists\_toggle\_walk} (toggles by \texttt{delEdge} / \texttt{plusEdge})\\
+Lemma~\ref{lem:sub} & \texttt{exists\_inv\_subgraph}, with \texttt{even\_card\_odd\_reachable}\\
+Lemma~\ref{lem:leaf} & \texttt{apexSep\_meetsOnce} (the leaf graph is \texttt{apex G \{y\}})\\
+the graph $K-X$ & \texttt{offX}, \texttt{offX\_degree}\\
+Theorem~\ref{thm:A} & \texttt{avoid\_packed\_of\_reach}\\
+Corollary~\ref{cor:na} & \texttt{avoid\_of\_reach}, \texttt{neighbourAvoid}, \texttt{neighbourAvoidOn}\\
+Corollary~\ref{cor:N} & \texttt{conjNDegTwoOn}, \texttt{conjN\_of\_tightTransferN}, \texttt{conjN\_of\_TR}\\
+Theorem~\ref{thm:C} & \texttt{mem\_pathEndingAt\_of\_component\_sub} (with \texttt{list\_sum\_lt\_sum})\\
+Corollary~\ref{cor:iff} & \texttt{avoid\_iff\_reach}\\
+\bottomrule
+\end{tabular}}
+\end{center}
+\begin{itemize}
+\item In Lean the hypothesis of Theorem~\ref{thm:A} is a walk from $y$ to $w$ that avoids $Y$, with
+$w$ of positive degree and no neighbour in $Y$.
+\item Library results used: \texttt{lovasz\_avoid\_set} ($L_1$), \texttt{fan\_single\_supp},
+\texttt{Retract.delete\_supp}, \texttt{delEdge\_degree}, \texttt{plusEdge\_degree},
+\texttt{apex\_degree\_some}, and Mathlib's \texttt{dist}, \texttt{Walk.takeUntil} and
+\texttt{even\_card\_odd\_degree\_vertices}.
+\end{itemize}
+
+\section{What remains}\label{sec:open}
+\begin{enumerate}
+\item $\TRN$: with NA proved, it is the whole of Conjecture~N (Corollary~\ref{cor:N}).
+\item The R2 strengthening: $Q(y)\not\ni x$ together with $xy$ terminal in $Q(x)$. It held at orders
+$4$ and $6$.
+\item Graphs with an even vertex. The leaf trick then produces two even vertices, and the steered chain
+breaks: its intermediate graphs would have two even vertices. This is where N differs from NA.
+\item Whether the set form extends to the sparse sets of~\cite{MS} (every vertex with at most one
+neighbour in $Y$), and to several tails at once.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{CN} Conjecture N, \texttt{manuscripts/conj-n}.
+\bibitem{DL} The disjunctive avoidance conjecture for one pair, \texttt{manuscripts/dl-one}.
+\bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser.
+B} 93 (2005) 117--125.
+\bibitem{L1I} Lov\'asz's induction for $L_1^*$, \texttt{manuscripts/l1-induction}.
+\bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc. Colloq.,
+Tihany, 1966), Academic Press, 1968, 231--236.
+\bibitem{MS} Multi-pair separation, \texttt{manuscripts/multi-sep}.
+\bibitem{RD} Route descent, \texttt{manuscripts/route-descent}.
+\end{thebibliography}
+\end{document}
