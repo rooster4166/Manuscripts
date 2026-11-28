@@ -1,0 +1,15 @@
+# Validation (ae session)
+## aesolve vs brute.py (independent), order 7: CF0, CF1 (one zero at each w0) and TE-odd queries
+3467 queries: SAT/SAT 3354, UNSAT/UNSAT 113, disagreements 0
+## brute.py on every CF0 UNSAT answer of aesolve at order 9
+337 queries: brute UNSAT 337, disagreements 0
+## TE at odd neighbours (tegen.py odd): gx terminal at g for an odd neighbour x of an odd g, d(g) >= 3, in graphs with <= 1 positive even vertex
+n = 5: 52 queries, UNSAT 5
+n = 6: 277 queries, UNSAT 5
+n = 7: 2239 queries, UNSAT 64
+n = 8: 8868 queries, UNSAT 64
+every failure at n = 6, 8 has an isolated vertex
+TE-odd aecheck n = 5: witnesses checked 47, unsat 5, undecided 0, failures 0
+TE-odd aecheck n = 6: witnesses checked 272, unsat 5, undecided 0, failures 0
+TE-odd aecheck n = 7: witnesses checked 2175, unsat 64, undecided 0, failures 0
+TE-odd aecheck n = 8: witnesses checked 8804, unsat 64, undecided 0, failures 0
