@@ -1,0 +1,21 @@
+# t2.c -s (slack witnesses) piped into verify_t2.py --require-slack; every slack = 1 answer must carry a
+# witness decomposition of J - z into <= n/2 - 1 paths, checked independently. Orders 6 and 8 exhaustive,
+# order 10 exhaustive in four geng slices (nauty-geng -q -C -d3 10 i/4).
+## order 6
+graphs 5 instances 10 slack 8 tight 2 fail 0 unk 0
+verified witnesses: 10  slack witnesses: 8  other: {}
+## order 8
+graphs 474 instances 948 slack 943 tight 5 fail 0 unk 0
+verified witnesses: 948  slack witnesses: 943  other: {}
+## order 10, slice 0/4
+graphs 82905 instances 165810 slack 165809 tight 1 fail 0 unk 0
+verified witnesses: 165810  slack witnesses: 165809  other: {}
+## order 10, slice 1/4
+graphs 84858 instances 169716 slack 169713 tight 3 fail 0 unk 0
+verified witnesses: 169716  slack witnesses: 169713  other: {}
+## order 10, slice 2/4
+graphs 96447 instances 192894 slack 192887 tight 7 fail 0 unk 0
+verified witnesses: 192894  slack witnesses: 192887  other: {}
+## order 10, slice 3/4
+graphs 94282 instances 188564 slack 188562 tight 2 fail 0 unk 0
+verified witnesses: 188564  slack witnesses: 188562  other: {}

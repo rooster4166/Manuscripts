@@ -23,6 +23,8 @@
             -B N node budget for each emax search (0 = none); if a search is cut off, emax is
                  printed as -e, meaning emax >= e (e the last value proved)
             -q  print only instances with slack = 0
+            -s  also print a slack witness: after the (T2) witness, the token S and a decomposition
+                of B into <= n/2 - 1 paths (only when slack = 1), each path followed by |
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -354,13 +356,14 @@ static void print_witness_J(void) {
 
 int main(int argc, char **argv) {
     budget = 0;
-    int any = 0, doemax = 0, quiet = 0;
+    int any = 0, doemax = 0, quiet = 0, slackwit = 0;
     long long ebudget = 0;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-a")) any = 1;
         else if (!strcmp(argv[i], "-e")) doemax = 1;
         else if (!strcmp(argv[i], "-E")) doemax = 2;
         else if (!strcmp(argv[i], "-q")) quiet = 1;
+        else if (!strcmp(argv[i], "-s")) slackwit = 1;
         else if (!strcmp(argv[i], "-b") && i + 1 < argc) budget = atoll(argv[++i]);
         else if (!strcmp(argv[i], "-B") && i + 1 < argc) ebudget = atoll(argv[++i]);
     }
@@ -392,6 +395,10 @@ int main(int argc, char **argv) {
             nodes = 0; aborted = 0; sp = 0;
             int slack = solve(E, k - 1);
             int ab0 = aborted;
+            /* save the slack witness */
+            static int sst[4 * MAXM][MAXN + 1], sl[4 * MAXM];
+            int ssp = slack ? sp : 0;
+            for (int i = 0; i < ssp; i++) { sl[i] = stklen[i]; memcpy(sst[i], stk[i], sizeof stk[i]); }
             int t2;
             nodes = 0; aborted = 0; sp = 0;
             if (solve_rooted_e(E, k, 3, rb, -1)) t2 = 1;
@@ -424,6 +431,12 @@ int main(int argc, char **argv) {
                 sp = wsp;
                 for (int i = 0; i < wsp; i++) { stklen[i] = wl[i]; memcpy(stk[i], wst[i], sizeof stk[i]); }
                 if (wstk_ok) print_witness_J();
+                if (slackwit && slack) {
+                    printf(" S");
+                    sp = ssp;
+                    for (int i = 0; i < ssp; i++) { stklen[i] = sl[i]; memcpy(stk[i], sst[i], sizeof stk[i]); }
+                    print_witness_J();
+                }
                 printf("\n");
             }
         }
