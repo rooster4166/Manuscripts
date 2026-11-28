@@ -2,11 +2,12 @@
 
 ## Multi-token steering (cloud session, branch `claude/multi-token`)
 
-Manuscript `manuscripts/multi-token`. One file, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound` (`manuscripts/multi-token/data/axioms.txt`). The full library builds (18,426 jobs).
+Manuscript `manuscripts/multi-token`. Two files, no `sorry`; every theorem below depends only on `propext`, `Classical.choice` and `Quot.sound` (`manuscripts/multi-token/data/axioms.txt`). The full library builds (18,428 jobs).
 
 | File | Content |
 |---|---|
 | `MultiToken.lean` | Tails `(c, w, x)` (a leaf `c` at `w`, a vertex `x` its path avoids; live while `cw ∈ K`): `OffTails`, `OneLive`, `SuppOK`, `TailSys` (static), `TailInv` (dynamic), `TailGood` (a parity decomposition meeting every live `{c, x}` at most once). **`SteerK`** (inductive; tokens = the even set): `move` (a token to an odd `u ∉ {c, x}` of live tails, not adjacent to another token after the deletion), `drop` (delete the leaf edge of a live tail with odd stem), `supp` (suppress a degree-2 token with non-adjacent neighbours), `fin` (≤ 1 token and ≤ 1 live tail). **`fan_step_multi`** (Fan's step with many even vertices, no blank), `evenSet_move`, `evenSet_drop`, `evenSet_supp`, `tailInv_*`, `live_*`, `tailGood_move`, **`tailGood_drop`**, **`splitOff_supp`** (cover form of `avoid_of_splitOff`), `tailGood_supp`, **`tailGood_fin`** (the multi-tail leaf lemma, from `avoid_leafTail` and `lovasz_ends`), **`steerK_good`** (the transfer theorem). Triangle base: `leafSet`, `triTails`, `triLeaf` (`leaves M Y` on `V ⊕ V`), `triTails_sys`, `triTails_inv`, **`triangleBase_of_steerK`** (a schedule in `M⁺` gives a triangle base), **`test1At_of_steerK`**. |
+| `MultiTokenObstruct.lean` | The obstruction (manuscript Props 6.1, 7.2). `nonNbr` (non-neighbours of `r` that can host a removal), `liveSet`, `rLive` (live tails avoiding `r`), `ObstrInv` (`r` odd, leaves only at their stems, `|A| + 2 ≤ #tokens + ρ`, `|A| + 3 ≤ #tokens + #live`), `obstr_no_entry`, `obstr_move`, `obstr_drop`, `obstr_supp`, **`not_steerK`** (no schedule under the invariant), **`not_steerK_triangle`** (triangle data: a root with fewer than `k` non-neighbours in `J − r` has no `k`-token schedule for any orientation; at `d(z) = 6`, every root of degree `|J| − 2`). |
 
 ## Neighbour avoidance NA: proved (cloud session, branch `claude/na`)
 

@@ -8,7 +8,8 @@ M = J − zw − {za_i, zb_i, a_ib_i} with a_i ∉ Q(b_i) or b_i ∉ Q(a_i) for 
 ## Status
 
 **The triangle base is not proved at d(z) = 6.** It is proved, in Lean, whenever the leaf graph has a
-k-token schedule, and on paper on an explicit certificate class (Theorem 4.2).
+k-token schedule, and on paper on an explicit certificate class (Theorem 4.2). Schedules cannot exist
+at roots with fewer than k non-neighbours (Proposition 6.1, Lean), which occur in every residual shape.
 
 ### Proved and formalised (no `sorry`; axioms `propext`, `Classical.choice`, `Quot.sound` only; `data/axioms.txt`)
 - `SteerK` (Definition 2.2): tokens are the even vertices; moves (M) Fan step onto an odd vertex off
@@ -20,24 +21,34 @@ k-token schedule, and on paper on an explicit certificate class (Theorem 4.2).
   `tailGood_fin` (2.6), **`steerK_good`** (Theorem 2.7, the transfer theorem, for any graph and any
   number of tails).
 - **`triangleBase_of_steerK`** (Theorem 3.1) and **`test1At_of_steerK`** (Corollary 3.2).
+- **`not_steerK_triangle`** (Proposition 6.1, `MultiTokenObstruct.lean`): if r has fewer than k
+  non-neighbours in J − r, no data choice and orientation at r has a schedule (needs only d(w) ≥ 2);
+  at d(z) = 6 this is every root of degree |J| − 2. It rests on **`not_steerK`**, an invariant over
+  `SteerK` for any graph, tails and vertex r (also covering tails whose avoided vertex is r).
 
 ### Proved on paper
 - Proposition 4.1 (the potential: a schedule needs 2k − 1 removals, each at a vertex of degree ≤ 2).
 - Theorem 4.2 (a certificate family: w suppressible or retiring through r; y₁ of degree 3 whose
   token is removed at its third neighbour; drop of tail 1). It applies at 882 of the 10,118 roots
   with data at order 9; all 882 certificates executed by `mt_verify.py`.
-- Proposition 6.1 (obstruction): if r has fewer than k non-neighbours in J − r, no data choice and
-  orientation at r has a schedule; at d(z) = 6 this is every root of degree |J| − 2 (1,597 of the
-  2,589 unscheduled roots at order 9).
+- Proposition 7.1 (the all-odd lift of synthesis §31, coordinator) and the instance of Proposition
+  7.2 (in the all-odd lift no root with at most k − 2 non-neighbours has a schedule; the invariance
+  is `not_steerK`).
 
 ### Computed (exact scope in the manuscript, Sections 5 and 6)
 - Order 9, d(z) = 6, all 1,819 3-connected J: a schedule for some data choice and orientation at
   7,529 / 10,118 roots (74%), no search undecided. All 76,474 schedules (every scheduled data choice
   and orientation) executed and checked independently, including the Test1 lift.
-- Residual families (`gen_resid.py`): 72 / 180 roots (|O| = 8) and 109 / 144 (|O| = 10); see Table 3. Every shape at |O| = 8 has roots where the
+- Residual families (`gen_resid.py`; Table 3): 72 / 180 roots (|O| = 8) and 111 / 144 (|O| = 10), at
+  node budget 2·10⁶ with the default move order, plus budget 2·10⁷ with seeds 7 and 11 for the roots
+  left open (two more at |O| = 10). The milestone-1 counts 71 / 180 and 107 / 144 were at budget 2·10⁵.
+  Roots without a schedule: 69 + 6 (|O| = 8) and 14 + 16 (|O| = 10), by the search + by Prop 6.1. Every shape at |O| = 8 has roots where the
   exhaustive search proves that no schedule exists, so no condition covering a whole shape exists for
   this move set.
 - E28 hard graphs: 10 / 48 roots; the clt ∅ graph `M~~zRz{~m~~lX|j~_`: 0 / 6 (all proved none).
+- All-odd lift (Section 7): 2,101 / 8,340 order-9 roots (25%; triangle base 74%), 0 / 36 at order 7,
+  resid |O| = 8 14 / 180 (budget 2·10⁶), |O| = 10 54 / 144 (2·10⁵), E28 0 / 48. All schedules executed.
+- d(z) = 4, order 9: triangle base 11,347 / 11,389 roots, all-odd lift 6,456 / 7,572.
 - Conjecture MT (6.2; the multi-tail lemma with any number of live tails): 0 failures in all tests
   (two tails on every connected base graph of order ≤ 9, 2,860,182 instances at order 9; three tails
   at order ≤ 7). It would add only 91 roots at order 9.
@@ -45,10 +56,12 @@ k-token schedule, and on paper on an explicit certificate class (Theorem 4.2).
   dense families almost every unscheduled root is *frozen* (no reachable state allows a token removal).
 
 ## Files
-- `scripts/mtok.cpp`: the schedule search (env `SUPP=1` suppression, `MAXLEN` iterative deepening,
-  `SEED` move-order shuffle; input lines `g6 [roots]`).
+- `scripts/mtok.cpp`: the schedule search (env `SUPP=1` suppression, `AODD=1` the all-odd lift,
+  `MAXLEN` iterative deepening, `SEED` move-order shuffle; input lines `g6 [roots]`).
 - `scripts/mt_verify.py`: the independent executor (needs `route_ext` built from `tools/route_ext.c`
-  and `direct-test1/scripts/tb.py`).
+  and `direct-test1/scripts/tb.py`); `SCHED` lines (triangle base) and `SCHEDA` lines (all-odd lift).
+  Note: before commit 28376e6 it did not assert the boolean returned by `tb.verify_test1` (path count
+  and two ends at r); all verifications were re-run after the fix and pass.
 - `scripts/pattern.py`: Theorem 4.2 from its hypotheses, writing certificates.
 - `scripts/firstmove.py`, `scripts/explore.py`: legal first moves; exhaustive state exploration
   (least potential reached).
