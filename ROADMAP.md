@@ -134,6 +134,11 @@ EMM sufficiency work is **stopped**.
   - **Separated case at order 10** (417,988 instances): classified. Proved categories cover most of it; the other 31,897 instances are all certified by Criterion R and executed.
   - **Conjecture AE** (Q(c) avoids the even vertex g, c ≁ g): exhaustive to n ≤ 9.
   - m = 3: Criterion R3 certified every instance tested at order 8.
+  - **Finished** (d2a8ef2). Manuscript `manuscripts/conj-r`; audit A42 applied. **L_N(2) is open.**
+    - It is reformulated as Conjecture J (joint; exhaustive at n ≤ 10) + Conjecture AE (exhaustive at n ≤ 9) + gluing lemmas for the remaining separations (a cut vertex outside Thm G, and 2-cuts).
+    - In Lean: Lemma R, Prop 6.3, `ln2_of_conjR` and the joint cases. On paper: Theorem G (cut-vertex gluing) and Lemma S.
+    - Order 10: every instance has a checked certificate.
+    - m = 3: L_N(3) holds at all 84,064 order-8 instances, and Criterion R3 certifies all of them. The joint extension J3 fails at 84.
 - **nodata** (session_01FxXpVhJQdK45Lc8b5G8nZD, branch `claude/nodata`): **finished** (a95f308). Manuscript `manuscripts/nodata`; audit A41 (minor revision; mathematics sound; F1–F18 fixed).
   - Lean `NoData.lean`:
     - twin insertion and the twin reductions for (T1) and (T2);
