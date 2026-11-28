@@ -1,0 +1,42 @@
+# AE and the deletion form CF (ae session).  cfrun.py output: per common-neighbour count t = |N(g) ∩ N(c)|,
+# the number of AE instances and how many satisfy AE ('A c g'), CF0 (b(w) = 2 at every non-leaf w in N(g)), and CF<=1 (at most one zero).
+# Every SAT witness re-checked by aecheck.c.  CF0 UNSAT at n = 9 (337 queries) confirmed by brute.py.
+## exhaustive (gen.c, all graphs of order n)
+n = 5: 8 instances, 30 queries, undecided 0; checker: witnesses checked 22, unsat 8, undecided 0, failures 0
+  common neighbours t = 0: instances 1, AE 1, CF0 (no zero) 0, CF<=1 (at most one zero) 1
+  common neighbours t = 1: instances 4, AE 4, CF0 (no zero) 2, CF<=1 (at most one zero) 4
+  common neighbours t = 2: instances 3, AE 3, CF0 (no zero) 0, CF<=1 (at most one zero) 3
+n = 7: 354 instances, 1582 queries, undecided 0; checker: witnesses checked 1533, unsat 49, undecided 0, failures 0
+  common neighbours t = 0: instances 59, AE 59, CF0 (no zero) 48, CF<=1 (at most one zero) 59
+  common neighbours t = 1: instances 140, AE 140, CF0 (no zero) 129, CF<=1 (at most one zero) 140
+  common neighbours t = 2: instances 113, AE 113, CF0 (no zero) 103, CF<=1 (at most one zero) 113
+  common neighbours t = 3: instances 28, AE 28, CF0 (no zero) 27, CF<=1 (at most one zero) 28
+  common neighbours t = 4: instances 14, AE 14, CF0 (no zero) 14, CF<=1 (at most one zero) 14
+n = 9: 47354 instances, 257112 queries, undecided 0; checker: witnesses checked 256569, unsat 543, undecided 0, failures 0
+  common neighbours t = 0: instances 6281, AE 6281, CF0 (no zero) 6110, CF<=1 (at most one zero) 6281
+  common neighbours t = 1: instances 14876, AE 14876, CF0 (no zero) 14776, CF<=1 (at most one zero) 14876
+  common neighbours t = 2: instances 14595, AE 14595, CF0 (no zero) 14537, CF<=1 (at most one zero) 14595
+  common neighbours t = 3: instances 7596, AE 7596, CF0 (no zero) 7589, CF<=1 (at most one zero) 7596
+  common neighbours t = 4: instances 3222, AE 3222, CF0 (no zero) 3222, CF<=1 (at most one zero) 3222
+  common neighbours t = 5: instances 612, AE 612, CF0 (no zero) 611, CF<=1 (at most one zero) 612
+  common neighbours t = 6: instances 172, AE 172, CF0 (no zero) 172, CF<=1 (at most one zero) 172
+## random (randae.py)
+random n = 11 (1500 graphs, seed 11): 7274 instances, 47766 queries, undecided 0; checker: witnesses checked 47760, unsat 6, undecided 0, failures 0
+  common neighbours t = 0: instances 762, AE 762, CF0 (no zero) 762, CF<=1 (at most one zero) 762
+  common neighbours t = 1: instances 1950, AE 1950, CF0 (no zero) 1949, CF<=1 (at most one zero) 1950
+  common neighbours t = 2: instances 2124, AE 2124, CF0 (no zero) 2124, CF<=1 (at most one zero) 2124
+  common neighbours t = 3: instances 1482, AE 1482, CF0 (no zero) 1482, CF<=1 (at most one zero) 1482
+  common neighbours t = 4: instances 673, AE 673, CF0 (no zero) 673, CF<=1 (at most one zero) 673
+  common neighbours t = 5: instances 226, AE 226, CF0 (no zero) 226, CF<=1 (at most one zero) 226
+  common neighbours t = 6: instances 49, AE 49, CF0 (no zero) 49, CF<=1 (at most one zero) 49
+  common neighbours t = 7: instances 8, AE 8, CF0 (no zero) 8, CF<=1 (at most one zero) 8
+random n = 11 (20000 graphs, seed 111): 98056 instances, 638630 queries, undecided 0; checker: witnesses checked 638620, unsat 10, undecided 0, failures 0
+  common neighbours t = 0: instances 10363, AE 10363, CF0 (no zero) 10356, CF<=1 (at most one zero) 10363
+  common neighbours t = 1: instances 26336, AE 26336, CF0 (no zero) 26336, CF<=1 (at most one zero) 26336
+  common neighbours t = 2: instances 29534, AE 29534, CF0 (no zero) 29531, CF<=1 (at most one zero) 29534
+  common neighbours t = 3: instances 19534, AE 19534, CF0 (no zero) 19534, CF<=1 (at most one zero) 19534
+  common neighbours t = 4: instances 8772, AE 8772, CF0 (no zero) 8772, CF<=1 (at most one zero) 8772
+  common neighbours t = 5: instances 2753, AE 2753, CF0 (no zero) 2753, CF<=1 (at most one zero) 2753
+  common neighbours t = 6: instances 666, AE 666, CF0 (no zero) 666, CF<=1 (at most one zero) 666
+  common neighbours t = 7: instances 79, AE 79, CF0 (no zero) 79, CF<=1 (at most one zero) 79
+  common neighbours t = 8: instances 19, AE 19, CF0 (no zero) 19, CF<=1 (at most one zero) 19

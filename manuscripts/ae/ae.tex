@@ -1,0 +1,294 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\cD}{\mathcal D}
+\newcommand{\lean}[1]{\quad{\footnotesize[Lean: \texttt{#1}]}}
+\emergencystretch=3em
+
+\title[Conjecture AE]{Conjecture AE is Conjecture EE,\\ and the deletion form of AE}
+\author{Gallai project (cloud session \texttt{claude/ae})}
+\date{28 November 2026 (working draft)}
+
+\begin{document}
+\begin{abstract}
+Conjecture AE (\cite{CR}, needed for the ``leaf at the other head'' case of $L_N(2)$) says: if $g$
+is the only vertex of positive even degree of $K$, and $c$ is odd with $c\not\sim g$, then some
+Lov\'asz decomposition of $K$ has $g\notin V(Q(c))$. We show that AE is, instance by instance,
+Conjecture EE of~\cite{PE} read in $K+gc$. Consequently AE is a theorem when $g$ and $c$ have at most
+one common neighbour, by~\cite[Theorem~5.1]{PE}, and the leaf-at-head case of $L_N(2)$ holds
+without hypothesis in that situation. The open part of AE is exactly EE with at least two common
+neighbours, which~\cite{PE,L1S} reduce to the blocked case of $L_1^*$. EE's exhaustive data give AE
+at every instance of order at most $11$. All of this is in Lean (\texttt{AEEquiv.lean}).
+
+We also test the coordinator's \emph{deletion form}. Delete $g$, prescribe end profiles in $K-g$,
+and reassemble through $g$ by a disjoint pairing. Prescribing two ends at every neighbour of $g$ is
+not always possible: it fails in $33$ of the $354$ AE instances of order~$7$. Allowing one zero
+works at every instance of order $\le9$, and in random samples of orders $11$ and $13$. We do not
+prove the deletion form.
+\end{abstract}
+\maketitle
+
+\section{Definitions and statements}
+
+Graphs are finite and simple. A \emph{Lov\'asz decomposition} of a graph with at most one vertex of
+positive even degree is a path decomposition $\cD$ with $b_\cD(v)=d(v)\bmod 2$ ends at every
+vertex~$v$. It exists by Lov\'asz's theorem (Lean \texttt{lovasz\_ends}). For an odd vertex $x$,
+$Q(x)=Q_\cD(x)$ is the unique path of $\cD$ ending at $x$. An edge $xy$ is \emph{terminal at $x$} if
+$xy\in E(Q(x))$; it is then the last edge of $Q(x)$ at $x$.
+
+\begin{conjecture}[AE~{\cite[Conjecture AE]{CR}}]\label{conj:AE}
+Let $g$ be the only vertex of positive even degree of $K$, and let $c$ be odd with $c\not\sim g$.
+Then some Lov\'asz decomposition of $K$ has $g\notin V(Q(c))$.\lean{ConjAE}
+\end{conjecture}
+
+\begin{conjecture}[EE~{\cite[Conjecture~1.5]{PE}}]\label{conj:EE}
+Let $z$ be the only vertex of positive even degree of $G$, and let $u\in N(z)$. Then $uz$ is terminal
+at $u$ in some Lov\'asz decomposition of $G$.\lean{ConjEE}
+\end{conjecture}
+
+\section{AE is EE}
+
+Fix an AE instance $(K,c,g)$ and put $L=K+gc$. In $L$ the vertex $c$ has degree $d_K(c)+1$, which is
+even and positive. The vertex $g$ has degree $d_K(g)+1$, which is odd. Every other vertex keeps its
+degree. So $c$ is the only vertex of positive even degree of $L$, and $g\in N_L(c)$; this is an EE
+instance $(L,z,u)=(L,c,g)$ with $L-uz=K$. \lean{evenSet\_plusEdge\_sub, mem\_evenSet\_plusEdge}
+Conversely, every EE instance $(G,z,u)$ arises in this way from $(G-uz,z,u)$, except when $d_G(u)=1$;
+then $u$ is isolated in $G-uz$, and any Lov\'asz decomposition of $G-uz$ already has $u\notin V(Q(z))$.
+
+\begin{proposition}\label{prop:equiv}
+For an AE instance $(K,c,g)$ with $L=K+gc$, the following are equivalent.
+\begin{enumerate}[label=(\roman*)]
+\item Some Lov\'asz decomposition of $K$ has $g\notin V(Q(c))$.
+\item Some Lov\'asz decomposition of $L$ has $gc$ terminal at $g$.
+\end{enumerate}
+Hence Conjectures~\ref{conj:AE} and~\ref{conj:EE} are equivalent.
+\lean{avoidDecomp\_of\_terminal, ee\_of\_avoid, conjAE\_iff\_conjEE}
+\end{proposition}
+
+\begin{proof}
+(i)$\Rightarrow$(ii). Append the edge $cg$ to $Q(c)$. This is a path because $g\notin V(Q(c))$. The
+vertex $c$ loses its only end and $g$ gains one, which matches $d_L \bmod 2$. This is
+\texttt{ee\_of\_avoid} of multi-sep, with $G=L$, $z=c$, $u=g$.
+
+(ii)$\Rightarrow$(i). Let $\cD$ have $gc$ terminal at $g$. Orient $P=Q_\cD(g)$ so that it starts
+$g,c,\dots$. Then $P$ has length at least two: otherwise $P=gc$ and $c$ would be an end, but
+$b_\cD(c)=0$ since $c$ is even in $L$. Delete the first edge (\texttt{PathDecomp.drop\_terminal}).
+The remaining path $P'$ starts at $c$ and does not contain $g$, since $P$ visits $g$ only once. Every other
+path is unchanged. In $K$, $g$ has $0$ ends and $c$ has one end, which matches $d_K\bmod2$, so we
+have a Lov\'asz decomposition of $K$. Its path ending at $c$ is $P'$: any other path ending at $c$
+would have been a path of $\cD$ ending at $c$. Hence $Q(c)=P'\not\ni g$.
+
+For the conjectures: (ii)$\Rightarrow$(i) at $(K+gc,c,g)$ gives EE$\Rightarrow$AE. For
+AE$\Rightarrow$EE at $(G,z,u)$, apply AE to $(G-uz,z,u)$ when $u$ is even there. When $u$ is isolated
+in $G-uz$, any Lov\'asz decomposition works. Then apply (i)$\Rightarrow$(ii).
+\end{proof}
+
+\begin{remark}
+The two directions are not new separately. AE$\Rightarrow$EE is~\cite[\texttt{ee\_of\_avoid}]{MS}.
+That AE is the case $A=\{g\}$ of $L_1^*$ is noted in~\cite{CR}, and that EE reduces to
+$L_1^*$ is in~\cite[Corollary~7.4]{PE}. What is new is that the converse, EE$\Rightarrow$AE, is
+immediate. So AE inherits everything known about EE, and the AE work of~\cite{CR} and the EE work
+of~\cite{PE,MS,L1S} are one problem.
+\end{remark}
+
+\section{Consequences}
+
+\begin{theorem}\label{thm:common}
+Let $(K,c,g)$ be an AE instance in which $g$ and $c$ have at most one common neighbour. Then some
+Lov\'asz decomposition of $K$ has $g\notin V(Q(c))$.\lean{avoidDecomp\_of\_atMostOneCommon}
+\end{theorem}
+
+\begin{proof}
+In $L=K+gc$ the common neighbours of $g$ and $c$ are those in $K$, because the new edge joins $g$ and
+$c$ themselves. So EE holds at $(L,c,g)$ by~\cite[Theorem~5.1]{PE} (Lean
+\texttt{ee\_atMostOneCommon}). Apply Proposition~\ref{prop:equiv}. In the proof of~\cite{PE}, $c$
+and $g$ are even separated: no path contains both.
+\end{proof}
+
+\begin{corollary}[leaf at the other head, unconditional case]\label{cor:leaf}
+In the setting of~\cite[Proposition~7.3]{CR} (\texttt{ln2\_of\_leaf\_at\_head}), with $F$ all-odd and
+$c_i$ a leaf whose neighbour is $a_j$, $L_N(2)$ holds whenever $a_j$ and $c_j$ have at most one
+common neighbour in $F$.\lean{ln2\_of\_leaf\_at\_head\_of\_atMostOneCommon}
+\end{corollary}
+
+\begin{proof}
+The proof of~\cite[Proposition~7.3]{CR} uses AE only for the instance $(F-c_ia_j,c_j,a_j)$. Its
+common neighbours are among those of $a_j$ and $c_j$ in $F$. Use Theorem~\ref{thm:common} there.
+\end{proof}
+
+\begin{remark}[what is left]\label{rem:left}
+\begin{enumerate}[label=(\alph*)]
+\item AE is open exactly when $t=|N(g)\cap N(c)|\ge2$. That is EE with at least two common
+neighbours, which~\cite[Corollary~7.4]{PE} and~\cite[Corollary ``EE from the blocked case'']{L1S} reduce to the blocked case of
+$L_1^*$.
+\item When $d(g)=2$, Theorem~\ref{thm:common} leaves only the case $N(g)=\{a,b\}\subseteq N(c)$, with
+$a\sim b$ or not. The degree-three results EE3(b), (c) of~\cite{MS} (\texttt{ee\_split},
+\texttt{ee\_triangle}) do not apply there: each needs a neighbour of $u=g$ other than $z=c$ to be
+non-adjacent to $z$, or $u$ to be the only common neighbour of $a,b$.
+\item Data. EE is exhaustive with no counterexample at every order $n\le11$. At $n=11$ that is all
+$11{,}959{,}367$ graphs with one even vertex and $59{,}688{,}458$ pairs~\cite{PE}. By
+Proposition~\ref{prop:equiv}, AE holds at every instance of order $\le11$, where $K$ and $L$ have the
+same order. This extends the order-$9$ data of~\cite{CR}. We reproduced AE at orders $5,7,9$
+(Section~\ref{sec:data}).
+\end{enumerate}
+\end{remark}
+
+\section{The deletion form}\label{sec:del}
+
+Let $(K,c,g)$ be an AE instance, $k=d(g)$, $N=N(g)$ and $H=K-g$. Every $w\in N$ is odd in $K$, so
+it is even in $H$, possibly isolated. Every other vertex keeps its parity in $H$, and $c\notin N$ is
+odd in $H$.
+
+\begin{proposition}[exact deletion form]\label{prop:del}
+$(K,c,g)$ satisfies AE if and only if there are
+\begin{itemize}
+\item a profile $b$ on $H$ with $b(v)=1$ at the odd vertices of $H$, $b(v)=0$ at the other vertices
+outside $N$, and $b(w)\in\{0,2\}$ for $w\in N$ (with $b(w)=0$ if $w$ is isolated in $H$);
+\item a path decomposition $\cD_H$ of $H$ with end profile $b$;
+\item for each $w\in N$ a \emph{piece} $\pi_w$: the trivial path $w$ if $b(w)=0$, and one of the two
+paths of $\cD_H$ ending at $w$ if $b(w)=2$. The pieces are distinct paths, and none is
+$Q_{\cD_H}(c)$;
+\item a perfect matching of the $k$ pieces into pairs $\{\pi_w,\pi_{w'}\}$ with
+$V(\pi_w)\cap V(\pi_{w'})=\emptyset$.
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+Given the data, replace each matched pair by the path $\pi_w\,w\,g\,w'\,\pi_{w'}$. It is a path
+because the pieces are disjoint and avoid $g$. Every edge $gw$ is used once. A vertex $w\in N$ with $b(w)=2$ loses the end used by its piece and keeps one;
+one with $b(w)=0$ becomes the end of the merged path. The vertex $g$ is interior, and every other vertex keeps
+$b(v)=d_K(v)\bmod2$. So the result is a Lov\'asz decomposition of $K$.
+$Q_{\cD_H}(c)$ is untouched, so it is $Q(c)$ and avoids $g$.
+
+Conversely, given a Lov\'asz decomposition of $K$ with $g\notin V(Q(c))$, delete $g$. The vertex
+$g$ is interior to each path through it, so each such path $\dots w\,g\,w'\dots$ splits into two
+pieces, one ending at $w$ and one at $w'$. A piece is trivial exactly when $w$ was the end of its
+path and $wg$ the terminal edge there. That gives $b(w)=0$ in that case and $b(w)=2$ otherwise.
+The two pieces of one path are disjoint, and $Q(c)$ is not a piece.
+\end{proof}
+
+Write $W=\{w\in N:d_H(w)\ge2\}$ for the non-leaf neighbours. In Lov\'asz-decomposition terms, $b(w)=2$
+at $w\in W$ means that $wg$ is not the terminal edge at $w$. So the forms below are Lov\'asz
+decompositions of $K$ with $g\notin V(Q(c))$ and with terminal-edge prohibitions at $W$. We test
+them with the solver constraint \texttt{T w g}.
+\begin{itemize}
+\item \textbf{CF0} (the coordinator's form, no zero): $b(w)=2$ for every $w\in W$; no path has a
+terminal edge $wg$ with $w\in W$.
+\item \textbf{CF$_{\le1}$} (one zero allowed): $b(w)=2$ for every $w\in W$ except at most one.
+\end{itemize}
+CF0 needs no realisability input: the profile is realisable by PC with no zero
+(\texttt{realisesProfile\_of\_no\_zero}). The obstacle is the disjoint pairing, as the next
+example shows.
+
+\begin{proposition}\label{prop:cf0fails}
+CF0 can fail. Let $K$ be the triangle $g\,w_1\,w_2$ with a pendant vertex $c$ at $w_2$ and a
+pendant vertex $\ell$ at $w_1$. Then $(K,c,g)$ is an AE instance with $W=\{w_1,w_2\}$, and CF0 fails.
+CF$_{\le1}$ holds, with the zero at $w_2$.
+\end{proposition}
+
+\begin{proof}
+$H$ is the path $\ell\,w_1\,w_2\,c$, with $d_H(w_1)=d_H(w_2)=2$. The profile $b(w_1)=b(w_2)=2$ forces
+the three one-edge paths $\ell w_1$, $w_1w_2$, $w_2c$. The piece at $w_2$ cannot be $w_2c=Q(c)$, so
+it is $w_1w_2$. Then the piece at $w_1$ is $\ell w_1$, which meets $w_1w_2$ in $w_1$. So no pairing
+exists. With $b(w_2)=0$, take the paths $\ell w_1$ and $w_1w_2c$. The pieces $\ell w_1$ and the
+trivial $w_2$ are disjoint and give the paths $\ell\,w_1\,g\,w_2$ and $w_1\,w_2\,c$. Here
+$Q(c)=w_1w_2c$ avoids $g$.
+\end{proof}
+
+\section{Computations}\label{sec:data}
+
+\emph{Solver.} \texttt{scripts/aesolve.c} is \texttt{conj-r/scripts/lnsolve3.c} with one new
+constraint, \texttt{T w x} (the path ending at $w$ does not have $wx$ as its terminal edge). It is
+enforced at the first edge of a path started at $w$ and at the last edge of a path ending at $w$.
+The search stays exhaustive. \texttt{scripts/aecheck.c} is \texttt{conj-r/scripts/wcheck.c} with
+the same constraint. It re-checks every SAT witness: paths simple, edges used exactly once, the
+profile, and constraints \texttt{A} and \texttt{T}.
+
+\emph{Validation.}
+\begin{itemize}
+\item \texttt{scripts/brute.py} is an independent brute force sharing no code with the solver. It
+grows every path through the smallest remaining edge. It agrees with \texttt{aesolve} on all
+$3{,}467$ order-7 queries (CF0, CF$_{\le1}$, and the terminal-edge queries below).
+\item It confirms all $337$ CF0 UNSAT answers at order~$9$.
+\end{itemize}
+
+\emph{Graphs.} \texttt{gen.c} of~\cite{CR} produces all graphs of orders $5$, $7$ and $9$: $34$,
+$1{,}044$ and $274{,}668$ graphs. An instance is a graph with exactly one vertex $g$ of positive
+even degree, together with an odd $c\ne g$, $c\not\sim g$, in the component of $g$
+(\texttt{scripts/cfrun.py}). Even orders add only isolated vertices to an instance.
+
+\begin{center}
+\begin{tabular}{rrrrrrr}
+\toprule
+$n$ & instances & AE & CF0 & CF$_{\le1}$ & queries & witnesses checked\\
+\midrule
+5 & 8 & 8 & 2 & 8 & 30 & 22\\
+7 & 354 & 354 & 321 & 354 & 1{,}582 & 1{,}533\\
+9 & 47{,}354 & 47{,}354 & 47{,}017 & 47{,}354 & 257{,}112 & 256{,}569\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+There are no undecided answers and no checker failures. The AE column reproduces~\cite{CR}. By the
+number $t$ of common neighbours of $g$ and $c$ at $n=9$, CF0 fails in $171$, $100$, $58$, $7$, $0$,
+$1$, $0$ instances for $t=0,\dots,6$. CF$_{\le1}$ never fails (\texttt{data/cf.txt}).
+
+\emph{Random samples.}
+\begin{itemize}
+\item \texttt{scripts/randae.py}: $H=G(n-1,p)$ with $p\in[0.25,0.6]$; $g$ is joined to the even
+vertices of $H$; $K$ is connected; each graph has an instance with $t\ge2$.
+\item Each sampled graph contributes all of its AE instances, so instances with $t\le1$ occur too.
+\item Order $11$, seed $11$: $1{,}500$ graphs, $7{,}274$ instances. AE and CF$_{\le1}$ hold at all
+of them; CF0 fails at one.
+\item Order $11$, seed $111$: $20{,}000$ graphs, $98{,}056$ instances ($61{,}357$ with $t\ge2$). AE
+and CF$_{\le1}$ hold at all of them; CF0 fails at $10$ ($7$ with $t=0$, $3$ with $t=2$).
+\item All $686{,}380$ SAT witnesses of the two samples were re-checked; there were no undecided
+answers. Totals are in \texttt{data/cf.txt}.
+\end{itemize}
+
+\emph{Terminal edges away from the even vertex.} As a cross-check of the \texttt{T} constraint
+against~\cite[Proposition~3.1]{PE}, we asked for every one-even (or all-odd) graph of order
+$n\le8$, every odd $g$ with $d(g)\ge3$ and every \emph{odd} neighbour $x$ of $g$, whether $gx$ is
+terminal at $g$ in some Lov\'asz decomposition. It fails $5$, $5$, $64$, $64$ times at $n=5,6,7,8$; every failure at
+$n=6,8$ has an isolated vertex. Proposition~\ref{prop:equiv} shows that the analogous
+question at the even neighbour $x=c$ is AE.
+
+\section{Status}
+
+\begin{itemize}
+\item \textbf{Proved (Lean, standard axioms):} Proposition~\ref{prop:equiv}, Theorem~\ref{thm:common},
+Corollary~\ref{cor:leaf}. \texttt{data/axioms.txt} has the \texttt{\#print axioms} output.
+\item \textbf{Proved (paper):} Propositions~\ref{prop:del} and~\ref{prop:cf0fails}.
+\item \textbf{Computed:} the table and samples of Section~\ref{sec:data}. AE at all orders
+$\le11$, via EE~\cite{PE}.
+\item \textbf{Conjectured, not proved:} AE (equivalently EE) for $t\ge2$, and the stronger
+CF$_{\le1}$.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{CR} Gallai project, \emph{Conjecture R}, \texttt{manuscripts/conj-r}; Lean
+\texttt{JointR.lean} (\texttt{ConjAE}, \texttt{ln2\_of\_leaf\_at\_head}).
+\bibitem{PE} Gallai project, \emph{Prescribed end edges}, \texttt{manuscripts/prescribed-end}; Lean
+\texttt{PrescribedEnd.lean}.
+\bibitem{MS} Gallai project, \emph{Multi-separation}, \texttt{manuscripts/multi-sep}; Lean
+\texttt{MultiSepEE.lean}.
+\bibitem{L1S} Gallai project, \emph{The avoidance conjecture $L_1^*$}, \texttt{manuscripts/l1star}.
+\bibitem{C31} Gallai project, \emph{Conjecture 31 and PC}, \texttt{manuscripts/conj31}; Lean
+\texttt{Conj31Up.lean}.
+\end{thebibliography}
+\end{document}
