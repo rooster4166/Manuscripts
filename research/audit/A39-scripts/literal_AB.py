@@ -18,7 +18,7 @@ of G (resp. G'), apply the paper's attachment rules with EVERY tie-break, and ch
 A violation of any of these is printed.  The degree condition implying (H) is also checked.
 
 usage: literal_AB.py J9                 all order-9 degree-7 roots (all connectors)
-       literal_AB.py rand K COUNT SEED  random B of order 2K (both theorems), COUNT instances
+       literal_AB.py rand K COUNT SEED [CAP NODECAP]  random B of order 2K (both theorems)
 """
 import sys, itertools, random
 from collections import Counter, defaultdict
@@ -36,17 +36,20 @@ def viol(msg):
 
 
 # ---------------- Lovasz decompositions ----------------
-def lovasz_decomps(Gadj, cap=10 ** 6):
-    """All path decompositions of the graph Gadj (dict v -> set) with e(v) = d(v) mod 2."""
+def lovasz_decomps(Gadj, cap=10 ** 6, nodecap=None):
+    """All path decompositions of the graph Gadj (dict v -> set) with e(v) = d(v) mod 2
+    (the first `cap` found, within `nodecap` search nodes if given)."""
     verts = sorted(Gadj)
     odd = {v for v in verts if len(Gadj[v]) % 2 == 1}
     rem = {v: set(Gadj[v]) for v in verts}
     used_end = set()
     paths = []
     out = []
+    nodes = [0]
 
     def solve():
-        if len(out) >= cap:
+        nodes[0] += 1
+        if len(out) >= cap or (nodecap and nodes[0] > nodecap):
             return
         if all(not rem[v] for v in verts):
             if used_end == odd:
@@ -65,6 +68,9 @@ def lovasz_decomps(Gadj, cap=10 ** 6):
         used_end.discard(v)
 
     def extend(seq, onpath):
+        nodes[0] += 1
+        if len(out) >= cap or (nodecap and nodes[0] > nodecap):
+            return
         v = seq[-1]
         if len(seq) > 1 and v in odd and v not in used_end:
             used_end.add(v)
@@ -234,7 +240,7 @@ def do_hall_and_reassemble(R, members, Aatt, Cvs, tag):
 
 
 # ---------------- Theorem A, literally ----------------
-def run_A(R, tag, cap=10 ** 6):
+def run_A(R, tag, cap=10 ** 6, nodecap=None):
     c = condA(R)
     if c is None:
         return None
@@ -243,7 +249,7 @@ def run_A(R, tag, cap=10 ** 6):
     Nset = set(N)
     g = [x for x in N if len(G[x]) % 2 == 0]
     g = g[0] if g else None
-    Ds = lovasz_decomps(G, cap)
+    Ds = lovasz_decomps(G, cap, nodecap)
     STATS['A:decomps'] += len(Ds)
     for D in Ds:
         if len(D) != k - 1:
@@ -334,7 +340,7 @@ def condB(R, Q, Gp):
     return ok, delta, lam, ht
 
 
-def run_B(R, Q, tag, cap=10 ** 6):
+def run_B(R, Q, tag, cap=10 ** 6, nodecap=None):
     k, N, G, dB, s = R.k, R.N, R.G, R.dB, R.s
     if any(dB[x] < 2 for x in N):
         return None
@@ -347,7 +353,7 @@ def run_B(R, Q, tag, cap=10 ** 6):
     VQ = set(Q)
     if len(Gp[s]) % 2 != 0:
         viol('%s B: s odd in G\'' % tag)
-    Ds = lovasz_decomps(Gp, cap)
+    Ds = lovasz_decomps(Gp, cap, nodecap)
     STATS['B:decomps'] += len(Ds)
     for D in Ds:
         if len(D) != k - 1:
@@ -540,7 +546,7 @@ def random_B(k, p, rng, mode):
     return Badj, r
 
 
-def run_rand(k, count, seed):
+def run_rand(k, count, seed, cap=300, nodecap=20000):
     rng = random.Random(seed)
     C = Counter()
     for it in range(count):
@@ -550,12 +556,12 @@ def run_rand(k, count, seed):
         R = Root(Badj, r)
         tag = 'rand k=%d it=%d' % (k, it)
         if mode == 'A':
-            a = run_A(R, tag, cap=3000)
+            a = run_A(R, tag, cap=cap, nodecap=nodecap)
             if a is not None:
                 C['A instances'] += 1; C['A cond'] += a
         else:
             for Q in connectors(R):
-                b = run_B(R, Q, tag + ' Q=%s' % (Q,), cap=3000)
+                b = run_B(R, Q, tag + ' Q=%s' % (Q,), cap=cap, nodecap=nodecap)
                 if b is None:
                     continue
                 d = 1 if len(Q) == 3 and Q[1] in set(R.N) else 0
@@ -568,6 +574,8 @@ if __name__ == '__main__':
     if sys.argv[1] == 'J9':
         run_J9()
     else:
-        run_rand(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
+        run_rand(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]),
+                 int(sys.argv[5]) if len(sys.argv) > 5 else 300,
+                 int(sys.argv[6]) if len(sys.argv) > 6 else 20000)
     print(dict(STATS))
     print('violations:', len(VIOL))

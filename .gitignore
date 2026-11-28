@@ -4,3 +4,4 @@ data/conn9.g6
 *.aux
 *.log
 *.out
+!manuscripts/dense-root/data/*.out

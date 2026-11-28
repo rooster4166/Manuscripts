@@ -32,25 +32,33 @@ Lov\'asz decompositions, one connector, and Hall matchings}
 The spine of the project reduces Gallai's conjecture to two tests on $3$-connected graphs $J$ with a
 special vertex $z$. The two-end test (T1) asks, when $z$ is the only even vertex of $J$ and
 $|J|=2k+1$, that for every $r\in N(z)$ the graph $B=J-z$ have a decomposition into at most $k$ paths
-with at least two ends at $r$. Multi-token steering certifies (T1) at most roots of order $9$ with
-$d(z)=6$, but provably not at roots of degree $n-2$, which are $1{,}597$ of its $2{,}589$ unscheduled
-roots. We treat these roots by the Lov\'asz-plus-matching method of the re-tight session, which was
-proved there only when $B$ is Eulerian (cones). Away from cones $B-r$ has many even vertices, and we
-repair the parity with one \emph{connector} path, used as a member of the family rather than lifted.
+with at least two ends at $r$. Multi-token steering provably cannot certify (T1) at roots of degree
+$n-2$. We treat these roots, for every $n$, by the Lov\'asz-plus-matching method of the re-tight
+session, which was proved there only when $B$ is Eulerian (cones). With $s$ the non-neighbour of $r$
+in $B$, the graph $B-r$ has $|V(B)\setminus N(z)|-1+2[s\in N(z)]$ even vertices; when there are three,
+we repair the parity with one \emph{connector} path, kept as a member of the family rather than lifted.
 
-Proved and machine-checked in Lean: (i) the family lemma for an arbitrary $B$; (ii) a defect-two Hall
-reassembly; (iii) Theorem~A: if $B-r$ has at most one vertex of positive even degree (cones, and
-$d(z)=n-3$ with $s\notin N(z)$), then a degree condition of re-tight type gives (T1); it contains
-re-tight Theorem~3.1 and drops its Eulerian hypothesis; (iv) Theorem~B: the case $d(z)=n-3$ with
-$s\in N(z)$, by one connector path of length at most two, kept as a member of the family rather than
-lifted. At order $9$, $d(z)=6$,
-Theorems~A and~B certify (T1) at $1{,}602$ of the $1{,}756$ roots of degree $n-2$ ($1{,}445$ of the
-$1{,}597$ unscheduled ones); the hypotheses of the collection's dense theorems (marked-reduction
-Thms.~74 and~166) add $56$. The method itself, with the best choices, succeeds at all $1{,}756$, and
-for some choice of connector \emph{every} Lov\'asz decomposition works at $1{,}742$. A variant with one
-free path succeeds at $112$ of the $113$ frozen roots of order $9$. In the dense residual families
-($n=15,17$, $|V(B)\setminus N(z)|\ge 8$) no theorem here or in the collection applies, and the
-method is undecided at our budgets; this is the dense middle identified by re-tight.
+Proved and machine-checked in Lean: (i) the family lemma (family $\Rightarrow$ decomposition) for an
+arbitrary $B$; (ii) a defect-two Hall reassembly; (iii) Theorem~A: if $B-r$ has at most one vertex of
+positive even degree, a degree condition of re-tight type gives a decomposition of $B$ into $k$ paths
+with two ends at $r$; it contains re-tight Theorem~3.1 and drops its Eulerian hypothesis;
+(iv) Theorem~B: if the even vertices of $B-r$ are $q_1,q_2,s$ and a path $Q$ from $q_1$ to $q_2$
+meets $N(r)$ in at most one further vertex, a similar degree condition gives the same. By
+Lemma~\ref{lem:basic} (paper), Theorem~A applies to cones and to $d(z)=n-3$ with $s\notin N(z)$, and
+Theorem~B to $d(z)=n-3$ with $s\in N(z)$ when $q_1,q_2$ are at distance at most two in $B-r$.
+
+At order $9$, $d(z)=6$, Theorems~A and~B certify (T1) at $1{,}602$ of the $1{,}756$ roots of degree
+$n-2$ ($1{,}445$ of multi-token's $1{,}597$ unscheduled ones). These numbers measure the reach of the
+theorems, not new coverage: marked-reduction Prop.~139 (unrefereed) claims (T1) at every root of
+degree $6$ in $B$ when $d(z)=6$, which includes all $1{,}756$, and the exact checker confirms (T1) at
+all of them. Theorems~A and~B are new for $n\ge11$, where Prop.~139 does not apply. The method
+itself, with the best choices, succeeds at all $1{,}756$; for some choice of the Lov\'asz even vertex
+and of $\Phi$ (empty, or one path of length $\le3$) \emph{every} Lov\'asz decomposition works at
+$1{,}742$. Allowing free paths (one at roots of degree $n-4$, two at degree $n-6$), it succeeds at
+$112$ of the $113$ frozen roots of order $9$; at the exception ($B-r=K_7$) (T1) holds by a Hamilton
+decomposition. In the dense residual families ($n=15,17$, $|V(B)\setminus N(z)|\in\{8,10\}$) no theorem
+here or in the collection applies, and the method is undecided at our budgets: the dense middle
+identified by re-tight.
 \end{abstract}
 
 \maketitle
@@ -61,8 +69,8 @@ All graphs are finite and simple. A \emph{decomposition} of a graph is a partiti
 into paths of positive length; $e_D(v)$ is the number of paths of $D$ ending at $v$. A vertex $v$
 lies on $(d(v)+e_D(v))/2$ paths of $D$.
 
-\subsection*{Setting} Throughout, $J$ has order $n=2k+1$ ($k\ge2$), $z$ is its only vertex of even
-degree, $r\in N(z)$ has $d_J(r)=n-2$, and
+\subsection*{Setting} Throughout, $J$ is $3$-connected (in particular $\delta(J)\ge3$) of order
+$n=2k+1$ ($k\ge2$), $z$ is its only vertex of even degree, $r\in N(z)$ has $d_J(r)=n-2$, and
 \[
 B=J-z\ (\text{order }2k),\qquad G=B-r,\qquad N=N_B(r),\qquad Z=N_J(z),\qquad T=V(B)\setminus Z .
 \]
@@ -72,6 +80,8 @@ $N=V(G)\setminus\{s\}$ and $|N|=2k-2$. The two-end test is
 \mathrm{Test1}(J,z,r):\quad B\text{ has a decomposition into at most $k$ paths with at least two ends at $r$}
 \]
 (Lean \lean{Test1At}). In Lean, $G$ is \lean{starDel B r}, which keeps $r$ as an isolated vertex.
+Theorems~A and~B and Lemma~\ref{lem:fam} are stated for an arbitrary graph $B$ of order $2k$; only
+the corollaries in terms of $J$ use $3$-connectivity (through $d_J\ge3$).
 
 \begin{lemma}[tightness and parity]\label{lem:basic}
 \begin{enumerate}[label=(\alph*)]
@@ -91,7 +101,7 @@ and $d(z)=n-5$).
 $d_G(s)=d_B(s)$. (c) $|T|=2k-d(z)$ is even, $s\in T$ when $s\notin Z$, and $|T|=0$ iff the cone.
 \end{proof}
 
-So the coordinator's parity facts hold, and at order $9$ with $d(z)=6$ (that is, $d(z)=n-3$), $G$ has
+In particular, at order $9$ with $d(z)=6$ (that is, $d(z)=n-3$), $G$ has
 one even vertex when $s\notin Z$ ($494$ roots) and three when $s\in Z$ ($1{,}262$ roots).
 
 \subsection*{Results}
@@ -100,13 +110,14 @@ one even vertex when $s\notin Z$ ($494$ roots) and three when $s\in Z$ ($1{,}262
 \toprule
 Statement & Status & Where\\
 \midrule
-Family lemma for any $B$ (Lemma~\ref{lem:fam}) & proved, Lean & \S\ref{sec:fam}\\
+Tightness and parity (Lemma~\ref{lem:basic}) & proved & \S1\\
+Family lemma for any $B$ (Lemma~\ref{lem:fam}) & proved; Lean (forward direction) & \S\ref{sec:fam}\\
 Hall reassembly with defect two (Theorem~\ref{thm:hall}) & proved, Lean & \S\ref{sec:fam}\\
-Theorem~A: $G$ has $\le1$ even vertex & proved, Lean & \S\ref{sec:A}\\
-Theorem~B: $d(z)=n-3$, $s\in Z$, one connector & proved, Lean & \S\ref{sec:B}\\
+Theorem~A: $G$ has $\le1$ even vertex & proved, Lean; Cor.~\ref{cor:A} paper & \S\ref{sec:A}\\
+Theorem~B: one connector ($d(z)=n-3$, $s\in Z$) & proved, Lean; Cor.~\ref{cor:B} paper & \S\ref{sec:B}\\
 Coverage at order $9$ and in the residual families & computation & \S\ref{sec:comp}\\
-Collection's dense theorems: hypotheses and coverage & reading + computation & \S\ref{sec:mr}\\
-Frozen roots: a variant with one free path & computation & \S\ref{sec:frozen}\\
+Collection's theorems (incl.\ MR Prop.~139 at order 9): hypotheses and coverage & reading + computation & \S\ref{sec:mr}\\
+Frozen roots: a variant with free paths & computation & \S\ref{sec:frozen}\\
 Dense residual families & open & \S\ref{sec:open}\\
 \bottomrule
 \end{tabular}
@@ -138,7 +149,7 @@ paths of $U$ end at $r$. For the converse, cut the $k$ paths at $r$.
 Lean: \lean{famReassemble}. The members are the paths of a decomposition $D$ of $G$ together with an
 injective choice of an end of each in $N$ (\lean{att}); the trivial members are at the other vertices
 of $N$, and \lean{InMember D att x v} says that $v$ lies on the member at $x$. No parity hypothesis
-on $B$ is used.
+on $B$ is used. Only the forward direction is formalised; the converse is not used by the theorems.
 
 \begin{theorem}[Hall reassembly]\label{thm:hall}
 Let $D$ be a decomposition of $G$ with injective attachments. Split its paths into $k-1$
@@ -209,7 +220,8 @@ so $|J_S|\le t+\lfloor h_{t+1}/2\rfloor+\varepsilon$. In both cases $t+|J_S|\le 
 Theorem~\ref{thm:hall} applies.
 \end{proof}
 
-Lean: \lean{exists\_decomp\_of\_oneEven}; $\varepsilon$ is a parameter with the hypothesis that it is at
+Lean: \lean{exists\_decomp\_of\_oneEven} (its conclusion is existential; that every Lov\'asz decomposition
+works is visible in the proof, which starts from an arbitrary one); $\varepsilon$ is a parameter with the hypothesis that it is at
 least $1$ when some neighbour of $r$ is even in $G$. \lean{test1At\_of\_oneEven} is the spine form,
 $\mathrm{Test1}(J,z,r)$ with the hypotheses stated on $B=J-z$.
 
@@ -235,10 +247,11 @@ has $d_B(g)=d_J(g)$, and $d_B(g)\ge6$ iff $d_J(g)=7$.
 When $s\in Z$ and $d(z)=n-3$, $T=\{q_1,q_2\}\subseteq N$ and the even vertices of $G$ are $q_1,q_2,s$
 (Lemma~\ref{lem:basic}). Deleting the edges of a path $Q$ of $G$ from $q_1$ to $q_2$ makes every vertex
 of $N$ odd; we keep $Q$ as one member of the family (the \emph{connector}), not as edges to be lifted.
-This avoids the forest-lift conditions (direct-test1 Lemma~4.1), which are DL-type and open.
+This avoids the forest-lift conditions (direct-test1 Lemma~4.1), which are of DL type and open in this
+generality.
 
 \begin{theorem}[B]\label{thm:B}
-Let $d_B(r)=2k-2$, $d_B(x)\ge2$ for $x\in N$, and let $Q$ be a path of $G$ of length $1$ or $2$ with
+Let $B$ have order $2k\ge4$ and $d_B(r)=2k-2$, and let $Q$ be a path of $G$ of length $1$ or $2$ with
 ends $q_1,q_2\in N$ such that every vertex of $N$ has odd degree in $G'=G-E(Q)$. Let $\delta=1$ if
 the middle vertex of $Q$ exists and lies in $N$, and $\delta=0$ otherwise. Put
 \[
@@ -316,8 +329,8 @@ most one has a heavier designated partner off $Q$) and \lean{hallReassemble}.
 
 \begin{remark}[why not lift the connector]
 Appending $Q$ to $P(q_1)$ (forest stepping) needs $P(q_1)\cap V(Q)=\{q_1\}$, an avoidance condition
-of DL type in a graph with one even vertex. For one pair it is the open DL(1); for several connectors
-it is DL$(k)$. Keeping $Q$ as a member costs one C-member that may meet many A-paths (the term
+of DL type in a graph with one even vertex. For one pair it is DL(1), which fails exactly at universal
+twins and is otherwise open (dl-one); for several connectors it is DL$(k)$. Keeping $Q$ as a member costs one C-member that may meet many A-paths (the term
 $[\lambda\ge t]$), but needs no avoidance at all; that is why ``every Lov\'asz decomposition works''.
 \end{remark}
 
@@ -339,11 +352,20 @@ succeeds. For roots of smaller degree it allows free paths (\S\ref{sec:frozen}).
 and~\ref{thm:B} and the hypotheses of the collection's theorems (\S\ref{sec:mr});
 \texttt{crosscheck.py}: every root certified by Theorem~A or~B has ``every decomposition works'' in the
 \texttt{-A} data (no mismatch).
+\item \texttt{scripts/run\_all.sh} regenerates every file in \texttt{data/} with the exact commands and
+budgets of the shipped files.
 \end{itemize}
+Audit~A39 ran Theorems~A and~B literally at every order-$9$ instance (every Lov\'asz decomposition, every
+tie-break of the attachment rules, every set $S$) and on random graphs with $k=5,6,7$, with no violation
+of any step of the proofs, and checked every witness from scratch
+(\texttt{research/audit/A39-scripts}).
 
 \subsection*{Order $9$, $d(z)=6$} The $1{,}819$ $3$-connected graphs of multi-token
 (\texttt{multi-token/data/J9\_d6.g6}) have $1{,}756$ roots of degree $n-2=7$. Multi-token's
-$1{,}597$ unscheduled roots of degree $7$ are those among them with triangle data.
+$1{,}597$ unscheduled roots of degree $7$ are those among them that have triangle data (direct-test1:
+a vertex $w\in N(z)-r$ and a matching of $N(z)-\{r,w\}$ in $J$). At this order (T1) at these roots is
+already claimed by MR Prop.~139 (\S\ref{sec:mr}); the table measures how far Theorems~A and~B, which
+hold for every $n$, reach.
 
 \begin{table}[h]\small
 \begin{tabular}{@{}lrrr@{}}
@@ -353,24 +375,26 @@ $1{,}597$ unscheduled roots of degree $7$ are those among them with triangle dat
 roots & $1{,}756$ & $494$ & $1{,}597$\\
 Test1 (exact, \texttt{ret.c}) & $1{,}756$ & $494$ & $1{,}597$\\
 Theorem~A & $459$ & $459$ & $404$\\
-Theorem~B, $\delta=0$ connectors only & $838$ & -- & \\
+Theorem~B, $\delta=0$ connectors only & $838$ & -- & n.c.\\
 Theorem~B, connectors of length $\le2$ & $1{,}143$ & -- & $1{,}041$\\
-Theorems A $\cup$ B & $1{,}602$ & & $1{,}445$\\
-hypotheses of MR Thm.~74 / Thm.~166 & $24$ / $111$ & & \\
-A $\cup$ B $\cup$ MR & $1{,}658$ & & $1{,}501$\\
-method, best choices (\texttt{drm -G}) & $1{,}756$ & $494$ & \\
-method, every Lov\'asz decomposition, $\Phi$ separate (\texttt{drm -A -m 0}) & $1{,}742$ & $481$ & \\
+Theorems A $\cup$ B & $1{,}602$ & $459$ & $1{,}445$\\
+hypotheses of MR Thm.~74 / Thm.~166 (any of 47/50/74/166) & $24$ / $111$ ($123$) & n.c. & ($119$)\\
+A $\cup$ B $\cup$ MR Thms.~47/50/74/166 & $1{,}658$ & n.c. & $1{,}501$\\
+hypotheses of MR Prop.~139 & $1{,}756$ & $494$ & $1{,}597$\\
+method, best choices (\texttt{drm -G}) & $1{,}756$ & $494$ & n.c.\\
+method, every Lov\'asz decomposition, $\Phi$ separate (\texttt{drm -A -m 0}) & $1{,}742$ & $481$ & n.c.\\
 \bottomrule
 \end{tabular}
 \caption{Roots of degree $n-2$ at order $9$, $d(z)=6$. Six roots (two near-complete graphs with seven
 vertices of degree $7$) need $g\notin\{\text{even vertices of }G\}$; without \texttt{-G} the method
-succeeds at $1{,}750$.}\label{tab:o9}
+succeeds at $1{,}750$ (\texttt{data/drm9.out}; with \texttt{-G}: \texttt{data/drm9G.out}). n.c.: not
+computed.}\label{tab:o9}
 \end{table}
 
 The $154$ roots outside Theorems~A and~B are of two kinds (\texttt{look.py}).
 \begin{itemize}[leftmargin=*]
-\item $52$ roots with $s\in Z$ where $q_1,q_2$ are at distance $3$ in $G$, so there is no connector of
-length $\le2$. They are sparse: in $50$ of them at most two of the six neighbours of $r$ in $B$ have
+\item $52$ roots with $s\in Z$ where $q_1,q_2$ are at distance at least $3$ in $G$ ($49$ at distance
+$3$, three at distance $4$), so there is no connector of length $\le2$. They are sparse: in $50$ of them at most two of the six neighbours of $r$ in $B$ have
 degree $7$. The method succeeds at all of them.
 \item $102$ roots where a connector or Theorem~A applies but the degree condition fails. All are
 dense: at least four of the six neighbours of $r$ in $B$ have degree $7$ in $J$ ($36$, $17+29$ and
@@ -385,12 +409,15 @@ $d(z)=6$, so $|T|\in\{8,10\}$ and $G$ has $7$, $9$ or $11$ even vertices: Theore
 \item \texttt{ret.c} (budget $2\cdot10^7$) confirms Test1 at $39$, $17$, $24$, $4$; $3+1$ roots are
 undecided.
 \item \texttt{drm} with $\Phi$ of three to five paths of length $\le2$, two random move orders, at most
-$8$ systems per $g$ and $10^5$ nodes per $(g,\Phi)$: undecided at all $88$ roots. The exact witnesses
-of \texttt{ret.c} have $8$ nontrivial members, against $k-1=6$ for a Lov\'asz family, and their far
-ends are not of Lov\'asz type.
+$8$ systems per $g$ and $10^5$ nodes per $(g,\Phi)$: undecided at all $88$ roots. On three of the
+graphs ($7$ roots) runs with $2\cdot10^7$ nodes per $(g,\Phi)$, up to $7.8\cdot10^8$ nodes per root,
+are undecided as well (\texttt{data/heavy*.out}).
+\item The $84$ exact witnesses of \texttt{ret.c} have $6$ to $10$ nontrivial members ($k-1=6$ or $7$),
+and none has the end structure of a Lov\'asz family (audit A39).
 \end{itemize}
-This is the dense middle of re-tight \S6: degrees between $7$ and $13$ at $n=15$, few vertices of degree
-$n-2$, and Lov\'asz paths long enough that a trivial member lies on almost every one of them.
+This is the dense middle of re-tight \S6: degrees between $7$ and $13$ at $n=15$ and few vertices of
+degree $n-2$. A trivial member of degree $d$ lies on $d/2$ of the $k-1$ Lov\'asz paths, so at degree
+$11$ or $13$ it is compatible with at most one of the six (at $n=15$).
 
 \section{The collection's dense theorems}\label{sec:mr}
 
@@ -398,12 +425,19 @@ The collection is unrefereed; we state the hypotheses as we read them, and say h
 $\mathrm{Test1}(J,z,r)$ at a root of degree $n-2$. Note that $\mathrm{Test1}(J,z,r)$ is equivalent to the
 singleton marked bound $q(B,\{r\})\le k-1$ (from the definition of $q$ in MR \S1: a path ending
 at $r$ forces a second end there, since $d_B(r)$ is even, and a partition into $k-1$ paths can be split
-at $r$), and to $p(B+\text{leaf at }r)\le k$ (the floor form of MR Thm.~114).
+at $r$), and to $p(B+\text{leaf at }r)\le k$ (the leaf form used in MR Thms.~144 and~170).
 \begin{center}\small
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.5\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}@{}}
 \toprule
 Result & Hypotheses (as read) and use for Test1 & Finite coverage here\\
 \midrule
+MR Prop.~139 & $B$ $2$-connected of order $2k$ with exactly six even vertices, $r$ even of degree $6$
+with an even neighbour: Test1 at $r$. At $d(z)=6$ the even vertices of $B$ are $Z$, so this is every
+root of degree $n-2=7$ at $n=9$ (it has $5$ or $4$ even neighbours as $s\notin Z$ or $s\in Z$). Its
+proof (Lov\'asz, toggling the edge $q_1q_2$ (added if absent), and the spoke lemma MR Lemma~108) is close
+to Theorems~A and~B but uses $d_B(r)=6$. With Thm.~144 and Cor.~138 (a least failure at $d(z)=6$ has
+$d_B(r)\ge8$) it would settle (T1) at $d(z)=6$ for $|B|\le8$. & $1{,}756$ (order 9), $0$ (residual:
+$d_B(r)\ge12$)\\
 MR Thm.~4 & $J=K_{2k+1}-H$, $|E(H)|\le k+1$; marked bound on $J$ itself. Test1 concerns $B=J-z$ (even
 order) or $B+$leaf, neither of this form; no per-instance implication. & none\\
 MR Thms.~12, 13, 78; SP Thms.~14.1, 14.5, 14.8, Cor.~14.2 & ``sufficiently large $n$'', no explicit
@@ -412,8 +446,8 @@ Test1 at every root when $\delta(B)\ge(1/2+\varepsilon)|B|$, for large $|B|$. & 
 MR Thm.~47 & $B$ of order $2k$ with $\ge k-1$ universal vertices: endpoint vectors characterised;
 $b_r=2$ is admissible, so Test1. In $J$: $\ge k-1$ vertices outside $N(z)$ of degree $n-2$. & $0$ (order
 9), $0$ (residual)\\
-MR Thm.~50 & $k-c$ universal vertices, $1\le c\le 2k/15$, $|E(B[X])|\le k^2/8$ (or $c=2$, $k\ge22$).
-Needs $k\ge8$. & $0$\\
+MR Thm.~50 & $k-c$ universal vertices, $1\le c\le 2k/15$, $|E(B[X])|\le k^2/8$ (or $c=2$, $k\ge22$,
+$|E(B[X])|\le\lfloor k^2/4\rfloor-k-2$). Needs $k\ge8$. & $0$\\
 MR Thm.~74 & $B=K_{2k}-E(D)$, $\Delta(D)\le2$, i.e.\ $\delta(B)\ge2k-3$: orient the path component of
 $D$ at $r$ (degree $1$ in $D$) from $r$; then $r$ has two ends. & $24$ (order 9), $0$\\
 MR Thm.~166 & $B$ connected, $R\ni r$ a set of $k$ vertices of degree $\ge2k-2$, $u$ of them universal;
@@ -424,9 +458,12 @@ MR Cor.~168, Thm.~170 & $B$ Eulerian: cones only ($d(z)=n-1$). Not applicable at
 \bottomrule
 \end{tabular}
 \end{center}
-(\texttt{coverage.py}; MR Thm.~166's end budget is checked exactly, the others' hypotheses directly.) We
-did not re-prove these theorems; at the $123$ order-$9$ roots where their hypotheses hold,
-\texttt{ret.c} independently confirms Test1.
+(\texttt{coverage.py}; MR Thm.~166's end budget is checked exactly, the others' hypotheses directly;
+Prop.~139 by audit A39, \texttt{misc\_checks.py}.) We did not re-prove these results; at every order-$9$
+root \texttt{ret.c} independently confirms Test1. For the residual families we also checked the
+remaining $d(z)=6$ results of MR \S21 that could apply: Cor.~138's list (Prop.~134, Thms.~135--137:
+vertices of degree $\le4$), Prop.~139 ($d_B(r)=6$) and Thm.~140 (an odd vertex of degree $5$ with at least
+three neighbours in $Z-r$); none applies, since $\delta(B)\ge6$ there and $d_B(r)\in\{12,14\}$.
 
 \emph{Literature.} Girão, Granet, Kühn and Osthus~\cite{GGKO} prove that sufficiently large graphs with
 linear minimum degree decompose into $n/2+o(n)$ paths, and determine the path number up to $o(n)$ under
@@ -444,20 +481,28 @@ attached), and Test1 holds iff
 \[
 \#\text{pairs}+\#\text{singletons}+\#\text{free}\le k,\qquad \#\text{singletons}\ge2
 \]
-for some family and pairing (the proof of Lemma~\ref{lem:fam}, with the free paths added). The method of
-\texttt{drm} extends: a Lov\'asz path or $\Phi$-path may be free.
+for some family and pairing (the proof of Lemma~\ref{lem:fam}, with the free paths added). Since there
+are $2k-2-2j$ members, the count allows at most $j$ free paths. The method of \texttt{drm} extends: a
+Lov\'asz path or $\Phi$-path may be free (the count then bounds their number).
 \begin{itemize}[leftmargin=*]
-\item Order $9$: the extended method succeeds at $112$ of the $113$ frozen roots (all $90$ of degree
-$5$; $22$ of $23$ of degree $3$). The exception is $r=2$ in \texttt{Huv]z\textasciitilde\}}, of degree
-$3$ in a graph with seven vertices of degree $7$ (there $G=K_7$). The search is exhaustive over the
-$\Phi$-systems of the type searched (at most $60$ per choice of $g$, paths of length $\le6$) and over all
-Lov\'asz decompositions (\texttt{data/frz9.out}). Every Lov\'asz path of $K_7$ minus a $3$-matching is
-Hamiltonian, so the method has no room there.
-\item Residual families ($27$, $7$, $6$ frozen roots in \texttt{resid\_O8}, \texttt{resid\_O10}, E28):
-undecided at the budgets above.
+\item Order $9$: the extended method succeeds at $112$ of the $113$ frozen roots: all $90$ of degree $5$
+($j=1$, one free path) and $22$ of the $23$ of degree $3$ ($j=2$; all $22$ witnesses use two free paths).
+With at most one free path it succeeds at $105$ (audit A39). The exception is $r=2$ in
+\texttt{Huv]z\textasciitilde\}}, of degree $3$ in a graph with seven vertices of degree $7$ (there
+$G=K_7$). The search is exhaustive there: the $\Phi$-systems are $15$ matchings, each with or without one
+of three one-edge detours through $g$, so $60$ per choice of $g$, and all of them and all Lov\'asz
+decompositions are searched (\texttt{data/frz9\_exception\_L6.out}, paths of length $\le6$; the shipped
+\texttt{frz9.out} used length $\le3$ and gives the same answers). For the $15$ matching systems every
+Lov\'asz path is Hamiltonian ($18$ edges in three paths of at most $6$ edges). (T1) does hold at this
+root: from a Hamilton decomposition $C_1,C_2,C_3$ of $K_7$ with $x_1x_2\in C_1$, $x_2w\in C_2$,
+$wv\in C_3$ ($N=\{x_1,x_2\}$), the four paths $C_1-x_1x_2$, $(C_2-x_2w)+x_2r$, $C_3-wv$ and
+$r\,x_1\,x_2\,w\,v$ have two ends at $r$ (audit A39, \texttt{frozen\_exception.py}). This is not of the
+method's form.
+\item Residual families ($27$, $7$, $6$, $2$ frozen roots in \texttt{resid\_O8}, \texttt{resid\_O10},
+E28 and the clt graph): undecided at the budgets above.
 \end{itemize}
-So at order $9$ the frozen roots, like the roots of degree $n-2$, are not an obstruction for the
-Lov\'asz-plus-matching method; they are an obstruction for steering. We have no degree theorem for them:
+So at order $9$ the frozen roots are an obstruction for steering but, with one exception, not for the
+Lov\'asz-plus-matching method with free paths. We have no degree theorem for them:
 with free members the Hall reassembly changes (a free path is a member that needs no partner, and one
 free path makes $k-2$ attached Lov\'asz paths), and we did not work out the analogue of
 Theorem~\ref{thm:hall}.
@@ -465,9 +510,17 @@ Theorem~\ref{thm:hall}.
 \section{What remains}\label{sec:open}
 \begin{enumerate}[leftmargin=*]
 \item \emph{Several connectors.} For $|T|=2m$ one needs $m$ connectors (or $m-1$ when $s\in T$). The
-proof of Theorem~\ref{thm:B} extends verbatim with one term $[\lambda_j\ge t]$ and one unpaired trivial
-member per connector, but in the residual families every $\lambda_j$ exceeds $t$, so the condition
-fails; a better estimate of how many A-paths a connector meets is needed.
+proof of Theorem~\ref{thm:B} extends, with one term $[\lambda_j\ge t]$ and at most one unpaired trivial
+member per connector, as long as no Lov\'asz path joins the interiors of two connectors. If one does,
+both interior vertices would have to be attachments of the same path, a trivial member lies on a
+connector, and the C-members are no longer pairwise compatible; audit A39 gives an instance at $k=5$
+(\texttt{two\_connectors.py}). That case needs a new argument (a choice of the Lov\'asz decomposition,
+or allowing one incompatible pair when $u=1$). In the residual families, moreover, every $\lambda_j$
+exceeds $t$, so the condition fails anyway; a better estimate of how many A-paths a connector meets is
+needed.
+\item \emph{No short connector.} At $52$ order-$9$ roots $q_1,q_2$ are at distance $\ge3$ in $G$. MR
+Prop.~139 handles its root-degree-$6$ analogue by adding the absent edge $q_1q_2$ as a virtual edge and
+cutting its carrier; whether this works with the degree condition at general $n$ is open.
 \item \emph{The dense middle.} At $n=15,17$ the method is undecided. Exact witnesses have more members
 than a Lov\'asz family, as re-tight observed for $K_{2k}-M$. A detachment or exchange argument, not a
 Lov\'asz decomposition, is probably required.
@@ -485,7 +538,12 @@ Lov\'asz decomposition, is probably required.
 \texttt{sorry}; \texttt{\#print axioms} gives \texttt{propext}, \texttt{Classical.choice},
 \texttt{Quot.sound} for every one of them; the full library builds (\texttt{lake build}, $18{,}436$
 jobs).
-\item Scripts and data: \texttt{scripts/}, \texttt{data/} (see \texttt{README.md}).
+\item Scripts and data: \texttt{scripts/}, \texttt{data/} (see \texttt{README.md});
+\texttt{scripts/run\_all.sh} regenerates the data.
+\item Audit: \texttt{research/audit/A39-dense-root.md} (adversarial referee; it audited commit d443852:
+the paper, \texttt{DenseRoot.lean}, scripts and data) and
+\texttt{research/audit/A39b-dense-root-lean.md} (\texttt{DenseRootB.lean}). All findings of A39 are
+applied in this version.
 \end{itemize}
 
 \begin{thebibliography}{9}
