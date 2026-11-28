@@ -45,10 +45,11 @@ with two ends at $r$; it contains re-tight Theorem~3.1 and drops its Eulerian hy
 (iv) Theorem~B: if the even vertices of $B-r$ are $q_1,q_2,s$ and a path $Q$ from $q_1$ to $q_2$
 meets $N(r)$ in at most one further vertex, a similar degree condition gives the same. By
 Lemma~\ref{lem:basic} (paper), Theorem~A applies to cones and to $d(z)=n-3$ with $s\notin N(z)$, and
-Theorem~B to $d(z)=n-3$ with $s\in N(z)$ when $q_1,q_2$ are at distance at most two in $B-r$.
+Theorem~B to $d(z)=n-3$ with $s\in N(z)$ whenever such a path exists (its other interior vertices are
+then $s$, so it has length at most three).
 
-At order $9$, $d(z)=6$, Theorems~A and~B certify (T1) at $1{,}602$ of the $1{,}756$ roots of degree
-$n-2$ ($1{,}445$ of multi-token's $1{,}597$ unscheduled ones). These numbers measure the reach of the
+At order $9$, $d(z)=6$, Theorems~A and~B certify (T1) at $1{,}630$ of the $1{,}756$ roots of degree
+$n-2$ ($1{,}472$ of multi-token's $1{,}597$ unscheduled ones). These numbers measure the reach of the
 theorems, not new coverage: marked-reduction Prop.~139 (unrefereed) claims (T1) at every root of
 degree $6$ in $B$ when $d(z)=6$, which includes all $1{,}756$, and the exact checker confirms (T1) at
 all of them. Theorems~A and~B are new for $n\ge11$, where Prop.~139 does not apply. The method
@@ -251,9 +252,10 @@ This avoids the forest-lift conditions (direct-test1 Lemma~4.1), which are of DL
 generality.
 
 \begin{theorem}[B]\label{thm:B}
-Let $B$ have order $2k\ge4$ and $d_B(r)=2k-2$, and let $Q$ be a path of $G$ of length $1$ or $2$ with
-ends $q_1,q_2\in N$ such that every vertex of $N$ has odd degree in $G'=G-E(Q)$. Let $\delta=1$ if
-the middle vertex of $Q$ exists and lies in $N$, and $\delta=0$ otherwise. Put
+Let $B$ have order $2k\ge4$ and $d_B(r)=2k-2$, and let $Q$ be a path of $G$ with ends $q_1,q_2\in N$
+such that every vertex of $N$ has odd degree in $G'=G-E(Q)$ and at most one other vertex $y$ of $Q$
+lies in $N$. Let $\delta=1$ if $y$ exists and $\delta=0$ otherwise. (The other interior vertices of $Q$
+are then $s$, so $Q$ has length at most $2+\delta$.) Put
 \[
 \lambda=\sum_{v\in V(Q)}\lceil d_{G'}(v)/2\rceil,\qquad
 \tilde h_t=\#\{x\in N\setminus V(Q):\ d_B(x)\ge2t\}.
@@ -276,16 +278,17 @@ write $P(v)$ for the L-path ending at $v$ and $o(v)$ for its other end.
 \emph{Attachments.} $Q$ gets one end $q_Q\in\{q_1,q_2\}$ as attachment; the other vertices of
 $V(Q)\cap N$ must be attachments of their L-paths, so that no trivial member lies on $Q$.
 \begin{itemize}[leftmargin=*]
-\item $Q=q_1q_2$ or $Q=q_1sq_2$ ($\delta=0$). If $P(q_1)=P(q_2)$, attach it at $q_2$ and $Q$ at
+\item $V(Q)\cap N=\{q_1,q_2\}$, i.e.\ $Q=q_1q_2$ or $q_1sq_2$ ($\delta=0$). If $P(q_1)=P(q_2)$, attach it at $q_2$ and $Q$ at
 $q_1$. Otherwise let $a=o(q_1)$, $b=o(q_2)$; if $d_B(b)\le d_B(a)$ attach $Q$ at $q_1$, $P(q_1)$ at
 $a$, $P(q_2)$ at $q_2$ (so $b$ is trivial), and symmetrically otherwise. The forced trivial end
 $\min(a,b)$ is paired with the attachment $\max(a,b)$; $a,b\notin V(Q)$.
-\item $Q=q_1yq_2$ with $y\in N$ ($\delta=1$). If $o(y)\in\{q_1,q_2\}$, say $o(y)=q_2$, attach $P(y)$
+\item $V(Q)\cap N=\{q_1,y,q_2\}$, i.e.\ $Q=q_1yq_2$, $q_1ysq_2$ or $q_1syq_2$ ($\delta=1$). If $o(y)\in\{q_1,q_2\}$, say $o(y)=q_2$, attach $P(y)$
 at $y$, $Q$ at $q_2$ and $P(q_1)$ at $q_1$; the far end $o(q_1)\notin V(Q)$ is a trivial member
 without a paired partner. Otherwise attach $P(y)$ at $y$ (its far end is trivial and unpaired) and
 treat $q_1,q_2$ as in the first case.
 \end{itemize}
-All other L-paths are attached at the end of larger $d_B$. Every trivial member lies outside $V(Q)$,
+All other L-paths are attached at the end of larger $d_B$. Only $V(Q)\cap N$ enters this plan: an
+interior vertex $s$ of $Q$ is not in $N$, so it is never a trivial member, and it enters only $\lambda$. Every trivial member lies outside $V(Q)$,
 and so the C-members (the $k-2$ trivial members and $Q$) are pairwise compatible. The A-paths are the
 $k-1$ L-paths. The trivial members are the far ends of all L-paths but the one whose far end is $q_Q$;
 all of them are paired with a heavier attachment inside $N\setminus V(Q)$, except at most $\delta$.
@@ -306,22 +309,26 @@ unpaired one is counted among the heavy ones. Theorem~\ref{thm:hall} applies.
 
 \begin{corollary}\label{cor:B}
 Let $s\in N(z)$ and $d(z)=n-3$, $T=\{q_1,q_2\}$. If $q_1q_2\in E(J)$, or $q_1,q_2$ have a common
-neighbour in $J-\{z,r\}$, and the condition of Theorem~\ref{thm:B} holds for that connector, then
+neighbour in $J-\{z,r\}$, or $J-\{z,r\}$ has a path $q_1ysq_2$ or $q_1syq_2$, and the condition of Theorem~\ref{thm:B} holds for that connector, then
 $\mathrm{Test1}(J,z,r)$ holds. At $n=9$ with $Q=q_1q_2$ ($\delta=0$, $\tilde h$ over the four vertices of
 $N\cap Z$) the condition fails only if all four vertices of $N\cap Z$ have degree $7$ and $\lambda\ge3$.
 \end{corollary}
 
 The connector condition holds automatically under $s\in Z$, $d(z)=n-3$: $q_1,q_2$ are the even vertices
-of $G$ in $N$ and the middle vertex is $s$ (even) or a vertex of $N\cap Z$ (odd, losing two edges).
+of $G$ in $N$, and each interior vertex is $s$ (even) or a vertex of $N\cap Z$ (odd), losing two edges.
 
 \begin{remark}[Lean]
-Both cases are formalised (\lean{DenseRootB.lean}). \lean{exists\_decomp\_of\_connector}
-($\delta=0$) assumes that the ends of $Q$ are neighbours of $r$ and its other vertices are not;
-\lean{exists\_decomp\_of\_connector\_mid} ($\delta=1$) assumes that exactly one other vertex $y$ of
-$Q$ is a neighbour of $r$. Both assume that every neighbour of $r$ is odd in $G'$
-(\lean{delList (starDel B r) Q.edges}) and the condition with $[t\le\lambda]$ for any
-$\lambda\ge\sum_{v\in V(Q)}\lceil d_{G'}(v)/2\rceil$; neither needs the length of $Q$ to be at most
-two. \lean{test1At\_of\_connector} and \lean{test1At\_of\_connector\_mid} are the spine forms. The
+Both cases are formalised (\lean{DenseRootB.lean}), with the hypotheses of Theorem~\ref{thm:B}.
+\lean{exists\_decomp\_of\_connector} ($\delta=0$) assumes that the ends of $Q$ are neighbours of $r$
+and its other vertices are not; \lean{exists\_decomp\_of\_connector\_mid} ($\delta=1$) assumes that
+exactly one other vertex $y$ of $Q$ is a neighbour of $r$. Both assume that every neighbour of $r$ is
+odd in $G'$ (\lean{delList (starDel B r) Q.edges}) and the condition with $[t\le\lambda]$ for any
+$\lambda\ge\sum_{v\in V(Q)}\lceil d_{G'}(v)/2\rceil$. The length bound $2+\delta$ is not a hypothesis;
+it follows from the others. The Lean conclusions are existential (a decomposition into $k$ paths with
+exactly two ends at $r$); that every Lov\'asz decomposition of $G'$ gives one is visible in the proof,
+which takes an arbitrary one from \lean{exists\_lovasz\_connector}. Audit A39b instantiates
+\lean{test1At\_of\_connector\_mid} at the $28$ order-$9$ roots that need a connector of length $3$
+(\texttt{research/audit/A39b-scripts/len3\_instances.lean}; every side condition by \texttt{decide}). \lean{test1At\_of\_connector} and \lean{test1At\_of\_connector\_mid} are the spine forms. The
 proofs go through \lean{consPath} ($Q$ followed by a Lov\'asz decomposition of $G'$),
 \lean{connector\_core} (the counting, for any attachment plan in which every trivial member but at
 most one has a heavier designated partner off $Q$) and \lean{hallReassemble}.
@@ -376,10 +383,10 @@ roots & $1{,}756$ & $494$ & $1{,}597$\\
 Test1 (exact, \texttt{ret.c}) & $1{,}756$ & $494$ & $1{,}597$\\
 Theorem~A & $459$ & $459$ & $404$\\
 Theorem~B, $\delta=0$ connectors only & $838$ & -- & n.c.\\
-Theorem~B, connectors of length $\le2$ & $1{,}143$ & -- & $1{,}041$\\
-Theorems A $\cup$ B & $1{,}602$ & $459$ & $1{,}445$\\
+Theorem~B, all connectors & $1{,}171$ & -- & $1{,}068$\\
+Theorems A $\cup$ B & $1{,}630$ & $459$ & $1{,}472$\\
 hypotheses of MR Thm.~74 / Thm.~166 (any of 47/50/74/166) & $24$ / $111$ ($123$) & n.c. & ($119$)\\
-A $\cup$ B $\cup$ MR Thms.~47/50/74/166 & $1{,}658$ & n.c. & $1{,}501$\\
+A $\cup$ B $\cup$ MR Thms.~47/50/74/166 & $1{,}686$ & n.c. & $1{,}528$\\
 hypotheses of MR Prop.~139 & $1{,}756$ & $494$ & $1{,}597$\\
 method, best choices (\texttt{drm -G}) & $1{,}756$ & $494$ & n.c.\\
 method, every Lov\'asz decomposition, $\Phi$ separate (\texttt{drm -A -m 0}) & $1{,}742$ & $481$ & n.c.\\
@@ -391,11 +398,11 @@ succeeds at $1{,}750$ (\texttt{data/drm9.out}; with \texttt{-G}: \texttt{data/dr
 computed.}\label{tab:o9}
 \end{table}
 
-The $154$ roots outside Theorems~A and~B are of two kinds (\texttt{look.py}).
+The $126$ roots outside Theorems~A and~B are of two kinds (\texttt{look.py}).
 \begin{itemize}[leftmargin=*]
-\item $52$ roots with $s\in Z$ where $q_1,q_2$ are at distance at least $3$ in $G$ ($49$ at distance
-$3$, three at distance $4$), so there is no connector of length $\le2$. They are sparse: in $50$ of them at most two of the six neighbours of $r$ in $B$ have
-degree $7$. The method succeeds at all of them.
+\item $24$ roots with $s\in Z$ and no connector: $q_1,q_2$ are at distance at least $3$ in $G$ ($21$ at
+distance $3$, three at distance $4$), and $G$ has no path $q_1ysq_2$ or $q_1syq_2$ with $y\in N$. They
+are sparse: in $23$ of them at most two of the six neighbours of $r$ in $B$ have degree $7$. The method succeeds at all of them.
 \item $102$ roots where a connector or Theorem~A applies but the degree condition fails. All are
 dense: at least four of the six neighbours of $r$ in $B$ have degree $7$ in $J$ ($36$, $17+29$ and
 $14+6$ roots with four, five and six). The bound $[\lambda\ge t]$ and the pair bound are then too
@@ -518,7 +525,7 @@ connector, and the C-members are no longer pairwise compatible; audit A39 gives 
 or allowing one incompatible pair when $u=1$). In the residual families, moreover, every $\lambda_j$
 exceeds $t$, so the condition fails anyway; a better estimate of how many A-paths a connector meets is
 needed.
-\item \emph{No short connector.} At $52$ order-$9$ roots $q_1,q_2$ are at distance $\ge3$ in $G$. MR
+\item \emph{No connector.} At $24$ order-$9$ roots there is no connector (\S\ref{sec:comp}). MR
 Prop.~139 handles its root-degree-$6$ analogue by adding the absent edge $q_1q_2$ as a virtual edge and
 cutting its carrier; whether this works with the degree condition at general $n$ is open.
 \item \emph{The dense middle.} At $n=15,17$ the method is undecided. Exact witnesses have more members
@@ -542,8 +549,8 @@ jobs).
 \texttt{scripts/run\_all.sh} regenerates the data.
 \item Audit: \texttt{research/audit/A39-dense-root.md} (adversarial referee; it audited commit d443852:
 the paper, \texttt{DenseRoot.lean}, scripts and data) and
-\texttt{research/audit/A39b-dense-root-lean.md} (\texttt{DenseRootB.lean}). All findings of A39 are
-applied in this version.
+\texttt{research/audit/A39b-dense-root-lean.md} (\texttt{DenseRootB.lean}). All findings of A39, and A39b F1--F4, are
+applied in this version (A39b F5, F6 are hygiene notes on the Lean).
 \end{itemize}
 
 \begin{thebibliography}{9}

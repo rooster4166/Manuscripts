@@ -11,11 +11,11 @@ Let `B` have order `2k`, let `r` have degree `2k − 2`, and let `G = B − r` (
 A *family* gives every neighbour `x` of `r` a member: a path of `G` with an end at `x` (its
 attachment) or the trivial member `x`; the nontrivial members partition `E(G)`. A set of disjoint
 pairs of vertex-disjoint members, together with the remaining singletons, gives the paths
-`Q_x x r y Q_y` and `Q_x x r` of `B` (`famReassemble`, manuscript Lemma 2.1). Nothing here needs
+`Q_x x r y Q_y` and `Q_x x r` of `B` (`famReassemble`, manuscript Lemma 2.2). Nothing here needs
 `B` to be Eulerian.
 
 * `InMember D att x v`: `v` lies on the member at `x`.
-* **`famReassemble`** (Lemma 2.1): pairs + singletons ⇒ a decomposition of `B` with one path per
+* **`famReassemble`** (Lemma 2.2): pairs + singletons ⇒ a decomposition of `B` with one path per
   pair and per singleton, and one end at `r` per singleton.
 -/
 
@@ -153,7 +153,7 @@ theorem exists_member_walk (D : PathDecomp (starDel B r)) (att : Fin D.paths.len
     · simp only [Walk.edges_nil, List.not_mem_nil, false_iff, not_exists, not_and]
       intro j hj; exact absurd hj (hx j)
 
-/-- **Lemma 2.1 (families).** Members are attached to the neighbours of `r`: the path `P_i` of
+/-- **Lemma 2.2 (families).** Members are attached to the neighbours of `r`: the path `P_i` of
 `D` at its end `att i`, and the trivial member at every other neighbour. A list `pr` of pairs of
 vertex-disjoint members and a list `sg` of singletons, using every neighbour of `r` exactly once,
 give a decomposition of `B` with `|pr| + |sg|` paths and exactly `|sg|` ends at `r`. -/
