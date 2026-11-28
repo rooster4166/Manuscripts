@@ -44,11 +44,15 @@ The spine reduction (Lean \texttt{gallai\_iff\_spineTests'}) shows that Gallai's
 decomposition conjecture is equivalent to two deletion tests on $3$-connected graphs. Almost all
 recent work concerns the first, (T1). This note brings the second, the three-end test (T2), to the
 same level. In (T2), $z$ and $r$ are the only even vertices of $J$, they are adjacent, and $J-z$
-must have a decomposition into at most $|J|/2$ paths with at least three ends at $r$.
+must have a decomposition into at most $|J|/2$ paths with at least three ends at $r$. At deletion
+degrees $d(z)\le8$, (T2) is already settled in the collection (MR Theorems~123 and~128, the second
+conditionally; audit A8). The contributions here are uniform in $d(z)$: two general lifts with
+their converses, DL $\Rightarrow$ (T2), and tools that apply at $d(z)\ge10$.
 
 \emph{Computed.} With a validated exact solver, (T2) holds at all $717{,}942$ instances given by
-$3$-connected graphs of order at most $10$. It is tight at exactly $20$ of them, and these are
-precisely the instances in which $J-z$ is an odd semi-clique.
+$3$-connected graphs of order at most $10$, and every answer carries a verified witness. It is
+tight at exactly $20$ of them, and these are precisely the instances in which $J-z$ is an odd
+semi-clique.
 
 \emph{Proved, in Lean.} There are two direct lifts. The first keeps $z$ as a leaf at $r$ and deletes
 a forest $T$-join of the whole neighbourhood $T=N(z)$, $r$ included. The auxiliary graph then has
@@ -56,9 +60,11 @@ a forest $T$-join of the whole neighbourhood $T=N(z)$, $r$ included. The auxilia
 and a sibling condition lifts to (T2). The second deletes $z$ and a forest join of
 $N(z)-\{r,w\}$, leaving $w$ as the only even vertex, and lifts to the \emph{floor}
 $p(J-z)\le(|J|-2)/2$. The floor implies (T2). Both lifts are machine-checked, and both are
-reversible. The converses are proved on paper, and in Lean for the matching case. As a consequence, the disjunctive avoidance conjecture DL implies (T2) at every
-root with matching data, with the same data condition and the same statement that give (T1) through
-the triangle lift. At deletion degree four the floor lift needs a single DL(1) pair. There,
+reversible. The converses are proved on paper, and in Lean for the matching case. As a
+consequence, the disjunctive avoidance conjecture DL implies (T2) at every root with
+\emph{twin-free} matching data. The DL statement used is the one that gives (T1) through the
+triangle lift, but the side condition differs: (T1) asks for a connected auxiliary graph, (T2) for
+no universal-twin pair. Twin-free data do not always exist, even outside odd semi-cliques. At deletion degree four the floor lift needs a single DL(1) pair. There,
 separation and two-token steering, both proved in Lean, settle $98.5\%$ of the sampled order-$10$
 instances with data.
 
@@ -67,7 +73,8 @@ $J-z$ is a fat theta ($K_{2,7}$ and a relative). There the base needs $r$ to be 
 forest, and no rooting at $r$ works.
 
 The cone tests at non-apex vertices are (T2) for the base graph with one vertex made universal.
-They are tight exactly at semi-cliques. All $20$ tight instances above are cones.
+In the data ($n\le10$) they are tight exactly at semi-cliques; only the direction ``semi-clique
+$\Rightarrow$ tight'' is proved. All $20$ tight instances above are cones.
 \end{abstract}
 
 \maketitle
@@ -91,6 +98,19 @@ The spine~\cite{SPINE} proves Gallai's conjecture equivalent to (T1)$\wedge$(T2)
 $J$, at every $z$ with $J-z$ free of matching cuts. The only previous tool for (T2) was STL2
 (Lean \texttt{test2\_of\_stl2}), a star-terminal condition at $z$. It was checked on $948$
 instances of order at most $8$ and is unproved.
+
+\emph{What is already known.} The marked-reduction manuscript~\cite{MR} settles the three-end test
+at small deletion degree by the E-subgraph route. At $d(z)=4$ it follows from Botler--Sambinelli~\cite{BS}
+(audit A8, item~2). At $d(z)=6$ it is MR Theorem~123 (T(6)-ii), and at $d(z)=8$ it is MR Theorem~128
+(T(8)-ii). Audit A8 found both sound; Theorem~128 is conditional on Fan--Hou--Zhou~\cite{FHZ} for two
+seven-site shapes and on a star lemma of Chu--Fan--Zhou that A8 could not check. A8 also checked
+the test exhaustively at $|J|\le10$, over all $2$-connected $B$ ($771{,}972$ instances at
+$|J|=10$), and at $17{,}521$ random instances of order $12$. We do not use these results. What is
+new here is uniform in $d(z)$: the two lifts and their converses
+(\S\S\ref{sec:lift}--\ref{sec:floorlift}), DL $\Rightarrow$ (T2) (Corollary~\ref{cor:dl}), and the
+base conjectures (\S\ref{sec:conj}). The data of \S\ref{sec:data} confirm A8's check independently,
+with witnesses, classify the tight instances, and include $13{,}491$ sampled instances with
+$d(z)=10$ at order $12$ (at $n\le10$ always $d(z)\le8$).
 
 \begin{lemma}[parities]\label{lem:par}
 In the setting of Definition~\ref{def:t2}, let $d_J(z)=2m$ and $\delta(J)\ge3$. Then $n$ is even;
@@ -116,7 +136,7 @@ Throughout, $k=(n-2)/2$, $B=J-z$, and $T:=N_J(z)$, so $|T|=2m$.
 Statement & Status\\
 \midrule
 (T2) at all $717{,}942$ instances of $3$-connected $J$, $n\le10$; tight $\iff$ $J-z$ an odd
-semi-clique (\S\ref{sec:data}) & computed, exhaustive, witnesses verified\\
+semi-clique (\S\ref{sec:data}) & computed, exhaustive; (T2) and slack witnesses verified\\
 Forest lift (Theorem~\ref{thm:lift}) & proved; Lean \texttt{test2At\_of\_forestBase2}\\
 Its converse (Proposition~\ref{prop:conv}) & proved; Lean for matchings
 (\texttt{forestBase2\_matching\_of\_test2})\\
@@ -124,7 +144,7 @@ Floor $\Rightarrow$ (T2); floor lift (Theorem~\ref{thm:floor}) & proved; Lean
 \texttt{test2At\_of\_floor}, \texttt{floor\_of\_floorBase}\\
 Floor-lift converse (Proposition~\ref{prop:floorconv}) & proved; Lean for matchings
 (\texttt{matchingFloorBase\_of\_terminal})\\
-DL $\Rightarrow$ (T2) at roots with data (Corollary~\ref{cor:dl}) & proved; Lean
+DL $\Rightarrow$ (T2) at roots with twin-free matching data (Corollary~\ref{cor:dl}) & proved; Lean
 \texttt{test2At\_of\_disjL1}\\
 $d(z)=4$: (T2) from one avoidance; from separation or a two-token schedule (\S\ref{sec:range}) &
 proved; Lean \texttt{test2At\_of\_pair\_farApart}, \texttt{\_steer2}\\
@@ -153,9 +173,12 @@ edge, and then deciding whether the rest splits into at most $k-2$ paths;
 The unrooted search, its lower bounds and its memo are copied verbatim from the rooted-path-number
 solver \texttt{re.c} of the eulerian-cone session, audited in A30. Validation:
 \begin{itemize}[leftmargin=*]
-\item every positive answer comes with a witness, and \texttt{scripts/verify\_t2.py} checks every
-witness independently (path partition of $J-z$, at most $n/2$ paths, three ends at $r$, parities of
-$J$);
+\item every positive answer comes with a witness: a (T2) decomposition, and, with option
+\texttt{-s}, a decomposition of $B$ into at most $k$ paths for every slack answer.
+\texttt{scripts/verify\_t2.py --require-slack} checks every witness independently (path partition of
+$J-z$, the number of paths, three ends at $r$, parities of $J$) and rejects a slack answer without
+one. At $n\le10$ all $717{,}942$ (T2) witnesses and all $717{,}922$ slack witnesses pass
+(\texttt{data/t2\_slack\_witnesses.txt});
 \item \texttt{scripts/bf\_t2.py} enumerates all exact covers by explicitly listed paths, with no
 pruning beyond the size cap, and agrees on every instance of order $6$;
 \item tightness ($p(B)=k+1$) is certified by edge counting, since every tight instance has
@@ -174,7 +197,8 @@ $10$ & $358{,}492$ & $716{,}984$ & $716{,}984$ & $13$ & $13$\\
 \bottomrule
 \end{tabular}
 \end{center}
-All $717{,}942$ witnesses are verified.
+All $717{,}942$ (T2) witnesses and all $8+943+716{,}971$ slack witnesses are verified. The
+remaining $20$ instances are the tight ones, certified by edge counting.
 
 \begin{observation}[computed, $n\le 10$]\label{obs:tight}
 In every instance, either $p(J-z)\le k$, or $J-z$ is an \emph{odd semi-clique}, that is, $K_{2k+1}-H$
@@ -185,9 +209,10 @@ universal vertex other than $z,r$ (\S\ref{sec:cones}).
 
 \emph{Ends at $r$.} At most $n/2$ paths can end at $r$, and the number of ends at $r$ is odd. So at
 $n\le 8$ every (T2) decomposition has exactly three ends at $r$, and at $n=10$ it has three or five.
-In a tight instance every decomposition into at most $n/2$ paths has exactly $k+1$ paths, so it has at
-most $2(k+1)-d_B(r)=d_H(r)+2$ ends at $r$, where $J-z=K_{2k+1}-H$. That is the elementary half of OSB
-Theorem~4. In all $20$ tight instances the maximum equals $d_H(r)+2$. In $18$ of them $d_H(r)=1$ and the
+If $J-z=K_{2k+1}-H$, a decomposition into at most $n/2=k+1$ paths has at most
+$d_H(r)+2$ ends at $r$: the vertex $r$ lies on at most $k+1$ paths, and the paths through $r$ use
+$2\cdot\#\{P\ni r\}-\varepsilon(r)=d_B(r)=2k-d_H(r)$ edges at $r$, so
+$\varepsilon(r)\le 2(k+1)-d_B(r)=d_H(r)+2$. That is the elementary half of OSB Theorem~4. In all $20$ tight instances the maximum equals $d_H(r)+2$. In $18$ of them $d_H(r)=1$ and the
 witness has three ends; in the other two ($n=10$) $d_H(r)=3$ and the solver finds five.
 
 \emph{Order $12$, sampled.} Random $3$-connected graphs of order $12$ with exactly two even vertices,
@@ -197,8 +222,8 @@ Weisfeiler--Leman hashes) and \TWELVEINST{} instances. (T2) fails at \TWELVEFAIL
 number \TWELVETIGHT{}.
 
 \emph{Connectivity.} Among $2$-connected $J$ with $\delta(J)\ge3$ of order at most $8$, (T2) holds
-at all $1{,}084$ instances. With a cut vertex it fails at $3$ instances of order $8$, so the
-connectivity hypothesis of the spine is needed.
+at all $1{,}084$ instances. With a cut vertex it fails at $3$ instances of order $8$. So some connectivity is needed;
+these data do not show that the spine's $3$-connectivity is.
 
 \section{The floor, odd semi-cliques, and the literature}\label{sec:floor}
 
@@ -216,37 +241,48 @@ ends at $r$. (Lean: \texttt{exists\_three\_ends}.)
 \begin{proposition}[odd semi-cliques]\label{prop:semi}
 If $B=J-z$ is an odd semi-clique $K_{2k+1}-H$ with $e(H)<k$, then (T2) holds at $(J,z,r)$. More
 precisely, some minimum decomposition has exactly $d_H(r)+2\ge3$ ends at $r$. This rests on
-Theorem~4 of the odd-semi-clique-boundary manuscript (OSB), which is unrefereed and uses the
-Javadi--Miralaei rainbow Hamilton decomposition.
+Theorem~4 of the odd-semi-clique-boundary manuscript (OSB~\cite{OSB}), which is unrefereed and
+uses the Javadi--Miralaei rainbow Hamilton decomposition~\cite{JM} (its extension step is repaired
+in \texttt{manuscripts/jm-repair}, audit A10).
 \end{proposition}
 
 \begin{proof}
 OSB Theorem~4 gives $p(B)=k+1$, realised by a path $Q$ of length $k-e(H)\ge1$ together with $k$
 Hamilton paths. The number of ends at a vertex $v$ is $d_H(v)+2\cdot\ind{v\in V(Q)}$ (OSB, equation
-(1)), and $Q$ may be chosen to start at any prescribed vertex (the last paragraph of that proof).
+(1)), and $Q$ may be chosen to start at any prescribed vertex (OSB, proof of Theorem~4: ``The
+individual cap is always attainable at any one vertex $v$. Start $Q$ at $v$ in~(1).'').
 Start $Q$ at $r$. Since $d_B(r)=2k-d_H(r)$ is odd, $d_H(r)\ge1$, so $r$ ends $d_H(r)+2\ge3$ of the
 $k+1=n/2$ paths.
 \end{proof}
 
-So (T2) at $(J,z,r)$ follows from the Bonamy--Perrett floor question~\cite{BP} for the single graph
-$J-z$. Since the even vertices of $J-z$ are exactly $N(z)-r$ (Lemma~\ref{lem:par}), the classical
+So (T2) at $(J,z,r)$ follows from the floor question of Bonamy--Perrett~\cite[Question~1.1]{BP}
+for the single graph $J-z$. Since the even vertices of $J-z$ are exactly $N(z)-r$ (Lemma~\ref{lem:par}), the classical
 floor theorems for E-subgraph classes apply directly. We use them in the floor form in which they
-are restated by Botler--Sambinelli and Bonamy--Perrett (\texttt{research/notes/eulerian-gallai-literature.md};
-the original papers were not accessible to us).
+are restated by Botler--Sambinelli~\cite{BS} and Bonamy--Perrett~\cite{BP}
+(\texttt{research/notes/eulerian-gallai-literature.md}). The papers of Pyber and Fan were not
+accessible to us; those of Blanch\'e--Bonamy--Bonichon and Botler--Sambinelli--Coelho--Lee were read on
+arXiv.
 
 \begin{corollary}[literature ranges]\label{cor:lit}
 (T2) holds at $(J,z,r)$ if $J[N(z)-r]$ is a forest (Pyber~\cite{Pyb96}), or more generally if every
 block of $J[N(z)-r]$ is triangle-free of maximum degree at most $3$ (Fan~\cite{Fan05}). It also holds
-if $J-z$ is planar (Blanch\'e--Bonamy--Bonichon), has treewidth at most $3$ or maximum degree at most
-$4$ (Botler--Sambinelli--Coelho--Lee); the exceptional graphs $K_3,K_5^-,K_5$ of those theorems are odd
+if $J-z$ is planar (Blanch\'e--Bonamy--Bonichon~\cite{BBB}), has treewidth at most $3$ or maximum degree at most
+$4$ (Botler--Sambinelli--Coelho--Lee~\cite{BSCL}); the exceptional graphs $K_3,K_5^-,K_5$ of those theorems are odd
 semi-cliques or not of the form $J-z$, and are covered by Proposition~\ref{prop:semi}.
 \end{corollary}
+
+\begin{proof}
+Each cited theorem gives $p(J-z)\le\fl{|J-z|/2}=k$ outside its exceptions, and Lemma~\ref{lem:floor}
+gives (T2). Of the exceptions, $K_3$ would need $J=K_4$, which has no even vertex; $K_5$ has five
+even vertices, but $J-z$ has $|N(z)-r|\le4$ of them when $|J|=6$; and $K_5^-$ is an odd semi-clique,
+covered by Proposition~\ref{prop:semi}.
+\end{proof}
 
 \emph{Reach} (\texttt{scripts/lit\_cover.py}, order $10$, exhaustive). The Fan condition holds at
 $265{,}632$ of the $307{,}231$ instances with $d(z)=4$, at $127{,}504$ of $346{,}599$ with $d(z)=6$, and at
 $3{,}767$ of $63{,}154$ with $d(z)=8$. At $d(z)=4$ it fails exactly when $N(z)-r$ is a triangle.
-MR's grading of the three-end test (closed for $d(z)\le8$ there, with computer assistance) uses the
-same E-subgraph route; we do not rely on it.
+MR's treatment of the three-end test (closed for $d(z)\le8$ there; see \S\ref{sec:setting}) uses
+the same E-subgraph route; we do not rely on it.
 
 \section{The forest lift}\label{sec:lift}
 
@@ -260,7 +296,8 @@ M \;=\; J-\{zv:\ v\in N(z)-r\}-E(\Phi).
 \]
 \end{definition}
 
-\begin{lemma}[parities; Lean \texttt{forM2\_odd\_child}, \texttt{forM2\_odd\_r}]\label{lem:M}
+\begin{lemma}[parities; Lean, for $r$ and the children, which is all the lift uses:
+\texttt{forM2\_odd\_child}, \texttt{forM2\_odd\_r}]\label{lem:M}
 In $M$ the vertex $z$ is a leaf adjacent to $r$, and \emph{every} vertex has odd degree. Hence every
 Lov\'asz decomposition of $M$ has exactly $n/2$ paths, one end at each vertex.
 \end{lemma}
@@ -347,9 +384,11 @@ This gives the lower bounds:
 With $q$ components, $\sum_{u\in V(\Phi)}c(u)=|V(\Phi)|-q$, so in both cases the bounds sum to exactly
 $n\ge2|D|$. Hence $|D|=n/2$ and every bound is attained.
 
+(In case (b) the hypothesis of at least three ends at $r$ is automatic, since $c(r)+1\ge3$.)
 Consequently no path is a single edge $p(v)v$ with $v\ne r$ a non-root, since its end at $v$ would
 exceed $c(v)$. A path whose two end edges are both edges of $\Phi$ terminal at parents has length at
-least three, since the two parents differ. Remove every edge $p(v)v$ from the end $p(v)$ of its path.
+least three: length one would make the parent relation cyclic, and length two would give the
+middle vertex two parents. Remove every edge $p(v)v$ from the end $p(v)$ of its path.
 Ends move from $p(v)$ to $v$. Afterwards every vertex other than $r$ has one end, and $r$ has two;
 the exception is case (b) when $D$ contains the single-edge path $p(r)r$, which then disappears and
 leaves $r$ with no end. Re-attach $z$: in case (a) append $rz$ to either path ending at $r$; in case
@@ -440,9 +479,18 @@ has a perfect matching $M_0$ by edges of $J$ none of whose pairs are universal t
 component of $B-M_0$, then (T2) holds at $(J,z,r)$, and even $p(J-z)\le k$.
 \end{corollary}
 
-This is the \emph{same} data condition and the same statement, DL with $m-1$ pairs in a graph with
-one even vertex, that gives (T1) through the triangle lift (Lean \texttt{test1At\_of\_disjL1}). So DL
-yields both spine tests at every root with matching data. At order $8$ (\texttt{scripts/tb2\_floor.py},
+The DL statement used is the same, DL with $m-1$ pairs in a graph with one even vertex, as the
+one that gives (T1) through the triangle lift (Lean \texttt{test1At\_of\_disjL1}). The side
+conditions differ: \texttt{test1At\_of\_disjL1} requires its auxiliary graph to be connected, while
+Corollary~\ref{cor:dl} requires twin-free pairs. So DL yields (T2) at every root with
+\emph{twin-free} matching data. Such data need not exist. At an odd semi-clique the floor is false,
+so every data choice has a twin pair. The same happens outside semi-cliques (audit A37,
+\texttt{h\_twins.py}; instances written as graph6 and $(z,r)$): at order $8$ the five instances \texttt{G?b\textasciitilde\textasciitilde\{} $(0,4)$
+and $(4,0)$, \texttt{GCv\textasciitilde\textasciitilde\{} $(1,4)$, \texttt{GQj\textasciitilde\textasciitilde\{}
+$(1,3)$ and $(3,1)$ (all with $d(z)=4$ and three data choices), and in the $20{,}000$-instance sample
+of order $10$ two more, \texttt{ICvv\textasciitilde\textasciitilde\textasciitilde\textasciitilde w} $(1,5)$ and
+\texttt{I?bfN\textasciitilde\textasciitilde\textasciitilde w} $(4,0)$. There Corollary~\ref{cor:dl} says
+nothing; (T2) holds, and the floor base exists with a spanning-tree join. At order $8$ (\texttt{scripts/tb2\_floor.py},
 mode \texttt{data}) the floor base exists for all $2{,}280$ data choices without a universal-twin pair
 and fails for all $153$ with one, exactly as DL predicts. Per instance, it is absent precisely at the
 $5$ odd semi-cliques, where the floor is false. It is also absent at the fat theta of
@@ -456,6 +504,11 @@ Let $d(z)=4$, $N(z)=\{r,w,a,b\}$ with $ab\in E(J)$, and $G=B-ab$, whose only eve
 Lov\'asz decomposition of $G$ has $a\notin V(Q(b))$, then (T2) holds.
 \end{proposition}
 
+\begin{proof}
+Theorem~\ref{thm:floor} with $T'=\{a,b\}$ and $\Phi=\{ab\}$ rooted at $a$: then (i) reads
+$a\notin V(Q(b))$, and (ii) is empty.
+\end{proof}
+
 \begin{corollary}[Lean \texttt{test2At\_of\_pair\_farApart}, \texttt{test2At\_of\_pair\_steer2}]\label{cor:pair}
 In Proposition~\ref{prop:pair}, (T2) holds if (a) $a,b$ have no common neighbour in $G$ (separation), or
 (b) $(G,b,\{a\})$ admits a two-token schedule in the sense of the trn session (Lean \texttt{Steer2},
@@ -465,7 +518,8 @@ In Proposition~\ref{prop:pair}, (T2) holds if (a) $a,b$ have no common neighbour
 So at deletion degree four (T2) needs a single DL(1) pair, the same as (T1) there.
 \texttt{scripts/dz4\_cover.py} ports the schedule search of \texttt{trn/scripts/steer2.cpp}, which
 matches the Lean definition (\texttt{fin}, \texttt{step}, \texttt{swap}; leaf at $y$, forbidden set
-$\{\ell,x\}$), and cross-checks every schedule with the exact oracle.
+$\{\ell,x\}$), and cross-checks every schedule with the exact oracle. The separation answers (a)
+are not cross-checked; (a) is a proved theorem.
 \begin{itemize}[leftmargin=*]
 \item Order $8$: of the $554$ instances with $d(z)=4$ and data, (a) settles $88$ and (b) $390$.
 \item Order $10$, a uniform sample of $20{,}000$ instances: of the $7{,}467$ with $d(z)=4$ and data,
@@ -476,22 +530,32 @@ instances at $d(z)=4$ are triangles $N(z)-r$ not settled by (a) or (b). Over all
 instances of order $10$: \TRIDATA.
 \end{itemize}
 
-For $m\ge3$ the matching base has at least two disjunctive pairs, and the proved tools reach only the
-\emph{packed} regime. There some $N(z)-y$ is pairwise at distance at least three in $M$, and the set
-forms of separation, $L_1$ and NA (\texttt{separation\_set}, \texttt{lovasz\_avoid\_set},
-\texttt{avoid\_packed\_of\_reach}) give every condition of \eqref{eq:match} at once
-(\texttt{scripts/coverage.py}). This reaches $37$ of the $685$ instances with matching data at order
-$8$ (all $37$ with $d(z)=4$, out of $408$ there) and none of the $14{,}434$ with matching data in a
-$20{,}000$-instance sample at order $10$.
+In the matching base of \S\ref{sec:lift} there are $m-1$ disjunctive pairs besides the fixed
+condition, so for $m\ge3$ at least two, beyond any single-avoidance theorem. For the matching base
+at any $m$, the proved tools reach only the \emph{packed} regime. Call $X\subseteq V(M)$
+\emph{packed} if its vertices are pairwise non-adjacent in $M$ with no common neighbour. The regime
+asks that $N(z)$, or $N(z)-y$ for a single vertex $y\in N(z)-r$, be packed in $M$, with a side
+condition at $y$. Then the set forms of separation, $L_1$ and NA (\texttt{separation\_set},
+\texttt{lovasz\_avoid\_set}, \texttt{avoid\_packed\_of\_reach}) give every condition of
+\eqref{eq:match} at once (\texttt{scripts/coverage.py}; not reproduced by the audit). Even at
+$m=2$ the regime is narrow. It reaches $37$ of the $685$ instances with matching data at order $8$
+(all $37$ with $d(z)=4$, of $408$ there, and none of the $277$ with $d(z)=6$). It reaches none of
+the $14{,}434$ with matching data in a $20{,}000$-instance sample at order $10$.
 
 \section{The base conjecture}\label{sec:conj}
 
 \begin{conjecture}[forest base for (T2)]\label{conj:base}
 Let $J$ be $3$-connected with exactly two even vertices $z\sim r$. Then some forest $T$-join of $J-z$,
 rooted with $r$ a root or with $c(r)\ge2$, admits a Lov\'asz decomposition of $M$ satisfying (i) and
-(ii). Equivalently (Proposition~\ref{prop:conv}), $J-z$ has a (T2) decomposition in which the edges of
-some such forest $T$-join are terminal at their parents.
+(ii).
 \end{conjecture}
+
+By Proposition~\ref{prop:conv}, for forests with $r$ a root of $\Phi$-degree one or $r$ a child,
+the base is equivalent to a (T2) decomposition of $J-z$ in which the edges of the forest are
+terminal at their parents. For a root $r$ with $d_\Phi(r)\ge3$ it is equivalent to the stronger
+statement with at least $d_\Phi(r)+2$ ends at $r$ (the remark after Proposition~\ref{prop:conv}).
+So Conjecture~\ref{conj:base} implies, and restricted to those two types of rooting is equivalent
+to, the existence of a (T2) decomposition with a terminal forest $T$-join.
 
 Theorem~\ref{thm:lift} turns it into (T2). It holds at all $717{,}942$ instances of order at most $10$,
 and at all $2$-connected instances with $\delta\ge3$ of order at most $8$. Its matching case is a
@@ -573,15 +637,16 @@ instances at $n=6,8,10$. All hold, and all $20$ tight instances of \S\ref{sec:da
 
 \begin{enumerate}[leftmargin=*]
 \item \emph{Proved, Lean.} Two lifts (Theorems~\ref{thm:lift}, \ref{thm:floor}); floor $\Rightarrow$
-(T2); DL $\Rightarrow$ (T2) at roots with data; $d(z)=4$ from one avoidance, separation, or a two-token
-schedule. All with standard axioms (\texttt{data/axioms.txt}).
+(T2); DL $\Rightarrow$ (T2) at roots with twin-free matching data; $d(z)=4$ from one avoidance,
+separation, or a two-token schedule. All with standard axioms (\texttt{data/axioms.txt}).
 \item \emph{Proved, Lean, matching case.} Both converses: \texttt{matchingFloorBase\_of\_terminal}, and
 \texttt{forestBase2\_matching\_of\_test2}, which takes a (T2) decomposition of \texttt{delVert J z} with a
 terminal matching and returns \texttt{ForestBase2 J z r}. The core is \texttt{PathDecomp.drop\_terminal},
 which removes a terminal edge and keeps every other path.
 \item \emph{Proved, paper.} The forest cases of both converses; odd semi-cliques (from OSB Thm~4,
 unrefereed); the literature ranges (from restated floor theorems); the cone characterisation.
-\item \emph{Computed.} (T2) exhaustively to order $10$; the general forest base at every instance there;
+\item \emph{Computed.} (T2) exhaustively to order $10$, with (T2) and slack witnesses; the general
+forest base at every instance there;
 the order-$12$ sample; the $d(z)=4$ and packed coverage; Conjecture~\ref{conj:two} to order $8$.
 \item \emph{Open.}
 \begin{itemize}
@@ -606,13 +671,31 @@ python3 scripts/dz4_cover.py ROUTE_EXT 200000 < instances
 python3 scripts/allodd_pairs.py ROUTE_EXT < graphs
 \end{verbatim}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
+\bibitem{BBB} A.~Blanch\'e, M.~Bonamy, N.~Bonichon, Gallai's path decomposition in planar graphs,
+arXiv:2110.08870v2 (2022); extended abstract in \emph{Extended Abstracts EuroComb 2021}, Trends in
+Mathematics 14, 758--764.
+\bibitem{BS} F.~Botler, M.~Sambinelli, Towards Gallai's path decomposition conjecture, \emph{J.\ Graph
+Theory} 97 (2021) 161--184; arXiv:1911.04546.
+\bibitem{BSCL} F.~Botler, M.~Sambinelli, R.~S.~Coelho, O.~Lee, Gallai's path decomposition conjecture
+for graphs with treewidth at most 3, \emph{J.\ Graph Theory} 93 (2020) 328--349; arXiv:1706.04334
+(the arXiv version, titled ``On Gallai's and Haj\'os' conjectures for graphs with treewidth at most
+3'', was read; its Theorem~4.1 is the maximum-degree-$4$ result).
 \bibitem{BP} M.~Bonamy and T.~Perrett, Gallai's path decomposition conjecture for graphs of small
 maximum degree, \emph{Discrete Math.} 342 (2019) 1293--1299.
 \bibitem{Fan05} G.~Fan, Path decompositions and Gallai's conjecture, \emph{J. Combin. Theory Ser. B}
 93 (2005) 117--125.
+\bibitem{FHZ} G.~Fan, J.~Hou, C.~Zhou, Gallai's conjecture on path decompositions, \emph{J.\ Oper.\
+Res.\ Soc.\ China} 11 (2023) 439--449.
+\bibitem{JM} R.~Javadi, M.~Miralaei, A conjecture on rainbow Hamiltonian cycle decomposition,
+\emph{Discrete Math.} 349 (2026) 114676; arXiv:2403.17290.
 \bibitem{L68} L.~Lov\'asz, On covering of graphs, in: \emph{Theory of Graphs} (Proc.\ Colloq., Tihany,
 1966), Academic Press, 1968, 231--236.
+\bibitem{MR} The marked-reduction manuscript, \emph{Cut vertices and cycle intersections in Gallai's
+path decomposition problem}, November 2026, \texttt{gallai/01-original-manuscripts/marked-reduction.pdf};
+audited in A8.
+\bibitem{OSB} The odd-semi-clique-boundary manuscript, \texttt{gallai/01-original-manuscripts/}
+\texttt{odd-semi-clique-boundary.pdf} (unrefereed); audited in A4.
 \bibitem{Pyb96} L.~Pyber, Covering the edges of a connected graph by paths, \emph{J. Combin. Theory
 Ser. B} 66 (1996) 152--159.
 \bibitem{SPINE} Gallai project, The reduction spine for Gallai's path decomposition conjecture,

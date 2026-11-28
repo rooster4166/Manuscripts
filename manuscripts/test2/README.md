@@ -1,6 +1,6 @@
 # test2: the three-end test (T2) of the spine
 
-Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; audit A37 in progress).
+Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; audited in A37, `research/audit/A37-test2.md`, fixes applied).
 
 ## Contents so far
 
@@ -15,6 +15,7 @@ Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; au
 | `data/t2_order10_fields.txt.gz` | Every instance at order 10 (fields only; rerun `t2 -E -B 20000000` for witnesses). |
 | `data/tight_le10.txt` | The 20 tight instances (p(J − z) = n/2) at order ≤ 10, with witnesses. |
 | `data/forestbase2_order8.txt`, `data/matchingbase2_order8.txt` | Base searches at order 8. |
+| `data/t2_slack_witnesses.txt` | Slack-witness check at n ≤ 10 (`t2 -s` into `verify_t2.py --require-slack`). |
 | `data/axioms.txt` | `#print axioms` for the Lean lift. |
 | `scripts/tb2_floor.py` | The floor lift (B − Φ with w the only even vertex), per instance or per matching data choice. |
 | `scripts/coverage.py`, `scripts/dz4_cover.py`, `scripts/lit_cover.py` | Reach of the proved tools: packed sets (separation / L1 / NA set forms), d(z) = 4 by separation or two-token schedules (port of trn steer2.cpp), Pyber/Fan floor conditions. |
@@ -30,7 +31,7 @@ Session `claude/test2`. Manuscript: `test2.tex` / `test2.pdf` (working draft; au
     python3 scripts/verify_t2.py < t2_10.out                        # witness check
     python3 scripts/tb2.py ROUTE_EXT < instances                     # forest base + lift check
 
-Line format of t2.c: `g6 z r d(z) d(r) n slack t2 emax | witness |`, where slack = [p(J − z) ≤ n/2 − 1],
+Line format of t2.c: `g6 z r d(z) d(r) n slack t2 emax | witness |` (with `-s`, followed by ` S | slack witness |`), where slack = [p(J − z) ≤ n/2 − 1],
 t2 = [(T2) holds], emax = most ends at r over decompositions with ≤ n/2 paths (−e: ≥ e, search cut off;
 −1: not computed).
 
@@ -42,7 +43,8 @@ t2 = [(T2) holds], emax = most ends at r over decompositions with ≤ n/2 paths 
 | 8 | 474 | 948 | 948 | 5 |
 | 10 | 358,492 | 716,984 | 716,984 | 13 |
 
-All 717,942 witnesses verified by `verify_t2.py`. In every tight instance J − z is an odd semi-clique
+All 717,942 (T2) witnesses verified by `verify_t2.py`; all 717,922 slack answers (p(J − z) ≤ n/2 − 1)
+carry witnesses (`t2 -s`) verified by `verify_t2.py --require-slack` (`data/t2_slack_witnesses.txt`). In every tight instance J − z is an odd semi-clique
 K_{2k+1} − H with e(H) < k (tightness then follows by edge counting). Order 8: the forest base exists at
 all 948 instances (685 by a perfect matching of J[N(z)], 263 by a spanning-tree T-join), every lift
 verified; every one of the 1,512 perfect matchings of J[N(z)] gives a matching base.

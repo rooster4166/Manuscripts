@@ -6,8 +6,8 @@ a not in Q(b) or b not in Q(a).  That gives the floor for J - z, hence (T2).  Pr
   FAR   : a, b have no common neighbour in G         (separation, pair form; Lean `separation`);
   STEER : a two-token schedule exists for (G, y, {x}) with {x, y} = {a, b}
           (trn session, Lean `avoid_of_steer2`; the search is a port of trn/scripts/steer2.cpp).
-Every positive answer is cross-checked with the exact oracle (route_ext A query: some Lovasz
-decomposition of G has Q(y) avoiding x).  Reports, per instance with d(z) = 4, whether some data
+Every STEER answer is cross-checked with the exact oracle (route_ext A query: some Lovasz
+decomposition of G has Q(y) avoiding x).  FAR answers are not cross-checked (FAR is a proved theorem).  Reports, per instance with d(z) = 4, whether some data
 choice is settled by FAR or STEER, and whether data exist at all.
 usage: python3 dz4_cover.py ORACLE BUDGET < t2_fields
 """
